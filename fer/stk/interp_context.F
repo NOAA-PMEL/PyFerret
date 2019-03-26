@@ -51,6 +51,7 @@
 *       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
 * V685: 1/13 *sh* ensure that sst[L=@ave] is recognized as a compressed axis
 * V702 1/17 *sh* for trac enhancement #2369 -- dynamic memory management
+* V745  3/18 *ACM* remove changes for issue 1916. This is done in repl_exprns.F
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -75,8 +76,6 @@
 * in	cx		- context slot to return
 * in	name_code	- name of uvar to be evaluated
 * out	status		- completion code
-
-	cx_only = .TRUE.  ! do merge_grid for getting the right cx sizes w/o evaluating
 
 * locate the requested variable in the uvar variables
 	uvar = UVAR_NUMBER( name_code )

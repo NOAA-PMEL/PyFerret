@@ -168,7 +168,7 @@
      .            vartype, ist, ind,
      .            attype, attlen, inxt, attoutflag, fertype, 
      .            attid, ieq, base_isp, base_cx, cat, var, uvar,  
-     .            i1ss, inss, grid, ucode, 
+     .            i1ss, inss, grid, ucode, iv, isp_start,
      .            hi_cx, item, itype, start, len_name, var_status
 	REAL	  result, val, aval
 	REAL*8 TM_WORLD, TM_WW_AXLEN, ww
@@ -202,6 +202,10 @@
         coordvar = .FALSE.
         apply_cx = .FALSE.
 	str_len = 0
+	
+	isp_start = isp
+	grid = unspecified_int4
+	cx_only = .TRUE.   ! do merge_grid in mode for not evaluating full context
 
 * do_err: issue error message if attrib does not exist on varname.attname
         do_err = .TRUE.
@@ -223,7 +227,6 @@
 	   IF (cmnd(istart-2:istart-2) .EQ. '\\') GOTO 10  
 	ENDIF
 #endif
-
 
 * locate the end of the next grave accent pair
 * Note: no check for backslash-escaped accent here because properly paired
@@ -397,7 +400,6 @@
 	      GOTO 500
 	   ENDIF
 	   
-
 * 11/2013
 * return=DEFINED needs only to check whether the user-variable is defined
 
@@ -457,7 +459,7 @@
 	      ELSEIF ( repl .EQ. "BAD" ) THEN
 	         result = cx_bad_data ( cx )
 
-c if its a netcdf-type dset with packed data, may have swapped out the bad flag
+* if its a netcdf-type dset with packed data, may have swapped out the bad flag
 
 	         i2 = cx_data_set(cx)
 		 CALL GET_DSET_BAD( i2,  cmnd(istart:iend), result )
@@ -727,14 +729,14 @@ c if its a netcdf-type dset with packed data, may have swapped out the bad flag
 * TRANSPOSE - ALL "IMPOSED" AXES PRESENT THE RISK OF WRONG RESULTS
 * Just checking for the abstract axis to fix bug 2213. 
 
-
                  DO 190 idim = 1, nferdims
 		    do_eval = ( cx_hi_ww(idim, cx) .EQ. unspecified_val8
      .	                        .AND. CGRID_AXIS(idim, cx) .NE. mnormal )
 		    do_eval = (do_eval .OR. 
      .	                 CGRID_AXIS(idim, cx) .EQ. GET_ABSTRACT_LINE(idim) )
 	            IF ( do_eval .OR. has_uvar_gc .OR. is_uvar_const) THEN
-	               CALL EVAL_EXPR (  cx_last,
+		       cx_only = .FALSE.
+		       CALL EVAL_EXPR (  cx_last,
      .		                     cmnd(istart:iend), apply_cx, status )
 	               IF ( status .NE. ferr_ok ) GOTO 5000
 	               cx = is_cx(1)	! always comes back as the first context
@@ -764,12 +766,14 @@ c if its a netcdf-type dset with packed data, may have swapped out the bad flag
 * ... RETURN=SHAPE
 
  200	   IF ( repl .EQ. "SHAPE" ) THEN
+ 
 	      repl = ' '
 	      str_len = 0
 	      DO 210 idim = 1, nferdims
 	         IF ( CX_DIM_LEN( idim, cx ) .GT. 1 ) THEN
-		    
-	         grid = GRID_FROM_NAME ( cmnd(istart:iend), cx, status )
+
+		    IF (grid .EQ. unspecified_int4) 
+     .                  grid = GRID_FROM_NAME ( cmnd(istart:iend), cx, status )
 		    
 * Getting details about the grid of a user-variable
 
@@ -1200,6 +1204,8 @@ c		    ENDIF
 	ELSE
 * single number answer desired
 * ... evaluate the expression
+
+	   cx_only = .FALSE.
 	   CALL EVAL_EXPR (  cx_last, cmnd(istart:iend), 
      .        .TRUE., status )
 	   IF ( status .NE. ferr_ok ) GOTO 5000
@@ -1297,6 +1303,30 @@ c		    ENDIF
 
 * successful translation of a grave-accented expression
  1000	did_sub = .TRUE.
+
+* restore the state of uvar description loaded here forreturns 
+* that need the grid, such as *size, shape. The uvar.GT.0 is 
+* checking for "packed" uvar-context info as set in const_var_context
+
+        IF (cx_only) THEN	   
+
+	   DO i = isp_start, max_intrp
+	      uvar = is_uvar(i)
+	      IF (uvar.GT.0 .AND. uvar.LT.max_uvar) THEN
+	         DO idim = 1, nferdims
+	           uvar_given ( idim, uvar ) = uvlim_irrelevant
+	           uvar_lo_ss ( uvar, idim ) = unspecified_int4
+	           uvar_hi_ss ( uvar, idim ) = unspecified_int4
+	         ENDDO
+
+		 CALL DEALLO_UVAR_GRIDS(uvar) 
+
+	      ENDIF
+	   ENDDO
+	   
+	   cx_only = .FALSE.
+
+	ENDIF
 
 	RETURN
 

@@ -49,6 +49,9 @@
 *	 results that may depend on this grid
 *        2/12 *kms* Add E and F dimensions (use nferdims in tmap_dims.parm)
 * v690 *sh* also purge any file vars that depend upon uvars as aux vars 
+* V745 *acm*  3/19 Issue 1916. For issue 1916: Pull out guts into a 
+*        subroutine that can also be called in cancel mem
+ 
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
@@ -66,23 +69,11 @@
      .                          max_uvar, num_indices )
         DO 500 j = 1, num_indices
            uvar = deleted_list_result(j)
+
 * eliminate all memory resident instances of this variable
-	   CALL PURGE_USER_VAR( uvar )
+* and restore initial defaults
 
-* back to initial defaults (see INIT_UVAR)
-* (eliminate all grid information that may have been rendered incorrect)
-	   CALL DEALLO_UVAR_GRIDS(uvar)
-
-*       bug fix: 11/91 *************
-* must reset ALL of the state variables as set up in INIT_UVAR
-* by default assume the definition requires an external data set specification
-        uvar_need_dset( uvar ) = .TRUE.
-
-* by default assume that all limits are irrelevant
-        DO 320 i = 1, nferdims
- 320           uvar_given(i,uvar) = uvlim_irrelevant
-* end of bug fix: 11/91 *************
-
+	   CALL PURGE_ALL_UVARS_SUB (uvar)
 
  500	CONTINUE
 

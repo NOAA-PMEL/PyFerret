@@ -81,6 +81,9 @@ C
 *                  calling graphics routines
 * V74  *acm* 1/18  Fixing issue 1009: scaling of polygons overlaid on time plot
 *                  when rescaling time for precision.
+* V745 *acm* 3/19  The fix for 2542 (issue 1814) needs to be applied only for
+*                  filled polygons in PyFerret.
+
 
         include         'xinterrupt.cmn' ! 1/89 *sh*
         include         'ppl_in_ferret.cmn'
@@ -298,6 +301,8 @@ C      set already.
 * Check that the polygon has a nonzero size in both directions
 * PyFerret fails e.g. on a zero-height rectangle. This is not a 
 * perfect test but will catch most cases.
+* The check is needed only for FILLED polygons.  If using POLY to 
+* draw an outline then a zero height or width is ok.
 
            x1val = x(IBASE+1)
            y1val = x(iy+IBASE+1)
@@ -305,10 +310,6 @@ C      set already.
           ydel = 0.
 
 	   DO 150 J=IBASE+1,IBASE+llen
-!	      CALL TRANS(I,X(J),X(IY+J),XT,YT)
-!	      nvertex = nvertex + 1
-!	      x(xvertexbase+nvertex-1) = xt
-!	      x(ypolybase+nvertex-1) = yt
 	      nvertex = nvertex + 1
 	      x(xvertexbase+nvertex-1) = x(j)
 	      x(ypolybase+nvertex-1) = x(iy+j)
@@ -318,9 +319,11 @@ C      set already.
               ENDIF
 
  150	   CONTINUE
-          IF (xdel.LT.epsilon .OR. ydel.LT.epsilon) GOTO 199
 
 	   if (fill_it) then
+
+	      IF (xdel.LT.epsilon .OR. ydel.LT.epsilon) GOTO 157
+
 *             Determine the color index for the fill
 	      if (ZEQ.AND.x(zpolybase+i).EQ.CMZEQ) GOTO 157
 

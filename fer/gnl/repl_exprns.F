@@ -158,7 +158,7 @@
 * internal variable declarations:
 	LOGICAL   TM_HAS_STRING, TM_DFPEQ, need_formatting, zero_fill, coordvar,
      .            do_err, do_eval, get_ready, was_dep, const_arr_var,
-     .		  dqote, DQ, orig_name, user_prec, uvgrid, compressed
+     .		  dqote, DQ, orig_name, user_prec, uvgrid, compressed, grid_reset
 	INTEGER   CGRID_SIZE, CGRID_AXIS, TM_LENSTR1, CX_DIM_LEN,
      .		  FIND_DSET_NUMBER, GET_ABSTRACT_LINE, TM_LENSTR,
      .		  TM_GET_GRIDNUM, GRID_FROM_NAME, TM_SUBSC, TM_GET_CALENDAR_ID,
@@ -205,7 +205,7 @@
 	
 	isp_start = isp
 	grid = unspecified_int4
-	cx_only = .TRUE.   ! do merge_grid in mode for not evaluating full context
+	cx_only = .FALSE.   ! do merge_grid in mode for not evaluating full context
 
 * do_err: issue error message if attrib does not exist on varname.attname
         do_err = .TRUE.
@@ -431,7 +431,35 @@
            ELSE
 * ... context meaningless for d=1,return=varnames
               IF (cmnd(istart:istart+1) .NE. 'd=') THEN
-                 CALL EVAL_CONTEXT ( cx_cmnd, cmnd(istart:iend), status )
+
+	         grid_reset = ( repl.EQ."SHAPE" .OR. 
+     .              (repl.EQ."SIZE"  .AND. INDEX(cmnd(istart:iend),'.').EQ.0) )
+
+	         IF ( repl(2:5).EQ."SIZE" ) THEN
+	            DO idim = 1, nferdims
+	               IF ( repl(1:1) .EQ. ss_dim_name(idim) ) THEN
+		          grid_reset = .TRUE.
+			  EXIT
+	               ENDIF
+		    ENDDO
+	         ENDIF
+
+	         IF ( repl(2:6).EQ."START" .OR. repl(2:4).EQ."END" ) THEN
+	            DO idim = 1, nferdims
+	               IF ( repl(1:1).EQ.ss_dim_name(idim).OR. 
+     .                      repl(1:1).EQ.ww_dim_name(idim))  THEN
+		          grid_reset = .TRUE.
+			  EXIT
+	               ENDIF
+		    ENDDO
+	         ENDIF
+
+		 IF (grid_reset) THEN
+		    cx_only = .TRUE.
+		    CALL RESET_UVAR_GRIDS (isp_start)
+		 ENDIF
+
+		 CALL EVAL_CONTEXT ( cx_cmnd, cmnd(istart:iend), status )
                  IF ( status .NE. ferr_ok ) GOTO 5000
 
                  cx = is_cx(1)	! always comes back as the first context
@@ -769,6 +797,7 @@
  
 	      repl = ' '
 	      str_len = 0
+
 	      DO 210 idim = 1, nferdims
 	         IF ( CX_DIM_LEN( idim, cx ) .GT. 1 ) THEN
 
@@ -921,6 +950,7 @@
 * ... RETURN=SIZE
 	   ELSEIF ( repl .EQ. "SIZE"  .AND. 
      .              INDEX(cmnd(istart:iend),'.') .EQ. 0) THEN
+
 	      i2 = CGRID_SIZE ( cx )
 	      repl = LEFINT(i2, str_len)
 
@@ -1310,20 +1340,7 @@ c		    ENDIF
 
         IF (cx_only) THEN	   
 
-	   DO i = isp_start, max_intrp
-	      uvar = is_uvar(i)
-	      IF (uvar.GT.0 .AND. uvar.LT.max_uvar) THEN
-	         DO idim = 1, nferdims
-	           uvar_given ( idim, uvar ) = uvlim_irrelevant
-	           uvar_lo_ss ( uvar, idim ) = unspecified_int4
-	           uvar_hi_ss ( uvar, idim ) = unspecified_int4
-	         ENDDO
-
-		 CALL DEALLO_UVAR_GRIDS(uvar) 
-
-	      ENDIF
-	   ENDDO
-	   
+	   CALL RESET_UVAR_GRIDS (isp_start)
 	   cx_only = .FALSE.
 
 	ENDIF

@@ -195,7 +195,7 @@
      .                  npermuted, recsofar, do_stream_phase, nvars,
      .                  edges_flag, keepax_flag, nn, slen, do_bounds,
      .			my_mr(max_intrp), my_cx(max_intrp), frame_bottom,
-     .			nvars2list, nctype, cdfid
+     .			nvars2list, nctype, cdfid, strmlen
 	INTEGER*8	i8_size
 
 	CHARACTER	AUTO_FILENAME*2048, filename*2048, raw_name*2048, 
@@ -432,24 +432,37 @@ c     .		 .AND. .NOT.do_comma_del
 	   buff = ' '
 	ENDIF
 
-* did they set an output type?
+* did they set an output type? allowed for netCDF and in limited way stream files
+
+	strmlen = 0
 	out_type = "DFLT"
 	i = qual_given( slash_list_outtype )
+
 	IF ( i .GT. 0 ) THEN
-           IF (.NOT. do_cdf) THEN
-	      CALL WARN('/OUTTYPE is valid only for NetCDF output. Ignored')
-	   ELSE
+           IF (do_cdf .OR. do_stream .OR. do_unform) THEN
 	      have_outtype = .FALSE.
 	      CALL EQUAL_STRING(
      .                  cmnd_buff(qual_start(i):qual_end(i)),
      .                  out_type, status )
 	      IF ( status .NE. ferr_ok ) GOTO 5000
-	      have_outtype = ( INDEX(out_type,'DOU') .GT. 0 .OR.
+	      IF (do_cdf .OR. do_stream ) THEN 
+	         have_outtype = ( INDEX(out_type,'DOU') .GT. 0 .OR.
      .                    INDEX(out_type,'FLO') .GT. 0 .OR. 
      .                    INDEX(out_type,'INT') .GT. 0 .OR.
      .                    INDEX(out_type,'SHO') .GT. 0 .OR.
      .                    INDEX(out_type,'BYT') .GT. 0 )
-	      IF (.NOT. have_outtype) GOTO 5100
+	         IF (.NOT. have_outtype) GOTO 5100
+	      ENDIF
+	      IF (do_stream .OR. do_unform .AND. have_outtype) THEN
+	         strmlen = 8
+		 IF (have_outtype .AND. INDEX(out_type,'FLO') .GT. 0 ) strmlen = 4
+		 IF (have_outtype .AND. INDEX(out_type,'INT') .GT. 0 ) strmlen = 4
+		 IF (have_outtype .AND. INDEX(out_type,'SHO') .GT. 0 ) strmlen = 2
+		 IF (have_outtype .AND. INDEX(out_type,'BYT') .GT. 0 ) strmlen = 1
+	      ENDIF
+
+	   ELSE
+	      CALL WARN('/OUTTYPE is valid only for NetCDF or stream output. Ignored')
            ENDIF
 	ENDIF
 
@@ -595,14 +608,13 @@ c     .		 .AND. .NOT.do_comma_del
      .			GET_MAX_STRING_LEN(my_cx(i), my_mr(i),
      .					   memry(my_mr(i))%ptr)+1 )
 	         ELSE
-	            reclen = MAX(reclen,4)
+	            reclen = MAX(reclen,8)
 	         ENDIF
-		 
-#ifdef double_p
-	         reclen = reclen * 2
-#endif
 
  60	      CONTINUE
+
+              IF (strmlen .GT. 0) reclen = strmlen
+
 	      OPEN( UNIT	= default_list_lun,
      .		    FILE	= raw_name,
      .		    FORM	= 'UNFORMATTED',

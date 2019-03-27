@@ -1,0 +1,26 @@
+! err744_poly_const_val.jnl
+! Issue 1918; zero-extent polygons cause a pyferret failure
+! but only filled polygons
+!
+! POLY/LINE without /FILL should still draw even if
+! constant-valued in either direction
+!
+set view upper
+let xpts = {2,8,,2,8,,2,2.1,,8,8}
+let ypts = {2,2.1,,8,8,,2,8,,2,8}
+poly/hl=0:10/vl=0:10/line=14 xpts, ypts
+plot/ov/vs/line=16 xpts+1, ypts+1
+
+! POLY/FILL will not draw, so will be skipped
+
+set view ll
+use bar_chart_data_small.nc
+POLY/LINE/NOLABEL/FILL/lev=4/coord_ax=Z  BCHx4,BCHy4 ,wt_plt
+
+! POLY/LINE/FILL can draw the outline only
+
+set view lr
+use bar_chart_data_small.nc
+POLY/LINE/NOLABEL/FILL/lev=4/LINE/THICK/COLOR=red/coord_ax=Z  BCHx4,BCHy4 ,wt_plt
+
+frame/file=poly_with_const.gif

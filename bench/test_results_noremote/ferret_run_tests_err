@@ -574,6 +574,10 @@ load num
 SET DATA/EZ/var=num/order=vxyzt/grid=mygrid junk.dat
  **ERROR: invalid command: invalid argument for /TYPE
 SET DATA/EZ/var=num/type=i3/grid=mygrid/form=stream junk.dat
+ LISTing to file permutedBinaryTest_r4.dat
+ LISTing to file permutedBinaryTest_int.dat
+ LISTing to file permutedBinaryTest_short.dat
+ LISTing to file permutedBinaryTest_byte.dat
 *** Running ferret script: bn_define_axes.jnl
 Replacing definition of axis XAX
 Replacing definition of axis XAX

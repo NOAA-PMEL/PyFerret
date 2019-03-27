@@ -129,6 +129,10 @@ out.cdf
 out.nc
 out.xml
 permutedBinaryTest.dat
+permutedBinaryTest_byte.dat
+permutedBinaryTest_int.dat
+permutedBinaryTest_r4.dat
+permutedBinaryTest_short.dat
 ppllist.out
 redirect_journal.txt
 redirect_stderr.txt

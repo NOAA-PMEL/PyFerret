@@ -84,6 +84,46 @@ file/format=str/var=num,num1/grid=mygrid/order=xyztv permutedBinaryTest.dat
 list num
 list num1
 
+
+!---------- A few tests for single-precision, integer, short, byte
+
+! testing real*4 write and read-back
+sp rm -f permutedBinaryTest_r4.dat
+list/i=1:48/form=stream/file=permutedBinaryTest_r4.dat/outtype=float i
+
+file/format=str/var=num,num1/type=r4/grid=mygrid/order=xyztv permutedBinaryTest_r4.dat
+list num
+list num1
+cancel data 2
+
+! testing integer*4 write and read-back
+sp rm -f permutedBinaryTest_int.dat
+list/i=1:48/form=stream/file=permutedBinaryTest_int.dat/outtype=int i
+
+file/format=str/var=num,num1/type=i4/grid=mygrid/order=xyztv permutedBinaryTest_int.dat
+list num
+list num1
+cancel data 2
+
+! testing short  write and read-back
+sp rm -f permutedBinaryTest_short.dat
+list/i=1:48/form=stream/file=permutedBinaryTest_short.dat/outtype=short i
+
+file/format=str/var=num,num1/type=i2/grid=mygrid/order=xyztv permutedBinaryTest_short.dat
+list num
+list num1
+cancel data 2
+
+! testing byte write and read-back
+sp rm -f permutedBinaryTest_byte.dat
+list/i=1:48/form=stream/file=permutedBinaryTest_byte.dat/outtype=byte i
+
+file/format=str/var=num,num1/type=i1/grid=mygrid/order=xyztv permutedBinaryTest_byte.dat
+list num
+list num1
+cancel data 2
+!----------
+
 !! Load file w/o order qualifier (should be same as above)
 file/format=str/var=num,num1/grid=mygrid/order=xyztv permutedBinaryTest.dat
 list num

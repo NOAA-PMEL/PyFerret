@@ -146,17 +146,22 @@
      .			cleft, usable_line_len, max_fields, row_ax,
      .			col_ax, places, col_dec, row_dec, row_wld, 
      .			numbers, first, slen, llen, axis, lp, cal_id,
-     .                  wkblk, ndig(nferdims), ival, num_it, slen1, i1
+     .                  wkblk, ndig(nferdims), ival, num_it, slen1, i1, ndx, n_alloc
 	CHARACTER*255	VAR_TITLE, VAR_TITLE_MOD, PAREN_SURROUND, vname_buff
 * V500: *kob* 3/99 - up VAR_UNITS from 32 to 64 
 	CHARACTER	AX_TITLE*32, VAR_UNITS*64, LEFINT*8, TM_FMT*16,
      .			GET_STRING_ELEMENT*512,
-     .			line_buff*10000, buff*128, b1*1,
+     .			line_buff*10000, buff*128, b1*1, out_type*3,
      .			good_data_form*10, row_ss_fmt*14, tab_or_comma*1,
      .			bad_data_form*10, col_head_format*32, cal_name*32
 	REAL		BOX_SIZE, big, small, biggest, bad_data, value
 	REAL*8		TM_WORLD, val8, val_last, diff_min, diff_ave, count
 
+
+	REAL*4, DIMENSION(:), ALLOCATABLE :: floatdata
+	INTEGER(kind = 4), DIMENSION(:), ALLOCATABLE :: intdata
+	INTEGER(kind = 2), DIMENSION(:), ALLOCATABLE  :: shortdata
+	INTEGER(kind = 1), DIMENSION(:), ALLOCATABLE  :: bytedata
 
 * convenience equivalence:* convenience equivalence:
         INTEGER         lo1, lo2, lo3, lo4, lo5, lo6, 
@@ -188,6 +193,8 @@
         norow = qual_given(slash_list_norow) .GT. 0
 	good_data_form = ''
 	good_data_form = ''
+	
+	n_alloc = -1
 
 * determine precision for outputting values
 	lp = qual_given( slash_list_precision ) 
@@ -539,6 +546,38 @@
 	      IF (TM_DIGIT( list_format(ival:ival)) ) GOTO 5020
 	   ENDIF
 
+* Have already checked  in XEQ_LIST for allowed type specified.
+	   out_type = 'DOU'
+	   IF ( do_stream) THEN
+	      i = qual_given( slash_list_outtype )
+
+	      IF ( i .GT. 0 ) THEN
+                 IF (do_unform .OR. do_stream) THEN
+	            CALL EQUAL_STRING(
+     .                  cmnd_buff(qual_start(i):qual_end(i)),
+     .                  out_type, status )
+	            IF ( status .NE. ferr_ok ) GOTO 5000
+                 ENDIF
+	      ENDIF
+	   ENDIF
+
+	   IF (out_type(1:3) .EQ. 'FLO') THEN
+	      n_alloc = hi1 - lo1 + 1 
+	      ALLOCATE(floatdata(n_alloc))
+	   ENDIF
+	   IF (out_type(1:3) .EQ. 'INT') THEN
+	      n_alloc = hi1 - lo1 + 1 
+	      ALLOCATE(intdata(n_alloc))
+	   ENDIF
+	   IF (out_type(1:3) .EQ. 'SHO') THEN
+	      n_alloc = hi1 - lo1 + 1 
+	      ALLOCATE(shortdata(n_alloc))
+	   ENDIF
+	   IF (out_type(1:3) .EQ. 'BYT') THEN
+	      n_alloc = hi1 - lo1 + 1 
+	      ALLOCATE(bytedata(n_alloc))
+	   ENDIF
+
 	   DO 300 n = lo6, hi6, del6
 	   DO 300 m = lo5, hi5, del5
 	   DO 300 l = lo4, hi4, del4
@@ -584,12 +623,64 @@
 	         WRITE (list_lun, ERR=5010)
      .			( grid_data(i,j,k,l,m,n),i = lo1, hi1, del1 )
 
-	      ELSEIF ( do_stream ) THEN				! 12/94
-	         DO 298 i = lo1, hi1, del1
-	            recsofar = recsofar + 1
-	            WRITE (list_lun, REC=recsofar, ERR=5010)
+	      ELSEIF ( do_stream ) THEN
+	         
+	         IF (out_type(1:3) .EQ. 'FLO') THEN
+		    ndx = 1
+		    DO i = lo1, hi1, del1
+		       floatdata(ndx) = grid_data(i,j,k,l,m,n)
+		       ndx = ndx + 1
+		    ENDDO
+
+	            DO i = 1, n_alloc, del1
+	               recsofar = recsofar + 1
+	               WRITE (list_lun, REC=recsofar, ERR=5010)
+     .						floatdata(i)
+	            ENDDO
+	         ELSEIF (out_type(1:3) .EQ. 'INT') THEN
+		    ndx = 1
+		    DO i = lo1, hi1, del1
+		       intdata(ndx) = grid_data(i,j,k,l,m,n)
+		       ndx = ndx + 1
+		    ENDDO
+
+	            DO i = 1, n_alloc, del1
+	               recsofar = recsofar + 1
+	               WRITE (list_lun, REC=recsofar, ERR=5010)
+     .						intdata(i)
+	            ENDDO
+		    
+	         ELSEIF (out_type(1:3) .EQ. 'SHO') THEN
+		    ndx = 1
+		    DO i = lo1, hi1, del1
+		       shortdata(ndx) = grid_data(i,j,k,l,m,n)
+		       ndx = ndx + 1
+		    ENDDO
+
+	            DO i = 1, n_alloc, del1
+	               recsofar = recsofar + 1
+	               WRITE (list_lun, REC=recsofar, ERR=5010)
+     .						shortdata(i)
+	            ENDDO
+	         ELSEIF (out_type(1:3) .EQ. 'BYT') THEN
+		    ndx = 1
+		    DO i = lo1, hi1, del1
+		       bytedata(ndx) = grid_data(i,j,k,l,m,n)
+		       ndx = ndx + 1
+		    ENDDO
+
+	            DO i = 1, n_alloc, del1
+	               recsofar = recsofar + 1
+	               WRITE (list_lun, REC=recsofar, ERR=5010)
+     .						bytedata(i)
+	            ENDDO
+	         ELSE
+	            DO i = lo1, hi1, del1
+	               recsofar = recsofar + 1
+	               WRITE (list_lun, REC=recsofar, ERR=5010)
      .						grid_data(i,j,k,l,m,n)
- 298		 CONTINUE
+	            ENDDO
+		 ENDIF
 	      ELSE
 	         IF (has_int) THEN
 		    DO i = lo1, hi1, del1
@@ -603,6 +694,13 @@
 
 	      ENDIF
  300	   CONTINUE
+ 
+	   IF (n_alloc .GE. 1) THEN
+	       IF (out_type(1:3) .EQ. 'FLO') DEALLOCATE(floatdata)
+	       IF (out_type(1:3) .EQ. 'INT') DEALLOCATE(intdata)
+	       IF (out_type(1:3) .EQ. 'SHO') DEALLOCATE(shortdata)
+	       IF (out_type(1:3) .EQ. 'BYT') DEALLOCATE(bytedata)
+	   ENDIF
 
 * done - go home
 	   RETURN

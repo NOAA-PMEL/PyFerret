@@ -39,7 +39,7 @@
 
       arg = 1
       CALL ef_set_arg_name(id, arg, 'DAT_TO_SAMPLE')
-      CALL ef_set_arg_desc(id, arg, 'data to sample using L indices')
+      CALL ef_set_arg_desc(id, arg, 'data to sample using N indices')
       CALL ef_set_axis_influence_6d(id, arg, YES, YES, YES, YES, YES, NO)
 
       arg = 2

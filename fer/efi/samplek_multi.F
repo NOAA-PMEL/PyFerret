@@ -60,7 +60,7 @@
       CHARACTER*100 fcn_desc
       WRITE (fcn_desc, 10)
    10 FORMAT ('Returns data sampled according to K indices which ',
-     . 'may vary in IJL')
+     . 'may vary in IJLMN')
       CALL ef_set_desc(id, fcn_desc)
 
       CALL ef_set_num_args(id, 2)
@@ -81,7 +81,7 @@
       CALL ef_set_axis_influence(id, arg, YES, YES, NO, YES)
 *                                                                     ^
 *                                                                     |
-*                                           USER CONFIGURABLE PORTION |
+*    4/3/2019                                       USER CONFIGURABLE PORTION |
 ***********************************************************************
 
       RETURN 

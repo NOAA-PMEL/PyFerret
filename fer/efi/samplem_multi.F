@@ -10,7 +10,7 @@
 *         Result is abstract on the sampled axis.
 *
 * 5/17  Make these functions 6-D.  Add E and F direction functions.
-*       Reverse the order of argumnets to beconsistent with the
+*       Reverse the order of argumnets to be consistent with the
 *       SAMPLEL etc functions. Fix the test for sample argument on 
 *       different axis than the sample direction.
 *
@@ -41,7 +41,7 @@
 
       arg = 1
       CALL ef_set_arg_name(id, arg, 'DAT_TO_SAMPLE')
-      CALL ef_set_arg_desc(id, arg, 'data to sample using L indices')
+      CALL ef_set_arg_desc(id, arg, 'data to sample using M indices')
       CALL ef_set_axis_influence_6d(id, arg, YES, YES, YES, YES, NO, YES)
 
       arg = 2

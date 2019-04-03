@@ -60,7 +60,7 @@
       CHARACTER*100 fcn_desc
       WRITE (fcn_desc, 10)
    10 FORMAT ('Returns data sampled according to J indices which ',
-     . 'may vary in IKL')
+     . 'may vary in IKLMN')
       CALL ef_set_desc(id, fcn_desc)
 
 

@@ -1350,7 +1350,7 @@ c		    ENDIF
 * successful translation of a grave-accented expression
  1000	did_sub = .TRUE.
 
-* restore the state of uvar description loaded here for returns 
+* restore the state of uvar grids etc changed here for returns 
 * that need the grid, such as *size, shape. The uvar.GT.0 is 
 * checking for "packed" uvar-context info as set in const_var_context
 

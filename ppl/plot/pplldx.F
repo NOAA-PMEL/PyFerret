@@ -127,18 +127,12 @@ c
 * V695  *acm*  9/15 Changes for hour:min labeling on time axes
 * V697  *acm*  1/16 Ticket 2344: if there was a time-plot underlay, use its time scaling
 * V73+ 1/18 *acm* Changes for Issue 1009. For debugging need to declare length of strings
+* V745  *acm*  3/19 Ticket 1920: do time computations in single precision except for
+*                   short time-range plots that need double (a few extra seconds in the
+*                   axis length on a multi-day axis should not mean a whole extra day.)
+
 
 * FERRET 9-21-88: replaced include files to make all declarations explicit
-! original:
-
-!	include 'pplinc:parampl5.dat'
-!	include 'pplinc:hd.inc'
-!	include 'pplinc:lines.inc'
-!	include 'pplinc:data.inc'
-!	include 'pplinc:axisl.inc'
-!	include 'pplinc:taxis.inc'
-!	include 'pplinc:cmrdl.inc'
-!	include 'pplinc:ppldat.inc'
 
 	include 'parampl5_dat.decl'
 	include 'PARAMPL5.DAT'
@@ -165,24 +159,17 @@ c
 
 CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 
-c
-! original:
-!	dimension xt(*),yt(*),stop(3),temp(3),start(3)
-!	character tstrt*10
-!	integer*4 mtmin,tstart,tstop,time,tmin
 
         REAL pplmem(*)
 
-#ifdef double_p
 	REAL*8 xt(*),yt(*), xdt
-#else
-	REAL xt(*),yt(*), xdt
-#endif
 	CHARACTER BC2WHOI*14, tstrt*14, tref*14
 	REAL*8	WHOI2BC, DIFF, tstart, tstop, time, tmin, off, rate, 
      .		dxmin, dxmax, dymin, dymax, xymin, xymax, dtd
 	INTEGER	icode, npts, i, ix, iy
 	REAL	xs, ys
+	REAL*4  xyminr, xymaxr
+
 	LOGICAL  TM_FPEQ_SNGL
 	LOGICAL  flip			!  FERRET mod 10/93
 
@@ -223,7 +210,7 @@ c **               passing thru c routine, a blank tref is somehow different??
 c    ticket 2344: if there was a time-plot underlay, use its delta-t
 	    IF (dt_save .NE. 0) THEN
 	       dtd = dt_save
-	       dt = dt_save
+	       dt  = dt_save
 	    ENDIF
 
 	    if(linen.eq.1)then
@@ -235,9 +222,7 @@ c	calculate offset and rate for time data
 c
 	    off=diff(itstrt,tstrt)/dtd+1.0
 	    rate=xdt/dtd
-**	else
-**	    off=1.0
-**	    rate=1.0
+
 	endif
 c
 c	load data
@@ -377,11 +362,23 @@ c
 		   xymin  = dymin
 		   xymax  = dymax
 		endif
+		xyminr = xymin
+		xymaxr = xymax
+
+	    delta_time = (xymax - xymin) *dtd /60  ! days
+
+
+	    IF (delta_time .GT. 1) THEN 
+		xymin = xyminr
+		xymax = xymaxr
+	    ENDIF
+
 
 	    if(linen.eq.1)then
 		tstart = WHOI2BC( itstrt )		! t=1 of time axis
 
 		tmin=tstart+(xymin-1.0)*dtd		! start of plot axis
+
 		itmin = BC2WHOI( tmin )
 
 		tstop=tstart+(xymax-1.0)*dtd		! end of plot axis
@@ -390,13 +387,14 @@ c
 	    else
 
 		tmin=tstart+(xymin-1.0)*dtd
-		tstop=tstart+(xymax-1.0)*dtd
+		tstop=tstart+(xymax-1.0)*dtd		! end of plot axis
 
 		time = WHOI2BC( itmin )
 		if(tmin.lt.time)  itmin = BC2WHOI( tmin )   ! chg. plot start
-c
+
 		time = WHOI2BC( itmax )
 		if(tstop.gt.time) itmax = BC2WHOI( tstop )   ! chg. plot end
+
 	    endif
 	endif
 * end of FERRET 9-21 changes

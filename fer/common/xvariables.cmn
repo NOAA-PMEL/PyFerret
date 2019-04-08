@@ -68,6 +68,8 @@
 * V702 *sh* 1/17   implement malloc-based dynamic memory management
 *                  remove block-managed "memory" array
 * V720: 4/17 *acm* Add direction-changing functions as a subset of grid-changing ones
+* V745  4/19 *acm* ticket 1916, special handling getting context for RETURN= outputs
+*                  new dynamic-memory line storage for keeping a list of uvars
 
 * Terminology:
 *	"mr"	- "memory resident"
@@ -163,11 +165,14 @@
 *	uvar_given	- indicate degree to which definition of uvar specifies
 *			  limits along each axis
 *	uvar_dset	- name of data set to which uvar **belongs** (7/95)
+*	uvar_cx_only_lm	- dynamic line, saving what's changed in cx_only mode 
+*			  for grave-accent exprn evaluation
+*	uvar_cxo_len    - number of elements stored in uvar_cx_only_lm
 *	uvar_by_ss	- when uvlims are given in expression this tells how
 *	uvar_lo/hi_ss	- when uvlims are given in expression this tells what
 *	uvar_lo/hi_ww	- when uvlims are given in expression this tells what
 *	uvar_bad_data	- missing value flag to be used for this variable
-*	uvar_c_cache_ptr- pointer to c-cahce of full range variable
+*	uvar_c_cache_ptr- pointer to c-cahce of full range 4/3/2019
 *	has_uvar_gc	- variable is a grid-changing variable
 *	has_uvar_dc	- a grid-changing variable where the function changes based 
 *			  on argument(s) which tell which dimension(s) to operateon
@@ -339,6 +344,8 @@
      .          deleted_list_result(max_uvar),
      .          string_array_result(max_uvar),
      .		max_usable_intrp,
+     .		uvar_cx_only_lm,
+     .		uvar_cxo_len,
      .		isp,
      .		is_act		( max_intrp ),
      .		is_cx		( max_intrp ),
@@ -440,7 +447,9 @@
      .                  string_array_result,
      .			rvar_uvar,
      .			rvar_dset,
-     .			rvar_varid
+     .			rvar_varid,
+     .			uvar_cx_only_lm,
+     .			uvar_cxo_len
 
 	INTEGER		isp,
      .			max_usable_intrp,

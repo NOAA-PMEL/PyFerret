@@ -2,46 +2,37 @@
 * samplem_multi.F
 *
 * Ansley Manke
-* Dec 1998
-*
-* This function samples data along the L axis using a set of indices
-* 4/5/99  Ansley Manke 
-*         Indices may be oriented along any axis; 
-*         Result is abstract on the sampled axis.
 *
 * 5/17  Make these functions 6-D.  Add E and F direction functions.
-*       Reverse the order of argumnets to beconsistent with the
-*       SAMPLEL etc functions. Fix the test for sample argument on 
-*       different axis than the sample direction.
-*
-
+* 4/19  See issue 1924: reworking sample-multi functions
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
       SUBROUTINE samplem_multi_init(id)
 
       IMPLICIT NONE
       INCLUDE 'EF_Util.cmn'
 
      
-* Local variable declarations
+* Declarations
       INTEGER id, arg
 
       CHARACTER*100 fcn_desc
 
       WRITE (fcn_desc, 10)
    10 FORMAT ('Returns data sampled according to M indices which ',
-     . 'may be function of IJKLN')
+     .        'may vary in IJKLN')
       CALL ef_set_desc(id, fcn_desc)
 
       CALL ef_set_num_args(id, 2)
       CALL ef_set_has_vari_args(id, NO)
-      CALL ef_set_axis_inheritance_6d(id, IMPLIED_BY_ARGS, 
+      CALL ef_set_axis_inheritance_6d(id, 
      .     IMPLIED_BY_ARGS, IMPLIED_BY_ARGS, IMPLIED_BY_ARGS, 
-     .     ABSTRACT, IMPLIED_BY_ARGS)
+     .     IMPLIED_BY_ARGS,          CUSTOM, IMPLIED_BY_ARGS)
 
       CALL ef_set_piecemeal_ok_6d(id, NO, NO, NO, NO, NO, NO)
 
       arg = 1
       CALL ef_set_arg_name(id, arg, 'DAT_TO_SAMPLE')
-      CALL ef_set_arg_desc(id, arg, 'data to sample using L indices')
+      CALL ef_set_arg_desc(id, arg, 'data to sample using M indices')
       CALL ef_set_axis_influence_6d(id, arg, YES, YES, YES, YES, NO, YES)
 
       arg = 2
@@ -52,78 +43,50 @@
       RETURN 
       END
 
-*
-* In this subroutine we provide information about the lo and hi
-* limits associated with each abstract or custom axis.  
-*
+* Define the simple custom axis
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
-      SUBROUTINE samplem_multi_result_limits(id)
+      SUBROUTINE samplem_multi_custom_axes(id)
 
-      IMPLICIT NONE
       INCLUDE 'EF_Util.cmn'
-* Declarations
+
       INTEGER id
       INTEGER arg_lo_ss(6,EF_MAX_ARGS), arg_hi_ss(6,EF_MAX_ARGS),
      .     arg_incr(6,EF_MAX_ARGS)
 
-* Local variable declarations
-      INTEGER npts, idir, ndim
-      CHARACTER*100 errtxt
+      REAL lo, hi
+      INTEGER idim
 
       CALL ef_get_arg_subscripts_6d(id, arg_lo_ss, arg_hi_ss, arg_incr)
 
-      npts = arg_hi_ss(E_AXIS, ARG2) - arg_lo_ss(E_AXIS, ARG2) + 1
+* The E axis of the indices is the index length
 
-* Count the dimensions in argument 2
-      ndim = 0
-      DO idir = X_AXIS, F_AXIS
-         IF (arg_lo_ss(idir, ARG2) .NE. ef_unspecified_int4) THEN
-	    ndim = ndim + 1
-         ENDIF
+      lo = 1
+      hi = arg_hi_ss(E_AXIS, ARG2) - arg_lo_ss(E_AXIS, ARG2) + 1
+
+* If ARG2 doesn't share its axes with ARG1 that's an error
+
+      DO idim = 1, F_AXIS
+	 IF (arg_hi_ss(idim, ARG2) .NE. ef_unspecified_int4) THEN
+	    IF (arg_hi_ss(idim, ARG1) .EQ. ef_unspecified_int4) GOTO 999
+	 ENDIF
       ENDDO
 
-* If they sent in a simple list as the 2nd argument, it might not be 
-* on the X axis. Allow that.
+      CALL ef_set_custom_axis(id, E_AXIS, lo, hi, 1.0, 'Index', NO)
 
-      IF (arg_lo_ss(E_AXIS, ARG2) .EQ. ef_unspecified_int4) THEN
-         DO idir = X_AXIS, F_AXIS
-	    IF (arg_lo_ss(idir, ARG2) .NE. ef_unspecified_int4) THEN
-	       npts = arg_hi_ss(idir, ARG2) - arg_lo_ss(idir, ARG2) + 1
-	    ENDIF
-         ENDDO
-	 IF (ndim .NE. 1) THEN
-	    errtxt = 'Argument 2 has no E axis. When it has more than '//
-     .               '1 dimension, E axis is the sample dimension.' 
-	    GOTO 999
-	 ENDIF
-
-* If argument 2 is a multi-dimensioned variable, all but the sample dimension
-* must match the grid of argument 1
-      ELSE
-         IF (ndim .GT. 1) THEN
-         DO idir = X_AXIS, F_AXIS
-	   IF (idir .EQ. E_AXIS) cycle
-	   IF (arg_hi_ss(idir,ARG1)-arg_lo_ss(idir,ARG1) .NE. 
-     .         arg_hi_ss(idir,ARG2)-arg_lo_ss(idir,ARG2) ) THEN
-	      errtxt = 'Grid mismatch. Non-E dimensions of Arg 2 must be '//
-     .               'conformable with grid of Arg 1' 
-	      GOTO 999
-	   ENDIF
-         ENDDO
-	 ENDIF
-      ENDIF
-
-      CALL ef_set_axis_limits(id, E_AXIS, 1, npts)
       RETURN
-  999 CONTINUE
 
-      CALL ef_bail_out(id, 'Argument 2 has no E axis. '//
-     .  'If it has >1 dimension, E axis is the sample dimension.' )
- 
+999   CONTINUE
+      CALL ef_bail_out(id, 
+     .  'ARG2: Grid of index list must be a subset of the grid of the data being sampled')
+      
+      RETURN
       END
+
 *
-* In this subroutine we compute the result
-*
+* Compute the result
+** * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+
       SUBROUTINE samplem_multi_compute(id, arg_1, arg_2, result)
 
       IMPLICIT NONE
@@ -147,17 +110,11 @@
       INTEGER arg_lo_ss(6,EF_MAX_ARGS), arg_hi_ss(6,EF_MAX_ARGS),
      .     arg_incr(6,EF_MAX_ARGS)
 
-     
-* Local variable declarations
       INTEGER i, j, k, l, m, n
       INTEGER i1, j1, k1, l1, m1, n1
       INTEGER i2, j2, k2, l2, m2, n2
       INTEGER morder
       REAL aorder
-
-      INTEGER nlen(3)
-      CHARACTER*8 lefint, aindex(3)
-      CHARACTER*100 errtxt
 
       CALL ef_get_res_subscripts_6d(id, res_lo_ss, res_hi_ss, res_incr)
       CALL ef_get_arg_subscripts_6d(id, arg_lo_ss, arg_hi_ss, arg_incr)
@@ -176,82 +133,79 @@
       k2 = arg_lo_ss(Z_AXIS, ARG2)
       DO 400 k = res_lo_ss(Z_AXIS), res_hi_ss(Z_AXIS) 
 
-         j1 = arg_lo_ss(Y_AXIS,ARG1)
-         j2 = arg_lo_ss(Y_AXIS,ARG2)
-         DO 300 j = res_lo_ss(Y_AXIS), res_hi_ss(Y_AXIS)
+      j1 = arg_lo_ss(Y_AXIS,ARG1)
+      j2 = arg_lo_ss(Y_AXIS,ARG2)
+      DO 300 j = res_lo_ss(Y_AXIS), res_hi_ss(Y_AXIS)
 
-            i1 = arg_lo_ss(X_AXIS,ARG1)
-            i2 = arg_lo_ss(X_AXIS,ARG2)
-            DO 200 i = res_lo_ss(X_AXIS), res_hi_ss(X_AXIS)
+      i1 = arg_lo_ss(X_AXIS,ARG1)
+      i2 = arg_lo_ss(X_AXIS,ARG2)
+      DO 200 i = res_lo_ss(X_AXIS), res_hi_ss(X_AXIS)
 
-               m2 = arg_lo_ss(E_AXIS,ARG2)
-               DO 100 m = res_lo_ss(E_AXIS), res_hi_ss(E_AXIS)
+      m2 = arg_lo_ss(E_AXIS,ARG2)
+      DO 100 m = res_lo_ss(E_AXIS), res_hi_ss(E_AXIS)
 
-*  Get the index to sample, whichever axis of arg_2 it is on.
+*  Get the index to sample.
+*  IF the indices don't lie in range the result is missing.
+*  (This is normally handled by having the inheritance depend on both ARG1 and ARG2
+*   but that checking is done on coordinates and here we are working with indices,
+*   and here we allow a return - which may be missing.)
 
-                  aorder = arg_2(i2,j2,k2,l2,m2,n2)
-                  IF (m2 .EQ. ef_unspecified_int4) 
-     .                  CALL pickindex(arg_2, m, aorder)
-                  morder = aorder
+         IF (i2.LT.arg_lo_ss(X_AXIS,ARG2) .OR. i2.GT.arg_hi_ss(X_AXIS,ARG2) .OR. 
+     .       j2.LT.arg_lo_ss(Y_AXIS,ARG2) .OR. j2.GT.arg_hi_ss(Y_AXIS,ARG2) .OR. 
+     .       k2.LT.arg_lo_ss(Z_AXIS,ARG2) .OR. k2.GT.arg_hi_ss(Z_AXIS,ARG2) .OR. 
+     .       l2.LT.arg_lo_ss(T_AXIS,ARG2) .OR. l2.GT.arg_hi_ss(T_AXIS,ARG2) .OR. 
+     .       m2.LT.arg_lo_ss(E_AXIS,ARG2) .OR. m2.GT.arg_hi_ss(E_AXIS,ARG2) .OR. 
+     .       n2.LT.arg_lo_ss(F_AXIS,ARG2) .OR. n2.GT.arg_hi_ss(F_AXIS,ARG2) ) THEN
 
-*  Check that we do have an index of ARG_1; set the result
+            result(i,j,k,l,m,n) = bad_flag_result
+            m2 = m2 + arg_incr(E_AXIS,ARG2)
+	    CYCLE
+         ENDIF
 
-                  IF (aorder .EQ. bad_flag(ARG2)) THEN
-                     result(i,j,k,l,m,n) = bad_flag_result
-                  ELSE
+         aorder = arg_2(i2,j2,k2,l2,m2,n2)
+         morder = aorder
 
-                     IF (morder .LT. arg_lo_ss(E_AXIS,ARG1)  .OR.
-     .                   morder .GT. arg_hi_ss(E_AXIS,ARG1) ) THEN
-                        GO TO 999
-                     ELSE
+*  Check that we do have an index of ARG_1. Set the result
 
-                        IF (arg_1(i1,j1,k1,l1,morder,n1) .EQ. bad_flag(ARG1)) THEN
-                           result(i,j,k,l,m,n) = bad_flag_result
-                        ELSE
-                           result(i,j,k,l,m,n) = arg_1(i1,j1,k1,l1,morder,n1)
- 
-                        END IF
-                     END IF
-                  END IF
+         IF (aorder .EQ. bad_flag(ARG2)) THEN
+            result(i,j,k,l,m,n) = bad_flag_result
+         ELSE
 
-                  m2 = m2 + arg_incr(E_AXIS,ARG2)
- 100           CONTINUE
+            IF (morder .LT. arg_lo_ss(E_AXIS,ARG1)  .OR.
+     .          morder .GT. arg_hi_ss(E_AXIS,ARG1) ) THEN
+               result(i,j,k,l,m,n) = bad_flag_result
+            ELSE
 
-               i1 = i1 + arg_incr(X_AXIS,ARG1)
-               i2 = i2 + arg_incr(X_AXIS,ARG2)
- 200        CONTINUE
+               IF (arg_1(i1,j1,k1,l1,morder,n1) .EQ. bad_flag(ARG1)) THEN
+                  result(i,j,k,l,m,n) = bad_flag_result
+               ELSE
+                  result(i,j,k,l,m,n) = arg_1(i1,j1,k1,l1,morder,n1)
+               ENDIF
+            ENDIF
+         ENDIF
 
-            j1 = j1 + arg_incr(Y_AXIS,ARG1)
-            j2 = j2 + arg_incr(Y_AXIS,ARG2)
- 300     CONTINUE
+         m2 = m2 + arg_incr(E_AXIS,ARG2)
+ 100  CONTINUE
 
-         k1 = k1 + arg_incr(Z_AXIS,ARG1)
-         k2 = k2 + arg_incr(Z_AXIS,ARG2)
+      i1 = i1 + arg_incr(X_AXIS,ARG1)
+      i2 = i2 + arg_incr(X_AXIS,ARG2)
+ 200  CONTINUE
+
+      j1 = j1 + arg_incr(Y_AXIS,ARG1)
+      j2 = j2 + arg_incr(Y_AXIS,ARG2)
+ 300  CONTINUE
+
+      k1 = k1 + arg_incr(Z_AXIS,ARG1)
+      k2 = k2 + arg_incr(Z_AXIS,ARG2)
  400  CONTINUE
-
-
-         l1 = l1 + arg_incr(T_AXIS,ARG1)
-         l2 = l2 + arg_incr(T_AXIS,ARG2)
+   
+      l1 = l1 + arg_incr(T_AXIS,ARG1)
+      l2 = l2 + arg_incr(T_AXIS,ARG2)
  500  CONTINUE
 
-
-         n1 = n1 + arg_incr(F_AXIS,ARG1)
-         n2 = n2 + arg_incr(F_AXIS,ARG2)
+      n1 = n1 + arg_incr(F_AXIS,ARG1)
+      n2 = n2 + arg_incr(F_AXIS,ARG2)
  600  CONTINUE
-
-      RETURN 
-
-999   CONTINUE
-
-      aindex(1) = LEFINT(morder,nlen(1))
-      aindex(2) = LEFINT(arg_lo_ss(T_AXIS,ARG2),nlen(2))
-      aindex(3) = LEFINT(arg_hi_ss(T_AXIS,ARG2),nlen(3))
-
-      WRITE (errtxt,*) 'Sampling index ', aindex(1)(1:nlen(1)), 
-     . ' in ARG1 is outside the range of L indices for ARG2 (', 
-     .  aindex(2)(1:nlen(2)), ':', aindex(3)(1:nlen(3)), ')'
-
-      CALL EF_BAIL_OUT(id, errtxt)
 
       RETURN
       END

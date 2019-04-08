@@ -8,44 +8,11 @@
 * 4/5/99  Ansley Manke 
 *         Indices may be oriented along any axis; 
 *         Result is abstract on the sampled axis.
-*
-*
-*
-* In this subroutine we provide information about
-* the function.  The user configurable information 
-* consists of the following:
-*
-* descr              Text description of the function
-*
-* num_args           Required number of arguments
-*
-* axis_inheritance   Type of axis for the result
-*                       ( CUSTOM, IMPLIED_BY_ARGS, NORMAL, ABSTRACT )
-*                       CUSTOM          - user defined axis
-*                       IMPLIED_BY_ARGS - same axis as the incoming argument
-*                       NORMAL          - the result is normal to this axis
-*                       ABSTRACT        - an axis which only has index values
-*
-* piecemeal_ok       For memory optimization:
-*                       axes where calculation may be performed piecemeal
-*                       ( YES, NO )
-* 
-*
-* For each argument we provide the following information:
-*
-* name               Text name for an argument
-*
-* unit               Text units for an argument
-*
-* desc               Text description of an argument
-*
-* axis_influence     Are this argument's axes the same as the result grid?
-*                       ( YES, NO )
-*
-* axis_extend       How much does Ferret need to extend arg limits relative to result 
-*
+* 4/19  Reverse the order of arguments to be consistent with the
+*       SAMPLEL etc functions.
+* 4/19  See issue 1924: reworking sample-multi functions
 
-
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
       SUBROUTINE samplej_multi_init(id)
 
       IMPLICIT NONE
@@ -53,207 +20,194 @@
 
       INTEGER id, arg
 
-***********************************************************************
-*                                           USER CONFIGURABLE PORTION |
-*                                                                     |
-*                                                                     V
+
       CHARACTER*100 fcn_desc
       WRITE (fcn_desc, 10)
    10 FORMAT ('Returns data sampled according to J indices which ',
-     . 'may vary in IKL')
+     .        'may vary in IKLMN')
       CALL ef_set_desc(id, fcn_desc)
 
+      CALL ef_set_num_args(id, 2) 
 
-      CALL ef_set_num_args(id, 2)
-      CALL ef_set_has_vari_args(id, NO)
-      CALL ef_set_axis_inheritance(id, IMPLIED_BY_ARGS, 
-     .     ABSTRACT, IMPLIED_BY_ARGS, IMPLIED_BY_ARGS)
-      CALL ef_set_piecemeal_ok(id, NO, NO, NO, NO)
+      CALL ef_set_axis_inheritance_6d(id,
+     .     IMPLIED_BY_ARGS,          CUSTOM, IMPLIED_BY_ARGS, 
+     .     IMPLIED_BY_ARGS, IMPLIED_BY_ARGS, IMPLIED_BY_ARGS)
+
+      CALL ef_set_piecemeal_ok_6d(id, NO, NO, NO, NO, NO, NO)
 
       arg = 1
-      CALL ef_set_arg_name(id, arg, 'J_INDICES')
-      CALL ef_set_arg_desc(id, arg, 'ordered indices')
-      CALL ef_set_axis_influence(id, arg, YES, NO, YES, YES)
-
-      arg = 2
       CALL ef_set_arg_name(id, arg, 'DAT_TO_SAMPLE')
       CALL ef_set_arg_desc(id, arg, 'data to sample using J indices')
-      CALL ef_set_axis_influence(id, arg, YES, NO, YES, YES)
-*                                                                     ^
-*                                                                     |
-*                                           USER CONFIGURABLE PORTION |
-***********************************************************************
+      CALL ef_set_axis_influence_6d(id, arg, YES, NO, YES, YES, YES, YES)
+
+      arg = 2
+      CALL ef_set_arg_name(id, arg, 'J_INDICES')
+      CALL ef_set_arg_desc(id, arg, 'ordered indices')
+      CALL ef_set_axis_influence_6d(id, arg, NO, NO, NO, NO, NO, NO)
 
       RETURN 
       END
 
+* Define the simple custom axis
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
-*
-* In this subroutine we provide information about the lo and hi
-* limits associated with each abstract or custom axis.   The user 
-* configurable information consists of the following:
-*
-* loss               lo subscript for an axis
-*
-* hiss               hi subscript for an axis
-*
+      SUBROUTINE samplej_multi_custom_axes(id)
 
-      SUBROUTINE samplej_multi_result_limits(id)
-
-      IMPLICIT NONE
       INCLUDE 'EF_Util.cmn'
 
       INTEGER id
-      INTEGER arg_lo_ss(4,EF_MAX_ARGS), arg_hi_ss(4,EF_MAX_ARGS),
-     .     arg_incr(4,EF_MAX_ARGS)
+      INTEGER arg_lo_ss(6,EF_MAX_ARGS), arg_hi_ss(6,EF_MAX_ARGS),
+     .     arg_incr(6,EF_MAX_ARGS)
 
-* **********************************************************************
-*                                           USER CONFIGURABLE PORTION |
-*                                                                     |
-*                                                                     V
+      REAL lo, hi
+      INTEGER idim
 
-      INTEGER my_lo_l, my_hi_l
-      INTEGER nx, ny, nz, nt
+      CALL ef_get_arg_subscripts_6d(id, arg_lo_ss, arg_hi_ss, arg_incr)
 
-*     Use utility functions to get context information about the 
-*     1st argument, to set the abstract axis lo and hi indices.
+* The Y axis of the indices is the index length
 
-      CALL ef_get_arg_subscripts(id, arg_lo_ss, arg_hi_ss, arg_incr)
+      lo = 1
+      hi = arg_hi_ss(Y_AXIS, ARG2) - arg_lo_ss(Y_AXIS, ARG2) + 1
+      
+* If ARG2 doesn't share its axes with ARG1 that's an error
 
-      nx = arg_hi_ss(X_AXIS, ARG1) - arg_lo_ss(X_AXIS, ARG1) + 1
-      ny = arg_hi_ss(Y_AXIS, ARG1) - arg_lo_ss(Y_AXIS, ARG1) + 1
-      nz = arg_hi_ss(Z_AXIS, ARG1) - arg_lo_ss(Z_AXIS, ARG1) + 1
-      nt = arg_hi_ss(T_AXIS, ARG1) - arg_lo_ss(T_AXIS, ARG1) + 1
+      DO idim = 1, F_AXIS
+	 IF (arg_hi_ss(idim, ARG2) .NE. ef_unspecified_int4) THEN
+	    IF (arg_hi_ss(idim, ARG1) .EQ. ef_unspecified_int4) GOTO 999
+	 ENDIF
+      ENDDO
 
-      my_lo_l = 1
-      my_hi_l = ny
-      IF (arg_hi_ss(Y_AXIS, ARG1) - arg_lo_ss(Y_AXIS, ARG1) .EQ. 0)
-     .    my_hi_l = max(nx,ny,nz,nt)
+      CALL ef_set_custom_axis(id, Y_AXIS, lo, hi, 1.0, 'Index', NO)
 
-      CALL ef_set_axis_limits(id, Y_AXIS, my_lo_l, my_hi_l)
+      RETURN
 
-*                                                                     ^
-*                                                                     |
-*                                           USER CONFIGURABLE PORTION |
-* **********************************************************************
-
-      RETURN 
+999   CONTINUE
+      CALL ef_bail_out(id, 
+     .  'ARG2: Grid of index list must be a subset of the grid of the data being sampled')
+      
+      RETURN
       END
+
 *
-* In this subroutine we compute the result
-*
+* Compute the result
+** * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
       SUBROUTINE samplej_multi_compute(id, arg_1, arg_2, result)
 
       IMPLICIT NONE
       INCLUDE 'EF_Util.cmn'
       INCLUDE 'EF_mem_subsc.cmn'
 
+* Declarations
+      INTEGER id
+
       REAL bad_flag(EF_MAX_ARGS), bad_flag_result
-      REAL arg_1(mem1lox:mem1hix, mem1loy:mem1hiy, mem1loz:mem1hiz, 
-     .     mem1lot:mem1hit)
+      REAL arg_1(mem1lox:mem1hix, mem1loy:mem1hiy, mem1loz:mem1hiz,
+     .      mem1lot:mem1hit, mem1loe:mem1hie, mem1lof:mem1hif)
       REAL arg_2(mem2lox:mem2hix, mem2loy:mem2hiy, mem2loz:mem2hiz, 
-     .     mem2lot:mem2hit)
+     .     mem2lot:mem2hit, mem2loe:mem2hie, mem2lof:mem2hif)
       REAL result(memreslox:memreshix, memresloy:memreshiy, 
-     .     memresloz:memreshiz, memreslot:memreshit)
+     .     memresloz:memreshiz, memreslot:memreshit,
+     .      memresloe:memreshie, memreslof:memreshif)
 
-* After initialization, the 'res_' arrays contain indexing information 
-* for the result axes.  The 'arg_' arrays will contain the indexing 
-* information for each variable's axes. 
+      INTEGER res_lo_ss(6), res_hi_ss(6), res_incr(6)
+      INTEGER arg_lo_ss(6,EF_MAX_ARGS), arg_hi_ss(6,EF_MAX_ARGS),
+     .     arg_incr(6,EF_MAX_ARGS)
 
-      INTEGER res_lo_ss(4), res_hi_ss(4), res_incr(4)
-      INTEGER arg_lo_ss(4,EF_MAX_ARGS), arg_hi_ss(4,EF_MAX_ARGS),
-     .     arg_incr(4,EF_MAX_ARGS)
-
-
-***********************************************************************
-*                                           USER CONFIGURABLE PORTION |
-*                                                                     |
-*                                                                     V
-      INTEGER id, i, j, k, l
-      INTEGER i1, j1, k1, l1
-      INTEGER i2, k2, l2
+      INTEGER i, j, k, l, m, n
+      INTEGER i1, j1, k1, l1, m1, n1
+      INTEGER i2, j2, k2, l2, m2, n2
       INTEGER jorder
       REAL aorder
 
-      INTEGER nlen(3), unspecified_int4
-      CHARACTER*8 lefint, aindex(3) 
-      CHARACTER*100 errtxt
-
-      unspecified_int4 = -111
-
-      CALL ef_get_res_subscripts(id, res_lo_ss, res_hi_ss, res_incr)
-      CALL ef_get_arg_subscripts(id, arg_lo_ss, arg_hi_ss, arg_incr)
+      CALL ef_get_res_subscripts_6d(id, res_lo_ss, res_hi_ss, res_incr)
+      CALL ef_get_arg_subscripts_6d(id, arg_lo_ss, arg_hi_ss, arg_incr)
       CALL ef_get_bad_flags(id, bad_flag, bad_flag_result)
 
+
+      n1 = arg_lo_ss(F_AXIS, ARG1)
+      n2 = arg_lo_ss(F_AXIS, ARG2)
+      DO 600 n = res_lo_ss(F_AXIS), res_hi_ss(F_AXIS) 
+     
+      m1 = arg_lo_ss(E_AXIS, ARG1)
+      m2 = arg_lo_ss(E_AXIS, ARG2)
+      DO 500 m = res_lo_ss(E_AXIS), res_hi_ss(E_AXIS) 
+
+      l1 = arg_lo_ss(T_AXIS, ARG1)
+      l2 = arg_lo_ss(T_AXIS, ARG2)
+      DO 400 l = res_lo_ss(T_AXIS), res_hi_ss(T_AXIS) 
+
+      k1 = arg_lo_ss(Z_AXIS, ARG1)
+      k2 = arg_lo_ss(Z_AXIS, ARG2)
+      DO 300 k = res_lo_ss(Z_AXIS), res_hi_ss(Z_AXIS)  
+
       i1 = arg_lo_ss(X_AXIS,ARG1)
-      i2 = arg_lo_ss(X_AXIS, ARG2)
-      DO 400 i = res_lo_ss(X_AXIS), res_hi_ss(X_AXIS) 
+      i2 = arg_lo_ss(X_AXIS,ARG2)
+      DO 200 i = res_lo_ss(X_AXIS), res_hi_ss(X_AXIS)
 
-         k1 = arg_lo_ss(Z_AXIS,ARG1)
-         k2 = arg_lo_ss(Z_AXIS,ARG2)
-         DO 300 k = res_lo_ss(Z_AXIS), res_hi_ss(Z_AXIS)
+      j2 = arg_lo_ss(Y_AXIS,ARG2)
+      DO 100 j = res_lo_ss(Y_AXIS), res_hi_ss(Y_AXIS)
 
-            l1 = arg_lo_ss(T_AXIS,ARG1)
-            l2 = arg_lo_ss(T_AXIS,ARG2)
-            DO 200 l = res_lo_ss(T_AXIS), res_hi_ss(T_AXIS)
+*  Get the index to sample.*  IF the indices don't lie in range the result is missing.
+*  (This is normally handled by having the inheritance depend on both ARG1 and ARG2
+*   but that checking is done on coordinates and here we are working with indices,
+*   and here we allow a return - which may be missing.)
 
-               j1 = arg_lo_ss(Y_AXIS,ARG1)
-               DO 100 j = res_lo_ss(Y_AXIS), res_hi_ss(Y_AXIS)
+         IF (i2.LT.arg_lo_ss(X_AXIS,ARG2) .OR. i2.GT.arg_hi_ss(X_AXIS,ARG2) .OR. 
+     .       j2.LT.arg_lo_ss(Y_AXIS,ARG2) .OR. j2.GT.arg_hi_ss(Y_AXIS,ARG2) .OR. 
+     .       k2.LT.arg_lo_ss(Z_AXIS,ARG2) .OR. k2.GT.arg_hi_ss(Z_AXIS,ARG2) .OR. 
+     .       l2.LT.arg_lo_ss(T_AXIS,ARG2) .OR. l2.GT.arg_hi_ss(T_AXIS,ARG2) .OR. 
+     .       m2.LT.arg_lo_ss(E_AXIS,ARG2) .OR. m2.GT.arg_hi_ss(E_AXIS,ARG2) .OR. 
+     .       n2.LT.arg_lo_ss(F_AXIS,ARG2) .OR. n2.GT.arg_hi_ss(F_AXIS,ARG2) ) THEN
 
-*  Get the index to sample, whichever axis of arg_1 it is on.
+            result(i,j,k,l,m,n) = bad_flag_result
+            j2 = j2 + arg_incr(Y_AXIS,ARG2)
+	    CYCLE
+         ENDIF
 
-                   aorder = arg_1(i1,j1,k1,l1)
-                   IF (j1 .EQ. unspecified_int4) 
-     .                  CALL pickindex(arg_1, j, aorder)
-                  jorder = aorder
+         aorder = arg_2(i2,j2,k2,l2,m2,n2)
+         jorder = aorder
 
-*  Check that we do have an index of ARG_2; set the result
+*  Check that we do have an index of ARG_. Set the result
 
-                  IF (aorder .EQ. bad_flag(ARG1)) THEN
-                     result(i,j,k,l) = bad_flag_result
-                  ELSE
+         IF (aorder .EQ. bad_flag(ARG2)) THEN
+            result(i,j,k,l,m,n) = bad_flag_result
+         ELSE
 
-                     IF (jorder .LT. arg_lo_ss(Y_AXIS,ARG2)  .OR.
-     .                   jorder .GT. arg_hi_ss(Y_AXIS,ARG2) ) THEN
-                        GO TO 999
-                     ELSE
+            IF (jorder .LT. arg_lo_ss(Y_AXIS,ARG1)  .OR.
+     .          jorder .GT. arg_hi_ss(Y_AXIS,ARG1) ) THEN
+               result(i,j,k,l,m,n) = bad_flag_result
+            ELSE
 
-                        IF (arg_2(i2,jorder,k2,l2) .EQ. bad_flag(ARG2))
-     .                   THEN
-                           result(i,j,k,l) = bad_flag_result
-                        ELSE
-                           result(i,j,k,l) = arg_2(i2,jorder,k2,l2)
- 
-                        END IF
-                     END IF
-                  END IF
+               IF (arg_1(i1,jorder,k1,l1,m1,n1) .EQ. bad_flag(ARG1)) THEN
+                  result(i,j,k,l,m,n) = bad_flag_result
+               ELSE
+                  result(i,j,k,l,m,n) = arg_1(i1,jorder,k1,l1,m1,n1)
+               ENDIF
+            ENDIF
+         ENDIF
 
-                  j1 = j1 + arg_incr(Y_AXIS,ARG1)
- 100           CONTINUE
+         j2 = j2 + arg_incr(Y_AXIS,ARG2)
+ 100  CONTINUE
 
-               l1 = l1 + arg_incr(T_AXIS,ARG1)
-               l2 = l2 + arg_incr(T_AXIS,ARG2)
- 200        CONTINUE
+      i1 = i1 + arg_incr(X_AXIS,ARG1)
+      i2 = i2 + arg_incr(X_AXIS,ARG2)
+ 200  CONTINUE
 
-            k1 = k1 + arg_incr(Z_AXIS,ARG1)
-            k2 = k2 + arg_incr(Z_AXIS,ARG2)
- 300     CONTINUE
+      k1 = k1 + arg_incr(Z_AXIS,ARG1)
+      k2 = k2 + arg_incr(Z_AXIS,ARG2)
+ 300  CONTINUE
 
-         i1 = i1 + arg_incr(X_AXIS,ARG1)
-         i2 = i2 + arg_incr(X_AXIS,ARG2)
+      l1 = l1 + arg_incr(T_AXIS,ARG1)
+      l2 = l2 + arg_incr(T_AXIS,ARG2)
  400  CONTINUE
+
+      m1 = m1 + arg_incr(E_AXIS,ARG1)
+      m2 = m2 + arg_incr(E_AXIS,ARG2)
+ 500  CONTINUE
+
+      n1 = n1 + arg_incr(F_AXIS,ARG1)
+      n2 = n2 + arg_incr(F_AXIS,ARG2)
+ 600  CONTINUE
+
       RETURN 
-
-999   CONTINUE
-      aindex(1) = LEFINT(jorder,nlen(1))
-      aindex(2) = LEFINT(arg_lo_ss(Y_AXIS,ARG2),nlen(2))
-      aindex(3) = LEFINT(arg_hi_ss(Y_AXIS,ARG2),nlen(3))
-
-      WRITE (errtxt,*) 'Sampling index ', aindex(1)(1:nlen(1)), 
-     . ' in ARG1 is outside the range of J indices for ARG2 (', 
-     .  aindex(2)(1:nlen(2)), ':', aindex(3)(1:nlen(3)), ')'
-
-      CALL EF_BAIL_OUT(id, errtxt)
-
-      RETURN
       END

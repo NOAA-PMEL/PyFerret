@@ -1,0 +1,49 @@
+! err744_timeax_plots.jnl
+! issue 1920: a time range a few seconds into the next day caused
+! an extra piece of the time axis to be plotted
+! 3/29/2019
+
+def view/x=0.1:0.9/y=0.75:0.95/axes v1
+def view/x=0.1:0.9/y=0.45:0.65/axes v2
+def view/x=0.1:0.9/y=0.15:0.35/axes v3
+
+! For discrete data we are often defining the time axis from  
+! time data in a file
+
+set view v1
+let times = 1513000000 + {\
+509406,511946,513392,551364,555664,570384,584525,584970,591428,643357,649012,\
+663121,664727,666085,743198,743286,758245,763918,840450,845033,927021,941481,\
+945432,950464,961409,965271,975940,1016568,1038717,1047512,1052024,1104094,\
+1163958,1232091,1237204,1247258,1260899,1262517,1268527,1274539,1274628,\
+1276161,1278465,1282797,1286385,1291679,1295978,1303257,1315204,1316810,\
+1327040,1332801}
+
+DEFINE AXIS/T/T0="1-Jan-1970"/UNITS=seconds tax = times
+
+! The axis extends to 27-DEC-2017 00:00:01
+list/prec=15 t[gt=tax]
+
+! the plot axis extended by one tic-mark interval at the end
+LET tt = L[gt=tax]
+plot/nolab/color=blue tt
+
+! This example did the same thing even with older Ferret execs, ask to
+! plot a second into a new hour.
+
+set view v2  
+
+define axis/t="1-jan-1990:00:00:01":"20-jan-1990:00:00:01":1/units=minutes/t0=1-jan-1990 taxis
+let tt = t[gt=taxis]
+plot/nolab/color=blue/t="2-jan-1990":"12-jan-1990:00:00:01" cos(tt/400)
+
+! Here plot a second into a new hour, the vertical axes and plot scale are
+! set correctly
+
+set view v3
+
+! starting just before beginning of a day works fine
+
+plot/nolab/color=blue/t="1-jan-1990:23:59:51":"12-jan-1990:00:00:10" cos(tt/400)
+
+frame/file=time_axis_ends.gif

@@ -98,4 +98,19 @@ cancel data cellareas
 set mode /last diagnos
 
 !
+! further report, ticket 1922, expression with a constant-array. 
+
+use coads_climatology
+let v1 = tsequence(sst[x=140w,y=0])
+let vx = v1
+
+say `vx,return=shape`
+
+plot/vs vx+{1,1,-1,-1,1}, 0*vx+{1,2,2,1,1}
+
+say `vx,return=shape`
+
+
+!
 ! end of err744_context.jnl
+

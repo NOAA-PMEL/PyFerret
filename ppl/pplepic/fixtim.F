@@ -66,13 +66,15 @@ C
 C *acm* 4/22/02  replace ALL places lower than the desired round-off
 C                with 00.  e.g. if 950115013303 is to be expressed
 C                in even hours, make it 950115010000 not 950115010003
+C       3/19     issue 1920 and related. Compute the time it2new using
+C                rather than reusing one that may be a few seconds off
+C    
 
 c
 	character*(*) it1,it2,itnew1,itnew2
 	character*14 cdum
 c
 	if (itype .eq. 3) then
-cc acm	    itnew1=it1(1:4)//'010000'//it1(11:14)
 	    itnew1=it1(1:4)//'01000000'//it1(13:14)
 
 	    if (it2(5:10) .eq. '010000') then
@@ -82,36 +84,28 @@ cc acm	    itnew1=it1(1:4)//'010000'//it1(11:14)
 		nm=numdm1(it2)
 		read (it2(5:6),*) id
 		iseq=nm-id+2
-cc		call time1 (1, it2(1:6)//'0000'//it2(11:14), iseq,
-cc     1		                cdum, idum, itnew2, dt)
 		call time1 (1, it2(1:6)//'000000'//it2(13:14), iseq,
      1		                cdum, idum, itnew2, dt)
 	    endif
 
 	else if (itype .eq. 1) then
-cc	    itnew1=it1(1:6)//'0000'//it1(11:14)
 	    itnew1=it1(1:6)//'000000'//it1(13:14)
-	    if (it2(7:10) .eq. '0000') then
+	    if (it2(7:12) .eq. '000000') then
 		itnew2=it2
 	    else
 		dt=1440.
 		iseq=2
-cc		call time1 (1, it2(1:6)//'0000'//it2(11:14), iseq,
-cc     1		                cdum, idum, itnew2, dt)
 		call time1 (1, it2(1:6)//'000000'//it2(13:14), iseq,
      1		                cdum, idum, itnew2, dt)
 	    endif
 
 	else if (itype .eq. 0) then
-cc	    itnew1=it1(1:8)//'00'//it1(11:14)
 	    itnew1=it1(1:8)//'0000'//it1(13:14)
 	    if (it2(9:10) .eq. '00') then
 		itnew2=it2
 	    else
 		dt=60.
 		iseq=2
-cc		call time1 (1, it2(1:8)//'00'//it2(11:14), iseq,
-cc     1		                cdum, idum, itnew2, dt)
 		call time1 (1, it2(1:8)//'0000'//it2(13:14), iseq,
      1		                cdum, idum, itnew2, dt)
 	    endif

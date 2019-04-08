@@ -160,15 +160,7 @@ rm -f bn_test_stream.jnl
 # endif
 
 #Set up for metafile/gif testing
-set check_met = check_metafiles
-
-if ($machine == "linux" || $machine == "ia64-linux") then
-   set check_met = check_metafiles_linux
-endif
-
-if ($rhlev == "six") then
-   set check_met = check_metafiles_rh6
-endif
+set check_met = check_metafiles_rh6
 
 echo "Log output in $log_file  Errors in $err_file" 
 echo "Procedure run_all to run all FERRET benchmarks" >&$log_file

@@ -40,11 +40,14 @@
 * V720: 6/17 *acm* Fix ticket 2547: We store the grid and type of user variables and
 *                  expressions, but the grid and type may be determined on different 
 *                  iterations in is_uvar_grid.
+* V745  4/19 *acm* ticket 1916, special handling getting context for RETURN= outputs
 
         IMPLICIT NONE
-        include 'ferret.parm'
         include 'tmap_dims.parm'
+        include 'ferret.parm'
         include 'xvariables.cmn'
+        include 'xcontext.cmn'
+        include 'xtm_grid.cmn_text'
 
 * calling argument declarations
         INTEGER uvar, uvgrid, uvdtype, dset
@@ -53,6 +56,7 @@
         INTEGER NCF_SET_UVAR_GRID,
      .          c_list_dset, context_dset, 
      .          pretype, savetype, status
+	REAL	value
 
 * c_list_dset  - dset value relevant in C LIST structures of NCF_Util.c
 * context_dset - dset for which grid of this uvar has been determined
@@ -77,6 +81,21 @@
 * store the grid
         status = NCF_SET_UVAR_GRID( c_list_dset, uvar,
      .                              uvgrid, savetype, context_dset )
+	
+* Store and keep count of uvar and grid storage when working on 
+* return from repl_exprns just getting context
+
+	IF (cx_only) THEN
+	   uvar_cxo_len = uvar_cxo_len + 1
+	   value = uvar
+	   CALL PUT_LINE_COORD ( linemem(uvar_cx_only_lm)%ptr, 
+     .                     uvar_cxo_len, value )
+
+	   value = c_list_dset
+	   CALL PUT_LINE_COORD ( lineedg(uvar_cx_only_lm)%ptr, 
+     .                     uvar_cxo_len, value )
+	ENDIF
+
 
 * Note that an ATOM_NOT_FOUND error is not trapped
 * We should really trap it and call ERRMSG(ferr_internal)

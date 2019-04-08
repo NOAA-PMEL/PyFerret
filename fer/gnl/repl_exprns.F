@@ -130,6 +130,7 @@
 * v7441*acm* 12/18 Issue 1910: Allow dates in commands to be in ISO 8601 form, yyyy-mm-dd
 * v745* acm*  2/19 Issue 400:  If a user var is LET var = filevar[d=1] then return the
 *                  correct info for `var,return=dset` and dsetnum and dsetpath.
+* V745  4/19 *acm* ticket 1916, special handling getting context for RETURN= outputs
 
         IMPLICIT NONE
 #include "netcdf.inc"
@@ -168,7 +169,7 @@
      .            vartype, ist, ind,
      .            attype, attlen, inxt, attoutflag, fertype, 
      .            attid, ieq, base_isp, base_cx, cat, var, uvar,  
-     .            i1ss, inss, grid, ucode, iv, isp_start,
+     .            i1ss, inss, grid, ucode, 
      .            hi_cx, item, itype, start, len_name, var_status
 	REAL	  result, val, aval
 	REAL*8 TM_WORLD, TM_WW_AXLEN, ww
@@ -203,7 +204,6 @@
         apply_cx = .FALSE.
 	str_len = 0
 	
-	isp_start = isp
 	grid = unspecified_int4
 	cx_only = .FALSE.   ! do merge_grid in mode for not evaluating full context
 
@@ -432,6 +432,9 @@
 * ... context meaningless for d=1,return=varnames
               IF (cmnd(istart:istart+1) .NE. 'd=') THEN
 
+* are we going to need to unset things later? (context-setting for user-vars
+* when doing shape and size returns.)
+
 	         grid_reset = ( repl.EQ."SHAPE" .OR. 
      .              (repl.EQ."SIZE"  .AND. INDEX(cmnd(istart:iend),'.').EQ.0) )
 
@@ -454,9 +457,21 @@
 		    ENDDO
 	         ENDIF
 
+*  For results such as shape and size where we need to get the context
+*  save a list of the uvars on the stack where the uvar grid gets set and
+*  unset it later
+
 		 IF (grid_reset) THEN
 		    cx_only = .TRUE.
-		    CALL RESET_UVAR_GRIDS (isp_start)
+
+*  Allocate dynamic line memory for a list of uvars where uvar-grid info gets
+*  set in this routine.
+		    
+		    CALL GET_LINE_DYNMEM(max_uvar, uvar_cx_only_lm, status)
+		    uvar_cxo_len = 0
+
+		    CALL DELETE_OLD_UGRIDS
+
 		 ENDIF
 
 		 CALL EVAL_CONTEXT ( cx_cmnd, cmnd(istart:iend), status )
@@ -482,7 +497,7 @@
 	         repl = VAR_TITLE( cx )
 	         str_len = TM_LENSTR1(repl)
 	         GOTO 500
-		 
+		  
 * ... RETURN=BAD
 	      ELSEIF ( repl .EQ. "BAD" ) THEN
 	         result = cx_bad_data ( cx )
@@ -768,7 +783,8 @@
      .		                     cmnd(istart:iend), apply_cx, status )
 	               IF ( status .NE. ferr_ok ) GOTO 5000
 	               cx = is_cx(1)	! always comes back as the first context
-	              GOTO 200
+		       cx_only = grid_reset
+	               GOTO 200
 	            ENDIF
  190	         CONTINUE
               ENDIF  ! `d=1,return=varnames`
@@ -1334,13 +1350,14 @@ c		    ENDIF
 * successful translation of a grave-accented expression
  1000	did_sub = .TRUE.
 
-* restore the state of uvar description loaded here forreturns 
+* restore the state of uvar grids etc changed here for returns 
 * that need the grid, such as *size, shape. The uvar.GT.0 is 
 * checking for "packed" uvar-context info as set in const_var_context
 
-        IF (cx_only) THEN	   
+        IF (cx_only) THEN
+	   CALL RESET_UVAR_GRIDS
+	   CALL FREE_LINE_DYNMEM(uvar_cx_only_lm)
 
-	   CALL RESET_UVAR_GRIDS (isp_start)
 	   cx_only = .FALSE.
 
 	ENDIF

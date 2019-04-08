@@ -290,27 +290,27 @@ void FORTRAN(sampleij_compute)(int *, DFTYPE *, DFTYPE *, DFTYPE *,
 
 
 void FORTRAN(samplei_multi_init)(int *);
-void FORTRAN(samplei_multi_result_limits)(int *);
+void FORTRAN(samplei_multi_custom_axes)(int *);
 void FORTRAN(samplei_multi_compute)(int *, DFTYPE *, DFTYPE *);
 
 void FORTRAN(samplej_multi_init)(int *);
-void FORTRAN(samplej_multi_result_limits)(int *);
+void FORTRAN(samplej_multi_custom_axes)(int *);
 void FORTRAN(samplej_multi_compute)(int *, DFTYPE *, DFTYPE *);
 
 void FORTRAN(samplek_multi_init)(int *);
-void FORTRAN(samplek_multi_result_limits)(int *);
+void FORTRAN(samplek_multi_custom_axes)(int *);
 void FORTRAN(samplek_multi_compute)(int *, DFTYPE *, DFTYPE *);
 
 void FORTRAN(samplel_multi_init)(int *);
-void FORTRAN(samplel_multi_result_limits)(int *);
+void FORTRAN(samplel_multi_custom_axes)(int *);
 void FORTRAN(samplel_multi_compute)(int *, DFTYPE *, DFTYPE *);
 
 void FORTRAN(samplem_multi_init)(int *);
-void FORTRAN(samplem_multi_result_limits)(int *);
+void FORTRAN(samplem_multi_custom_axes)(int *);
 void FORTRAN(samplem_multi_compute)(int *, DFTYPE *, DFTYPE *);
 
 void FORTRAN(samplen_multi_init)(int *);
-void FORTRAN(samplen_multi_result_limits)(int *);
+void FORTRAN(samplen_multi_custom_axes)(int *);
 void FORTRAN(samplen_multi_compute)(int *, DFTYPE *, DFTYPE *);
 
 void FORTRAN(samplet_date_init)(int *);
@@ -320,7 +320,7 @@ void FORTRAN(samplet_date_compute)(int *, DFTYPE *, DFTYPE *,
       DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *,
       DFTYPE *, DFTYPE *);
 
-void FORTRAN(samplef_date_init)(int *);
+void FORTRAN(samplef_date_init)(int *); 
 void FORTRAN(samplef_date_result_limits)(int *);
 void FORTRAN(samplef_date_work_size)(int *);
 void FORTRAN(samplef_date_compute)(int *, DFTYPE *, DFTYPE *,
@@ -3644,32 +3644,32 @@ else if ( !strcmp(name,"sampleij_compute_") ) return (void *)FORTRAN(sampleij_co
 
 /* samplei_multi.F */
 else if ( !strcmp(name,"samplei_multi_init_") ) return (void *)FORTRAN(samplei_multi_init);
-else if ( !strcmp(name,"samplei_multi_result_limits_") ) return (void *)FORTRAN(samplei_multi_result_limits);
+else if ( !strcmp(name,"samplei_multi_custom_axes_") ) return (void *)FORTRAN(samplei_multi_custom_axes);
 else if ( !strcmp(name,"samplei_multi_compute_") ) return (void *)FORTRAN(samplei_multi_compute);
 
 /* samplej_multi.F */
 else if ( !strcmp(name,"samplej_multi_init_") ) return (void *)FORTRAN(samplej_multi_init);
-else if ( !strcmp(name,"samplej_multi_result_limits_") ) return (void *)FORTRAN(samplej_multi_result_limits);
+else if ( !strcmp(name,"samplej_multi_custom_axes_") ) return (void *)FORTRAN(samplej_multi_custom_axes);
 else if ( !strcmp(name,"samplej_multi_compute_") ) return (void *)FORTRAN(samplej_multi_compute);
 
 /* samplek_multi.F */
 else if ( !strcmp(name,"samplek_multi_init_") ) return (void *)FORTRAN(samplek_multi_init);
-else if ( !strcmp(name,"samplek_multi_result_limits_") ) return (void *)FORTRAN(samplek_multi_result_limits);
+else if ( !strcmp(name,"samplek_multi_custom_axes_") ) return (void *)FORTRAN(samplek_multi_custom_axes);
 else if ( !strcmp(name,"samplek_multi_compute_") ) return (void *)FORTRAN(samplek_multi_compute);
 
 /* samplel_multi.F */
 else if ( !strcmp(name,"samplel_multi_init_") ) return (void *)FORTRAN(samplel_multi_init);
-else if ( !strcmp(name,"samplel_multi_result_limits_") ) return (void *)FORTRAN(samplel_multi_result_limits);
+else if ( !strcmp(name,"samplel_multi_custom_axes_") ) return (void *)FORTRAN(samplel_multi_custom_axes);
 else if ( !strcmp(name,"samplel_multi_compute_") ) return (void *)FORTRAN(samplel_multi_compute);
 
 /* samplem_multi.F */
 else if ( !strcmp(name,"samplem_multi_init_") ) return (void *)FORTRAN(samplem_multi_init);
-else if ( !strcmp(name,"samplem_multi_result_limits_") ) return (void *)FORTRAN(samplem_multi_result_limits);
+else if ( !strcmp(name,"samplem_multi_custom_axes_") ) return (void *)FORTRAN(samplem_multi_custom_axes);
 else if ( !strcmp(name,"samplem_multi_compute_") ) return (void *)FORTRAN(samplem_multi_compute);
 
 /* samplen_multi.F */
 else if ( !strcmp(name,"samplen_multi_init_") ) return (void *)FORTRAN(samplen_multi_init);
-else if ( !strcmp(name,"samplen_multi_result_limits_") ) return (void *)FORTRAN(samplen_multi_result_limits);
+else if ( !strcmp(name,"samplen_multi_custom_axes_") ) return (void *)FORTRAN(samplen_multi_custom_axes);
 else if ( !strcmp(name,"samplen_multi_compute_") ) return (void *)FORTRAN(samplen_multi_compute);
 
 /* samplet_date.F */

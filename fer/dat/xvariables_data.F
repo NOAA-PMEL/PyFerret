@@ -62,6 +62,8 @@
 * V685+: 3/14 *sh* - initialize max_usable_intrp
 * V695+: 5/15 *sh* - initialize uvar_c_cache_ptr
 * V702:  2/17 *sh* - remove old block memory management variables
+* V745  4/19 *acm* ticket 1916, special handling getting context for RETURN= outputs
+*                  new dynamic-memory line storage for keeping a list of uvars
 
         IMPLICIT NONE
 #include "tmap_dset.parm"

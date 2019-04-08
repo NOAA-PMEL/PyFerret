@@ -8,10 +8,9 @@
 * 4/5/99  Ansley Manke 
 *         Indices may be oriented along any axis; 
 *         Result is abstract on the sampled axis.
-*
-* 4/19  Make these functions 6-D. 
-*       Reverse the order of arguments to be consistent with the
+* 4/19  Reverse the order of arguments to be consistent with the
 *       SAMPLEL etc functions.
+* 4/19  See issue 1924: reworking sample-multi functions
 *
 
 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -32,7 +31,7 @@
 
       CALL ef_set_axis_inheritance_6d(id,
      .     IMPLIED_BY_ARGS, IMPLIED_BY_ARGS, IMPLIED_BY_ARGS, 
-     .            ABSTRACT, IMPLIED_BY_ARGS, IMPLIED_BY_ARGS)
+     .              CUSTOM, IMPLIED_BY_ARGS, IMPLIED_BY_ARGS)
 
       CALL ef_set_piecemeal_ok(id, NO, NO, NO, NO, NO, NO)
 
@@ -50,21 +49,20 @@
       RETURN 
       END
 
-* Set the lo and hi limits associated with each abstract result axis. 
+* Define the simple custom axis
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
-* * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-      SUBROUTINE samplel_multi_result_limits(id)
+      SUBROUTINE samplel_multi_custom_axes(id)
 
-      IMPLICIT NONE
       INCLUDE 'EF_Util.cmn'
 
       INTEGER id
+
       INTEGER arg_lo_ss(6,EF_MAX_ARGS), arg_hi_ss(6,EF_MAX_ARGS),
      .     arg_incr(6,EF_MAX_ARGS)
 
-
-      INTEGER lo, hi
-      INTEGER nn, count, idim
+      REAL lo, hi
+      INTEGER idim
 
       CALL ef_get_arg_subscripts_6d(id, arg_lo_ss, arg_hi_ss, arg_incr)
 
@@ -73,42 +71,25 @@
       lo = 1
       hi = arg_hi_ss(T_AXIS, ARG2) - arg_lo_ss(T_AXIS, ARG2) + 1
 
-* If the index list is empty on the X axis, then see if it's a simple 1D list
-* in another direction.
+      DO idim = 1, F_AXIS
+	 IF (arg_hi_ss(idim, ARG2) .NE. ef_unspecified_int4) THEN
+	    IF (arg_hi_ss(idim, ARG1) .EQ. ef_unspecified_int4) GOTO 999
+	 ENDIF
+      ENDDO
 
-      IF (hi .EQ. 1)  THEN
-         count = 0
-	 DO idim = X_AXIS, F_AXIS
-
-            IF (idim .EQ. T_AXIS) CYCLE
-
-            nn = arg_hi_ss(idim, ARG2) - arg_lo_ss(idim, ARG2) + 1
-	    IF (nn .GT. 1) THEN
-	       hi = nn
-	       count = count + 1
-	       IF (count .GT. 1) GOTO 999
-	    ENDIF
-
-	 ENDDO
-      ENDIF
-
-      CALL ef_set_axis_limits(id, T_AXIS, lo, hi)
+      CALL ef_set_custom_axis(id, T_AXIS, lo, hi, 1.0, 'Index', NO)
 
       RETURN
-      
+
 999   CONTINUE
       CALL ef_bail_out(id, 
-     .  'Argument 2: Index list must have a T axis or be one-dimensional')
-*                                                                     ^
-*                                                                     |
-*                                           USER CONFIGURABLE PORTION |
-* **********************************************************************
-
-      RETURN 
+     .  'ARG2: Grid of index list must be a subset of the grid of the data being sampled')
+      
+      RETURN
       END
 
 *
-* In this subroutine we compute the result
+* Compute the result
 ** * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
       SUBROUTINE samplel_multi_compute(id, arg_1, arg_2, result)
 
@@ -128,8 +109,6 @@
       INTEGER res_lo_ss(6), res_hi_ss(6), res_incr(6)
       INTEGER arg_lo_ss(6,EF_MAX_ARGS), arg_hi_ss(6,EF_MAX_ARGS),
      .     arg_incr(6,EF_MAX_ARGS)
-
-*                                                                     V
 
       INTEGER id
       INTEGER i, j, k, l, m, n
@@ -166,10 +145,25 @@
       l2 = arg_lo_ss(T_AXIS,ARG2)
       DO 100 l = res_lo_ss(T_AXIS), res_hi_ss(T_AXIS)
 
-*  Get the index to sample, whichever axis of arg_1 it is on.
+*  Get the index to sample.
+*  IF the indices don't lie in range the result is missing.
+*  (This is normally handled by having the inheritance depend on both ARG1 and ARG2
+*   but that checking is done on coordinates and here we are working with indices,
+*   and here we allow a return - which may be missing.)
+
+         IF (i2.LT.arg_lo_ss(X_AXIS,ARG2) .OR. i2.GT.arg_hi_ss(X_AXIS,ARG2) .OR. 
+     .       j2.LT.arg_lo_ss(Y_AXIS,ARG2) .OR. j2.GT.arg_hi_ss(Y_AXIS,ARG2) .OR. 
+     .       k2.LT.arg_lo_ss(Z_AXIS,ARG2) .OR. k2.GT.arg_hi_ss(Z_AXIS,ARG2) .OR. 
+     .       l2.LT.arg_lo_ss(T_AXIS,ARG2) .OR. l2.GT.arg_hi_ss(T_AXIS,ARG2) .OR. 
+     .       m2.LT.arg_lo_ss(E_AXIS,ARG2) .OR. m2.GT.arg_hi_ss(E_AXIS,ARG2) .OR. 
+     .       n2.LT.arg_lo_ss(F_AXIS,ARG2) .OR. n2.GT.arg_hi_ss(F_AXIS,ARG2) ) THEN
+
+            result(i,j,k,l,m,n) = bad_flag_result
+            l2 = l2 + arg_incr(T_AXIS,ARG2)
+	    CYCLE
+         ENDIF
 
          aorder = arg_2(i2,j2,k2,l2,m2,n2)
-         IF (l1 .EQ. ef_unspecified_int4) CALL pickindex(arg_2, l, aorder)
          lorder = aorder
 
 *  Check that we do have an index of ARG_1. Set the result

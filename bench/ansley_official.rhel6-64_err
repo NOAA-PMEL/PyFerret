@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/users/ansley/build/working/FERRET/fer/ferret_c
--rwxr-xr-x. 1 ansley tmap 114956756 Apr  5 16:36 /home/users/ansley/build/working/FERRET/fer/ferret_c
+-rwxr-xr-x. 1 ansley tmap 115003402 Apr  9 16:05 /home/users/ansley/build/working/FERRET/fer/ferret_c
 Using external functions from /home/users/ansley/build/working/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: issue 1920: time-axis drawing on plots
+Note: SAMPLE*_MULTI functions, as discussed in 1924
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DATA=. ./data
@@ -22,7 +22,7 @@ FER_PALETTE=. /home/users/tmap/ferret/rhel6-x86_64-linux/ppl
 FER_WEB_BROWSER=firefox
 PWD=/home/users/ansley/build/working/FERRET/bench
 PYFER_EXTERNAL_FUNCTIONS=/home/users/tmap/ferret/rhel6-x86_64-linux/ext_func/pylibs
-Beginning at Fri Apr 5 16:52:57 PDT 2019
+Beginning at Tue Apr 9 16:55:57 PDT 2019
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -6946,6 +6946,24 @@ set axis/t0=2010-15-01 TIME112
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
 Starting test: bn_agg_given_taxis
+
+Bailing out of external function "samplem_multi":
+	Axes of INDEX data must match those in the grid of DATA_TO_SAMPLE. Mismatch in T direction.
+
+Bailing out of external function "samplei_multi":
+	Axes of INDEX data must match those in the grid of DATA_TO_SAMPLE. Mismatch in T direction.
+
+Bailing out of external function "samplej_multi":
+	Axes of INDEX data must match those in the grid of DATA_TO_SAMPLE. Mismatch in T direction.
+
+Bailing out of external function "samplek_multi":
+	Axes of INDEX data must match those in the grid of DATA_TO_SAMPLE. Mismatch in T direction.
+
+Bailing out of external function "samplel_multi":
+	Axes of INDEX data must match those in the grid of DATA_TO_SAMPLE. Mismatch in F direction.
+
+Bailing out of external function "samplen_multi":
+	Axes of INDEX data must match those in the grid of DATA_TO_SAMPLE. Mismatch in T direction.
            *** NOTE: Time axis coordinates matched using @XACT
 Replacing definition of axis tax
            *** NOTE: Time axis coordinates matched using @BIN
@@ -6989,6 +7007,44 @@ DEFINE DATA /AGG /T /TOVERLAP=2 /TAXIS=aggtime@BIN myagg = data2010.nc, data2009
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
 Starting test: bn_samplexyzt
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
+Starting test: bn_sample_multi
+ **ERROR: error in external function
+list samplem_multi(a_2d, b_t)
+           *** NOTE: Ambiguous coordinates on X axis: SAMPLEM_MULTI(A_2D, C_2D)
+Replacing definition of axis aax_a
+Replacing definition of axis aax_b
+Replacing definition of axis sax
+ **ERROR: error in external function
+list samplei_multi(a_2d, b_t)
+Replacing definition of axis bigax
+           *** NOTE: Ambiguous coordinates on Y axis: SAMPLEI_MULTI(A_2D, C_2D)
+Replacing definition of axis aax_a
+Replacing definition of axis aax_b
+Replacing definition of axis sax
+ **ERROR: error in external function
+list samplej_multi(a_2d, b_t)
+Replacing definition of axis bigax
+           *** NOTE: Ambiguous coordinates on X axis: SAMPLEJ_MULTI(A_2D, C_2D)
+Replacing definition of axis aax_a
+Replacing definition of axis aax_b
+ **ERROR: error in external function
+list samplek_multi(a_2d, b_t)
+           *** NOTE: Ambiguous coordinates on X axis: SAMPLEK_MULTI(A_2D, C_2D)
+Replacing definition of axis aax_a
+Replacing definition of axis aax_b
+Replacing definition of axis sax2
+ **ERROR: error in external function
+list samplel_multi(a_2d, b_f)
+           *** NOTE: Ambiguous coordinates on X axis: SAMPLEL_MULTI(A_2D, C_2D)
+Replacing definition of axis aax_a
+Replacing definition of axis aax_b
+Replacing definition of axis sax2
+ **ERROR: error in external function
+list samplen_multi(a_2d, b_f)
+           *** NOTE: Ambiguous coordinates on X axis: SAMPLEN_MULTI(A_2D, C_2D)
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -7113,4 +7169,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
            *** NOTE: Cannot create new windows when batch mode set
-Ended at Fri Apr 5 17:01:08 PDT 2019
+Ended at Tue Apr 9 17:05:02 PDT 2019

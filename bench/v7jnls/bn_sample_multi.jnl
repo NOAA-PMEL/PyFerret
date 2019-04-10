@@ -1,0 +1,352 @@
+! bn_sample_multi
+!  4/8/2019  ACM
+! 
+! Tests for functions samplei_multi, etc as discussed in ticket 1924
+! Same tests in all directions 
+
+define axis/e=11:15:1 aax_a
+define axis/e=1:4:1 aax_b
+define axis/x=0:1:1 sax
+let a_1 = _e[ge=aax_a]^2
+let a_2 = (4-x[gx=sax])^2
+let a_2d = a_1 + a_2
+let b_1 = 5-_e[ge=aax_b]
+let b_2 = 1+x[gx=sax]
+let b_2d = b_1 + b_2 - 1
+list a_2d
+list b_2d
+list samplem_multi(a_2d, b_2d)
+
+! SAMPLEM_MULTI agrees with SAMPLEM for a 1D index list  in the E direction
+list b_1
+list samplem (a_2d, b_1)
+list samplem_multi (a_2d, b_1) 
+
+! b_2 is a list in the x direction,  SAMPLEM returns data @ e=1,2
+! but SAMPLEM_MULTI returns data at (x,e)  = (1,1) and (2,2)
+
+list b_2
+list samplem (a_2d, b_2)  ! b_2 a list in x, x=1,2 returns data @ e=1,2
+list samplem_multi(a_2d, b_2)
+
+! Intentional errors
+set mode ignore_error
+
+! Cannot sample the x-e data along t 
+
+define axis/t=3:4:1 sax2
+let b_t = t[gt=sax2]
+list samplem_multi(a_2d, b_t)
+
+set mode/last ignore_error
+
+! Not an error: The grid of the INDEX var in non-sample directions  
+! must be conformable with the grid of to-be-sampled.   
+
+define axis/x=0:3:1 bigax
+let c_2 = 1+x[gx=bigax]
+let c_2d = c_2 + b_1
+list c_2d
+list samplem_multi(a_2d, c_2d)
+
+! Example: Monte Carlo resamples of a dataset, as outlined in #1924
+! Expanding this X-data in the E direction via sampling in E using X-E sample indices
+
+let data = {59,91,26,37,72,43,87}
+let npts = `data,r=isize`
+let samp_indices = 1 + int((npts-1) * randu(x[gx=data,i=1:`npts`] + _e[m=1:6]))
+list samp_indices
+list data
+list samplem_multi (data, samp_indices)
+
+! Sample 2D data in this way, samples along the axis that's 
+! the length of the sample-axis
+let data2d = data + y[y=0:6:6] 
+list data2d
+
+let data2d_expand = samplem_multi (data2d, samp_indices)
+list/y=1 data2d_expand !same as the 1-d sample of "data" just above
+list/y=6 data2d_expand
+
+
+! SAMPLEI_multi
+
+define axis/x=11:15:1 aax_a
+define axis/x=1:4:1 aax_b
+define axis/y=0:1:1 sax
+let a_1 = x[gx=aax_a]^2
+let a_2 = (4-y[gy=sax])^2
+let a_2d = a_1 + a_2
+let b_1 = 5-x[gx=aax_b]
+let b_2 = 1+y[gy=sax]
+let b_2d = b_1 + b_2 - 1
+list samplei_multi(a_2d, b_2d)
+list samplei_multi(a_2d, b_1)
+list samplei_multi(a_2d, b_2)
+
+! Intentional errors
+set mode ignore_error
+
+! Cannot sample the x-y data along t 
+
+define axis/t=3:4:1 sax2
+let b_t = t[gt=sax2]
+list samplei_multi(a_2d, b_t)
+
+set mode/last ignore_error
+
+! Not an error: The grid of the INDEX var in non-sample directions  
+! must be conformable with the grid of to-be-sampled. 
+
+define axis/y=0:3:1 bigax
+let c_2 = 1+y[gy=bigax]
+let c_2d = c_2 + b_1
+list c_2d
+list samplei_multi(a_2d, c_2d)
+
+
+! Monte Carlo resamples of a dataset, as outlined in #1924
+! Expanding this Y-data in the X direction via sampling in X using X-Y sample indices
+
+let data = YSEQUENCE({59,91,26,37,72,43,87})
+let npts = `data,r=jsize`
+let samp_indices = 1 + int((npts-1) * randu(y[gy=data,j=1:`npts`] + x[i=1:6]))
+list samp_indices
+list data
+list samplei_multi (data, samp_indices)
+
+! Sample 2D data in this way, samples along the axis that's 
+! the length of the sample-axis
+let data2d = data + z[z=0:6:6] 
+list data2d
+
+let data2d_expand = samplei_multi (data2d, samp_indices)
+list/z=1 data2d_expand !same as the 1-d sample of "data" just above
+list/z=6 data2d_expand
+
+
+
+! SAMPLJ_multi
+
+
+
+define axis/y=11:15:1 aax_a
+define axis/y=1:4:1 aax_b
+define axis/x=0:1:1 sax
+let a_1 = y[gy=aax_a]^2
+let a_2 = (4-x[gx=sax])^2
+let a_2d = a_1 + a_2
+let b_1 = 5-y[gy=aax_b]
+let b_2 = 1+x[gx=sax]
+let b_2d = b_1 + b_2 - 1
+list samplej_multi(a_2d, b_2d)
+list samplej_multi(a_2d, b_1)
+list samplej_multi(a_2d, b_2)
+
+! Intentional errors
+set mode ignore_error
+
+! Cannot sample the x-y data along t 
+
+define axis/t=3:4:1 sax2
+let b_t = t[gt=sax2]
+list samplej_multi(a_2d, b_t)
+
+set mode/last ignore_error
+
+! Not an error: The grid of the INDEX var in non-sample directions  
+! must be conformable with the grid of to-be-sampled. 
+
+define axis/x=0:3:1 bigax
+let c_2 = 1+x[gx=bigax]
+let c_2d = c_2 + b_1
+list c_2d
+list samplej_multi(a_2d, c_2d)
+
+! Example: Monte Carlo resamples of a dataset, as outlined in #1924
+! Expanding this X-data in the Y direction via sampling in Y a set of X-Y sample indices
+
+let data = {59,91,26,37,72,43,87}
+let npts = `data,r=isize`
+let samp_indices = 1 + int((npts-1) * randu(x[gx=data,i=1:`npts`] + y[j=1:6]))
+list samp_indices
+list data
+list samplej_multi (data, samp_indices)
+
+! Sample 2D data in this way, samples along the axis that's 
+! the length of the sample-axis
+let data2d = data + z[z=0:6:6] 
+list data2d
+
+let data2d_expand = samplej_multi (data2d, samp_indices)
+list/z=1 data2d_expand !same as the 1-d sample of "data" just above
+list/z=6 data2d_expand
+
+
+! SAMPLEK_MULTI
+
+
+
+define axis/z=11:15:1 aax_a
+define axis/z=1:4:1 aax_b
+define axis/x=0:1:1 sax
+let a_1 = z[gz=aax_a]^2
+let a_2 = (4-x[gx=sax])^2
+let a_2d = a_1 + a_2
+let b_1 = 5-z[gz=aax_b]
+let b_2 = 1+x[gx=sax]
+let b_2d = b_1 + b_2 - 1
+list samplek_multi(a_2d, b_2d)
+list samplek_multi(a_2d, b_1)
+list samplek_multi(a_2d, b_2)
+
+! Intentional errors
+set mode ignore_error
+
+! Cannot sample the x-z data along t 
+
+define axis/t=3:4:1 sax2
+let b_t = t[gt=sax2]
+list samplek_multi(a_2d, b_t)
+
+set mode/last ignore_error
+
+! Not an error: The grid of the INDEX var in non-sample directions  
+! must be conformable with the grid of to-be-sampled. 
+
+define axis/x=0:3:1 bigax
+let c_2 = 1+x[gx=bigax]
+let c_2d = c_2 + b_1
+list c_2d
+list samplek_multi(a_2d, c_2d)
+
+! Monte Carlo resamples of a dataset, as outlined in #1924
+! Expanding this X-data in the Z direction via sampling in Z on a set of X-Z sample indices
+
+let data = {59,91,26,37,72,43,87}
+let npts = `data,r=isize`
+let samp_indices = 1 + int((npts-1) * randu(x[gx=data,i=1:`npts`] + z[k=1:6]))
+list samp_indices
+list data
+list samplek_multi (data, samp_indices)
+
+! Sample 2D data in this way, samples along the axis that's 
+! the length of the sample-axis
+let data2d = data + y[y=0:6:6] 
+list data2d
+
+let data2d_expand = samplek_multi (data2d, samp_indices)
+list/y=1 data2d_expand !same as the 1-d sample of "data" just above
+list/y=6 data2d_expand
+
+
+
+! SAMPLEL_MULTI
+
+define axis/t=11:15:1 aax_a
+define axis/t=1:4:1 aax_b
+define axis/x=0:1:1 sax
+let a_1 = t[gt=aax_a]^2
+let a_2 = (4-x[gx=sax])^2
+let a_2d = a_1 + a_2
+let b_1 = 5-t[gt=aax_b]
+let b_2 = 1+x[gx=sax]
+let b_2d = b_1 + b_2 - 1
+list samplel_multi(a_2d, b_2d)
+list samplel_multi(a_2d, b_1)
+list samplel_multi(a_2d, b_2)
+
+! Intentional errors
+set mode ignore_error
+
+! Cannot sample the x-t data along F 
+
+define axis/f=3:4:1 sax2
+let b_f = _F[gf=sax2]
+list samplel_multi(a_2d, b_f)
+
+set mode/last ignore_error
+
+! Not an error: The grid of the INDEX var in non-sample directions 
+! must be conformable with the grid of to-be-sampled. 
+
+define axis/x=0:3:1 bigax
+let c_2 = 1+x[gx=bigax]
+let c_2d = c_2 + b_1
+list c_2d
+list samplel_multi(a_2d, c_2d)
+
+! Example: Monte Carlo resamples of a dataset, as outlined in #1924
+! Expanding this X-data in the T direction via sampling in T using X-T sample indices
+
+let data = {59,91,26,37,72,43,87}
+let npts = `data,r=isize`
+let samp_indices = 1 + int((npts-1) * randu(x[gx=data,i=1:`npts`] + t[l=1:6]))
+list samp_indices
+list data
+list samplel_multi (data, samp_indices)
+
+! Sample 2D data in this way, samples along the axis that's 
+! the length of the sample-axis
+let data2d = data + y[y=0:6:6] 
+list data2d
+
+let data2d_expand = samplel_multi (data2d, samp_indices)
+list/y=1 data2d_expand !same as the 1-d sample of "data" just above
+list/y=6 data2d_expand
+
+
+! SAMPLEN_MULTI
+
+define axis/f=11:15:1 aax_a
+define axis/f=1:4:1 aax_b
+define axis/x=0:1:1 sax
+let a_1 = _f[gf=aax_a]^2
+let a_2 = (4-x[gx=sax])^2
+let a_2d = a_1 + a_2
+let b_1 = 5-_f[gf=aax_b]
+let b_2 = 1+x[gx=sax]
+let b_2d = b_1 + b_2 - 1
+list samplen_multi(a_2d, b_2d)
+list samplen_multi(a_2d, b_1)
+list samplen_multi(a_2d, b_2)
+
+! Intentional errors
+set mode ignore_error
+
+! Cannot sample the x-f data along T
+
+define axis/t=3:4:1 sax2
+let b_f = t[gt=sax2]
+list samplen_multi(a_2d, b_f)
+
+set mode/last ignore_error
+
+! Not an error: The grid of the INDEX var in non-sample directions 
+! must be conformable with the grid of to-be-sampled.  
+
+define axis/x=0:3:1 bigax
+let c_2 = 1+x[gx=bigax]
+let c_2d = c_2 + b_1
+list c_2d
+list samplen_multi(a_2d, c_2d)
+
+
+! Example: Monte Carlo resamples of a dataset, as outlined in #1924
+! Expanding this X-data in the F direction via sampling in F using X-F sample indices
+
+let data = {59,91,26,37,72,43,87}
+let npts = `data,r=isize`
+let samp_indices = 1 + int((npts-1) * randu(x[gx=data,i=1:`npts`] + _f[n=1:6]))
+list samp_indices
+list data
+list samplen_multi (data, samp_indices)
+
+! Sample 2D data in this way, samples along the axis that's 
+! the length of the sample-axis
+let data2d = data + y[y=0:6:6] 
+list data2d
+
+let data2d_expand = samplen_multi (data2d, samp_indices)
+list/y=1 data2d_expand !same as the 1-d sample of "data" just above
+list/y=6 data2d_expand

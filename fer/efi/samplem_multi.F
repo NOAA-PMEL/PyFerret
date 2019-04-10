@@ -11,7 +11,6 @@
       IMPLICIT NONE
       INCLUDE 'EF_Util.cmn'
 
-     
 * Declarations
       INTEGER id, arg
 
@@ -21,14 +20,15 @@
    10 FORMAT ('Returns data sampled according to M indices which ',
      .        'may vary in IJKLN')
       CALL ef_set_desc(id, fcn_desc)
+      
+      CALL ef_set_piecemeal_ok_6d(id, NO, NO, NO, NO, NO, NO)
 
       CALL ef_set_num_args(id, 2)
       CALL ef_set_has_vari_args(id, NO)
       CALL ef_set_axis_inheritance_6d(id, 
      .     IMPLIED_BY_ARGS, IMPLIED_BY_ARGS, IMPLIED_BY_ARGS, 
-     .     IMPLIED_BY_ARGS,          CUSTOM, IMPLIED_BY_ARGS)
+     .     IMPLIED_BY_ARGS, IMPLIED_BY_ARGS, IMPLIED_BY_ARGS)
 
-      CALL ef_set_piecemeal_ok_6d(id, NO, NO, NO, NO, NO, NO)
 
       arg = 1
       CALL ef_set_arg_name(id, arg, 'DAT_TO_SAMPLE')
@@ -38,54 +38,13 @@
       arg = 2
       CALL ef_set_arg_name(id, arg, 'M_INDICES')
       CALL ef_set_arg_desc(id, arg, 'ordered indices')
-      CALL ef_set_axis_influence_6d(id, arg, NO, NO, NO, NO, NO, NO)
+      CALL ef_set_axis_influence_6d(id, arg, YES, YES, YES, YES, YES, YES)
 
       RETURN 
       END
 
-* Define the simple custom axis
-* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-
-      SUBROUTINE samplem_multi_custom_axes(id)
-
-      INCLUDE 'EF_Util.cmn'
-
-      INTEGER id
-      INTEGER arg_lo_ss(6,EF_MAX_ARGS), arg_hi_ss(6,EF_MAX_ARGS),
-     .     arg_incr(6,EF_MAX_ARGS)
-
-      REAL lo, hi
-      INTEGER idim
-
-      CALL ef_get_arg_subscripts_6d(id, arg_lo_ss, arg_hi_ss, arg_incr)
-
-* The E axis of the indices is the index length
-
-      lo = 1
-      hi = arg_hi_ss(E_AXIS, ARG2) - arg_lo_ss(E_AXIS, ARG2) + 1
-
-* If ARG2 doesn't share its axes with ARG1 that's an error
-
-      DO idim = 1, F_AXIS
-	 IF (arg_hi_ss(idim, ARG2) .NE. ef_unspecified_int4) THEN
-	    IF (arg_hi_ss(idim, ARG1) .EQ. ef_unspecified_int4) GOTO 999
-	 ENDIF
-      ENDDO
-
-      CALL ef_set_custom_axis(id, E_AXIS, lo, hi, 1.0, 'Index', NO)
-
-      RETURN
-
-999   CONTINUE
-      CALL ef_bail_out(id, 
-     .  'ARG2: Grid of index list must be a subset of the grid of the data being sampled')
-      
-      RETURN
-      END
-
-*
 * Compute the result
-** * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
       SUBROUTINE samplem_multi_compute(id, arg_1, arg_2, result)
 
@@ -113,13 +72,42 @@
       INTEGER i, j, k, l, m, n
       INTEGER i1, j1, k1, l1, m1, n1
       INTEGER i2, j2, k2, l2, m2, n2
-      INTEGER morder
+      INTEGER idim, morder, iexpnd
       REAL aorder
+      CHARACTER adir(6)*1, dir_string*12, errstr*100
+      DATA adir /'X', 'Y', 'Z', 'T', 'E', 'F'/
 
       CALL ef_get_res_subscripts_6d(id, res_lo_ss, res_hi_ss, res_incr)
       CALL ef_get_arg_subscripts_6d(id, arg_lo_ss, arg_hi_ss, arg_incr)
       CALL ef_get_bad_flags(id, bad_flag, bad_flag_result)
 
+
+* If ARG2 doesn't share its axes with ARG1 that's an error
+
+      iexpnd = 0
+
+      DO idim = X_AXIS, F_AXIS
+
+         IF (idim .EQ. E_AXIS) CYCLE
+
+	 IF (arg_hi_ss(idim, ARG2) .NE. ef_unspecified_int4) THEN
+            dir_string = adir(idim)//' direction.'
+            IF (arg_hi_ss(idim, ARG2) - arg_lo_ss(idim, ARG2) + 1  .NE. 
+     .          arg_hi_ss(idim, ARG1) - arg_lo_ss(idim, ARG1) + 1) GOTO 199
+
+* Also find the first axis that ARG1 and ARG2 share. If arg-1 does not have 
+* an E axis then we're going to expand the result into that direction.
+            IF (iexpnd .EQ. 0) iexpnd = idim
+
+	 ENDIF 
+	 
+      ENDDO
+
+* only need iexpnd if the data-var does not have an E direction
+
+      IF (arg_lo_ss(E_AXIS,ARG1) .NE. ef_unspecified_int4) iexpnd = 0 
+
+* Now do the sampling
 
       n1 = arg_lo_ss(F_AXIS, ARG1)
       n2 = arg_lo_ss(F_AXIS, ARG2)
@@ -146,21 +134,6 @@
 
 *  Get the index to sample.
 *  IF the indices don't lie in range the result is missing.
-*  (This is normally handled by having the inheritance depend on both ARG1 and ARG2
-*   but that checking is done on coordinates and here we are working with indices,
-*   and here we allow a return - which may be missing.)
-
-         IF (i2.LT.arg_lo_ss(X_AXIS,ARG2) .OR. i2.GT.arg_hi_ss(X_AXIS,ARG2) .OR. 
-     .       j2.LT.arg_lo_ss(Y_AXIS,ARG2) .OR. j2.GT.arg_hi_ss(Y_AXIS,ARG2) .OR. 
-     .       k2.LT.arg_lo_ss(Z_AXIS,ARG2) .OR. k2.GT.arg_hi_ss(Z_AXIS,ARG2) .OR. 
-     .       l2.LT.arg_lo_ss(T_AXIS,ARG2) .OR. l2.GT.arg_hi_ss(T_AXIS,ARG2) .OR. 
-     .       m2.LT.arg_lo_ss(E_AXIS,ARG2) .OR. m2.GT.arg_hi_ss(E_AXIS,ARG2) .OR. 
-     .       n2.LT.arg_lo_ss(F_AXIS,ARG2) .OR. n2.GT.arg_hi_ss(F_AXIS,ARG2) ) THEN
-
-            result(i,j,k,l,m,n) = bad_flag_result
-            m2 = m2 + arg_incr(E_AXIS,ARG2)
-	    CYCLE
-         ENDIF
 
          aorder = arg_2(i2,j2,k2,l2,m2,n2)
          morder = aorder
@@ -169,6 +142,14 @@
 
          IF (aorder .EQ. bad_flag(ARG2)) THEN
             result(i,j,k,l,m,n) = bad_flag_result
+
+         ELSE IF (arg_lo_ss(E_AXIS,ARG1) .EQ. ef_unspecified_int4) THEN
+            m1 = ef_unspecified_int4
+            IF (iexpnd .EQ. X_AXIS) result(i,j,k,l,m,n) = arg_1(morder,j1,k1,l1,m1,n1)
+            IF (iexpnd .EQ. Y_AXIS) result(i,j,k,l,m,n) = arg_1(i1,morder,k1,l1,m1,n1)
+            IF (iexpnd .EQ. Z_AXIS) result(i,j,k,l,m,n) = arg_1(i1,j1,morder,l1,m1,n1)
+            IF (iexpnd .EQ. T_AXIS) result(i,j,k,l,m,n) = arg_1(i1,j1,k1,morder,m1,n1)
+            IF (iexpnd .EQ. F_AXIS) result(i,j,k,l,m,n) = arg_1(i1,j1,k1,l1,m1,morder)
          ELSE
 
             IF (morder .LT. arg_lo_ss(E_AXIS,ARG1)  .OR.
@@ -206,6 +187,13 @@
       n1 = n1 + arg_incr(F_AXIS,ARG1)
       n2 = n2 + arg_incr(F_AXIS,ARG2)
  600  CONTINUE
+
+      RETURN
+
+ 199  CONTINUE
+      errstr = 'Axes of INDEX data must match those in the grid of '//
+     .  'DATA_TO_SAMPLE. Mismatch in '//dir_string 
+      CALL ef_bail_out(id, errstr)
 
       RETURN
       END

@@ -1240,6 +1240,9 @@ GO bn_tagg_overlaps
 GO bn_reset bn_samplexyzt
 GO bn_samplexyzt
 
+GO bn_reset bn_sample_multi
+GO bn_sample_multi
+
 
 ! *********** PyFerret-specific scripts ***********
 

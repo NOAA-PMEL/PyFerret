@@ -5852,6 +5852,59 @@ DEFINE DATA /AGG /T /TOVERLAP=2 /TAXIS=aggtime@XACT myagg = data2010.nc, data200
  **ERROR: error defining aggregate dataset: Excessive (3) overlaps in time axes for data2010.nc and data2011.nc
 DEFINE DATA /AGG /T /TOVERLAP=2 /TAXIS=aggtime@BIN myagg = data2010.nc, data2009.nc, data2011.nc
 *** Running ferret script: bn_samplexyzt.jnl
+*** Running ferret script: bn_sample_multi.jnl
+
+Bailing out of external function "samplem_multi":
+	Axes of INDEX data must match those in the grid of DATA_TO_SAMPLE. Mismatch in T direction.
+ **ERROR: error in external function
+list samplem_multi(a_2d, b_t)
+           *** NOTE: Ambiguous coordinates on X axis: SAMPLEM_MULTI(A_2D, C_2D)
+Replacing definition of axis AAX_A
+Replacing definition of axis AAX_B
+Replacing definition of axis SAX
+
+Bailing out of external function "samplei_multi":
+	Axes of INDEX data must match those in the grid of DATA_TO_SAMPLE. Mismatch in T direction.
+ **ERROR: error in external function
+list samplei_multi(a_2d, b_t)
+Replacing definition of axis BIGAX
+           *** NOTE: Ambiguous coordinates on Y axis: SAMPLEI_MULTI(A_2D, C_2D)
+Replacing definition of axis AAX_A
+Replacing definition of axis AAX_B
+Replacing definition of axis SAX
+
+Bailing out of external function "samplej_multi":
+	Axes of INDEX data must match those in the grid of DATA_TO_SAMPLE. Mismatch in T direction.
+ **ERROR: error in external function
+list samplej_multi(a_2d, b_t)
+Replacing definition of axis BIGAX
+           *** NOTE: Ambiguous coordinates on X axis: SAMPLEJ_MULTI(A_2D, C_2D)
+Replacing definition of axis AAX_A
+Replacing definition of axis AAX_B
+
+Bailing out of external function "samplek_multi":
+	Axes of INDEX data must match those in the grid of DATA_TO_SAMPLE. Mismatch in T direction.
+ **ERROR: error in external function
+list samplek_multi(a_2d, b_t)
+           *** NOTE: Ambiguous coordinates on X axis: SAMPLEK_MULTI(A_2D, C_2D)
+Replacing definition of axis AAX_A
+Replacing definition of axis AAX_B
+Replacing definition of axis SAX2
+
+Bailing out of external function "samplel_multi":
+	Axes of INDEX data must match those in the grid of DATA_TO_SAMPLE. Mismatch in F direction.
+ **ERROR: error in external function
+list samplel_multi(a_2d, b_f)
+           *** NOTE: Ambiguous coordinates on X axis: SAMPLEL_MULTI(A_2D, C_2D)
+Replacing definition of axis AAX_A
+Replacing definition of axis AAX_B
+Replacing definition of axis SAX2
+
+Bailing out of external function "samplen_multi":
+	Axes of INDEX data must match those in the grid of DATA_TO_SAMPLE. Mismatch in T direction.
+ **ERROR: error in external function
+list samplen_multi(a_2d, b_f)
+           *** NOTE: Ambiguous coordinates on X axis: SAMPLEN_MULTI(A_2D, C_2D)
 *** Running ferret script: bn_gif_noremote.jnl
  **ERROR: dimensions improperly specified: specified data is not a line
            - its a 2D region: "plot/i=1:10/j=1:20/nolabel i+j"

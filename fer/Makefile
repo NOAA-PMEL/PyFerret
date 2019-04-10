@@ -115,23 +115,13 @@ ncdf4:
 		"GUI_FAKES=special/gui_fakes.o" \
 		build
 
-.PHONY: beta
-beta:
-	mkdir -p ../lib
-	$(MAKE) "CFLAGS=$(CFLAGS) $(OPT_FLAGS)" \
-		"FFLAGS=$(FFLAGS) $(OPT_FLAGS)" \
-		"PPLUS_FFLAGS = $(PPLUS_FFLAGS) $(PPLUS_OPT_FLAGS)" \
-		"DEBUG_TITLE = beta/optim" \
-		"GUI_FAKES=special/gui_fakes.o" \
-		build
-
 .PHONY: debug
 debug:
 	mkdir -p ../lib
 	$(MAKE) "CFLAGS = $(CFLAGS) $(DBG_FLAGS)"  \
 		"FFLAGS = $(FFLAGS) $(DBG_FLAGS) -fbounds-check" \
 		"PPLUS_FFLAGS = $(PPLUS_FFLAGS) $(DBG_FLAGS)" \
-		"DEBUG_TITLE = beta/debug" \
+		"DEBUG_TITLE = debug" \
 		"GUI_FAKES=special/gui_fakes.o" \
 		build
 
@@ -145,7 +135,7 @@ memorydebug:
 	$(MAKE) "CFLAGS = -DMEMORYDEBUG $(CFLAGS) $(DBG_FLAGS)"  \
 		"FFLAGS = $(FFLAGS) $(DBG_FLAGS) -fbounds-check" \
 		"PPLUS_FFLAGS = $(PPLUS_FFLAGS) $(DBG_FLAGS)" \
-		"DEBUG_TITLE = beta/debug" \
+		"DEBUG_TITLE = memorydebug" \
 		"GUI_FAKES=special/gui_fakes.o" \
 		build
 

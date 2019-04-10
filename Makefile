@@ -29,19 +29,6 @@ optimized :
 	$(MAKE) -C gksm2ps
 	$(MAKE) -C bin/build_fonts/unix
 
-.PHONY : beta
-beta :
-	mkdir -p lib
-	$(COPY_DYLIBS)
-	$(MAKE) xgks/Makefile
-	$(MAKE) -C xgks
-	$(MAKE) -C fer beta
-	cp -f fer/ferret_c bin/ferret
-	$(MAKE) "FER_DIR = $(DIR_PREFIX)" -C external_functions all
-	rm -f bin/ferret
-	$(MAKE) -C gksm2ps
-	$(MAKE) -C bin/build_fonts/unix
-
 .PHONY : debug
 debug :
 	mkdir -p lib

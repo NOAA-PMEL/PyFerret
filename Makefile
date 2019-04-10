@@ -28,16 +28,6 @@ optimized :
 	$(MAKE) externals_optimized
 	$(MAKE) -C $(DIR_PREFIX)/bin/build_fonts/unix
 
-.PHONY : beta
-beta :
-	mkdir -p $(DIR_PREFIX)/lib
-	$(COPY_DYLIBS)
-	$(MAKE) -C $(DIR_PREFIX)/fer beta
-	$(MAKE) pymod_optimized_build
-	$(MAKE) pymod_optimized_install
-	$(MAKE) externals_optimized
-	$(MAKE) -C $(DIR_PREFIX)/bin/build_fonts/unix
-
 .PHONY : debug
 debug :
 	mkdir -p $(DIR_PREFIX)/lib

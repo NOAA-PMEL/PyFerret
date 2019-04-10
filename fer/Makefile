@@ -42,20 +42,12 @@ optimized:
 		"VERSION_INFO = (optimized)" \
 		build
 
-.PHONY : beta
-beta:
-	$(MAKE) "CFLAGS = $(CFLAGS) $(OPT_FLAGS)" \
-		"FFLAGS = $(FFLAGS) $(OPT_FLAGS)" \
-		"PPLUS_FFLAGS = $(PPLUS_FFLAGS) $(PPLUS_OPT_FLAGS)" \
-		"VERSION_INFO = (beta/optim)" \
-		build
-
 .PHONY : debug
 debug:
 	$(MAKE) "CFLAGS = $(CFLAGS) $(DBG_FLAGS)"  \
 		"FFLAGS = $(FFLAGS) $(DBG_FLAGS) -fbounds-check" \
 		"PPLUS_FFLAGS = $(PPLUS_FFLAGS) $(DBG_FLAGS)" \
-		"VERSION_INFO = (beta/debug)" \
+		"VERSION_INFO = (debug)" \
 		build
 
 ## The definition of MEMORYDEBUG is observed by fer/special/FerMem_routines.c, 
@@ -68,7 +60,7 @@ memorydebug:
 	$(MAKE) "CFLAGS = $(CFLAGS) $(DBG_FLAGS) -DMEMORYDEBUG"  \
 		"FFLAGS = $(FFLAGS) $(DBG_FLAGS) -fbounds-check" \
 		"PPLUS_FFLAGS = $(PPLUS_FFLAGS) $(DBG_FLAGS)" \
-		"VERSION_INFO = (beta/debug)" \
+		"VERSION_INFO = (memorydebug)" \
 		build
 
 
@@ -79,7 +71,7 @@ grdeldebug:
 	$(MAKE) "CFLAGS = $(CFLAGS) $(DBG_FLAGS) -DGRDELDEBUG"  \
 		"FFLAGS = $(FFLAGS) $(DBG_FLAGS) -fbounds-check" \
 		"PPLUS_FFLAGS = $(PPLUS_FFLAGS) $(DBG_FLAGS)" \
-		"VERSION_INFO = (beta/debug)" \
+		"VERSION_INFO = (grdeldebug)" \
 		build
 
 .PHONY: profiling

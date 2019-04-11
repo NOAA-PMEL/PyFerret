@@ -1272,6 +1272,9 @@ GO bn_stats_histogram
 GO bn_reset bn_symbolpattern
 GO bn_symbolpattern
 
+GO bn_reset bn_setting_text
+GO bn_setting_text
+
 ENDIF  ! pyferret
 
 !  *********** Always do a bn_reset  *********** 

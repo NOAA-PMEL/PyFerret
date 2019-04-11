@@ -213,6 +213,7 @@
 * v745 *acm* 12/18 Issue 1909, option to write dates in ISO8601 format
 *                  new mode datefmt for formatted date output
 * v7441*acm* 12/18 Issue 1910: Allow dates in commands to be in ISO 8601 form, yyyy-mm-dd
+* v7545*acm*  4/19 Check for invalid text-group name in SET TEXT/FONT=xxx text-group
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -2045,20 +2046,26 @@ c           ENDIF
 
 	ELSE
 
+	   iset = 0
 	   DO 1820 item = 1, num_items
 
 	      buff2 = cmnd_buff(item_start(item):item_end(item))
 
 	      len_test = TM_LENSTR(buff2)
+
 	      DO 1810 igrp = 1, ngp
                  len_mchars = TM_LENSTR(pyf_group_names(igrp)(:4))
 	         IF ( MATCH4( buff2, len_test,
-     .               pyf_group_names( igrp ),len_mchars) ) 
-     .              CALL SET_PYTEXT_GROUP (igrp, buff1, status)
-		 IF ( STR_SAME( buff2(1:3), "ALL") .EQ. 0)
-     .              CALL SET_PYTEXT_GROUP (fnt_all, buff1, status)
+     .               pyf_group_names( igrp ),len_mchars) ) THEN
+	            CALL SET_PYTEXT_GROUP (igrp, buff1, status)
+		    iset = iset + 1
+		 ELSEIF ( STR_SAME( buff2(1:3), "ALL") .EQ. 0) THEN
+	            CALL SET_PYTEXT_GROUP (fnt_all, buff1, status)
+		    iset = iset + 1
+		 ENDIF
 
  1810	      CONTINUE
+	      IF (iset .EQ. 0) GOTO 5480
  1820	   CONTINUE
 
  	ENDIF  ! SET TEXT arguments
@@ -2115,6 +2122,8 @@ c           ENDIF
      .			pCR//'check '//ww_dim_name(idim)//' axis', *5000 )
  5470   CALL ERRMSG( ferr_invalid_command, status,
      .			'SET TEXT what? /FONT/COLOR/BOLD/ITALIC/ISIZ', *5000 )
+ 5480   CALL ERRMSG( ferr_invalid_command, status,
+     .			'SET TEXT  with unknown text-group name', *5000 )
  5700	CALL ERRMSG( ferr_invalid_command, status,
      .			'qualifier(s) valid only with SET DATA/EZ command',
      .			*5000 )

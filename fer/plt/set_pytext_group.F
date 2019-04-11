@@ -32,6 +32,9 @@
 *  CONTRACT, NEGLIGENCE OR OTHER TORTUOUS ACTION, ARISING OUT OF OR IN
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
+* v7545*acm*  4/19 Issue 1923 Error checking, can't say "SET TEXT/xxx text-group"
+*                  if the current font is Hershey.
+*
         IMPLICIT NONE
         include 'tmap_dims.parm'
         include 'ferret.parm'
@@ -48,12 +51,12 @@
 	REAL	val_buf
 	CHARACTER errstrng*20
 
+
+      font_hershey = (STR_SAME(pyfnt_fontname, 'hershey') .EQ. 0)
+
 * Settings for all text
 
       IF (igrp .EQ. fnt_all) THEN
-
-
-	font_hershey = (STR_SAME(pyfnt_fontname, 'hershey') .EQ. 0)
 
 c* ... SET TEXT/FONT
 	IF ( qual_given( slash_set_text_font ) .GT. 0 ) THEN
@@ -134,6 +137,11 @@ c* ... SET TEXT/FONT
       
 * If there were not previous settings on this group, first apply the
 * current global settings to this group
+
+* Has a pyferret font been set?  If the general font is Hershey then any group settings are meaningless.
+
+	IF (font_hershey) GOTO 5430
+
 
 	IF (.NOT. pyf_set(igrp)) THEN
 	   pyf_italic(igrp) = pyfnt_italic

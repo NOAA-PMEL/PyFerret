@@ -1,5 +1,7 @@
 ! bn_sample_multi
+! See the big discussion in issue 1924
 !  4/8/2019  ACM
+! 4/11/2018  more tests, can't sample 1-D var in another direction
 ! 
 ! Tests for functions samplei_multi, etc as discussed in ticket 1924
 ! Same tests in all directions 
@@ -37,6 +39,14 @@ set mode ignore_error
 define axis/t=3:4:1 sax2
 let b_t = t[gt=sax2]
 list samplem_multi(a_2d, b_t)
+
+
+! Cannot sample the x data along e, but can if we add an e axis to arg 1
+
+list samplem_multi(a_2, b_1)
+list samplem_multi(a_2+esequence(0), b_1)
+list samplem_multi(a_2+0*esequence({3,1,2}), b_1)
+
 
 set mode/last ignore_error
 
@@ -92,6 +102,14 @@ set mode ignore_error
 define axis/t=3:4:1 sax2
 let b_t = t[gt=sax2]
 list samplei_multi(a_2d, b_t)
+
+
+! Cannot sample the y data along x, but can if we add an x axis to arg 1
+
+list samplei_multi(a_2, b_1)
+list samplei_multi(a_2+xsequence(0), b_1)
+list samplei_multi(a_2+0*xsequence({3,1,2}), b_1)
+
 
 set mode/last ignore_error
 
@@ -152,6 +170,14 @@ define axis/t=3:4:1 sax2
 let b_t = t[gt=sax2]
 list samplej_multi(a_2d, b_t)
 
+
+! Cannot sample the x data along y, but can if we add a y axis to arg 1
+
+list samplej_multi(a_2, b_1)
+list samplej_multi(a_2+ysequence(0), b_1)
+list samplej_multi(a_2+0*ysequence({3,1,2}), b_1)
+
+
 set mode/last ignore_error
 
 ! Not an error: The grid of the INDEX var in non-sample directions  
@@ -209,6 +235,13 @@ define axis/t=3:4:1 sax2
 let b_t = t[gt=sax2]
 list samplek_multi(a_2d, b_t)
 
+! Cannot sample the x data along x, but can if we add a z axis to arg 1
+
+list samplek_multi(a_2, b_1)
+list samplek_multi(a_2+zsequence(0), b_1)
+list samplek_multi(a_2+0*zsequence({3,1,2}), b_1)
+
+
 set mode/last ignore_error
 
 ! Not an error: The grid of the INDEX var in non-sample directions  
@@ -265,6 +298,13 @@ define axis/f=3:4:1 sax2
 let b_f = _F[gf=sax2]
 list samplel_multi(a_2d, b_f)
 
+
+! Cannot sample the x data along t, but can if we add a t axis to arg 1
+
+list samplel_multi(a_2, b_1)
+list samplel_multi(a_2+tsequence(0), b_1)
+list samplel_multi(a_2+0*tsequence({3,1,2}), b_1)
+
 set mode/last ignore_error
 
 ! Not an error: The grid of the INDEX var in non-sample directions 
@@ -319,6 +359,12 @@ set mode ignore_error
 define axis/t=3:4:1 sax2
 let b_f = t[gt=sax2]
 list samplen_multi(a_2d, b_f)
+
+! Cannot sample the x data along f, but can if we add an f axis to arg 1
+
+list samplen_multi(a_2, b_1)
+list samplen_multi(a_2+fsequence(0), b_1)
+list samplen_multi(a_2+0*fsequence({3,1,2}), b_1)
 
 set mode/last ignore_error
 

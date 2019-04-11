@@ -76,8 +76,8 @@
       INTEGER i, j, k, l, m, n
       INTEGER i1, j1, k1, l1, m1, n1
       INTEGER i2, j2, k2, l2, m2, n2
-      INTEGER idim, iorder, iexpnd
-      REAL aorder
+      INTEGER idim, p1, iexpnd, ishare
+      REAL aindex
       CHARACTER adir(6)*1, dir_string*12, errstr*100
       DATA adir /'X', 'Y', 'Z', 'T', 'E', 'F'/
 
@@ -108,6 +108,20 @@
 * only need iexpnd if the data-var does not have an E direction
       IF (arg_lo_ss(X_AXIS,ARG1) .NE. ef_unspecified_int4) iexpnd = 0 
 
+      ishare = 0
+      DO idim = X_AXIS, F_AXIS
+         IF ( arg_hi_ss(idim, ARG1).NE.ef_unspecified_int4 .AND.
+     .        arg_hi_ss(idim, ARG2).NE.ef_unspecified_int4 ) 
+     .            ishare = ishare+1
+      ENDDO
+
+      IF (ishare .EQ. 0)  GOTO 299  ! no shared axes
+
+* Initialize the result
+      result = bad_flag_result
+
+* Now do the sampling
+
       n1 = arg_lo_ss(F_AXIS, ARG1)
       n2 = arg_lo_ss(F_AXIS, ARG2)
       DO 600 n = res_lo_ss(F_AXIS), res_hi_ss(F_AXIS) 
@@ -134,34 +148,49 @@
 *  Get the index to sample.
 *  IF the indices don't lie in range the result is missing.
 
-	 aorder = arg_2(i2,j2,k2,l2,m2,n2)
-         iorder = aorder
-	 IF ( iorder.LT.arg_lo_ss(X_AXIS,ARG1) .OR. 
-     .        iorder.GT.arg_hi_ss(X_AXIS,ARG1) ) result(i,j,k,l,m,n) = bad_flag_result
+	 aindex = arg_2(i2,j2,k2,l2,m2,n2)
+         p1 = aindex
+	 IF ( p1.LT.arg_lo_ss(X_AXIS,ARG1) .OR. 
+     .        p1.GT.arg_hi_ss(X_AXIS,ARG1) ) result(i,j,k,l,m,n) = bad_flag_result
 
 *  Check that we do have an index of ARG_2. Set the result
 
-         IF (aorder .EQ. bad_flag(ARG1)) THEN
+         IF (aindex .EQ. bad_flag(ARG1)) THEN
             result(i,j,k,l,m,n) = bad_flag_result
             
          ELSE IF (arg_lo_ss(X_AXIS,ARG1) .EQ. ef_unspecified_int4) THEN
             i1 = ef_unspecified_int4
-            IF (iexpnd .EQ. Y_AXIS) result(i,j,k,l,m,n) = arg_1(i1,iorder,k1,l1,m1,n1)
-            IF (iexpnd .EQ. Z_AXIS) result(i,j,k,l,m,n) = arg_1(i1,j1,iorder,l1,m1,n1)
-            IF (iexpnd .EQ. T_AXIS) result(i,j,k,l,m,n) = arg_1(i1,j1,k1,iorder,m1,n1)
-            IF (iexpnd .EQ. E_AXIS) result(i,j,k,l,m,n) = arg_1(i1,j1,k1,l1,iorder,n1)
-            IF (iexpnd .EQ. F_AXIS) result(i,j,k,l,m,n) = arg_1(i1,j1,k1,l1,m1,iorder)
+
+	    IF (iexpnd .EQ. Y_AXIS .AND. 
+     .          (p1.GE.arg_lo_ss(Y_AXIS,ARG1).AND.p1.LE.arg_hi_ss(Y_AXIS,ARG1)) ) 
+     .          result(i,j,k,l,m,n) = arg_1(i1,p1,k1,l1,m1,n1)
+
+            IF (iexpnd .EQ. Z_AXIS .AND. 
+     .          (p1.GE.arg_lo_ss(Z_AXIS,ARG1).AND.p1.LE.arg_hi_ss(Z_AXIS,ARG1)) ) 
+     .          result(i,j,k,l,m,n) = arg_1(i1,j1,p1,l1,m1,n1)
+
+            IF (iexpnd .EQ. T_AXIS .AND. 
+     .          (p1.GE.arg_lo_ss(T_AXIS,ARG1).AND.p1.LE.arg_hi_ss(T_AXIS,ARG1)) ) 
+     .          result(i,j,k,l,m,n) = arg_1(i1,j1,k1,p1,m1,n1)
+
+            IF (iexpnd .EQ. E_AXIS .AND. 
+     .          (p1.GE.arg_lo_ss(E_AXIS,ARG1).AND.p1.LE.arg_hi_ss(E_AXIS,ARG1)) ) 
+     .          result(i,j,k,l,m,n) = arg_1(i1,j1,k1,p1,m1,n1)
+
+            IF (iexpnd .EQ. F_AXIS .AND. 
+     .          (p1.GE.arg_lo_ss(F_AXIS,ARG1).AND.p1.LE.arg_hi_ss(F_AXIS,ARG1)) ) 
+     .          result(i,j,k,l,m,n) = arg_1(i1,j1,k1,l1,m1,p1)
 
          ELSE
-            IF (iorder .LT. arg_lo_ss(X_AXIS,ARG1)  .OR.
-     .          iorder .GT. arg_hi_ss(X_AXIS,ARG1) ) THEN
+            IF (p1 .LT. arg_lo_ss(X_AXIS,ARG1)  .OR.
+     .          p1 .GT. arg_hi_ss(X_AXIS,ARG1) ) THEN
                result(i,j,k,l,m,n) = bad_flag_result
             ELSE
 
-               IF (arg_1(iorder,j1,k1,l1,m1,n1) .EQ. bad_flag(ARG1)) THEN
+               IF (arg_1(p1,j1,k1,l1,m1,n1) .EQ. bad_flag(ARG1)) THEN
                   result(i,j,k,l,m,n) = bad_flag_result
                ELSE
-                  result(i,j,k,l,m,n) = arg_1(iorder,j1,k1,l1,m1,n1)
+                  result(i,j,k,l,m,n) = arg_1(p1,j1,k1,l1,m1,n1)
 
                ENDIF
             
@@ -198,6 +227,12 @@
  199  CONTINUE
       errstr = 'Axes of INDEX data must match those in the grid of '//
      .  'DATA_TO_SAMPLE. Mismatch in '//dir_string 
+      CALL ef_bail_out(id, errstr)
+
+
+ 299  CONTINUE
+      errstr = 'ARG1 has no X-axis. Add X dimension to ARG1, e.g.  '//
+     .  'DAT_TO_SAMPLE + 0*var_on_x'
       CALL ef_bail_out(id, errstr)
 
       RETURN

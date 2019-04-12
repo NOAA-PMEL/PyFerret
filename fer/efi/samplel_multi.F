@@ -11,6 +11,7 @@
 * 4/19  Reverse the order of arguments to be consistent with the
 *       SAMPLEL etc functions.
 * 4/19  See issue 1924: reworking sample-multi functions
+* 4/12/19 See issue 1924: both args must have axis in the sample direction.
 *
 
 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -74,7 +75,7 @@
       INTEGER i, j, k, l, m, n
       INTEGER i1, j1, k1, l1, m1, n1
       INTEGER i2, j2, k2, l2, m2, n2
-      INTEGER idim, p1, iexpnd, ishare
+      INTEGER idim, p1, sampl_ax
       REAL aindex
       CHARACTER adir(6)*1, dir_string*12, errstr*100
       DATA adir /'X', 'Y', 'Z', 'T', 'E', 'F'/
@@ -83,39 +84,13 @@
       CALL ef_get_arg_subscripts_6d(id, arg_lo_ss, arg_hi_ss, arg_incr)
       CALL ef_get_bad_flags(id, bad_flag, bad_flag_result)
 
+* Both arguments must have an axis in the sample direction
 
-* If ARG2 doesn't share its axes with ARG1 that's an error
+      sampl_ax = T_AXIS
 
-      iexpnd = 0
-
-      DO idim = X_AXIS, F_AXIS
-
-         IF (idim .EQ. T_AXIS) CYCLE
-
-	 IF (arg_hi_ss(idim, ARG2) .NE. ef_unspecified_int4) THEN
-            dir_string = adir(idim)//' direction.'
-            IF (arg_hi_ss(idim, ARG2) - arg_lo_ss(idim, ARG2) + 1  .NE. 
-     .          arg_hi_ss(idim, ARG1) - arg_lo_ss(idim, ARG1) + 1) GOTO 199
-
-* Also find the first axis that ARG1 and ARG2 share. If arg-1 does not have 
-* a T axis then we're going to expand the result into that direction.
-            IF (iexpnd .EQ. 0) iexpnd = idim
-
-	 ENDIF 
-	 
-      ENDDO
-
-* only need iexpnd if the data-var does not have an E direction
-      IF (arg_lo_ss(T_AXIS,ARG1) .NE. ef_unspecified_int4) iexpnd = 0 
-
-      ishare = 0
-      DO idim = X_AXIS, F_AXIS
-         IF ( arg_hi_ss(idim, ARG1).NE.ef_unspecified_int4 .AND.
-     .        arg_hi_ss(idim, ARG2).NE.ef_unspecified_int4 ) 
-     .            ishare = ishare+1
-
-      ENDDO
-      IF (ishare .EQ. 0)  GOTO 299  ! no shared axes
+      dir_string = adir(sampl_ax)
+      IF (arg_hi_ss(sampl_ax, ARG1) .EQ. ef_unspecified_int4) GOTO 999
+      IF (arg_hi_ss(sampl_ax, ARG2) .EQ. ef_unspecified_int4) GOTO 999
 
 * Initialize the result
       result = bad_flag_result
@@ -147,55 +122,21 @@
 
 *  Get the index to sample.
 
-         aindex = arg_2(i2,j2,k2,l2,m2,n2)
+	 aindex = arg_2(i2,j2,k2,l2,m2,n2)
          p1 = aindex
 
-*  Check that we do have an index of ARG_1. Set the result
+* Set the result. Check that we do have an index of ARG_1.
+* If the indices don't lie in range the result is missing.
 
-         IF (aindex .EQ. bad_flag(ARG2)) THEN
+	 IF (aindex .EQ. bad_flag(ARG1))  CYCLE
 
-         ELSE IF (arg_lo_ss(T_AXIS,ARG1) .EQ. ef_unspecified_int4) THEN
-            l1 = ef_unspecified_int4
+	 IF ( p1.GE.arg_lo_ss(sampl_ax,ARG1) .AND. 
+     .        p1.LE.arg_hi_ss(sampl_ax,ARG1) ) THEN
+           
+            IF (arg_1(i1,j1,k1,p1,m1,n1) .NE. bad_flag(ARG1)) 
+     .        result(i,j,k,l,m,n) = arg_1(i1,j1,k1,p1,m1,n1)
 
-            IF (iexpnd .EQ. X_AXIS .AND. 
-     .          (p1.GE.arg_lo_ss(X_AXIS,ARG1).AND.p1.LE.arg_hi_ss(X_AXIS,ARG1)) )  
-     .          result(i,j,k,l,m,n) = arg_1(p1,j1,k1,l1,m1,n1)
-
-	    IF (iexpnd .EQ. Y_AXIS .AND. 
-     .          (p1.GE.arg_lo_ss(Y_AXIS,ARG1).AND.p1.LE.arg_hi_ss(Y_AXIS,ARG1)) ) 
-     .          result(i,j,k,l,m,n) = arg_1(i1,p1,k1,l1,m1,n1)
-
-            IF (iexpnd .EQ. Z_AXIS .AND. 
-     .          (p1.GE.arg_lo_ss(Z_AXIS,ARG1).AND.p1.LE.arg_hi_ss(Z_AXIS,ARG1)) ) 
-     .          result(i,j,k,l,m,n) = arg_1(i1,j1,p1,l1,m1,n1)
-
-            IF (iexpnd .EQ. T_AXIS .AND. 
-     .          (p1.GE.arg_lo_ss(T_AXIS,ARG1).AND.p1.LE.arg_hi_ss(T_AXIS,ARG1)) ) 
-     .          result(i,j,k,l,m,n) = arg_1(i1,j1,k1,p1,m1,n1)
-
-            IF (iexpnd .EQ. E_AXIS .AND. 
-     .          (p1.GE.arg_lo_ss(E_AXIS,ARG1).AND.p1.LE.arg_hi_ss(E_AXIS,ARG1)) ) 
-     .          result(i,j,k,l,m,n) = arg_1(i1,j1,k1,p1,m1,n1)
-
-            IF (iexpnd .EQ. F_AXIS .AND. 
-     .          (p1.GE.arg_lo_ss(F_AXIS,ARG1).AND.p1.LE.arg_hi_ss(F_AXIS,ARG1)) ) 
-     .          result(i,j,k,l,m,n) = arg_1(i1,j1,k1,l1,m1,p1)
-
-         ELSE
-
-            IF (p1 .LT. arg_lo_ss(T_AXIS,ARG1)  .OR.
-     .          p1 .GT. arg_hi_ss(T_AXIS,ARG1) ) THEN
-               result(i,j,k,l,m,n) = bad_flag_result
-            ELSE
-
-               IF (arg_1(i1,j1,k1,p1,m1,n1) .EQ. bad_flag(ARG1)) THEN
-                  result(i,j,k,l,m,n) = bad_flag_result
-               ELSE
-                  result(i,j,k,l,m,n) = arg_1(i1,j1,k1,p1,m1,n1)
-               ENDIF
-            ENDIF
-
-         ENDIF
+	 ENDIF
 
          l2 = l2 + arg_incr(T_AXIS,ARG2)
  100  CONTINUE
@@ -222,15 +163,8 @@
 
       RETURN
 
- 199  CONTINUE
-      errstr = 'Axes of INDEX data must match those in the grid of '//
-     .  'DATA_TO_SAMPLE. Mismatch in '//dir_string 
-      CALL ef_bail_out(id, errstr)
-
-
- 299  CONTINUE
-      errstr = 'ARG1 has no T-axis. Add T dimension to ARG1, e.g.  '//
-     .  'DAT_TO_SAMPLE + 0*var_on_t'
+ 999  CONTINUE
+      errstr = 'Both arguments must have an axis in '//dir_string 
       CALL ef_bail_out(id, errstr)
 
       RETURN

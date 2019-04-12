@@ -2,6 +2,7 @@
 ! See the big discussion in issue 1924
 !  4/8/2019  ACM
 ! 4/11/2018  more tests, can't sample 1-D var in another direction
+! 4/12/2018  Both arguments must have an axis in the sample-direction
 ! 
 ! Tests for functions samplei_multi, etc as discussed in ticket 1924
 ! Same tests in all directions 
@@ -24,13 +25,6 @@ list b_1
 list samplem (a_2d, b_1)
 list samplem_multi (a_2d, b_1) 
 
-! b_2 is a list in the x direction,  SAMPLEM returns data @ e=1,2
-! but SAMPLEM_MULTI returns data at (x,e)  = (1,1) and (2,2)
-
-list b_2
-list samplem (a_2d, b_2)  ! b_2 a list in x, x=1,2 returns data @ e=1,2
-list samplem_multi(a_2d, b_2)
-
 ! Intentional errors
 set mode ignore_error
 
@@ -40,13 +34,11 @@ define axis/t=3:4:1 sax2
 let b_t = t[gt=sax2]
 list samplem_multi(a_2d, b_t)
 
-
 ! Cannot sample the x data along e, but can if we add an e axis to arg 1
 
 list samplem_multi(a_2, b_1)
 list samplem_multi(a_2+esequence(0), b_1)
 list samplem_multi(a_2+0*esequence({3,1,2}), b_1)
-
 
 set mode/last ignore_error
 
@@ -59,25 +51,28 @@ let c_2d = c_2 + b_1
 list c_2d
 list samplem_multi(a_2d, c_2d)
 
-! Example: Monte Carlo resamples of a dataset, as outlined in #1924
-! Expanding this X-data in the E direction via sampling in E using X-E sample indices
+! Monte Carlo resamples of a dataset, as outlined in #1924
+! Sample E data using an M-N st of indices.
 
-let data = {59,91,26,37,72,43,87}
-let npts = `data,r=isize`
-let samp_indices = 1 + int((npts-1) * randu(x[gx=data,i=1:`npts`] + _e[m=1:6]))
-list samp_indices
+let data = ESEQUENCE({59,91,26,37,72,43,87})
+let ndat = `data,r=msize`
+let na = 8
+let vals = _n[n=1:`na`]
+let samp_indices = 1 + int(ndat * randu(_e[ge=data, m=1:`ndat`]+vals))
+let bootstrap_resamples = samplem_multi(data+0*samp_indices, samp_indices)
+
 list data
-list samplem_multi (data, samp_indices)
+list samp_indices
+list bootstrap_resamples
 
-! Sample 2D data in this way, samples along the axis that's 
-! the length of the sample-axis
-let data2d = data + y[y=0:6:6] 
+! Sample 2D data in this way, samples in M as above for each Z
+
+let data2d = data + z[z=0:6:6] 
 list data2d
 
-let data2d_expand = samplem_multi (data2d, samp_indices)
-list/y=1 data2d_expand !same as the 1-d sample of "data" just above
-list/y=6 data2d_expand
-
+let data2d_samp = samplem_multi (data2d, samp_indices)
+list/z=1 data2d_samp !same as the 1-d sample of "data" just above
+list/z=6 data2d_samp
 
 ! SAMPLEI_multi
 
@@ -92,7 +87,6 @@ let b_2 = 1+y[gy=sax]
 let b_2d = b_1 + b_2 - 1
 list samplei_multi(a_2d, b_2d)
 list samplei_multi(a_2d, b_1)
-list samplei_multi(a_2d, b_2)
 
 ! Intentional errors
 set mode ignore_error
@@ -103,13 +97,11 @@ define axis/t=3:4:1 sax2
 let b_t = t[gt=sax2]
 list samplei_multi(a_2d, b_t)
 
-
 ! Cannot sample the y data along x, but can if we add an x axis to arg 1
 
 list samplei_multi(a_2, b_1)
 list samplei_multi(a_2+xsequence(0), b_1)
 list samplei_multi(a_2+0*xsequence({3,1,2}), b_1)
-
 
 set mode/last ignore_error
 
@@ -122,31 +114,30 @@ let c_2d = c_2 + b_1
 list c_2d
 list samplei_multi(a_2d, c_2d)
 
-
 ! Monte Carlo resamples of a dataset, as outlined in #1924
-! Expanding this Y-data in the X direction via sampling in X using X-Y sample indices
+! Sample I data using an I-M st of indices.
 
-let data = YSEQUENCE({59,91,26,37,72,43,87})
-let npts = `data,r=jsize`
-let samp_indices = 1 + int((npts-1) * randu(y[gy=data,j=1:`npts`] + x[i=1:6]))
-list samp_indices
+let data = {59,91,26,37,72,43,87}
+let ndat = `data,r=isize`
+let na = 8
+let vals = _m[m=1:`na`]
+let samp_indices = 1 + int(ndat * randu(x[gx=data,i=1:`ndat`]+vals))
+let bootstrap_resamples = samplei_multi(data+0*samp_indices, samp_indices)
+
 list data
-list samplei_multi (data, samp_indices)
+list samp_indices
+list bootstrap_resamples
 
-! Sample 2D data in this way, samples along the axis that's 
-! the length of the sample-axis
+! Sample 2D data in this way, samples in I for each Z
+
 let data2d = data + z[z=0:6:6] 
 list data2d
 
-let data2d_expand = samplei_multi (data2d, samp_indices)
-list/z=1 data2d_expand !same as the 1-d sample of "data" just above
-list/z=6 data2d_expand
-
-
+let data2d_samp = samplei_multi (data2d, samp_indices)
+list/z=1 data2d_samp !same as the 1-d sample of "data" just above
+list/z=6 data2d_samp
 
 ! SAMPLJ_multi
-
-
 
 define axis/y=11:15:1 aax_a
 define axis/y=1:4:1 aax_b
@@ -159,7 +150,6 @@ let b_2 = 1+x[gx=sax]
 let b_2d = b_1 + b_2 - 1
 list samplej_multi(a_2d, b_2d)
 list samplej_multi(a_2d, b_1)
-list samplej_multi(a_2d, b_2)
 
 ! Intentional errors
 set mode ignore_error
@@ -170,13 +160,11 @@ define axis/t=3:4:1 sax2
 let b_t = t[gt=sax2]
 list samplej_multi(a_2d, b_t)
 
-
 ! Cannot sample the x data along y, but can if we add a y axis to arg 1
 
 list samplej_multi(a_2, b_1)
 list samplej_multi(a_2+ysequence(0), b_1)
 list samplej_multi(a_2+0*ysequence({3,1,2}), b_1)
-
 
 set mode/last ignore_error
 
@@ -189,29 +177,30 @@ let c_2d = c_2 + b_1
 list c_2d
 list samplej_multi(a_2d, c_2d)
 
-! Example: Monte Carlo resamples of a dataset, as outlined in #1924
-! Expanding this X-data in the Y direction via sampling in Y a set of X-Y sample indices
+! Monte Carlo resamples of a dataset, as outlined in #1924
+! Sample Y data using an Y-N st of indices.
 
-let data = {59,91,26,37,72,43,87}
-let npts = `data,r=isize`
-let samp_indices = 1 + int((npts-1) * randu(x[gx=data,i=1:`npts`] + y[j=1:6]))
-list samp_indices
+let data = YSEQUENCE({59,91,26,37,72,43,87})
+let ndat = `data,r=jsize`
+let na = 8
+let vals = _n[n=1:`na`]
+let samp_indices = 1 + int(ndat * randu(_y[gy=data, j=1:`ndat`]+vals))
+let bootstrap_resamples = samplej_multi(data+0*samp_indices, samp_indices)
+
 list data
-list samplej_multi (data, samp_indices)
+list samp_indices
+list bootstrap_resamples
 
-! Sample 2D data in this way, samples along the axis that's 
-! the length of the sample-axis
+! Sample 2D data in this way, samples in M as above for each Z
+
 let data2d = data + z[z=0:6:6] 
 list data2d
 
-let data2d_expand = samplej_multi (data2d, samp_indices)
-list/z=1 data2d_expand !same as the 1-d sample of "data" just above
-list/z=6 data2d_expand
-
+let data2d_samp = samplej_multi (data2d, samp_indices)
+list/z=1 data2d_samp !same as the 1-d sample of "data" just above
+list/z=6 data2d_samp
 
 ! SAMPLEK_MULTI
-
-
 
 define axis/z=11:15:1 aax_a
 define axis/z=1:4:1 aax_b
@@ -224,7 +213,6 @@ let b_2 = 1+x[gx=sax]
 let b_2d = b_1 + b_2 - 1
 list samplek_multi(a_2d, b_2d)
 list samplek_multi(a_2d, b_1)
-list samplek_multi(a_2d, b_2)
 
 ! Intentional errors
 set mode ignore_error
@@ -241,7 +229,6 @@ list samplek_multi(a_2, b_1)
 list samplek_multi(a_2+zsequence(0), b_1)
 list samplek_multi(a_2+0*zsequence({3,1,2}), b_1)
 
-
 set mode/last ignore_error
 
 ! Not an error: The grid of the INDEX var in non-sample directions  
@@ -254,25 +241,27 @@ list c_2d
 list samplek_multi(a_2d, c_2d)
 
 ! Monte Carlo resamples of a dataset, as outlined in #1924
-! Expanding this X-data in the Z direction via sampling in Z on a set of X-Z sample indices
+! Sample Z data using an Z-N st of indices.
 
-let data = {59,91,26,37,72,43,87}
-let npts = `data,r=isize`
-let samp_indices = 1 + int((npts-1) * randu(x[gx=data,i=1:`npts`] + z[k=1:6]))
-list samp_indices
+let data = ZSEQUENCE({59,91,26,37,72,43,87})
+let ndat = `data,r=ksize`
+let na = 8
+let vals = _n[n=1:`na`]
+let samp_indices = 1 + int(ndat * randu(_z[gz=data, k=1:`ndat`]+vals))
+let bootstrap_resamples = samplek_multi(data+0*samp_indices, samp_indices)
+
 list data
-list samplek_multi (data, samp_indices)
+list samp_indices
+list bootstrap_resamples
 
-! Sample 2D data in this way, samples along the axis that's 
-! the length of the sample-axis
+! Sample 2D data in this way, samples in M as above for each Z
+
 let data2d = data + y[y=0:6:6] 
 list data2d
 
-let data2d_expand = samplek_multi (data2d, samp_indices)
-list/y=1 data2d_expand !same as the 1-d sample of "data" just above
-list/y=6 data2d_expand
-
-
+let data2d_samp = samplek_multi (data2d, samp_indices)
+list/y=1 data2d_samp !same as the 1-d sample of "data" just above
+list/y=6 data2d_samp
 
 ! SAMPLEL_MULTI
 
@@ -287,7 +276,6 @@ let b_2 = 1+x[gx=sax]
 let b_2d = b_1 + b_2 - 1
 list samplel_multi(a_2d, b_2d)
 list samplel_multi(a_2d, b_1)
-list samplel_multi(a_2d, b_2)
 
 ! Intentional errors
 set mode ignore_error
@@ -297,7 +285,6 @@ set mode ignore_error
 define axis/f=3:4:1 sax2
 let b_f = _F[gf=sax2]
 list samplel_multi(a_2d, b_f)
-
 
 ! Cannot sample the x data along t, but can if we add a t axis to arg 1
 
@@ -316,25 +303,28 @@ let c_2d = c_2 + b_1
 list c_2d
 list samplel_multi(a_2d, c_2d)
 
-! Example: Monte Carlo resamples of a dataset, as outlined in #1924
-! Expanding this X-data in the T direction via sampling in T using X-T sample indices
+! Monte Carlo resamples of a dataset, as outlined in #1924
+! Sample Z data using an T-N st of indices.
 
-let data = {59,91,26,37,72,43,87}
-let npts = `data,r=isize`
-let samp_indices = 1 + int((npts-1) * randu(x[gx=data,i=1:`npts`] + t[l=1:6]))
-list samp_indices
+let data = TSEQUENCE({59,91,26,37,72,43,87})
+let ndat = `data,r=lsize`
+let na = 8
+let vals = _n[n=1:`na`]
+let samp_indices = 1 + int(ndat * randu(_t[gt=data, l=1:`ndat`]+vals))
+let bootstrap_resamples = samplel_multi(data+0*samp_indices, samp_indices)
+
 list data
-list samplel_multi (data, samp_indices)
+list samp_indices
+list bootstrap_resamples
 
-! Sample 2D data in this way, samples along the axis that's 
-! the length of the sample-axis
+! Sample 2D data in this way, samples in M as above for each Z
+
 let data2d = data + y[y=0:6:6] 
 list data2d
 
-let data2d_expand = samplel_multi (data2d, samp_indices)
-list/y=1 data2d_expand !same as the 1-d sample of "data" just above
-list/y=6 data2d_expand
-
+let data2d_samp = samplel_multi (data2d, samp_indices)
+list/y=1 data2d_samp !same as the 1-d sample of "data" just above
+list/y=6 data2d_samp
 
 ! SAMPLEN_MULTI
 
@@ -349,7 +339,6 @@ let b_2 = 1+x[gx=sax]
 let b_2d = b_1 + b_2 - 1
 list samplen_multi(a_2d, b_2d)
 list samplen_multi(a_2d, b_1)
-list samplen_multi(a_2d, b_2)
 
 ! Intentional errors
 set mode ignore_error
@@ -357,8 +346,8 @@ set mode ignore_error
 ! Cannot sample the x-f data along T
 
 define axis/t=3:4:1 sax2
-let b_f = t[gt=sax2]
-list samplen_multi(a_2d, b_f)
+let b_t = t[gt=sax2]
+list samplen_multi(a_2d, b_t)
 
 ! Cannot sample the x data along f, but can if we add an f axis to arg 1
 
@@ -377,22 +366,25 @@ let c_2d = c_2 + b_1
 list c_2d
 list samplen_multi(a_2d, c_2d)
 
+! Monte Carlo resamples of a dataset, as outlined in #1924
+! Sample F data using an T-M st of indices.
 
-! Example: Monte Carlo resamples of a dataset, as outlined in #1924
-! Expanding this X-data in the F direction via sampling in F using X-F sample indices
+let data = FSEQUENCE({59,91,26,37,72,43,87})
+let ndat = `data,r=nsize`
+let na = 8
+let vals = _m[m=1:`na`]
+let samp_indices = 1 + int(ndat * randu(_f[gy=data, n=1:`ndat`]+vals))
+let bootstrap_resamples = samplen_multi(data+0*samp_indices, samp_indices)
 
-let data = {59,91,26,37,72,43,87}
-let npts = `data,r=isize`
-let samp_indices = 1 + int((npts-1) * randu(x[gx=data,i=1:`npts`] + _f[n=1:6]))
-list samp_indices
 list data
-list samplen_multi (data, samp_indices)
+list samp_indices
+list bootstrap_resamples
 
-! Sample 2D data in this way, samples along the axis that's 
-! the length of the sample-axis
-let data2d = data + y[y=0:6:6] 
+! Sample 2D data in this way, samples in M as above for each Z
+
+let data2d = data + z[z=0:6:6] 
 list data2d
 
-let data2d_expand = samplen_multi (data2d, samp_indices)
-list/y=1 data2d_expand !same as the 1-d sample of "data" just above
-list/y=6 data2d_expand
+let data2d_samp = samplen_multi (data2d, samp_indices)
+list/z=1 data2d_samp !same as the 1-d sample of "data" just above
+list/z=6 data2d_samp

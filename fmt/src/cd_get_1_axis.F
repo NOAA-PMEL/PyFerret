@@ -217,8 +217,10 @@
 *                  override mixed-gregorian calendar handling. 
 * v7441*acm* 12/18 Issue 1909,1919: ISO 8601 formatted dates and detecting
 *                  mixed gregorian/julain calendar axes
-
-
+* v7445*acm*  4/19 Issue 334: If there was a point_spacing = "even" attr, do more checking.
+*                  But, if they've said USE/REGULART then go ahead and treat it as regular.
+* v7445*acm*  4/19 Fix the calls to TM_SCALE 
+*
 * argument definitions:
 *       cdfid    - netCDF id number for already opened CDF file  (to go away with new attr. hanling)
 *       dset     - dataset number for already opened CDF file
@@ -267,7 +269,7 @@
      .        got_edges, got_bnds, coordvar, its_irregular, 
      .        do_scale, do_offset, scale_is_dp, reg,
      .        has_repeated, misordered, has_missing, is_double, 
-     .        true_month, okmod, edge_reg, set_regular
+     .        true_month, okmod, edge_reg, set_regular, attr_regular
 
       INTEGER TM_UNIT_ID, TM_UNITS_CAL, TM_LENSTR1, TM_GET_CALENDAR_ID,      
      .        STR_CASE_BLIND_COMPARE, STR_UPCASE, STR_SAME,
@@ -281,7 +283,7 @@
      .        all_outflag, dir, attlen, itop, irev, attype, iatt, ibx1,
      .        i1, i2, i3, i0, npts2
 
-      REAL    rbuff, delta, first_delta, val, lm_len, 
+      REAL    rbuff, delta, first_delta, val, val2, lm_len, 
      .        scale, offset, start
       REAL*4  r4delta
       REAL*8  TM_LONW2LONE, TM_WW_AXLEN, GET_LINE_COORD,
@@ -415,10 +417,12 @@
       line_regular(iaxis) = .FALSE.
       its_irregular = .FALSE.
       set_regular = .FALSE.
+      attr_regular = .FALSE.
+
       IF ( got_it ) THEN
          line_regular(iaxis) = buff(1:1).EQ.'e' .OR. buff(1:1).EQ.'E'
          its_irregular = .NOT.line_regular(iaxis)
-	 set_regular = line_regular(iaxis)
+	 attr_regular = line_regular(iaxis)
       ELSE
          line_regular(iaxis) = .FALSE. ! default
       ENDIF
@@ -683,7 +687,7 @@ c           IF ( status .NE. merr_ok ) GOTO 1000        ! 3/99 soft error
      .      .AND. .NOT.TM_HAS_STRING(buff,'east') )
 
 * was a regular time axis forced on us by the user?
-      IF (tregular) THEN
+      IF (tregular) THEN 
         IF (line_direction(iaxis).EQ."TI" .OR.
      .      line_direction(iaxis).EQ."TT" ) line_regular(iaxis) = .TRUE.
         got_bnds = .FALSE.
@@ -702,6 +706,63 @@ c           IF ( status .NE. merr_ok ) GOTO 1000        ! 3/99 soft error
 
       CALL PUT_LINE_COORD ( linemem(iaxis)%ptr, 1, 0.0 )
 
+* If there was a point_spacing = "even" attr, do just a bit more checking.
+* But, if they've said USE/REGULART then go ahead and treat it as regular.
+* (ticket 334)
+
+      IF (npts.GT.1 .AND. line_regular(iaxis) .AND. 
+     .    attr_regular.AND.(.NOT.set_regular) ) THEN   
+
+         IF ( epic_time ) THEN
+               CALL CD_RD_EP_1( cdfid, ivar, epic_t2var, line_t0(iaxis),
+     .                       line_tunit(iaxis), 1, val, status )
+               IF ( status .NE. merr_ok ) GOTO 1000
+               CALL CD_RD_EP_1( cdfid, ivar, epic_t2var, line_t0(iaxis),
+     .                       line_tunit(iaxis), 2, val2, status )
+         ELSEIF ( yyyymmdd_time ) THEN
+               CALL CD_RD_YMD_1( cdfid, ivar, line_t0(iaxis),
+     .                       line_tunit(iaxis), 1, val, status )
+               IF ( status .NE. merr_ok ) GOTO 1000
+               CALL CD_RD_YMD_1( cdfid, ivar,  line_t0(iaxis),
+     .                       line_tunit(iaxis), 2, val2, status )
+         ELSE
+               CALL CD_RD_R8_1( cdfid, ivar, 1, vartype, vname(:vlen),
+     .                       val, status )
+               IF ( status .NE. merr_ok ) GOTO 1000
+              CALL CD_RD_R8_1( cdfid, ivar, 2, vartype, vname(:vlen),
+     .                       val2, status )
+         ENDIF
+
+         first_delta = ABS(val2-val)
+
+         IF ( epic_time ) THEN
+            CALL CD_RD_EP_1( cdfid, ivar, epic_t2var, line_t0(iaxis),
+     .                       line_tunit(iaxis), npts_cdf, val2, status )
+         ELSEIF ( yyyymmdd_time ) THEN
+            CALL CD_RD_YMD_1( cdfid, ivar,  line_t0(iaxis),
+     .                       line_tunit(iaxis), npts_cdf, val2, status )
+         ELSE
+            CALL CD_RD_R8_1( cdfid,ivar, npts_cdf, vartype, vname(:vlen),
+     .                       val2, status )
+         ENDIF
+
+*  Do the first-delta and computed delta-coordinates agree?
+
+         IF (is_double) THEN
+            ok = TM_DFPEQ(first_delta, ABS(val2-val)/DBLE(npts-1) ) 
+         ELSE
+            ok = TM_FPEQ(first_delta, ABS(val2-val)/DBLE(npts-1) ) 
+         ENDIF
+         
+	 IF (.NOT. ok ) THEN
+            CALL TM_NOTE('Axis "'//vname(:vlen)//'" is irregular. Ignoring'//
+     .        ' erroneous point_spacing=even attribute. ', tt)
+	    line_regular(iaxis) = .FALSE.
+	    attr_regular = .FALSE.
+
+	 ENDIF
+      ENDIF
+
       IF ( npts .EQ. 0 ) THEN
 * create a dummy one point axis
          CALL TM_NOTE('Axis "'//vname(:vlen)//
@@ -719,6 +780,7 @@ c           IF ( status .NE. merr_ok ) GOTO 1000        ! 3/99 soft error
 * (no check is made on validity of the regularity claim)
 * read the start and end - compute delta     
       ELSEIF ( line_regular(iaxis) ) THEN
+
          IF ( epic_time ) THEN
             CALL CD_RD_EP_1( cdfid, ivar,  epic_t2var, line_t0(iaxis),
      .                       line_tunit(iaxis), 1, 
@@ -742,6 +804,7 @@ c           IF ( status .NE. merr_ok ) GOTO 1000        ! 3/99 soft error
             CALL CD_RD_R8_1( cdfid,ivar,npts_cdf,vartype,vname(:vlen),
      .                       line_delta(iaxis), status )
          ENDIF
+
          IF ( status .NE. merr_ok ) GOTO 1000   ! 3/99 soft error
 
 * Invalid points. Cannot compute line_delta
@@ -826,19 +889,19 @@ c           IF ( status .NE. merr_ok ) GOTO 1000        ! 3/99 soft error
      .                         vname(:vlen), linemem(iaxis)%ptr, status )
             IF (days_neg4713 .NE. 0.) THEN
                offset = -1* days_neg4713
-               CALL TM_SCALE (1.D0, -1* days_neg4713, linemem(iaxis)%ptr, 
-     .                         npts, bad_r8, bad_r8)
+               CALL TM_SCALE (1.D0, -1* days_neg4713, bad_r8, 
+     .                        linemem(iaxis)%ptr,  npts)
             ENDIF
          ENDIF
          IF ( status .NE. merr_ok ) GOTO 1000   ! 3/99 soft error
 	 
 	 IF (do_scale) THEN
 	    IF (scale_is_dp) THEN
-	       CALL TM_SCALE (dscale, doffset, linemem(iaxis)%ptr, 
-     .                         npts, bad_r8, bad_r8)
+	       CALL TM_SCALE (dscale, doffset, bad_r8, 
+     .                         linemem(iaxis)%ptr, npts)
 	    ELSE
-	       CALL TM_SCALE (scale, offset, linemem(iaxis)%ptr, 
-     .                         npts, bad_r8, bad_r8)
+	       CALL TM_SCALE (scale, offset, bad_r8, 
+     .                         linemem(iaxis)%ptr, npts)
 	    ENDIF
 	 ENDIF
 
@@ -983,9 +1046,9 @@ c           IF ( status .NE. merr_ok ) GOTO 1000        ! 3/99 soft error
 * The axis had a point_spacing = "even" attribute and also edges.  We have found 
 * the axis coordinate and/or edges themselves to be in fact irregular. So don't 
 * later on apply the set_regular, which came from the point-spacing attribute.
+* If the user said USE/REGULART then go ahead and still treat it as regular
 
-      IF (ok .AND. set_regular .AND. .NOT.edge_reg ) set_regular = .FALSE.
-
+      IF (ok .AND. attr_regular .AND. .NOT.edge_reg ) set_regular = .FALSE.
 
 * It's actually regular - save it as such
       IF (edge_reg .AND. .NOT. line_regular(iaxis)) THEN

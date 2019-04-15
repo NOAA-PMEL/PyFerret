@@ -1,0 +1,14 @@
+! err744_axis_not_even.jnl
+! issue 334:  coordinate axis has a point_spacing=even attribute
+! Which should be checked more carefully and ignored.
+! 4/15/2019 ACM
+
+use wrong_reg_axis.nc
+list avar
+
+! But if the user specifies USE/REGULART then that overrides everything
+! The coordinates are now different from what's in the file, but they're regular.
+
+cancel data/all
+use/regulart wrong_reg_axis.nc
+list avar

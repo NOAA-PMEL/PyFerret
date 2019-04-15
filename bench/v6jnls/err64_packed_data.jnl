@@ -1,6 +1,9 @@
 ! err64_packed_data.jnl
 ! Test writing packed data. Prior to v6.4 this example shows the
 ! crash described in bug 1715.
+! 4/15/19: Output changes with fix to issue 334: coordinates are not 
+! regular but have a point_spacing="even" attribute. Ferret now checks
+! and overrides this.
 
 ! ncpdq from NCO operators 
 ! sp ncpdq fine_x_axis.nc err64_packed_data.nc

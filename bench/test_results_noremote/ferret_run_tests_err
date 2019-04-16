@@ -1217,10 +1217,10 @@ ooooooooooooooooooooooooooooooooooooooooooo
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
-           *** NOTE: Coordinates missing on axis LONGITUDE at subscript 2
-           *** NOTE: A dummy axis of subscripts will be used
-           *** NOTE: Coordinates missing on axis LATITUDE at subscript 2
-           *** NOTE: A dummy axis of subscripts will be used
+           *** NOTE: Axis "LONGITUDE" is irregular. Ignoring erroneous point_spacing=even attribute.
+           *** NOTE: Axis has repeated values -- micro-adjusting LONGITUDE
+           *** NOTE: Axis "LATITUDE" is irregular. Ignoring erroneous point_spacing=even attribute.
+           *** NOTE: Axis has repeated values -- micro-adjusting LATITUDE
            *** NOTE: Axis has repeated values -- micro-adjusting TIME
  **ERROR: illegal limits: "DUMMY" does not exist at T=01-JAN-1990 00:00
           Axis extremes are T=31-DEC-1997 12:00:30-JAN-1998 12:00
@@ -2117,10 +2117,10 @@ ooooooooooooooooooooooooooooooooooooooooooo
 ooooooooooooooooooooooooooooooooooooooooooo
 *** Running ferret script: bn_modnbd.jnl
 *** Running ferret script: bn_fifty_files.jnl
-           *** NOTE: Coordinates missing on axis LONGITUDE at subscript 2
-           *** NOTE: A dummy axis of subscripts will be used
-           *** NOTE: Coordinates missing on axis LATITUDE at subscript 2
-           *** NOTE: A dummy axis of subscripts will be used
+           *** NOTE: Axis "LONGITUDE" is irregular. Ignoring erroneous point_spacing=even attribute.
+           *** NOTE: Axis has repeated values -- micro-adjusting LONGITUDE
+           *** NOTE: Axis "LATITUDE" is irregular. Ignoring erroneous point_spacing=even attribute.
+           *** NOTE: Axis has repeated values -- micro-adjusting LATITUDE
            *** NOTE: Axis has repeated values -- micro-adjusting TIME
            *** NOTE: Error in bounds "TAX_bnds" or bounds do not enclose point on axis TAX
            *** NOTE: Substituting coordinate midpoints
@@ -2697,6 +2697,7 @@ ooooooooooooooooooooooooooooooooooooooooooo
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
+           *** NOTE: Axis "LON" is irregular. Ignoring erroneous point_spacing=even attribute.
            *** NOTE: Units on axis "ENS" are not recognized: count
            *** NOTE: They will not be convertible:
  LISTing to file mypack.nc
@@ -3322,10 +3323,12 @@ ooooooooooooooooooooooooooooooooooooooooooo
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
+           *** NOTE: Axis "X1_20" is irregular. Ignoring erroneous point_spacing=even attribute.
  LISTing to file aa.nc
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
+           *** NOTE: Axis "X1_20" is irregular. Ignoring erroneous point_spacing=even attribute.
  LISTing to file aa.nc
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -4637,7 +4640,8 @@ Replacing definition of axis TAX
 ooooooooooooooooooooooooooooooooooooooooooo
            *** NOTE: unrepairable repeated axis coords on axis xax at subscript 2
            *** NOTE: A dummy axis of subscripts will be used
-           *** NOTE: unrepairable repeated axis coords on axis yax at subscript 2
+           *** NOTE: Axis "yax" is irregular. Ignoring erroneous point_spacing=even attribute.
+           *** NOTE: Coordinates out of order or missing on axis yax at subscript 3
            *** NOTE: A dummy axis of subscripts will be used
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -5722,6 +5726,10 @@ ooooooooooooooooooooooooooooooooooooooooooo
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
+           *** NOTE: Axis "XAXIS" is irregular. Ignoring erroneous point_spacing=even attribute.
 *** Running ferret script: bn_iso8601_time.jnl
  LISTing to file a.nc
            *** NOTE: regarding ./data/clim_axes_julian.nc ...

@@ -138,6 +138,8 @@
 * V697  3/16 Ticket 2376: parsing backslash escapes within repeat loops.
 * V697  3/16  *acm* ticket 2356 scale back change for multiple slash at end of command
 * V73   7/17  *acm* ticket 2551 Report an error for unmatched parentheses in a REPEAT loop.
+* V75   4/19  *acm* Issue   660 Evaluate a grave-accent expression that appears right after
+*                               a slash in the position of a qualifier
 
 * command, subcommand and qualifiers will be identified by number in
 *	 COMMON/XCOMMAND.  Arguments will be returned as positions in
@@ -787,8 +789,11 @@ cc  Allow zero-length null string in quotes
  710	   CONTINUE
 	   iterm = arg_end(iqual_word) + 1	! no funny terminator
 
-* identify against list of qualifiers for this subcommand
+* identify against list of qualifiers for this subcommand 
+* unless there's a grave-accent to evaluate (issue 660)
  720	   len_test = TM_LENSTR(cmnd_buff(arg_start(iqual_word):iterm-1))
+	   IF (INDEX(cmnd_buff(arg_start(iqual_word):iterm-1),'`') .GT. 0) GOTO 740
+
            DO 730 iqual = 1,num_qualifs(isubcmnd_ptr)
 	   iqual_ptr = iqual + qualifier_pointer(isubcmnd_ptr) - 1
            len_mchars = TM_LENSTR(qualifiers(iqual_ptr)(:4))
@@ -815,6 +820,7 @@ cc  Allow zero-length null string in quotes
  730	   CONTINUE
 
 * checked all possible qualifiers and did't find a match
+
 	   IF (its_set_data .OR. its_define_sym) THEN
 * *sh* 2015 *HACK* for SET DATA path/filename and GO path/filename
 *      since filenames may contain slashes that are mistaken as qualifiers

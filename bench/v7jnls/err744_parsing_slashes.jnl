@@ -1,0 +1,44 @@
+! err744_parsing_slashes.jnl
+!  4/17/2019 ACM issue 660 parsing with grave-accent
+!               expressions apearing right after a slash.
+!
+!
+! Previously gave an error on the SET REGION, unknown qualifier
+! Now it's correct
+
+let region = "x=0:360"
+say `region`
+
+set region/`region`
+
+! But this was ok, including the slash in the string
+
+let region = "/x=0:360"
+set region`region`
+
+! Test multiple such strings
+
+let xregion = "x=0:360"
+let yregion = "y=15:45"
+
+set region/`xregion`/`yregion`
+
+! Any qualifier right after a slash had the same parsing bug
+! This previously gave an error on the PLOT command, unknown qualifier
+
+let style="color=blue"
+plot/`style`/i=1:15 1./i
+
+
+set mode ignore
+
+! Intentional errors
+! This really is an error
+
+let region = "p=0:360"
+say `region`
+
+set region/`region`
+
+set mode /last ignore
+

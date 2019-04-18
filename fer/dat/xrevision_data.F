@@ -153,6 +153,6 @@
 
 	DATA program_name	/ 'FERRET' /
 	DATA len_program_name	/  6       /
-	DATA revision_level	/  7.444   /
+	DATA revision_level	/  7.445   /
 
 	END

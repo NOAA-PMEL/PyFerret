@@ -5755,6 +5755,11 @@ ooooooooooooooooooooooooooooooooooooooooooo
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
            *** NOTE: Axis "XAXIS" is irregular. Ignoring erroneous point_spacing=even attribute.
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
+ **ERROR: unknown command qualifier: p=0:360
+set region/p=0:360
 *** Running ferret script: bn_iso8601_time.jnl
  LISTing to file a.nc
            *** NOTE: regarding ./data/clim_axes_julian.nc ...

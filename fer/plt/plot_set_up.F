@@ -198,6 +198,8 @@
 *                 On time plots overlaid on a 2D plot, set up time-axis information even when
 *                 not labeling the plot.
 * V7434 10/18 *acm* minor cleanup: initialize variable the_taxis
+* V75   10/18 *acm* ticket 1926 F-axis line plots were trying to get time-origin from t-axis
+*                   of the grid.
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -485,22 +487,22 @@ c	   IF ( .NOT.no_labels) THEN
 		    line_direction( itmp ) = 'TI'
 
 	            CALL MINMAX( indep_dat, npts, mr_bad_data(mv), lo, hi )
-		    grid_line(t_dim, mgrid_buff) = itmp
+		    grid_line(the_taxis, mgrid_buff) = itmp
 		 
 		    igrd_save =  cx_grid(cx_list(1))
 		    cx_grid(cx_list(1)) = mgrid_buff
-		    ww_save = cx_lo_ww(t_dim,cx_list(1) ) 
-		    cx_lo_ww(t_dim,cx_list(1)) = lo
+		    ww_save = cx_lo_ww(the_taxis,cx_list(1) ) 
+		    cx_lo_ww(the_taxis,cx_list(1)) = lo
 
-		    ind_min = TSTEP_TO_SECS (mgrid_buff, t_dim, lo)
-		    ind_max = TSTEP_TO_SECS (mgrid_buff, t_dim, hi)
+		    ind_min = TSTEP_TO_SECS (mgrid_buff, the_taxis, lo)
+		    ind_max = TSTEP_TO_SECS (mgrid_buff, the_taxis, hi)
 
 * Plotting short time range? If so recompute tref     
 * axis length in hours from time since BC in seconds
 		    IF (.NOT.overlay) THEN
                        hrs = ( ind_max - ind_min ) / 3600.
                        IF (hrs.LT.24) tref = 
-     .                  MERGED_WHOI_DATE( cx_list(var1), t_dim, nmv, .TRUE. )
+     .                  MERGED_WHOI_DATE( cx_list(var1), the_taxis, nmv, .TRUE. )
 
                        all_1_ind = ind_min .EQ. ind_max
                        IF ( all_1_ind ) THEN
@@ -513,8 +515,8 @@ c	   IF ( .NOT.no_labels) THEN
                       CALL TPLOT_AXIS_ENDS (ind_min, ind_max, cal_id_1, tstyle)
  
                       IF (.NOT.overlay) CALL AXIS_END_SYMS( indep_ax,
-     .                          SECS_TO_TSTEP( mgrid_buff, t_dim, ind_min ),
-     .                          SECS_TO_TSTEP( mgrid_buff, t_dim, ind_max ) )
+     .                          SECS_TO_TSTEP( mgrid_buff, the_taxis, ind_min ),
+     .                          SECS_TO_TSTEP( mgrid_buff, the_taxis, ind_max ) )
 
 		    ENDIF
 
@@ -861,23 +863,23 @@ c	   ENDIF
 		       line_cal_name(itmp) = 'GREGORIAN'
 		       line_direction( itmp ) = 'TI'
 
-		       grid_line(t_dim, mgrid_buff) = itmp
+		       grid_line(the_taxis, mgrid_buff) = itmp
 		 
 		       igrd_save =  cx_grid(cx_list(1))
 		       cx_grid(cx_list(1)) = mgrid_buff
-		       ww_save = cx_lo_ww(t_dim,cx_list(1) ) 
-		       cx_lo_ww(t_dim,cx_list(1)) = lo
+		       ww_save = cx_lo_ww(the_taxis,cx_list(1) ) 
+		       cx_lo_ww(the_taxis,cx_list(1)) = lo
 
-		       dep_min = TSTEP_TO_SECS (mgrid_buff, t_dim, lo)
-		       dep_max = TSTEP_TO_SECS (mgrid_buff, t_dim, hi)
+		       dep_min = TSTEP_TO_SECS (mgrid_buff, the_taxis, lo)
+		       dep_max = TSTEP_TO_SECS (mgrid_buff, the_taxis, hi)
 		    
 		       CALL TAXIS_STYLE( dep_ax, dep_min, dep_max, tstyle, xtra_lab )
 * 11/16 Get the min and max as used by PPLUS.  That function uses WHOI formatted time
 		       CALL TPLOT_AXIS_ENDS (dep_min, dep_max, cal_id_1, tstyle)
  
 		       CALL AXIS_END_SYMS( dep_ax,
-     .                          SECS_TO_TSTEP( mgrid_buff, t_dim, dep_min ),
-     .                          SECS_TO_TSTEP( mgrid_buff, t_dim, dep_max ) )
+     .                          SECS_TO_TSTEP( mgrid_buff, the_taxis, dep_min ),
+     .                          SECS_TO_TSTEP( mgrid_buff, the_taxis, dep_max ) )
 
 
 		    ENDIF
@@ -1047,7 +1049,7 @@ c	   ENDIF
               IF ( tax .EQ. mnormal .OR. tax .EQ. munknown ) THEN  ! 8/91 bug
                  dt_min = 1.0
               ELSE
-	         dt_min = line_tunit( grid_line(t_dim,grid) ) / 60.! sec-->min
+	         dt_min = line_tunit( grid_line(the_taxis,grid) ) / 60.! sec-->min
 	         IF ( ITSA_TRUEMONTH_AXIS(grid_line(the_taxis,grid)) ) 
      .                dt_min = un_convert(pun_day)/60. 
 
@@ -1061,7 +1063,7 @@ c	   ENDIF
                  ENDIF
 
               ENDIF
-              t1_date = INTERNAL_WHOI_DATE( grid, t_dim, 1.0D0 )
+              t1_date = INTERNAL_WHOI_DATE( grid, the_taxis, 1.0D0 )
            ELSE
 	      IF (overlay .AND. has_time_axis) THEN
 	         dt_min  = saved_dt_min
@@ -1111,14 +1113,14 @@ c	   ENDIF
 		 dt_min = line_tunit(itmp)/ 60.
 		 
 		 adjust_time = .FALSE.
-		 CALL AXIS_ENDS(indep_ax,t_dim,mgrid_buff,ind_min,ind_max,
+		 CALL AXIS_ENDS(indep_ax,the_taxis,mgrid_buff,ind_min,ind_max,
      .                       delta, indep_is_log, indep_axtyp, versus, status)
 
-                 tref = MERGED_WHOI_DATE( cx_list(1), t_dim, 1, .FALSE. )
-                 t1_date = INTERNAL_WHOI_DATE( mgrid_buff, t_dim, 1.0D0 )
+                 tref = MERGED_WHOI_DATE( cx_list(1), the_taxis, 1, .FALSE. )
+                 t1_date = INTERNAL_WHOI_DATE( mgrid_buff, the_taxis, 1.0D0 )
 
 		 cx_grid(cx_list(1)) = igrd_save
-		 cx_lo_ww(t_dim,cx_list(1) ) = ww_save 
+		 cx_lo_ww(the_taxis,cx_list(1) ) = ww_save 
 		 IF (ipl .EQ. nmv) THEN
 		    IF (itmp .NE. mnormal) CALL TM_DEALLO_DYN_LINE( itmp )
 		    itmp = mnormal
@@ -1131,14 +1133,14 @@ c	   ENDIF
 		 dt_min = line_tunit(itmp)/ 60.
 		 
 		 adjust_time = .FALSE.
-		 CALL AXIS_ENDS(dep_ax,t_dim,mgrid_buff,dep_min,dep_max,
+		 CALL AXIS_ENDS(dep_ax,the_taxis,mgrid_buff,dep_min,dep_max,
      .                       delta, indep_is_log, indep_axtyp, versus, status)
 
-                 tref = MERGED_WHOI_DATE( cx_list(1), t_dim, 1, .FALSE. )
-                 t1_date = INTERNAL_WHOI_DATE( mgrid_buff, t_dim, 1.0D0 )
+                 tref = MERGED_WHOI_DATE( cx_list(1), the_taxis, 1, .FALSE. )
+                 t1_date = INTERNAL_WHOI_DATE( mgrid_buff, the_taxis, 1.0D0 )
 
 		 cx_grid(cx_list(1)) = igrd_save
-		 cx_lo_ww(t_dim,cx_list(1) ) = ww_save 
+		 cx_lo_ww(the_taxis,cx_list(1) ) = ww_save 
 		 IF (ipl .EQ. nmv) THEN
 		    IF (itmp .NE. mnormal) CALL TM_DEALLO_DYN_LINE( itmp )
 		    itmp = mnormal
@@ -1374,7 +1376,7 @@ c	   ENDIF
 	hlen = xlen ! single-precision xlen from PPLUS common -> double prec. var
 
         IF (x_is_time .OR. y_is_time) THEN
-           ul_dolab(t_dim) = .FALSE.
+           ul_dolab(the_taxis) = .FALSE.
            READ (t1_date(13:14), *) cen
            READ (t1_date(1:2), *) yr
            ind_min = 100*cen + yr 

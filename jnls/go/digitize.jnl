@@ -1,6 +1,7 @@
 \cancel mode verify
 ! digitize.jnl
 ! 7/99 *sh*
+! 04/2019 Extend axis references to allow E or F axis
 
 ! Description: Click cursor on plot -- get value or surrounding block
 
@@ -40,11 +41,13 @@
 
 ! save the input expressions into simple variable definitions
 LET/QUIET DGTexpr = $1%<usage: GO digitize expression ["interpolate" "nearest" or n] ["full" "brief" or "quiet"] [out_filename]%
+
 IF $2"1|nearest>0|interpolate>1|interp>1|*>0" THEN
   DEFINE SYMBOL DGTinterp @ITP
 ELSE
   CANCEL SYMBOL DGTinterp	! effectly a blank symbol
 ENDIF
+
 DEFINE SYMBOL DGTblock $2"0|nearest>0|interpolate>0|interp>0|*>1"
 DEFINE SYMBOL DGTquiet $3"0|quiet>1|*>0"
 DEFINE SYMBOL DGTbrief_verify $3"0|brief>1|*>0|"	! default
@@ -60,10 +63,15 @@ ENDIF
 
 ! determine the orientation of the data (and check if it is 1D or 2D)
 DEFINE SYMBOL DGTdims `DGTexpr,return=shape`
-DEFINE SYMBOL DGTndim ($DGTdims"|X>1|Y>1|Z>1|T>1|XY>2|XZ>2|XT>2|YZ>2|YT>2|ZT>2|<error: expression is not plottable -- 1D or 2D")
+DEFINE SYMBOL DGTndim `STRLEN("($DGTdims)")`
+IF `($DGTndim) GT 2` THEN 
+   SAY error: expression is not plottable -- 1D or 2D
+   EXIT/SCRIPT
+ENDIF
+
 IF `($DGTndim) EQ 2` THEN
-  DEFINE SYMBOL DGTax1 ($DGTdims"|XY>X|XZ>X|XT>X|YZ>Y|YT>Y|ZT>Z|")
-  DEFINE SYMBOL DGTax2 ($DGTdims"|XY>Y|XZ>Z|XT>T|YZ>Z|YT>T|ZT>T|")
+  DEFINE SYMBOL DGTax1 `SUBSTRING("($DGTdims)", 1, 1)`
+  DEFINE SYMBOL DGTax2 `SUBSTRING("($DGTdims)", 2, 1)`
 ENDIF
 
 ! get the digitized location on the plot
@@ -101,18 +109,18 @@ IF  $2"0|nearest>0|interpolate>0|interp>0|*>1" THEN
   LET/QUIET DGTgrid = MISSING(DGTresult,0)
   DEFINE SYMBOL DGTwidth $2
   IF `($DGTndim) EQ 1` THEN
-    DEFINE SYMBOL DGTiax ($DGTdims"|X>I|Y>J|Z>K|T>L|")
-    LET/QUIET ipos = 0*DGTgrid + ($DGTiax)[($DGTdims)=($xmouse)]
+    DEFINE SYMBOL DGTiax ($DGTdims"|X>I|Y>J|Z>K|T>L|E>M|F>N|")
+    LET/QUIET ipos = 0*DGTgrid + _($DGTiax)[($DGTdims)=($xmouse)]
     DEFINE SYMBOL DGTilo `ipos - $2`
     DEFINE SYMBOL DGTihi `ipos + $2`
     LIST/PREC=7 DGTexpr[($DGTiax)=($DGTilo):($DGTihi)]
-    IF $4"0|*>1" THEN LIST/APPEND/PREC=7/QUIET/FILE="$4%??%" DGTexpr[($DGTiax)=($DGTilo):($DGTihi)]
+    IF $4"0|*>1" THEN LIST/APPEND/PREC=7/QUIET/FILE="$4%??%" _DGTexpr[($DGTiax)=($DGTilo):($DGTihi)]
   ENDIF
   IF `($DGTndim) EQ 2` THEN
-    DEFINE SYMBOL DGTiax1 ($DGTax1"|X>I|Y>J|Z>K|T>L|")
-    DEFINE SYMBOL DGTiax2 ($DGTax2"|X>I|Y>J|Z>K|T>L|")
-    LET/QUIET ipos =  0*DGTgrid + ($DGTiax1)[($DGTax1)=($xmouse)]
-    LET/QUIET jpos =  0*DGTgrid + ($DGTiax2)[($DGTax2)=($ymouse)]
+    DEFINE SYMBOL DGTiax1 ($DGTax1"|X>I|Y>J|Z>K|T>L|E>M|F>N|")
+    DEFINE SYMBOL DGTiax2 ($DGTax2"|X>I|Y>J|Z>K|T>L|E>M|F>N|")
+    LET/QUIET ipos =  0*DGTgrid + _($DGTiax1)[($DGTax1)=($xmouse)]
+    LET/QUIET jpos =  0*DGTgrid + _($DGTiax2)[($DGTax2)=($ymouse)]
     DEFINE SYMBOL DGTilo `ipos - $2`
     DEFINE SYMBOL DGTihi `ipos + $2`
     DEFINE SYMBOL DGTjlo `jpos - $2`

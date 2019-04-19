@@ -2,6 +2,7 @@
 ! polytube.jnl
 ! 4/99 *sh* and *jd*
 ! 10/00 *sh* bug fix to scaling algorithm
+! 04/2019 Extend axis references to allow E or F axis
 
 ! Description: Plot a colored tube of variable values along a plotted track
 
@@ -40,7 +41,7 @@ LET/QUIET TUBEdata = ($4)
 
 ! determine the orientation of the data (and check that it is 1D)
 DEFINE SYMBOL TUBEax `TUBEx,return=shape`
-DEFINE SYMBOL TUBEpoly_ax ($TUBEax"|X>Z|Y>Z|Z>Y|T>Z|<error: data is not a line")
+DEFINE SYMBOL TUBEpoly_ax ($TUBEax"|X>Z|Y>Z|Z>Y|T>Z|E>Z|F>Z|<error: data is not a line")
 
 ! units/inch scale factors
 LET/QUIET TUBEdefault_scale =$5"1" *  0.25
@@ -75,7 +76,7 @@ LET/QUIET TUBEymid = MISSING( (TUBEy + TUBEy[($TUBEax)=@shf])/2, TUBEy )
 !LET/QUIET TUBEydn  = TUBEymid - TUBEynorm
 
 ! create the 4 vertices for each quadrlateral of the tube
-LET/QUIET TUBEpindex = ($TUBEpoly_ax)[($TUBEpoly_ax)=1:4]
+LET/QUIET TUBEpindex = _($TUBEpoly_ax)[($TUBEpoly_ax)=1:4]
 LET/QUIET TUBEx4_0 = IF TUBEpindex EQ 1 OR TUBEpindex EQ 4 then TUBExmid-TUBExnorm ELSE TUBExmid+TUBExnorm
 LET/QUIET TUBEy4_0 = IF TUBEpindex EQ 1 OR TUBEpindex EQ 4 then TUBEymid-TUBEynorm ELSE TUBEymid+TUBEynorm
 

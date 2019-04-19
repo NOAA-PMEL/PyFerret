@@ -5,6 +5,7 @@
 ! From Weimin Wang/Steve Hankin emails  July 2000
 ! cleanup Ansley Manke 10/2000
 ! Bug fix: 3/2004 for depth axis polygon overlay was not drawn.
+! 04/2019 Extend axis references to allow E or F axis
 
 ! Description: Fill between two curves or a curve and a constant value
 
@@ -42,12 +43,12 @@ LET/QUIET FBbase = $4"0"
 
 ! determine the orientation of the data (and check that it is 1D)
 DEFINE SYMBOL FBax `FBy,return=shape`
-DEFINE SYMBOL FBiax ($FBax"|X>i|Y>j|Z>k|T>l|<error: data is not a line")
-DEFINE SYMBOL FBbar_ax ($FBax"|X>Z|Y>Z|Z>Y|T>Z|<error: data is not a line")
+DEFINE SYMBOL FBiax ($FBax"|X>i|Y>j|Z>k|T>l|E>m|F>n|<error: data is not a line")
+DEFINE SYMBOL FBbar_ax ($FBax"|X>Z|Y>Z|Z>Y|T>Z|E>Z|F>Z|<error: data is not a line")
 
 DEFINE SYMBOL FBbase_ax `FBbase,return=shape`
-DEFINE SYMBOL FBbase_iax ($FBbase_ax"|X>i|Y>j|Z>k|T>l|POINT>i|<error: base is not a line")
-DEFINE SYMBOL FBbase_bar_ax ($FBbase_ax"|X>Z|Y>Z|Z>Z|T>Z|POINT>Z|<error: base is not a line")
+DEFINE SYMBOL FBbase_iax ($FBbase_ax"|X>i|Y>j|Z>k|T>l|E>m|F>n|POINT>i|<error: base is not a line")
+DEFINE SYMBOL FBbase_bar_ax ($FBbase_ax"|X>Z|Y>Z|Z>Z|T>Z|E>Z|F>Z|POINT>Z|<error: base is not a line")
 
 ! get the independent axis out as a separate variable
 DEFINE SYMBOL FBilo `FBy,return=($FBiax)start`
@@ -56,9 +57,9 @@ DEFINE SYMBOL FBihi `FBy,return=($FBiax)end`
 ! Define a new non-depth axis in case of a depth axis: the poly overlay 
 ! with /transpose is incorrect on a depth axis.
 
-define axis/($FBax) FBaxis=($FBax)[G($FBax)=$3] 
-LET/QUIET FBx = ($FBax)[G($FBax)=FBaxis,($FBiax)=($FBilo):($FBihi)]   !FBx=X[GX=ax,i=lo:hi]
-LET/QUIET FBx = ($FBax)[G($FBax)=$3,($FBiax)=($FBilo):($FBihi)]   !FBx=X[GX=ax,i=lo:hi]
+define axis/($FBax) FBaxis=_($FBax)[G($FBax)=$3] 
+LET/QUIET FBx = _($FBax)[G($FBax)=FBaxis,($FBiax)=($FBilo):($FBihi)]   ! FBx=X[GX=ax,i=lo:hi]
+LET/QUIET FBx = _($FBax)[G($FBax)=$3,($FBiax)=($FBilo):($FBihi)]   ! FBx=X[GX=ax,i=lo:hi]
 ! assemble the vertices above and below
 LET/QUIET FBxup  = FBx
 LET/QUIET FByup  = FBy
@@ -75,8 +76,8 @@ LET/QUIET FBy4_1 = IF FBpindex LE 2 then FBy4_0 ELSE FBy4_0[($FBax)=@shf:-1]
 
 ! for Z -axis plot, transpose the overlay
 ! if it is a depth axis, need to also multiply by -1.
-DEFINE SYMBOL FB_orient ($FBax"|X>fill|Y>fill|T>fill|Z>transpose|")
-DEFINE SYMBOL FB_mult ($FBax"|X>1|Y>1|T>1|Z>-1|")
+DEFINE SYMBOL FB_orient ($FBax"|X>fill|Y>fill|T>fill|Z>transpose|E>fill|F>fill|")
+DEFINE SYMBOL FB_mult ($FBax"|X>1|Y>1|T>1|Z>-1|E>1|F>1|")
 
 $1/($FB_orient)/coord_ax=($FBbar_ax) FBx4_1, FBy4_1
 

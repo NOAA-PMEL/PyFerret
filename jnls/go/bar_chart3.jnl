@@ -2,6 +2,7 @@
 ! bar_chart3.jnl
 ! 6/99 *sh*
 ! 7/01 *acm* update /xlimits to /hlimits
+! 04/2019 Extend axis references to allow E or F axis
 
 ! Description: Produce a color-filled bar chart
 
@@ -43,21 +44,21 @@ LET/QUIET BCHbase = $4"0"
 
 ! determine the orientation of the data (and check that it is 1D)
 DEFINE SYMBOL BCHax `BCHy,return=shape`
-DEFINE SYMBOL BCHiax ($BCHax"|X>i|Y>j|Z>k|T>l|<error: data is not a line")
-DEFINE SYMBOL BCHbar_ax ($BCHax"|X>Z|Y>Z|Z>Y|T>Z)   ! pick a different axis
+DEFINE SYMBOL BCHiax ($BCHax"|X>i|Y>j|Z>k|T>l|E>m|F>m|<error: data is not a line")
+DEFINE SYMBOL BCHbar_ax ($BCHax"|X>Z|Y>Z|Z>Y|T>Z|E>Z|F>Z)   ! pick a different axis
 
 ! get the independent axis out as a separate variable
 ! typically, "0*BCHy + X[i=lo:hi]", so X is inherited from BCHy
 DEFINE SYMBOL BCHilo `BCHy,return=($BCHiax)start`
 DEFINE SYMBOL BCHihi `BCHy,return=($BCHiax)end`
-LET/QUIET BCHx = 0*BCHy + ($BCHax)[($BCHiax)=($BCHilo):($BCHihi)]
+LET/QUIET BCHx = 0*BCHy + _($BCHax)[($BCHiax)=($BCHilo):($BCHihi)]
 
 ! compute midpoints along the independent axis so the "bars" are centered
 ! (use MISSING to extrapolate down to the bottom end of the first bar)
 LET/QUIET BCHxmid = MISSING((BCHx + BCHx[($BCHiax)=@shf:-1])/2, 1.5*BCHx[($BCHiax)=($BCHilo)]-0.5*BCHx[($BCHiax)=`($BCHilo)+1`])
 
 ! create rectangles (polygons) on the BCHbar_ax axis
-LET/QUIET BCHpindex = ($BCHbar_ax)[($BCHbar_ax)=1:4]
+LET/QUIET BCHpindex = _($BCHbar_ax)[($BCHbar_ax)=1:4]
 LET/QUIET BCHy4 = IF BCHpindex EQ 1 OR BCHpindex EQ 4 then 0*BCHy+BCHbase ELSE BCHy
 LET/QUIET BCHx4 = MISSING(IF BCHpindex LE 2 then BCHxmid ELSE BCHxmid[($BCHiax)=@shf:1], 1.5*BCHx[($BCHiax)=($BCHihi)]-0.5*BCHx[($BCHiax)=`($BCHihi)-1`])
 

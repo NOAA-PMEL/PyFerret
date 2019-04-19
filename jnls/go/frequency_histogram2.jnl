@@ -1,5 +1,6 @@
 \cancel mode verify
 ! frequency_histogram2.jnl - *acm* 10/02  
+! 04/2019 Extend axis references to allow E or F axis
 ! 
 ! Description: produce a 1D frequency histogram, using Ferret functions to
 !              compile bin data. Calls sort and sample functions, and 
@@ -82,9 +83,9 @@ LET/QUIET fh_wtsort = samplei(XSEQUENCE(wt_index),fh_sort)
 
 LET/QUIET fh_fbins = bin_index_wt(fh_indsort, fh_wtsort, vn+1)
 
-define axis/$6"y|X|Y|Z|T"=$2:$3:$4 yax
-define grid/$6"y|X|Y|Z|T"=yax gindex
-define var fh_a =$6"y|X|Y|Z|T"[g$6"y|X|Y|Z|T"=yax] 
+define axis/$6"y|X|Y|Z|T|E|F"=$2:$3:$4 yax
+define grid/$6"y|X|Y|Z|T|E|F"=yax gindex
+define var fh_a = _$6"y|X|Y|Z|T|E|F"[g$6"y|X|Y|Z|T|E|F"=yax] 
 
 LET/QUIET fh_wc = reshape(fh_fbins,fh_a)
 LET/QUIET wt_count = missing(fh_wc,0.)
@@ -93,8 +94,8 @@ LET/QUIET wt_count = missing(fh_wc,0.)
 ! do a hollow or filed plot
 IF `style EQ 0` THEN
   message/cont You may want to replot with color qualifiers on PLOT and Ymin specified:
-  message/cont >>>  go bar_chart2 plot/line wt_count $6"y|X|Y|Z|T" clear [Ymin]
-  go bar_chart2 plot/line wt_count $6"y|X|Y|Z|T"
+  message/cont >>>  go bar_chart2 plot/line wt_count $6"y|X|Y|Z|T|E|F" clear [Ymin]
+  go bar_chart2 plot/line wt_count $6"y|X|Y|Z|T|E|F"
 ELSE
   message/cont You may want to replot with /HLIM /PALETTE or other qualifiers on PLOT:
   message/cont Color may be same as wt_count or another variable with the same shape

@@ -3,6 +3,8 @@
 ! 6/99 *sh*
 ! 1/02 *acm* add note on limits
 ! 3/17 *acm* handle positive-down Z axis
+! 04/2019 Fix second example
+! 04/2019 Extend axis references to allow E or F axis
 
 ! Description: Plot a color-filed swath between upper and lower bounds
 
@@ -28,7 +30,8 @@
 !	yes? go plot_swath poly/over/nolabels/palette=black  a b
 
 ! example 2 -- 3 colored time series
-!	yes? let base =  T[T=1-jan-1990:1-feb-1990:24] - T[T=1-jan-1990]
+!	yes? define axis/T=1-jan-1990:1-feb-1990:24/t0=1-jan-1990 timeax
+!	yes? let base =  T[gt=timeax]
 !	yes? let y1 = base^0.5
 !	yes? let y2 = base
 !	yes? let y3 = base^1.1
@@ -40,7 +43,7 @@
 !	yes? go plot_swath poly/over/nolabels/palette=blue  y3,y4
 !
 ! example 3 -- 2 time series with 1-point z axis.
-!	yes? define axis/T=1-jan-1990:1-feb-1990:24] timeax
+!	yes? define axis/T=1-jan-1990:1-feb-1990:24 timeax
 !	yes? define axis/z=1:1:1 zax
 !	yes? define grid/z=zax/t=timeax ztgrid
 !	yes? let tpts = t[gt=ztgrid] - T[T=1-jan-1990]
@@ -62,8 +65,8 @@ LET/QUIET PSWyhi = ($3)
 
 ! determine the orientation of the data (and check that it is 1D)
 DEFINE SYMBOL PSWax `PSWylo,return=shape`
-DEFINE SYMBOL PSWquad_ax ($PSWax"|X>Z|Y>Z|Z>Y|T>Z|<error: data is not a line")
-DEFINE SYMBOL PSWiax ($PSWax"|X>i|Y>j|Z>k|T>l")
+DEFINE SYMBOL PSWquad_ax ($PSWax"|X>Z|Y>Z|Z>Y|T>Z|E>Z|F>Z|<error: data is not a line")
+DEFINE SYMBOL PSWiax ($PSWax"|X>i|Y>j|Z>k|T>l|E>m|F>n")
 
 ! get the dependent coordinates -- needed since POLYGON is like PLOT/VS
 ! typically, "0*PSWylo + X[i=lo:hi]", so X is inherited from PSWylo

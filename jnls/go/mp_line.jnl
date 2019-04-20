@@ -7,6 +7,7 @@
 ! 5/97
 ! Description:  Plots data using a predefined map projection. 
 ! 10/18 *additions for Ribbon plots
+! 04/2019 Extend axis references to allow E or F axis
 !
 ! This script presumes that following are predefined a projection script
 ! run previous to this script:
@@ -25,7 +26,7 @@
 !
 ! Examples:
 !	  go mp_line plot/vs/over my_x my_y
-!	  go mp_line plot/vs/ribbon/line/thick/over my_x my_y, my_colr_var
+!	  go mp_line plot/vs/ribbon/line/thick/over my_x, my_y, my_colr_var
 !
 
 query/ignore $1%<Specify all arguments: plot_command xpos ypos%
@@ -53,8 +54,8 @@ let/quiet mp_ypos = $3
 define symbol mp_shape_x `mp_xpos,RESULT=SHAPE`
 define symbol mp_shape_y `mp_ypos,RESULT=SHAPE`
 
-query/ignore ($mp_shape_x%|X|Y|Z|T|<error: x position array must be 1-dimensional%)
-query/ignore ($mp_shape_y%|X|Y|Z|T|<error: y position array must be 1-dimensional%)
+query/ignore ($mp_shape_x%|X|Y|Z|T|E|F|<error: x position array must be 1-dimensional%)
+query/ignore ($mp_shape_y%|X|Y|Z|T|E|F|<error: y position array must be 1-dimensional%)
 can variable mp_xpos
 can variable mp_ypos
 

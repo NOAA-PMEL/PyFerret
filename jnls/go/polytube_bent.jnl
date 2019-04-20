@@ -3,6 +3,7 @@
 ! 4/99 *sh* and *jd*
 ! 10/00 *sh* bug fix to scaling algorithm
 ! 08/2012 Adapted from polytube by E. D. Cokelet, NOAA/PMEL
+! 04/2019 Extend axis references to allow E or F axis
 
 ! Description: Plot a colored, sgmented tube of variable values along a plotted track.
 ! Older polytube cuts off the corners, i.e. it draws a single tube between the midpoints of successive trackline points.  
@@ -54,7 +55,7 @@ LET/QUIET TUBEdata = ($4)
 ! determine the orientation of the data (and check that it is 1D)
 
 DEFINE SYMBOL TUBEax `TUBEx,return=shape`
-DEFINE SYMBOL TUBEpoly_ax ($TUBEax"|X>Z|Y>Z|Z>Y|T>Z|<error: data is not a line")
+DEFINE SYMBOL TUBEpoly_ax ($TUBEax"|X>Z|Y>Z|Z>Y|T>Z|E>Z|F>Z|<error: data is not a line")
 
 
 ! Scale factors in units/(quarter-inch)
@@ -105,7 +106,7 @@ LET/QUIET TUBEymid_aft = missing( (TUBEy + TUBEy[($TUBEax)=@shf:1])/2, TUBEy )
 ! create the 6 vertices for each 6-sided bent tube centered on each trackline point
 ! Vertices are numbered counterclockwise beginning in lower, left corner
 
-LET/QUIET TUBE_index = ($TUBEpoly_ax)[($TUBEpoly_ax)=1:6]
+LET/QUIET TUBE_index = _($TUBEpoly_ax)[($TUBEpoly_ax)=1:6]
 
 let/quiet TUBEx1 = missing( 0*TUBE_index + TUBExmid_bef - TUBExnorm_bef, TUBEx2)
 let/quiet TUBEy1 = missing( 0*TUBE_index + TUBEymid_bef - TUBEynorm_bef, TUBEy2)

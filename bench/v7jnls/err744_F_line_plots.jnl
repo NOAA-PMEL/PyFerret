@@ -1,0 +1,26 @@
+! err744_F_line_plots.jnl
+! issue 1926
+! Line plots in the F direction borrowed some info
+! from the T axis in the grid if available.
+
+use 6dfile.nc
+show grid u
+
+! give the F axis a date definition different from the T axis
+! (not done in general but you could...)
+set axis/units=days/t0=1-oct-2000 faxis
+show grid u
+
+! 2D plot is ok
+shade/i=1/l=1/k=1/e=1 u
+
+set view upper
+! Line plot horiz axis had incorrect dates. Should be Oct 2 - 7
+plot/i=1/j=1/k=1/l=1/e=1 u
+
+set view lower
+! If the variable has no T axis then there's an error (v7.432 +)
+define axis/f=1-jan-1990:1-mar-1990:1/unit=days fday
+let a = SIN(_f[gf=fday]/10)
+let b = 0.4*cos(_f[gf=fday]/4) - 2
+plot a, b

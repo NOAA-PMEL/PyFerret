@@ -2,6 +2,7 @@
 ! error_bars.jnl
 ! 6/99 *sh*
 ! 7/01 *acm* update /xlimits to /hlimits
+! 04/2019 Extend axis references to allow E or F axis
 
 ! Description: Overlay error bars on a plot
 
@@ -62,8 +63,8 @@ DEFINE SYMBOL ERBis_transposed  $5"0|*>1"
 
 ! determine the orientation of the data (and check that it is 1D)
 DEFINE SYMBOL ERBax `ERBy,return=shape`
-DEFINE SYMBOL ERBbar_dim ($ERBax"|PT>Z|X>Z|Y>Z|Z>Y|T>Z|<error: data is not a point or line")
-DEFINE SYMBOL ERBiax ($ERBax"|X>i|Y>j|Z>k|T>l")
+DEFINE SYMBOL ERBbar_dim ($ERBax"|PT>Z|X>Z|Y>Z|Z>Y|T>Z|E>Z|F>Z|<error: data is not a point or line")
+DEFINE SYMBOL ERBiax ($ERBax"|X>i|Y>j|Z>k|T>l|E>m|F>n")
 
 ! get the dependent coordinates -- needed since POLYGON is like PLOT/VS
 ! typically, "0*ERBy + X[i=lo:hi]", so X is inherited from ERBy

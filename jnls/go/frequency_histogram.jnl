@@ -3,6 +3,7 @@
 ! frequency_histogram.jnl - *sh* 8/94
 ! *acm* Add argument to choose hollow or filled bars. Also fix
 !       the call to bar_chart2.jnl which should use plot/line
+! 04/2019 Extend axis references to allow E or F axis
 !
 ! Description: produce a 1D frequency histogram
 
@@ -78,8 +79,8 @@ list/nohead/form=(F10.0,1X,1PG14.7)/file=frequency_h.raw index, wt_index
 list/nohead/form=(F10.0,1X,1PG14.7)/file=frequency_h.raw/append vn+1,0  ! MAX index + 1
 sp sort -n frequency_h.raw | awk -f $FER_DIR/go/frequency.awk > frequency_h.dat
 
-define axis/$6"y|X|Y|Z|T"=$2:$3:$4 yax
-define grid/$6"y|X|Y|Z|T"=yax gindex
+define axis/$6"y|X|Y|Z|T|E|F"=$2:$3:$4 yax
+define grid/$6"y|X|Y|Z|T|E|F"=yax gindex
 set data/save
 file/grid=gindex/var="-,wt_count" frequency_h.dat
 set variable/title="Sum of Weights" wt_count
@@ -91,8 +92,8 @@ set data/restore
 ! do a hollow or filled plot
 IF `style EQ 0` THEN
   message/cont You may want to replot with color qualifiers on PLOT and Ymin specified:
-  message/cont >>>  go bar_chart2 plot/line wt_count[d=frequency_h.dat] $6"y|X|Y|Z|T" clear [Ymin]
-  go bar_chart2 plot/line wt_count[d=frequency_h.dat] $6"y|X|Y|Z|T"
+  message/cont >>>  go bar_chart2 plot/line wt_count[d=frequency_h.dat] $6"y|X|Y|Z|T|E|F" clear [Ymin]
+  go bar_chart2 plot/line wt_count[d=frequency_h.dat] $6"y|X|Y|Z|T|E|F"
 ELSE
   message/cont You may want to replot with /HLIM /PALETTE or other qualifiers on PLOT:
   message/cont >>>  go bar_chart3 poly/line/nolabel/fill wt_count [color] [base]

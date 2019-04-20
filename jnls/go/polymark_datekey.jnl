@@ -1,6 +1,7 @@
 \cancel mode verify
 ! polymark_datekey.jnl
 ! 11/05 ACM 
+! 04/2019 Extend axis references to allow E or F axis
 
 ! Description: Plot symbols colored by values of a variable along a track
 !              and labelled with dates from a time axis
@@ -60,7 +61,7 @@ LET/QUIET PLMlabel = $8"0|hr>1|min>2|sec>3|*>0"
 
 ! determine the orientation of the data (and check that it is 1D or a point)
 DEFINE SYMBOL PLMax `PLMxpoly,return=shape`
-DEFINE SYMBOL PLMpoly_ax ($PLMax"|POINT>Z|X>Z|Y>Z|Z>Y|T>Z|<error: data is not a point or line")
+DEFINE SYMBOL PLMpoly_ax ($PLMax"|POINT>Z|X>Z|Y>Z|Z>Y|T>Z|E>Z|F>Z|<error: data is not a point or line")
 
 ! units/inch scale factors
 LET/QUIET PLMdefault_scale =$6"1" *  0.1

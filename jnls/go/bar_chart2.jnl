@@ -4,6 +4,7 @@
 ! bug fixes 8/94: use "ppl yaxis" to set lower plot bound
 !		  use "ppl xaxis" to make X axis wide enough
 ! bug fix  12.98: overlay/vs -> overlay>overlay/vs *jd* per *sh*
+! 04/2019 Extend axis references to allow E or F axis
 
 ! Description: Make a bar chart using hollow rectangles
 
@@ -30,7 +31,7 @@
 ! check for required args
 QUERY/IGNORE $1%<Usage: GO bar_chart2 "PLOT"[/quals] expression [axis] ["OVERLAY"] [lower_bound]%
 QUERY/IGNORE $2%<Usage: GO bar_chart2 "PLOT"[/quals] expression [axis] ["OVERLAY"] [[lower_bound]%
-QUERY/IGNORE $3%X|X|Y|Z|T|<Usage: GO bar_chart2 "PLOT"[/quals] expression [axis] ["OVERLAY"] [[lower_bound]%
+QUERY/IGNORE $3%X|X|Y|Z|T|E|F|<Usage: GO bar_chart2 "PLOT"[/quals] expression [axis] ["OVERLAY"] [[lower_bound]%
 QUERY/IGNORE $4%clear|overlay|clear|<Usage: GO bar_chart2 "PLOT"[/quals] expression [axis] ["OVERLAY"] [[lower_bound]%
 
 ! determine the grid for bar_expr (so SET GRID works)
@@ -40,10 +41,10 @@ SET GRID/SAVE
 SET GRID bar_expr
 
 ! determine the start and end of the X axis of the plot
-LET/QUIET x_expr = $3"X|X|Y|Z|T"
-LET/QUIET x_ax_end   = x_expr[$3"X|X|Y|Z|T"=@max]
-LET/QUIET x_ax_start = x_expr[$3"X|X|Y|Z|T"=@min]
-LET/QUIET x_ax_delta = (x_ax_end - x_ax_start)/(x_expr[$3"X|X|Y|Z|T"=@ngd]+x_expr[$3"X|X|Y|Z|T"=@nbd]-1)
+LET/QUIET x_expr = $3"X|X|Y|Z|T|E|F"
+LET/QUIET x_ax_end   = x_expr[$3"X|X|Y|Z|T|E|F"=@max]
+LET/QUIET x_ax_start = x_expr[$3"X|X|Y|Z|T|E|F"=@min]
+LET/QUIET x_ax_delta = (x_ax_end - x_ax_start)/(x_expr[$3"X|X|Y|Z|T|E|F"=@ngd]+x_expr[$3"X|X|Y|Z|T|E|F"=@nbd]-1)
 
 ! set the lower edge of the boxes
 LET/QUIET bar_min = y3[X=@MIN]
@@ -53,7 +54,7 @@ LET/QUIET bar_y0 = $5"bar_min-0.2*ABS(bar_min)"   ! a bit below the min
 ! write the first and last X values to help complete the edge bars
 sp rm -f bar_plot.dat
 LIST/NOHEAD/FILE=bar_plot.dat/FORMAT=(2(1PG15.7))/APPEND x_ax_start - x_ax_delta, 0
-LIST/NOHEAD/FILE=bar_plot.dat/FORMAT=(2(1PG15.7))/APPEND $3"X|X|Y|Z|T", bar_expr 
+LIST/NOHEAD/FILE=bar_plot.dat/FORMAT=(2(1PG15.7))/APPEND $3"X|X|Y|Z|T|E|F", bar_expr 
 LIST/NOHEAD/FILE=bar_plot.dat/FORMAT=(2(1PG15.7))/APPEND x_ax_end+x_ax_delta, 0
 LIST/NOHEAD/FILE=bar_plot.dat/FORMAT=(2(1PG15.7))/APPEND x_ax_end+2*x_ax_delta, 0
 
@@ -77,7 +78,7 @@ LET/QUIET y3 = IF y3_9999 NE (-9999) THEN y3_9999 !screen out REAL missing data
 
 
 ! Define the region "bar" to be the number of points x3
-LIST/NOHEAD/APPEND/FORMAT=("DEFINE REGION/I=1:",1PG11.6," bar")/FILE=bar_commands.jnl (bar_expr[$3"X|X|Y|Z|T"=@ngd]+1)*3 + 1
+LIST/NOHEAD/APPEND/FORMAT=("DEFINE REGION/I=1:",1PG11.6," bar")/FILE=bar_commands.jnl (bar_expr[$3"X|X|Y|Z|T|E|F"=@ngd]+1)*3 + 1
 GO bar_commands.jnl
 sp rm -f bar_commands.jnl     ! clean up
 

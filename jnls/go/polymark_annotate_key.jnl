@@ -1,13 +1,16 @@
 \cancel mode verify
-! polymark.jnl
-! 4/99 *sh* and *jd*
-! 10/00 *sh* bug fix to scaling algorithm
-!  3/04 *acm* bug fix in check for point data
+! polymark_annotate_key.jnl
+! 04/2019 Extend axis references to allow E or F axis
 
 ! Description: Plot symbols colored by values of a variable along a track
+!              Include the setting that annotates the ends of the colorbar
 !
 !              Needs a basemap or other underlying plot to define scaling
 !              parameters.
+
+! *****  
+! NOTE: This script is unneeded. Just make the setting KEYMARK to turn on colorbar annotations
+! *****
 
 ! Usage:                  $1        $2    $3     $4      $5      $6
 ! Yes?	GO polymark polygon_command xpts ypts [values] [shape] [scale]
@@ -25,7 +28,7 @@
 !           ex
 
 ! examples
-!       GO polymark polygon/over/key lon lat sst diamond
+!       GO polymark_annotate_key polygon/over/key lon lat sst diamond
 
 ! In detail, set cruise track and plot on a map:
 !       yes? LET xpts = 180 + 50*COS(2*3.14*I[I=1:50]/60)
@@ -34,13 +37,20 @@
 
 !       yes? GO basemap x=120:250 Y=25s:65n 20
 !
-!       yes? GO polymark polygon/over/key/title="SST"  xpts,ypts,sst,ex, 0.5 
+!       yes? GO polymark_annotate_key polygon/over/key/title="SST"  xpts,ypts,sst,ex, 0.5 
 
+say ...
+say NOTE The polymark_annotate_key script is redundant.  Simply say 
+say    KEYMARK 1 to turn on colorbar annotation
+say    KEYMARK 0 to turn off colorbar annotation
+say ...
+
+keymark 1
 
 ! argument check
-QUERY/IGNORE $1"<usage: yes? GO polymark polygon_command xpts ypts [values] [shape] [scale]"
-QUERY/IGNORE $2"<usage: yes? GO polymark polygon_command xpts ypts [values] [shape] [scale]"
-QUERY/IGNORE $3"<usage: yes? GO polymark polygon_command xpts ypts [values] [shape] [scale]"
+QUERY/IGNORE $1"<usage: yes? GO polymark_annotate_key polygon_command xpts ypts [values] [shape] [scale]"
+QUERY/IGNORE $2"<usage: yes? GO polymark_annotate_key polygon_command xpts ypts [values] [shape] [scale]"
+QUERY/IGNORE $3"<usage: yes? GO polymark_annotate_key polygon_command xpts ypts [values] [shape] [scale]"
 
 ! save the input expressions into simple variable definitions
 LET/QUIET PLMxpoly = ($2)
@@ -49,7 +59,7 @@ LET/QUIET PLMpolydata = $4"0"
 
 ! determine the orientation of the data (and check that it is 1D or a point)
 DEFINE SYMBOL PLMax `PLMxpoly,return=shape`
-DEFINE SYMBOL PLMpoly_ax ($PLMax"|POINT>Z|X>Z|Y>Z|Z>Y|T>Z|<error: data is not a point or line")
+DEFINE SYMBOL PLMpoly_ax ($PLMax"|POINT>Z|X>Z|Y>Z|Z>Y|T>Z|E>Z|F>Z|<error: data is not a point or line")
 
 ! units/inch scale factors
 LET/QUIET PLMdefault_scale =$6"1" *  0.1
@@ -69,11 +79,11 @@ ENDIF
 LET/QUIET PLMxpolymark = ($PLMpoly_ax)SEQUENCE(xpolyshape) * PLMx_correction
 LET/QUIET PLMypolymark = ($PLMpoly_ax)SEQUENCE(ypolyshape) * PLMy_correction
 
-$1/coord_ax=($PLMpoly_ax)/set  PLMxpoly+PLMxpolymark, PLMypoly+PLMypolymark, PLMpolydata
-PPL SHAKEY 1,,,,,,,,,,1 
-ppl fillpol
+$1/coord_ax=($PLMpoly_ax)  PLMxpoly+PLMxpolymark, PLMypoly+PLMypolymark, PLMpolydata
 
 cancel symbol PLM*
 cancel variable PLM*
 set mode/last verify
 
+
+keymark 0

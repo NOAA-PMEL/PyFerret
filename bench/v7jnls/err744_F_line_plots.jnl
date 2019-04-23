@@ -12,15 +12,17 @@ set axis/units=days/t0=1-oct-2000 faxis
 show grid u
 
 ! 2D plot is ok
-shade/i=1/l=1/k=1/e=1 u
+shade/i=1/k=1/l=1/e=1 u
 
 set view upper
 ! Line plot horiz axis had incorrect dates. Should be Oct 2 - 7
 plot/i=1/j=1/k=1/l=1/e=1 u
 
 set view lower
-! If the variable has no T axis then there's an error (v7.432 +)
+! If the variable had no T axis then there was an error (v7.432 - 7.444)
 define axis/f=1-jan-1990:1-mar-1990:1/unit=days fday
 let a = SIN(_f[gf=fday]/10)
 let b = 0.4*cos(_f[gf=fday]/4) - 2
 plot a, b
+
+frame /file=f_line_plots.gif

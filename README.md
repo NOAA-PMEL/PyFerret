@@ -1,5 +1,8 @@
 # PyFerret
-The PyFerret Python module from NOAA/PMEL.  
+The PyFerret program and Python module from NOAA/PMEL.  
+See [https://ferret.pmel.noaa.gov/Ferret/](https://ferret.pmel.noaa.gov/Ferret/)
+for more information about Ferret and PyFerret.
+
 This repository is regularly synchronized with PyFerret repository at PMEL 
 (the pyferret branch of the ferret project in the subversion repository at 
 PMEL) using git-svn.
@@ -21,24 +24,25 @@ or activity by the DOC or the United States Government.*
 ## Ferret/PyFerret Documentation
 
 For more information on using PyFerret, see the Ferret and PyFerret documentation under 
-[http://ferret.pmel.noaa.gov/Ferret/](http://ferret.pmel.noaa.gov/Ferret/)
+[https://ferret.pmel.noaa.gov/Ferret/](https://ferret.pmel.noaa.gov/Ferret/)
 
 Information about the Ferret email users group, and archives of past discussions
 from the group (which should be searched prior to sending a question to the email 
 users group) can be found at 
-[http://ferret.pmel.noaa.gov/Ferret/email-users-group](http://ferret.pmel.noaa.gov/Ferret/email-users-group)
+[https://ferret.pmel.noaa.gov/Ferret/email-users-group/](https://ferret.pmel.noaa.gov/Ferret/email-users-group/)
 
 ## Jupyter / iPython notebook
 
 The latest ferretmagic module from Patrick Brockmann for using PyFerret 
 with the iPython notebook can be obtained using `pip install ferretmagic`, or see
-[http://pypi.python.org/pypi/ferretmagic](http://pypi.python.org/pypi/ferretmagic).
+[https://pypi.org/project/ferretmagic/](https://pypi.org/project/ferretmagic/).
 Note that this only installs the ferretmagic module for PyFerret;
 it does not install PyFerret.
 
 ## Anaconda Installation - Linux, OS X, and Windows 10/bash
 
-Download and install [miniconda](http://conda.pydata.org/miniconda.html) for your system.
+Download and install minicoda for your system from 
+[https://docs.conda.io/en/latest/miniconda.html](https://docs.conda.io/en/latest/miniconda.html)
 Note that Windows 10 bash must use the Linux version!
 Either python version of miniconda is fine; PyFerret works with ether python 2.x or python 3.x
 
@@ -52,14 +56,14 @@ Execute the following command on the terminal to install `pyferret` as well as
 To start using PyFerret, execute the following command from a Bourne shell 
 (such as bash) that you will be working in:
 ```shell
- . /my/path/to/miniconda/bin/activate FERRET
+. /my/path/to/miniconda/bin/activate FERRET
 ```
 (In bash shells, `source` can be used instead of `.` if desired.)
 
 Once you are done working with PyFerret you can leave this environment,
 if you wish, with the command:
 ```shell
- . /my/path/to/miniconda/bin/deactivate FERRET
+. /my/path/to/miniconda/bin/deactivate FERRET
 ```
 
 In the commands above, `FERRET` is the environment name where `pyferret` is installed.
@@ -76,7 +80,7 @@ the Bourne shell that is created for running the script.
 Such a script would look something like the following
 ```shell
 #! /bin/sh
- . /my/path/to/miniconda/bin/activate FERRET
+. /my/path/to/miniconda/bin/activate FERRET
 /my/path/to/miniconda/envs/FERRET/bin/pyferret $*
 ```
 (substituting `/my/path/to/miniconda` with the appropriate value.  If you used another 
@@ -106,7 +110,7 @@ programs for working with NetCDF files (such as `ncdump` and `ncattted` which ar
 in the benchmark tests).
 
 If you do not have the Ferret/PyFerret standard datasets, they can be obtained from the
-[NOAA-PMEL/FerretDatasets](https://github.com/NOAA-PMEL/FerretDatasets) GitHub repo.
+[https://github.com/NOAA-PMEL/FerretDatasets/](https://github.com/NOAA-PMEL/FerretDatasets/) GitHub repo.
 The contents can be put extracted/cloned to whatever location desired.
 
 Extract the PyFerret tar.gz file in the desired location.
@@ -258,7 +262,7 @@ system-wide (such as installing in `/usr/local/PyFerret` as in the example
 #### Standard Ferret/PyFerret datasets
 
 If you do not have the standard Ferret/PyFerret datasets, they can be downloaded from
-[the FerretDatasets GitHub repository](https://github.com/NOAA-PMEL/FerretDatasets)
+[https://github.com/NOAA-PMEL/FerretDatasets/](https://github.com/NOAA-PMEL/FerretDatasets/)
 either as a zip file download or as a git cloned repository (similar to obtaining the
 PyFerret source).
 If you already have a copy of these datasets on your system, these datasets can be 

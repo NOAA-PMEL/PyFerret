@@ -31,10 +31,10 @@ include ../ef_utility/platform_specific.mk.$(BUILDTYPE)
 #
 
 .F.o:
-	$(F77) $(FFLAGS) -c $<
+	$(FC) $(FFLAGS) -c $<
 
 .F.so:
-	$(F77) $(FFLAGS) -c $<
+	$(FC) $(FFLAGS) -c $<
 	$(LD) $(LD_DYN_FLAGS) $*.o minminmax.o maxminmax.o $(SYSLIBS) -o $*.so
 
 #

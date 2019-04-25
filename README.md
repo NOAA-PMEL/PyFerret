@@ -3,45 +3,44 @@ The PyFerret program and Python module from NOAA/PMEL.
 See [https://ferret.pmel.noaa.gov/Ferret/](https://ferret.pmel.noaa.gov/Ferret/)
 for more information about Ferret and PyFerret.
 
-This repository is regularly synchronized with PyFerret repository at PMEL 
-(the pyferret branch of the ferret project in the subversion repository at 
+This repository is regularly synchronized with PyFerret repository at PMEL
+(the pyferret branch of the ferret project in the subversion repository at
 PMEL) using git-svn.
 
 #### Legal Disclaimer
-*This repository is a software product and is not official communication 
-of the National Oceanic and Atmospheric Administration (NOAA), or the 
-United States Department of Commerce (DOC). All NOAA GitHub project 
-code is provided on an 'as is' basis and the user assumes responsibility 
-for its use. Any claims against the DOC or DOC bureaus stemming from 
-the use of this GitHub project will be governed by all applicable Federal 
-law. Any reference to specific commercial products, processes, or services 
-by service mark, trademark, manufacturer, or otherwise, does not constitute 
-or imply their endorsement, recommendation, or favoring by the DOC. 
-The DOC seal and logo, or the seal and logo of a DOC bureau, shall not 
-be used in any manner to imply endorsement of any commercial product 
+*This repository is a software product and is not official communication
+of the National Oceanic and Atmospheric Administration (NOAA), or the
+United States Department of Commerce (DOC). All NOAA GitHub project
+code is provided on an 'as is' basis and the user assumes responsibility
+for its use. Any claims against the DOC or DOC bureaus stemming from
+the use of this GitHub project will be governed by all applicable Federal
+law. Any reference to specific commercial products, processes, or services
+by service mark, trademark, manufacturer, or otherwise, does not constitute
+or imply their endorsement, recommendation, or favoring by the DOC.
+The DOC seal and logo, or the seal and logo of a DOC bureau, shall not
+be used in any manner to imply endorsement of any commercial product
 or activity by the DOC or the United States Government.*
 
 ## Ferret/PyFerret Documentation
 
-For more information on using PyFerret, see the Ferret and PyFerret documentation under 
+For more information on using PyFerret, see the Ferret and PyFerret documentation under
 [https://ferret.pmel.noaa.gov/Ferret/](https://ferret.pmel.noaa.gov/Ferret/)
 
 Information about the Ferret email users group, and archives of past discussions
-from the group (which should be searched prior to sending a question to the email 
-users group) can be found at 
+from the group (which should be searched prior to sending a question to the email
+users group) can be found at
 [https://ferret.pmel.noaa.gov/Ferret/email-users-group/](https://ferret.pmel.noaa.gov/Ferret/email-users-group/)
 
 ## Jupyter / iPython notebook
 
-The latest ferretmagic module from Patrick Brockmann for using PyFerret 
+The latest ferretmagic module from Patrick Brockmann for using PyFerret
 with the iPython notebook can be obtained using `pip install ferretmagic`, or see
 [https://pypi.org/project/ferretmagic/](https://pypi.org/project/ferretmagic/).
 Note that this only installs the ferretmagic module for PyFerret;
 it does not install PyFerret.
 
 ## Anaconda Installation - Linux, OS X, and Windows 10/bash
-
-Download and install minicoda for your system from 
+Download and install minicoda for your system from
 [https://docs.conda.io/en/latest/miniconda.html](https://docs.conda.io/en/latest/miniconda.html)
 Note that Windows 10 bash must use the Linux version!
 Either python version of miniconda is fine; PyFerret works with ether python 2.x or python 3.x
@@ -53,7 +52,7 @@ Execute the following command on the terminal to install `pyferret` as well as
 ```
 (substituting `/my/path/to/miniconda` with the appropriate value).
 
-To start using PyFerret, execute the following command from a Bourne shell 
+To start using PyFerret, execute the following command from a Bourne shell
 (such as bash) that you will be working in:
 ```shell
 . /my/path/to/miniconda/bin/activate FERRET
@@ -74,7 +73,7 @@ will set up all the variables that PyFerret needs.
 (You can test whether the PyFerret environment is activated by issuing the command
 `echo $FER_DATA` and see if it returns a directory name.)
 
-If you usually work under a C-shell (such as tcsh) or outside the conda environment, 
+If you usually work under a C-shell (such as tcsh) or outside the conda environment,
 you may want to create a Bourne shell script that activates and runs PyFerret within
 the Bourne shell that is created for running the script.
 Such a script would look something like the following
@@ -83,11 +82,11 @@ Such a script would look something like the following
 . /my/path/to/miniconda/bin/activate FERRET
 /my/path/to/miniconda/envs/FERRET/bin/pyferret $*
 ```
-(substituting `/my/path/to/miniconda` with the appropriate value.  If you used another 
+(substituting `/my/path/to/miniconda` with the appropriate value.  If you used another
 name for the environment, substitute that name for `FERRET` in the above script.)
-If this script was called `pyferret.sh`, made executable (`chmod 755 pyferret.sh`), and placed 
-in a directory listed in your `$PATH` enviroment variable, you can just type `pyferret.sh` (followed
-by any desired arguments) from the command line to run PyFerret.
+If this script was called `pyferret.sh`, made executable (`chmod 755 pyferret.sh`),
+and placed in a directory listed in your `$PATH` enviroment variable, you can just type
+`pyferret.sh` (followed by any desired arguments) from the command line to run PyFerret.
 
 ## Installation from prebuilt tar.gz file
 
@@ -114,18 +113,16 @@ If you do not have the Ferret/PyFerret standard datasets, they can be obtained f
 The contents can be put extracted/cloned to whatever location desired.
 
 Extract the PyFerret tar.gz file in the desired location.
-Starting with PyFerret v7, there is only one tar.gz file which
-extracts all its contents to a subdirectory that it creates
-(as apposed to Ferret which has separate `fer_environment` and
-`fer_executables` tar.gz files that extract into the current directory).
-If desired, at this time you can change the name of this subdirectory
-that was created.
+Starting with PyFerret v7, there is only one tar.gz file which extracts all its contents
+to a subdirectory that it creates (as apposed to Ferret which has separate `fer_environment`
+and `fer_executables` tar.gz files that extract into the current directory).
+If desired, at this time you can change the name of this subdirectory that was created.
 
-Move into this PyFerret installation directory and run the `bin/Finstall`
-script to create the `ferret_paths.sh`, `ferret_paths.csh`, and `pyferret`
-scripts. The value of `FER_DIR`, the Ferret/PyFerret installation directory,
-should be this installation directory, which can be specified as `.` (a period)
-which means the current directory.
+Move into this PyFerret installation directory and run the `bin/Finstall` script
+to create the `ferret_paths.sh`, `ferret_paths.csh`, and `pyferret` scripts.
+The value of `FER_DIR`, the Ferret/PyFerret installation directory, should be
+this installation directory, which can be specified as `.` (a period) which means
+the current directory.
 (If `FER_DIR` is already defined for another Ferret/PyFerret installation,
 you will need to tell the script to use a new value.)
 For `FER_DSETS`, the Ferret/PyFerret standard datasets, specify the directory
@@ -141,19 +138,27 @@ e.g., bash) or `source ferret_paths.csh` (for C-type shells; e.g. tcsh).
 
 ## Building PyFerret from source
 
-Please note that these are general instructions that are not fully verified; names 
+Please note that these are general instructions that are not fully verified; names
 of installation packages may vary slightly for you particular operating system.
-In particular, some systems have special development (`-dev`) packages that provide 
-the include files, and shared-object libraries without a numeric extension, that are 
+In particular, some systems have special development (`-dev`) packages that provide
+the include files, and shared-object libraries without a numeric extension, that are
 needed for compiling and linking the PyFerret code.
 On other systems, these include and library files are part of the standard package.
 These instructions assume your package manager provides recent versions of HDF5 and NetCDF.
 
+#### If you have previously built PyFerret from source
+
+The definitions of CC, FC, and LD (the last only for building external
+functions written in Fortran) were moved to the `site_specific.mk.in` files.
+(These were previously defined in the `platform_specific.mk.*` files.)
+If you already have customized `site_specific.mk` files, please appropriately
+updated your customized files with these additional definitions.
+
 #### Packages from the package manager
 
-If not already installed on your system, install the following packages using the package 
-manager for your operating system, or a command-line package installation program such as 
-`yum` or `apt-get` (which needs to be run as a system administator - as "root" - or using 
+If not already installed on your system, install the following packages using the package
+manager for your operating system, or a command-line package installation program such as
+`yum` or `apt-get` (which needs to be run as a system administator - as "root" - or using
 the `sudo` privilege escalation program):
 - `gfortran`, or `gcc` (Gnu Compiler Collection) on some systems - for the gfortran compiler and library
 - `libcairo`, `libcairo-dev`, `cairo`, or `cairo-dev` - for the cairographics library and include files
@@ -163,8 +168,8 @@ the `sudo` privilege escalation program):
 - `netcdf` - for NetCDF 4.x include and library files
 
 The NetCDF package should add the HDF5 packages as a dependency.
-Some package manager programs (such as Homebrew) have their own version of Python separate 
-from the operating system; if so, the NumPy and PyQt packages should add the python package(s) 
+Some package manager programs (such as Homebrew) have their own version of Python separate
+from the operating system; if so, the NumPy and PyQt packages should add the python package(s)
 as dependencies.
 
 You may also want, if not already installed:
@@ -173,14 +178,14 @@ You may also want, if not already installed:
 - `pyshp`, or `python-pyshp` - for shapefile functions in PyFerret
 
 Note that `pyshp` is pure-python code and can also be installed using `pip2`
-(part of python2.x) or `pip3` (part of python3.x). 
+(part of python2.x) or `pip3` (part of python3.x).
 
 #### PyFerret source code
 
-The green `Clone or download` button at the top of the PyFerret GitHub 
+The green `Clone or download` button at the top of the PyFerret GitHub
 `Code` page/tab gives you options for obtaining the latest PyFerret source code.
-You can get a copy of the latest source as a zip file, but a better option, 
-if you can, is to use "git" commands to clone the repository (the source code, 
+You can get a copy of the latest source as a zip file, but a better option,
+if you can, is to use "git" commands to clone the repository (the source code,
 plus history and version control of the source code) to your local system.
 
 The git comands to clone the PyFerret repository look something like the following
@@ -206,6 +211,8 @@ configuration file appropriately for your system; for example:
 DIR_PREFIX = $(HOME)/git/PyFerret
 INSTALL_FER_DIR = /usr/local/PyFerret
 BUILDTYPE = x86_64-linux
+CC = $(shell which gcc)
+FC = $(shell which gfortran)
 PYTHON_EXE = python2.7
 GFORTRAN_LIB = $(shell $(FC) --print-file-name=libgfortran.a)
 CAIRO_LIBDIR =
@@ -224,21 +231,18 @@ Similarly, copy `external_functions/ef_utility/site_specific.mk.in` to
 `external_functions/ef_utility/site_specific.mk`:
 ```shell
 BUILDTYPE = x86_64-linux
+CC = $(shell which gcc)
+FC = $(shell which gfortran)
+LD = $(shell which gfortran)
 PYTHON_EXE = python2.7
 ```
 
-The compilers used are specified in the `platform_specific.mk.*` file 
-appropriate for your system. (The final extension is the value of `BUILDTYPE`
-given in your `site_specific.mk` file.) If you wish to use a different
-compiler that that given (usually `gfortran` and `gcc`), change the value of 
-`CC`, `FC`, and `F77` in the appropriate `platform_specific.mk.*` file.
-
-If you have previously built PyFerret (successfully or not) from this source 
+If you have previously built PyFerret (successfully or not) from this source
 directory or repository, run the command:
 ```shell
 make clean
 ```
-to make sure you remove all previously generated files.
+to make sure you have removed all previously generated files.
 Then run the command:
 ```shell
 make
@@ -247,17 +251,18 @@ to build PyFerret.
 This build will take a bit of time (minutes) and will generate a lot of output,
 so you may wish to redirect output and run this command in the background.
 
-When the build has successfully completed, install PyFerret in the location given 
-by the value of `INSTALL_FER_DIR` in the `site_specific.mk` file by running the following
-command. (If the installation directory exists and is not empty, you should 
-move or remove any contents of that directory to ensure a clean installation.)
+When the build has successfully completed, install PyFerret in the location given
+by the value of `INSTALL_FER_DIR` in the `site_specific.mk` file by running the
+following command.
+(If the installation directory exists and is not empty, you should move or remove
+any contents of that directory to ensure a clean installation.)
 ```shell
 make install
 ```
-You may need to be logged in as a system administrator (as "root") or use the "sudo" 
-privilege escalation command (thus, `sudo make install`), to install PyFerret 
-system-wide (such as installing in `/usr/local/PyFerret` as in the example 
-`site_specific.mk` file given above.
+You may need to be logged in as a system administrator (as "root") or use the
+"sudo" privilege escalation command (thus, `sudo make install`), to install
+PyFerret system-wide (such as installing in `/usr/local/PyFerret` as in the
+example `site_specific.mk` file given above.
 
 #### Standard Ferret/PyFerret datasets
 
@@ -265,33 +270,33 @@ If you do not have the standard Ferret/PyFerret datasets, they can be downloaded
 [https://github.com/NOAA-PMEL/FerretDatasets/](https://github.com/NOAA-PMEL/FerretDatasets/)
 either as a zip file download or as a git cloned repository (similar to obtaining the
 PyFerret source).
-If you already have a copy of these datasets on your system, these datasets can be 
+If you already have a copy of these datasets on your system, these datasets can be
 shared between Ferret and PyFerret, including different versions of these programs.
 You can also add any of your own datasets that might be frequently used.
 These datasets will be needed as part of the following PyFerret configuration.
 
 #### (Py)Ferret configuration
 
-Change to the PyFerret installation directory (the value of `INSTALL_FER_DIR`) 
+Change to the PyFerret installation directory (the value of `INSTALL_FER_DIR`)
 created above and run the script:
 ```shell
 bin/Finstall
 ```
 to create the `ferret_paths.sh`, `ferret_paths.csh`, and `pyferret` scripts.
-The value of `FER_DIR`, the Ferret/PyFerret installation directory, should be this 
-installation directory, which can be specified as `.` (a period) which means the 
+The value of `FER_DIR`, the Ferret/PyFerret installation directory, should be this
+installation directory, which can be specified as `.` (a period) which means the
 current directory.
-The value of `FER_DSETS` should be the directory containing the standard 
+The value of `FER_DSETS` should be the directory containing the standard
 Ferret/PyFerret dataset mentioned above.
 
-Before running PyFerret for the first time in a new terminal window (shell), 
-you will need to set the Ferret/PyFerret environment variables using the 
+Before running PyFerret for the first time in a new terminal window (shell),
+you will need to set the Ferret/PyFerret environment variables using the
 appropriate `ferret_paths` script:
 ```shell
 . /my/path/to/ferret_paths.sh
 ```
-(a period, a space, and the path to the `ferret_paths.sh` script) 
-for Bourne-type shells (such as bash), or 
+(a period, a space, and the path to the `ferret_paths.sh` script)
+for Bourne-type shells (such as bash), or
 ```shell
 source /my/path/to/ferret_paths.csh
 ```

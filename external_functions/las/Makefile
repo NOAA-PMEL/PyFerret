@@ -32,8 +32,14 @@ include ../ef_utility/platform_specific.mk.$(BUILDTYPE)
 #
 
 .F.so:
-	$(F77) $(FFLAGS) -c $<
+	$(FC) $(FFLAGS) -c $<
 	$(LD) $(LD_DYN_FLAGS) $*.o $(SYSLIBS) -o $*.so
+
+.c.o:
+	$(CC) $(CFLAGS) -c $<
+
+.F.o:
+	$(FC) $(FFLAGS) -c $<
 
 #
 # Targets

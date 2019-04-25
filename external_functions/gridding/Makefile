@@ -32,8 +32,11 @@ SUB_OBJS = modscatminmax.o nobsxytv.o scat2grid_subs_mask.o
 #
 
 .F.so:
-	$(F77) $(FFLAGS) -c  $<
+	$(FC) $(FFLAGS) -c  $<
 	$(LD) $(LD_DYN_FLAGS) $(SUB_OBJS) $*.o $(SYSLIBS) -o $*.so
+
+.F.o:
+	$(FC) $(FFLAGS) -c  $<
 
 #
 # Targets

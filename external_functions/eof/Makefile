@@ -38,7 +38,7 @@ SUB_OBJS = eofsubs.o
 #   once eof_space etc are linked into Ferret dont need SUB_OBJS
 
 .F.so:
-	$(F77) $(FFLAGS) -c $<
+	$(FC) $(FFLAGS) -c $<
 	$(LD) $(LD_DYN_FLAGS) $*.o $(SYSLIBS) -o $*.so
 
 #

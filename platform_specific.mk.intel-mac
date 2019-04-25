@@ -86,9 +86,6 @@ endif
 			  -DNO_PREPEND_STRING \
 			  -DSTAR_1_SUPPORTED
 
-	CC		= $(shell which clang)
-	FC		= $(shell which gfortran)
-	F77		= $(shell which gfortran)
 	AR		= $(shell which ar)
 	RANLIB		= $(shell which ranlib)
 

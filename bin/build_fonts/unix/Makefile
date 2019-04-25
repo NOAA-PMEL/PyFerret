@@ -4,7 +4,7 @@
 #    builds and runs the executable to write the
 #    binary character and symbol font files. 
 #    Just use long lists of files.
-#    Expects environment variables F77 and PLOTFONTS to be defined.
+#    Expects environment variables FC and PLOTFONTS to be defined.
 #    No need for any compiler flags.
 
 include ../../../site_specific.mk
@@ -13,7 +13,7 @@ include ../../../platform_specific.mk.$(BUILDTYPE)
 all:    binary 
 
 binary:	binary.F
-	$(F77) $(FFLAGS) -o binary binary.F
+	$(FC) $(FFLAGS) -o binary binary.F
 	./binary   in_fnt01a.chr  fnt01.chr
 	./binary   in_fnt02a.chr  fnt02.chr
 	./binary   in_fnt03a.chr  fnt03.chr

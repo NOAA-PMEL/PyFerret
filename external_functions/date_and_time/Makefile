@@ -34,7 +34,7 @@ DAT_OBJS = date_decode.o time_decode.o secs_to_ymdhms.o
 	$(LD) $(LD_DYN_FLAGS) $(DAT_OBJS) $*.o -o $*.so 
 
 .F.so:
-	$(F77) $(FFLAGS) -c $<
+	$(FC) $(FFLAGS) -c $<
 	$(LD) $(LD_DYN_FLAGS) $(DAT_OBJS) $*.o -o $*.so 
 
 #

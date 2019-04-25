@@ -56,9 +56,6 @@ endif
 
 	PLATFORM 	= $(shell uname -s -r)
 
-	CC		= $(shell which clang)
-	FC		= $(shell which gfortran)
-	F77		= $(shell which gfortran)
 	AR		= $(shell which ar)
 	RANLIB		= $(shell which ranlib)
 

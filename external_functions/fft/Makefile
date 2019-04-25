@@ -9,7 +9,7 @@
 #  remove refs to ef_utility/*.o  (now in ferret executable)
 #
 # 2/2001  debug macros
-# 1/2002  need $(F77) in .F.so rule
+# 1/2002  need $(FC) in .F.so rule
 #         and compile ffta_sample, fftp_sample functions
 # 7/2012  Do not need a special platform_specific file.
 #
@@ -32,7 +32,7 @@ SUB_OBJS = fftinv_subs.o
 #
 
 .F.so:
-	$(F77)  $(FFLAGS)  -c $<
+	$(FC)  $(FFLAGS)  -c $<
 	$(LD) $(LD_DYN_FLAGS) $(SUB_OBJS) $*.o -o $*.so 
 
 #

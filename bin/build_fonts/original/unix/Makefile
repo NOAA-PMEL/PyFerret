@@ -2,7 +2,7 @@
 #
 
 binary:	binary.f
-	$(F77) $(FFLAGS) -o binary binary.f
+	$(FC) $(FFLAGS) -o binary binary.f
 	binary   fnt01a.chr   font01
 	binary   fnt02a.chr   font02
 	binary   fnt03a.chr   font03

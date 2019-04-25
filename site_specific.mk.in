@@ -29,6 +29,15 @@ INSTALL_FER_DIR = $(HOME)/Ferret
 # INSTALL_FER_DIR = $(FER_DIR)
 
 ## =========================
+## C and Fortran compilers to use.  The construct "$(shell which gcc)" assigns
+## the response to "which gcc" run from a Bourne shell (such as bash).
+## When compiling for Mac OS X, one may wish to use clang instead of gcc.
+## =========================
+# CC = $(shell which clang)
+CC = $(shell which gcc)
+FC = $(shell which gfortran)
+
+## =========================
 ## Directory containing the HDF5 static libraries.
 ## If given and not empty, HDF5 and NetCDF static libraries will be used.
 ## If empty or not given, NetCDF shared-object libraries (which specify the

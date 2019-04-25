@@ -20,14 +20,14 @@ SUB_OBJS = pnpoly_subs.o
 #
 
 .F.so:
-	$(F77) $(FFLAGS) -c $<
+	$(FC) $(FFLAGS) -c $<
 	$(LD) $(LD_DYN_FLAGS) $(SUB_OBJS) $*.o -o $*.so 
 
 .c.o:
 	$(CC) $(CFLAGS) -c $<
 
 .F.o:
-	$(F77) $(FFLAGS) -c $<
+	$(FC) $(FFLAGS) -c $<
 
 #
 # Targets

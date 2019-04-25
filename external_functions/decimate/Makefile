@@ -19,7 +19,7 @@ SUB_OBJS = piecewise_subs.o
 #
 
 .F.so:
-	$(F77) $(FFLAGS) -c  $<
+	$(FC) $(FFLAGS) -c  $<
 	$(LD) $(LD_DYN_FLAGS) $(SYSLIBS) $(SUB_OBJS) $*.o -o $*.so
 
 #

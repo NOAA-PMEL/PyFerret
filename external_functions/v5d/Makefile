@@ -31,7 +31,7 @@ V5D_OBJS = binio.o v5d.o
 	$(CC) $(V5DFLAGS) $(CFLAGS) -c $<
 
 .F.so:
-	$(F77) $(FFLAGS) -c $<
+	$(FC) $(FFLAGS) -c $<
 	$(LD) $(LD_DYN_FLAGS) $(V5D_OBJS) $*.o -o $*.so 
 
 #

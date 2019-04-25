@@ -31,7 +31,7 @@ GOB_OBJS = ocn_obs.o
 	$(LD) $(LD_DYN_FLAGS) $(GOB_OBJS) $*.o -o $*.so 
 
 .F.so:
-	$(F77) $(FFLAGS) -c $<
+	$(FC) $(FFLAGS) -c $<
 	$(LD) $(LD_DYN_FLAGS) $(GOB_OBJS) $*.o -o $*.so 
 
 #

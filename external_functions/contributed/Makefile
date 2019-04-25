@@ -29,7 +29,7 @@ include ../ef_utility/platform_specific.mk.$(BUILDTYPE)
 #
 
 .F.so:
-	$(F77) $(FFLAGS) -c $<
+	$(FC) $(FFLAGS) -c $<
 	$(LD) $(LD_DYN_FLAGS) $(SYSLIBS) $*.o -o $*.so
 
 #

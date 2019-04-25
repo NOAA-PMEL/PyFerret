@@ -32,6 +32,8 @@ INSTALL_FER_DIR = $(HOME)/Ferret
 ## C and Fortran compilers to use.  The construct "$(shell which gcc)" assigns
 ## the response to "which gcc" run from a Bourne shell (such as bash).
 ## When compiling for Mac OS X, one may wish to use clang instead of gcc.
+## If you wish to use values already defined in you shell environment when 
+## you run make, comment out all definitions of CC and FC (do NOT leave blank).
 ## =========================
 # CC = $(shell which clang)
 CC = $(shell which gcc)

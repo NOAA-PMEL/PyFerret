@@ -3,10 +3,12 @@
 
 ! SET TEXT with customizations for text groupings
 ! tests of syntax-checking, see ticket 1923
+!
+! 4/30/19 add tests of text location and centering, issue 1927
 
 set text/font=helvetica
 
-set view left
+set view ul
 define axis/x=0:20:1/units=degrees_east xaxis
 define axis/y=0:20:1/units=degrees_north yaxis
 let xx = x[gx=xaxis]
@@ -20,8 +22,25 @@ set text/isiz=3/bold title
 set text/font=serif/bold/color=blue hlab
 set text/font=serif/bold/color=purple vlab
 
-set view right
-contour/color=(20,70,70)/thick/title="contour"  10*sin(xx/3)*cos(yy/4)
+set view ur
+contour/color=(20,70,70)/thick/title="With SET TEXT customizing text groups"  10*sin(xx/3)*cos(yy/4)
+
+cancel text
+
+! Tests for text centering and location when there are 
+! subscripts, superscriptsand special characters
+
+set view ll
+set text/font=arial
+let/title="Xpts title with many deltas: <&Delta> <&Delta> <&Delta> <&Delta> <&Delta> <&Delta>" xpts = {0,1}
+let/title="Ypts title with degree sign <&deg> C" ypts = {0,1}
+plot/x=0:3/y=0:3/vs/title= "K<sup>2</sup> / (here are the denominator units)" xpts, ypts
+set text/font=courier/bold
+annotate/norm/xpos=0.5/ypos=0.5/halign=1/siz=0.12 "Left with<sub>3</sub> sub"
+annotate/norm/xpos=0.5/ypos=0.4/halign=-1/siz=0.12 "Right with<sup>2</sup> super"
+annotate/norm/xpos=0.5/ypos=0.6/halign=0/siz=0.12 "Centered with sub<sub>2</sub> and super <sup>0.5</sup>"
+
+frame/file=set_text.png
 
 
 ! Intentional errors on SET TEXT

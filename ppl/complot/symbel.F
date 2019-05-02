@@ -41,6 +41,8 @@ C V7.22 *acm* 10/17 Fix ticket 2566: if zero or negative character size, exit.
 C V7.45 *acm*  3/19 Fix issue# 1915: When pyferret fonts, send moveable label 
 C                   strings starting with @PY. Then labels starting with numeric 
 C                   characters don't lose those numbers .
+C V7.51 *acm*  4/19 Fix issue# 1927: When pyferret fonts correct the calculation 
+C                   of string length when it contains subscript or superscript
 C
 C	CALL SYMBEL(X,Y,DEGRES,HEIGHT,NCHAR,STRING)
 C
@@ -66,7 +68,7 @@ C
 	INTEGER		NCHAR
 
 * Local declarations
-	LOGICAL		TM_HAS_STRING
+	LOGICAL		TM_HAS_STRING, space
 	INTEGER		STR_SAME, TM_LENSTR, STR_UPCASE
 	REAL		fontsiz, rotate, stx, sty, swid, shgt, xu, yu
      .			stx_pos, sty_pos, symcos, symsin
@@ -213,7 +215,7 @@ C Look for subscripts and superscript tags.
 	   IF (sup.LT.sub .AND. sep.GT.seb) GOTO 3300
 	ELSE
 	   ss = MAX(sub,sup)
-           ENDIF
+	ENDIF
 
 	buff1 = ''  ! Full-size portion of string
 	buffs = ''  ! smaller sub- or super-script portion of string
@@ -255,8 +257,12 @@ C This section returns the string length from swid
 	   ENDDO
 
 * Find the length of the total non-subscripted or superscripted string
-	   glen = TM_LENSTR(buffs)
-	   IF (glen .GT. 0) buff = buff1(:TM_LENSTR(buff1))//buff2(:glen)
+	   
+	   space = IF (buff1(:flen) .EQ. ' ') 
+	   IF (space) buff1(flen:flen) = '_'
+	   glen = TM_LENSTR(buff1)
+	   IF (glen .GT. 0) buff = buff1(:glen)//buff2(:TM_LENSTR(buff2))
+	   IF (space) buff1(flen:flen) = ''
 
 	   swid = 0.
 	   shgt = 0.
@@ -302,6 +308,7 @@ C If subscripts and/or superscripts do each part as it comes
 	   DO WHILE (ss.GT.0)
 	      buff1 = buff2(1:ss-1)
 	      flen = ss-1
+	      space = IF (buff1(:flen) .EQ. ' ') 
 	      buff2 = buff2(ss+5:)
 	      ia =  STR_UPCASE (upbuff, buff2)
 	      se = INDEX(upbuff, '</SU')
@@ -320,9 +327,10 @@ C If subscripts and/or superscripts do each part as it comes
 * and mark the start of the next text to follow
 	      swid = 0.
 	      shgt = 0.
+	      IF (space) buff1(flen:flen) = '_'
 	      CALL FERTEXTSIZE (buff1, fontname, fontsiz, 
      .           italic, bold, pyfnt_under, swid, shgt, status)
-
+	      IF (space) buff1(flen:flen) = ' '
 	      IF (rotate.EQ.0) THEN
 	         stx_pos = stx_pos + swid/1000  ! what about rotations?
 	      ELSE

@@ -41,7 +41,7 @@ C V7.22 *acm* 10/17 Fix ticket 2566: if zero or negative character size, exit.
 C V7.45 *acm*  3/19 Fix issue# 1915: When pyferret fonts, send moveable label 
 C                   strings starting with @PY. Then labels starting with numeric 
 C                   characters don't lose those numbers .
-C V7.51 *acm*  4/19 Fix issue# 1927: When pyferret fonts correct the calculation 
+C V7.51 *acm*  4/19 Fix issue# 1928: When pyferret fonts correct the calculation 
 C                   of string length when it contains subscript or superscript
 C
 C	CALL SYMBEL(X,Y,DEGRES,HEIGHT,NCHAR,STRING)

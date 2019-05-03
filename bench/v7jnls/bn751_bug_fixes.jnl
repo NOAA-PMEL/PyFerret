@@ -1,0 +1,7 @@
+! bn751_bug_fixes.jnl
+! test various fixes that went into version 7.51
+! 4/19 *acm*
+
+GO bn_reset
+GO err75_grave_parsing
+

@@ -1,0 +1,17 @@
+! err75_grave_parsing
+! 4/29/19 ACM
+! See issue 1927. Error parsing the grave-accent expr 
+! when a previous command had qualifiers
+
+let obs_yr1 = 1880
+let obs_yr2 = 2014
+
+! This succeeded
+let/title="Observations (`obs_yr1`-`obs_yr2`)"/unit="#C" ts_obs = sst
+
+let obs_yr1 = 1880
+let obs_yr2 = 2014
+def ax/t=1-jan-1880:1-jan-2015:`1/12`/unit=years/edge/cal=noleap tax_hist
+
+! This failed with a syntax error
+let/title="Observations (`obs_yr1`-`obs_yr2`)"/unit="#C" ts_obs = sst

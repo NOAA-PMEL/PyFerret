@@ -59,6 +59,8 @@
 * v687  *acm* 3/14 Fix ticket 2149: TM_GET_CAL gets the calendar label from the T axis.
 * v690 *sh* 4/14 show regridding by "false 1 pt" curvilinear regrid 
 * V698 *sh* 4/16 document a true E ensemble axis with dataset identifier
+* V75+ *acm*5/19 Issue 1930. Do not write member name in header unless we're 
+*                looking at just one ensemble member (typo fix).
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -175,8 +177,7 @@
 * a single ensemble member name
 	IF ( its_ensemble
      .  .AND.cx_lo_ss(cx,idim).NE.unspecified_int4
-     .  .AND.cx_lo_ss(cx,idim).EQ.cx_lo_ss(cx,idim) ) THEN
-
+     .  .AND.cx_lo_ss(cx,idim).EQ.cx_hi_ss(cx,idim) ) THEN
 
 * ... get the special string that indicates the ensemble member
 	   memb_dset = ENSEMBLE_MEMBER_DSET(dset, cx_lo_ss(cx,idim))

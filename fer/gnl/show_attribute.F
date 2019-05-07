@@ -65,7 +65,7 @@
 
 * local variable declarations:
 	INTEGER  TM_LENSTR1, slen, llen, vlen, i, status
-        CHARACTER TM_FMT*14, vbuff*14, buff*2048, punc*2
+        CHARACTER TM_FMT*64, vbuff*14, buff*2048, punc*2
 
 * local parameter declarations:
 	INTEGER		sig_figs

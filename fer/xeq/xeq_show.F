@@ -316,7 +316,7 @@
 	INTEGER aux_cat(nferdims), aux_var(nferdims)  ! get info from LIST 
 
 	REAL	xtemp, ytemp, attvals(100), cache_mb, cache_n, cache_p, rsize
-	CHARACTER EXPR_NAME*8, TM_FMT*12, VAR_CODE*128, ALG_TRANS_CODE*3,
+	CHARACTER EXPR_NAME*8, TM_FMT*64, VAR_CODE*128, ALG_TRANS_CODE*3,
      .		default*10, show_str*2048, arg*128, name*128, argsym*120
 	CHARACTER	varatt*641, varname*512, attname*128,
      .			efname*40, upname*40, aname*128, outstring*2048,

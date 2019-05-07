@@ -76,7 +76,7 @@
                                        
 	real		thickness, dotsize, frac, r_val, g_val, b_val
 	CHARACTER*100   err_msg
-	CHARACTER*12	TM_FMT_SNGL, note
+	CHARACTER*64	TM_FMT_SNGL, note
 
 	integer		max_bundles
 	parameter	(max_bundles = 250)  ! matches MAX_BUNDL_TBL in xgks

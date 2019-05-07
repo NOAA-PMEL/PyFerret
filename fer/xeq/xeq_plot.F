@@ -162,7 +162,7 @@
 	REAL		val, sym_size, dashstyle(4), only_val
 	CHARACTER	LEFINT*4, buff*128
 	
-	CHARACTER	TM_FMT*12, TM_INQ_PATH*2048, sfile*2048
+	CHARACTER	TM_INQ_PATH*2048, sfile*2048
 	INTEGER ncolors
 
 * set up the graphics environment and get the data

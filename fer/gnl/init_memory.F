@@ -72,7 +72,6 @@
 	INTEGER	bigblk, mv, ws
         INTEGER i1, i2, len
 	INTEGER*8 i8_val
-        CHARACTER*30 TM_FMT, sym_name, buff
 
 * LINKS IN MEMORY VARIABLE TABLE
 * ... all hash pile start pointers point to self (empty lists)

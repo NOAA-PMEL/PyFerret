@@ -173,7 +173,7 @@
      .            hi_cx, item, itype, start, len_name, var_status
 	REAL	  result, val, aval
 	REAL*8 TM_WORLD, TM_WW_AXLEN, ww
-	CHARACTER TM_FMT*(max_len), TM_FMT_USER*(max_len), LEFINT*16, VAR_TITLE*(max_len),
+	CHARACTER TM_FMT*64, TM_FMT_USER*64, LEFINT*16, VAR_TITLE*(max_len),
      .		  VAR_UNITS*(max_len), GET_STRING_ELEMENT*(max_len),
      .		  repl*(max_len), bad_str*(max_len), return_errmsg*256,
      .            buff*128, varname*512, attname*128, aname*128, name*128
@@ -715,11 +715,7 @@
                           result = line_modulo_len(axis)
 
 ! If axis has modulo=" ", and units are not degrees, mod len = axis len.
-#ifdef double_p
-                          IF (result .EQ. 0) result = (TM_WW_AXLEN(axis))
-#else
-                          IF (result .EQ. 0) result = SNGL(TM_WW_AXLEN(axis))
-#endif
+                          IF (result .EQ. 0) result = TM_WW_AXLEN(axis)
                           repl = TM_FMT( result, use_digits, max_len, str_len)
 		       ENDIF
 	            ENDIF
@@ -736,11 +732,7 @@
                           result = line_modulo_len(axis)
 
 ! If axis has modulo=" ", mod len = axis len.
-#ifdef double_p
-                          IF (result .EQ. 0) result = (TM_WW_AXLEN(axis))
-#else
-                          IF (result .EQ. 0) result = SNGL(TM_WW_AXLEN(axis))
-#endif
+                          IF (result .EQ. 0) result = TM_WW_AXLEN(axis)
                           repl = TM_FMT( result, use_digits, max_len, str_len)
 
                        ENDIF
@@ -1125,11 +1117,7 @@
                     result = line_modulo_len(axis)
 
 ! If axis has modulo=" ", and units are not degrees, mod len = axis len.
-#ifdef double_p
-                    IF (result .EQ. 0) result = (TM_WW_AXLEN(axis))
-#else
-                    IF (result .EQ. 0) result = SNGL(TM_WW_AXLEN(axis))
-#endif
+                    IF (result .EQ. 0) result = TM_WW_AXLEN(axis)
                     repl = TM_FMT( result, use_digits, max_len, str_len)
                  ENDIF
 	      ENDIF
@@ -1143,11 +1131,7 @@
                     result = line_modulo_len(axis)
 
 ! If axis has modulo=" ", mod len = axis len.
-#ifdef double_p
-                    IF (result .EQ. 0) result = (TM_WW_AXLEN(axis))
-#else
-                    IF (result .EQ. 0) result = SNGL(TM_WW_AXLEN(axis))
-#endif
+                    IF (result .EQ. 0) result = TM_WW_AXLEN(axis)
                     repl = TM_FMT( result, use_digits, max_len, str_len)
                  ENDIF
 	      ENDIF
@@ -1298,11 +1282,11 @@ c		    ENDIF
 	        ELSE
 	           repl = TM_FMT ( result, use_digits, max_len, str_len )
 
-* Did the large default number of digits result in a string like 0.000001?  
+* Did the large default number of digits result in a string like 0.000001 or .999999 ?  
 * If so see if we can return a nicer string with exponent. TM_FMT_USER has 
 * logic for this. Less robust than TM_FMT, so only use in limited instances.
 
-		   IF (TM_HAS_STRING (repl, '000')) THEN 
+		   IF (TM_HAS_STRING(repl,'000').OR.TM_HAS_STRING(repl,'999')) THEN
 		      buff  = TM_FMT_USER( result, use_digits, max_len, str_len )
 		      READ ( buff,*) aval
 		      IF (TM_DFPEQ(result, aval) ) repl = buff

@@ -54,7 +54,7 @@
 * internal variable declarations:
         LOGICAL	NC_GET_ATTRIB, att_done, got_it, gedit
 	CHARACTER*128 VAR_CODE, varname, rqst_name, attname, buff
-	CHARACTER*14  TM_FMT, numstr
+	CHARACTER*64  TM_FMT, numstr
 	CHARACTER*1   null, comma
 	INTEGER	CGRID_SIZE, STR_SAME, TM_LENSTR1,
      .		mr, cx, size, n, dset, vtype, varid, rqst_type, attype, 

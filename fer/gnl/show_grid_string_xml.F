@@ -72,7 +72,7 @@
 	INTEGER TM_LENSTR1, TM_LENSTR, STR_DNCASE, idim, slen, line, status
         CHARACTER*1 axdir
 	CHARACTER*2048 outstring
-	CHARACTER TM_FMT*16, show_str*16, axname*64
+	CHARACTER axname*64
 
  2020   FORMAT ('<grid name="',A,'">' )
  2030   FORMAT ('<axes>' )

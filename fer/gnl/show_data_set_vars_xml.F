@@ -105,7 +105,7 @@
      .            have_title, have_dims
 
 
-	CHARACTER TM_FMT*16
+	CHARACTER TM_FMT*64
         CHARACTER show_str*128
         CHARACTER uvarname*150, attname*128, attbuff*2048, buff*128,
      .            outstring*2048, aname*128, atype*10

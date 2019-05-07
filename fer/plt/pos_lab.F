@@ -60,7 +60,7 @@
 	
 * local variable declarations:
 	INTEGER		TM_LENSTR1, grid
-	CHARACTER*4	TM_FMT
+	CHARACTER*64	TM_FMT
 	REAL*8		TM_WORLD
 
 * initialize string with subscript (e.g.) "I:22 " or "I:*"

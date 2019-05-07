@@ -119,7 +119,7 @@ C
 
 * Local declarations
         INTEGER   status, slen1, slen2, nlev1
-        CHARACTER TM_FMT_SNGL*20, buff1*20, buff2*20, err_msg*40
+        CHARACTER TM_FMT_SNGL*64, buff1*20, buff2*20, err_msg*40
         REAL*8    DXFF, DXOF, DYFF, DYOF
         REAL      XFF, XOF, YFF, YOF, DMIN, DMAX, DZMAX
         LOGICAL   TM_FPEQ_SNGL

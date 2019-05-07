@@ -94,7 +94,7 @@
 	real		dx,dy,dz,z(nx,ny),znp,zmp
 
 	integer		status, i, j, cells(*), slen1, slen2
-        CHARACTER       TM_FMT_SNGL*20, buff1*20, buff2*20, err_msg*40
+        CHARACTER       TM_FMT_SNGL*64, buff1*20, buff2*20, err_msg*40
 
 C       Add external stmt for linux port *jd* 12.96 RANGE is intrinsic fcn
         external range

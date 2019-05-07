@@ -114,7 +114,7 @@
 	INTEGER ncx, cx_list(ncx)
 
 * internal variable declarations:
-	CHARACTER	TM_FMT*12, LEFINT*4, buffer*40, buffsym*30, show_str*12
+	CHARACTER	TM_FMT*64, LEFINT*4, buffer*40, buffsym*30, show_str*12
         INTEGER         i, idim, ier, nc, slen
 
 * open metafile for this new plot

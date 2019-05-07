@@ -84,7 +84,7 @@
      .		lo, hi, i, line, loest, hiest, dlen,
      .		ndec, status, delta, exlen, cal_id,
      .          prev_cal_id, less_figs
-	CHARACTER TM_FMT*14, buff*14, pt_str*28, lo_str*28, extra*24
+	CHARACTER TM_FMT*64, buff*14, pt_str*28, lo_str*28, extra*24
 	REAL	BOX_SIZE
 	REAL*8	TM_WORLD, SECS_TO_TSTEP,
      .          pt_val8, lo_val8, start, end, new_ww, new_lo, new_hi, timefac

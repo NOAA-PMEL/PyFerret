@@ -69,7 +69,7 @@ c        include 'PLT.INC'
 
 * internal variable declarations:
 	INTEGER slen
-	CHARACTER TM_FMT_SNGL*8, buff*24
+	CHARACTER TM_FMT_SNGL*64, buff*24
 
 	buff = TM_FMT_SNGL(scale,-3,8,slen) 
 	CALL PPLCMD ( from, line, 0, 'SET VP_SCALE '//buff, 1, 1 )

@@ -117,7 +117,7 @@
         CHARACTER*255 labsym_buff
 	CHARACTER*1 cbuf
 
-	CHARACTER TM_FMT*12, buffer*40, buff30*30
+	CHARACTER buffer*40, buff30*30
 
 * is the graphics output device open and ready ??
 	CALL CHECK_GRAPHICS( status )

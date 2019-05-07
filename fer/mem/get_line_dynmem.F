@@ -59,10 +59,7 @@
 
 * internal variable declarations:
 
-	INTEGER	num_slen
 	INTEGER*8 i8_rqst_size
-	CHARACTER LEFINT8*20, TM_FMT*12, num_str*20
-	REAL	GET_LINE_COORD
 
 	i8_rqst_size = rqst_size
 

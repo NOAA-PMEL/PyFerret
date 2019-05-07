@@ -138,7 +138,7 @@
      .			pt(nferdims), valid_ax(nferdims), lloc, num_it, ival
 	CHARACTER*255	VAR_TITLE, VAR_TITLE_MOD, PAREN_SURROUND, vname_buff
 	CHARACTER	KEY_STRING*128, AX_TITLE*32, VAR_UNITS*64, LEFINT*8,
-     .			CX_DIM_STR*16, VAR_CODE*128, TM_FMT*16,
+     .			CX_DIM_STR*16, VAR_CODE*128, TM_FMT*64,
      .			buff1*16, buff2*1024, buff3*16, line_buff*2048,
      .			row_ss_fmt*14, bad_ax*5, bad_buff*32,
      .			col_head_format*32, sep*1, fmtstring*30

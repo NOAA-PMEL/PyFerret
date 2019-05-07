@@ -157,7 +157,7 @@
         INTEGER   STR_UPCASE, i1
 	REAL	  vbuf, only_val, aspect, lab_size, lab_spacing
 	PARAMETER (aspect = 0.0)			!kob 12/96
-	CHARACTER TM_FMT*12, TM_INQ_PATH*2048, 
+	CHARACTER TM_FMT*64, TM_INQ_PATH*2048, 
      .                  fname*128, buff*25, sfile*2048
 
 * internal parameter declarations:

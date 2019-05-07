@@ -120,7 +120,7 @@
      .			nfields, kvar, field_types(maxezvars), 
      .			cal_id, len_cal, j, num_indices, rlen(nferdims), iok,
      .			listdims, idim, igrid, nv, varid
-	CHARACTER	LEFINT*16, LOHI_STRING*48, TM_FMT*14, 
+	CHARACTER	LEFINT*16, LOHI_STRING*48, TM_FMT*64, 
      .			TM_GET_CAL*32, 
      .			line*255, cal_name*32
 	REAL*8		TM_WORLD, lo, hi

@@ -75,7 +75,7 @@
       INTEGER MR_DIM_LEN, TM_LENSTR1, STR_SAME, varid, idim, ndims, attlen,
      .        attype, span, lo(nferdims), hi(nferdims), del(nferdims), slen, vlen
       REAL dummy
-      CHARACTER GET_STRING_ELEMENT*2048, TM_FMT*2048, attbuff*2048, 
+      CHARACTER GET_STRING_ELEMENT*2048, TM_FMT*64, attbuff*2048, 
      .          varname*512, attname*128
 
       vlen = TM_LENSTR1(varattname)  

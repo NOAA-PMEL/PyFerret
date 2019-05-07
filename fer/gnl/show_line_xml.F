@@ -83,7 +83,7 @@
      .			got_it, calendar, bounds_done, do_bounds
 	INTEGER		idim, orient, slen, iset, dset, alen, igrid
 	INTEGER		TM_LENSTR1, TM_GET_CALENDAR_ID, cal_id, status
-	CHARACTER	TM_FMT*32, buff*80, outbuff*20
+	CHARACTER	TM_FMT*64, buff*80, outbuff*20
 
         LOGICAL         new
         INTEGER         STR_SAME, 
@@ -204,11 +204,7 @@ C New form for attribute output, list values separately.
 
 * if line is subspan modulo, report its modulo cycle length
 	IF ( line_modulo(line) .AND. TM_ITS_SUBSPAN_MODULO(line) ) THEN
-#ifdef double_p
 	   buff = TM_FMT( (line_modulo_len(line)),7,32,slen)
-#else
-	   buff = TM_FMT( SNGL(line_modulo_len(line)),7,32,slen)
-#endif
            CALL ESCAPE_FOR_XML(buff, outstring, slen)
 	   WRITE (risc_buff, 2030) 'modulo_length'
 	   CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)

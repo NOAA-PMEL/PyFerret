@@ -55,7 +55,7 @@
 * local variable declarations:
 	INTEGER UVAR_NUMBER, TM_LENSTR1, uvar, slen, slen2, slen3
 	INTEGER*8 object_mem
-	CHARACTER LEFINT*8, LEFINT8*16, EXPR_NAME*8, TM_FMT*8,
+	CHARACTER LEFINT*8, LEFINT8*16, EXPR_NAME*8, TM_FMT*64,
      .		arg_num*8, name_code*8, mem_int*16, percent*8
 	REAL*8 rmax_mem
 

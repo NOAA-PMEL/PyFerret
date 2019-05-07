@@ -148,7 +148,7 @@
         REAL    counter_const, val
 *                  
 
-	CHARACTER TM_FMT*150, name*150, attname*128, aname*128, buff*10
+	CHARACTER TM_FMT*64, name*150, attname*128, aname*128, buff*10
 
 *        ... interpretation stack setup at the time this is called ...
 *	stack level		stack contents

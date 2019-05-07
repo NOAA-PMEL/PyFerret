@@ -75,7 +75,7 @@
 	INTEGER	TM_LENSTR1, KNOWN_GRID,
      .		var, categ, dset, mlen, maxlen, idim, std_grid, n,
      .		axis, slen
-	CHARACTER TM_FMT*8, GNAME_FROM_NUMBER*128, VAR_CODE*128,
+	CHARACTER TM_FMT*64, GNAME_FROM_NUMBER*128, VAR_CODE*128,
      .		  ALG_TRANS_TITL*20, units*24, trans*8, mybuff*128,
      .		  sep*1, buff*128
 
@@ -168,17 +168,10 @@
 	         IF ( line_regular(axis) .AND. .NOT.stat_grid 
      .	    .   AND.  line_dim    (axis) .GT.  1               ) THEN
 * ... delta
-#ifdef double_p
 	            buff = buff(:mlen) //
      .				 TM_FMT(line_delta(axis),2,8,slen)
 	            mybuff = mybuff(:mlen) //
      .				 TM_FMT(line_delta(axis),2,8,slen)
-#else
-     	            buff = buff(:mlen) //
-     .				 TM_FMT(SNGL(line_delta(axis)),2,8,slen)
-	            mybuff = mybuff(:mlen) //
-     .				 TM_FMT(SNGL(line_delta(axis)),2,8,slen)
-#endif
 	            mlen = MIN( maxlen, mlen+slen )
 * ... units
 	            IF ( line_units(axis) .EQ. ' ' ) THEN

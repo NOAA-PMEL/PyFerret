@@ -73,7 +73,7 @@
       REAL zmax, zmin, dz, diff, eps
       REAL*8 zmaxD, zminD
 
-      CHARACTER ppl_buff*2048, TM_FMT_SNGL*10, TM_FMT*10, 
+      CHARACTER ppl_buff*2048, TM_FMT_SNGL*64, TM_FMT*64, 
      .          buff*10, symbuff*30, buffmin*10, buffmax*10, 
      .         comma*2
 

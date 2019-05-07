@@ -151,7 +151,7 @@ C
 	integer		i,j,uprdn, llen, ptsbase
 	logical         line_it, fill_it
         integer         slen1, slen2
-        CHARACTER       TM_FMT_SNGL*20, buff1*20, buff2*20, err_msg*40
+        CHARACTER       TM_FMT_SNGL*64, buff1*20, buff2*20, err_msg*40
 
         parameter       (epsilon = 1e-6)
 

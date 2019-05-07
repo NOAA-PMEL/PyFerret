@@ -113,7 +113,7 @@
      .			s1, s2, it_start(4), it_end(4),
      .			nparm,  num_it, i, iax(4), i1, loch, locv
 	REAL		val, only_val, sym_size, add_lon
-	CHARACTER	LEFINT*4, TM_FMT*20, fname*128, poly_opt*10,
+	CHARACTER	LEFINT*4, TM_FMT*64, fname*128, poly_opt*10,
      .                  buff*25
 
 * internal parameter declarations

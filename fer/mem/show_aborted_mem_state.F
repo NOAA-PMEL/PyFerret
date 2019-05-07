@@ -103,7 +103,7 @@
 	percent = TM_FMT (object_mem/rmax_mem*100, 2, 8, slen3)
 	CALL SPLIT_LIST(pttmode_explct, show_lun,
      .		'        - to objects used in computation: '//
-     .		': '//mem_int(:slen2)//' ('//percent(:slen3)//'%)' ,0 )
+     .		mem_int(:slen2)//' ('//percent(:slen3)//'%)' ,0 )
 
 
 * Report the size of the requested object
@@ -111,7 +111,7 @@
 	percent = TM_FMT (i8_rqst_size/rmax_mem*100, 2, 8, slen3)
 	CALL SPLIT_LIST(pttmode_explct, show_lun,
      .		'    The size of the requested object was: '//
-     .		': '//mem_int(:slen2)//' ('//percent(:slen3)//'%)' ,0 )
+     .		mem_int(:slen2)//' ('//percent(:slen3)//'%)' ,0 )
 
 * report the activity that was underway
 * ... could optionally investigate the is_act states of isp and isp-1 to report

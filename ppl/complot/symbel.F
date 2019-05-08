@@ -258,7 +258,7 @@ C This section returns the string length from swid
 
 * Find the length of the total non-subscripted or superscripted string
 	   
-	   space = IF (buff1(:flen) .EQ. ' ') 
+	   space = buff1(:flen) .EQ. ' '
 	   IF (space) buff1(flen:flen) = '_'
 	   glen = TM_LENSTR(buff1)
 	   IF (glen .GT. 0) buff = buff1(:glen)//buff2(:TM_LENSTR(buff2))
@@ -308,7 +308,7 @@ C If subscripts and/or superscripts do each part as it comes
 	   DO WHILE (ss.GT.0)
 	      buff1 = buff2(1:ss-1)
 	      flen = ss-1
-	      space = IF (buff1(:flen) .EQ. ' ') 
+	      space = buff1(:flen) .EQ. ' '
 	      buff2 = buff2(ss+5:)
 	      ia =  STR_UPCASE (upbuff, buff2)
 	      se = INDEX(upbuff, '</SU')

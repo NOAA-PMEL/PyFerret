@@ -229,7 +229,7 @@ C plus those starting w/ xbox_bounds:
 
 * internal variable declarations:
 	CHARACTER*1020	COMPOUND_TITLE, COMPOUND_KEY, plot_title
-	CHARACTER	TM_FMT*16, LEFINT*8, LEFT_REAL*16, INTERNAL_WHOI_DATE*14, 
+	CHARACTER	TM_FMT*64, LEFINT*8, LEFT_REAL*16, INTERNAL_WHOI_DATE*14, 
      .                  xstyle*3, ystyle*3, cmnd_name*8, year*4, buff*8,
      .			letter*1, buff1*16, buff2*16, buff30*30,
      .                  TM_GET_CALENDAR_NAME*32, cal_name_1*32, 

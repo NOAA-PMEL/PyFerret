@@ -140,7 +140,7 @@
      .		MGRID_SIZE, STR_SAME, hi_mr, hi_cx, lo_cx, big_cx,
      .		dflt_cx, start, end, saved_grid, ifcn, size,
      .		dset, lo_isp, uvar, item, itype, idim,
-     .		nitem, new_mr, len_name, idig, csp1, cat, cvar, 
+     .		nitem, new_mr, len_name, csp1, cat, cvar, 
      .          varid, attlen, attype, maxlen, attoutflag,
      .          ndims, nvars, ngatts, recdim, ivar, vartype, 
      .          nvdims, vdims(8), nvatts, nv, iatt, all_outflag, dot,
@@ -148,7 +148,7 @@
         REAL    counter_const, val
 *                  
 
-	CHARACTER TM_FMT*150, name*150, attname*128, aname*128, buff*10
+	CHARACTER TM_FMT*64, name*150, attname*128, aname*128, buff*10
 
 *        ... interpretation stack setup at the time this is called ...
 *	stack level		stack contents
@@ -333,7 +333,7 @@
         CALL find_var_name (dset, uvar_text(uvar)(start:end), cat, cvar)
         csp1 = csp_cvar(cvar)
 	counter_const = cs_phase( csp1 ) - cs_delta( csp1 )
-        name = TM_FMT(counter_const, idig, 150, len_name)
+        name = TM_FMT(counter_const, 0, 12, len_name)
 	CALL CONSTANT_CONTEXT   ( name,
      .				  lo_cx,
      .				  hi_cx,

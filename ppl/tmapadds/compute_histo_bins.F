@@ -67,7 +67,7 @@
 
       INTEGER i, ngood, ibin, n_per_bin
 
-      CHARACTER ppl_buff*2048, TM_FMT_SNGL*10, buff*10
+      CHARACTER ppl_buff*2048, TM_FMT_SNGL*64, buff*10
       INTEGER TM_LENSTR1, ier, ilen, slen, ist
       LOGICAL TM_FPEQ_SNGL
 

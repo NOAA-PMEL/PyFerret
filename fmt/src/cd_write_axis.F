@@ -201,7 +201,7 @@
 *                    name to 64 from 24 to match longer line_name
 * *acm* 6/06 - change axis name lengths to 128
       CHARACTER CD_CHILDAX_NAME*128, CD_AXIS_NAME*128, CD_AXIS_OUTNAME*128, 
-     .       TM_FMT*12,
+     .       TM_FMT*64,
      .       name*128, name_in*128, units*48, datebuff*40, 
      .       buff*140, buff2*140, attname*128, dimstr*12, varstr*12, 
      .       name_bnds*140, axis_dir*1

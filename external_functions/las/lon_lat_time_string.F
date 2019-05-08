@@ -144,7 +144,7 @@
       INTEGER i1, j1, k1, l1
       INTEGER slen,len1,len2,outlen,llen
 
-      CHARACTER*20  TM_FMT, datestring, lonstr, latstr, ilab
+      CHARACTER*64  TM_FMT, datestring, lonstr, latstr, ilab
       CHARACTER*256 lab, outstring
       REAL ddate
 

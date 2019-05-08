@@ -56,7 +56,7 @@ c Local declararations
      .		dlen, i
 	REAL	val
 	CHARACTER*512 upstr
-	CHARACTER*10 TM_FMT, errcode
+	CHARACTER*64 TM_FMT, errcode
 
         upstr =  NF_STRERROR(cdfstat)
 
@@ -75,7 +75,7 @@ c Local declararations
         val = cdfstat
         errcode = TM_FMT(val, 0, 10, i)
         ebuff(dlen+2:)  = '(OPeNDAP/netCDF Error code '//
-     .      errcode(1:TM_LENSTR1(errcode))//') '
+     .                    errcode(1:i)//') '
         dlen = TM_LENSTR1(ebuff)
 
 	RETURN

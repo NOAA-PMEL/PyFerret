@@ -74,7 +74,7 @@
 	LOGICAL		TM_ITS_SUBSPAN_MODULO
 	INTEGER		idim, orient, slen, i, idum
 	INTEGER		TM_LENSTR1, TM_GET_CALENDAR_ID, cal_id
-	CHARACTER	TM_FMT*32, buff*80, buff20*20
+	CHARACTER	TM_FMT*64, buff*80, buff20*20
 	REAL*8		TM_WW_AXLEN
 
 * determine orientation

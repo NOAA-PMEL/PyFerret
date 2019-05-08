@@ -140,7 +140,7 @@
      .			cx, mr, idim, cat, act, uvar_pointer,
      .			com_mr, var, dset, slen, slen2
 !	INTEGER*8	CGRID_SIZE8, cxsize
-	CHARACTER	TM_FMT*12, num_str*12, num_str2*12
+	CHARACTER	TM_FMT*64, num_str*12, num_str2*12
 
 * external routines passed
 	EXTERNAL	DO_SHIFT, DO_SMTH_BOX, DO_FILL_AVE, DO_AVERAGE,

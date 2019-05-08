@@ -290,7 +290,7 @@
      .        tmp8, axwwlen, dscale, doffset,  micro_adj, madj
       CHARACTER*12 TM_LEFINT
       CHARACTER vname*128, ename*128, vupcase*128, words(8)*24,
-     .        spacing_attr*14, bname*128, TM_FMT*32
+     .        spacing_attr*14, bname*128, TM_FMT*64
       CHARACTER*13 TM_STRING
       CHARACTER*1 axis_dir
       CHARACTER*2 dcode

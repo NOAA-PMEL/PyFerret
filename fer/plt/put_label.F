@@ -105,7 +105,7 @@
 * internal variable declarations:
 	LOGICAL		TM_DIGIT_TEST
 	INTEGER		flen, lsym, ii
-	CHARACTER	TM_FMT*4, font*3, buf4*4,
+	CHARACTER	TM_FMT*64, font*3, buf4*4,
      .			labname(ppl_dset:ppl_calendar)*6
 	REAL 		xp, yp
 

@@ -56,7 +56,7 @@
 	REAL		newnum
 	INTEGER*4	suglen, outlen, addlen, uselen, ilne 
 	INTEGER*4	TM_LENSTR1
-	CHARACTER*4	TM_FMT, add_on
+	CHARACTER*64	TM_FMT, add_on
 *
 * initialize
 	suglen   = TM_LENSTR1(suggested_name)
@@ -89,7 +89,7 @@
 	add_on = TM_FMT(newnum, 4, 4, addlen )
 	uselen  = MIN( suglen, outlen-addlen )
 	IF ( uselen .LE. 0 ) STOP 'TM_NEW_LINE_NAME'
-	new_name = suggested_name(:uselen)//add_on
+	new_name = suggested_name(:uselen)//add_on(1:addlen)
 *
 * no danger of an infinite loop unless there are over 9999 names
 	GOTO 10

@@ -54,7 +54,7 @@
 
 * internal variable declarations:
 	INTEGER TM_LENSTR1, len, i1, prelen
-	CHARACTER TM_FMT*12,
+	CHARACTER TM_FMT*64,
      .		  units*16, num_str*12
 
         IF (mem .GT. 1000000) THEN

@@ -52,7 +52,7 @@
 
 * local variable declarations:
 	INTEGER		slen
-	CHARACTER	TM_FMT*32, outbuff*20
+	CHARACTER	TM_FMT*64, outbuff*20
         CHARACTER       attname*128, attbuff*2048, 
      .                  outstring*2048
 

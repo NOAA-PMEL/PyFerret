@@ -85,8 +85,7 @@
      .          slen, itype, max_attlen
 
         REAL    attvals(100)
-	CHARACTER TM_FMT*32, 
-     .          attname*128, vname*1, buff*128, label*8, add_name*128
+	CHARACTER attname*128, vname*1, buff*128, label*8, add_name*128
         CHARACTER*(maxlen) attstr
 
 * initialize

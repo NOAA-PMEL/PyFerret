@@ -253,11 +253,11 @@ C   Create a message saying arg1 values at index are duplicate
       
       REAL v1, v2
       INTEGER n1, n2
-      CHARACTER TM_FMT*15, buff1*15, buff2*15
+      CHARACTER TM_FMT*64, buff1*15, buff2*15
 
       v1 = L1-1
       v2 = L1
-      buff1 = TM_FMT(v1, 10,12, n1) 
+      buff1 = TM_FMT(v1, 10, 12, n1) 
       buff2 = TM_FMT(v2, 10, 10, n2) 
       
       IF (n1 .GE. 14 .OR. n2 .GE. 14) THEN

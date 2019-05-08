@@ -70,7 +70,7 @@
      .		big_cx, idim, nv, nu, type, slen, igrid, vtype, 
      .		i, num_indices, varid, iline, imemb, itype
 	INTEGER igrid_test
-	CHARACTER*8 TM_FMT, fset
+	CHARACTER*64 TM_FMT, fset
 
 * Is this variable already in the union aggregation? If so, do not add it.
 

@@ -142,7 +142,6 @@
         CHARACTER*128   buff, vname
 	DATA  		dimnam/'I','J','K','L','M','N'/
 	CHARACTER*1024 ebuff, upstr  ! for nf_ error message
-	CHARACTER*10 TM_FMT, errcode
 
 * special equivalence (cannot include in tmap_format/xdset_info.cd_equiv 
 * because "BYTE" isn't supported on DECstation)

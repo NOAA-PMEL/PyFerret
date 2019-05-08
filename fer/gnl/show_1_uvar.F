@@ -63,7 +63,7 @@
 	
 * local variable declarations:
 	INTEGER TM_LENSTR1, slen, llen
-	CHARACTER FULL_UVAR_NAME*150, TM_FMT*12
+	CHARACTER FULL_UVAR_NAME*150, TM_FMT*64
 
 * initialize
 	IF (uvar_num_items(uvar) .EQ. uvar_deleted  ) RETURN

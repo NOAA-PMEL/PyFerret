@@ -55,7 +55,7 @@
 * local variable declarations:
 	INTEGER UVAR_NUMBER, TM_LENSTR1, uvar, slen, slen2, slen3
 	INTEGER*8 object_mem
-	CHARACTER LEFINT*8, LEFINT8*16, EXPR_NAME*8, TM_FMT*8,
+	CHARACTER LEFINT*8, LEFINT8*16, EXPR_NAME*8, TM_FMT*64,
      .		arg_num*8, name_code*8, mem_int*16, percent*8
 	REAL*8 rmax_mem
 
@@ -103,7 +103,7 @@
 	percent = TM_FMT (object_mem/rmax_mem*100, 2, 8, slen3)
 	CALL SPLIT_LIST(pttmode_explct, show_lun,
      .		'        - to objects used in computation: '//
-     .		': '//mem_int(:slen2)//' ('//percent(:slen3)//'%)' ,0 )
+     .		mem_int(:slen2)//' ('//percent(:slen3)//'%)' ,0 )
 
 
 * Report the size of the requested object
@@ -111,7 +111,7 @@
 	percent = TM_FMT (i8_rqst_size/rmax_mem*100, 2, 8, slen3)
 	CALL SPLIT_LIST(pttmode_explct, show_lun,
      .		'    The size of the requested object was: '//
-     .		': '//mem_int(:slen2)//' ('//percent(:slen3)//'%)' ,0 )
+     .		mem_int(:slen2)//' ('//percent(:slen3)//'%)' ,0 )
 
 * report the activity that was underway
 * ... could optionally investigate the is_act states of isp and isp-1 to report

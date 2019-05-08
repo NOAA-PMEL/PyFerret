@@ -56,7 +56,7 @@
 * internal variable declarations:
 	INTEGER	num_slen, mr_del
 	INTEGER*8 available_mem
-	CHARACTER  LEFINT8*20, TM_FMT*12, num_str*20
+	CHARACTER  LEFINT8*20, TM_FMT*64, num_str*20
 
 * Check for unspecified limits on abstract axis
 	IF ( i8_rqst_size .EQ. abstractax_len ) GOTO 5100

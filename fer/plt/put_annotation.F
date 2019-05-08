@@ -50,7 +50,7 @@
 
 * local variable declarations:
 	INTEGER TM_LENSTR1, rlen, nchar
-	CHARACTER TM_FMT*16, buff*20
+	CHARACTER TM_FMT*64, buff*20
 	
 * Count of (PLOT+ movable labels) or use the nlab given by the user
 	IF (nlab .EQ. 0) THEN

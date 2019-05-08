@@ -59,7 +59,7 @@
 * internal variable declarations:
 	INTEGER slen
 	REAL	xaxlen, yaxlen, xsize, ysize
-	CHARACTER TM_FMT*8, buff*24
+	CHARACTER TM_FMT*64, buff*24
 
 * calculate plot size
 	xsize = xfrac*width

@@ -100,7 +100,7 @@ c	include 'xtm_grid.cmn_text'  ! with line_name
      .          itype, arg_first_mismatch, slen, iset, igrid, idim,
      .          aux_cat(nferdims), aux_var(nferdims), 
      .          idir_args(nferdims), idir_vals(nferdims), num_dirs, ival
-        CHARACTER*40 TM_FMT, GCF_NAME*40, alt_name
+        CHARACTER TM_FMT*64, GCF_NAME*40, alt_name*40
 	REAL	oneval
 
 * convenience equivalences

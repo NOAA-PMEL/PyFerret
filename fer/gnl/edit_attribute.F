@@ -267,7 +267,7 @@
      .        attlen_old, attype_old, attoutflag, cat, var, tmap_status,
      .        grid, mod_cx, attid
       REAL dummy, bad, scalefac, offset
-      CHARACTER GET_STRING_ELEMENT*2048, TM_FMT*2048, attbuff*2048, 
+      CHARACTER GET_STRING_ELEMENT*2048, TM_FMT*64, attbuff*2048, 
      .          errbuff*256, varname*512, attname*128, aname*128
 
       CHARACTER	grid_name*64, title*128, units*64, newname*128

@@ -280,7 +280,7 @@
         REAL*8          TM_WW_AXLEN, GET_LINE_COORD, axwwlen, new_att_modulo_len
         REAL*8          delta, dlo, dhi, firstval, lastval
 	REAL		val_buf, cache_size_mb, v1
-	CHARACTER	TM_FMT*12, title*1024, subtitle*64, arg*24,
+	CHARACTER	TM_FMT*64, title*1024, subtitle*64, arg*24,
      .			buff1*512, buff2*512, data_form*3, show_str*12,
      .                  varname*512, attname*128, new_att_calendar*10, 
      .                  new_att_t0*128, new_att_units*128, buff3*512,
@@ -870,7 +870,7 @@ c *kob* 4/97
         show_str = TM_FMT(revision_level, 5, 12, slen)
 	WRITE ( subtitle, 3000 ) program_name(1:len_program_name),
      .				 progname_mod(1:len_progname_mod),
-     .				 show_str
+     .				 show_str(1:slen)
  3000	FORMAT(' Program ',A,1X,A,'  version',A )
 
 	IF ( do_laser_movie ) THEN

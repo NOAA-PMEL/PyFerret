@@ -1,0 +1,15 @@
+! err75_tm_fmt_ints
+! 5/06/19 KMS
+! See issue 1929. Integer overflow in tm_fmt.F and tm_fmt_user.F
+
+! This succeeded
+say `2.2100001 * 1e8`
+
+! This crashed the program (undetected integer overflow when represented as an integer)
+say `2.2100001 * 1e9`
+
+! Try some other variants
+say `2.2100001 * 1e12`
+say `2.2100001 * 1e-2`
+say `2.00`
+say `2.`

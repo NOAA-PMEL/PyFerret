@@ -51,7 +51,7 @@
 
 * Internal declarations
 	LOGICAL TM_FPEQ
-	CHARACTER TM_FMT*16
+	CHARACTER TM_FMT*64
 	INTEGER TM_LENSTR, STR_SAME, ival
 	REAL test_val
   

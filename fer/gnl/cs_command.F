@@ -80,7 +80,7 @@
         INTEGER prev, status, limit, i, nparen
         CHARACTER CX_DIM_STR*40
         INTEGER  TM_LENSTR1, slen
-        CHARACTER*10 TM_FMT, out_buff
+        CHARACTER*64 TM_FMT, out_buff
         REAL    val
         LOGICAL range
 

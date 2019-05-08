@@ -42,7 +42,7 @@ c* number as a string.  Calls internal Ferret routine tm_fmt.
 
 
 * calling arguments:
-* val		- REAL*4 value to be converted
+* val		- REAL*8 value to be converted
 * digits	- IF >0 maximum number of significant digits desired
 *	        - ELSE  maximum number of decimal places desired
 * max_len	- longest allowable length for string to be returned
@@ -56,7 +56,7 @@ c* number as a string.  Calls internal Ferret routine tm_fmt.
       INTEGER str_len
       CHARACTER*(*) outstring
 
-      CHARACTER*8 TM_FMT
+      CHARACTER*64 TM_FMT
 
 * internal declarations
 

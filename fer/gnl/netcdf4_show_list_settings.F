@@ -61,7 +61,7 @@
 
 * internal variable declarations
 	INTEGER  STR_SAME, loc, slen, nchunk
-	CHARACTER TM_FMT*12, show_str*12
+	CHARACTER TM_FMT*64, show_str*12
 	REAL val
 
 * initialize netcdf4-type stuff. If there has been a 

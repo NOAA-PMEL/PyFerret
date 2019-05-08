@@ -92,7 +92,7 @@
 	INTEGER	TM_LENSTR, TM_LENSTR1, CX_DIM_LEN,
      .		var, categ, dset, cairt, cairt_dset,
      .		mlen, t_len, maxlen, idim, trans, slen, k_lo
-	CHARACTER ALG_TRANS_TITL*20, TM_FMT*20,
+	CHARACTER ALG_TRANS_TITL*20, TM_FMT*64,
      .		REGRID_COMMENTS*64,
      .          trans_title*40, buffer*24
 

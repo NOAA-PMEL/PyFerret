@@ -53,7 +53,7 @@
 	LOGICAL	TM_ITS_SUBSPAN_MODULO
 	INTEGER TM_LENSTR1, alen, blen, vlen
 	REAL	TM_WW_AXLEN, GET_LINE_COORD, axwwlen, delta
-	CHARACTER*32 TM_FMT, buff1, buff2
+	CHARACTER*64 TM_FMT, buff1, buff2
 
 	INTEGER tt  ! nice short name
 	EQUIVALENCE (tt,lunit_errors)

@@ -193,7 +193,7 @@
       INTEGER slen, len1, len2, outlen, llen, get_prec, dlen
       
       CHARACTER*2   ns
-      CHARACTER*20  TM_FMT, datestring, lonstr, latstr, ilab
+      CHARACTER*64  TM_FMT, datestring, lonstr, latstr, ilab
       CHARACTER*256 lab, outstring
       REAL ddate, alon, alat
 

@@ -62,7 +62,7 @@
       INTEGER maxlen, slen, ldigits
       REAL x1, x2, x3, x4, y1, y2, y3, y4
       REAL delx, xx, yy, xxx, yyy
-      CHARACTER*10 TM_FMT_SNGL_DIGITS, text
+      CHARACTER TM_FMT_SNGL_DIGITS*64, text*10
 
 * save px and py values
 

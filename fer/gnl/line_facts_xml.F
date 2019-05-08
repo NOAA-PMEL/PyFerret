@@ -82,7 +82,7 @@
      .            varid, vtype, nvdims, vdims(8), nvatts, blen, i, 
      .            len_attbuff, attoutflag, all_outflag, attid, 
      .            attlen, attype, iatt, iset, dset, alen
-	CHARACTER TM_FMT*16, show_str*16, lo_str*20, hi_str*20, 
+	CHARACTER TM_FMT*64, show_str*16, lo_str*20, hi_str*20, 
      .            title*32, outbuff*20, aname*128,
      .            attname*128, attbuff*2048, buff*20, outstring*2048,
      .            atype*10, axname*64

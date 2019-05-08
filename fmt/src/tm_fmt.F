@@ -95,7 +95,7 @@
 	LOGICAL		negative, fixed_pt
 	INTEGER		slen, sig_left, sig_full, nleft, nright,
      .			sig_max, xtra, sig_needed, pow10, added_pow10,
-     .			chk10, chk10_save, waste, i, ind,
+     .			chk10, chk10_save, waste, ind,
      .			iloop, width, prec_digits, right
 	REAL*8		full, full10, aval, l10
 	CHARACTER	fmt*10, dummy_fmt*10,
@@ -193,7 +193,7 @@
 * get number of digits remaining after trimming off right hand zeros
 	full10 = 10.0 ** (sig_full-sig_min)
 	DO 100 sig_needed = sig_min, sig_full
-	   IF ( DMOD(full, full10) .EQ. 0.0 ) GOTO 200
+	   IF ( ABS(DMOD(full, full10)) .LT. 1.0E-7 ) GOTO 200
 	   full10 = full10 / 10.0
  100	CONTINUE
 	sig_needed = sig_full
@@ -271,13 +271,6 @@
 	   WRITE ( fmt, 3200 ) str_len, nright
  3200	   FORMAT ( '(F',I2,'.',I2,')' )
 	   WRITE ( outstring, fmt ) val
-	   IF (slen .GE. 3) THEN 
-	       IF (outstring(1:3) .EQ. ' -.') THEN
-		  outstring(1:3) = '-0.'
-	       ELSEIF (outstring(1:1) .EQ. ' ') THEN
-                  outstring(1:1) = '0'
-	       ENDIF
-	   ENDIF
 	ENDIF
 
 * Ticket 2323
@@ -288,14 +281,29 @@
 * Using the VAR_DATA_FMT call takes care of the cases where the values
 * are so close that the number will be written as an integer.
 
-* KMS - writing as Fn.0 (with the '.' to be removed below) 
-*       takes care of the integer overflow issues
+* KMS - writing integer values using Fn.0, with the '.' to be removed
+*       below, resolves the integer overflow issues and lost accuracy
 
 	str_len = TM_LENSTR1( outstring )
 
+*       Add a zero before a floating point value with no integer part
+        IF ( outstring(1:3) .EQ. ' -.' ) THEN
+           outstring(1:3) = '-0.'
+        ELSEIF ( outstring(1:2) .EQ. ' .' ) THEN
+           outstring(1:2) = '0.'
+        ELSEIF ( (str_len .LT. slen) .AND. (outstring(1:2) .EQ. '-.') ) THEN
+           strend = outstring(2:str_len)
+           outstring = '-0'//strend
+           str_len = str_len + 1
+        ELSEIF ( (str_len .LT. slen) .AND. (outstring(1:1) .EQ. '.') ) THEN
+           strend = outstring(1:str_len)
+           outstring = '0'//strend
+           str_len = str_len + 1
+        ENDIF
+
 * Remove zeros just before the exponent.
 	ind = INDEX(outstring, '0E')
-	DO WHILE (ind .GT. 0)
+	DO WHILE (ind .GT. 1)
 	   strend = outstring(ind+1:str_len)
 	   outstring = outstring(1:ind-1)//strend
            str_len = str_len - 1
@@ -305,20 +313,27 @@
 * Remove zeros and . at the end of the fractional part of a fixed-point string
 	IF (INDEX(outstring, '.') .GT. 0 .AND. 
      .	    INDEX(outstring, 'E') .EQ. 0) THEN
-	   slen = str_len
-	   DO i = slen,1,-1
-	      IF (outstring(i:i) .EQ. '0') THEN
-                 outstring(i:i) = ' '
+	   right = str_len
+	   DO ind = right,1,-1
+	      IF (outstring(ind:ind) .EQ. '0') THEN
+                 outstring(ind:ind) = ' '
                  str_len = str_len - 1
 	      ELSE
                  GOTO 3500
 	      ENDIF
 	   ENDDO
  3500      IF (outstring(str_len:str_len) .EQ. '.') THEN
-              outstring(i:i) = ' '
+              outstring(str_len:str_len) = ' '
               str_len = str_len - 1
            ENDIF
 	ENDIF
+
+* Remove any initial spaces
+        DO WHILE ( (str_len .GT. 1) .AND. (outstring(1:1) .EQ. ' ') )
+           strend = outstring(2:str_len)
+           outstring = strend
+           str_len = str_len - 1
+        ENDDO
 
         TM_FMT = outstring
 	RETURN

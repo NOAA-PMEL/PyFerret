@@ -119,7 +119,7 @@
 * v695 *acm* 5/16 Ticket 2389. When the user gives `var,prec=xx`, return the acutal number
 *                 of digits requested. Return exponential formats when that makes the
 *                 result shorter. Changes are only for positive values of ,prec=
-* v701 *acm* 9/16 Ticket 2469: For RETURN=shape, use the same logic as in SHOW GRID,
+* v701 *acm* 9/16 Ticket 1269: For RETURN=shape, use the same logic as in SHOW GRID,
 *                 for determining when a grid dimension is compressed by a transformation.
 * V702 1/17 *sh* for trac enhancement #2369 -- dynamic memory management 
 * V720 *acm* 5/17 Implement specific calls in place of CD_GET_VAR_INFO
@@ -507,7 +507,7 @@
 	         i2 = cx_data_set(cx)
 		 CALL GET_DSET_BAD( i2,  cmnd(istart:iend), result )
 
-	         repl = TM_FMT( result, use_digits, max_len, str_len )
+	         repl = TM_FMT( result, use_digits, 22, str_len )
 	         GOTO 500
 		 
 * ... RETURN=T0
@@ -594,7 +594,7 @@
                     ELSE 
 	               GOTO 4000
 	            ENDIF
-	            repl = TM_FMT( result, use_digits, max_len, str_len )
+	            repl = TM_FMT( result, use_digits, 22, str_len )
 	            GOTO 500
 
 * ... RETURN=user_scale, user_offset
@@ -606,7 +606,7 @@
 	            ELSE 
 	               GOTO 4000
 	            ENDIF
-	            repl = TM_FMT( result, use_digits, max_len, str_len )
+	            repl = TM_FMT( result, use_digits, 22, str_len )
 	            GOTO 500
 
 * ... RETURN=dtype if it is available in the context at this point. For user-
@@ -696,7 +696,7 @@
 	               IF (status .EQ. ferr_ok) THEN
                           IF (attlen .GT. 0) THEN
                              result = attlen
-                             repl = TM_FMT( result, use_digits, max_len, str_len )
+                             repl = TM_FMT( result, use_digits, 22, str_len )
                           ENDIF
 	               ELSE 
 	                  GOTO 4000
@@ -716,7 +716,7 @@
 
 ! If axis has modulo=" ", and units are not degrees, mod len = axis len.
                           IF (result .EQ. 0) result = TM_WW_AXLEN(axis)
-                          repl = TM_FMT( result, use_digits, max_len, str_len)
+                          repl = TM_FMT( result, use_digits, 22, str_len)
 		       ENDIF
 	            ENDIF
 	            str_len = TM_LENSTR1(repl)
@@ -733,7 +733,7 @@
 
 ! If axis has modulo=" ", mod len = axis len.
                           IF (result .EQ. 0) result = TM_WW_AXLEN(axis)
-                          repl = TM_FMT( result, use_digits, max_len, str_len)
+                          repl = TM_FMT( result, use_digits, 22, str_len)
 
                        ENDIF
 	           ENDIF
@@ -969,14 +969,14 @@
 	            i2 = CX_DIM_LEN(idim, cx)
 		    result = result * i2
 	         ENDDO
-		 repl = TM_FMT( result, use_digits, max_len, str_len )
+		 repl = TM_FMT( result, use_digits, 22, str_len )
 
 	      ENDIF
 
 * ... RETURN=BAD
 	   ELSEIF ( repl .EQ. "BAD" ) THEN
 	      result = cx_bad_data ( cx )
-	      repl = TM_FMT( result, use_digits, max_len, str_len )
+	      repl = TM_FMT( result, use_digits, 22, str_len )
 
 * ... RETURN=nc_scale, nc_offset
 	   ELSEIF ( repl(1:3) .EQ. "NC_" ) THEN
@@ -987,7 +987,7 @@
 	      ELSE 
 	         GOTO 5520
 	      ENDIF
-	      repl = TM_FMT( result, use_digits, max_len, str_len )
+	      repl = TM_FMT( result, use_digits, 22, str_len )
 
 * ... RETURN=user_scale, user_offset
 	   ELSEIF ( repl(1:5) .EQ. "USER_" ) THEN
@@ -998,7 +998,7 @@
 	      ELSE 
 	         GOTO 5520
 	      ENDIF
-	      repl = TM_FMT( result, use_digits, max_len, str_len )
+	      repl = TM_FMT( result, use_digits, 22, str_len )
 
 * ... varname ,RETURN=dtype
 	   ELSEIF ( repl .EQ. "DTYPE" .AND. 
@@ -1101,7 +1101,7 @@
                  IF (status .EQ. ferr_ok) THEN
                     IF (attlen .GT. 0) THEN
                        result = attlen
-                       repl = TM_FMT( result, use_digits, max_len, str_len )
+                       repl = TM_FMT( result, use_digits, 22, str_len )
                     ENDIF
 	         ELSE 
 	            GOTO 5520
@@ -1118,7 +1118,7 @@
 
 ! If axis has modulo=" ", and units are not degrees, mod len = axis len.
                     IF (result .EQ. 0) result = TM_WW_AXLEN(axis)
-                    repl = TM_FMT( result, use_digits, max_len, str_len)
+                    repl = TM_FMT( result, use_digits, 22, str_len)
                  ENDIF
 	      ENDIF
 
@@ -1132,7 +1132,7 @@
 
 ! If axis has modulo=" ", mod len = axis len.
                     IF (result .EQ. 0) result = TM_WW_AXLEN(axis)
-                    repl = TM_FMT( result, use_digits, max_len, str_len)
+                    repl = TM_FMT( result, use_digits, 22, str_len)
                  ENDIF
 	      ENDIF
 
@@ -1278,18 +1278,17 @@ c		    ENDIF
 	        str_len = TM_LENSTR1(bad_str)
 	     ELSE
 	        IF (user_prec .AND. use_digits.GT.0) THEN
-	           repl = TM_FMT_USER( result, use_digits, max_len, str_len )
+	           repl = TM_FMT_USER( result, use_digits, 22, str_len )
 	        ELSE
-	           repl = TM_FMT ( result, use_digits, max_len, str_len )
+	           repl = TM_FMT ( result, use_digits, 22, str_len )
 
-* Did the large default number of digits result in a string like 0.000001 or .999999 ?  
-* If so see if we can return a nicer string with exponent. TM_FMT_USER has 
-* logic for this. Less robust than TM_FMT, so only use in limited instances.
-
-		   IF (TM_HAS_STRING(repl,'000').OR.TM_HAS_STRING(repl,'999')) THEN
-		      buff  = TM_FMT_USER( result, use_digits, max_len, str_len )
-		      READ ( buff,*) aval
-		      IF (TM_DFPEQ(result, aval) ) repl = buff
+* Did the large default number of digits result in a string like 0.000001 or 4.999999 ?  
+* If so see if we can return a nicer string with exponent. 
+                   IF ( (INDEX(repl,'000') .GT. 2) .OR.
+     .                  (INDEX(repl,'999') .GT. 2) ) THEN
+		      buff = TM_FMT_USER(result, use_digits, 22, str_len)
+		      READ (buff,*) aval
+		      IF ( TM_DFPEQ(result, aval) ) repl = buff
 		   ENDIF
 		      
 		ENDIF

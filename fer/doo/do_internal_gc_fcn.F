@@ -1029,7 +1029,7 @@
 
 * error exits
  5000	RETURN
- 5100	argval = TM_FMT(FLOAT(narg), 2, 40, slen)
+ 5100	argval = TM_FMT(DBLE(narg), 2, 8, slen)
 	CALL ERRMSG(ferr_out_of_range, status,
      .   'Negative argument to function. Argument '//
      .    argval(:slen)//' : SUBSTRING', *5000 )

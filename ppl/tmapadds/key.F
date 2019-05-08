@@ -161,8 +161,8 @@ c	        IF (NL.EQ.1 .AND. J.LE.2) ZLEV(2) = zlev(1)
      .                  val, del, x_inc_inf, y_inc_inf, frac, fixx, inc_min, 
      .                  center_add
         real*8          val_n, val_last
-	character*64	text,TM_FMT_SNGL, TM_FMT_SNGL_DIGITS, 
-     .			txt_out, blanks
+        character*64    TM_FMT_SNGL, TM_FMT_SNGL_DIGITS
+        character*12    text, txt_out, blanks
         character*20    buff
 	logical		TM_FPEQ_SNGL, TM_DFPEQ, ITSA_AXIS_VIEW, TM_HAS_STRING,  
      .                  windof_hold, check_0, increase_digits, nofill, cont_key_keep, 

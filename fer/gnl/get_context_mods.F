@@ -159,6 +159,8 @@
 * V698+ *sh* 5/15 bug fix: allow blanks before aux varname e.g. "gz( depth)"
 * V698+ *sh* 6/15 bug fix: all axes to allow [g*(aux)=pt], not just z_dim
 * V698+ *acm* 2/16 Ticket 2362: Change /D= qualifier to /DATASET=
+* V751  *acm* 5/19 Ticket 1931; don't try to translate the delta value in LO:HI:DEL
+*                  from a formatted string.  It's just a number.
 
 * specifiers may give coordinate in subscript units (/I,/J,/K,/L) or
 * may give coordinate in "world" units (/X,/Y,/Z,/T)
@@ -1081,12 +1083,10 @@ c	            axis = TM_GET_LINENUM( name(:nend) )
 	cx_formatted(idim) = fmat_lo .OR. fmat_hi
 	
 * is there a third value given ?  (possibly implying a dynamic axis)
+* Issue 1931: can't be a formatted string in the third value that 
+* would need translating.  It's just delta in the units of the axis.
 	IF ( colon2 ) THEN
-	   CALL TRANSLATE_LIMIT
-     .		      ( text_buff(del_start:del_end), idim,
-     .			cx_by_ss( idim, mods_cx ),
-     .			cx_delta   ( idim, mods_cx ),
-     .			logical_dummy, cal_id, status )
+	   READ ( text_buff(del_start:del_end),* , ERR=5000 ) cx_delta(idim, mods_cx)
 	   IF ( status .NE. ferr_ok ) RETURN
 
 * get the dynamic regridding transformation, e.g. x=lo:hi:del@tran

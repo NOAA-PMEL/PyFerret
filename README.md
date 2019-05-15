@@ -40,6 +40,14 @@ Note that this only installs the ferretmagic module for PyFerret;
 it does not install PyFerret.
 
 ## Anaconda Installation - Linux, OS X, and Windows 10/bash
+
+*Note: If you are updating an existing conda installation of PyFerret, you should
+only need to update the existing installation using `conda update -n FERRET pyferret`
+(assuming `FERRET` is the name of the environment used).
+Or you can install under a new environment name if you wish to keep multiple versions 
+of PyFerret.  
+You may first need to update conda itself `conda update --all` before updating PyFerret.*
+
 Download and install minicoda for your system from
 [https://docs.conda.io/en/latest/miniconda.html](https://docs.conda.io/en/latest/miniconda.html)
 Note that Windows 10 bash must use the Linux version!

@@ -182,7 +182,6 @@ tm_copy_grid.F\
 tm_copy_grid_w_line_use.F\
 tm_copy_line.F\
 tm_ctof_strng.F\
-tm_date.F\
 tm_date_ok.F\
 tm_date_reformat.F\
 tm_date_time.F\

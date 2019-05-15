@@ -71,6 +71,8 @@
 * V71 12/16 *acm* For ticket 2158: working with true monthly time axes.
 * v74  *acm* 3/18  Issue 1856, changes to allow for timesteps in fractional seconds
 * v7441*acm* 12/18 Issue 1910: Allow dates in commands to be in ISO 8601 form, yyyy-mm-dd
+* V751 *acm*  5/19 Minor cleanup.  No longer need TM_DATE.  Report time-string translation
+*                  errors for F or T axis
 
 * possible formats:
 * for subscript values ( subscript .EQ. .TRUE. ) :
@@ -198,7 +200,6 @@
 	ELSE
 * /T or /F
 * date/time string ?
-           is_t = TM_DATE(buff)
 	   IF ( TM_DATE_OK ( buff , cal_id)  ) THEN
 * ... time step cannot be evaluated until we know what axis this is on
 * ... save number of seconds from B.C. as a negative to flag later translation 
@@ -229,8 +230,9 @@
 	RETURN
 
 * error exit
- 5000	IF ( is_t ) THEN
-	   RETURN  ! already issued a message
+ 5000	IF ( idim.EQ.t_dim .OR. idim.EQ.f_dim) THEN
+	   buff = string(:slen)//' invalid date or not valid in this calendar'
+	   GOTO 5200
 	ELSE
 	   CALL ERRMSG( merr_badtimedef, status, string, *5900 )
 	ENDIF

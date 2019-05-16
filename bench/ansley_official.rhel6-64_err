@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/users/ansley/build/working/FERRET/fer/ferret_c
--rwxr-xr-x. 1 ansley tmap 115051312 May 16 13:59 /home/users/ansley/build/working/FERRET/fer/ferret_c
+-rwxr-xr-x. 1 ansley tmap 115049544 May 16 15:22 /home/users/ansley/build/working/FERRET/fer/ferret_c
 Using external functions from /home/users/ansley/build/working/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: issue 1932, conformability in multi-var listings, different grids
+Note: remove dup error lines in bn_iso8601_time
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DATA=. ./data
@@ -15,14 +15,14 @@ FER_DIR=.
 FER_DSETS=. ./data
 FER_EXTERNAL_FUNCTIONS=/home/users/ansley/build/working/FERRET/external_functions/ext_func
 FER_FONTS=/home/users/tmap/ferret/rhel6-x86_64-linux/ppl/fonts
-FER_GO=. ./v4jnls ./v5jnls ./v6jnls ./v7jnls ./genjnls . /home/users/tmap/ferret/rhel6-x86_64-linux/go /home/users/tmap/ferret/rhel6-x86_64-linux/examples /home/users/tmap/ferret/rhel6-x86_64-linux/contrib
+FER_GO=. ./v4jnls ./v5jnls ./v6jnls ./v7jnls ./genjnls . ./v4jnls ./v5jnls ./v6jnls ./v7jnls ./genjnls . /home/users/tmap/ferret/rhel6-x86_64-linux/go /home/users/tmap/ferret/rhel6-x86_64-linux/examples /home/users/tmap/ferret/rhel6-x86_64-linux/contrib
 FER_GRIDS=. ./data
 FER_LIBS=/home/users/tmap/ferret/rhel6-x86_64-linux/lib
 FER_PALETTE=. /home/users/tmap/ferret/rhel6-x86_64-linux/ppl
 FER_WEB_BROWSER=firefox
 PWD=/home/users/ansley/build/working/FERRET/bench
 PYFER_EXTERNAL_FUNCTIONS=/home/users/tmap/ferret/rhel6-x86_64-linux/ext_func/pylibs
-Beginning at Thu May 16 14:14:25 PDT 2019
+Beginning at Thu May 16 15:26:11 PDT 2019
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -6882,8 +6882,6 @@ list/t=82-9-6/k=6/x=-123/y=-3 temp
 list/t=1982-01-01/k=1/x=-123/y=-3 salt
  **ERROR: command syntax: 1982-15-09 invalid date or not valid in this calendar
 list/t=1982-15-09/k=1/x=-123/y=-3 salt
- **ERROR: command syntax: 1982-15-09 invalid date or not valid in this calendar
-list/t=1982-15-09/k=1/x=-123/y=-3 salt
  **ERROR: command syntax: 1982-11-31 invalid date or not valid in this calendar
 list/t=1982-11-31/k=1/x=-123/y=-3 salt
  **ERROR: illegal limits: "SALT" does not exist at T=1980-01-15 05:00
@@ -6891,18 +6889,10 @@ list/t=1982-11-31/k=1/x=-123/y=-3 salt
 list/t=15/k=1/x=-123/y=-3 salt
  **ERROR: command syntax: 15-09-1983 invalid date or not valid in this calendar
 list/t=15-09-1983/k=1/x=-123/y=-3 salt
- **ERROR: command syntax: 15-09-1983 invalid date or not valid in this calendar
-list/t=15-09-1983/k=1/x=-123/y=-3 salt
- **ERROR: command syntax: 01-15-2010 invalid date or not valid in this calendar
-define axis/t=01-15-2010:09-01-2010:1/units=days/t0=2010-01-01 taxis
  **ERROR: command syntax: 01-15-2010 invalid date or not valid in this calendar
 define axis/t=01-15-2010:09-01-2010:1/units=days/t0=2010-01-01 taxis
  **ERROR: command syntax: 2018-15-01 invalid date or not valid in this calendar
 define axis/t=2018-15-01:2019-01-01:1/units=days taxis
- **ERROR: command syntax: 2018-15-01 invalid date or not valid in this calendar
-define axis/t=2018-15-01:2019-01-01:1/units=days taxis
- **ERROR: command syntax: 2018--5-01 invalid date or not valid in this calendar
-define axis/t=2018--5-01:2019-01-01:1/units=days taxis
  **ERROR: command syntax: 2018--5-01 invalid date or not valid in this calendar
 define axis/t=2018--5-01:2019-01-01:1/units=days taxis
  **ERROR: command syntax: 2010-15-01 invalid date or not valid in this calendar
@@ -7181,4 +7171,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
            *** NOTE: Cannot create new windows when batch mode set
-Ended at Thu May 16 14:23:09 PDT 2019
+Ended at Thu May 16 15:35:19 PDT 2019

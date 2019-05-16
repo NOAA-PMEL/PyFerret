@@ -1,0 +1,20 @@
+! err75_listings_conformable.jnl
+! issue 1932  5/16/2019
+!
+! listing 1-D yvar, xvar, along with a 2-D variable twoDvar got the data in
+! twoDvar wrong, when the yvar is listed first; this triggers the listing 
+! to be done with Y varying fastest, but the data wasn't permuted to do that.
+
+let var = 100*{1,,3,4,,6,7,8,,10,11,12}
+define axis/x=1:4:1 xaxis
+define axis/y=1:3:1 yaxis
+let xyvar = x[gx=xaxis] + y[gy=yaxis]
+let testvar = reshape (var, xyvar)
+list testvar
+
+! this is ok x varying fastest in the 3-var listing
+list x[gx=testvar], y[gy=testvar], testvar
+
+! This was wrong, y varying fastest in the 3-var listing
+list y[gy=testvar], x[gx=testvar], testvar
+

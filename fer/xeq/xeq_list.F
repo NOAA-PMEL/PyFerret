@@ -160,6 +160,8 @@
 * v730 11/2017 *acm* new SAVE/ASGLOBAL to write a global attribute, see ticket 2060, issue 1332
 * V740  3/2018 *acm* issue 1863: LIST/APPEND w/o /FORM=cdf to a netCDF file is an error
 * V743 12/2018 *acm* issue 1907: LIST/CLOBBER/FORM=stream didn't clobber the file
+* V75   5/2019 *acm* issue 1932: For err540_write_order bug, (at loop 200) make the
+*                    change only for netCDF outputs not ascii multi-var listings
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -668,22 +670,25 @@ c     .		 .AND. .NOT.do_comma_del
 
 	IF ( all_at_once ) THEN
 * ... if no axis order was specified determine the permutation
-c bug fix: see err540_write_order.jnl move inside loop:
+*      bug fix: see err540_write_order.jnl move inside loop 
 * ... Ticket 1480: When writing to netCDF, test the region 
 *     on modulo axes 
 
-c	   IF (.NOT.permute) CALL GET_CX_DIMS(cx,ndim, perm )
+
+	   IF (.NOT.permute .AND. .NOT.do_cdf) CALL GET_CX_DIMS(cx,ndim, perm )
 	   DO 200 ilist = 1, nvars2list
-	      IF (.NOT.permute) CALL GET_CX_DIMS(my_cx(ilist),ndim,perm)
-	      CALL SHRINK_FOR_MODULO (my_cx(ilist), my_mr(ilist), do_cdf,
+	      
+              IF (.NOT.permute .AND.do_cdf) CALL GET_CX_DIMS(my_cx(ilist),ndim,perm)
+              CALL SHRINK_FOR_MODULO (my_cx(ilist), my_mr(ilist), do_cdf,
      .				      do_shrink)
-	      CALL CREATE_PERMUTATION(	my_cx  (ilist),
-     .					my_mr  (ilist),
-     .					perm, 
-     .					mr_perm(ilist), do_shrink, status )
-	      IF ( status .NE. ferr_ok ) GOTO 500
+              CALL CREATE_PERMUTATION(my_cx  (ilist),
+     .				      my_mr  (ilist),
+     .				      perm, 
+     .				      mr_perm(ilist), do_shrink, status )
+              IF ( status .NE. ferr_ok ) GOTO 500
               npermuted = npermuted + 1
  200	   CONTINUE
+ 
 
 * w/ the above fix, mr_perm is correct but perm needs to be reset.
 	   IF (.NOT.permute) CALL GET_CX_DIMS(cx,ndim, perm )

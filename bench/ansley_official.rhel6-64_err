@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/users/ansley/build/working/FERRET/fer/ferret_c
--rwxr-xr-x. 1 ansley tmap 115046469 May 13 17:47 /home/users/ansley/build/working/FERRET/fer/ferret_c
+-rwxr-xr-x. 1 ansley tmap 115049544 May 16 15:22 /home/users/ansley/build/working/FERRET/fer/ferret_c
 Using external functions from /home/users/ansley/build/working/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: issue 1931 date translation
+Note: remove dup error lines in bn_iso8601_time
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DATA=. ./data
@@ -15,14 +15,14 @@ FER_DIR=.
 FER_DSETS=. ./data
 FER_EXTERNAL_FUNCTIONS=/home/users/ansley/build/working/FERRET/external_functions/ext_func
 FER_FONTS=/home/users/tmap/ferret/rhel6-x86_64-linux/ppl/fonts
-FER_GO=. ./v4jnls ./v5jnls ./v6jnls ./v7jnls ./genjnls . /home/users/tmap/ferret/rhel6-x86_64-linux/go /home/users/tmap/ferret/rhel6-x86_64-linux/examples /home/users/tmap/ferret/rhel6-x86_64-linux/contrib
+FER_GO=. ./v4jnls ./v5jnls ./v6jnls ./v7jnls ./genjnls . ./v4jnls ./v5jnls ./v6jnls ./v7jnls ./genjnls . /home/users/tmap/ferret/rhel6-x86_64-linux/go /home/users/tmap/ferret/rhel6-x86_64-linux/examples /home/users/tmap/ferret/rhel6-x86_64-linux/contrib
 FER_GRIDS=. ./data
 FER_LIBS=/home/users/tmap/ferret/rhel6-x86_64-linux/lib
 FER_PALETTE=. /home/users/tmap/ferret/rhel6-x86_64-linux/ppl
 FER_WEB_BROWSER=firefox
 PWD=/home/users/ansley/build/working/FERRET/bench
 PYFER_EXTERNAL_FUNCTIONS=/home/users/tmap/ferret/rhel6-x86_64-linux/ext_func/pylibs
-Beginning at Mon May 13 17:48:08 PDT 2019
+Beginning at Thu May 16 15:26:11 PDT 2019
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -1335,9 +1335,11 @@ ooooooooooooooooooooooooooooooooooooooooooo
            *** NOTE: Axis is in use by grid G10X5
            *** NOTE: Not deleted: TIME1
            *** NOTE: Axis is in use by grid GHB1
+           *** NOTE: Not deleted: TIME2
+           *** NOTE: Axis is in use by grid GJR1
            *** NOTE: Not deleted: TIME5
            *** NOTE: Axis is in use by grid GQO1
-           *** NOTE: Not deleted: TIME2
+           *** NOTE: Not deleted: TIME6
            *** NOTE: Axis is in use by grid GCQ1
            *** NOTE: Not deleted: TAX
            *** NOTE: Axis is in use by grid GFORMAT
@@ -1399,7 +1401,7 @@ ooooooooooooooooooooooooooooooooooooooooooo
            *** NOTE: Axis is in use by grid G5DAY
            *** NOTE: Not deleted: PSYU
            *** NOTE: Axis is in use by grid G5DAY
-           *** NOTE: Not deleted: TIME6
+           *** NOTE: Not deleted: TIME7
            *** NOTE: Axis is in use by grid GXYT
            *** NOTE: Not deleted: TEST_IRREG
            *** NOTE: Axis is in use by grid (G015)
@@ -1467,9 +1469,11 @@ ooooooooooooooooooooooooooooooooooooooooooo
            *** NOTE: Axis is in use by grid G10X5
            *** NOTE: Not deleted: TIME1
            *** NOTE: Axis is in use by grid GHB1
+           *** NOTE: Not deleted: TIME2
+           *** NOTE: Axis is in use by grid GJR1
            *** NOTE: Not deleted: TIME5
            *** NOTE: Axis is in use by grid GQO1
-           *** NOTE: Not deleted: TIME2
+           *** NOTE: Not deleted: TIME6
            *** NOTE: Axis is in use by grid GCQ1
            *** NOTE: Not deleted: TAX
            *** NOTE: Axis is in use by grid GFORMAT
@@ -1531,7 +1535,7 @@ ooooooooooooooooooooooooooooooooooooooooooo
            *** NOTE: Axis is in use by grid G5DAY
            *** NOTE: Not deleted: PSYU
            *** NOTE: Axis is in use by grid G5DAY
-           *** NOTE: Not deleted: TIME6
+           *** NOTE: Not deleted: TIME7
            *** NOTE: Axis is in use by grid GXYT
            *** NOTE: Not deleted: PSZW
            *** NOTE: Axis is in use by grid G5_10
@@ -2195,10 +2199,10 @@ Starting test: bn_labwid.jnl
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
 Starting test: bn_redefine_taxis_mc.jnl
-Replacing definition of axis TIME10
+Replacing definition of axis TIME12
            *** NOTE: grid GHB2 used by data set coads_clim
            *** NOTE: Redefinition may alter apparent contents of data set
-Replacing definition of axis TIME10
+Replacing definition of axis TIME12
            *** NOTE: grid GHB2 used by data set coads_clim
            *** NOTE: Redefinition may alter apparent contents of data set
  PERMANENT data cleared from memory
@@ -2421,7 +2425,7 @@ ooooooooooooooooooooooooooooooooooooooooooo
            *** NOTE: Changing the value of attribute (PSZT1).positive
            *** NOTE: Changing the type of attribute (coadsx).modulo
            *** NOTE: Changing the value of attribute (coadsx).modulo
-           *** NOTE: Changing the value of attribute (TIME6).time_origin
+           *** NOTE: Changing the value of attribute (TIME7).time_origin
  **ERROR: command syntax: enclose coordinate variable name in parentheses
 list coadsx.units
  **ERROR: variable unknown or not in data set: COADSX.UNITS
@@ -2720,7 +2724,7 @@ ooooooooooooooooooooooooooooooooooooooooooo
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
            *** NOTE: /UNIT=MONTHS is ambiguous ... using 1/12 of 365.2425 days
-Replacing definition of axis TIME14
+Replacing definition of axis TIME16
            *** NOTE: grid GSQ1 used by data set coads_climatology
            *** NOTE: Redefinition may alter apparent contents of data set
  PERMANENT data cleared from memory
@@ -3512,7 +3516,7 @@ ooooooooooooooooooooooooooooooooooooooooooo
            *** NOTE: LON1_15: Writing scaled coordinates not implemented. Suggest using nco operators on output file to pack coord values
            *** NOTE: LAT1800_1800: Writing scaled coordinates not implemented. Suggest using nco operators on output file to pack coord values
            *** NOTE: ENS: Writing scaled coordinates not implemented. Suggest using nco operators on output file to pack coord values
-           *** NOTE: TIME20: Writing scaled coordinates not implemented. Suggest using nco operators on output file to pack coord values
+           *** NOTE: TIME21: Writing scaled coordinates not implemented. Suggest using nco operators on output file to pack coord values
            *** NOTE: Units on axis "ENS" are not recognized: count
            *** NOTE: They will not be convertible:
  PERMANENT data cleared from memory
@@ -6887,18 +6891,14 @@ list/t=15/k=1/x=-123/y=-3 salt
 list/t=15-09-1983/k=1/x=-123/y=-3 salt
  **ERROR: command syntax: 01-15-2010 invalid date or not valid in this calendar
 define axis/t=01-15-2010:09-01-2010:1/units=days/t0=2010-01-01 taxis
- **ERROR: command syntax: 09-01-2010 invalid date or not valid in this calendar
-define axis/t=01-15-2010:09-01-2010:1/units=days/t0=2010-01-01 taxis
-Replacing definition of axis taxis
  **ERROR: command syntax: 2018-15-01 invalid date or not valid in this calendar
 define axis/t=2018-15-01:2019-01-01:1/units=days taxis
-Replacing definition of axis taxis
  **ERROR: command syntax: 2018--5-01 invalid date or not valid in this calendar
 define axis/t=2018--5-01:2019-01-01:1/units=days taxis
  **ERROR: command syntax: 2010-15-01 invalid date or not valid in this calendar
-set axis/t0=2010-15-01 TIME111
+set axis/t0=2010-15-01 TIME112
  **ERROR: command syntax: invalid date string: 2010-15-01
-set axis/t0=2010-15-01 TIME111
+set axis/t0=2010-15-01 TIME112
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -7045,6 +7045,11 @@ ooooooooooooooooooooooooooooooooooooooooooo
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
+Replacing definition of axis xaxis
+Replacing definition of axis yaxis
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -7166,4 +7171,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
            *** NOTE: Cannot create new windows when batch mode set
-Ended at Mon May 13 17:55:20 PDT 2019
+Ended at Thu May 16 15:35:19 PDT 2019

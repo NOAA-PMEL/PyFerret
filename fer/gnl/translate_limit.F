@@ -231,8 +231,8 @@
 
 * error exit
  5000	IF ( idim.EQ.t_dim .OR. idim.EQ.f_dim) THEN
-	   buff = string(:slen)//' invalid date or not valid in this calendar'
-	   GOTO 5200
+	   status = ferr_syntax
+	   RETURN  ! already reported any error
 	ELSE
 	   CALL ERRMSG( merr_badtimedef, status, string, *5900 )
 	ENDIF

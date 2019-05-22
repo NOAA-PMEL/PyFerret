@@ -54,7 +54,7 @@ ENDIF
 DEFINE SYMBOL plot_command = ($plot_command)/NOLAB/OVER/VS
 
 ! IF it's not explicitly plot/sym=  THEN add /line.  By default plot/vs makes symbol plots
-IF `STRINDEX("($plot_command)", "sy") EQ 0` THEN DEFINE SYMBOL plot_command = ($plot_command)/line
+IF `STRINDEX("($plot_command)", "SY") EQ 0` THEN DEFINE SYMBOL plot_command = ($plot_command)/line
 
 
 LET lk_xrange = ($XAXIS_MAX)-(($XAXIS_MIN))

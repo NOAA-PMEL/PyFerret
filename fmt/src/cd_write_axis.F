@@ -134,6 +134,8 @@
 * V7.44 11/18 *acm* Issue 1905: add int64 as a netcdf data type, recognize 
 *                   other newer types 
 * v745 *acm* 12/18 Issue 1909, option to write dates in ISO8601 format
+* v75 *acm*   5/19 Issue 1933, recompute T0 datestring length after it
+*                  possibly was reformatted
 
 * argument definitions:
 *     dset    - dset (if netcdf file, for getting name and attribute 
@@ -695,7 +697,8 @@
      .                            datebuff, date_fmt_out,
      .                            .TRUE., status )
 
-            IF (attoutflag .EQ. 1) 
+            slen = TM_LENSTR1 (datebuff)
+	    IF (attoutflag .EQ. 1) 
      .         cdfstat = NF_PUT_ATT_TEXT( cdfid, axid, attname,
      .        	       slen, datebuff(:slen) )
 	ENDIF

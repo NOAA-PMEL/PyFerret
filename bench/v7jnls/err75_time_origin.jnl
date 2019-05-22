@@ -8,19 +8,48 @@ LET year = 1970 + INT((ii-1)/12)
 
 DEFINE AXIS/T0="1-JAN-1970"/EDGES/UNITS=days tmnth = DAYS1900(year,month,1) - offset1970
 LET mytime = _T[GT=tmnth]
+show axis tmnth
 SAVE /FILE=time_origin_1.nc /CLOBBER mytime
 CAN VAR mytime
 CAN AXIS tmnth
 
-SPAWN ncdump time_origin_1.nc 
+SPAWN ncdump time_origin_1.nc  | grep -i tmnth
 
 DEFINE AXIS/T0="01-JAN-1970"/EDGES/UNITS=days tmnth = DAYS1900(year,month,1) - offset1970
+show axis tmnth
+
 LET mytime = _T[GT=tmnth]
 SAVE /FILE=time_origin_01.nc /CLOBBER mytime
 CAN VAR mytime
 CAN AXIS tmnth
 
-SPAWN ncdump time_origin_01.nc 
+SPAWN ncdump time_origin_01.nc  | grep -i tmnth
+
+! or can define the axis with the time origin in ISO time
+DEFINE AXIS/T0="1970-01-01"/EDGES/UNITS=days tmnth = DAYS1900(year,month,1) - offset1970
+show axis tmnth
+
+LET mytime = _T[GT=tmnth]
+SAVE /FILE=time_origin_01.nc /CLOBBER mytime
+CAN VAR mytime
+CAN AXIS tmnth
+
+SPAWN ncdump time_origin_01.nc  | grep -i tmnth
+
+
+! and/or can output the time string in iso time
+
+DEFINE AXIS/T0="01-JAN-1970"/EDGES/UNITS=days tmnth = DAYS1900(year,month,1) - offset1970
+show axis tmnth
+
+LET mytime = _T[GT=tmnth]
+SET MODE DATE:ISO
+SAVE /FILE=time_origin_01.nc /CLOBBER mytime
+CAN VAR mytime
+CAN AXIS tmnth
+
+SPAWN ncdump time_origin_01.nc | grep -i tmnth
+
 
 CAN VAR year, month, offset1970, ii
-
+CANCEL MODE DATE

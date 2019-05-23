@@ -461,7 +461,6 @@ sh att/all temp3
 can var temp2
 let/units="degrees C"/title="my new TEMP"/bad=`temp,return=bad` temp2 = temp*2
 sh att/all temp2
-pause
 go bn_reset
  
 !-----

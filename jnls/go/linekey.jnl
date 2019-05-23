@@ -28,7 +28,10 @@
 !   plot/over/nolab/i=1:60/thick/size=0.16/line/sym=30/color=red sin(i/10)
 !   go linekey 1 "cosine" plot/thick/sym=20/color=black ur
 !   go linekey 2 "sine" plot/thick/size=0.16/line/sym=30/color=red ur
-
+!
+! NOTE:  For time plots, when running PyFerret, if you have issued SET TEXT for system fonts
+!        this script issues a CANCEL TEXT because the text is mis-located using SET TEXT.
+!
 ! For the legends drawn within the plot box, the first line is drawn nearest
 ! the upper or lower axis line of the plot, with each new line drawn below that 
 ! for upper-located legends or above for lower-located ones.
@@ -38,20 +41,28 @@
 ! with more lines added above that. For lower-located legends the first line is drawn
 ! just below the bottom axis with more lines added below that.
 
-query/ignore $1%<usage: go linekey line# title plot_command [location]%
-query/ignore $2%<usage: go go linekey line# title plot_command [location]%
-query/ignore $3%<usage: go go linekey line# title plot_command [location]%
+DEFINE SYMBOL lk_lnum = ($1)
+DEFINE SYMBOL lk_title = ($2%" "%)
+DEFINE SYMBOL plot_command = `upcase("($3)")`
+DEFINE SYMBOL lk_where = ($4)
+DEFINE SYMBOL lk_lsize = ($5"0")
+
 query/ignore $4%1|ul>1|ur>1|ll>1|lr>1|ulc>1|urc>1|llc>1|lrc>1|\
  <location must be ul, ur, ll, lr, ulc, urc, llc or lrc%
 
-
-DEFINE SYMBOL plot_command = `upcase("($3)")`
+! currently SET TEXT setting mis-positions the text on some plots (time-axis plots?)
+IF `($program_name"0|PyFerret>1|*>0") and ($AX_HORIZ%0|T>1|*>0%) or ($AX_VERT%0|T>1|*>0%)` THEN 
+   CANCEL TEXT
+ENDIF
 
 IF `substring("($plot_command)", 1,1) NE "P"` THEN 
   SAY Argument 3 must be a PLOT command, e.g. PLOT/COLOR=RED
   EXIT/SCRIPT
 ENDIF
 DEFINE SYMBOL plot_command = ($plot_command)/NOLAB/OVER/VS
+
+IF `($lk_lsize) EQ 0` THEN DEFINE SYMBOL lk_lsize = 0.11
+
 
 ! IF it's not explicitly plot/sym=  THEN add /line.  By default plot/vs makes symbol plots
 IF `STRINDEX("($plot_command)", "SY") EQ 0` THEN DEFINE SYMBOL plot_command = ($plot_command)/line
@@ -69,7 +80,7 @@ LET lk_ydel = 0.03/ lk_aspect
 LET lk_xdel = `lk_xdel/(($vp_xhi%1%)-($vp_xlo%0%))`
 LET lk_ydel = `lk_ydel/(($vp_yhi%1%)-($vp_ylo%0%))`
 
-IF `$4%1|ul>1|*>0|% EQ 1` THEN     ! left top
+IF `($lk_where%1|ul>1|*>0%) EQ 1` THEN     ! left top
 
    LET lk_x1pt = (0.5*lk_xdel)* lk_xrange + (($XAXIS_MIN))
    LET lk_x2pt = lk_xdel*lk_xrange + lk_x1pt
@@ -77,13 +88,14 @@ IF `$4%1|ul>1|*>0|% EQ 1` THEN     ! left top
    LET lk_yfac = (1-0.5*lk_ydel) - (($1)-1)* lk_ydel
    LET lk_y1pt = lk_yfac * lk_yrange + ($YAXIS_MIN)
    
-   LET lk_xlabloc = lk_x2pt + 0.02*lk_xrange
-
    ($plot_command) {`lk_x1pt`,`lk_x2pt`}, {`lk_y1pt`, `lk_y1pt`}
-   ANNOTATE/XPOS=`lk_xlabloc`/YPOS=`lk_y1pt`/HALIGN=-1/VALIGN=0/SIZE=0.11 "($2)"
+   
+   LET lk_xlabloc = lk_x2pt + 0.02*lk_xrange
+   IF ($AX_HORIZ%0|T>1|*>0%) THEN LET lk_xlabloc = ($PPL$XMAX1)+ 0.02*LK_XRANGE
+   
+   ANNOTATE/XPOS=`lk_xlabloc`/YPOS=`lk_y1pt`/HALIGN=-1/VALIGN=0/SIZE=($lk_lsize) "($lk_title)"
 
-
-ELIF `$4%1|ur>1|*>0|% EQ 1` THEN   ! right top
+ELIF `($lk_where%1|ur>1|*>0%) EQ 1` THEN   ! right top
 
    LET lk_x1pt = (1-1.5*lk_xdel)* lk_xrange + (($XAXIS_MIN))
    LET lk_x2pt = lk_xdel*lk_xrange + lk_x1pt
@@ -94,9 +106,13 @@ ELIF `$4%1|ur>1|*>0|% EQ 1` THEN   ! right top
    LET lk_xlabloc = lk_x1pt - 0.02*lk_xrange
 
    ($plot_command) {`lk_x1pt`,`lk_x2pt`}, {`lk_y1pt`, `lk_y1pt`}
-   ANNOTATE/XPOS=`lk_xlabloc`/YPOS=`lk_y1pt`/HALIGN=1/VALIGN=0/SIZE=0.11 "($2)"
+   
+   LET lk_xlabloc = lk_x1pt - 0.02*lk_xrange
+   IF ($AX_HORIZ%0|T>1|*>0%) THEN LET lk_xlabloc = ($PPL$XMAX1) - 0.06*LK_XRANGE
 
-ELIF `$4%1|ll>1|*>0|% EQ 1` THEN   ! left bottom
+   ANNOTATE/XPOS=`lk_xlabloc`/YPOS=`lk_y1pt`/HALIGN=1/VALIGN=0/SIZE=($lk_lsize) "($lk_title)"
+
+ELIF `($lk_where%1|ll>1|*>0%) EQ 1` THEN   ! left bottom
 
    LET lk_x1pt = (0.5*lk_xdel)* lk_xrange + (($XAXIS_MIN))
    LET lk_x2pt = lk_xdel*lk_xrange + lk_x1pt
@@ -104,12 +120,14 @@ ELIF `$4%1|ll>1|*>0|% EQ 1` THEN   ! left bottom
    LET lk_yfac = 0.5*lk_ydel + (($1)-1)* lk_ydel
    LET lk_y1pt = lk_yfac * lk_yrange + ($YAXIS_MIN)
    
-   LET lk_xlabloc = lk_x2pt + 0.02*lk_xrange
-
    ($plot_command) {`lk_x1pt`,`lk_x2pt`}, {`lk_y1pt`, `lk_y1pt`}
-   ANNOTATE/XPOS=`lk_xlabloc`/YPOS=`lk_y1pt`/HALIGN=-1/VALIGN=0/SIZE=0.11 "($2)"
 
-ELIF `$4%1|lr>1|*>0|% EQ 1` THEN   ! right bottom
+   LET lk_xlabloc = lk_x2pt + 0.02*lk_xrange
+   IF ($AX_HORIZ%0|T>1|*>0%) THEN LET lk_xlabloc = ($PPL$XMAX1)+ 0.02*LK_XRANGE
+   
+   ANNOTATE/XPOS=`lk_xlabloc`/YPOS=`lk_y1pt`/HALIGN=-1/VALIGN=0/SIZE=($lk_lsize) "($lk_title)"
+
+ELIF `($lk_where%1|lr>1|*>0%) EQ 1` THEN   ! right bottom
 
    LET lk_x1pt = (1-1.5*lk_xdel)* lk_xrange + (($XAXIS_MIN))
    LET lk_x2pt = lk_xdel*lk_xrange + lk_x1pt
@@ -117,19 +135,22 @@ ELIF `$4%1|lr>1|*>0|% EQ 1` THEN   ! right bottom
    LET lk_yfac = 0.5*lk_ydel + (($1)-1)* lk_ydel
    LET lk_y1pt = lk_yfac * lk_yrange + ($YAXIS_MIN)
    
-   LET lk_xlabloc = lk_x1pt - 0.02*lk_xrange
 
    ($plot_command) {`lk_x1pt`,`lk_x2pt`}, {`lk_y1pt`, `lk_y1pt`}
-   ANNOTATE/XPOS=`lk_xlabloc`/YPOS=`lk_y1pt`/HALIGN=1/VALIGN=0/SIZE=0.11 "($2)"
+   
+   LET lk_xlabloc = lk_x1pt - 0.02*lk_xrange
+   IF ($AX_HORIZ%0|T>1|*>0%) THEN LET lk_xlabloc = ($PPL$XMAX1) - 0.06*LK_XRANGE
+
+   ANNOTATE/XPOS=`lk_xlabloc`/YPOS=`lk_y1pt`/HALIGN=1/VALIGN=0/SIZE=($lk_lsize) "($lk_title)"
 
 ENDIF
 
 ! legends in the plot corners.  
 
 ! set up to draw outside the plot box
-IF `$4%|ulc>1|urc>1|llc>1|lrc>1|*>0|% EQ 1` THEN PPL WINDOW,OFF
+IF `($lk_where%|ulc>1|urc>1|llc>1|lrc>1|*>0%) EQ 1` THEN PPL WINDOW,OFF
 
-IF `$4%1|ulc>1|*>0|% EQ 1` THEN     ! left top
+IF `($lk_where%1|ulc>1|*>0%) EQ 1` THEN     ! left top
 
    LET lk_x1pt = (0.5*lk_xdel)* lk_xrange + (($XAXIS_MIN) - 4*lk_xdel*lk_xrange)
    LET lk_x2pt = lk_xdel*lk_xrange + lk_x1pt
@@ -137,13 +158,15 @@ IF `$4%1|ulc>1|*>0|% EQ 1` THEN     ! left top
    LET lk_yfac = (1-0.5*lk_ydel) + (($1)-1)* lk_ydel
    LET lk_y1pt = lk_yfac * lk_yrange + (($YAXIS_MIN) + 2*lk_ydel*lk_yrange)
    
-   LET lk_xlabloc = lk_x2pt + 0.02*lk_xrange
-
    ($plot_command) {`lk_x1pt`,`lk_x2pt`}, {`lk_y1pt`, `lk_y1pt`}
-   ANNOTATE/XPOS=`lk_xlabloc`/YPOS=`lk_y1pt`/HALIGN=-1/VALIGN=0/SIZE=0.11 "($2)"
+
+   LET lk_xlabloc = lk_x2pt + 0.02*lk_xrange
+   IF ($AX_HORIZ%0|T>1|*>0%) THEN LET lk_xlabloc = ($PPL$XMAX1)+ 0.02*LK_XRANGE
+   
+   ANNOTATE/XPOS=`lk_xlabloc`/YPOS=`lk_y1pt`/HALIGN=-1/VALIGN=0/SIZE=($lk_lsize) "($lk_title)"
 
 
-ELIF `$4%1|urc>1|*>0|% EQ 1` THEN   ! right top
+ELIF `($lk_where%1|urc>1|*>0%) EQ 1` THEN   ! right top
 
    LET lk_x1pt = (1-1.5*lk_xdel)* lk_xrange + (($XAXIS_MIN) + 4*lk_xdel*lk_xrange)
    LET lk_x2pt = lk_xdel*lk_xrange + lk_x1pt
@@ -151,12 +174,15 @@ ELIF `$4%1|urc>1|*>0|% EQ 1` THEN   ! right top
    LET lk_yfac = (1-0.5*lk_ydel) + (($1)-1)* lk_ydel
    LET lk_y1pt = lk_yfac * lk_yrange + (($YAXIS_MIN) + 2*lk_ydel*lk_yrange)
 
-   LET lk_xlabloc = lk_x1pt - 0.02*lk_xrange
-
    ($plot_command) {`lk_x1pt`,`lk_x2pt`}, {`lk_y1pt`, `lk_y1pt`}
-   ANNOTATE/XPOS=`lk_xlabloc`/YPOS=`lk_y1pt`/HALIGN=1/VALIGN=0/SIZE=0.11 "($2)"
+   
+   LET lk_xlabloc = lk_x1pt - 0.02*lk_xrange
+   IF ($AX_HORIZ%0|T>1|*>0%) THEN LET lk_xlabloc = ($PPL$XMAX1) - 0.06*LK_XRANGE
 
-ELIF `$4%1|llc>1|*>0|% EQ 1` THEN   ! left bottom
+   ANNOTATE/XPOS=`lk_xlabloc`/YPOS=`lk_y1pt`/HALIGN=1/VALIGN=0/SIZE=($lk_lsize) "($lk_title)"
+
+
+ELIF `($lk_where%1|llc>1|*>0%) EQ 1` THEN   ! left bottom
 
    LET lk_x1pt = (0.5*lk_xdel)* lk_xrange + (($XAXIS_MIN) - 4*lk_xdel*lk_xrange)
    LET lk_x2pt = lk_xdel*lk_xrange + lk_x1pt
@@ -164,12 +190,15 @@ ELIF `$4%1|llc>1|*>0|% EQ 1` THEN   ! left bottom
    LET lk_yfac = 0.5*lk_ydel - (($1)-1)* lk_ydel
    LET lk_y1pt = lk_yfac * lk_yrange + (($YAXIS_MIN) - 2.5*lk_ydel*lk_yrange)
    
-   LET lk_xlabloc = lk_x2pt + 0.02*lk_xrange
-
    ($plot_command) {`lk_x1pt`,`lk_x2pt`}, {`lk_y1pt`, `lk_y1pt`}
-   ANNOTATE/XPOS=`lk_xlabloc`/YPOS=`lk_y1pt`/HALIGN=-1/VALIGN=0/SIZE=0.11 "($2)"
 
-ELIF `$4%1|lrc>1|*>0|% EQ 1` THEN   ! right bottom
+   LET lk_xlabloc = lk_x2pt + 0.02*lk_xrange
+   IF ($AX_HORIZ%0|T>1|*>0%) THEN LET lk_xlabloc = ($PPL$XMAX1)+ 0.02*LK_XRANGE
+   
+   ANNOTATE/XPOS=`lk_xlabloc`/YPOS=`lk_y1pt`/HALIGN=-1/VALIGN=0/SIZE=($lk_lsize) "($lk_title)"
+
+
+ELIF `($lk_where%1|lrc>1|*>0%) EQ 1` THEN   ! right bottom
 
    LET lk_x1pt = (1-1.5*lk_xdel)* lk_xrange + (($XAXIS_MIN) + 4*lk_xdel*lk_xrange)
    LET lk_x2pt = lk_xdel*lk_xrange + lk_x1pt
@@ -177,10 +206,14 @@ ELIF `$4%1|lrc>1|*>0|% EQ 1` THEN   ! right bottom
    LET lk_yfac = 0.5*lk_ydel - (($1)-1)* lk_ydel
    LET lk_y1pt = lk_yfac * lk_yrange + (($YAXIS_MIN) - 2.5*lk_ydel*lk_yrange)
    
-   LET lk_xlabloc = lk_x1pt - 0.02*lk_xrange
 
    ($plot_command) {`lk_x1pt`,`lk_x2pt`}, {`lk_y1pt`, `lk_y1pt`}
-   ANNOTATE/XPOS=`lk_xlabloc`/YPOS=`lk_y1pt`/HALIGN=1/VALIGN=0/SIZE=0.11 "($2)"
+   
+   LET lk_xlabloc = lk_x1pt - 0.02*lk_xrange
+   IF ($AX_HORIZ%0|T>1|*>0%) THEN LET lk_xlabloc = ($PPL$XMAX1) - 0.06*LK_XRANGE
+
+   ANNOTATE/XPOS=`lk_xlabloc`/YPOS=`lk_y1pt`/HALIGN=1/VALIGN=0/SIZE=($lk_lsize) "($lk_title)"
+
 
 ENDIF
 

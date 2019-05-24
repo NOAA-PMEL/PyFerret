@@ -81,6 +81,8 @@
 *                    changes to tm_scale_nobad call.
 * V74  *acm*  2/2018 Issue # 1861, handling missing- and _FillValue with scale and offset
 *             4/2018 for the 1861 fix, need to deal with different missing_value and _FillValue
+* V751 *acm*  5/2019 Issue # 1935.  If there is a _FillValue but no missing_value don't treat
+*                    things as if missing_value = 0 ! 
 
 * include files
         include 'netcdf.inc'
@@ -126,7 +128,7 @@
 * *kob* explicit definitions not allowed on decl line in linux...
 *       moved it to parameter line 10/96
 	LOGICAL      NC_GET_ATTRIB, 
-     .               do_warn, already_scaled, got_it, tf2, 
+     .               do_warn, already_scaled, got_it, tf1, tf2, 
      .               coordvar
         INTEGER      TM_LENSTR1,
      .               cdfid, varid, idim, lasdim, cdfstat, dim, idim2,
@@ -370,7 +372,7 @@
 * If the file variable has a missing-flag use it, else the _FillValue
 
         IF ( cd_scaled( ivar ) ) THEN
-           tf2 = NC_GET_ATTRIB( dset, varid, '_FillValue',
+           tf1 = NC_GET_ATTRIB( dset, varid, '_FillValue',
      .                     do_warn, vname, maxlen, attlen, 
      .                     attoutflag, buff, fill_in)
            tf2 = NC_GET_ATTRIB( dset, varid, 'missing_value',
@@ -378,7 +380,10 @@
      .                     attoutflag, buff, bad_in)
 
 * Consolidate to one bad-value - needed for the fix to 1861...
-	   CALL TM_SWITCH_BAD ( fill_in, bad_in, var, totsize )
+
+	   IF (tf2) CALL TM_SWITCH_BAD ( fill_in, bad_in, var, totsize )
+	   IF (tf1 .AND. .NOT.tf2) bad_in = fill_in
+
 	   CALL TM_SCALE_SWITCH_BAD ( cd_scale_factor(ivar), cd_add_offset(ivar), 
      .                     bad_in, ds_bad_flag(ivar), var, totsize )
         ENDIF

@@ -13,3 +13,6 @@ GO err75_listings_conformable
 
 GO bn_reset
 GO err75_time_origin
+
+GO bn_reset
+GO err75_packed_no_missing

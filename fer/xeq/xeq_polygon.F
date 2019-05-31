@@ -74,6 +74,7 @@
 *                  style after a color plot and also after SHADE/SET; SHADE.
 * V702 1/17 *sh* for trac enhancement #2369 -- dynamic memory management 
 * v744 *acm* 11/18 Issue 1786: graticule lines & axes drawn if PLOT/OVER/AXES given
+* v751 *acm*  5/19 Issue 1937: POLY/MODULO mis-handled requested /LEVELS
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -448,7 +449,9 @@ c           nlev = 1
 	   ENDIF
 
 * Is a modulo replication set up?  If so go do it, no labels, no axes, no key,
-* same levels (which were computed with all the data, just not shown on orig. plot)
+* same levels. If auto-levels were used on the first plot, re-using them is 
+* fine. The levelsare computed with all the data. 
+
 	   IF (is_modx) THEN
 	      add_lon = 0.
 	      IF (do_mod_minus) THEN
@@ -463,8 +466,8 @@ c           nlev = 1
 		 overlay = .TRUE.
 		 noaxes = .TRUE.
 		 no_labels = .TRUE.
-		 do_key = .FALSE.
-		 iautoc = 1 ! Mark the levels as set
+		 CALL PPLCMD ( from, line, 0, 'SHAKEY 0,1', 1, 1 )
+		 iautoc = 0 ! reuse levels from last plot
 C Reset pplus lines
 		 LINEN=0
 		 IBASE=1

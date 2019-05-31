@@ -1,0 +1,41 @@
+    
+
+use coads_climatology
+let var =  sst - 16
+
+! save just one timestep
+save/clobber/L=1/y=30:60/file=a.nc var
+cancel data/all
+cancel var/all
+use a
+
+let yvar = ysequence(var)
+!=======================================
+! Create bounds of cells
+let lon_LL =  ysequence(var*0+xboxlo[g=var])
+let lon_UL =  ysequence(var*0+xboxlo[g=var])
+let lon_UR =  ysequence(var*0+xboxhi[g=var])
+let lon_LR =  ysequence(var*0+xboxhi[g=var])
+let lon_bounds0 = xcat(lon_LL,lon_UL)
+let lon_bounds1 = xcat(lon_bounds0,lon_UR)
+let lon_bounds  = xcat(lon_bounds1,lon_LR)
+let/units=degrees_east/title=LONGITUDE ylon = lon_bounds
+!=======================================
+! Create bounds of cells
+let lat_LL =  ysequence(var*0+yboxlo[g=var])
+let lat_UL =  ysequence(var*0+yboxhi[g=var])
+let lat_UR =  ysequence(var*0+yboxhi[g=var])
+let lat_LR =  ysequence(var*0+yboxlo[g=var])
+let lat_bounds0 = xcat(lat_LL,lat_UL)
+let lat_bounds1 = xcat(lat_bounds0,lat_UR)
+let lat_bounds  = xcat(lat_bounds1,lat_LR)
+let/units=degrees_north/title=LATITUDE ylat = lat_bounds
+
+! This plot is ok, uses levels computed on all the data, 
+! The overlay recomputes the same levels with all the data and plots the same key
+!  polygon/modulo/hlim=-10:60/vlim=30:60/line/fill/pal=rainbow/lev=25 ylon, ylat, yvar; set win/new
+
+! Here the overlay plot triggered by the /MODULO did not apply the specified levels
+! but just computed levels from the data and also drew the key for those new levels.
+polygon/modulo/hlim=-10:60/vlim=30:60/line/fill/pal=rainbow/lev=(-5,0,1)(0,2.6,0.2) ylon, ylat, yvar
+frame/file=poly_modulo_levels.gif

@@ -1,0 +1,236 @@
+! test_linekey.jnl
+! Examples using the "linekey.jnl" script for legend lines.
+
+
+cancel mode logo
+go margins 1.4  1.4  1.2  1.2
+
+! Draw an example pair of lines, and show all of the different legend
+! locations
+
+plot/i=1:60/thick/sym=20 cos(i/10)
+plot/over/nolab/i=1:60/thick/size=0.16/line/sym=30/color=red sin(i/10)
+
+go linekey.jnl 1 "title one" plot/thick/sym=20/color=black ur .12
+go linekey.jnl 2 "title two" plot/thick/size=0.16/line/sym=30/color=red ur .12
+
+go linekey.jnl 1 "title one" plot/thick/sym=20/color=black ul .14
+go linekey.jnl 2 "title two" plot/thick/size=0.16/line/sym=30/color=red ul .14
+
+go linekey.jnl 1 "title two" plot/thick/size=0.16/line/sym=30/color=red ll .10
+go linekey.jnl 2 "title one" plot/thick/sym=20/color=black ll .10
+
+go linekey.jnl 1 "title two" plot/thick/size=0.16/line/sym=30/color=red lr .16
+go linekey.jnl 2 "title one" plot/thick/sym=20/color=black lr .16
+
+! Now the legends outside the plot box
+go linekey.jnl 1 "title one" plot/thick/sym=20/color=black urc .12
+go linekey.jnl 2 "title two" plot/thick/size=0.16/line/sym=30/color=red urc .12
+
+go linekey.jnl 1 "title one" plot/thick/sym=20/color=black ulc .08
+go linekey.jnl 2 "title two" plot/thick/size=0.16/line/sym=30/color=red ulc .08
+
+go linekey.jnl 1 "title one" plot/thick/sym=20/color=black llc .18
+go linekey.jnl 2 "title two" plot/thick/size=0.16/line/sym=30/color=red llc .18
+
+go linekey.jnl 1 "title one" plot/thick/sym=20/color=black lrc .11
+go linekey.jnl 2 "title two" plot/thick/size=0.16/line/sym=30/color=red lrc .11
+
+message now show the example as in test_legend.jnl that used the older legend.jnl script
+
+cancel mode logo
+
+let one=3*x+2
+let two=x*x-5
+let three=0*x+3
+
+set region /x=-10:10
+
+set viewport ul
+go margins 1.4  1.4  1.2  1.2
+plot/title="test plot" one,two,three
+
+go linekey 1 "Variable one" plot/color=black ul
+go linekey 2 "Variable two"  plot/color=red ul
+go linekey 3 "Variable three" plot/color=green ul
+
+
+set viewport ur
+go margins 1.4  1.4  1.2  1.2
+plot/title="test plot" one,two,three
+
+go linekey 1 "Variable one" plot/color=black ur
+go linekey 2 "Variable two"  plot/color=red ur
+go linekey 3 "Variable three" plot/color=green ur
+
+
+set viewport ll
+go margins 1.4  1.4  1.2  1.2
+plot/title="test plot" one,two,three
+
+go linekey 1 "Variable one" plot/color=black ll
+go linekey 2 "Variable two"  plot/color=red ll
+go linekey 3 "Variable three" plot/color=green ll
+
+set viewport lr
+go margins 1.4  1.4  1.2  1.2
+plot/title="test plot" one,two,three
+
+go linekey 1 "Variable one" plot/color=black lr
+go linekey 2 "Variable two"  plot/color=red lr
+go linekey 3 "Variable three" plot/color=green lr
+
+message now draw legends outside the plot boxes.
+cancel view
+
+set viewport ul
+go margins 1.4  1.4  1.2  1.2
+plot/title="test plot" one,two,three
+
+go linekey 1 "Variable one" plot/color=black ulc
+go linekey 2 "Variable two"  plot/color=red ulc
+go linekey 3 "Variable three" plot/color=green ulc
+
+
+set viewport ur
+go margins 1.4  1.4  1.2  1.2
+plot/title="test plot" one,two,three
+
+go linekey 1 "Variable one" plot/color=black urc
+go linekey 2 "Variable two"  plot/color=red urc
+go linekey 3 "Variable three" plot/color=green urc
+
+
+set viewport ll
+go margins 1.4  1.4  1.2  1.2
+plot/title="test plot" one,two,three
+
+go linekey 1 "Variable one" plot/color=black llc
+go linekey 2 "Variable two"  plot/color=red llc
+go linekey 3 "Variable three" plot/color=green llc
+
+set viewport lr
+go margins 1.4  1.4  1.2  1.2
+plot/title="test plot" one,two,three
+
+go linekey 1 "Variable one" plot/color=black lrc
+go linekey 2 "Variable two"  plot/color=red lrc
+go linekey 3 "Variable three" plot/color=green lrc
+
+
+
+! Now tests on time plots
+cancel view
+
+use monthly_navy_winds
+
+plot/title=" "/t=1-jan-1982:31-dec-1985/x=180/y=20 uwnd
+plot/over/nolab/t=1-jan-1982:31-dec-1985/x=180/y=20/thick/size=0.16/line/sym=30/color=red vwnd
+
+go linekey.jnl 1 "`uwnd,return=title`" plot/thick/sym=20/color=black ur .12
+go linekey.jnl 2 "`vwnd,return=title`" plot/thick/size=0.16/line/sym=30/color=red ur .12
+
+go linekey.jnl 1 "`uwnd,return=title`" plot/thick/sym=20/color=black ul .14
+go linekey.jnl 2 "`vwnd,return=title`" plot/thick/size=0.16/line/sym=30/color=red ul .14
+
+go linekey.jnl 1 "title two" plot/thick/size=0.16/line/sym=30/color=red ll .10
+go linekey.jnl 2 "title one" plot/thick/sym=20/color=black ll .10
+
+go linekey.jnl 1 "title two" plot/thick/size=0.16/line/sym=30/color=red lr .16
+go linekey.jnl 2 "title one" plot/thick/sym=20/color=black lr .16
+
+! Now the legends outside the plot box
+go linekey.jnl 1 "`uwnd,return=title`" plot/thick/sym=20/color=black urc .12
+go linekey.jnl 2 "`vwnd,return=title`" plot/thick/size=0.16/line/sym=30/color=red urc .12
+
+go linekey.jnl 1 "`uwnd,return=title`" plot/thick/sym=20/color=black ulc .08
+go linekey.jnl 2 "`vwnd,return=title`" plot/thick/size=0.16/line/sym=30/color=red ulc .08
+
+go linekey.jnl 1 "`uwnd,return=title`" plot/thick/sym=20/color=black llc .18
+go linekey.jnl 2 "`vwnd,return=title`" plot/thick/size=0.16/line/sym=30/color=red llc .18
+
+go linekey.jnl 1 "`uwnd,return=title`" plot/thick/sym=20/color=black lrc .11
+go linekey.jnl 2 "`vwnd,return=title`" plot/thick/size=0.16/line/sym=30/color=red lrc .11
+
+message now show the example as in test_legend.jnl that used the older legend.jnl script
+
+cancel mode logo
+
+
+set region /x=-10:10
+
+set viewport ul
+go margins 1.4  1.4  1.2  1.2
+plot/title="`uwnd,return=title`"/t=1-jan-1982:31-dec-1985/x=120 uwnd[y=-20], uwnd[y=-0], uwnd[y=20]
+
+go linekey 1 "Y=-20" plot/color=black ul
+go linekey 2 "Y=0"  plot/color=red ul
+go linekey 3 "Y=20" plot/color=green ul
+
+
+set viewport ur
+go margins 1.4  1.4  1.2  1.2
+plot/title="`uwnd,return=title`"/t=1-jan-1982:31-dec-1985/x=120 uwnd[y=-20], uwnd[y=-0], uwnd[y=20]
+
+go linekey 1 "Y=-20" plot/color=black ur
+go linekey 2 "Y=0"  plot/color=red ur
+go linekey 3 "Y=20" plot/color=green ur
+
+
+set viewport ll
+go margins 1.4  1.4  1.2  1.2
+plot/title="`uwnd,return=title`"/t=1-jan-1982:31-dec-1985/x=120 uwnd[y=-20], uwnd[y=-0], uwnd[y=20]
+
+go linekey 1 "Y=-20" plot/color=black ll
+go linekey 2 "Y=0"  plot/color=red ll
+go linekey 3 "Y=20" plot/color=green ll
+
+set viewport lr
+go margins 1.4  1.4  1.2  1.2
+plot/title="`uwnd,return=title`"/t=1-jan-1982:31-dec-1985/x=120 uwnd[y=-20], uwnd[y=-0], uwnd[y=20]
+
+go linekey 1 "Y=-20" plot/color=black lr
+go linekey 2 "Y=0"  plot/color=red lr
+go linekey 3 "Y=20" plot/color=green lr
+
+message now draw legends outside the plot boxes.
+cancel view
+
+set viewport ul
+go margins 1.4  1.4  1.2  1.2
+plot/title="`uwnd,return=title`"/t=1-jan-1982:31-dec-1985/x=120 uwnd[y=-20], uwnd[y=-0], uwnd[y=20]
+
+go linekey 1 "Y=-20" plot/color=black ulc
+go linekey 2 "Y=0"  plot/color=red ulc
+go linekey 3 "Y=20" plot/color=green ulc
+
+
+set viewport ur
+go margins 1.4  1.4  1.2  1.2
+plot/title="`uwnd,return=title`"/t=1-jan-1982:31-dec-1985/x=120 uwnd[y=-20], uwnd[y=-0], uwnd[y=20]
+
+go linekey 1 "Y=-20" plot/color=black urc
+go linekey 2 "Y=0"  plot/color=red urc
+go linekey 3 "Y=20" plot/color=green urc
+
+
+set viewport ll
+go margins 1.4  1.4  1.2  1.2
+plot/title="`uwnd,return=title`"/t=1-jan-1982:31-dec-1985/x=120 uwnd[y=-20], uwnd[y=-0], uwnd[y=20]
+
+go linekey 1 "Y=-20" plot/color=black llc
+go linekey 2 "Y=0"  plot/color=red llc
+go linekey 3 "Y=20" plot/color=green llc
+
+set viewport lr
+go margins 1.4  1.4  1.2  1.2
+plot/title="`uwnd,return=title`"/t=1-jan-1982:31-dec-1985/x=120 uwnd[y=-20], uwnd[y=-0], uwnd[y=20]
+
+go linekey 1 "Y=-20" plot/color=black lrc
+go linekey 2 "Y=0"  plot/color=red lrc
+go linekey 3 "Y=20" plot/color=green lrc
+
+
+
+
+

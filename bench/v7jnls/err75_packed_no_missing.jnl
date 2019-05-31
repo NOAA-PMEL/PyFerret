@@ -1,0 +1,16 @@
+! err75_packed_no_missing.jnl
+! 
+! 5/24/2019: ticket 1935
+! 
+! The data is packed with a _FillValue of -32767s and no missing_value.
+! The fourth value is a valid value of 0, which unpacks to 180.
+! previously the scaling treated the variable as if it had a missing_value 
+! of 0 and _Fillvalue of -32767s and so put bad-flag into the 4th location.
+!
+! In the file, item 4 is 0
+sp ncdump -v var data/packed_no_missflag.nc
+
+! When unpacked, 0 should become 180.  Previously it was set to missing.
+use packed_no_missflag.nc
+list var
+

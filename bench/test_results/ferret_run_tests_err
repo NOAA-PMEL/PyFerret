@@ -548,8 +548,8 @@ load num
     To fulfill this request would exceed the current SET MEMORY/SIZE= limit of 25.6 megawords
     At the moment that the memory limit was reached
     memory was committed as follows:
-        - to objects used in computation: : 0 (0%)
-    The size of the requested object was: : 24000000000 (93750%)
+        - to objects used in computation: 0 (0%)
+    The size of the requested object was: 24000000000 (93750%)
 Replacing definition of axis YAX
 Replacing definition of axis ZAX
 Replacing definition of axis TAX
@@ -558,8 +558,8 @@ load num
     To fulfill this request would exceed the current SET MEMORY/SIZE= limit of 25.6 megawords
     At the moment that the memory limit was reached
     memory was committed as follows:
-        - to objects used in computation: : 0 (0%)
-    The size of the requested object was: : 1000000000 (3906%)
+        - to objects used in computation: 0 (0%)
+    The size of the requested object was: 1000000000 (3906%)
 Replacing definition of axis XAX
 Replacing definition of axis YAX
 Replacing definition of axis ZAX
@@ -2911,7 +2911,7 @@ ooooooooooooooooooooooooooooooooooooooooooo
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
  **ERROR: value out of legal range: illegal mode argument. Negative or > 1.e+9,
-set mode desperate 9999999999.
+set mode desperate 9999999999
  **ERROR: value out of legal range: illegal mode argument. Negative or > 1.e+9,
 set mode desperate 1234567890123456789
            *** NOTE: MODE DESPERATE is deprecated. Use MODE FRUGAL
@@ -5849,12 +5849,8 @@ list/t=15/k=1/x=-123/y=-3 salt
 list/t=15-09-1983/k=1/x=-123/y=-3 salt
  **ERROR: command syntax: 01-15-2010 invalid date or not valid in this calendar
 define axis/t=01-15-2010:09-01-2010:1/units=days/t0=2010-01-01 taxis
- **ERROR: command syntax: 09-01-2010 invalid date or not valid in this calendar
-define axis/t=01-15-2010:09-01-2010:1/units=days/t0=2010-01-01 taxis
-Replacing definition of axis TAXIS
  **ERROR: command syntax: 2018-15-01 invalid date or not valid in this calendar
 define axis/t=2018-15-01:2019-01-01:1/units=days taxis
-Replacing definition of axis TAXIS
  **ERROR: command syntax: 2018--5-01 invalid date or not valid in this calendar
 define axis/t=2018--5-01:2019-01-01:1/units=days taxis
  **ERROR: command syntax: 2010-15-01 invalid date or not valid in this calendar
@@ -6012,6 +6008,27 @@ Bailing out of external function "samplen_multi":
  **ERROR: error in external function
 list samplen_multi(a_2, b_1)
            *** NOTE: Ambiguous coordinates on X axis: SAMPLEN_MULTI(A_2D, C_2D)
+*** Running ferret script: bn751_bug_fixes.jnl
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
+ LISTing to file time_origin_1.nc
+ LISTing to file time_origin_01.nc
+ LISTing to file time_origin_01.nc
+ LISTing to file time_origin_01.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
+           *** NOTE: Axis coordinates are decreasing-ordered. Reversing ordering for axis latitude
 *** Running ferret script: bn_gif.jnl
  **ERROR: dimensions improperly specified: specified data is not a line
            - its a 2D region: "plot/i=1:10/j=1:20/nolabel i+j"

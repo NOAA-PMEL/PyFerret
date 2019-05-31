@@ -5754,8 +5754,6 @@ list/t=82-9-6/k=6/x=-123/y=-3 temp
 list/t=1982-01-01/k=1/x=-123/y=-3 salt
  **ERROR: command syntax: 1982-15-09 invalid date or not valid in this calendar
 list/t=1982-15-09/k=1/x=-123/y=-3 salt
- **ERROR: command syntax: 1982-15-09 invalid date or not valid in this calendar
-list/t=1982-15-09/k=1/x=-123/y=-3 salt
  **ERROR: command syntax: 1982-11-31 invalid date or not valid in this calendar
 list/t=1982-11-31/k=1/x=-123/y=-3 salt
  **ERROR: illegal limits: "SALT" does not exist at T=1980-01-15 05:00
@@ -5763,18 +5761,10 @@ list/t=1982-11-31/k=1/x=-123/y=-3 salt
 list/t=15/k=1/x=-123/y=-3 salt
  **ERROR: command syntax: 15-09-1983 invalid date or not valid in this calendar
 list/t=15-09-1983/k=1/x=-123/y=-3 salt
- **ERROR: command syntax: 15-09-1983 invalid date or not valid in this calendar
-list/t=15-09-1983/k=1/x=-123/y=-3 salt
- **ERROR: command syntax: 01-15-2010 invalid date or not valid in this calendar
-define axis/t=01-15-2010:09-01-2010:1/units=days/t0=2010-01-01 taxis
  **ERROR: command syntax: 01-15-2010 invalid date or not valid in this calendar
 define axis/t=01-15-2010:09-01-2010:1/units=days/t0=2010-01-01 taxis
  **ERROR: command syntax: 2018-15-01 invalid date or not valid in this calendar
 define axis/t=2018-15-01:2019-01-01:1/units=days taxis
- **ERROR: command syntax: 2018-15-01 invalid date or not valid in this calendar
-define axis/t=2018-15-01:2019-01-01:1/units=days taxis
- **ERROR: command syntax: 2018--5-01 invalid date or not valid in this calendar
-define axis/t=2018--5-01:2019-01-01:1/units=days taxis
  **ERROR: command syntax: 2018--5-01 invalid date or not valid in this calendar
 define axis/t=2018--5-01:2019-01-01:1/units=days taxis
  **ERROR: command syntax: 2010-15-01 invalid date or not valid in this calendar
@@ -5939,6 +5929,20 @@ ooooooooooooooooooooooooooooooooooooooooooo
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
+ LISTing to file time_origin_1.nc
+ LISTing to file time_origin_01.nc
+ LISTing to file time_origin_01.nc
+ LISTing to file time_origin_01.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
+           *** NOTE: Axis coordinates are decreasing-ordered. Reversing ordering for axis latitude
 *** Running ferret script: bn_gif_noremote.jnl
  **ERROR: dimensions improperly specified: specified data is not a line
            - its a 2D region: "plot/i=1:10/j=1:20/nolabel i+j"

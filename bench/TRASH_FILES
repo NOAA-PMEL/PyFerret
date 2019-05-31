@@ -180,6 +180,8 @@ test_string.cdf
 test_subspan_modulo.nc
 test.unf
 the_xml_file.xml
+time_origin_01.nc
+time_origin_1.nc
 tmp0.nc
 tmp1.nc
 tval.nc

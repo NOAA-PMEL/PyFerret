@@ -33,6 +33,7 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE.  
 *
 *  ywei:05/04 created to speed up get fortran string length rountine 
+* ACM  - 06/19 Issue 1939, test for carriage return or tab at the end of the line
 */
 
 #include <assert.h>
@@ -45,7 +46,7 @@ void FORTRAN(tm_get_strlen)(int *len_str, int *whole_len, char *in_string)
    assert(in_string);
 
    for(i=*whole_len-1;i>=0;i--){
-      if(in_string[i]!=' ')
+      if(in_string[i]!=' ' && in_string[i]!='\r' && in_string[i]!='\t')
          break;
       }
    *len_str=i+1;

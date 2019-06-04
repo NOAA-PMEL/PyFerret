@@ -1,0 +1,23 @@
+! err75_longname_cr.jnl
+! This dataset has DOS-style control character at the end of the
+! long_name long_name for variable dissolved_o2.  It garbled the listing
+!
+
+! Note the long_name attribute on dissolved_o2
+! Also note newlines in the long_name for nitrite and in the global history attribute.
+! Those are ok. This is often seen in the history attribute.
+
+sp ncdump -h data/bad_longname.nc
+
+use bad_longname.nc
+
+! Previously the header lines describing the variables said this, with the 
+! second line garbled:
+!
+!  Column  1: DEPTH is Depth (m)
+!  (micromoles/kg)OLVED_O2 is Dissolved Oxygen Concentration 1 mMoles/kg
+!  Column  3: NITRITE is NO2
+!  A two-line long_name (micromoles/kg)
+
+
+list depth, dissolved_o2, nitrite

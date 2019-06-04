@@ -46,21 +46,29 @@
 *
 * revision 0.00 - 05/05/87 - based on TM_LENSTR rev. 0.00
 * ywei - 05/04 call C tm_get_strlen function to speed up
-*
+* ACM  - 06/19 Issue 1939, test for linefeed or newline at the end of the line.
+
 * calling argument declarations:
 	CHARACTER*(*) line
 
 * internal variable declarations:
 	INTEGER	mright, len_str
+	CHARACTER*1 clast, lf, nl
+
+	PARAMETER     ( nl = CHAR(10))
+	PARAMETER     ( lf = CHAR(13))
 
 * initialize: find highest possible right hand limit of string
 	mright = LEN(line)
 
         CALL TM_GET_STRLEN(len_str, mright, line)
+
 * for all blanks
         IF(len_str .EQ. 0) THEN
             TM_LENSTR1 = 1 
         ELSE
+	    clast = line(len_str:len_str)
+	    IF (clast.EQ.nl .OR. clast.EQ.lf) len_str = MAX(1,len_str-1)
             TM_LENSTR1 = len_str
         ENDIF
 

@@ -23,4 +23,6 @@ GO err75_poly_modulo
 GO bn_reset
 GO err75_longname_cr
 
+GO bn_reset
+GO err75_vlimits
 

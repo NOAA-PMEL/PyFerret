@@ -43,6 +43,7 @@
 * 7/92 *sh* 
 * V530: *acm* 12/00 alternative calendar types; cal_id
 * v7441*acm* 12/18 Issue 1910: Allow dates in commands to be in ISO 8601 form, yyyy-mm-dd
+* v751 *acm*  6/19 Issue 1940: Require two dashes before trying to parse as an ISO 8601
 
 
      include 'tmap_errors.parm'
@@ -54,7 +55,8 @@
 
 * internal variable declarations:
       INTEGER	TM_LENSTR1, i, ib, yr, mth, day, hr, min, sec, 
-     .		slen, status
+     .		slen, dash1, dash2, status
+      REAL*8	value
       CHARACTER c*1, buff*26, buff2*26
 
 * local parameter declarations:
@@ -97,10 +99,22 @@
       CALL TM_BREAK_DATE( buff(:slen), cal_id,
      .                   yr, mth, day, hr, min, sec, status )
 
+c 300  CONTINUE
+
 * If couldn't parse the date, is it an ISO8601 formatted date? Is so translate 
 * the date string to default date format.
 
       IF (status .NE. merr_ok) THEN
+      
+* Require 2 dashes to translate as an ISO8601 date
+* Not starting with a dash, but at least with yy-
+
+	 TM_DATE_OK = .FALSE.
+	 dash1 = INDEX(buff, '-') 
+	 IF (dash1 .LT. 3) GOTO 5000 
+	 buff2 = buff(dash1+1:slen)
+	 dash2 = INDEX(buff(dash1+1:slen), '-')
+	 IF (dash2 .EQ. 0) GOTO 5000
          
 	 CALL TM_DATE_REFORMAT( buff, pdate_numslashnum, cal_id,
      .                          buff2, pdate_vax, .TRUE., status)
@@ -109,5 +123,5 @@
 
       TM_DATE_OK = status .EQ. merr_ok
 
-      RETURN
+ 5000 RETURN
       END

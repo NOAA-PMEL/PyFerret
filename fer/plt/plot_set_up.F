@@ -200,6 +200,9 @@
 * V7434 10/18 *acm* minor cleanup: initialize variable the_taxis
 * V75   10/18 *acm* ticket 1926 F-axis line plots were trying to get time-origin from t-axis
 *                   of the grid.
+* V751   6/19 *acm* Issue 1940, dependent variable on a time axis with /vlimits.  The call to
+*                   EQUAL_RANGE specified that the dependent-axis limits be translated as dates 
+*                   on the independent time axis.
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -261,7 +264,7 @@
      .			dep_axtyp, indep_axtyp, the_taxis, ribbon_var, 
      .			gap_var, iiunits, iaxis, hblk1, mvh_temp, 
      .			nkey_entries, t_axtyp, since_T0, itmp, igrd_save, 
-     .			icode
+     .			icode, dep_dir
 
 	INTEGER         TM_GET_CALENDAR_ID, cal_id_1, cal_id_2,
      .			cal_id_old, cal_id_new
@@ -1306,9 +1309,25 @@ c	   ENDIF
                  ENDIF
 	      ENDIF
 
+* Do the dependent variable(s) have units of time? If not then don't send 
+* dep_dim = t_dim to EQUAL_RANGE.  When the dependent data is on a time 
+* axis, then the_taxis is set, but we don't want to be translating limits 
+* for the dependent axis as time units.
+
+	      dep_dir = dep_dim
+	      IF (dep_dim .EQ. t_dim) THEN
+
+	         DO ipl = 1, nmv
+		    buff1 = VAR_UNITS( cx_list(ipl) )
+		    iunits = TM_UNIT_ID(buff1)
+		    IF ( iunits .GT. pun_last_time ) dep_dir = 0
+		 ENDDO
+		 
+	      ENDIF
+
 	      CALL EQUAL_RANGE(
      .			cmnd_buff(qual_start(pdeplim):qual_end(pdeplim)),
-     .			dep_dim, dep_min, dep_max, delta,
+     .			dep_dir, dep_min, dep_max, delta,
      .			formatted, range_rqd, cal_id_1, status )
 	      IF ( status .NE. ferr_OK ) GOTO 5000
 

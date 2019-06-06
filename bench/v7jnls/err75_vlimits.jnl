@@ -1,0 +1,10 @@
+! err75_vlimits.jnl
+! issue 1940.  The /vlimits were translated as dates for variables on a 
+! time axis.  Incorrect attempt to translate the date as an iso-8601 date
+!
+! The plot succeeded but issued an error  
+! **TMAP ERR: error in time line definition 1 is not valid in this calendar
+
+use coads_vwnd.cdf
+plot/i=90/j=65/vlim=-10:1.99E-2 vwnd
+

@@ -131,6 +131,7 @@
 * v745* acm*  2/19 Issue 400:  If a user var is LET var = filevar[d=1] then return the
 *                  correct info for `var,return=dset` and dsetnum and dsetpath.
 * V745  4/19 *acm* ticket 1916, special handling getting context for RETURN= outputs
+* V751  6/19 *acm* ticket 1929, don't chop off str_len when testing for reformatting at the end
 
         IMPLICIT NONE
 #include "netcdf.inc"
@@ -1286,9 +1287,12 @@ c		    ENDIF
 * If so see if we can return a nicer string with exponent. 
                    IF ( (INDEX(repl,'000') .GT. 2) .OR.
      .                  (INDEX(repl,'999') .GT. 2) ) THEN
-		      buff = TM_FMT_USER(result, use_digits, 22, str_len)
+		      buff = TM_FMT_USER(result, use_digits, 22, itmp)
 		      READ (buff,*) aval
-		      IF ( TM_DFPEQ(result, aval) ) repl = buff
+		      IF ( TM_DFPEQ(result, aval) ) THEN
+		         repl = buff
+			 str_len = itmp
+		      ENDIF
 		   ENDIF
 		      
 		ENDIF

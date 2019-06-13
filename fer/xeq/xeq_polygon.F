@@ -361,8 +361,9 @@ c           nlev = 1
 * protect colors already on-screen before a color overlay
 	IF ( overlay ) CALL PPL_SHASET( 'PROTECT' )
 
-* save old and reset to new color spectrum if requested
-	IF ( spectrum ) THEN
+* save old and reset to new color spectrum if requested (if not doing
+* a polygon/modulo operation).
+	IF ( spectrum .AND. add_lon.EQ.0) THEN
 	   CALL EQUAL_STR_LC( cmnd_buff(qual_start(sp):qual_end(sp)),
      .             fname, status )
 	   IF ( status .NE. ferr_ok ) RETURN

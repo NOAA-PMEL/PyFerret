@@ -395,8 +395,9 @@ c           nlev = 1
 *        PyFerret does not need to protect colors after using them
 *        IF ( overlay ) CALL PPL_SHASET( 'PROTECT' )
 
-* save old and reset to new color spectrum if requested
-	IF ( spectrum ) THEN
+* save old and reset to new color spectrum if requested (if not doing
+* a polygon/modulo operation).
+	IF ( spectrum .AND. add_lon.EQ.0) THEN
 	   CALL EQUAL_STR_LC( cmnd_buff(qual_start(sp):qual_end(sp)),
      .             fname, status )
 	   IF ( status .NE. ferr_ok ) RETURN

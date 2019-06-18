@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/users/ansley/build/working/FERRET/fer/ferret_c
--rwxr-xr-x. 1 ansley tmap 115051725 Jun 10 15:02 /home/users/ansley/build/working/FERRET/fer/ferret_c
+-rwxr-xr-x. 1 ansley tmap 115061423 Jun 17 16:01 /home/users/ansley/build/working/FERRET/fer/ferret_c
 Using external functions from /home/users/ansley/build/working/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: issue 1929
+Note: issue 1941
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DATA=. ./data
@@ -14,15 +14,15 @@ FER_DESCR=. ./data
 FER_DIR=.
 FER_DSETS=. ./data
 FER_EXTERNAL_FUNCTIONS=/home/users/ansley/build/working/FERRET/external_functions/ext_func
-FER_FONTS=/home/users/ansley/ferret_distributions/dunkel_DSG/ppl/fonts
-FER_GO=. ./v4jnls ./v5jnls ./v6jnls ./v7jnls ./genjnls . /home/users/ansley/ferret_distributions/dunkel_DSG/go /home/users/ansley/ferret_distributions/dunkel_DSG/examples /home/users/ansley/ferret_distributions/dunkel_DSG/contrib
+FER_FONTS=/home/users/tmap/ferret/rhel6-x86_64-linux/ppl/fonts
+FER_GO=. ./v4jnls ./v5jnls ./v6jnls ./v7jnls ./genjnls . ./v4jnls ./v5jnls ./v6jnls ./v7jnls ./genjnls . /home/users/tmap/ferret/rhel6-x86_64-linux/go /home/users/tmap/ferret/rhel6-x86_64-linux/examples /home/users/tmap/ferret/rhel6-x86_64-linux/contrib
 FER_GRIDS=. ./data
 FER_LIBS=/home/users/tmap/ferret/rhel6-x86_64-linux/lib
-FER_PALETTE=. /home/users/ansley/ferret_distributions/dunkel_DSG/ppl
+FER_PALETTE=. /home/users/tmap/ferret/rhel6-x86_64-linux/ppl
 FER_WEB_BROWSER=firefox
 PWD=/home/users/ansley/build/working/FERRET/bench
-PYFER_EXTERNAL_FUNCTIONS=/home/users/ansley/ferret_distributions/dunkel_DSG/ext_func/pylibs
-Beginning at Mon Jun 10 15:10:55 PDT 2019
+PYFER_EXTERNAL_FUNCTIONS=/home/users/tmap/ferret/rhel6-x86_64-linux/ext_func/pylibs
+Beginning at Mon Jun 17 16:18:15 PDT 2019
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -2199,10 +2199,10 @@ Starting test: bn_labwid.jnl
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
 Starting test: bn_redefine_taxis_mc.jnl
-Replacing definition of axis TIME12
+Replacing definition of axis TIME11
            *** NOTE: grid GHB2 used by data set coads_clim
            *** NOTE: Redefinition may alter apparent contents of data set
-Replacing definition of axis TIME12
+Replacing definition of axis TIME11
            *** NOTE: grid GHB2 used by data set coads_clim
            *** NOTE: Redefinition may alter apparent contents of data set
  PERMANENT data cleared from memory
@@ -2724,7 +2724,7 @@ ooooooooooooooooooooooooooooooooooooooooooo
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
            *** NOTE: /UNIT=MONTHS is ambiguous ... using 1/12 of 365.2425 days
-Replacing definition of axis TIME16
+Replacing definition of axis TIME15
            *** NOTE: grid GSQ1 used by data set coads_climatology
            *** NOTE: Redefinition may alter apparent contents of data set
  PERMANENT data cleared from memory
@@ -3516,7 +3516,7 @@ ooooooooooooooooooooooooooooooooooooooooooo
            *** NOTE: LON1_15: Writing scaled coordinates not implemented. Suggest using nco operators on output file to pack coord values
            *** NOTE: LAT1800_1800: Writing scaled coordinates not implemented. Suggest using nco operators on output file to pack coord values
            *** NOTE: ENS: Writing scaled coordinates not implemented. Suggest using nco operators on output file to pack coord values
-           *** NOTE: TIME21: Writing scaled coordinates not implemented. Suggest using nco operators on output file to pack coord values
+           *** NOTE: TIME20: Writing scaled coordinates not implemented. Suggest using nco operators on output file to pack coord values
            *** NOTE: Units on axis "ENS" are not recognized: count
            *** NOTE: They will not be convertible:
  PERMANENT data cleared from memory
@@ -7245,4 +7245,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
            *** NOTE: Cannot create new windows when batch mode set
-Ended at Mon Jun 10 15:19:37 PDT 2019
+Ended at Mon Jun 17 16:26:54 PDT 2019

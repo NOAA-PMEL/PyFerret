@@ -1,0 +1,18 @@
+! err75_z_reversed.jnl
+! Issue 1941
+
+! The file has the z-axis reversed, z listed in order 1000, 900, ...
+! The file also has 2-D bounds variables in the lon, lat direction
+! so grid formation needs to handle the nvert dimension.
+
+! make an identical copy of the file and open both
+
+sp cp data/z_reversed.nc z_copy.nc
+
+! This listing is correct
+use z_reversed
+list q
+
+! This listing was incorrect, listed q=1,2,3,4,5,6
+use z_copy
+list q

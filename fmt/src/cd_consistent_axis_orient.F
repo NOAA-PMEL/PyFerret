@@ -35,17 +35,22 @@
 *
 *
 * Checks that axis orientation is the same for all grids in the dataset
-! it looks like the routine does more than this ...
 
 * Programmer Ansley Manke
 * NOAA/PMEL, Seattle, WA - Thermal Modeling and Analysis Program
 
 * revision 0.0 - 1/11 
-* V67 1/11 *acm*  Ticket 1774. Changes for making sure axes have the same direction
-*                 in all  grids of a dataset.
+* V67 1/11 *acm*  Ticket 1774. (Git issue 1046) Changes for making sure axes have the same 
+*                 direction in all  grids of a dataset.
 * V672 8/11 *acm* When reordering axes, dont wipe out an existing axis that is not being moved.
 * V674 2/12 *acm* 6D Ferret: use nferdims rather than 4 for dimension indexing
 * V698 3/16 *sh*  changed an array declaration to match grid_ceiling change
+* V751 6/19 *acm* Fix issue 1941 and comment at the end of GIT issue 1046. When this routine
+*                 is called to handle grids with axes in unknown directions for a second dataset, 
+*                 it was clobbering the negative sign on ds_ordering that indicates axis reversal 
+*                 is needed.  (in loop 230 ds_ordering(idim,tmvar) incorrectly set to 0)
+* V751 6/19 *acm* Also allocate all the working storage used by this routine dynamically,
+*                 cleaning up unnecessary space and processing time.
 
 * argument definitions:
 *      dset        - TMAP data set pointer
@@ -70,8 +75,7 @@
       include 'xdset_info.cd_equiv'
 
 * argument declarations
-      LOGICAL  reversed(max_lines:line_ceiling),
-     .         already_noted(max_lines:line_ceiling)
+      LOGICAL reversed(max_lines:line_ceiling)
       INTEGER dset, perm(*), status
 
 * local variable declarations:
@@ -81,50 +85,56 @@
      .        grid_save(nferdims), igrid1, ipos1, igrid2, ipos2, kk, 
      .        iaxis_last, iax, iorder, tmvar, ivar, vartyp, nvdims, 
      .        vdims(8), nvatts, vlen, istat, lastdim, tmplines(nferdims), 
-     .        i1, i2, iter, ndim, isave_order, ncheck
+     .        i1, i2, iter, ndim, isave_order, ncheck, g1, g2, l1, l2
       LOGICAL shift_ok, need_iterate, coordvar, all_outflag, permuted
-      REAL axes_out_of_order(100)
       CHARACTER vname*128
 
-      INTEGER grid_ndims (max_grids:grid_ceiling), 
-     .        line_use_dir(0:3000)
-
-
-! *sh* 3/2016 It looks as if experimental changes were made
-!    in this routine that became permanent parts of it:
-! 1. it contains explicit integer values 100, 1001, 3000, 500, 501
-!    that do not automatically adjust when the corresponding parameter values
-!    are adjusted
-! 2. it makes a copy of every grid -- the majority of which have nothing to do
-!    with this dataset ==> significant scalablity issue
-
-!      INTEGER copy_of_grids (nferdims, 1001)
-      INTEGER copy_of_grids (nferdims,grid_ceiling)   !!!! TEMPORARY  !!!! 
+      LOGICAL, allocatable :: already_noted (:)
+      INTEGER, allocatable :: grid_ndims (:)
+      INTEGER, allocatable :: line_use_dir (:)
+      INTEGER, allocatable :: copy_of_grids ( : , : ) 
+      
+      REAL, allocatable ::  axes_out_of_order(:)
 
       iter = 0
       reordered = 0
 
-! why are we copying grids that are not used by this dataset?
-      DO igrid = 501, grid_ceiling
-      DO idim = 1, nferdims
-         copy_of_grids(idim, igrid-500) = grid_line(idim, igrid)
-      ENDDO
+* Allocate temporary storage for storing grid info.
+* Count variables in this dataset and range of grids
+* Get range of line numbers.
+
+      g1 = max_dyn_grids
+      g2 = 0
+      l1 = max_dyn_lines
+      l2 = 0
+      DO tmvar = 1,maxvars
+         IF ( ds_var_setnum(tmvar) .EQ. dset ) THEN
+            igrid = ds_grid_number(tmvar)
+	    g1 = MIN(g1, igrid)
+	    g2 = MAX(g2, igrid)
+
+	    DO idim = 1, nferdims
+	       iaxis = grid_line(idim, igrid)
+	       IF (iaxis.NE.line_0) l1 = MIN(l1, iaxis)
+	       IF (iaxis.NE.line_0) l2 = MAX(l2, iaxis)
+	    ENDDO
+	 ENDIF
       ENDDO
 
-      DO i = max_lines,line_ceiling
-         already_noted = .FALSE.
-      ENDDO
+      ALLOCATE ( grid_ndims(g1:g2) )
+      ALLOCATE ( copy_of_grids(nferdims, g1:g2) )
 
-      DO i = 1, 100
-         axes_out_of_order(i) = 0.
-      ENDDO
+      ALLOCATE ( line_use_dir(l1:l2) )
+      ALLOCATE ( already_noted(l1:l2) )
+      ALLOCATE ( axes_out_of_order(l2-l1+1) )
 
-      DO i = 0, line_ceiling
-         line_use_dir(i) = 0
-      ENDDO
-      DO i = max_grids, grid_ceiling
-         grid_ndims(i) = 0
-      ENDDO
+* Initialize temporary storage
+
+      already_noted = .FALSE.
+      axes_out_of_order = 0.
+      line_use_dir = 0
+      grid_ndims = 0
+      copy_of_grids = 0
 
  1000 CONTINUE
       disordered = 0
@@ -283,6 +293,11 @@ c Find the grid which contains this axis and has the most dimensions.
          IF ( ds_var_setnum(tmvar) .NE. dset ) GOTO 250
          igrid = ds_grid_number(tmvar)
 
+! save a copy of the grid
+         DO idim = 1, nferdims
+            copy_of_grids(idim, igrid) = grid_line(idim, igrid)
+         ENDDO
+
 * Check.  Did we wind up with a different number of axes after
 * attempt to fix the grids?
 
@@ -306,7 +321,7 @@ c Find the grid which contains this axis and has the most dimensions.
 * and perhaps used to fix the file.
 
             DO 210 idim = 1, nferdims
-	       grid_line(idim,igrid) = copy_of_grids(idim,igrid-500)
+               grid_line(idim,igrid) = copy_of_grids(idim,igrid)
   210       CONTINUE 
  
          ENDIF
@@ -316,9 +331,7 @@ c Find the grid which contains this axis and has the most dimensions.
 	    iaxis = grid_line(idim, igrid)
 	    ds_grid_start(idim,tmvar) = 1
 	    ds_grid_end(idim,tmvar) = 1
-            IF (iaxis .EQ. 0) THEN
-	       ds_ordering(idim,tmvar) = 0
-	    ELSE
+            IF (iaxis .NE. 0) THEN
 	       ds_grid_end(idim,tmvar) = line_dim(iaxis)
 	       ndim = ndim + 1
 	       isave_order = ds_ordering(ndim,tmvar)  ! want to keep the sign
@@ -329,11 +342,13 @@ c Find the grid which contains this axis and has the most dimensions.
      .			      = -1 * ds_ordering(ndim,tmvar)
                ELSE
 	          IF ( perm(idim).NE.unspecified_int4 .AND. perm(idim).LT.0) THEN
-		  ds_ordering(ndim,tmvar) = -1 * ds_ordering(ndim,tmvar)
+		     ds_ordering(ndim,tmvar) = -1 * ds_ordering(ndim,tmvar)
+
                   ELSE   ! if already had a reversed coord indicated, save that.
                      IF ( (ABS(isave_order) .EQ. ABS(ds_ordering(ndim,tmvar)) )
      .	                 .AND.(isave_order .NE. ds_ordering(ndim,tmvar)) )
      .	               ds_ordering(ndim,tmvar) = isave_order
+
                   ENDIF
                ENDIF
 	    ENDIF
@@ -367,6 +382,14 @@ c Find the grid which contains this axis and has the most dimensions.
 
   250 CONTINUE
       ENDIF
+	  
+
+      DEALLOCATE ( grid_ndims )
+      DEALLOCATE ( copy_of_grids )
+
+      DEALLOCATE ( line_use_dir )
+      DEALLOCATE ( already_noted )
+      DEALLOCATE ( axes_out_of_order )
 
       RETURN
       END

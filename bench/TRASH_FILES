@@ -4,8 +4,8 @@
 1990-2010.nc
 1990.nc
 1a.dat
-2001+07.nc
 2001.07.nc
+2001+07.nc
 3a.dat
 492C19881104_dec.nc
 5a.dat
@@ -46,10 +46,10 @@ confuse_yz.nc
 confuse_yzt.nc
 conventions_history.nc
 d2.nc
-dat.dat
 data2009.nc
 data2010.nc
 data2011.nc
+dat.dat
 dummy1.string_tst
 dummy1.str_test
 dummy2.string_tst
@@ -101,8 +101,8 @@ longtitle.nc
 longvname.nc
 lonlat.dat
 lonlat.nc
-mixed_or_proleptic.nc
 manyvars.tsv
+mixed_or_proleptic.nc
 monthA.nc
 monthB.nc
 myfile.nc
@@ -128,8 +128,8 @@ other_file_vars.nc
 out.cdf
 out.nc
 out.xml
-permutedBinaryTest.dat
 permutedBinaryTest_byte.dat
+permutedBinaryTest.dat
 permutedBinaryTest_int.dat
 permutedBinaryTest_r4.dat
 permutedBinaryTest_short.dat
@@ -196,3 +196,4 @@ xyir.nc
 xz.nc
 z1.nc
 z2.nc
+z_copy.nc

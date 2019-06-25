@@ -9,17 +9,13 @@
 
 INCLUDES	= -I. -I../ef_utility -I../ef_utility/ferret_cmn
 
-CC		= $(shell which gcc)
 CFLAGS		= -fPIC -m64 -O -Ddouble_p $(INCLUDES)
 
-FC		= $(shell which gfortran)
-F77		= $(shell which gfortran)
 FFLAGS		= -fPIC -m64 -O -Ddouble_p -fno-second-underscore \
 		  -fno-backslash -fdollar-ok -ffixed-line-length-132 \
 		  -fdefault-real-8 -fdefault-double-8 -O $(INCLUDES)
 
-LD		= $(shell which gfortran)
-LD_DYN_FLAGS	= -fPIC -m64 -shared -Wl,--no-undefined
+LD_DYN_FLAGS	= -fPIC -m64 -shared
 # Some compilers add an OS spec between libpyferret and .so
 # This also takes care of whether to use lib or lib64
 LIBPYFERRET	= $(wildcard $(INSTALL_FER_DIR)/lib*/$(PYTHON_EXE)/site-packages/pyferret/libpyferret*.so)

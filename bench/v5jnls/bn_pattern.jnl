@@ -33,7 +33,6 @@ set win 2
 set data coads_climatology
 set data clim_airt_lev.cdf
 set reg/l=1:3/y=50s:60n/x=100e:60w
-set mode cal months
 
 set mode meta pattern_plot2.plt
 fill/lev=(0,33,3)/nolabel sst[l=@ave,d=1]
@@ -47,4 +46,5 @@ go land thick
 can win 2
 set win 1
 can mode meta
+set mode/last calendar
 set mode/last ignore

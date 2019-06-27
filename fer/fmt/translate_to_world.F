@@ -71,6 +71,7 @@
 * v74+ *acm* 11/18  Issue 1902, fractional seconds only when time units are seconds
 * v745 *acm* 12/18  Issue 1909, option to write dates in ISO8601 format
 * v7441*acm* 12/18 Issue 1910: Allow dates in commands to be in ISO 8601 form, yyyy-mm-dd
+* V751 6/19 *acm* TM_FMT rewrite: formatting of lon/lat coordinate strings
 
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
@@ -84,10 +85,11 @@
 	REAL*8		val
 
 * internal variable declarations:
-	CHARACTER	SECS_TO_DATE*20, TM_FMT*64, TM_SECS_TO_DATE*20, 
-     .                  code*1, xtra*16, buff*20
+	CHARACTER	SECS_TO_DATE*20, TM_FMT_TRIM*48, TM_SECS_TO_DATE*20, 
+     .                  code*1, xtra*32, buff*20
 	INTEGER		FIELD_WIDTH, TM_GET_CALENDAR_ID, TM_LENSTR1, 
-     .                  min_width, width, decim, slen, n2, cal_id, iv, status
+     .                  min_width, width, decim, slen, n2, cal_id, iv, 
+     .                  idx, nright, status
 	LOGICAL		GEOG_LABEL, fancy, use_sig_fig,
      .                  modulo, truncate, no_year
 	REAL		TSTEP_TO_SECS, val4, val4_orig, fval
@@ -101,7 +103,7 @@
 * initialize
         modulo     = .FALSE.
 	width	   = MIN( 30, LEN(string) )
-	use_sig_fig = ndec .LT. 0			! use TM_FMT
+	use_sig_fig = ndec .LT. 0
 	decim	   = ABS(ndec)
 	val4	   = val
         val4_orig  = val4
@@ -113,6 +115,7 @@
 
 * adjust precision to fit into field if necessary
 100	min_width = FIELD_WIDTH( val, grid, idim, decim, slen )
+ 
 	IF ( width .LT. min_width ) THEN
 	   IF ( decim .EQ. 0 ) THEN
 	      string = '*'		! too narrow to format
@@ -198,7 +201,7 @@ c	      IF (ndec .LE. 3) val4 = INT(val4 * 1000.D0)/1000.D0
                     fval = AINT(val)
                     IF (fval .NE. val) THEN
                        fval = val-fval
-                       xtra = TM_FMT(fval, 4, 16, n2)  
+                       xtra = TM_FMT_TRIM(fval, 4, 16, n2)  
                        IF (width-slen .GE. n2-1) 
      .                    string = string(:slen)//xtra(2:n2)
                     ELSE 
@@ -217,19 +220,25 @@ c	      IF (ndec .LE. 3) val4 = INT(val4 * 1000.D0)/1000.D0
 
 * create all strings except date/time here
 	IF ( use_sig_fig ) THEN
-	   string = TM_FMT( val4, decim, width, slen )
+	   string = TM_FMT_TRIM( val4, decim, width, slen )
 	ELSE
-	   string = TM_FMT( val4, -decim, width, slen )
+	   string = TM_FMT_TRIM( val4, -decim, width, slen )
 	ENDIF
+
+* Remove fractional zeros and trailing decimal point from non-exponentials
+
+        CALL TM_CLEANUP_NUM_STRING (string, slen)
 	string = string(:slen)//code
 
 * add parenthetical remark if modulo translation has occurred
         IF ( modulo ) THEN
 	   IF ( use_sig_fig ) THEN
-              xtra =  TM_FMT( val4_orig, decim, width, n2 )
+              xtra =  TM_FMT_TRIM( val4_orig, decim, width, n2 )
 	   ELSE
-              xtra =  TM_FMT( val4_orig, -decim, width, n2 )
+              xtra =  TM_FMT_TRIM( val4_orig, -decim, width, n2 )
 	   ENDIF
+	   CALL TM_CLEANUP_NUM_STRING (xtra, n2)
+
            IF ( LEN(string) .GE. slen+n2+3 ) 
      .                string = string(:slen+1)//'('//xtra(:n2)//')'
         ENDIF

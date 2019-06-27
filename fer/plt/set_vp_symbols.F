@@ -69,43 +69,43 @@ c        include 'PLT.INC'
 
 * internal variable declarations:
 	INTEGER slen
-	CHARACTER TM_FMT_SNGL*64, buff*24
+	CHARACTER TM_FMT_SNGL*48, buff*24
 
 	buff = TM_FMT_SNGL(scale,-3,8,slen) 
-	CALL PPLCMD ( from, line, 0, 'SET VP_SCALE '//buff, 1, 1 )
+	CALL PPLCMD ( from, line, 0, 'SET VP_SCALE '//buff(1:slen), 1, 1 )
  
 c	buff = TM_FMT_SNGL(vp_size,-3,8,slen) 
-c	CALL PPLCMD ( from, line, 0, 'SET VP_SIZE '//buff, 1, 1 )
+c	CALL PPLCMD ( from, line, 0, 'SET VP_SIZE '//buff(1:slen), 1, 1 )
 
 c	buff = TM_FMT_SNGL(xfrac,-3,8,slen) 
-c	CALL PPLCMD ( from, line, 0, 'SET VP_XSC '//buff, 1, 1 )
+c	CALL PPLCMD ( from, line, 0, 'SET VP_XSC '//buff(1:slen), 1, 1 )
 	
 c	buff = TM_FMT_SNGL(yfrac,-3,8,slen) 
-c	CALL PPLCMD ( from, line, 0, 'SET VP_YSC '//buff, 1, 1 )
+c	CALL PPLCMD ( from, line, 0, 'SET VP_YSC '//buff(1:slen), 1, 1 )
         
 c	buff = TM_FMT_SNGL(xspc_lo,-3,8,slen) 
-c	CALL PPLCMD ( from, line, 0, 'SET VP_XORG '//buff, 1, 1 )
+c	CALL PPLCMD ( from, line, 0, 'SET VP_XORG '//buff(1:slen), 1, 1 )
         
 	buff = TM_FMT_SNGL(xspc_hi,-3,8,slen) 
-	CALL PPLCMD ( from, line, 0, 'SET VP_RT_MARGIN '//buff, 1, 1 )
+	CALL PPLCMD ( from, line, 0, 'SET VP_RT_MARGIN '//buff(1:slen), 1, 1 )
         
 c	buff = TM_FMT_SNGL(yspc_lo,-3,8,slen) 
-c	CALL PPLCMD ( from, line, 0, 'SET VP_YORG '//buff, 1, 1 )
+c	CALL PPLCMD ( from, line, 0, 'SET VP_YORG '//buff(1:slen), 1, 1 )
         
 	buff = TM_FMT_SNGL(yspc_hi,-3,8,slen) 
-	CALL PPLCMD ( from, line, 0, 'SET VP_TOP_MARGIN '//buff, 1, 1 )
+	CALL PPLCMD ( from, line, 0, 'SET VP_TOP_MARGIN '//buff(1:slen), 1, 1 )
 
 	buff = TM_FMT_SNGL(xov,-3,8,slen) 
-	CALL PPLCMD ( from, line, 0, 'SET VP_XLO '//buff, 1, 1 )
+	CALL PPLCMD ( from, line, 0, 'SET VP_XLO '//buff(1:slen), 1, 1 )
 
 	buff = TM_FMT_SNGL(xcv,-3,8,slen) 
-	CALL PPLCMD ( from, line, 0, 'SET VP_XHI '//buff, 1, 1 )
+	CALL PPLCMD ( from, line, 0, 'SET VP_XHI '//buff(1:slen), 1, 1 )
 
 	buff = TM_FMT_SNGL(yov,-3,8,slen) 
-	CALL PPLCMD ( from, line, 0, 'SET VP_YLO '//buff, 1, 1 )
+	CALL PPLCMD ( from, line, 0, 'SET VP_YLO '//buff(1:slen), 1, 1 )
 
 	buff = TM_FMT_SNGL(ycv,-3,8,slen) 
-	CALL PPLCMD ( from, line, 0, 'SET VP_YHI '//buff, 1, 1 )
+	CALL PPLCMD ( from, line, 0, 'SET VP_YHI '//buff(1:slen), 1, 1 )
 
 	RETURN
 	END

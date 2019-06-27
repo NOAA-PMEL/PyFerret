@@ -69,6 +69,7 @@
 *                  that return results on abstract axes.
 * v75  *acm* 3/18  Issue 1856, changes to allow for timesteps in fractional seconds
 * v74  *acm* 3/18  Backing off the fix for 1575, see comments 3/16/2018
+* V751 6/19 *acm* TM_FMT rewrite: formatting of lon/lat coordinate strings
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -87,9 +88,9 @@
 	INTEGER	  lun, idim, grid, orient, uvar
 
 * local variable declarations:
-	LOGICAL	BKWD_AXIS, GEOG_LABEL, ITSA_TRUEMONTH_AXIS, 
+	LOGICAL	BKWD_AXIS, GEOG_LABEL, ITSA_TRUEMONTH_AXIS, TM_FPEQ,
      .          calendar, original, true_month, ss_ok
-	INTEGER TM_LENSTR1, TM_SUBSC, TM_GET_CALENDAR_ID, 
+	INTEGER TM_LENSTR1, TM_SUBSC, TM_GET_CALENDAR_ID, STR_SAME,
      .          lo, hi, i, line, dlen, ndec, status,nlen, naxlen, 
      .          int1, slen, i1ss, inss,cal_id 
 	CHARACTER AX_TITLE*32, TM_FMT*64, lo_str*28, hi_str*28, direction*1,
@@ -127,7 +128,9 @@
 	   IF ( calendar ) THEN
 	      ndec = 5 		! accurate to minutes
 	   ELSE
-	      ndec = -sig_figs	! 5 sig places w/out extra zeros
+	      ndec = sig_figs	! 5 sig places w/out extra zeros
+	      ndec = -5  ! 
+	      IF (i .EQ. y_dim) ndec = -3
 	   ENDIF
 	   true_month = ITSA_TRUEMONTH_AXIS (line)
 	   IF (true_month) ndec = 2
@@ -136,11 +139,19 @@
 	   IF ( calendar ) THEN
 	      ndec = 5 
 	   ELSE
-	      ndec = -sig_figs
+	      ndec = sig_figs
+	      ndec = -5  ! 
+	      IF (i .EQ. y_dim) ndec = -3
 	   ENDIF
 	   IF (true_month) ndec = 2
 
 	   CALL TRANSLATE_TO_WORLD( hi_val8, idim, grid, ndec, hi_str )
+
+	   IF (.NOT.TM_FPEQ(lo_val8, hi_val8) .AND. STR_SAME (lo_str, hi_str) .EQ. 0) THEN
+	      ndec=9
+	      CALL TRANSLATE_TO_WORLD( lo_val8, idim, grid, ndec, lo_str )
+	      CALL TRANSLATE_TO_WORLD( hi_val8, idim, grid, ndec, hi_str )
+	   ENDIF
 
 * axis oriented backwards ?
 	   IF ( BKWD_AXIS(idim, grid) ) THEN

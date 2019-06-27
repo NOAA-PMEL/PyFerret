@@ -94,7 +94,7 @@
 	real		dx,dy,dz,z(nx,ny),znp,zmp
 
 	integer		status, i, j, cells(*), slen1, slen2
-        CHARACTER       TM_FMT_SNGL*64, buff1*20, buff2*20, err_msg*40
+        CHARACTER       TM_FMT*48, buff1*20, buff2*20, err_msg*40
 
 C       Add external stmt for linux port *jd* 12.96 RANGE is intrinsic fcn
         external range
@@ -161,8 +161,8 @@ C  Error exit when too many levels specified.
 C  Arrays LWGT, LDIG, and ZLEV are length ICNLEV=500
 
  5000   ii = ICNLEV
-        buff1 = TM_FMT_SNGL (REAL(ICNLEV), 20, 20, slen1)
-        buff2 = TM_FMT_SNGL (REAL(NLEV2), 20, 20, slen2)
+        buff1 = TM_FMT(DBLE(ICNLEV), 0, 20, slen1)
+        buff2 = TM_FMT(DBLE(NLEV2), 0, 20, slen2)
         err_msg = '# of shade levels > '// buff1(1:slen1) //
      .          '  (' // buff2(1:slen2) // ')'
         CALL errmsg (ferr_out_of_range, status, err_msg, *5002)

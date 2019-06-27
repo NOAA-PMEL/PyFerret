@@ -87,7 +87,7 @@
 * V741 *acm* 5/18 Promoting global attributes to a variable in ensembles: list 
 *                 the variables synthesized by aggregations with a separator ---
 * V743 *acm* 10/10 Fix issue 1897: datasets with E or F axis in any grids gets 6 columns
-*
+* V751 6/19 *acm* TM_FMT rewrite: formatting of lon/lat coordinate strings
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -119,8 +119,8 @@
      .			ivar, i, dlen, len, grid, taxis, slen(nferdims), tlen, 
      .			nfields, kvar, field_types(maxezvars), 
      .			cal_id, len_cal, j, num_indices, rlen(nferdims), iok,
-     .			listdims, idim, igrid, nv, varid
-	CHARACTER	LEFINT*16, LOHI_STRING*48, TM_FMT*64, 
+     .			listdims, idim, igrid, nv, varid, ndec
+	CHARACTER	LEFINT*16, LOHI_STRING*48, TM_FMT*48, 
      .			TM_GET_CAL*32, 
      .			line*255, cal_name*32
 	REAL*8		TM_WORLD, lo, hi
@@ -446,10 +446,15 @@
 	      DO 300 i = 1, listdims
 	         IF ( grid_line(i,grid) .NE. mnormal ) THEN
 
-	            IF (i .NE. 4) THEN  ! Skip time dim
+	            IF (i .NE. t_dim) THEN  ! Skip time dim
 
 	               lo = TM_WORLD( ds_grid_start(i,ivar), grid, i, box_lo_lim )
 	               hi = TM_WORLD( ds_grid_end  (i,ivar), grid, i, box_hi_lim )
+
+		       ndec = ax_dec_pt(i)
+
+		       ndec = -5  ! 
+		       IF (i .EQ. y_dim) ndec = -3
 #ifdef NO_PREPEND_STRING
 	               risc_buff = line(:len)
  	               len_rbuff = len
@@ -457,7 +462,7 @@
 #else
 		       line = line(:len) // ww_dim_name(i) // '=' //
 #endif
-     .			 LOHI_STRING( lo,hi,i,grid,':',ax_dec_pt(i),dlen )
+     .			 LOHI_STRING( lo,hi,i,grid,':',ndec,dlen )
      .			 // '  '
 	               len = MIN( 128, len+4+dlen )
 	            ENDIF ! Skip time dim

@@ -85,7 +85,7 @@
 	LOGICAL	ITS_UN_CACHED, FOUR_D_GRID
 	INTEGER TM_LENSTR1, MR_DIM_LEN,
      .		idim, ndim, mrlen, mrsizelen, dset, listdims
-	CHARACTER VAR_CODE*128, ALG_TRANS_CODE*3, ARG_STRING*12, TM_FMT*64,
+	CHARACTER VAR_CODE*128, ALG_TRANS_CODE*3, ARG_STRING*12, TM_FMT*48,
      .		  protection*4, shape*4, dname*14, gname*12, vname*128,
      .		  ww_lo(nferdims)*20, ww_hi(nferdims)*20, 
      .		  ss_lo(nferdims)*9, ss_hi(nferdims)*9,
@@ -169,8 +169,8 @@
 	ELSE
 	   gname = ']'
 	ENDIF
-	mrbuf      = TM_FMT( FLOAT(mr), 0, 4, mrlen )
-	mrsizebuf  = TM_FMT( FLOAT(mr_size(mr)), 0, 8, mrsizelen )
+	mrbuf      = TM_FMT(DBLE(mr), 0, 4, mrlen)
+	mrsizebuf  = TM_FMT(DBLE(mr_size(mr)), 0, 8, mrsizelen)
 	risc_buff  = ' '
 	WRITE ( risc_buff, 3010 )	vname(:TM_LENSTR1(vname)),
      .					dname(:TM_LENSTR1(dname)),

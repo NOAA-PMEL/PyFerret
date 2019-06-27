@@ -70,7 +70,7 @@
      .		big_cx, idim, nv, nu, type, slen, igrid, vtype, 
      .		i, num_indices, varid, iline, imemb, itype
 	INTEGER igrid_test
-	CHARACTER*64 TM_FMT, fset
+	CHARACTER*48 TM_FMT, fset
 
 * Is this variable already in the union aggregation? If so, do not add it.
 
@@ -214,7 +214,7 @@ c	      ds_var_code(nv)     = uvar_name_code(nu)
 	ENDIF  ! itsa_uvar 
 
  5000	RETURN
- 5100	fset = TM_FMT(FLOAT(iset), 5, 8, slen)
+ 5100	fset = TM_FMT(DBLE(iset), 0, 8, slen)
 	CALL WARN('Variable '//vname(:TM_LENSTR1(vname))//
      .		' from dataset '//fset(:slen)//
      .		' is already in the union dataset. Skipping it')

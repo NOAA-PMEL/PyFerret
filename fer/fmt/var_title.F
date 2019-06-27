@@ -94,7 +94,7 @@
      .                  attlen, attoutflag, status
         REAL            vals
 	CHARACTER	AX_TITLE*32, VAR_CODE*128, SANITARY_VAR_CODE*128, 
-     .                  TM_FMT*64, REPLACE_DEQ*180,   ! .GT. uvar_text_len
+     .                  TM_FMT*48, REPLACE_DEQ*180,   ! .GT. uvar_text_len
      .                  buff1*32, buff2*10, buff*2048, varname*128
 
 * initialize

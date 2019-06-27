@@ -68,7 +68,7 @@
 	LOGICAL	GEOG_LABEL, fancy
 	INTEGER	decim, left, nfrac
 	REAL	fval, val2
-	CHARACTER*64 TM_FMT, buff
+	CHARACTER*48 TM_FMT, buff
 
 * initialize
 	fancy = GEOG_LABEL( idim, grid )	! special axis formatting

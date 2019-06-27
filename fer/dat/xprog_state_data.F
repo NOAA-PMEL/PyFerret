@@ -126,6 +126,7 @@
 *                 SPAWN_STATUS returns the status value, used for SPAWN_OK and SPAWN_STATUS
 * v745 *acm* 12/18  Issue 1909, option to write dates in ISO8601 format
 *                  new mode datefmt for formatted date output, setting stored in date_fmt_out
+* V751 6/19 *acm* TM_FMT rewrite: formatting of lon/lat coordinate strings set to match previous
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
@@ -291,17 +292,17 @@
      .		(mode_arg  ( pmode_journal     ,i), i=1,mode_stack_size)
      .				/ mode_stack_size*unspecified_int4 /,
      .		(mode_arg  ( pmode_long_lab    ,i), i=1,mode_stack_size)
-     .				/ mode_stack_size* 1 /, ! 1 decimal place
+     .				/ mode_stack_size* 4 /, ! 4 sig. digs.  
      .		(mode_arg  ( pmode_lat_lab     ,i), i=1,mode_stack_size)
-     .				/ mode_stack_size* 1 /, ! 1 decimal place
+     .				/ mode_stack_size* 3 /, ! 3 sig. digs.  
      .		(mode_arg  ( pmode_depth_lab   ,i), i=1,mode_stack_size)
-     .				/ mode_stack_size*-4 /, ! 4 sig. digs. less 0's
+     .				/ mode_stack_size*4 /, ! 4 sig. digs. 
      .		(mode_arg  ( pmode_time_lab    ,i), i=1,mode_stack_size)
-     .				/ mode_stack_size*-5 /, ! dd-mmm-yyyy:hh:mm
+     .				/ mode_stack_size*5 /, ! dd-mmm-yyyy:hh:mm
      .		(mode_arg  ( pmode_e_lab     ,i), i=1,mode_stack_size)
-     .				/ mode_stack_size*1 / 
+     .				/ mode_stack_size*4 / 
      .		(mode_arg  ( pmode_f_lab     ,i), i=1,mode_stack_size)
-     .				/ mode_stack_size*-5 /  ! dd-mmm-yyyy:hh:mm
+     .				/ mode_stack_size*5 /  ! dd-mmm-yyyy:hh:mm
 	DATA	(mode_arg  ( pmode_font_ascii  ,i), i=1,mode_stack_size)
      .				/ mode_stack_size*unspecified_int4 /,
      .		(mode_arg  ( pmode_segment     ,i), i=1,mode_stack_size)

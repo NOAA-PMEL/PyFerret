@@ -51,6 +51,9 @@
 * V300: ifdef to work around "*" bug in READ (buff,*) in DEC f77 3.2.2
 * V420 (IBM/AIX port of V411): 10/5/95 - buffer "READ(var,*"
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
+* V751  *acm* 6/19 read directly from const_text instead of putting that
+*                  text into a smaller buffer. See issue 1929 allowing
+*                  e.g for `00000000000000000012345678901234567890`
 
         IMPLICIT NONE
 	include	'tmap_dims.parm'
@@ -66,7 +69,6 @@
 * internal variable declarations:
 	INTEGER		idim
 	REAL		const_buff
-	CHARACTER	buff*24
 
 * equivalences
 	REAL		cx_value( max_cx )
@@ -82,8 +84,7 @@
 
 * get the value of the constant
 * bug is that if a "*" follows the numeric text the error branch is taken
-        buff = const_text
-	READ ( buff, *, ERR=5100 ) const_buff
+	READ ( const_text, *, ERR=5100 ) const_buff
 	cx_value( const_cx ) = const_buff
 
 * flesh out context by removing all axes limits

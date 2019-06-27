@@ -64,7 +64,7 @@
       INTEGER maxlen, slen, ldigits
       REAL x1, x2, x3, x4, y1, y2, y3, y4
       REAL delx, xx, yy, xxx, yyy
-      CHARACTER TM_FMT_SNGL_DIGITS*64, text*10
+      CHARACTER TM_FMT_SNGL*48, text*10
 
 * If min and max values havent been set then return.
       IF (zmin .EQ. 1e33 .OR. zmax .EQ. -1*1e33) RETURN
@@ -87,7 +87,7 @@
 
          maxlen = 10
          ldigits = lab_digits+1
-         text = TM_FMT_SNGL_DIGITS (zmin,ldigits,maxlen,slen)
+         text = TM_FMT_SNGL(zmin,ldigits,maxlen,slen)
 	 xx = px(1)/1000.0 - xorg - (slen/2)* height
          yy = py(1)/1000.0 - yorg - 2.1* height
 	 
@@ -99,7 +99,7 @@
 
          maxlen = 10
          ldigits = lab_digits+1
-         text = TM_FMT_SNGL_DIGITS (zmax,ldigits,maxlen,slen)
+         text = TM_FMT_SNGL(zmax,ldigits,maxlen,slen)
 	 xx = px(1)/1000.0 - xorg - (slen/2)* height
          yy = py(3)/1000.0 - yorg + 1.1* height
 	 
@@ -111,7 +111,7 @@
 
          maxlen = 10
          ldigits = lab_digits+1
-         text = TM_FMT_SNGL_DIGITS (zmin,ldigits,maxlen,slen)
+         text = TM_FMT_SNGL(zmin,ldigits,maxlen,slen)
 	 xx = px(1)/1000.0 - xorg - (slen+1)* height
          yy = py(1)/1000.0 - yorg - 0.5* height
 	 
@@ -123,7 +123,7 @@
 
          maxlen = 10
          ldigits = lab_digits+1
-         text = TM_FMT_SNGL_DIGITS (zmax,ldigits,maxlen,slen)
+         text = TM_FMT_SNGL(zmax,ldigits,maxlen,slen)
 	 xx = px(3)/1000.0 - xorg + 0.5* height
          yy = py(3)/1000.0 - yorg - 0.5* height
 	 

@@ -61,7 +61,7 @@
       INTEGER maxlen, slen, ldigits
       REAL x1, x2, x3, x4, y1, y2, y3, y4
       REAL delx, xx, yy, xxx, yyy
-      CHARACTER TM_FMT_SNGL_DIGITS*64, text*10
+      CHARACTER TM_FMT_SNGL*48, text*10
 
 * save px and py values
       y1 = py(1)
@@ -98,7 +98,7 @@
       IF (annotate_key .GT. 0) THEN
          maxlen = 10
          ldigits = lab_digits+1
-         text = TM_FMT_SNGL_DIGITS (zmin,ldigits,maxlen,slen)
+         text = TM_FMT_SNGL(zmin,ldigits,maxlen,slen)
 	 xx = px(1)/1000.0 - xorg - (slen/2)* height
          yy = py(1)/1000.0 - yorg - 1.5* height
 	 

@@ -91,7 +91,7 @@
 
 
 	REAL*8	TWORLD, TM_WORLD, lo, hi, delta
-	CHARACTER TM_FMT*64, buff1*32, buff2*32
+	CHARACTER TM_FMT*48, buff1*32, buff2*32
 
 * initialize
 	status = ferr_ok

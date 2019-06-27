@@ -76,7 +76,7 @@
                                        
 	real		thickness, dotsize, frac, r_val, g_val, b_val
 	CHARACTER*100   err_msg
-	CHARACTER*64	TM_FMT_SNGL, note
+	CHARACTER*48	TM_FMT, note
 
 	integer		max_bundles
 	parameter	(max_bundles = 250)  ! matches MAX_BUNDL_TBL in xgks
@@ -153,26 +153,26 @@
 	    n2 = (low_index+(nthick-2)*(ncolors+1)+ncolors)
 	    n1 = (low_index+(nthick-3)*(ncolors+1)+ncolors)
 
-	    note = TM_FMT_SNGL (REAL(max_bundles), 12, 12, slen)
+	    note = TM_FMT(DBLE(max_bundles), 0, 12, slen)
 
 	    IF (n1. GT. max_bundles) THEN
 	       CALL WARN ('Graphics limits settings to '//note(:slen)//
      .	       ' line/thickness combinations plus existing spectrum colors')
-	       note = TM_FMT_SNGL (REAL(ncolors), 12, 12, slen)
+	       note = TM_FMT(DBLE(ncolors), 0, 12, slen)
 	       CALL WARN ('Cannot draw /THICK=1 lines with current number '//
      .	       'of color levels = '//note(:slen) )
      
 	    ELSE IF (n2. GT. max_bundles) THEN
 	       CALL WARN ('Graphics limits settings to '//note(:slen)//
      .	       ' line/thickness combinations plus existing spectrum colors')
-	       note = TM_FMT_SNGL (REAL(ncolors), 12, 12, slen)
+	       note = TM_FMT(DBLE(ncolors), 0, 12, slen)
 	       CALL WARN ('Cannot draw /THICK=2 lines with current number '//
      .	       'of color levels = '//note(:slen)//'; THICK=1 will be ok' )
 
 	    ELSE IF (n3. GT. max_bundles) THEN
 	       CALL WARN ('Graphics limits settings to '//note(:slen)//
      .	       ' line/thickness combinations plus existing spectrum colors')
-	       note = TM_FMT_SNGL (REAL(ncolors), 12, 12, slen)
+	       note = TM_FMT(DBLE(ncolors), 0, 12, slen)
 	       CALL WARN ('Cannot draw /THICK=3 lines with current number '//
      .	       'of color levels = '//note(:slen) //'; THICK=1 or 2 will be ok' )
 	    ENDIF

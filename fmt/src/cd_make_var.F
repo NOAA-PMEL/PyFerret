@@ -159,7 +159,7 @@
 * acm* vname to 128
       CHARACTER CD_CHILDAX_NAME*128, CD_AXIS_OUTNAME*128, CD_AXIS_NAME*128, 
      .		lname*128, cdfname*128, vname*128, gname*64, buff*128, 
-     .		DIMDIR*1, TM_FMT*64, c_str*12, d_str*12
+     .		DIMDIR*1, TM_FMT*48, c_str*12, d_str*12
 
       INTEGER dlen, clen
       INTEGER chunks(nferdims)  

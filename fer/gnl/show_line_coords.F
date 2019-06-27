@@ -213,7 +213,7 @@ c	          cx_hi_ww(idim,cx) = INT(cx_lo_ww(idim,cx)+1)
 	IF ( calendar ) THEN
 	   ndec = 6	! was 5 1/95
 	ELSE
-	   ndec = -sig_figs
+	   ndec = ABS(sig_figs)
 	ENDIF
 	IF (true_month) ndec = 2
 

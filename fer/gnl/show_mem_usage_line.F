@@ -54,15 +54,15 @@
 
 * internal variable declarations:
 	INTEGER TM_LENSTR1, len, i1, prelen
-	CHARACTER TM_FMT*64,
+	CHARACTER TM_FMT*48,
      .		  units*16, num_str*12
 
         IF (mem .GT. 1000000) THEN
-           num_str = TM_FMT( mem/1.E6, 8, 12, len)
+           num_str = TM_FMT( DBLE(mem)/1.D6, 8, 12, len)
            units = ' megawords'
            i1 = 10
         ELSE 
-           num_str = TM_FMT( FLOAT(mem), 8, 12, len)
+           num_str = TM_FMT( DBLE(mem), 8, 12, len)
            units = ' words'
            i1 = 6
         ENDIF

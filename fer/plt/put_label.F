@@ -99,7 +99,7 @@
 
 * internal variable declarations:
 	INTEGER		flen, lsym, ii
-	CHARACTER	TM_FMT*64, font*3, buf4*4,
+	CHARACTER	TM_FMT*48, font*3, buf4*4,
      .			labname(ppl_dset:ppl_calendar)*6
 	REAL 		xp, yp
 
@@ -211,7 +211,7 @@
 	   CALL PPLCMD ( from, line, 0, ppl_buff, 1, 1 )
 	   WRITE ( ppl_buff, 3100 ) nlabs_on, labht
 	   CALL PPLCMD ( from, line, 0, ppl_buff, 1, 1 )
-           buf4 = TM_FMT(DBLE(nlabs_on),3,3,flen)      ! for Unix/RISC
+           buf4 = TM_FMT(DBLE(nlabs_on),0,3,flen)      ! for Unix/RISC
 	   WRITE ( ppl_buff, 3500 ) buf4(:flen),  risc_buff(:lsym)
 	   CALL PPLCMD ( from, line, 0, ppl_buff, 1, 1 )
 * ... define a PLOT+ symbol containing the label number "SET LABNUM_X 4"

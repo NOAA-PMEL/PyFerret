@@ -87,7 +87,7 @@
      .                  vdims(8),  nvatts, status, blen, i, len_attbuff,
      .                  max_vals, attoutflag, all_outflag, attid, uvflag
         REAL            vals(1000)
-	CHARACTER	TM_FMT*64, GET_UNIQUE_DSET_NAME*1024, varname*512, 
+	CHARACTER	TM_FMT*48, GET_UNIQUE_DSET_NAME*1024, varname*512, 
      .                  attname*128, buff*14, dsname*1024, attbuff*10240, oflag*1
         CHARACTER*6     typ(0:13)
         PARAMETER       (len_attbuff = 10240, max_vals=1000)
@@ -202,7 +202,7 @@
                  ENDIF
 
                  slen = TM_LENSTR1(attname)
-                 buff = TM_FMT (FLOAT(attlen),7,14,llen)
+                 buff = TM_FMT (DBLE(attlen),0,14,llen)
 		 IF (slen .GT. 15) THEN
 
                     WRITE (risc_buff, 3300) varname(1:vlen), typ(vtype),
@@ -308,7 +308,7 @@
                  ENDIF
 
                  slen = TM_LENSTR1(attname)
-                 buff = TM_FMT (FLOAT(attlen),7,14,llen) 
+                 buff = TM_FMT (DBLE(attlen),0,14,llen) 
                 
                  IF (iatt .EQ. 1) THEN
                     IF (uvflag.EQ.0) THEN

@@ -203,8 +203,7 @@
 *                    name to 64 from 24 to match longer line_name
 * *acm* 6/06 - change axis name lengths to 128
       CHARACTER CD_CHILDAX_NAME*128, CD_AXIS_NAME*128, CD_AXIS_OUTNAME*128, 
-     .       TM_FMT*64,
-     .       name*128, name_in*128, units*48, datebuff*40, 
+     .       TM_FMT*48, name*128, name_in*128, units*48, datebuff*40, 
      .       buff*140, buff2*140, attname*128, dimstr*12, varstr*12, 
      .       name_bnds*140, axis_dir*1
 
@@ -1076,8 +1075,8 @@
      .       'Failed creating bounds for coord variable '
      .       //name(:nlen), no_errstring, *5900 )
 
- 5300 dimstr = TM_FMT(FLOAT(slen), 8, 12, dlen)
-      varstr = TM_FMT(FLOAT(axlen), 8, 12, vlen)
+ 5300 dimstr = TM_FMT(DBLE(slen), 0, 12, dlen)
+      varstr = TM_FMT(DBLE(axlen), 0, 12, vlen)
       CALL TM_ERRMSG
      . ( merr_linepredef, status, 'CD_WRITE_AXIS', unspecified_int4,
      .   unspecified_int4,

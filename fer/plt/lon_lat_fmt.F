@@ -53,7 +53,7 @@
 
 	INTEGER slen
 	REAL	val
-	CHARACTER TM_FMT*64, str*10
+	CHARACTER TM_FMT*48, str*10
 
 * longitude or latitude formatting
 	IF ( idim .EQ. x_dim .OR. idim .EQ. y_dim) THEN

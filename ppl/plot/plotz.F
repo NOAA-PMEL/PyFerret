@@ -119,7 +119,7 @@ C
 
 * Local declarations
         INTEGER   status, slen1, slen2, nlev1
-        CHARACTER TM_FMT_SNGL*64, buff1*20, buff2*20, err_msg*40
+        CHARACTER TM_FMT*48, buff1*20, buff2*20, err_msg*40
         REAL*8    DXFF, DXOF, DYFF, DYOF
         REAL      XFF, XOF, YFF, YOF, DMIN, DMAX, DZMAX
         LOGICAL   TM_FPEQ_SNGL
@@ -371,8 +371,8 @@ C  Error exit when too many levels specified.
 C  Arrays LWGT, LDIG, and ZLEV are length ICNLEV=500
 
  5000   ii = ICNLEV
-        buff1 = TM_FMT_SNGL (REAL(ICNLEV), 20, 20, slen1)
-        buff2 = TM_FMT_SNGL (REAL(NLEV2), 20, 20, slen2)
+        buff1 = TM_FMT(DBLE(ICNLEV), 0, 20, slen1)
+        buff2 = TM_FMT(DBLE(NLEV2), 0, 20, slen2)
         err_msg = '# of contour levels > '// buff1(1:slen1) //
      .          '  (' // buff2(1:slen2) // ')'
         CALL errmsg (ferr_out_of_range, status, err_msg, *5002)

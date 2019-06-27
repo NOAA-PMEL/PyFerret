@@ -56,7 +56,7 @@
 	REAL		newnum
 	INTEGER*4	suglen, outlen, addlen, uselen, ilne 
 	INTEGER*4	TM_LENSTR1
-	CHARACTER*64	TM_FMT, add_on
+	CHARACTER*48	TM_FMT, add_on
 *
 * initialize
 	suglen   = TM_LENSTR1(suggested_name)

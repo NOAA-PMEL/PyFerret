@@ -274,7 +274,7 @@
         REAL*8          TM_WW_AXLEN, GET_LINE_COORD, axwwlen, new_att_modulo_len
         REAL*8          delta, dlo, dhi, firstval, lastval
 	REAL		val_buf, cache_size_mb
-	CHARACTER	TM_FMT*64, title*1024, subtitle*64, arg*24,
+	CHARACTER	TM_FMT*48, title*1024, subtitle*64, arg*24,
      .			buff1*512, buff2*512, data_form*3, show_str*12,
      .                  varname*512, attname*128, new_att_calendar*10, 
      .                  new_att_t0*128, new_att_units*128, buff3*512,

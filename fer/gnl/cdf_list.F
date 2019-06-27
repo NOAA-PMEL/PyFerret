@@ -194,7 +194,7 @@
 
 	CHARACTER	SANITARY_VAR_CODE*128, VAR_TITLE*140,
      .                  VAR_TITLE_MOD*140, VAR_UNITS*64, CX_DIM_STR*48,
-     .                  TM_FMT*64, GET_STRING_ELEMENT*(max_len),
+     .                  TM_FMT*48, GET_STRING_ELEMENT*(max_len),
      .                  varcode*128, varname*128, buff*2048, revnum*12, 
      .                  c1*1, aname*128, short*128
 

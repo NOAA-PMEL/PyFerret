@@ -124,6 +124,7 @@ c	        IF (NL.EQ.1 .AND. J.LE.2) ZLEV(2) = zlev(1)
 *          negative values they run off the edges. Issue 1904
 *       *acm* 12/18 For vertical colorbars that are short, like in viewports, adjust
 *          the labeling interval so they aren't crowded.
+* v751  *acm* prevent tiny text in labels. Pre-compute max length for strings computed by TM_FMT_SNGL
 
 	include 	'parampl5_dat.decl'
 	include 	'PARAMPL5.DAT'
@@ -161,14 +162,14 @@ c	        IF (NL.EQ.1 .AND. J.LE.2) ZLEV(2) = zlev(1)
      .                  val, del, x_inc_inf, y_inc_inf, frac, fixx, inc_min, 
      .                  center_add
         real*8          val_n, val_last
-        character*64    TM_FMT_SNGL, TM_FMT_SNGL_DIGITS
+        character*48    TM_FMT_SNGL
         character*12    text, txt_out, blanks
         character*20    buff
 	logical		TM_FPEQ_SNGL, TM_DFPEQ, ITSA_AXIS_VIEW, TM_HAS_STRING,  
      .                  windof_hold, check_0, increase_digits, nofill, cont_key_keep, 
      .                  no_lines, is_viewport, have_neg, have_exp
 
-	external	TM_FMT_SNGL, TM_FMT_SNGL_DIGITS
+	external	TM_FMT_SNGL
 
 	equivalence 	(px(1),kpx(1)),(py(1),kpy(1))
 
@@ -243,7 +244,7 @@ c	        IF (NL.EQ.1 .AND. J.LE.2) ZLEV(2) = zlev(1)
 	   IF (center_key_labels) val = zlevsave(lev1)
            IF (TM_FPEQ_SNGL(val,0.) .AND. check_0) val = 0.
  	   buff = 
-     .        TM_FMT_SNGL_DIGITS (val,lab_digits,klab_len+5,str_len)
+     .        TM_FMT_SNGL(val,lab_digits,klab_len+5,str_len)
 
            READ (buff,*) val_last
            increase_digits = .FALSE.
@@ -259,11 +260,10 @@ c	        IF (NL.EQ.1 .AND. J.LE.2) ZLEV(2) = zlev(1)
              ENDIF
 	     IF (TM_FPEQ_SNGL(val,0.) .AND. check_0) val = 0.
 	     buff = 
-     .          TM_FMT_SNGL_DIGITS (val,lab_digits,klab_len+5,str_len)
+     .          TM_FMT_SNGL(val,lab_digits,klab_len+5,str_len)
 
              READ (buff,*) val_n
              IF ( TM_DFPEQ(val_last, val_n) ) increase_digits = .TRUE.
-             IF ( TM_HAS_STRING(buff, 'E-') ) increase_digits = .TRUE.
 
              val_last = val_n
              IF (max_len .lt. str_len) max_len = str_len
@@ -280,6 +280,10 @@ c	        IF (NL.EQ.1 .AND. J.LE.2) ZLEV(2) = zlev(1)
            ENDIF
            kount = kount + 1
         ENDDO
+
+* Account for magnitude and formatting of data in the labels as found by TM_FMT_SNGL
+
+	IF (max_len .GT. klab_len) lab_add = lab_add + (max_len-klab_len)
 
 	IF (vertical_key) GOTO 1000
 
@@ -436,7 +440,7 @@ c	IF ( no_lines ) cont_key = .TRUE.
 	val = zlev(lev1)
 	IF (center_key_labels) val = zlevsave(lev1)
 	IF (TM_FPEQ_SNGL(val,0.) .AND. check_0) val = 0.
-	text = TM_FMT_SNGL_DIGITS (val,lab_digits,klab_len+lab_add,str_len)  
+	text = TM_FMT_SNGL(val,lab_digits,klab_len+lab_add,str_len)  
         if (max_len .lt. str_len) max_len = str_len
         
         nhi = MAX(2,shd_levels+1)
@@ -502,8 +506,8 @@ c	IF ( no_lines ) cont_key = .TRUE.
               val = zlev(ndx)
               IF (center_key_labels) val = zlevsave(ndx)
               IF (TM_FPEQ_SNGL(val,0.) .AND. check_0) val = 0.
-	      text = TM_FMT_SNGL_DIGITS (val,lab_digits,klab_len+lab_add,str_len)
-	      if (max_len .lt. str_len) max_len = str_len
+              text = TM_FMT_SNGL(val,lab_digits,klab_len+lab_add,str_len)
+              if (max_len .lt. str_len) max_len = str_len
            ENDIF
 10	continue
 
@@ -523,7 +527,7 @@ c	IF ( no_lines ) cont_key = .TRUE.
 	      val = zlevsave(ndx)
 	   ENDIF
 	   IF (TM_FPEQ_SNGL(val,0.) .AND. check_0) val = 0.
-	   text = TM_FMT_SNGL_DIGITS (val,lab_digits,klab_len+lab_add,str_len)
+	   text = TM_FMT_SNGL(val,lab_digits,klab_len+lab_add,str_len)
 
 	   IF (ndx .EQ. 1 .AND. neginf) text = " "
 	   IF (ndx .EQ. levn+1 .AND. posinf) text = " "
@@ -694,7 +698,7 @@ c	IF ( no_lines ) cont_key = .TRUE.
 
         val = zlev(lev1)
         IF (TM_FPEQ_SNGL(val,0.) .AND. check_0) val = 0.
-	text = TM_FMT_SNGL_DIGITS (val,lab_digits,klab_len+lab_add,str_len)
+	text = TM_FMT_SNGL(val,lab_digits,klab_len+lab_add,str_len)
 
 	if (max_len .lt. str_len) max_len = str_len	
 
@@ -760,8 +764,8 @@ c	IF ( no_lines ) cont_key = .TRUE.
            IF (ndx .GE. lev1 .AND. ndx .LE. levn) THEN
               val = zlev(ndx)
               IF (TM_FPEQ_SNGL(val,0.) .AND. check_0) val = 0.
-	      text = TM_FMT_SNGL_DIGITS (val,lab_digits,klab_len+lab_add,str_len)
-	      if (max_len .lt. str_len) max_len = str_len
+              text = TM_FMT_SNGL(val,lab_digits,klab_len+lab_add,str_len)
+              if (max_len .lt. str_len) max_len = str_len
            ENDIF
 1010	continue
 
@@ -798,7 +802,7 @@ c	IF ( no_lines ) cont_key = .TRUE.
 
            IF (TM_FPEQ_SNGL(val,0.) .AND. check_0) val = 0.
            buff = 
-     .          TM_FMT_SNGL_DIGITS (val,lab_digits,klab_len+lab_add,str_len)
+     .          TM_FMT_SNGL(val,lab_digits,klab_len+lab_add,str_len)
            i = INDEX(buff, '.')
            i_dec = -1
            IF (i .GT. 0) i_dec = str_len-i
@@ -880,7 +884,7 @@ c	IF ( no_lines ) cont_key = .TRUE.
 	      val = zlevsave(ndx)
 	   ENDIF
 	   IF (TM_FPEQ_SNGL(val,0.) .AND. check_0) val = 0.
-	   text = TM_FMT_SNGL_DIGITS (val,lab_digits,klab_len+lab_add,str_len)
+	   text = TM_FMT_SNGL(val,lab_digits,klab_len+lab_add,str_len)
 	   IF (ndx .EQ. 1 .AND. neginf) text = " "
 	   IF (ndx .EQ. levn+1 .AND. posinf) text = " "
 

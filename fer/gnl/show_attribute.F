@@ -65,7 +65,7 @@
 
 * local variable declarations:
 	INTEGER  TM_LENSTR1, slen, llen, vlen, i, status
-        CHARACTER TM_FMT*64, vbuff*14, buff*2048, punc*2
+        CHARACTER TM_FMT*48, vbuff*14, buff*2048, punc*2
 
 * local parameter declarations:
 	INTEGER		sig_figs
@@ -106,7 +106,7 @@
 	      IF ( interrupted ) CALL ERRMSG
      .		   ( ferr_interrupt, status, ' ', *1000 )
 	   
-              vbuff = TM_FMT(attvals(i), sig_figs, 14, llen )
+              vbuff = TM_FMT(attvals(i), sig_figs, 14, llen)
               buff = buff(:slen)//punc//vbuff(:llen)
               slen = slen + 2 + llen
               punc = ', '

@@ -62,7 +62,7 @@
      .		rlen, nchar, status
 	REAL	xloc, yloc, halign, angle, size
 
-	CHARACTER TM_FMT*64, buff*20, labtxt*2048
+	CHARACTER TM_FMT*48, buff*20, labtxt*2048
 
 * initialize 
 

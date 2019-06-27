@@ -62,7 +62,7 @@
       INTEGER TM_LENSTR1, m, jj, nlevf, nlevc, nlev3, half_ncoarse, 
      .        slen, llen, dlen, hlen, if1, if2, i, k
 
-      CHARACTER TM_FMT_SNGL*64, lo_str*10, del_str*10, hi_str*10
+      CHARACTER TM_FMT_SNGL*48, lo_str*10, del_str*10, hi_str*10
 
       EXTERNAL RANGE
 

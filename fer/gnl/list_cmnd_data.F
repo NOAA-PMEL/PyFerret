@@ -97,6 +97,7 @@
 * V740 *acm*  3/18 Issue 950: Allow simplified I formats
 * V741 *acm*  4/18 Issue 1870: Check Format more closely when finding an I Format
 * V741 *acm*  4/18 Issue 1878: Ferret error if the WRITE results in an error
+* V751 6/19 *acm* TM_FMT rewrite: formatting of lon/lat coordinate strings
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -731,6 +732,7 @@
 * Get number of decimal places for formatting the row coordinates
 
            ndig(row_ax)= ax_dec_pt(row_ax)
+
            CALL NDIG_COORDS (grid, row_ax, lo1, hi1, del1, 
      .        bad_data, ndig(row_ax), ax_dec_pt(row_ax) )
 
@@ -900,6 +902,7 @@
      .				 cx_hi_ww(row_ax,cx),
      .				 small, places, row_dec )
 	   row_dec = row_dec + 1		! add 1 more, arbitrarily
+c	   IF ( GEOG_LABEL(col_ax,grid) ) row_dec = MAX(row_dec, ax_dec_pt(col_ax))
 	ENDIF
 
 * ... determine numeric format to fit nicely on the line

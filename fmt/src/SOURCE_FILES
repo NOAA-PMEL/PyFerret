@@ -172,6 +172,7 @@ tm_check_line_edges.F\
 tm_check_monthly_axis.F\
 tm_choose_read.F\
 tm_clean_filename.F\
+tm_cleanup_num_string.F\
 tm_close_set.F\
 tm_close_set_cond_deallo.F\
 tm_close_step.F\
@@ -210,9 +211,9 @@ tm_find_like_line.F\
 tm_find_line_slot.F\
 tm_firm_axis_orient.F\
 tm_fmt.F\
-tm_fmt_sngl_digits.F\
 tm_fmt_sngl.F\
-tm_fmt_user.F\
+tm_fmt_sngl_trim.F\
+tm_fmt_trim.F\
 tm_fp_convert.F\
 tm_fpeq_eps.F\
 tm_fpeq_eps_sngl.F\

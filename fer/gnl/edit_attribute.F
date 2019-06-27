@@ -266,7 +266,7 @@
      .        attlen_old, attype_old, attoutflag, cat, var, tmap_status,
      .        grid, mod_cx, attid
       REAL dummy, bad, scalefac, offset
-      CHARACTER GET_STRING_ELEMENT*2048, TM_FMT*64, attbuff*2048, 
+      CHARACTER GET_STRING_ELEMENT*2048, TM_FMT*48, attbuff*2048, 
      .          errbuff*256, varname*512, attname*128, aname*128
 
       CHARACTER	grid_name*64, title*128, units*64, newname*128
@@ -336,7 +336,7 @@
          IF (mr_type(mr) .NE. ptype_string) THEN
             attbuff = TM_FMT(
      .                grid_data(lo(1),lo(2),lo(3),lo(4),lo(5),lo(6)),
-     .                8, 40, slen)
+     .                8, 22, slen)
             IF (attlen .GT. 1) THEN 
                CALL WARN ('Requested string attribute using a '//
      .                    'numeric expression. Using first value and '//

@@ -82,7 +82,7 @@
      .            varid, vtype, nvdims, vdims(8), nvatts, blen, i, 
      .            len_attbuff, attoutflag, all_outflag, attid, 
      .            attlen, attype, iatt, iset, dset, alen
-	CHARACTER TM_FMT*64, show_str*16, lo_str*20, hi_str*20, 
+	CHARACTER TM_FMT*48, show_str*16, lo_str*20, hi_str*20, 
      .            title*32, outbuff*20, aname*128,
      .            attname*128, attbuff*2048, buff*20, outstring*2048,
      .            atype*10, axname*64
@@ -182,7 +182,7 @@
 
 * line dimension
 
-           show_str = TM_FMT(FLOAT(line_dim(line)), 7,16,slen)
+           show_str = TM_FMT(DBLE(line_dim(line)),0,16,slen)
 	   CALL ESCAPE_FOR_XML (show_str, outstring, slen)
            WRITE ( risc_buff, 2040 ) 'length'
 	   CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)

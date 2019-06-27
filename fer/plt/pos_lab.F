@@ -60,12 +60,12 @@
 	
 * local variable declarations:
 	INTEGER		TM_LENSTR1, grid
-	CHARACTER*64	TM_FMT
+	CHARACTER*48	TM_FMT
 	REAL*8		TM_WORLD
 
 * initialize string with subscript (e.g.) "I:22 " or "I:*"
 	IF ( ss .NE. unspecified_int4 ) THEN
-	   string = ss_dim_name(idim) // ':' // TM_FMT( FLOAT(ss),1,4,slen )
+	   string = ss_dim_name(idim) // ':' // TM_FMT( DBLE(ss),0,4,slen )
 	   slen = slen + 2
 	ELSE
 	   string = ss_dim_name(idim) // ':*'

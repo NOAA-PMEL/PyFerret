@@ -52,7 +52,7 @@
 
 * local variable declarations:
 	INTEGER		slen
-	CHARACTER	TM_FMT*64, outbuff*20
+	CHARACTER	TM_FMT*48, outbuff*20
         CHARACTER       attname*128, attbuff*2048, 
      .                  outstring*2048
 
@@ -73,7 +73,7 @@
 	WRITE ( risc_buff, 2030 ) outstring(:slen)
 	CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
 
-	attbuff = TM_FMT(FLOAT(dim_len), 7, 14, slen)
+	attbuff = TM_FMT(DBLE(dim_len), 0, 14, slen)
 	CALL ESCAPE_FOR_XML (attbuff, outstring, slen)
 	WRITE ( risc_buff, 2050 ) outstring(1:slen)
 	CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)

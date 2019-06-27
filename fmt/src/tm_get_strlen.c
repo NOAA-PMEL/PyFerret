@@ -34,22 +34,24 @@
 *
 *  ywei:05/04 created to speed up get fortran string length rountine 
 * ACM  - 06/19 Issue 1939, test for carriage return or tab at the end of the line
+* KMS  - 06/19 skip over anything that is "isspace"
 */
 
 #include <Python.h> /* make sure Python.h is first */
-#include <assert.h>
-#include <stdio.h>
+#include <ctype.h>
+#include <stdlib.h>
 #include "fmtprotos.h"
 
 void FORTRAN(tm_get_strlen)(int *len_str, int *whole_len, char *in_string)
 {
    int i;
-   assert(in_string);
 
-   for(i=*whole_len-1;i>=0;i--){
-      if(in_string[i]!=' ' && in_string[i]!='\r' && in_string[i]!='\t')
+   if ( in_string == NULL )
+      abort();
+   for (i = *whole_len - 1; i >= 0; i--) {
+      if ( ! isspace(in_string[i]) )
          break;
-      }
-   *len_str=i+1;
+   }
+   *len_str = i + 1;
    return;
 } 

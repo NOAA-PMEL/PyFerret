@@ -1,4 +1,4 @@
-	CHARACTER*64 FUNCTION TM_FMT( val, digits, max_len, str_len )
+      CHARACTER*48 FUNCTION TM_FMT(val, ndigits, max_len, str_len)
 
 *
 *
@@ -28,11 +28,11 @@
 *  THIS SOFTWARE IS PROVIDED BY NOAA/PMEL/TMAP "AS IS" AND ANY EXPRESS
 *  OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
 *  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
-*  ARE DISCLAIMED. IN NO EVENT SHALL NOAA/PMEL/TMAP BE LIABLE FOR ANY SPECIAL,
-*  INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER
+*  ARE DISCLAIMED. IN NO EVENT SHALL NOAA/PMEL/TMAP BE LIABLE FOR ANY
+*  SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER
 *  RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF
 *  CONTRACT, NEGLIGENCE OR OTHER TORTUOUS ACTION, ARISING OUT OF OR IN
-*  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
+*  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE.
 *
 *
 * convert the value val to a formatted string, left justified, not exceeding
@@ -44,23 +44,23 @@
 * written for VAX computer under VMS operating system
 *
 * revision 0.00 - 08/31/88
-* 	   0.10 - 7/21/89 - check if NINT increases digits
+*          0.10 -  7/21/89 - check if NINT increases digits
 *    1/27/95 - corrected tendency to put out tons of zeros to the right
 *    3/20/95 - the 1/27/95 correction causes this routine to blow up on
-*		OSF f77 **only** when compiled with -g
+*              OSF f77 **only** when compiled with -g
 * *sh* 9/95  - precision output bug for large values
 *     10/95  - fix missing leading zero on fixed point for some compilers (HP)
 *     12/95  - fix bug with 9.9995 displayed as 4 digits: one_m_eps made
-*		system dependent
+*              system dependent
 * *kob* 8/96 - check for a negative w/out a leading zero to prevent output
 *              looking like "0-.xxx" - for ibm and hp
-* *acm* 11/04  incoming value may be NaN (e.g. in a SHOW DATA/FULL if missing 
+* *acm* 11/04  incoming value may be NaN (e.g. in a SHOW DATA/FULL if missing
 *              flag is NaN)
 * *acm* 11/05  incoming value may be Inf (e.g. in a STAT, if data contains Inf)
 * *acm*  1/06  When val is 0, log10(aval) is infinite.  Causes crash on IRIX;
 *              take care of val=0 case individually.
-* *acm*  V6.1 3/08  further corrections to last fix when writing a value with 
-*              negative exponent
+* *acm*  V6.1 3/08 further corrections to last fix when writing a value with
+*                  negative exponent
 * *acm*  V6.5 1/10 Fix bug 1717: If the format is going to be (I0) make it (I1)
 * *acm*  V7.2 3/17 Floating-point formatted output could still have trailing zeros
 *                  after the decimal point. Remove them.
@@ -69,224 +69,226 @@
 *                  Write integer initially as Fn.0 values, then remove the '.'
 *                  Return CHARACTER*64 to simplify life since 64 is max size that
 *                  can be handled here. Remove the one_m_eps stuff for the VAX bug.
+* *kms*  v7.5 5/19 For negative values of ndigit (previously called digit), exactly
+*                  that many (as a positive number) digits after the decimal point
+*                  are returned.  Revised checks for zero values.
+*                  Use and return CHARACTER*48 - more than enough for even REAL*16
+* *acm*  v7.5 6/19 Check for fewer digits returned with same accuracy 
 
 * calling arguments:
-* val		- REAL*8 value to be converted
-* digits	- IF >0 maximum number of significant digits desired
-*	          ELSE  maximum number of decimal places desired
-* max_len	- longest allowable length for string to be returned
-* str_len	- (returned) actual length of the string generated
+* val      - REAL*8 value to be converted
+* ndigits  - IF positive, maximum number of significant digits desired
+*            IF zero, nearest integer value (no decimal point, no exponential)
+*            IF negative, exact number of digits after the decimal point (no exponential)
+* max_len  - longest allowable length for string to be returned
+* str_len  - (returned) actual length of the string generated
 
         IMPLICIT NONE
 
 * calling argument declarations:
-	INTEGER		digits, max_len, str_len
-	REAL*8		val
+        INTEGER ndigits, max_len, str_len
+        REAL*8  val
 
 * functions:
         INTEGER TM_CHECK_NAN, TM_CHECK_INF, TM_LENSTR1
 
 * local parameters:
         INTEGER     sig_min, max_str_len
-        PARAMETER ( sig_min     = 1,		! minimum sig. digits
-     .              max_str_len = 64 )
+        PARAMETER ( sig_min = 1, max_str_len = 48 )
 
 * internal variable declarations:
-	LOGICAL		negative, fixed_pt
-	INTEGER		slen, sig_left, sig_full, nleft, nright,
-     .			sig_max, xtra, sig_needed, pow10, added_pow10,
-     .			chk10, chk10_save, waste, ind,
-     .			iloop, width, prec_digits, right
-	REAL*8		full, full10, aval, l10
-	CHARACTER	fmt*10, dummy_fmt*10,
-     .                  outstring*(max_str_len), strend*(max_str_len)
-
-* special treatment for exact zero
-	IF ( val .EQ. 0.0 ) GOTO 1000
+        LOGICAL   TM_FPEQ, negative
+        INTEGER   slen, sig_max, pow10p, pow10p_save, sig_left, nleft,
+     .            sig_needed, nright, xtra, idx
+        REAL*8    aval, l10, full, full10
+        CHARACTER frmt*10, outstring*(max_str_len), strend*(max_str_len)
 
 * initialize
-
-	negative = val .LT. 0.0
-	fixed_pt = digits .LE. 0
-	aval     = ABS( val )
-	outstring   = ' '
-	added_pow10 = 0
+        negative     = val .LT. 0.0
+        aval         = ABS( val )
+        outstring    = ' '
 
 * maximum length of output string
 * (at least 1 character long but not longer than outstring or user-specified max)
-	slen = MAX( 1, MIN( max_str_len, max_len ) )
+        slen = MAX( 1, MIN( max_str_len, max_len ) )
 
 * If the value is NaN, set the string here
-        IF ( TM_CHECK_NAN(aval) .EQ. 1   ) THEN
-           IF (slen .GE. 3) THEN
-              outstring  = 'NaN'
-              str_len = 3
-           ELSE
-              outstring = '*'
-              str_len = 1
-           ENDIF
+        IF ( TM_CHECK_NAN(val) .EQ. 1   ) THEN
+           IF (slen .LT. 3) GOTO 5000
+           outstring  = 'NaN'
+           str_len = 3
            TM_FMT = outstring
-	   RETURN
+           RETURN
         ENDIF
 
 * If the value is Inf, set the string here
         IF ( TM_CHECK_INF(val)  .EQ. 1   ) THEN
-           IF (slen .GE. 3) THEN
-              outstring  = 'Inf'
-              str_len = 3
-           ELSE
-              outstring = '*'
-              str_len = 1
-           ENDIF
+           IF (slen .LT. 3) GOTO 5000
+           outstring  = 'Inf'
+           str_len = 3
            TM_FMT = outstring
-	   RETURN
+           RETURN
         ENDIF
+
+* Easy case where the exact number of fractional digits is specified
+        IF ( ndigits .LE. 0 ) THEN
+*          Just write the value in all space provided with the indicated
+*          number of fractional digits, then clean up.
+           WRITE ( frmt, 20 ) slen, ABS(ndigits)
+   20      FORMAT ( '(F',I2,'.',I2,')' )
+           WRITE ( outstring, frmt ) val
+           IF ( outstring(1:1) .EQ. '*' ) GOTO 5000
+           GOTO 400
+        ENDIF
+
+        aval         = ABS( val )
+        outstring    = ' '
+
+* The number of significant digits was specified - need to decide how to represent it
+
+*       Take care of exactly zero values
+        IF ( aval .EQ. 0.0 ) THEN
+           outstring = '0'
+           str_len = 1
+           TM_FMT = outstring
+           RETURN
+        ENDIF
+
+        sig_max = ndigits
 
 * location of leftmost digit (.01-->-1, 0.1-->0, 1.0-->1, etc.)
- 10	IF ( aval .NE. 0.0 ) THEN
-           l10 = LOG10(aval)
-        ELSE 
-           l10 = 0.0
+        l10 = LOG10(aval)
+        IF ( l10 .GE. 0.0 ) THEN
+           pow10p = INT(l10) + 1
+        ELSE
+           pow10p = INT(l10)
         ENDIF
-	IF ( l10 .GE. 0.0 ) THEN
-	   pow10 = INT(l10) + 1
-	ELSE
-	   pow10 = INT(l10)
-	ENDIF
-	chk10_save = pow10
-
-* compute total significant digits requested
- 50	IF ( fixed_pt ) THEN
-	   sig_max = pow10 + ABS(digits)
-	ELSE
-	   sig_max = digits
-	ENDIF
+   50   pow10p_save = pow10p
 
 * significant digits to left of the decimal point
-	sig_left = MAX( pow10, 0 )
+        sig_left = MAX(pow10p, 0)
 
 * actual characters to the left of the decimal point
-	nleft = MAX( sig_left, 1 )
-	IF ( negative ) nleft = nleft + 1	! minus sign
-
-* compute "wasted" space needed for minus signs, left zeros and decimal points
-	waste = nleft - sig_left			! sign and left zero
-	IF ( sig_max .GT. sig_left ) waste = waste + 1	! decimal point
-	IF ( pow10 .LT. 0 ) waste = waste + ABS(pow10)	! leading zeros
-
-* modify # significant digits: cannot request more digits than 
-* the "unwasted" string length but at least sig_min digits.
-
-        sig_full = MAX( sig_min, MIN( sig_max, slen-waste ) )
+        nleft = MAX(sig_left, 1)           ! at least a zero
+        IF ( negative ) nleft = nleft + 1  ! minus sign
 
 * create the nearest integer with all the possible digits
-
-        full = DNINT( aval * (10.0**(sig_full-pow10)) )
-
-* special check: eg. 99.9 --> 100.0 , changing leftmost digit
-	IF ( full .EQ. 10.0**sig_full ) THEN
-	   pow10 = pow10 + 1
-	   added_pow10 = added_pow10 + 1 
-	   GOTO 50
-	ENDIF
-
+        full = DNINT(aval * (10.0**(sig_max-pow10p)))
+* special check: eg. 99.9 --> 100.0 , changing leftmost digit count
+        IF ( ABS(full - 10.0**sig_max) .LT. 1.0E-7 ) THEN
+           pow10p = pow10p + 1
+           GOTO 50
+        ENDIF
 * get number of digits remaining after trimming off right hand zeros
-	full10 = 10.0 ** (sig_full-sig_min)
-	DO 100 sig_needed = sig_min, sig_full
-	   IF ( ABS(DMOD(full, full10)) .LT. 1.0E-7 ) GOTO 200
-	   full10 = full10 / 10.0
- 100	CONTINUE
-	sig_needed = sig_full
+        full10 = 10.0**(sig_max-sig_min)
+        DO sig_needed = sig_min, sig_max
+           IF ( ABS(DMOD(full, full10)) .LT. 1.0E-7 ) GOTO 200
+           full10 = full10 / 10.0
+        ENDDO
+        sig_needed = sig_max
+  200   nright = sig_needed - sig_left
+        IF ( pow10p .LT. 0 ) nright = nright + ABS(pow10p)  ! leading zeros
+        IF ( nright .LT. 0 ) nright = 0
 
 * * * * CREATE A FORMAT STRING AND WRITE THE RESULT * * *
-* EXACT ZERO - fixed point numbers that would be 0.000...
- 200	IF ( fixed_pt .AND. sig_min-pow10 .GT. slen-waste ) THEN
-	   GOTO 1000
+
+* compute the length if written as fixed point with unlimited string length
+        str_len = nleft + 1 + nright
 
 * EXPONENTIAL STRING
-* numbers too small for fixed point (eg. 0.0000025 represented as 0.0)
-* or too big for the string length  (eg. 150000 can't fit in 4 spaces)
-* must be written in exponential format
-	ELSEIF ( sig_min-pow10 .GT. slen-waste
-     .              .OR. nleft .GT. slen ) THEN
-	   IF ( negative ) THEN
-	      xtra = 6
-	   ELSE
-	      xtra = 5
-	   ENDIF
-	   IF ( slen .LE. xtra ) THEN
-	      outstring  = '******'
-	      str_len = slen
-	   ELSE
-	      str_len = MIN( slen, sig_needed+xtra)
-* Correct for too-small number of slots when writing a number w neg exponent.
-              IF (pow10 .LT. 0) str_len = str_len + sig_max
-              IF (str_len .GT. slen) str_len = slen
-              IF (str_len-(xtra+1) .LT. 0) xtra = 1
-              right = MIN(str_len-(xtra+1), digits-1)
-              IF (right .LT. 0) right = str_len-(xtra+1)
-              WRITE ( fmt, 3000 ) str_len, right
- 3000	      FORMAT( '(1PG',I2,'.',I2,')' )
-	      WRITE ( outstring, fmt ) val
-	   ENDIF
+* numbers that are:
+*    too big for the string length  (eg. 150000 can't fit into 4 spaces),
+*    too small for fixed point (eg. 0.0000025 with 2 sig. digits), or
+*    whose integer form gives too many sig. digits (eg. 555555 with 3 sig. digits)
+* must be written in exponential format.
+* Values in (10.0,0.1] should never be using exponential format.
+* Values in (1000.0,0.001] should not use exponential format unless the
+* fixed point form would give too many significant digits.
+        IF ( ( (ABS(l10) .GE. 3.0) .OR. 
+     .         (ABS(l10) .GE. 1.0) .AND. (ndigits .LT.3) ) .AND.
+     .       ( (str_len .GT. slen) .OR.
+     .         (nright .GT. sig_max) .OR.
+     .         (sig_left .GT. sig_max) ) ) THEN
+*          Absolute minimum needed: <n>.E+<n>, <n>.E-<n>
+           IF ( negative ) THEN
+              xtra = 6
+           ELSE
+              xtra = 5
+           ENDIF
+           IF ( slen .LE. xtra ) GOTO 5000
+           str_len = MIN(slen, sig_needed+xtra)
+           IF (pow10p .LT. 0) str_len = str_len + sig_max
+           IF (str_len .GT. slen) str_len = slen
+           nright = MAX(0, ndigits - 1)
+           IF (str_len-(xtra+1) .LT. 0) xtra = 1
+           nright = MIN(nright, str_len-(xtra+1))
+*          Write out the exponential form
+           WRITE ( frmt, 300 ) str_len, nright
+  300      FORMAT( '(1PG',I2,'.',I2,')' )
+           WRITE ( outstring, frmt ) val
+           IF ( outstring(1:1) .EQ. '*' ) GOTO 5000
 
 * INTEGER STRING
 * numbers whose needed digits are all on the left (eg. -2.0001 in 4 characters)
 * or whose length is too long to add a decimal point (eg. 25.5 in 3 characters)
-* may/must be represented as integers
-	ELSEIF ( sig_left .GE. sig_needed .OR. nleft .GE. slen-1 ) THEN
-* ... check if nearest integer will alter formatting (e.g. 99.6-->100)
+* must be represented as integers
+        ELSEIF ( (sig_left .GE. sig_needed) .OR.
+     .           (nleft .GE. slen-1) ) THEN
 
-	   aval = DNINT(aval)
-           IF ( aval .NE. 0.0 ) THEN
-              l10  = LOG10(aval)
-           ELSE
-              l10 = 0.0
+*          get the nearest integer as a REAL*8
+           aval = DNINT(aval)
+           IF ( aval .EQ. 0.0 ) THEN
+              outstring = '0'
+              str_len = 1
+              TM_FMT = outstring
+              RETURN
            ENDIF
-	   IF ( l10 .GE. 0.0 ) THEN
-	      chk10 = INT(l10) + 1
-	   ELSE
-	      chk10 = INT(l10)
-	   ENDIF
-	   IF ( chk10 .NE. chk10_save ) GOTO 10
-	   str_len = nleft - added_pow10
-	   iloop = 0
- 9000	   IF (str_len .LE. 0) str_len = 1
+*          check if this integer value will alter formatting (e.g. 99.6-->100)
+           l10  = LOG10(aval)
+           IF ( l10 .GE. 0.0 ) THEN
+              pow10p = INT(l10) + 1
+           ELSE
+              pow10p = INT(l10)
+           ENDIF
+           IF ( pow10p .NE. pow10p_save ) GOTO 50
+
+           str_len = nleft
+*          increment the length for the decimal point that will be removed
            IF ( str_len .LT. max_str_len ) str_len = str_len + 1
-	   WRITE ( fmt, 3100 ) str_len
-*          Write as floating point with no fraction (eg, 25.) to avoid integer overflow
-*          The end '.' will be removed later on
- 3100	   FORMAT ( '(F',I2,'.0)' )
-	   WRITE ( outstring, fmt ) DNINT(val)
-	   IF (INDEX(outstring,'*') .EQ. 1) THEN
-	      str_len = str_len + 1
-	      iloop = iloop + 1
-	      IF (iloop .LT. 5) GOTO 9000
-	   ENDIF
+           WRITE ( frmt, 310 ) str_len
+*          Write the integer form as floating point with no fraction (eg, 25.) to
+*          avoid integer overflow.  The end decimal point will be removed later
+  310      FORMAT ( '(F',I2,'.0)' )
+           WRITE ( outstring, frmt ) DNINT(val)
+           IF ( outstring(1:1) .EQ. '*' ) GOTO 5000
 
 * FIXED POINT STRING
-	ELSE
-	   nright = MIN( sig_needed-pow10, slen-(nleft+1) )
-	   str_len = nleft + nright + 1
-	   WRITE ( fmt, 3200 ) str_len, nright
- 3200	   FORMAT ( '(F',I2,'.',I2,')' )
-	   WRITE ( outstring, fmt ) val
-	ENDIF
+        ELSE
+           WRITE ( frmt, 320 ) str_len, nright
+  320      FORMAT ( '(F',I2,'.',I2,')' )
+           WRITE ( outstring, frmt ) val
+           IF ( outstring(1:1) .EQ. '*' ) GOTO 5000
+        ENDIF
 
-* Ticket 2323
-* the adjustment for handling large values does not always produce 
-* accurate results. Compare the result to the original value and if
-* needed use the formatting method used in ascii data listings.
-* Ticket 2510: make the test more strict differing val and aval.
-* Using the VAR_DATA_FMT call takes care of the cases where the values
-* are so close that the number will be written as an integer.
+* Clean up the string
 
-* KMS - writing integer values using Fn.0, with the '.' to be removed
-*       below, resolves the integer overflow issues and lost accuracy
+  400   str_len = TM_LENSTR1( outstring )
 
-	str_len = TM_LENSTR1( outstring )
+* Remove fractional zeros just before the exponent
+* (but leave a trailing decimal point)
+        idx = INDEX(outstring, '0E')
+        DO WHILE (idx .GT. 1)
+           strend = outstring(idx+1:str_len)
+           outstring = outstring(1:idx-1)//strend
+           str_len = str_len - 1
+           idx = INDEX(outstring, '0E')
+        ENDDO
 
-*       Add a zero before a floating point value with no integer part
+* Remove fractional zeros (if not required) and
+* trailing decimal point from non-exponentials
+        IF ( (ndigits .GE. 0) ) CALL TM_CLEANUP_NUM_STRING (outstring, str_len)
+
+* Add a zero before a floating point value with no integer part
         IF ( outstring(1:3) .EQ. ' -.' ) THEN
            outstring(1:3) = '-0.'
         ELSEIF ( outstring(1:2) .EQ. ' .' ) THEN
@@ -301,33 +303,6 @@
            str_len = str_len + 1
         ENDIF
 
-* Remove zeros just before the exponent.
-	ind = INDEX(outstring, '0E')
-	DO WHILE (ind .GT. 1)
-	   strend = outstring(ind+1:str_len)
-	   outstring = outstring(1:ind-1)//strend
-           str_len = str_len - 1
-	   ind = INDEX(outstring, '0E')
-	ENDDO
-
-* Remove zeros and . at the end of the fractional part of a fixed-point string
-	IF (INDEX(outstring, '.') .GT. 0 .AND. 
-     .	    INDEX(outstring, 'E') .EQ. 0) THEN
-	   right = str_len
-	   DO ind = right,1,-1
-	      IF (outstring(ind:ind) .EQ. '0') THEN
-                 outstring(ind:ind) = ' '
-                 str_len = str_len - 1
-	      ELSE
-                 GOTO 3500
-	      ENDIF
-	   ENDDO
- 3500      IF (outstring(str_len:str_len) .EQ. '.') THEN
-              outstring(str_len:str_len) = ' '
-              str_len = str_len - 1
-           ENDIF
-	ENDIF
-
 * Remove any initial spaces
         DO WHILE ( (str_len .GT. 1) .AND. (outstring(1:1) .EQ. ' ') )
            strend = outstring(2:str_len)
@@ -336,12 +311,15 @@
         ENDDO
 
         TM_FMT = outstring
-	RETURN
+        RETURN
 
-* return exact zero
- 1000   outstring = '0'
-        str_len = 1
+* Error return of '******' (trimmed down to slen length)
+ 5000   str_len = 0
+        DO WHILE ( (str_len .LT. 6) .AND. (str_len .LT. slen) )
+           str_len = str_len + 1
+           outstring(str_len:str_len) = '*'
+        ENDDO
         TM_FMT = outstring
-	RETURN
+        RETURN
 
       END

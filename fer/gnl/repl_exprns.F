@@ -1,6 +1,6 @@
 	SUBROUTINE REPL_EXPRNS(  cmnd, lencmnd, cmnd_num,
      .				istart, max_check,
-     .				digits, did_sub, status  )
+     .				ndigits, did_sub, status  )
 
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -150,7 +150,7 @@
 
 * calling argument declarations:
 	LOGICAL	  did_sub, info_query, itsa_subsc, apply_cx
-	INTEGER	  cmnd_num, lencmnd, istart, max_check, digits, status
+	INTEGER	  cmnd_num, lencmnd, istart, max_check, ndigits, status
 	CHARACTER cmnd*(*)
 
 * local parameter declarations 
@@ -160,21 +160,20 @@
 * internal variable declarations:
 	LOGICAL   TM_HAS_STRING, TM_DFPEQ, need_formatting, zero_fill, coordvar,
      .            do_err, do_eval, get_ready, was_dep, const_arr_var,
-     .		  dqote, DQ, orig_name, user_prec, uvgrid, compressed, grid_reset
+     .		  dqote, DQ, orig_name, uvgrid, compressed, grid_reset
 	INTEGER   CGRID_SIZE, CGRID_AXIS, TM_LENSTR1, CX_DIM_LEN,
      .		  FIND_DSET_NUMBER, GET_ABSTRACT_LINE, TM_LENSTR,
      .		  TM_GET_GRIDNUM, GRID_FROM_NAME, TM_SUBSC, TM_GET_CALENDAR_ID,
      .		  str_len, lenbuff, iend, itmp, axis,
      .		  mr, cx, mr_temp, i, i1, i2, use_digits, true_end,
-     .		  qual_end, brkt, idim, use_width, dset, varid, 
-     .            vartype, ist, ind,
-     .            attype, attlen, inxt, attoutflag, fertype, 
-     .            attid, ieq, base_isp, base_cx, cat, var, uvar,  
-     .            i1ss, inss, grid, ucode, 
+     .		  qual_end, brkt, idim, use_width, dset, varid,
+     .            vartype, attype, attlen, inxt, attoutflag, fertype,
+     .            attid, ieq, base_isp, base_cx, cat, var, uvar,
+     .            i1ss, inss, grid, ucode, dotidx, shorterlen,
      .            hi_cx, item, itype, start, len_name, var_status
 	REAL	  result, val, aval
 	REAL*8 TM_WORLD, TM_WW_AXLEN, ww
-	CHARACTER TM_FMT*64, TM_FMT_USER*64, LEFINT*16, VAR_TITLE*(max_len),
+	CHARACTER TM_FMT*48, LEFINT*16, VAR_TITLE*(max_len),
      .		  VAR_UNITS*(max_len), GET_STRING_ELEMENT*(max_len),
      .		  repl*(max_len), bad_str*(max_len), return_errmsg*256,
      .            buff*128, varname*512, attname*128, aname*128, name*128
@@ -194,8 +193,7 @@
 * initialize
 	did_sub = .FALSE.    	! any substitutions done?
 	lenbuff = LEN( cmnd )
-	use_digits = digits
-	user_prec = .FALSE.
+	use_digits = ndigits
 	bad_str = 'bad'
 !	fmt = ' '
 	use_width = 0
@@ -327,7 +325,6 @@
 	      IF ( status .NE. ferr_ok ) GOTO 5000
 	      IF (ABS(result) .GT. 16.) GOTO 5510 	         
 	      use_digits = NINT(result)
-	      user_prec = .TRUE.
 	      GOTO 131
 	   ELSEIF (cmnd(i:i).EQ.'b' .OR. cmnd(i:i).EQ.'B') THEN
 * ... decode BAD = string
@@ -420,8 +417,6 @@
 	   is_uvar_const = .FALSE.
 	   CALL GET_NEW_CX( cx_last, cx_cmnd, apply_cx, status )
 	   IF ( status .NE. ferr_ok ) GOTO 5000
-           ist = istart
-           ind = iend 
 
 	   IF (cmnd(istart:istart) .EQ. '(') THEN
               dset = cx_data_set(cx_cmnd)   ! initial value to try; will return dset
@@ -1224,8 +1219,9 @@ c		    ENDIF
 !     .					        fmt, bad_str, repl )
 !	            ELSE
 *   ... default formatting for world coordinates
+*       ndec is precision when positive, number of sig digits when negative
 	              CALL TRANSLATE_TO_WORLD( ww, idim, cx_grid(cx),
-     .				             use_digits, repl )
+     .				               -use_digits, repl )
 !	            ENDIF
 	         ENDIF
 	      ENDIF
@@ -1269,33 +1265,33 @@ c		    ENDIF
      .				max_len, str_len)
 	   ELSE
 
-* .... convert to a formatted result with requested digits
-*      Ticket 2389: TM_FMT_USER applies use_digits more strictly 
-*      than TM_FMT, returns results of exponentials more consistently. 
-
 	     result =  memry(mr_temp)%ptr(1)
 	     IF ( result .EQ. mr_bad_data(mr) ) THEN
 	        repl = bad_str
 	        str_len = TM_LENSTR1(bad_str)
 	     ELSE
-	        IF (user_prec .AND. use_digits.GT.0) THEN
-	           repl = TM_FMT_USER( result, use_digits, 22, str_len )
-	        ELSE
-	           repl = TM_FMT ( result, use_digits, 22, str_len )
-
-* Did the large default number of digits result in a string like 0.000001 or 4.999999 ?  
-* If so see if we can return a nicer string with exponent. 
-                   IF ( (INDEX(repl,'000') .GT. 2) .OR.
-     .                  (INDEX(repl,'999') .GT. 2) ) THEN
-		      buff = TM_FMT_USER(result, use_digits, 22, itmp)
-		      READ (buff,*) aval
-		      IF ( TM_DFPEQ(result, aval) ) THEN
-		         repl = buff
-			 str_len = itmp
-		      ENDIF
-		   ENDIF
-		      
-		ENDIF
+                repl = TM_FMT(result, use_digits, 48, str_len)
+* Did the large allowed string length result in a string like 0.00000001 or 7.499999999999 ?  
+* If so see if we can return a nicer string that is essentially the same numeric value.
+* First try 24, then 16.
+                shorterlen = 24
+  400           dotidx = INDEX(repl, '.')
+                IF ( (dotidx .GT. 0) .AND. (use_digits .GT. 0) .AND.
+     .               ( (INDEX(repl,'000000') .GT. dotidx) .OR.
+     .                 (INDEX(repl,'999999') .GT. dotidx) ) ) THEN
+                   buff = TM_FMT(result, use_digits, shorterlen, itmp)
+                   IF ( buff(1:1) .NE. '*' ) THEN
+                      READ (buff,*) aval
+                      IF ( TM_DFPEQ(result, aval) ) THEN
+                         repl = buff
+                         str_len = itmp
+                         IF ( shorterlen .GT. 16 ) THEN
+                            shorterlen = 16
+                            GOTO 400
+                         ENDIF
+                      ENDIF
+                   ENDIF
+                ENDIF
 	     ENDIF
 	   ENDIF
 * ... clean up temporary variable

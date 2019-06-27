@@ -48,6 +48,7 @@
 * V720 *acm*  7/17 Ticket 2250: precision errors when data has very small values
 * V74+  *acm* 3/18 Issue 1607.  /KEY=centerlab
 * V74+  *acm* 6/18 Add the symbol LEV_ALL for a list of all levels used
+* V751  *acm* 6/19 Changes to TM_FMT. Clean off excess .00 from the strings
 
 *    LEV_MIN  - lowest level used on last CONTOUR, SHADE, or FILL call.
 *    LEV_MAX -  highest level used last
@@ -74,7 +75,7 @@
       REAL zmax, zmin, dz, diff, eps
       REAL*8 zmaxD, zminD
 
-      CHARACTER ppl_buff*2048, TM_FMT_SNGL*64, TM_FMT*64, 
+      CHARACTER ppl_buff*2048, TM_FMT_SNGL_TRIM*48, TM_FMT_TRIM*48, 
      .          buff*10, symbuff*30, buffmin*10, buffmax*10, 
      .         comma*2
 
@@ -87,11 +88,11 @@
 * Lowest and highest Z level
 
       zmin = zlevels(1)
-      buffmin = TM_FMT_SNGL(zmin, -2, 10, slen)
+      buffmin = TM_FMT_SNGL_TRIM(zmin, -2, 10, slen)
       IF (neginf) buffmin = 'open-ended'
 
       zmax = zlevels(nlevels)
-      buffmax = TM_FMT_SNGL(zmax, -2, 10, slen)
+      buffmax = TM_FMT_SNGL_TRIM(zmax, -2, 10, slen)
       IF (posinf) buffmax = 'open-ended'
 
 * An epsilon for equal-sized deltas, need not be too tight a test
@@ -101,8 +102,8 @@
      .    .NOT.TM_FPEQ_EPS_SNGL(eps, zmin, zmax) ) THEN
 	 zminD = zmin
          zmaxD = zmax 
-	 buffmin = TM_FMT(zminD, 2, 10, slen)
-	 buffmax = TM_FMT(zmaxD, 2, 10, slen)
+	 buffmin = TM_FMT_TRIM(zminD, 4, 10, slen)
+	 buffmax = TM_FMT_TRIM(zmaxD, 4, 10, slen)
       ENDIF
 
       ppl_buff = 'LEV_MIN '//buffmin
@@ -121,7 +122,7 @@
 * Number of levels used 
 
       zmax = MAX(nlevels-1,1)
-      buff = TM_FMT_SNGL(zmax, -2, 10, slen)
+      buff = TM_FMT_SNGL_TRIM(zmax, -2, 10, slen)
 
       ppl_buff = 'LEV_NUM '//buff
       ilen = TM_LENSTR1(ppl_buff)
@@ -134,7 +135,7 @@
 
       IF (set_delta) THEN
 	 dz = delta
-         buff = TM_FMT_SNGL(dz, -2, 10, slen)
+         buff = TM_FMT_SNGL_TRIM(dz, -2, 10, slen)
 
 * Otherwise, check if levels are regularly spaced 
 
@@ -146,7 +147,7 @@
          IF (nlevels .EQ. 1) THEN
             buff = 'none'
          ELSE IF (nlevels .EQ. 2) THEN
-            buff = TM_FMT_SNGL(dz, -2, 10, slen)
+            buff = TM_FMT_SNGL_TRIM(dz, -2, 10, slen)
          ELSE
             reglevs = .TRUE.
             DO 100 i=3,nlevels
@@ -155,7 +156,7 @@
 	       IF (.NOT.reglevs) GOTO 110
   100       CONTINUE
   110       IF (reglevs) THEN
-               buff = TM_FMT_SNGL(dz, -2, 10, slen)
+               buff = TM_FMT_SNGL_TRIM(dz, -2, 10, slen)
             ELSE
                buff = 'irregular'
             ENDIF
@@ -167,7 +168,7 @@
 	 zminD = zlevels(1)
          zmaxD = zlevels(2)
 	 zminD = zmaxD - zminD
-	 buff = TM_FMT(zminD, 2, 10, slen)
+	 buff = TM_FMT_TRIM(zminD, 4, 10, slen)
       ENDIF
 
       ppl_buff = 'LEV_DEL '//buff
@@ -227,7 +228,7 @@
 	    nc = 1
 	 ENDIF
          zminD = zlevels(i)
-	 buff = TM_FMT(zminD, 2, 10, slen)
+	 buff = TM_FMT_TRIM(zminD, 4, 10, slen)
 	 ppl_buff = ppl_buff(:ilen+1)//buff(:slen)//comma
 
 	 ilen = ilen + slen + nc

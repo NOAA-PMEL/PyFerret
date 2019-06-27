@@ -140,7 +140,7 @@
      .			cx, mr, idim, cat, act, uvar_pointer,
      .			com_mr, var, dset, slen, slen2
 !	INTEGER*8	CGRID_SIZE8, cxsize
-	CHARACTER	TM_FMT*64, num_str*12, num_str2*12
+	CHARACTER	TM_FMT*48, num_str*12, num_str2*12
 
 * external routines passed
 	EXTERNAL	DO_SHIFT, DO_SMTH_BOX, DO_FILL_AVE, DO_AVERAGE,
@@ -364,8 +364,8 @@
 !     .		"Did you use an ABSTRACT axis without specifying limits?",
 !     .			*5000)
 !	      ELSE
-!	         num_str  = TM_FMT( max_mem_allowed/1.E6, 3, 12, slen)
-!		 num_str2 = TM_FMT( cxsize/1.E6,          3, 12, slen2)
+!	         num_str  = TM_FMT( max_mem_allowed/1.D6, 3, 12, slen)
+!		 num_str2 = TM_FMT( cxsize/1.D6,          3, 12, slen2)
 !	         CALL ERRMSG( ferr_insuff_memory,status,
 !     .		 "Size of request="//num_str2(:slen2)//
 !     .		 " but currently SET MEMORY/SIZE="//num_str(:slen), *5000)

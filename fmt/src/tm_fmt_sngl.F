@@ -1,4 +1,4 @@
-       CHARACTER*64 FUNCTION TM_FMT_SNGL(val, digits, max_len, str_len)
+       CHARACTER*48 FUNCTION TM_FMT_SNGL(val, digits, max_len, str_len)
 
 *
 *
@@ -46,7 +46,7 @@
 * Single-precision version of TM_FMT, to be called from PPLUS.
 *
 * *kms*  v7.5 5/19 Change to a wrapper for calling TM_FMT
-*                  Return CHARACTER*64 to simplify life.
+*                  Return CHARACTER*48 to simplify life.
 
 * calling arguments:
 * val      - REAL*4 value to be converted
@@ -62,11 +62,11 @@
         REAL*4  val
 
 * functions:
-        CHARACTER*64 TM_FMT
+        CHARACTER*48 TM_FMT
 
 * internal variable declarations:
         REAL*8 dblval
-        CHARACTER*64 outstring
+        CHARACTER*48 outstring
 
         dblval = DBLE(val)
         outstring = TM_FMT(dblval, digits, max_len, str_len)

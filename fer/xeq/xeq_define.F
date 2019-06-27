@@ -449,7 +449,7 @@
      .            micro_adj, axwwlen, rmod_len, secsperyear, small, 
      .            new_att_modulo_len, madj, firs_coord, last_coord, timefac, 
      .            vlo, vhi, idel
-	CHARACTER TM_FMT*64, TM_CLEAN_FILENAME*512,SECS_TO_DATE_OUT*11,
+	CHARACTER TM_FMT*48, TM_CLEAN_FILENAME*512,SECS_TO_DATE_OUT*11,
      .            reg_name*24, buff1*128, buff2*512, buff3*512, 
      .            buffsym*120, cal_name*32, buff*512,
      .            basic_orients(nferdims)*2, err_string*2048, replmsg*24,
@@ -3054,10 +3054,10 @@ c ?? if nlab=0, use next avail slot?
 	CALL ERRMSG( ferr_grid_definition, status,
      .		'unrepairable repeated axis coords', *5000 )
  5570	CALL FREE_LINE_DYNMEM (iline)
-	buff1 = TM_FMT(FLOAT(i1), 14, 16, slen)
+	buff1 = TM_FMT(DBLE(i1), 0, 16, slen)
 	CALL ERRMSG( ferr_grid_definition, status,
-     .		'data for DEFINE AXIS/FROM_VARIABLE is not monotonically increasing at index '
-     .		//buff1(:slen), *5000 )
+     .		'data for DEFINE AXIS/FROM_VARIABLE is not monotonically '//
+     .		'increasing at index '//buff1(:slen), *5000 )
  5580	CALL ERRMSG( ferr_grid_definition, status,
      .		'data for DEFINE AXIS/FROM_VARIABLE is ambiguous', *5000 )
  5582	CALL ERRMSG( ferr_grid_definition, status,
@@ -3100,14 +3100,14 @@ c ?? if nlab=0, use next avail slot?
 5730	CALL ERRMSG( ferr_syntax,status,
      .     'cannot have /BOUNDS and /EDGES together ',*5000 )
 
-5740	buff1 = TM_FMT(FLOAT( n), 14, 16, slen)
-        buff2 = TM_FMT(FLOAT(n2), 14, 16, s2len)
+5740	buff1 = TM_FMT(DBLE( n), 0, 16, slen)
+        buff2 = TM_FMT(DBLE(n2), 0, 16, s2len)
         CALL ERRMSG( ferr_grid_definition, status,
      .     'dimension of bounds ('// buff2(:s2len)//
      .     ') must be 2*N or N+1, N=number of axis coordinates ('//
      .     buff1(:slen) //')', *5000 )
-5745	buff1 = TM_FMT(FLOAT( n), 14, 16, slen)
-        buff2 = TM_FMT(FLOAT(n2), 14, 16, s2len)
+5745	buff1 = TM_FMT(DBLE( n), 0, 16, slen)
+        buff2 = TM_FMT(DBLE(n2), 0, 16, s2len)
         CALL ERRMSG( ferr_grid_definition, status,
      .     'dimension of upper&lower bounds ('// buff2(:s2len)//
      .     ') must be N, N=number of axis coordinates ('//

@@ -54,7 +54,7 @@
 
 * local variable definitions
 	INTEGER TM_LENSTR1, slen, plen
-        CHARACTER*64 TM_FMT, show_str
+        CHARACTER*48 TM_FMT, show_str
 
         show_str = TM_FMT(revision_level, 5, 12, slen)
 	

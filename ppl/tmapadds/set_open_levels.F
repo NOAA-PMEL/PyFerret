@@ -64,7 +64,7 @@
      .        slen, llen, dlen, hlen, if1, if2, i, i1, i2, ilev, 
      .        index, k, levcount
 
-      CHARACTER TM_FMT_SNGL*64, lo_str*10, del_str*10, hi_str*10
+      CHARACTER TM_FMT_SNGL*48, lo_str*10, del_str*10, hi_str*10
 
       EXTERNAL RANGE
 

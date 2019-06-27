@@ -67,7 +67,7 @@
 
 * local variable definitions
 	INTEGER TM_LENSTR1, len_platform_type, slen
-        CHARACTER*64 TM_FMT, show_str
+        CHARACTER*48 TM_FMT, show_str
 
 * get revision type info (8/95 - kind of a hack)
 	IF ( revision_type .EQ. '()' ) THEN

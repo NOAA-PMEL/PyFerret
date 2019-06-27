@@ -89,6 +89,7 @@
 * V740 *acm*  3/18 Issue 950: Allow (some) A formats for listing strings and numeric data together
 *                  Also simplified I formats in the same way.
 * V741 *acm*  4/18 Issue 1870: Check Format more closely when finding an I Format
+* V751 6/19 *acm* TM_FMT rewrite: formatting of lon/lat coordinate strings
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -138,7 +139,7 @@
      .			pt(nferdims), valid_ax(nferdims), lloc, num_it, ival
 	CHARACTER*255	VAR_TITLE, VAR_TITLE_MOD, PAREN_SURROUND, vname_buff
 	CHARACTER	KEY_STRING*128, AX_TITLE*32, VAR_UNITS*64, LEFINT*8,
-     .			CX_DIM_STR*16, VAR_CODE*128, TM_FMT*64,
+     .			CX_DIM_STR*16, VAR_CODE*128, TM_FMT*48,
      .			buff1*16, buff2*1024, buff3*16, line_buff*2048,
      .			row_ss_fmt*14, bad_ax*5, bad_buff*32,
      .			col_head_format*32, sep*1, fmtstring*30
@@ -197,7 +198,6 @@
 	ELSE
            prec_digits = list_digits
 	ENDIF
-
 
 
 * Check format specifiers if given.  When there are strings or integers we
@@ -589,7 +589,7 @@
      .                  ( out(ivar),ivar = 1, num_uvars_in_cmnd )
 	      ELSE
 	         lloc = TM_LENSTR1(line_buff)
-                 buff2 = TM_FMT(FLOAT(lloc),12,16,vlen)
+                 buff2 = TM_FMT(DBLE(lloc),0,16,vlen)
 	         fmtstring = '(A'//buff2(:vlen)//')'
 	         WRITE (list_lun, fmtstring, ERR=5010) line_buff
 	      ENDIF
@@ -628,7 +628,7 @@
 	      CALL GET_SIG_DIGITS( biggest, ABS(prec_digits), nleft, nright )
 	      nleft = MAX( 1, nleft )			! at least "0" to left
               IF ( prec_digits .GT. 0 ) THEN
-*                positive means user is giving the total number of digits
+*                positive means user is giving the total precision
                  ndigits = prec_digits
               ELSE
 *                 zero or negative means user is giving nright; use nleft from above 
@@ -862,7 +862,7 @@
 	        IF ( out(ivar) .EQ. bad(ivar) ) THEN
                    IF (do_comma_del .OR. do_tab_del) THEN
                        line_buff = line_buff(:ww-1)//
-     .	                   TM_FMT(out(ivar),prec_digits,16,vlen)
+     .	                   TM_FMT(out(ivar),ndigits,48,vlen)
                        IF (ivar .LT. num_uvars_in_cmnd) 
      .                   line_buff(ww+vlen:ww+vlen) = tab_or_COMMA
      	               ww = ww+vlen+1
@@ -874,7 +874,7 @@
                    IF (do_comma_del .OR. do_tab_del) THEN
 * ... tab or comma formatting
                        line_buff = line_buff(:ww-1)//
-     .	                   TM_FMT(out(ivar),prec_digits,16,vlen)
+     .	                   TM_FMT(out(ivar),ndigits,48,vlen)
                        IF (ivar .LT. num_uvars_in_cmnd) 
      .                   line_buff(ww+vlen:ww+vlen) = tab_or_COMMA
      	               ww = ww+vlen+1

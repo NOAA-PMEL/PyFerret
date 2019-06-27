@@ -111,7 +111,7 @@
 	REAL	sset
 	CHARACTER TM_STRING*13
 	CHARACTER*512 GET_STRING_ELEMENT_1D_X, memb_dsetname(nsets)
-	CHARACTER*64 TM_FMT, strset
+	CHARACTER*48 TM_FMT, strset
 	CHARACTER*128 vname
 
 * initialize

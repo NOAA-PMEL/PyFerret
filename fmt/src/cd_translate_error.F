@@ -56,7 +56,7 @@ c Local declararations
      .		dlen, i
 	REAL	val
 	CHARACTER*512 upstr
-	CHARACTER*64 TM_FMT, errcode
+	CHARACTER*48 TM_FMT, errcode
 
         upstr =  NF_STRERROR(cdfstat)
 

@@ -100,7 +100,7 @@ c	include 'xtm_grid.cmn_text'  ! with line_name
      .          itype, arg_first_mismatch, slen, iset, igrid, idim,
      .          aux_cat(nferdims), aux_var(nferdims), 
      .          idir_args(nferdims), idir_vals(nferdims), num_dirs, ival
-        CHARACTER TM_FMT*64, GCF_NAME*40, alt_name*40
+        CHARACTER TM_FMT*48, GCF_NAME*40, alt_name*40
 	REAL	oneval
 
 * convenience equivalences
@@ -431,25 +431,23 @@ cc	  ENDDO
  5100	CALL DELETE_VARIABLE(res_mr)
 	GOTO 5000
 * 1/03 *kob* g77 port requires risc buff for arbitrary string concats
- 5200	CONTINUE
 * Could not match argument types
-        risc_buff = alg_text
-	alt_name = TM_FMT(FLOAT(arg_first_mismatch), 2, 40, slen)
+ 5200   risc_buff = alg_text
+	alt_name = TM_FMT(DBLE(arg_first_mismatch), 0, 22, slen)
 	CALL ERRMSG( ferr_invalid_command, status,
      .		'string/numeric data type mix-up. Argument '//
      .		alt_name(:slen)//' : '//risc_buff, *5000 )
 
- 5300	CONTINUE
 * Invalid value for for direction
-        risc_buff = alg_text
+ 5300   risc_buff = alg_text
 	CALL ERRMSG( ferr_invalid_command, status,
-     . 'Arguments for direction of function must not repeat and be between 1 and 6 '//
-     .  risc_buff, *5000 )
+     .          'Arguments for direction of function must not repeat '//
+     .          'and be between 1 and 6 '//
+     .          risc_buff, *5000 )
 
 
- 5400	CONTINUE
 * Could not find alternative function for direction
-        risc_buff = alg_text
+ 5400   risc_buff = alg_text
 	CALL ERRMSG( ferr_invalid_command, status,
      .		'Could not find alternative function for directions given '//
      .		risc_buff, *5000 )

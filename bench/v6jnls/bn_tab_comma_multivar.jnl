@@ -5,6 +5,7 @@
 ! LIST/FORM=tab and /FORM=comma with more than one variable
 ! no longer behave as if /SINGLY was specified. New qualifier 
 ! LIST/NOROWLAB removes coordinate labels from the rows listing data
+! v7.51 6/2019  precision handling is changed. 
 
 let country =  {"JP", "JP", "US"}
 let id = {1,2,3}
@@ -17,3 +18,12 @@ let the_data_var = {4,5,4}
 list/format=comma country, id, aa, bb, newcountry, the_data_var
 
 list/format=tab/norow country, id, aa, bb, newcountry, the_data_var
+
+
+! With v7.51 the handling of precision=4 has changed, so that bb isn't 
+! well represented.
+
+list/format=comma/prec=7 country, id, aa, bb, newcountry, the_data_var
+list/format=tab/norow/prec=7 country, id, aa, bb, newcountry, the_data_var
+
+

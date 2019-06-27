@@ -56,7 +56,7 @@
 * internal variable declarations:
 	INTEGER	num_slen, mr_del
 	INTEGER*8 available_mem
-	CHARACTER  LEFINT8*20, TM_FMT*64, num_str*20
+	CHARACTER  LEFINT8*20, TM_FMT*48, num_str*20
 
 * Check for unspecified limits on abstract axis
 	IF ( i8_rqst_size .EQ. abstractax_len ) GOTO 5100
@@ -104,7 +104,7 @@
 	GOTO 5000
 
  5200	CALL ERRMSG( ferr_insuff_memory,status,' ', *5210)
- 5210	num_str = TM_FMT( max_mem_allowed/1.E6, 6, 12, num_slen)
+ 5210	num_str = TM_FMT( DBLE(max_mem_allowed)/1.D6, 6, 12, num_slen)
 	CALL SPLIT_LIST(pttmode_explct, show_lun,
      .		'    To fulfill this request would exceed the current '//
      .		  'SET MEMORY/SIZE= limit of '//num_str(:num_slen)

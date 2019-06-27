@@ -48,6 +48,7 @@
 * V230:  2/10/92 - SUN port: must use a temporary string, strbuf, instead of
 *                  routine name LOHI_STRING internally.
 *       *acm* 3/12 cleanup ifdefs and unnecessary include files
+* V751 6/19 *acm* TM_FMT rewrite: formatting of lon/lat coordinate strings
 
         IMPLICIT NONE
 	include	'ferret.parm'
@@ -58,7 +59,8 @@
 	REAL*8	lo, hi
 
 * internal variable declarations:
-	INTEGER	sub_len, full_len
+	LOGICAL need_more
+	INTEGER	STR_SAME, sub_len, full_len
         CHARACTER*80 strbuf       ! needed for SUN FORTRAN
 
 * initialize
@@ -72,12 +74,16 @@
 	   strbuf = '???'
 	ENDIF
 	CALL LEFT_JUST( strbuf, strbuf, slen )
+	sub_len = slen
 
 * put in upper limit if different from lower
 	IF ( hi .NE. lo ) THEN
 	   strbuf = strbuf(:slen) // to_word	! either " to " or ":"
 	   slen = MIN( full_len, slen + LEN(to_word) + 1 )
 	   CALL TRANSLATE_TO_WORLD( hi, idim, grid, ndec, strbuf(slen:) )
+
+	   need_more = ( STR_SAME(strbuf(1:sub_len) , strbuf(slen:full_len)) .EQ. 0)
+
 	   CALL LEFT_JUST( strbuf(slen:), strbuf(slen:), sub_len )
            slen = MIN( full_len, slen + sub_len - 1 )
 	ENDIF

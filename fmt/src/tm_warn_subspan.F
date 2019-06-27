@@ -53,7 +53,7 @@
 	LOGICAL	TM_ITS_SUBSPAN_MODULO
 	INTEGER TM_LENSTR1, alen, blen, vlen
 	REAL	TM_WW_AXLEN, GET_LINE_COORD, axwwlen, delta
-	CHARACTER*64 TM_FMT, buff1, buff2
+	CHARACTER*48 TM_FMT, buff1, buff2
 
 	INTEGER tt  ! nice short name
 	EQUIVALENCE (tt,lunit_errors)
@@ -71,8 +71,8 @@
 
         IF (line_modulo(iaxis) .AND. TM_ITS_SUBSPAN_MODULO(iaxis) .AND.
      .	    (line_modulo_len(iaxis)-axwwlen) .LE. delta )  THEN
-           buff1 = TM_FMT( SNGL(axwwlen),7,32,alen )
-           buff2 = TM_FMT( SNGL(line_modulo_len(iaxis)),7,32,blen )
+           buff1 = TM_FMT( axwwlen,7,22,alen )
+           buff2 = TM_FMT( line_modulo_len(iaxis),7,22,blen )
            CALL TM_NOTE('Subspan modulo axis '//line_name(iaxis)(:vlen)//
      .		'. Axis span = '//buff1(:alen)//
      .		', modulo length = ' //buff2(:blen)//

@@ -153,7 +153,7 @@
         REAL*4    opacity
 	PARAMETER ( aspect = 0.0)			!kob 12/96
 
-	CHARACTER TM_FMT*64, TM_INQ_PATH*2048, 
+	CHARACTER TM_FMT*48, TM_INQ_PATH*2048, 
      .                  fname*128, buff*25, sfile*2048
 
 * internal parameter declarations:

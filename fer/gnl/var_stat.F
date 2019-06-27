@@ -103,7 +103,7 @@
 	REAL*8	sum, sum2, xmean, zmean, x, xdelta, variance_c, diff
 
 	CHARACTER*255	VAR_TITLE, VAR_TITLE_MOD, vname_buff
-	CHARACTER	TM_FMT*64, LEFINT*20, AX_TITLE*32, CX_SIZE_STR*24,
+	CHARACTER	TM_FMT*48, LEFINT*20, AX_TITLE*32, CX_SIZE_STR*24,
      .			line_buff*130, title*32, bl13*13, symbuff*30
 	PARAMETER (bl13 = '             ' )
 

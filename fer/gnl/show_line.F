@@ -74,7 +74,7 @@
 	LOGICAL		TM_ITS_SUBSPAN_MODULO
 	INTEGER		idim, orient, slen, i, idum
 	INTEGER		TM_LENSTR1, TM_GET_CALENDAR_ID, cal_id
-	CHARACTER	TM_FMT*64, buff*80, buff20*20
+	CHARACTER	TM_FMT*48, buff*80, buff20*20
 	REAL*8		TM_WW_AXLEN
 
 * determine orientation
@@ -147,25 +147,15 @@
 	ENDIF
 
 * report the full span of the axis
-#ifdef double_p
 	buff =  '   Axis span (to cell edges) = '//
-     .		TM_FMT( (TM_WW_AXLEN(line)),7,32,slen )
-#else
-	buff =  '   Axis span (to cell edges) = '//
-     .		TM_FMT( SNGL(TM_WW_AXLEN(line)),7,32,slen )
-#endif
+     .		TM_FMT( TM_WW_AXLEN(line),7,22,slen )
 	slen = slen + 31
 
 * if line is modulo, report its modulo cycle length
 	IF ( line_modulo(line) ) THEN
 	   IF ( TM_ITS_SUBSPAN_MODULO(line) ) THEN
-#ifdef double_p
 	     buff = buff(:slen)// ' (modulo length = ' //
-     .		   TM_FMT( (line_modulo_len(line)),7,32,i )
-#else
-	     buff = buff(:slen)// ' (modulo length = ' //
-     .		   TM_FMT( SNGL(line_modulo_len(line)),7,32,i )
-#endif
+     .		   TM_FMT( line_modulo_len(line),7,22,i )
 	     slen = slen + i + 18
 	     buff = buff(:slen) //')'
 	     slen = slen + 1

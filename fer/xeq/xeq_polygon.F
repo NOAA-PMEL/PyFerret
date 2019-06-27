@@ -125,7 +125,7 @@
      .			nparm,  num_it, i, iax(4), i1, loch, locv
 	REAL		val, only_val, sym_size, add_lon
         REAL*4          thickness, opacity
-	CHARACTER	LEFINT*4, TM_FMT*64, fname*128, poly_opt*10,
+	CHARACTER	LEFINT*4, TM_FMT*48, fname*128, poly_opt*10,
      .                  buff*25
 
 * internal parameter declarations

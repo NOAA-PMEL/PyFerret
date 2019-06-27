@@ -106,7 +106,7 @@
      .			tmap_status, loc, skip, grid, columns,
      .			order(nferdimsp1), idim, s1, slen, ndigits, nread,
      .                  ndims, nvars, ngatts, recdim
-	CHARACTER	TM_INQ_PATH*2048, TM_FMT*64, var_list*2048,
+	CHARACTER	TM_INQ_PATH*2048, TM_FMT*48, var_list*2048,
      .			path_name*2048, ezform*80, title*128, grid_name*64,
      .			type*2048, ctype*16, delim*24, buff*20
 	REAL		rval
@@ -330,7 +330,7 @@
                  nread = nread*columns/nvars
 	      ENDIF
 
-	      buff = TM_FMT(FLOAT(nread), 10, 12, slen)
+	      buff = TM_FMT(DBLE(nread), 0, 12, slen)
 	      grid_name = 'X[GX=1:'//buff(:slen)//':1]'
 	      grid = GRID_FROM_NAME( grid_name, cx_last, status )
               IF ( status .NE. ferr_ok ) RETURN

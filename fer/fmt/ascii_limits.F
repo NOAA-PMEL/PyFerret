@@ -86,7 +86,7 @@
      .			max_len, len_trans, llen, trans, i,
      .			grid, cal_id, len_cal, dset, slen2, memb_dset
 	CHARACTER	ALG_TRANS_TITL*20, LOHI_WORLD*44, LEFINT*4, 
-     .			TM_FMT*64, TM_GET_CAL*32, TM_GET_F_CAL*32,
+     .			TM_FMT*48, TM_GET_CAL*32, TM_GET_F_CAL*32,
      .			VAR_CODE*128,
      .			trans_title*128, cal_name*32
 	REAL		trans_arg

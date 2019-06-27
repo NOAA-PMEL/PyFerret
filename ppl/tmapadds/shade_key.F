@@ -46,6 +46,7 @@
 *           the key the default size in that direction.  See key.F
 * v581 *acm* 3/05 put flag cont_key into common CONT.INC
 * V6.92 *acm* 6/14 New color /key options: any of /key=horizontal,centerlabel
+* V7.51 *acm* 6/19 Rewrite of TM_FMT means change to klab_dig for colorbar labels
 
         IMPLICIT NONE
         include         'shade_vars.cmn'
@@ -85,7 +86,7 @@ c	do_key	     	= .true.   ! Still initialize this in setup_defaults.F
 	IF (isetting .EQ. 2) center_key_labels = .TRUE.
 
 	klab_size = 0.0
-	klab_dig  = 3
+	klab_dig  = 5
 	klab_len  = 9
 	klab_incr = 0
 !c Make annotate_key setting persist: Once it has been

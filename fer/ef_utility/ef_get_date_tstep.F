@@ -72,7 +72,7 @@
 * Local definitions
         LOGICAL         ITSA_TRUEMONTH_AXIS, modulo
 	CHARACTER*30	SECS_TO_DATE, SECS_TO_DATE_OUT, buff
-	CHARACTER*64	TM_FMT, buff2
+	CHARACTER*48	TM_FMT, buff2
 	CHARACTER*2     linedir
 	INTEGER		TM_GET_CALENDAR_ID, TM_LENSTR1,  
      .                  axis, status, prec, cal_id, nfrac, slen

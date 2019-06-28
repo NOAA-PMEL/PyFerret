@@ -40,6 +40,7 @@
 * Specifically, how much memory was tied up for what purposes
 
 * V702 3/17 *sh*
+* V751 *acm* 6/19 Issue 1903: memory set and reported in terms of bytes
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -56,7 +57,7 @@
 	INTEGER UVAR_NUMBER, TM_LENSTR1, uvar, slen, slen2, slen3
 	INTEGER*8 object_mem
 	CHARACTER LEFINT*8, LEFINT8*16, EXPR_NAME*8, TM_FMT*48,
-     .		arg_num*8, name_code*8, mem_int*16, percent*8
+     .		arg_num*8, name_code*8, mem_str*16, mem_unit*2, percent*8
 	REAL*8 rmax_mem
 
 * initialize
@@ -82,36 +83,40 @@
      .		'    memory was committed as follows:',0 )
 
 	IF (permanent_mem .GT. 0) THEN
-	   mem_int = LEFINT8(permanent_mem, slen2)
+	   mem_str = LEFINT8(permanent_mem, slen2)
 	   percent = TM_FMT (permanent_mem/rmax_mem*100, 0, 8, slen3)
 	   CALL SPLIT_LIST(pttmode_explct, show_lun,
      .		'        - to LOAD/PERM storage: '//
-     .		mem_int(:slen2)//' ('//percent(:slen3)//'%)' ,0 )
+     .		mem_str(:slen2)//' ('//percent(:slen3)//'%)' ,0 )
 	ENDIF
 
 	IF (current_cmnd_uvar .GT. 1) THEN
 	   arg_num = LEFINT(current_cmnd_uvar-1, slen)
-	   mem_int = LEFINT8(completed_args_mem, slen2)
+	   mem_str = LEFINT8(completed_args_mem, slen2)
 	   percent = TM_FMT (completed_args_mem/rmax_mem*100, 0, 8, slen3)
 	   CALL SPLIT_LIST(pttmode_explct, show_lun,
      .		'        - to arguments 1-'//arg_num(:slen)//
-     .		': '//mem_int(:slen2)//' ('//percent(:slen3)//'%)' ,0 )
+     .		': '//mem_str(:slen2)//' ('//percent(:slen3)//'%)' ,0 )
 	ENDIF
 
 	object_mem = essential_mem-completed_args_mem
-	mem_int = LEFINT8(object_mem, slen2)
+	mem_str = LEFINT8(object_mem, slen2)
 	percent = TM_FMT (object_mem/rmax_mem*100, 0, 8, slen3)
 	CALL SPLIT_LIST(pttmode_explct, show_lun,
      .		'        - to objects used in computation: '//
-     .		mem_int(:slen2)//' ('//percent(:slen3)//'%)' ,0 )
+     .		mem_str(:slen2)//' ('//percent(:slen3)//'%)' ,0 )
 
 
 * Report the size of the requested object
-	mem_int = LEFINT8(i8_rqst_size, slen2)
+	mem_str = LEFINT8(i8_rqst_size, slen2)
 	percent = TM_FMT (i8_rqst_size/rmax_mem*100, 0, 8, slen3)
+
+	CALL MEM_TO_BYTES (i8_rqst_size, mem_str, slen2, mem_unit)
+	IF (i8_rqst_size .EQ. 0) mem_unit = ' '
+
 	CALL SPLIT_LIST(pttmode_explct, show_lun,
      .		'    The size of the requested object was: '//
-     .		mem_int(:slen2)//' ('//percent(:slen3)//'%)' ,0 )
+     .		mem_str(:slen2)//' '//mem_unit//' ('//percent(:slen3)//'%)' ,0 )
 
 * report the activity that was underway
 * ... could optionally investigate the is_act states of isp and isp-1 to report

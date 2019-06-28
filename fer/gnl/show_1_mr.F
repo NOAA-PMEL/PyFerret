@@ -61,6 +61,7 @@
 *		  Adjust output to 6-D or 4-D grids
 * V702 *sh* 2/17  Reveal dynamic memory instead of block memory
 *		  Increase field widths for long axes
+* V751 *acm* 6/19 Issue 1903: memory set and reported in terms of bytes
 
         IMPLICIT NONE
 	include	'tmap_dims.parm'
@@ -85,12 +86,13 @@
 	LOGICAL	ITS_UN_CACHED, FOUR_D_GRID
 	INTEGER TM_LENSTR1, MR_DIM_LEN,
      .		idim, ndim, mrlen, mrsizelen, dset, listdims
-	CHARACTER VAR_CODE*128, ALG_TRANS_CODE*3, ARG_STRING*12, TM_FMT*48,
+	INTEGER*8 mem
+	CHARACTER VAR_CODE*128, ALG_TRANS_CODE*3, ARG_STRING*12, TM_FMT*64,
      .		  protection*4, shape*4, dname*14, gname*12, vname*128,
      .		  ww_lo(nferdims)*20, ww_hi(nferdims)*20, 
      .		  ss_lo(nferdims)*9, ss_hi(nferdims)*9,
-     .		  mrbuf*4, mrsizebuf*8,
-     .		  cache_stat*8
+     .		  mrbuf*4, mrsizebuf*16,
+     .		  cache_stat*8, byte_unit*2
 
 * If mode 6d_lab has been canceled, we will list only the first 4 dimensions.
 
@@ -169,8 +171,14 @@
 	ELSE
 	   gname = ']'
 	ENDIF
-	mrbuf      = TM_FMT(DBLE(mr), 0, 4, mrlen)
-	mrsizebuf  = TM_FMT(DBLE(mr_size(mr)), 0, 8, mrsizelen)
+	mrbuf      = TM_FMT( FLOAT(mr), 0, 4, mrlen )
+	mrsizebuf  = TM_FMT( FLOAT(mr_size(mr)), 0, 8, mrsizelen )
+
+	mem = mr_size(mr)
+
+	CALL MEM_TO_BYTES (mem, mrsizebuf, mrsizelen, byte_unit)
+	IF (mem .EQ. 0) byte_unit = ' '
+
 	risc_buff  = ' '
 	WRITE ( risc_buff, 3010 )	vname(:TM_LENSTR1(vname)),
      .					dname(:TM_LENSTR1(dname)),
@@ -178,6 +186,7 @@
      .					shape,
      .					mrbuf(:mrlen),
      .					mrsizebuf(:mrsizelen),
+     .					byte_unit,
      .					protection,
      .					cache_stat
 
@@ -202,7 +211,7 @@
 
 	CALL SPLIT_LIST(pttmode_explct, show_lun, risc_buff, 0)
 
- 3010	FORMAT(T2,A,'[',2A,T36,A4,'  mr:',A, ' size:', A, 1X,A4,1x,A8)
+ 3010	FORMAT(T2,A,'[',2A,T36,A4,'  mr:',A, ' size:', A, 1X,A2,1X,A4,1x,A8)
  3020	FORMAT(T2,5(A9,'/',A12),A9,'/',A12)
  3030	FORMAT(T2,6(4X,A3,A12))
 

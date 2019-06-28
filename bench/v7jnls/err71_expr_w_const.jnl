@@ -2,7 +2,9 @@
 ! ticket 2313: return= is loading the whole 
 ! grid unnecessarily in the last example
 
-set mem/size=1
+DEFINE SYMBOL saved_memory_size = ($FERRET_BYTES_MEM)
+
+set mem/size=8M
 def ax/t=1-jan-0001:1-jan-1000:1/unit=year tax
 let a = t[gt=tax] + x[gx=1:1000:1] + y[gy=1:1000:1]
 
@@ -21,3 +23,6 @@ let one = 1
 let a1 = a*one
 show grid a1
 say `a*one,return=cal`
+
+! clean up
+SET MEMORY/SIZE=($saved_memory_size)

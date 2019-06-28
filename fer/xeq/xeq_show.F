@@ -209,6 +209,7 @@
 * V720 3/17 *acm* Ticket 2132, attribute of user-defined variable, do not try to show dataset info
 * v745 *acm* 12/18 Issue 1909, option to write dates in ISO8601 format
 *                  new mode datefmt for formatted date output
+* V751 *acm* 6/19 Issue 1903: memory set and reported in terms of bytes
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -316,8 +317,9 @@
 	INTEGER aux_cat(nferdims), aux_var(nferdims)  ! get info from LIST 
 
 	REAL	xtemp, ytemp, attvals(100), cache_mb, cache_n, cache_p, rsize
-	CHARACTER EXPR_NAME*8, TM_FMT*48, VAR_CODE*128, ALG_TRANS_CODE*3,
-     .		default*10, show_str*2048, arg*128, name*128, argsym*120
+	CHARACTER EXPR_NAME*8, TM_FMT*48, TM_FMT_TRIM*48, VAR_CODE*128, 
+     .		  ALG_TRANS_CODE*3,
+     .		  default*10, show_str*2048, arg*128, name*128, argsym*120
 	CHARACTER	varatt*641, varname*512, attname*128,
      .			efname*40, upname*40, aname*128, outstring*2048,
      .                  dname*128, sub4*4
@@ -1385,11 +1387,11 @@ c                    ENDIF ! status from GET_SAVED_UVAR_AUX_INFO
         ENDIF
  4201   FORMAT(8x,A15,A1,A8,I10,I12)
 
-        CALL SHOW_MEM_USAGE_LINE('SET MEMORY/SIZE', max_mem_allowed)
-        CALL SHOW_MEM_USAGE_LINE('Peak demand', peak_essential_mem)
-        CALL SHOW_MEM_USAGE_LINE('Current cache', total_mem)
+        CALL SHOW_MEM_USAGE_LINE('SET MEMORY/SIZE', max_mem_allowed, .TRUE.)
+        CALL SHOW_MEM_USAGE_LINE('Peak demand', peak_essential_mem, .FALSE.)
+        CALL SHOW_MEM_USAGE_LINE('Current cache', total_mem, .FALSE.)
         IF (permanent_mem .NE. 0 ) THEN
-           CALL SHOW_MEM_USAGE_LINE('Permanent', permanent_mem)
+           CALL SHOW_MEM_USAGE_LINE('Permanent', permanent_mem, .FALSE.)
         ENDIF
 
 	IF ( qual_given( slash_mem_free ) .GT. 0 ) THEN
@@ -2003,18 +2005,18 @@ c                    ENDIF ! status from GET_SAVED_UVAR_AUX_INFO
  1900   CALL CD_GET_CHUNK_CACHE (cache_size, cache_nelems, 
      .    cache_preemption, status)
         cache_mb = cache_size/1.e6
-	name = TM_FMT(cache_mb, 6, 12, dlen)
+	name = TM_FMT_TRIM(cache_mb, -2, 12, dlen)
         show_str = 'Current NCDF Chunk Cache size '//name(1:dlen)
 	len = TM_LENSTR1(show_str)
 
         cache_n = cache_nelems
-	name = TM_FMT(cache_n, 6, 12, dlen)
+	name = TM_FMT(cache_n, 0, 12, dlen)
 
 	show_str = show_str(1:len)//' MB, n_elems = '//name(1:dlen)
 	len = TM_LENSTR1(show_str)
 
         cache_p = cache_preemption
-	name = TM_FMT(cache_p, 6, 12, dlen)
+	name = TM_FMT(cache_p, 0, 12, dlen)
 
 	show_str = show_str(1:len)//', preemption = '//name(1:dlen)
 	len = TM_LENSTR1(show_str)

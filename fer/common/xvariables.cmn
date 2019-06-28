@@ -70,6 +70,8 @@
 * V720: 4/17 *acm* Add direction-changing functions as a subset of grid-changing ones
 * V745  4/19 *acm* ticket 1916, special handling getting context for RETURN= outputs
 *                  new dynamic-memory line storage for keeping a list of uvars
+* V751 *acm* 6/19  Issue 1903: memory set and reported in terms of bytes
+*                  Change the initial memory limit to 500Mb 
 
 * Terminology:
 *	"mr"	- "memory resident"
@@ -218,7 +220,8 @@
      .			max_ws    = 8,
      .			plegacy_work_buffer = 1,
      .			max_mr_avail = max_mrs - 1,
-     .			pmax_mem_default = 25600000,  !25.6 megawords
+c     .			pmax_mem_default = 62500000,  ! 500Mb
+     .			pmax_mem_default = 25600000,  !25.6 megawords for one round of benchmark testing...
      .			pint_size_test = -999,   ! if needed use c __WORDSIZE
      .			pmv_npiles     = 299,	! prime # of hash piles
      .			pmv_nocache_pile = -pmv_npiles - 1,

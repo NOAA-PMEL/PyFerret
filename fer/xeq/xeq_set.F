@@ -210,6 +210,7 @@
 *                  new mode datefmt for formatted date output
 * v7441*acm* 12/18 Issue 1910: Allow dates in commands to be in ISO 8601 form, yyyy-mm-dd
 * v751 *acm*  6/19 Issue 1942: reinitialize varname and attname for SET ATTRIBUTE
+* v751 *acm*  6/19 cleanup: remove code related to SET MOVIE 
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -225,7 +226,6 @@
 	include	'ferret.parm'
 	include	'slash.parm'
 	include 'errmsg.parm'
-	include 'movies.parm'
 	include 'gfdl_vms.parm'
 	include 'plot_setup.parm'
 	include 'xprog_state.cmn'
@@ -285,7 +285,6 @@
      .                  TM_DIGIT_ONLY,
      .                  TM_HAS_STRING, TM_LEGAL_NAME, MATCH_NAME, TM_FPEQ,
      .                  NC_GET_ATTRIB, set_last, any_delta, dset_cdf,
-     .			do_laser_movie, past_laser_movie, start_frame,
      .                  do_ez, tregular, its_changed, ok_cal,
      .                  coordvar, new_att_modulo, batch, its_gif, 
      .                  got_it, redir_stdout, redir_stderr, redir_tee,
@@ -833,83 +832,6 @@ c *kob* 4/97
 * Movies are discontinued with Ferret v6.6: NetCDF-4 / HDF5
 
  900	GOTO 5086
-        past_laser_movie = frame_file .EQ. plaser_flag
-	do_laser_movie = qual_given( slash_set_movie_laser ) .GT. 0
-	IF ( frame_on ) THEN
-	   IF ( past_laser_movie ) THEN
-	      CALL ODR_OP( 'RC', -1, -1 )	! clear record mode
-	      CALL LASER_STATUS( buff1, status )
-	      IF ( status .NE. ferr_OK ) GOTO 5085
-	      CALL ODR_QUIT
-	      CALL LASER_STATUS( buff1, status )
-	      IF ( status .NE. ferr_OK ) GOTO 5085
-	   ENDIF
-	ENDIF
-	frame_on = .FALSE.
-
-        lp = qual_given( slash_set_movie_out )
-	IF ( lp .GT. 0 ) THEN
-	   IF ( do_laser_movie ) GOTO 5082
-           CALL EQUAL_STR_LC( cmnd_buff(qual_start(lp):qual_end(lp)),
-     .			      title(1:80), status )
-           IF ( status .NE. ferr_ok ) RETURN
-           IF ( .NOT. TM_LEGAL_UNIX_NAME(title(1:80)) ) GOTO 5083
-           frame_file = title(1:80)
-	ENDIF
-
-        lp = qual_given( slash_set_movie_start )
-	start_frame = lp .GT. 0
-	IF ( start_frame ) THEN
-	   IF (.NOT.do_laser_movie) GOTO 5082
-           CALL EQUAL_VAL( cmnd_buff(qual_start(lp):qual_end(lp)),
-     .			   val_buf, status )
-           IF ( status .NE. ferr_ok ) RETURN
-	ENDIF
-
-        lp = qual_given( slash_set_movie_compress )
-	IF ( lp .GT. 0 ) THEN
-           CALL EQUAL_STRING( cmnd_buff(qual_start(lp):qual_end(lp)),
-     .                        buff1, status )
-           IF ( status .NE. ferr_ok ) RETURN
-           IF ( buff1(1:1) .EQ. 'N'
-     .     .OR. buff1(1:3) .EQ. 'OFF' ) THEN
-              frame_compress = ' '
-	   ELSEIF ( buff1 .EQ. ' '
-     .     .OR. buff1(1:2) .EQ. 'ON'
-     .     .OR. buff1(1:1) .EQ. 'Y' ) THEN
-	      frame_compress = 'RLE'
-           ELSE
-              GOTO 5084
-	   ENDIF
-        ENDIF
-	IF ( num_args .GT. 0 ) THEN
-	   title = cmnd_buff( arg_start(1) : len_cmnd )
-	ELSE
-	   title = 'GFDL movie output'
-	ENDIF
-        show_str = TM_FMT(revision_level, 5, 12, slen)
-	WRITE ( subtitle, 3000 ) program_name(1:len_program_name),
-     .				 progname_mod(1:len_progname_mod),
-     .				 show_str(1:slen)
- 3000	FORMAT(' Program ',A,1X,A,'  version',A )
-
-	IF ( do_laser_movie ) THEN
-	      CALL ODR_INIT
-	      CALL LASER_STATUS( buff1, status )
-	      IF ( status .NE. ferr_OK ) GOTO 5085
-	      IF ( start_frame ) THEN
-	         CALL ODR_OP( 'SR', INT(val_buf), -1 )
-	         CALL LASER_STATUS( buff1, status )
-	         IF ( status .NE. ferr_OK ) GOTO 5085
-	      ENDIF
-	      CALL ODR_OP( 'RM', -1, -1 )	! record mode:arbitrary # frames
-	      CALL LASER_STATUS( buff1, status )
-	      IF ( status .NE. ferr_OK ) GOTO 5085
-	      frame_file = plaser_flag
-	ENDIF
-	frame_on = .TRUE.
-	RETURN
-
 * SET VARIABLE
  1000	IF ( num_items .NE. 1 ) GOTO 5100
 	CALL SET_VAR( cmnd_buff(item_start(1):item_end(1)), status )
@@ -2069,17 +1991,6 @@ c           ENDIF
      .			cmnd_buff( item_start(item):item_end(item) ), *5000 )
  5030	CALL ERRMSG( ferr_syntax, status,
      .			cmnd_buff( qual_start(lp):qual_end(lp) ), *5000 )
- 5060	CALL ERRMSG( ferr_erreq, status, list_file,  *5000 )
- 5070	CALL ERRMSG( ferr_erreq, status, frame_file, *5000 )
- 5080	CALL ERRMSG( status, status, frame_file, *5000 )
- 5082	CALL ERRMSG( ferr_invalid_command, status,
-     .			'laser movie or on-disk movie?', *5000 )
- 5083	CALL ERRMSG( ferr_invalid_command, status, 
-     .            'illegal file name: '//
-     .            cmnd_buff(qual_start(lp):qual_end(lp)), *5000 )
- 5084	CALL ERRMSG( ferr_invalid_command, status,
-     .			'Unknown compression type: ON or OFF only', *5000 )
- 5085	CALL ERRMSG( status, status, buff1, *5000 )
  5086	CALL ERRMSG( ferr_invalid_command, status, 
      .     'Movies are discontinued as of Ferret v6.6', *5000 )
  5090	CALL ERRMSG( ferr_TMAP_error, status, ' ', *5000 )

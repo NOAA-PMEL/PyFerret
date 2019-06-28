@@ -1,0 +1,12 @@
+! err75_set_global_att_out.jnl
+! 6/27/2019 Acm
+!
+! Issue 1942: Previously the second instance of "set att/output=all ."
+! in a session caused an error.
+
+use WestCoastCarbon_9d9c_f562_77b5_5f8e_5d19_7b1d.nc
+set att/output=all .
+save/clobber/file=a.nc prof, time
+
+set att/output=all .
+

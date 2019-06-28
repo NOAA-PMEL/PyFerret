@@ -214,6 +214,7 @@
 *                  new mode datefmt for formatted date output
 * v7441*acm* 12/18 Issue 1910: Allow dates in commands to be in ISO 8601 form, yyyy-mm-dd
 * v7545*acm*  4/19 Check for invalid text-group name in SET TEXT/FONT=xxx text-group
+* v751 *acm*  6/19 Issue 1942: reinitialize varname and attname for SET ATTRIBUTE
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -1475,8 +1476,11 @@ c *kob* 4/97
  1400 IF ( num_args .LT. 1 ) GOTO 5900
       CALL NAME_EQUAL_STRING_VATT ( buff1, pos, status )
       IF ( status .NE. ferr_ok )  GOTO 5000
-      dset_num = unspecified_int4
 
+* Initialize
+      dset_num = unspecified_int4
+      varname = ' '
+      attname = ' '
       loc = qual_given( slash_set_attr_like ) 
 
 *     Inherit all attributes from another variable (except missing flags and

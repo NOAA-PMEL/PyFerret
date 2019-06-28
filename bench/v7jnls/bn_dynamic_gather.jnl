@@ -5,6 +5,11 @@
 !  here, the SET MEMORY commands are done in terms of megawords,
 !  as we're thinking of grid sizes
 
+
+! initialize
+DEFINE SYMBOL saved_memory_size = ($FERRET_BYTES_MEM)
+
+
 ! There's not really anything "dynamic" about this benchmark, except that it
 ! excercises the split/gather improvements that were implemented together with
 ! dynamic memory management
@@ -100,6 +105,4 @@ SET MODE IGNORE
 SET MODE FRUGAL:95
 SET MODE/LAST IGNORE
 
-
-! clean up
-set mem/siz=25.6  ! return to the default setting
+SET MEMORY/SIZE=($saved_memory_size)

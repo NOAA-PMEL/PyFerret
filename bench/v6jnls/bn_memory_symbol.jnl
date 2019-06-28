@@ -1,18 +1,19 @@
 ! bn_memory_symbol.jnl
 ! Ferret v6.06 15-Aug-07 
 ! Symbol FERRET_MEMORY shows current size of Ferret memory in MWords
-     
-sh sym ferret_memory
+! V751:*acm* 6/2019 - memory set and shown in bytes
+
+sh sym ferret_memory, ferret_bytes_mem
 
 set mem/siz=90
-sh sym ferret_memory
+sh sym ferret_memory, ferret_bytes_mem
 show memory
 
 set mem/size=0.05
-sh sym ferret_memory
+sh sym ferret_memory, ferret_bytes_mem
 
 set mem/siz=500000  ! too large to allow
-sho sym ferret_memory
+sh sym ferret_memory, ferret_bytes_mem
 
-set mem/siz=25.6  ! return to the default setting
-show memory
+set mem/siz=250M  ! return to the default setting
+sh sym ferret_memory, ferret_bytes_mem

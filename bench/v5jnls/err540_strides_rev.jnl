@@ -1,5 +1,6 @@
 ! err540_strides_rev.jnl
 ! V702: *sh* 2/2017 - modified this bench script
+! V751:*acm* 6/2019 - memory is restored to the default in bn_reset
 
 ! reported Feb '02
 ! fixed April 17, '02
@@ -51,4 +52,4 @@ ppl list data  ! make screen wide -- shows the 1's matching the plot
 
 can mode stupid
 can mode diag
-set mem/size=25.6
+

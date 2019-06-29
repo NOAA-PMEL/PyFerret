@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
-Running FERRET version /home/users/ansley/build/working/FERRET/fer/ferret_c
--rwxr-xr-x. 1 ansley tmap 115062973 Jun 28 13:42 /home/users/ansley/build/working/FERRET/fer/ferret_c
-Using external functions from /home/users/ansley/build/working/FERRET/external_functions/ext_func
+Running FERRET version /home/users/ansley/build/trunk/FERRET/fer/ferret_c
+-rwxr-xr-x. 1 ansley tmap 115062275 Jun 28 17:04 /home/users/ansley/build/trunk/FERRET/fer/ferret_c
+Using external functions from /home/users/ansley/build/trunk/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: issue 1903: memory is set and shown in terms of bytes, with new defalt setting 250Mb
+Note: issue 1903: also report the memory in Mwords in the message where the memory limit is set too low
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DATA=. ./data
@@ -13,7 +13,7 @@ FER_DAT=/home/users/tmap/ferret/rhel6-x86_64-linux
 FER_DESCR=. ./data
 FER_DIR=.
 FER_DSETS=. ./data
-FER_EXTERNAL_FUNCTIONS=/home/users/ansley/build/working/FERRET/external_functions/ext_func
+FER_EXTERNAL_FUNCTIONS=/home/users/ansley/build/trunk/FERRET/external_functions/ext_func
 FER_FONTS=/home/users/tmap/ferret/rhel6-x86_64-linux/ppl/fonts
 FER_GO=. ./v4jnls ./v5jnls ./v6jnls ./v7jnls ./genjnls . /home/users/tmap/ferret/rhel6-x86_64-linux/go /home/users/tmap/ferret/rhel6-x86_64-linux/examples /home/users/tmap/ferret/rhel6-x86_64-linux/contrib
 FER_GRIDS=. ./data
@@ -22,7 +22,7 @@ FER_PALETTE=. /home/users/tmap/ferret/rhel6-x86_64-linux/ppl
 FER_WEB_BROWSER=firefox
 PWD=/home/users/ansley/build/working/FERRET/bench
 PYFER_EXTERNAL_FUNCTIONS=/home/users/tmap/ferret/rhel6-x86_64-linux/ext_func/pylibs
-Beginning at Fri Jun 28 13:55:54 PDT 2019
+Beginning at Fri Jun 28 17:08:42 PDT 2019
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -1335,11 +1335,9 @@ ooooooooooooooooooooooooooooooooooooooooooo
            *** NOTE: Axis is in use by grid G10X5
            *** NOTE: Not deleted: TIME1
            *** NOTE: Axis is in use by grid GHB1
-           *** NOTE: Not deleted: TIME2
-           *** NOTE: Axis is in use by grid GJR1
            *** NOTE: Not deleted: TIME5
            *** NOTE: Axis is in use by grid GQO1
-           *** NOTE: Not deleted: TIME6
+           *** NOTE: Not deleted: TIME2
            *** NOTE: Axis is in use by grid GCQ1
            *** NOTE: Not deleted: TAX
            *** NOTE: Axis is in use by grid GFORMAT
@@ -1401,7 +1399,7 @@ ooooooooooooooooooooooooooooooooooooooooooo
            *** NOTE: Axis is in use by grid G5DAY
            *** NOTE: Not deleted: PSYU
            *** NOTE: Axis is in use by grid G5DAY
-           *** NOTE: Not deleted: TIME7
+           *** NOTE: Not deleted: TIME6
            *** NOTE: Axis is in use by grid GXYT
            *** NOTE: Not deleted: TEST_IRREG
            *** NOTE: Axis is in use by grid (G015)
@@ -1469,11 +1467,9 @@ ooooooooooooooooooooooooooooooooooooooooooo
            *** NOTE: Axis is in use by grid G10X5
            *** NOTE: Not deleted: TIME1
            *** NOTE: Axis is in use by grid GHB1
-           *** NOTE: Not deleted: TIME2
-           *** NOTE: Axis is in use by grid GJR1
            *** NOTE: Not deleted: TIME5
            *** NOTE: Axis is in use by grid GQO1
-           *** NOTE: Not deleted: TIME6
+           *** NOTE: Not deleted: TIME2
            *** NOTE: Axis is in use by grid GCQ1
            *** NOTE: Not deleted: TAX
            *** NOTE: Axis is in use by grid GFORMAT
@@ -1535,7 +1531,7 @@ ooooooooooooooooooooooooooooooooooooooooooo
            *** NOTE: Axis is in use by grid G5DAY
            *** NOTE: Not deleted: PSYU
            *** NOTE: Axis is in use by grid G5DAY
-           *** NOTE: Not deleted: TIME7
+           *** NOTE: Not deleted: TIME6
            *** NOTE: Axis is in use by grid GXYT
            *** NOTE: Not deleted: PSZW
            *** NOTE: Axis is in use by grid G5_10
@@ -2198,10 +2194,10 @@ Starting test: bn_labwid.jnl
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
 Starting test: bn_redefine_taxis_mc.jnl
-Replacing definition of axis TIME12
+Replacing definition of axis TIME11
            *** NOTE: grid GHB2 used by data set coads_clim
            *** NOTE: Redefinition may alter apparent contents of data set
-Replacing definition of axis TIME12
+Replacing definition of axis TIME11
            *** NOTE: grid GHB2 used by data set coads_clim
            *** NOTE: Redefinition may alter apparent contents of data set
  PERMANENT data cleared from memory
@@ -2424,7 +2420,7 @@ ooooooooooooooooooooooooooooooooooooooooooo
            *** NOTE: Changing the value of attribute (PSZT1).positive
            *** NOTE: Changing the type of attribute (coadsx).modulo
            *** NOTE: Changing the value of attribute (coadsx).modulo
-           *** NOTE: Changing the value of attribute (TIME7).time_origin
+           *** NOTE: Changing the value of attribute (TIME6).time_origin
  **ERROR: command syntax: enclose coordinate variable name in parentheses
 list coadsx.units
  **ERROR: variable unknown or not in data set: COADSX.UNITS
@@ -2723,7 +2719,7 @@ ooooooooooooooooooooooooooooooooooooooooooo
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
            *** NOTE: /UNIT=MONTHS is ambiguous ... using 1/12 of 365.2425 days
-Replacing definition of axis TIME16
+Replacing definition of axis TIME15
            *** NOTE: grid GSQ1 used by data set coads_climatology
            *** NOTE: Redefinition may alter apparent contents of data set
  PERMANENT data cleared from memory
@@ -3515,7 +3511,7 @@ ooooooooooooooooooooooooooooooooooooooooooo
            *** NOTE: LON1_15: Writing scaled coordinates not implemented. Suggest using nco operators on output file to pack coord values
            *** NOTE: LAT1800_1800: Writing scaled coordinates not implemented. Suggest using nco operators on output file to pack coord values
            *** NOTE: ENS: Writing scaled coordinates not implemented. Suggest using nco operators on output file to pack coord values
-           *** NOTE: TIME21: Writing scaled coordinates not implemented. Suggest using nco operators on output file to pack coord values
+           *** NOTE: TIME20: Writing scaled coordinates not implemented. Suggest using nco operators on output file to pack coord values
            *** NOTE: Units on axis "ENS" are not recognized: count
            *** NOTE: They will not be convertible:
  PERMANENT data cleared from memory
@@ -7250,4 +7246,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
            *** NOTE: Cannot create new windows when batch mode set
-Ended at Fri Jun 28 14:04:21 PDT 2019
+Ended at Fri Jun 28 17:15:23 PDT 2019

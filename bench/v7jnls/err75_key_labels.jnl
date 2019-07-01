@@ -15,6 +15,7 @@ shade/L=1/x=150:220/y=-90:0/key=horiz sst * 1e-13
 set v lr
 shade/L=1/x=150:220/y=-90:0/key=horiz sst * 1e4
 
+frame/file=key_labels_magnitude.gif
 
 !!!! Remember to update documentation about precision= 
 ! https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/variables-xpressions/EMBEDDED-XPRESSIONS#_VPINDEXENTRY_576

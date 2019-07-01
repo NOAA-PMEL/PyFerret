@@ -1176,3 +1176,11 @@ say `1.555555555e-9,p=4`
 list/nohead/p=16 1234567890123456, `1234567890123456`
 list/nohead/p=16 1234567890123456, `1234567890123456,p=16`
 
+! negative precision: don't do fixed decimal format if it will
+! list too many digits
+
+say `2.2 * 1e10,p=-5`
+say `2.2 * 1e16,p=-5`
+say `2.2 * 1e21,p=-5`
+say `2.2 * 1e41,p=-5`
+say `2.2 * 1e14,p=-1`

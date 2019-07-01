@@ -99,7 +99,7 @@
 * internal variable declarations:
         LOGICAL   TM_FPEQ, negative
         INTEGER   slen, sig_max, pow10p, pow10p_save, sig_left, nleft,
-     .            sig_needed, nright, xtra, idx
+     .            sig_needed, nright, xtra, idx, digits
         REAL*8    aval, l10, full, full10
         CHARACTER frmt*10, outstring*(max_str_len), strend*(max_str_len)
 
@@ -107,6 +107,7 @@
         negative     = val .LT. 0.0
         aval         = ABS( val )
         outstring    = ' '
+	digits       = ndigits
 
 * maximum length of output string
 * (at least 1 character long but not longer than outstring or user-specified max)
@@ -131,10 +132,16 @@
         ENDIF
 
 * Easy case where the exact number of fractional digits is specified
-        IF ( ndigits .LE. 0 ) THEN
+* However for very large numbers go on and use scientific notation, 
+* arbitrarily returning the max amount of precision
+
+        l10 = LOG10(aval)
+        IF (digits.LE.0 .AND. INT(l10).GT.16-ABS(ndigits) ) digits = 16
+	
+	IF ( digits .LE. 0 ) THEN
 *          Just write the value in all space provided with the indicated
 *          number of fractional digits, then clean up.
-           WRITE ( frmt, 20 ) slen, ABS(ndigits)
+           WRITE ( frmt, 20 ) slen, ABS(digits)
    20      FORMAT ( '(F',I2,'.',I2,')' )
            WRITE ( outstring, frmt ) val
            IF ( outstring(1:1) .EQ. '*' ) GOTO 5000
@@ -154,7 +161,7 @@
            RETURN
         ENDIF
 
-        sig_max = ndigits
+        sig_max = digits
 
 * location of leftmost digit (.01-->-1, 0.1-->0, 1.0-->1, etc.)
         l10 = LOG10(aval)
@@ -205,7 +212,7 @@
 * Values in (1000.0,0.001] should not use exponential format unless the
 * fixed point form would give too many significant digits.
         IF ( ( (ABS(l10) .GE. 3.0) .OR. 
-     .         (ABS(l10) .GE. 1.0) .AND. (ndigits .LT.3) ) .AND.
+     .         (ABS(l10) .GE. 1.0) .AND. (digits .LT.3) ) .AND.
      .       ( (str_len .GT. slen) .OR.
      .         (nright .GT. sig_max) .OR.
      .         (sig_left .GT. sig_max) ) ) THEN
@@ -219,7 +226,7 @@
            str_len = MIN(slen, sig_needed+xtra)
            IF (pow10p .LT. 0) str_len = str_len + sig_max
            IF (str_len .GT. slen) str_len = slen
-           nright = MAX(0, ndigits - 1)
+           nright = MAX(0, digits - 1)
            IF (str_len-(xtra+1) .LT. 0) xtra = 1
            nright = MIN(nright, str_len-(xtra+1))
 *          Write out the exponential form
@@ -286,7 +293,7 @@
 
 * Remove fractional zeros (if not required) and
 * trailing decimal point from non-exponentials
-        IF ( (ndigits .GE. 0) ) CALL TM_CLEANUP_NUM_STRING (outstring, str_len)
+        IF ( (digits .GE. 0) ) CALL TM_CLEANUP_NUM_STRING (outstring, str_len)
 
 * Add a zero before a floating point value with no integer part
         IF ( outstring(1:3) .EQ. ' -.' ) THEN

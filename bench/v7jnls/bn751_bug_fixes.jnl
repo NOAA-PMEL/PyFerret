@@ -35,3 +35,5 @@ GO err75_grave_numbers
 GO bn_reset
 GO err75_set_global_att_out
 
+GO bn_reset
+GO err75_key_labels

@@ -1,0 +1,26 @@
+! err75_key_labels
+! 7/1/2019  issue 1929
+! various tests using data at different orders of magnitude.
+! some switched back and forth from decimal to scientific notation
+! some started adding too many digits.
+
+use coads_climatology
+
+set v ul 
+shade/L=1/x=150:220/y=-90:0 sst * 1e-6
+set v ur
+shade/L=1/x=150:220/y=-90:0 sst * 1e-12
+set v ll
+shade/L=1/x=150:220/y=-90:0/key=horiz sst * 1e-13
+set v lr
+shade/L=1/x=150:220/y=-90:0/key=horiz sst * 1e4
+
+
+!!!! Remember to update documentation about precision= 
+! https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/variables-xpressions/EMBEDDED-XPRESSIONS#_VPINDEXENTRY_576
+! Changes here: In the case of a negative precision value, Ferret will again drop terminating zeros to the right of the decimal point.
+! It does not drop terminating zero's and for large numbers does not return a decimal string result
+! 
+! 
+! https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/variables-xpressions/EMBEDDED-XPRESSIONS#_VPINDEXENTRY_572
+! Changes here: [ for p=0] ...This also means that Ferret will always return at least one significant digit:

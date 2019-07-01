@@ -133,6 +133,9 @@ c	        IF (NL.EQ.1 .AND. J.LE.2) ZLEV(2) = zlev(1)
 *       *acm* 12/18 For vertical colorbars that are short, like in viewports, adjust
 *          the labeling interval so they aren't crowded.
 * v751  *acm* prevent tiny text in labels. Pre-compute max length for strings computed by TM_FMT_SNGL
+* v751  *acm* Also keep from switching back and forth between exponential and fixed-format in the labels
+*             if possible. Use string comparison when checking to see if we are using enough
+*             precision to differentiate the levels labels.
 
         IMPLICIT NONE
 
@@ -160,10 +163,12 @@ c	        IF (NL.EQ.1 .AND. J.LE.2) ZLEV(2) = zlev(1)
 	include        'gkspar.inc'
 	include        'pyfonts.cmn'
 	
+
 	integer TM_LENSTR1, TM_LENSTR, 
      .          ndx,str_len,max_len,incr,lab_digits, nhi, ncount,
      .          lab_add, nlab, i, kount, lev1, levn, nspace, shd_lev_hi,
-     .		ITYPEX_save, ITYPEY_save, ic, num_dec, maxstr, i_dec
+     .		ITYPEX_save, ITYPEY_save, ic, num_dec, maxstr, i_dec, 
+     .		have_exp, nl
 
 	real		SYMWID
 	real		x_inc,y_inc,px(4),py(4),rem,kpx(5),kpy(5),flaty(5),flatx(5)
@@ -172,15 +177,12 @@ c	        IF (NL.EQ.1 .AND. J.LE.2) ZLEV(2) = zlev(1)
         real            kx_lo_def, kx_hi_def, ky_lo_def, ky_hi_def,
      .                  val, del, x_inc_inf, y_inc_inf, frac, fixx, inc_min, 
      .                  center_add, ht_ann
-        real*8          val_n, val_last
         character*48    TM_FMT_SNGL
         character*12    text, txt_out, blanks
         character*20    buff
-	logical		TM_FPEQ_SNGL, TM_DFPEQ, ITSA_AXIS_VIEW, TM_HAS_STRING,  
+	logical		TM_FPEQ_SNGL, ITSA_AXIS_VIEW, TM_HAS_STRING,  
      .                  windof_hold, check_0, increase_digits, nofill, cont_key_keep, 
-     .                  no_lines, is_viewport, have_neg, have_exp
-
-	external	TM_FMT_SNGL
+     .                  no_lines, is_viewport, have_neg
 
 	include 	'ppl_in_ferret.cmn'	
 
@@ -258,34 +260,38 @@ c	        IF (NL.EQ.1 .AND. J.LE.2) ZLEV(2) = zlev(1)
            val = zlev(lev1)
            IF (center_key_labels) val = zlevsave(lev1)
            IF (TM_FPEQ_SNGL(val,0.) .AND. check_0) val = 0.
- 	   buff = 
-     .        TM_FMT_SNGL(val,lab_digits,klab_len+5,str_len)
+ 	   text = TM_FMT_SNGL(val,lab_digits,klab_len+5,str_len)
 
-           READ (buff,*) val_last
            increase_digits = .FALSE.
+	   
+ 	   have_exp = 0
+ 	   IF (INDEX(buff, 'E') .GT.0) have_exp = 1
+ 	   nl = 1
 
            num_dec = 0
            have_neg = .FALSE.
 	   max_len = 0
+
 	   DO 30 ndx = lev1+incr, shd_levels, incr
              val = zlev(ndx)
              IF (center_key_labels) THEN
-	        IF (ndx.GE.shd_levels) EXIT ! from loop
-		val = zlevsave(ndx)
+                IF (ndx.GE.shd_levels) EXIT ! from loop
+                val = zlevsave(ndx)
              ENDIF
-	     IF (TM_FPEQ_SNGL(val,0.) .AND. check_0) val = 0.
-	     buff = 
-     .          TM_FMT_SNGL(val,lab_digits,klab_len+5,str_len)
+             IF (TM_FPEQ_SNGL(val,0.) .AND. check_0) val = 0.
+             buff = TM_FMT_SNGL(val,lab_digits,klab_len+5,str_len)
 
-             READ (buff,*) val_n
-             IF ( TM_DFPEQ(val_last, val_n) ) increase_digits = .TRUE.
+             increase_digits = (buff .EQ. text)   ! Are labels different, one to the next?
+             text = buff
 
-             val_last = val_n
              IF (max_len .lt. str_len) max_len = str_len
 	     
              i = INDEX(buff, '.')
              IF (i .GT. 0) num_dec = MAX(num_dec, str_len-i)
              have_neg = have_neg .OR. val.LT.0 
+             nl = nl + 1
+             IF (INDEX(buff, 'E') .GT.0) have_exp = have_exp + 1
+
    30      CONTINUE
 
            IF (increase_digits) THEN
@@ -293,6 +299,11 @@ c	        IF (NL.EQ.1 .AND. J.LE.2) ZLEV(2) = zlev(1)
               IF (lab_digits .LT. 0) lab_digits = lab_digits - 1
               lab_add = lab_add + 1
            ENDIF
+
+* If some labels are formatted as exponentials and some not, try
+* using less digits for all exponential.
+           IF (have_exp .GT. 0 .AND. .NOT.increase_digits) lab_digits = lab_digits - 1
+
            kount = kount + 1
         ENDDO
 
@@ -519,8 +530,8 @@ c	IF ( no_lines ) cont_key = .TRUE.
               val = zlev(ndx)
               IF (center_key_labels) val = zlevsave(ndx)
               IF (TM_FPEQ_SNGL(val,0.) .AND. check_0) val = 0.
-              text = TM_FMT_SNGL(val,lab_digits,klab_len+lab_add,str_len)
-              if (max_len .lt. str_len) max_len = str_len
+	      text = TM_FMT_SNGL(val,lab_digits,klab_len+lab_add,str_len)
+	      if (max_len .lt. str_len) max_len = str_len
            ENDIF
 10	continue
 
@@ -712,7 +723,6 @@ c	IF ( no_lines ) cont_key = .TRUE.
         val = zlev(lev1)
         IF (TM_FPEQ_SNGL(val,0.) .AND. check_0) val = 0.
 	text = TM_FMT_SNGL(val,lab_digits,klab_len+lab_add,str_len)
-
 	if (max_len .lt. str_len) max_len = str_len	
 
         nhi = MAX(2,shd_levels+1)
@@ -803,7 +813,7 @@ c	IF ( no_lines ) cont_key = .TRUE.
 * so the set of numbers written could be different.
 
 	have_neg = .FALSE.
-	have_exp = .FALSE.
+
 	max_len = 0
 	DO ndx = lev1+incr, shd_levels, incr
            val = zlev(ndx)
@@ -813,8 +823,8 @@ c	IF ( no_lines ) cont_key = .TRUE.
            ENDIF
 
            IF (TM_FPEQ_SNGL(val,0.) .AND. check_0) val = 0.
-	   buff = 
-     .          TM_FMT_SNGL(val,lab_digits,klab_len+lab_add,str_len)
+     	   buff = TM_FMT_SNGL(val,lab_digits,klab_len+lab_add,str_len)
+
            i = INDEX(buff, '.')
            i_dec = -1
            IF (i .GT. 0) i_dec = str_len-i
@@ -824,7 +834,7 @@ c	IF ( no_lines ) cont_key = .TRUE.
 	      txt_out = buff
 	   ENDIF
 	   have_neg = have_neg .OR. val.LT.0
-	   have_exp = have_exp .OR. INDEX(buff, 'E') .GT.0
+
 	ENDDO
 	buff = txt_out
 
@@ -898,7 +908,7 @@ c	IF ( no_lines ) cont_key = .TRUE.
 	      val = zlevsave(ndx)
 	   ENDIF
 	   IF (TM_FPEQ_SNGL(val,0.) .AND. check_0) val = 0.
-	   text = TM_FMT_SNGL(val,lab_digits,klab_len+lab_add,str_len)
+     	   text = TM_FMT_SNGL(val,lab_digits,klab_len+lab_add,str_len)
 	   IF (ndx .EQ. 1 .AND. neginf) text = " "
 	   IF (ndx .EQ. levn+1 .AND. posinf) text = " "
 

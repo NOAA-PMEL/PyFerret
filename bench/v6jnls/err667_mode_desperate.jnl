@@ -4,6 +4,9 @@
 ! MODE DESPERATE, and formatting of the value of the
 ! setting in SHOW MODE.
 
+! Mode desperate is no longer used as of Ferret v7.2
+EXIT/SCRIPT
+
 set mode ignore
 
 ! setting too large

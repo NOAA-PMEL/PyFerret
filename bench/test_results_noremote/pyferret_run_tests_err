@@ -566,21 +566,21 @@ list v2-and-minus[i=5:15@ddc]
  LISTing to file junk.dat
  **ERROR: request exceeds memory setting
 load num
-    To fulfill this request would exceed the current SET MEMORY/SIZE= limit of 25.6 megawords
+    To fulfill this request would exceed the current SET MEMORY/SIZE= limit of 500Mb
     At the moment that the memory limit was reached
     memory was committed as follows:
         - to objects used in computation: 0 (0%)
-    The size of the requested object was: 24000000000 (93750%)
+    The size of the requested object was: 192 Gb (38400%)
 Replacing definition of axis YAX
 Replacing definition of axis ZAX
 Replacing definition of axis TAX
  **ERROR: request exceeds memory setting
 load num
-    To fulfill this request would exceed the current SET MEMORY/SIZE= limit of 25.6 megawords
+    To fulfill this request would exceed the current SET MEMORY/SIZE= limit of 500Mb
     At the moment that the memory limit was reached
     memory was committed as follows:
         - to objects used in computation: 0 (0%)
-    The size of the requested object was: 1000000000 (3906%)
+    The size of the requested object was: 8 Gb (1600%)
 Replacing definition of axis XAX
 Replacing definition of axis YAX
 Replacing definition of axis ZAX
@@ -2925,12 +2925,6 @@ ooooooooooooooooooooooooooooooooooooooooooo
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
- **ERROR: value out of legal range: illegal mode argument. Negative or > 1.e+9,
-set mode desperate 9999999999
- **ERROR: value out of legal range: illegal mode argument. Negative or > 1.e+9,
-set mode desperate 1234567890123456789
-           *** NOTE: MODE DESPERATE is deprecated. Use MODE FRUGAL
-           *** NOTE: MODE DESPERATE is deprecated. Use MODE FRUGAL
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo

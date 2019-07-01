@@ -70,9 +70,9 @@
 * internal variable declarations:
 	INTEGER	mv, mvfree, mvused, 
      .		nmvlost, pile, last, size, test_next,
-     .		navail, nperm, ntemp, ndel, slen, nn
+     .		navail, nperm, ntemp, ndel, slen, nn, mrsizelen
         INTEGER*8 mem_in_use
-	CHARACTER LEFINT*8, buff*40, b04*4
+	CHARACTER LEFINT*8, buff*40, b04*4, mrsizebuf*16, byte_unit*2
 	PARAMETER (b04 = '    ')
 
 
@@ -205,9 +205,12 @@
 	   CALL SPLIT_LIST( pttmode_explct, lun,
      .			 b04//'number of /PERMANENT variables: '//
      .			 LEFINT(nperm,slen), 0 )
+	   	   
+	   CALL MEM_TO_BYTES (mem_in_use, mrsizebuf, slen, byte_unit)
+
 	   CALL SPLIT_LIST( pttmode_explct, lun,
      .			 b04//'memory used for /PERM: '//
-     .			 LEFINT(mem_in_use,slen), 0 )
+     .			 mrsizebuf(:slen)//byte_unit, 0 )
 	ENDIF
 	nmvlost = max_mr_avail - (navail+nperm+ndel+ntemp)
 	IF ( nmvlost .NE. 0 ) CALL WARN

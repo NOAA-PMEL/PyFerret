@@ -52,6 +52,7 @@ line_facts_xml.F\
 list_cmnd_data.F\
 list_multi.F\
 list_multi_sub.F\
+mem_to_bytes.F\
 mouse_command.F\
 name_equal_string.F\
 name_equal_string_lc.F\

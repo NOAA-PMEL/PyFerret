@@ -90,7 +90,9 @@
 * the reason so small is that Ferret memory management is not aware of
 * large hierarchies of definitions -- so a command like "LIST var"
 * may involve far more data than the transformations of "var" alone
-	mode_arg(pmode_desperate,1) = 0.1 *  pmax_mem_default
+* 6/19: mode despearate is not used as of v7.2
+
+c	mode_arg(pmode_desperate,1) = 0.1 *  pmax_mem_default
 
 * initialize malloced dynamic memory management variables  (2/2017)
         DO mv = 1, max_mrs

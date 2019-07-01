@@ -1,6 +1,13 @@
 ! bn_compressed_gather.jnl
 ! 11/2016 (for trac #2428 enhancement)
 ! updated 3/17 for dynamic memory and using SHOW MEM/DIAG
+!  6/19, code changes for SET MEM in terms of Mbytes. But
+!  here, the SET MEMORY commands are done in terms of megawords,
+!  as we're thinking of grid sizes
+
+! initialize
+DEFINE SYMBOL saved_memory_size = ($FERRET_BYTES_MEM)
+
 
 ! force a split/gather operation due to a T=@ave
 
@@ -217,4 +224,5 @@ LIST/PREC=12 xyz[x=@std,y=@std,z=@std]
 
 
 ! clean up
-set mem/siz=25.6  ! return to the default setting
+set mem/siz=1
+SET MEMORY/SIZE=($saved_memory_size)

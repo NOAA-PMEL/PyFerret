@@ -9,14 +9,15 @@ cancel mode verify
 !            put helpful separators into the log and err files
 !  4/17 *sh* added CANCEL MODE STUPID (was left on by bn_regrid_6d.jnl)
 !  2/18 *acm* cancel mode logo -- off except for bn tests specificall testing it 
+!  6/19 *acm* New default memory
 
 ! reset FERRET to prepare for another benchmark test
 CANCEL REGION/ALL
 CANCEL DATA/ALL
 CANCEL VARIABLES/ALL
 CANCEL MEMORY/ALL
-SET MEMORY/SIZE=25.6 ! return to the default setting
-CANCEL MODE STUPID   ! added 4/2017
+SET MEMORY/SIZE=250Mb ! return to the default setting
+CANCEL MODE STUPID    ! added 4/2017
 SET GRID ABSTRACT
 CANCEL MODE DIAGNOSTIC
 CANCEL MODE IGNORE_ERROR

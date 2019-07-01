@@ -315,7 +315,7 @@
      .		(mode_arg  ( pmode_reject      ,i), i=1,mode_stack_size)
      .				/ mode_stack_size*unspecified_int4 /,
      .		(mode_arg  ( pmode_desperate   ,i), i=1,mode_stack_size)
-     .				/ mode_stack_size*320000 /,
+     .				/ mode_stack_size*0 /,
      .		(mode_arg  ( pmode_rpn         ,i), i=1,mode_stack_size)
      .				/ mode_stack_size*unspecified_int4 /,
      .		(mode_arg  ( pmode_gks         ,i), i=1,mode_stack_size)

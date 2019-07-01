@@ -1,4 +1,4 @@
-	SUBROUTINE SHOW_MEM_USAGE_LINE ( prefix, mem )
+	SUBROUTINE SHOW_MEM_USAGE_LINE ( prefix, mem, do_words)
 
 *
 *
@@ -41,6 +41,8 @@
 * written for VAX computer under VMS operating system
 
 * V702  1/17 
+* V751 *acm* 6/19 Issue 1903: memory set and reported in terms of bytes
+*             First line may also show the total in words - if do_words flag.
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -49,28 +51,41 @@
 	include 'xrisc.cmn'
 
 * calling argument declarations:
+	LOGICAL do_words
 	INTEGER*8 mem
 	CHARACTER*(*)	prefix
 
 * internal variable declarations:
-	INTEGER TM_LENSTR1, len, i1, prelen
-	CHARACTER TM_FMT*48,
-     .		  units*16, num_str*12
+	INTEGER TM_LENSTR1, wlen, blen, i1, prelen
+	CHARACTER TM_FMT*64,
+     .		  word_unit*16, word_str*12,
+     .		  byte_unit*3, byte_str*12
 
         IF (mem .GT. 1000000) THEN
-           num_str = TM_FMT( DBLE(mem)/1.D6, 8, 12, len)
-           units = ' megawords'
+           word_str = TM_FMT( mem/1.E6, 8, 12, wlen)
+           word_unit = ' megawords'
            i1 = 10
         ELSE 
-           num_str = TM_FMT( DBLE(mem), 8, 12, len)
-           units = ' words'
+           word_str = TM_FMT( FLOAT(mem), 8, 12, wlen)
+           word_unit = ' words'
            i1 = 6
         ENDIF
 
+
+	IF (mem .EQ. 0) byte_unit = ' '
+	CALL MEM_TO_BYTES (mem, byte_str, blen, byte_unit)
+
 	prelen = TM_LENSTR1(prefix)
 	
-        risc_buff = '    '//prefix(:prelen)//': '//
-     .		    num_str(:len)//units(:i1)
+        IF (do_words) THEN
+	   risc_buff = '    '//prefix(:prelen)//': '//
+     .		    byte_str(:blen)//' '//byte_unit//'  ('//
+     .		    word_str(:wlen)//word_unit(:i1)//')'
+        ELSE
+	   risc_buff = '    '//prefix(:prelen)//': '//
+     .		    byte_str(:blen)//' '//byte_unit
+	ENDIF
+
 	CALL SPLIT_LIST(pttmode_explct, show_lun, risc_buff, 0)
 
 	RETURN

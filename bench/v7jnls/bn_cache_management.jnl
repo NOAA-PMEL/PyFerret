@@ -4,6 +4,7 @@
 ! and cache maintenance in order to reproduce the problem seen in trac
 ! ticket #2485 (from Ned Cokelet)
 ! *acm*7/2017 0=success for SPAWN_STATUS
+! *acm* 6/2019 Change to SET MEM in Mb
 
 ! Ferret's cache of memory-resident results is full when it holds 500 of them.
 ! At that point it must delete cached results to make room for new variables.
@@ -20,9 +21,9 @@
 ! But the top level variables need these components only in sequence. 
 ! So if no split-gather is performed, Ferret requires ~12+25=37 Mwords 
 
-DEFINE SYMBOL saved_memory_size = ($FERRET_MEMORY)
+DEFINE SYMBOL saved_memory_size = ($FERRET_BYTES_MEM)
 
-SET MEMORY/SIZE=20
+SET MEMORY/SIZE=160M
 CANCEL MEMORY/ALL
 
 DEFINE SYMBOL nsets = 20

@@ -215,6 +215,8 @@
 * v7441*acm* 12/18 Issue 1910: Allow dates in commands to be in ISO 8601 form, yyyy-mm-dd
 * v7545*acm*  4/19 Check for invalid text-group name in SET TEXT/FONT=xxx text-group
 * v751 *acm*  6/19 Issue 1942: reinitialize varname and attname for SET ATTRIBUTE
+* v751 *acm*  6/19 cleanup: remove code related to SET MOVIE 
+* V751 *acm* 6/19 Issue 1903: memory set and reported in terms of bytes
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -230,7 +232,6 @@
 	include	'ferret.parm'
 	include	'slash.parm'
 	include 'errmsg.parm'
-	include 'movies.parm'
 	include 'gfdl_vms.parm'
 	include 'plot_setup.parm'
 	include 'xprog_state.cmn'
@@ -281,7 +282,7 @@
         REAL*8          TM_WW_AXLEN, GET_LINE_COORD, axwwlen, new_att_modulo_len
         REAL*8          delta, dlo, dhi, firstval, lastval
 	REAL		val_buf, cache_size_mb, v1
-	CHARACTER	TM_FMT*48, title*1024, subtitle*64, arg*24,
+	CHARACTER	TM_FMT_TRIM*48, title*1024, subtitle*64, arg*24,
      .			buff1*512, buff2*512, data_form*3, show_str*12,
      .                  varname*512, attname*128, new_att_calendar*10, 
      .                  new_att_t0*128, new_att_units*128, buff3*512,
@@ -291,7 +292,6 @@
      .                  TM_DIGIT_ONLY,
      .                  TM_HAS_STRING, TM_LEGAL_NAME, MATCH_NAME, TM_FPEQ,
      .                  NC_GET_ATTRIB, set_last, any_delta, dset_cdf,
-     .			do_laser_movie, past_laser_movie, start_frame,
      .                  do_ez, tregular, its_changed, ok_cal,
      .                  coordvar, new_att_modulo,
      .                  got_it, redir_stdout, redir_stderr, redir_tee,
@@ -691,6 +691,11 @@ c *kob* 4/97
 	      iarg = unspecified_int4
 	      CALL GET_MODE_ARG( mode, buff2, iarg, status )
 	      IF ( status .NE. ferr_ok ) GOTO 5000
+* ... MODE DESPERATE is ignored as of V7.2
+	      IF ( mode .EQ. pmode_desperate ) THEN	      
+		 CALL WARN ('MODE DESPERATE is deprecated. Use MODE FRUGAL')
+		 GOTO 820
+	      ENDIF
 	      IF ( set_last ) THEN
 * ... pop the mode stack
 	         DO 804 i = 2, mode_stack_size
@@ -699,7 +704,6 @@ c *kob* 4/97
 		    IF (mode .EQ. pmode_time_lab) 
      .		      mode_state(pmode_f_lab,i-1) = mode_state(pmode_time_lab,i)
  804	         CONTINUE
-
 	      ELSE
 * ... push the mode stack adding on a TRUE (because it is SET)
 	         DO 806 i = mode_stack_size, 2, -1
@@ -796,9 +800,6 @@ c *kob* 4/97
 	         ax_dec_pt(f_dim) = ax_dec_pt(t_dim)  
 	         ax_fmt(f_dim) = ax_fmt(t_dim) 
 
-              ELSEIF ( mode .EQ. pmode_desperate ) THEN
-	         CALL WARN("MODE DESPERATE is deprecated. Use MODE FRUGAL")
-
 * ... mode mode_datefmt sets the default output format for dates
               ELSEIF ( mode .EQ. pmode_datefmt ) THEN
                  date_fmt_out = mode_arg(pmode_datefmt, 1)
@@ -814,82 +815,6 @@ c *kob* 4/97
 * Movies are discontinued with Ferret v6.6: NetCDF-4 / HDF5
 
  900	GOTO 5086
-        past_laser_movie = frame_file .EQ. plaser_flag
-	do_laser_movie = qual_given( slash_set_movie_laser ) .GT. 0
-	IF ( frame_on ) THEN
-	   IF ( past_laser_movie ) THEN
-	      CALL ODR_OP( 'RC', -1, -1 )	! clear record mode
-	      CALL LASER_STATUS( buff1, status )
-	      IF ( status .NE. ferr_OK ) GOTO 5085
-	      CALL ODR_QUIT
-	      CALL LASER_STATUS( buff1, status )
-	      IF ( status .NE. ferr_OK ) GOTO 5085
-	   ENDIF
-	ENDIF
-	frame_on = .FALSE.
-
-        lp = qual_given( slash_set_movie_out )
-	IF ( lp .GT. 0 ) THEN
-	   IF ( do_laser_movie ) GOTO 5082
-           CALL EQUAL_STR_LC( cmnd_buff(qual_start(lp):qual_end(lp)),
-     .			      title(1:80), status )
-           IF ( status .NE. ferr_ok ) RETURN
-           IF ( .NOT. TM_LEGAL_UNIX_NAME(title(1:80)) ) GOTO 5083
-           frame_file = title(1:80)
-	ENDIF
-
-        lp = qual_given( slash_set_movie_start )
-	start_frame = lp .GT. 0
-	IF ( start_frame ) THEN
-	   IF (.NOT.do_laser_movie) GOTO 5082
-           CALL EQUAL_VAL( cmnd_buff(qual_start(lp):qual_end(lp)),
-     .			   val_buf, status )
-           IF ( status .NE. ferr_ok ) RETURN
-	ENDIF
-
-        lp = qual_given( slash_set_movie_compress )
-	IF ( lp .GT. 0 ) THEN
-           CALL EQUAL_STRING( cmnd_buff(qual_start(lp):qual_end(lp)),
-     .                        buff1, status )
-           IF ( status .NE. ferr_ok ) RETURN
-           IF ( buff1(1:1) .EQ. 'N'
-     .     .OR. buff1(1:3) .EQ. 'OFF' ) THEN
-              frame_compress = ' '
-	   ELSEIF ( buff1 .EQ. ' '
-     .     .OR. buff1(1:2) .EQ. 'ON'
-     .     .OR. buff1(1:1) .EQ. 'Y' ) THEN
-	      frame_compress = 'RLE'
-           ELSE
-              GOTO 5084
-	   ENDIF
-        ENDIF
-	IF ( num_args .GT. 0 ) THEN
-	   title = cmnd_buff( arg_start(1) : len_cmnd )
-	ELSE
-	   title = 'GFDL movie output'
-	ENDIF
-        show_str = TM_FMT(revision_level, 5, 12, slen)
-	WRITE ( subtitle, 3000 ) program_name(1:len_program_name),
-     .				 progname_mod(1:len_progname_mod),
-     .				 show_str(1:slen)
- 3000	FORMAT(' Program ',A,1X,A,'  version',A )
-
-	IF ( do_laser_movie ) THEN
-	      CALL ODR_INIT
-	      CALL LASER_STATUS( buff1, status )
-	      IF ( status .NE. ferr_OK ) GOTO 5085
-	      IF ( start_frame ) THEN
-	         CALL ODR_OP( 'SR', INT(val_buf), -1 )
-	         CALL LASER_STATUS( buff1, status )
-	         IF ( status .NE. ferr_OK ) GOTO 5085
-	      ENDIF
-	      CALL ODR_OP( 'RM', -1, -1 )	! record mode:arbitrary # frames
-	      CALL LASER_STATUS( buff1, status )
-	      IF ( status .NE. ferr_OK ) GOTO 5085
-	      frame_file = plaser_flag
-	ENDIF
-	frame_on = .TRUE.
-	RETURN
 
 * SET VARIABLE
  1000	IF ( num_items .NE. 1 ) GOTO 5100
@@ -950,8 +875,8 @@ c *kob* 4/97
 
 	      IF (.NOT.TM_FPEQ(axwwlen, val_buf) .AND. 
      .			   axwwlen .GT. val_buf) THEN
-                 arg = TM_FMT(val_buf, 8, 12, len)
-	         show_str = TM_FMT(axwwlen, 8, 12, slen)
+                 arg = TM_FMT_TRIM(val_buf, -2, 12, len)
+                 show_str = TM_FMT_TRIM(axwwlen, -2, 12, slen)
                  buff1 = 'illegal modulo value '//arg(:len) //
      .             ' is less than axis length '//show_str(:slen)
 		 buff_len = TM_LENSTR1(buff1)
@@ -1447,25 +1372,58 @@ c *kob* 4/97
 
 	RETURN
 
-* SET MEMORY/MWORDS=megawords
+* SET MEMORY/SIZE=megawords 
+* Optional units given as /SIZE=xxKb /SIZE=xxMb /SIZE=xxGb, looking only at the first letter.
+
  1300	IF ( num_args .GT. 0 ) GOTO 5800
 	if (is_secure()) then
 	   CALL SPLIT_LIST(pttmode_help, err_lun,
      1	        'This command is not allowed in secure mode.', 0)
-	   return
-	endif
+	   RETURN
+	ENDIF
+
         lp = qual_given( slash_set_memory_words )
 	IF ( lp .GT. 0 ) THEN
-           CALL EQUAL_VAL( cmnd_buff(qual_start(lp):qual_end(lp)),
-     .			   val_buf, status )
+           CALL EQUAL_STRING( cmnd_buff(qual_start(lp):qual_end(lp)),
+     .			      buff2, status )
+
            IF ( status .NE. ferr_ok ) RETURN
 	ELSE
 	   val_buf = max_mem_allowed / 1E6    ! retain current size
+	   RETURN
 	ENDIF
+
+* Size may be given in Kb, Mb, Gb, or if no units, in double=words
+
+	IF (TM_LENSTR(buff2) .EQ. 0) GOTO 5803
+	
+	IF (INDEX(buff2, 'K') .GT. 0) THEN
+	   slen = INDEX(buff2, 'K')
+	   READ (buff2(:slen-1), *, err=5803) val_buf
+	   val_buf = val_buf* 1.E3/ 8
+	   i8_val = (val_buf*1.0000000001D0) 
+
+	ELSE IF (INDEX(buff2, 'M') .GT. 0) THEN
+	   slen = INDEX(buff2, 'M')
+	   READ (buff2(:slen-1), *, err=5803) val_buf
+	   val_buf = val_buf* 1.E6/ 8
+	   i8_val = (val_buf*1.0000000001D0) 
+
+	ELSE IF (INDEX(buff2, 'G') .GT. 0) THEN
+	   slen = INDEX(buff2, 'G')
+	   READ (buff2(:slen-1), *, err=5803) val_buf
+	   val_buf = val_buf* 1.E9/ 8
+	   i8_val = (val_buf*1.0000000001D0) 
+
+	ELSE
+	   READ (buff2, *, err=5803) val_buf
+	   i8_val = (val_buf*1.0000000001D0) * 1000000  !  int tuncation issues ...
+	ENDIF
+
 	IF ( val_buf .LE. 0.0 ) GOTO 5805
-	i8_val = (val_buf*1.0000000001D0) * 1000000  ! int tuncation issues ...
 
 * reset the memory size
+
 	max_mem_allowed = i8_val 
 	peak_mem = 0
 	peak_essential_mem = 0
@@ -1481,6 +1439,7 @@ c *kob* 4/97
       dset_num = unspecified_int4
       varname = ' '
       attname = ' '
+
       loc = qual_given( slash_set_attr_like ) 
 
 *     Inherit all attributes from another variable (except missing flags and
@@ -2092,17 +2051,6 @@ c           ENDIF
      .			cmnd_buff( item_start(item):item_end(item) ), *5000 )
  5030	CALL ERRMSG( ferr_syntax, status,
      .			cmnd_buff( qual_start(lp):qual_end(lp) ), *5000 )
- 5060	CALL ERRMSG( ferr_erreq, status, list_file,  *5000 )
- 5070	CALL ERRMSG( ferr_erreq, status, frame_file, *5000 )
- 5080	CALL ERRMSG( status, status, frame_file, *5000 )
- 5082	CALL ERRMSG( ferr_invalid_command, status,
-     .			'laser movie or on-disk movie?', *5000 )
- 5083	CALL ERRMSG( ferr_invalid_command, status, 
-     .            'illegal file name: '//
-     .            cmnd_buff(qual_start(lp):qual_end(lp)), *5000 )
- 5084	CALL ERRMSG( ferr_invalid_command, status,
-     .			'Unknown compression type: ON or OFF only', *5000 )
- 5085	CALL ERRMSG( status, status, buff1, *5000 )
  5086	CALL ERRMSG( ferr_invalid_command, status, 
      .     'Movies are discontinued as of Ferret v6.6', *5000 )
  5090	CALL ERRMSG( ferr_TMAP_error, status, ' ', *5000 )
@@ -2138,11 +2086,14 @@ c           ENDIF
      .		     '/ORDER must be permutation of XYZTEF (with minus signs)'//
      .			pCR//cmnd_buff(:len_cmnd), *5000 )
  5800	CALL ERRMSG( ferr_syntax, status,
-     .		     'To reconfigure use SET MEMORY/SIZE=megawords'
+     .	 'To reconfigure use SET MEMORY/SIZE=xxMb or /SIZE=xxGb. If no units, size is megawords'
      .		     //pCR//cmnd_buff(:len_cmnd), *5000 )
+ 5803	CALL ERRMSG( ferr_invalid_command, status,
+     .		     'Unspecified or invalid SET MEMORY/SIZE= value: '
+     .		     //pCR//cmnd_buff(:len_cmnd), *5000)
  5805	CALL ERRMSG( ferr_invalid_command, status,
      .		     'Negative SET MEMORY/SIZE= value: '
-     .		     //pCR//cmnd_buff(item_start(1):item_end(1)), *5000)
+     .		     //pCR//cmnd_buff(:len_cmnd), *5000)
  5810	CALL ERRMSG( ferr_invalid_command, status,
      .		     'SET MODE REMOTE_X requires a node name argument',
      .			*5000 )

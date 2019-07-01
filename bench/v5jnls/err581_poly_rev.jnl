@@ -2,6 +2,8 @@
 ! POLYGON/LINE mis-locates the line when there is a depth or
 ! other reversed axis. Bugs 842, 843, 844
 ! ACM 8/10/2006
+! V751:*acm* 6/2019 - memory is restored to the default in bn_reset
+
 
 ! From Patrick, polygon/line on a depth axis 
 
@@ -43,5 +45,3 @@ yes? plot/vl=4:-4/hl=4:-4/vs/line/title="there should be just one triangle" {1,2
 yes? poly/ov/col=2/pal=yellow {1,2,3,1},{0,2,1,0}
 
 ppl cross 0
-
-set mem /size=25.6

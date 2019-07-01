@@ -316,15 +316,24 @@ echo 's/CURRENT_TIME = "[0-9][0-9]:[0-9][0-9]:[0-9][0-9]"/CURRENT_TIME = "HH:MM:
 echo 's/SESSION_TIME = "[0-9][0-9]:[0-9][0-9]"/SESSION_TIME = "HH:MM"/g' >> $cleanups
 echo 's/SESSION_PID = "[0-9]+"/SESSION_PID = "#####"/g' >> $cleanups
 echo 's/DELTA_CPU = "[0-9]\.[0-9E-]+"/DELTA_CPU = "######"/g' >> $cleanups
+echo 's/DELTA_CPU = "[0-9]"/DELTA_CPU = "######"/g' >> $cleanups
 echo 's/CLOCK_SECS = "[0-9]\.[0-9E-]+"/CLOCK_SECS = "######"/g' >> $cleanups
+echo 's/CLOCK_SECS = "[0-9]"/CLOCK_SECS = "######"/g' >> $cleanups
 echo 's/^\[\?1034h//' >> $cleanups
-echo 's/Second 10K LET commands LET a = 0 takes  [0-6]\.[0-9]+  seconds/Second 10K LET commands LET a = 0 takes [0-7] seconds/' >> $cleanups
-echo 's/10K LET commands LET a = 0 takes  [0-2]\.[0-9]+  seconds/10K LET commands LET a = 0 takes [0-3] seconds/' >> $cleanups
+echo 's/Second 10K LET commands LET a = 0 takes  [0-7]\.[0-9]+  seconds/Second 10K LET commands LET a = 0 takes [0-8] seconds/' >> $cleanups
+echo 's/Second 10K LET commands LET a = 0 takes  [0-8]  seconds/Second 10K LET commands LET a = 0 takes [0-8] seconds/' >> $cleanups
+echo 's/10K LET commands LET a = 0 takes  [0-3]\.[0-9]+  seconds/10K LET commands LET a = 0 takes [0-4] seconds/' >> $cleanups
+echo 's/10K LET commands LET a = 0 takes  [0-4]  seconds/10K LET commands LET a = 0 takes [0-4] seconds/' >> $cleanups
 echo 's/5K LOAD with transform takes  [0-8]\.[0-9]+  seconds/5K LOAD with transform takes [0-9] seconds/' >> $cleanups
+echo 's/5K LOAD with transform takes  [0-9]  seconds/5K LOAD with transform takes [0-9] seconds/' >> $cleanups
 echo 's/DEFINE VARIABLE ten_plots = 0\.[0-9]+/DEFINE VARIABLE ten_plots = 0.######/' >> $cleanups
+echo 's/DEFINE VARIABLE ten_plots = [01]$/DEFINE VARIABLE ten_plots = 0.######/' >> $cleanups
 echo 's/DEFINE VARIABLE dt = 0\.[0-9]+/DEFINE VARIABLE dt = 0.######/' >> $cleanups
+echo 's/DEFINE VARIABLE dt = [01]$/DEFINE VARIABLE dt = 0.######/' >> $cleanups
 echo 's/DEFINE VARIABLE sumcpu =[ ]?0\.[0-9]+/DEFINE VARIABLE sumcpu = 0.######/' >> $cleanups
+echo 's/DEFINE VARIABLE sumcpu =[ ]?[01]$/DEFINE VARIABLE sumcpu = 0.######/' >> $cleanups
 echo '/say `sumcpu`/,/sh sym CLOCK_SECS/ s/0\.[0-9]+/0.######/' >> $cleanups
+echo '/say `sumcpu`/,/sh sym CLOCK_SECS/ s/[01] /0.###### /' >> $cleanups
 
 username=`id -un`
 groupname=`id -gn`

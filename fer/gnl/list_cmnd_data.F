@@ -150,7 +150,7 @@
      .                  wkblk, ndig(nferdims), ival, num_it, slen1, i1, ndx, n_alloc
 	CHARACTER*255	VAR_TITLE, VAR_TITLE_MOD, PAREN_SURROUND, vname_buff
 * V500: *kob* 3/99 - up VAR_UNITS from 32 to 64 
-	CHARACTER	AX_TITLE*32, VAR_UNITS*64, LEFINT*8, TM_FMT*64,
+	CHARACTER	AX_TITLE*32, VAR_UNITS*64, LEFINT*8, TM_FMT*48,
      .			GET_STRING_ELEMENT*512, fmtline*16,
      .			line_buff*10000, buff*128, b1*1, out_type*3,
      .			good_data_form*10, row_ss_fmt*14, tab_or_comma*1,

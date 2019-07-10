@@ -808,11 +808,10 @@ c	IF ( no_lines ) cont_key = .TRUE.
 	shd_lev_hi = shd_levels+1
 	IF (center_key_labels .AND. posinf) shd_lev_hi = shd_levels
 
-* Recompute max_len as formatted for these labels.
 * Recompute max_len as formatted for these labels.  incr etc may have changed,
 * so the set of numbers written could be different.
 
-	have_neg = .FALSE.
+	have_neg = (zlev(lev1) .LT. 0.)
 
 	max_len = 0
 	DO ndx = lev1+incr, shd_levels, incr
@@ -899,6 +898,8 @@ c	IF ( no_lines ) cont_key = .TRUE.
 
            xpos = kpx(2)/ 1000.0 - xorg + wid
 	ENDIF
+
+	IF (have_neg) xpos = xpos + 0.8* karht 
 
         do 1020 ndx = lev1,shd_lev_hi,incr
 *	   WRITE OUT CORRESPONDING VALUE

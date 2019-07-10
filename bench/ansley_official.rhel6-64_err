@@ -4,7 +4,7 @@ Running FERRET version /home/users/ansley/build/working/FERRET/fer/ferret_c
 Using external functions from /home/users/ansley/build/working/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: cleanup: declare TM_FMT as *48 everywhere
+Note: set mode calendar back to minutes in bn_pattern.jnl
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DATA=. ./data
@@ -22,7 +22,7 @@ FER_PALETTE=. /home/users/ansley/PyFerret/ppl
 FER_WEB_BROWSER=firefox
 PWD=/home/users/ansley/build/working/FERRET/bench
 PYFER_EXTERNAL_FUNCTIONS=/home/users/ansley/PyFerret/ext_func/pylibs
-Beginning at Wed Jul 10 10:09:12 PDT 2019
+Beginning at Wed Jul 10 15:11:08 PDT 2019
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -1703,8 +1703,8 @@ ooooooooooooooooooooooooooooooooooooooooooo
            *** NOTE: Axis "LATITUDE" is irregular. Ignoring erroneous point_spacing=even attribute.
            *** NOTE: Axis has repeated values -- micro-adjusting LATITUDE
            *** NOTE: Axis has repeated values -- micro-adjusting TIME
- **ERROR: illegal limits: "DUMMY" does not exist at T=JAN-1990
-          Axis extremes are T=DEC-1997:JAN-1998
+ **ERROR: illegal limits: "DUMMY" does not exist at T=01-JAN-1990 00:00
+          Axis extremes are T=31-DEC-1997 12:00:30-JAN-1998 12:00
 list/t=1-jan-1990 dummy
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -1857,8 +1857,8 @@ ooooooooooooooooooooooooooooooooooooooooooo
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
- **ERROR: illegal limits: "TEMP" does not exist at T=AUG-1980:JAN-1982
-          Axis extremes are T=AUG-1982:JAN-1983
+ **ERROR: illegal limits: "TEMP" does not exist at T=01-AUG-1980 00:00:01-JAN-1982 00:00
+          Axis extremes are T=14-AUG-1982 11:00:13-JAN-1983 13:00
 list/t=1-aug-1980:1-jan-1982/i=92/j=35 temp
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -2198,10 +2198,10 @@ Starting test: bn_labwid.jnl
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
 Starting test: bn_redefine_taxis_mc.jnl
-Replacing definition of axis TIME11
+Replacing definition of axis TIME12
            *** NOTE: grid GHB2 used by data set coads_clim
            *** NOTE: Redefinition may alter apparent contents of data set
-Replacing definition of axis TIME11
+Replacing definition of axis TIME12
            *** NOTE: grid GHB2 used by data set coads_clim
            *** NOTE: Redefinition may alter apparent contents of data set
  PERMANENT data cleared from memory
@@ -2723,7 +2723,7 @@ ooooooooooooooooooooooooooooooooooooooooooo
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
            *** NOTE: /UNIT=MONTHS is ambiguous ... using 1/12 of 365.2425 days
-Replacing definition of axis TIME15
+Replacing definition of axis TIME16
            *** NOTE: grid GSQ1 used by data set coads_climatology
            *** NOTE: Redefinition may alter apparent contents of data set
  PERMANENT data cleared from memory
@@ -3515,7 +3515,7 @@ ooooooooooooooooooooooooooooooooooooooooooo
            *** NOTE: LON1_15: Writing scaled coordinates not implemented. Suggest using nco operators on output file to pack coord values
            *** NOTE: LAT1800_1800: Writing scaled coordinates not implemented. Suggest using nco operators on output file to pack coord values
            *** NOTE: ENS: Writing scaled coordinates not implemented. Suggest using nco operators on output file to pack coord values
-           *** NOTE: TIME20: Writing scaled coordinates not implemented. Suggest using nco operators on output file to pack coord values
+           *** NOTE: TIME21: Writing scaled coordinates not implemented. Suggest using nco operators on output file to pack coord values
            *** NOTE: Units on axis "ENS" are not recognized: count
            *** NOTE: They will not be convertible:
  PERMANENT data cleared from memory
@@ -7200,4 +7200,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
            *** NOTE: Cannot create new windows when batch mode set
-Ended at Wed Jul 10 10:17:52 PDT 2019
+Ended at Wed Jul 10 15:18:46 PDT 2019

@@ -51,7 +51,6 @@
       INTEGER id, arg
       CHARACTER*100 descrip
 
-      CALL ef_version_test(ef_version)
 
 * **********************************************************************
 *                                            USER CONFIGURABLE PORTION |

@@ -98,7 +98,6 @@
       INTEGER id, arg
 
       CHARACTER*110 fcn_desc
-c      CALL ef_version_test(ef_version)
 
 * **********************************************************************
 *                                            USER CONFIGURABLE PORTION |

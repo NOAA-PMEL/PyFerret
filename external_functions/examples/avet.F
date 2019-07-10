@@ -51,7 +51,7 @@
 
       INTEGER id, arg
 
-      CALL ef_version_test(ef_version)
+
 
 ***********************************************************************
 *                                           USER CONFIGURABLE PORTION |

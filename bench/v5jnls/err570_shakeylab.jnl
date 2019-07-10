@@ -35,7 +35,6 @@ ppl shakey 1, 1, .1, 0, -2, 8,  `($ppl$xorg)+($ppl$xlen)+0.3`,  `($ppl$xorg)+($p
 ppl fill 
 
 frame/file=shakeylab_fill.gif
-pause
 cancel view
 
 set view ul

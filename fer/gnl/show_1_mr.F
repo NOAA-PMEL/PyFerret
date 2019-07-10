@@ -87,7 +87,7 @@
 	INTEGER TM_LENSTR1, MR_DIM_LEN,
      .		idim, ndim, mrlen, mrsizelen, dset, listdims
 	INTEGER*8 mem
-	CHARACTER VAR_CODE*128, ALG_TRANS_CODE*3, ARG_STRING*12, TM_FMT*64,
+	CHARACTER VAR_CODE*128, ALG_TRANS_CODE*3, ARG_STRING*12, TM_FMT*48,
      .		  protection*4, shape*4, dname*14, gname*12, vname*128,
      .		  ww_lo(nferdims)*20, ww_hi(nferdims)*20, 
      .		  ss_lo(nferdims)*9, ss_hi(nferdims)*9,

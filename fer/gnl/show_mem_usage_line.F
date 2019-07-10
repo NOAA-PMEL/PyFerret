@@ -57,7 +57,7 @@
 
 * internal variable declarations:
 	INTEGER TM_LENSTR1, wlen, blen, i1, prelen
-	CHARACTER TM_FMT*64,
+	CHARACTER TM_FMT*48,
      .		  word_unit*16, word_str*12,
      .		  byte_unit*3, byte_str*12
 

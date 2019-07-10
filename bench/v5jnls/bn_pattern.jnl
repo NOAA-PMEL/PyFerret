@@ -48,3 +48,5 @@ can win 2
 set win 1
 can mode meta
 set mode/last ignore
+set mode cal minutes
+

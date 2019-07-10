@@ -104,7 +104,6 @@
 
       INTEGER id, arg
 
-c      CALL ef_version_test(ef_version)
 
 * **********************************************************************
 *                                            USER CONFIGURABLE PORTION |

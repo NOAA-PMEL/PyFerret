@@ -1,27 +1,27 @@
 Procedure run_all to run all FERRET benchmarks
-Running FERRET version /home/users/ansley/ferret_distributions/rhel6_64/bin/pyferret
--rwxr-xr-x. 1 ansley tmap 1879 Apr 10 14:54 /home/users/ansley/ferret_distributions/rhel6_64/bin/pyferret
-Using external functions from /home/users/ansley/build/pyferret_dev/external_functions/ext_func
+Running FERRET version /home/users/ansley/PyFerret/bin/pyferret
+-rwxr-xr-x. 1 ansley tmap 1858 May 16 17:18 /home/users/ansley/PyFerret/bin/pyferret
+Using external functions from /home/users/ansley/PyFerret/ext_func/pylibs
 Running the tests of external functions y
 Benchmark run by ansley
-Note: issue 1923             
+Note:  merged from the trunk:  EF cleanups, TM_FMT declaration cleanup
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DATA=. ./data
 FER_DATA_THREDDS= http://ferret.pmel.noaa.gov/geoide/geoIDECleanCatalog.xml /home/users/tmap/ferret/linux/fer_dsets
-FER_DAT=/home/users/ansley/ferret_distributions/rhel6_64
+FER_DAT=/home/users/tmap/ferret/rhel6-x86_64-linux
 FER_DESCR=. ./data
 FER_DIR=.
 FER_DSETS=. ./data
-FER_EXTERNAL_FUNCTIONS=/home/users/ansley/build/pyferret_dev/external_functions/ext_func
-FER_FONTS=/home/users/ansley/ferret_distributions/rhel6_64/ppl/fonts
-FER_GO=. ./v4jnls ./v5jnls ./v6jnls ./v7jnls ./pyjnls ./genjnls . /home/users/ansley/ferret_distributions/rhel6_64/go /home/users/ansley/ferret_distributions/rhel6_64/examples /home/users/ansley/ferret_distributions/rhel6_64/contrib
+FER_EXTERNAL_FUNCTIONS=/home/users/ansley/PyFerret/ext_func/pylibs
+FER_FONTS=/home/users/ansley/PyFerret/ppl/fonts
+FER_GO=. ./v4jnls ./v5jnls ./v6jnls ./v7jnls ./pyjnls ./genjnls . /home/users/ansley/PyFerret/go /home/users/ansley/PyFerret/examples /home/users/ansley/PyFerret/contrib
 FER_GRIDS=. ./data
-FER_LIBS=/home/users/ansley/ferret_distributions/rhel6_64/lib
-FER_PALETTE=. /home/users/ansley/ferret_distributions/rhel6_64/ppl
+FER_LIBS=/home/users/tmap/ferret/rhel6-x86_64-linux/lib
+FER_PALETTE=. /home/users/ansley/PyFerret/ppl
 FER_WEB_BROWSER=firefox
-PYFER_EXTERNAL_FUNCTIONS=/home/users/ansley/ferret_distributions/rhel6_64/ext_func/pylibs
-Beginning at Wed Apr 10 15:29:51 PDT 2019
+PYFER_EXTERNAL_FUNCTIONS=/home/users/ansley/PyFerret/ext_func/pylibs
+Beginning at Wed Jul 10 14:35:56 PDT 2019
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -1747,13 +1747,13 @@ ooooooooooooooooooooooooooooooooooooooooooo
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
-           *** NOTE: Coordinates missing on axis LONGITUDE at subscript 2
-           *** NOTE: A dummy axis of subscripts will be used
-           *** NOTE: Coordinates missing on axis LATITUDE at subscript 2
-           *** NOTE: A dummy axis of subscripts will be used
+           *** NOTE: Axis "LONGITUDE" is irregular. Ignoring erroneous point_spacing=even attribute.
+           *** NOTE: Axis has repeated values -- micro-adjusting LONGITUDE
+           *** NOTE: Axis "LATITUDE" is irregular. Ignoring erroneous point_spacing=even attribute.
+           *** NOTE: Axis has repeated values -- micro-adjusting LATITUDE
            *** NOTE: Axis has repeated values -- micro-adjusting TIME
- **ERROR: illegal limits: "DUMMY" does not exist at T=JAN-1990
-          Axis extremes are T=DEC-1997:JAN-1998
+ **ERROR: illegal limits: "DUMMY" does not exist at T=01-JAN-1990 00:00
+          Axis extremes are T=31-DEC-1997 12:00:30-JAN-1998 12:00
 list/t=1-jan-1990 dummy
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -1908,8 +1908,8 @@ ooooooooooooooooooooooooooooooooooooooooooo
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
- **ERROR: illegal limits: "TEMP" does not exist at T=AUG-1980:JAN-1982
-          Axis extremes are T=AUG-1982:JAN-1983
+ **ERROR: illegal limits: "TEMP" does not exist at T=01-AUG-1980 00:00:01-JAN-1982 00:00
+          Axis extremes are T=14-AUG-1982 11:00:13-JAN-1983 13:00
 list/t=1-aug-1980:1-jan-1982/i=92/j=35 temp
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -2117,7 +2117,6 @@ Replacing definition of axis YAX
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
-Re-defining viewport VP_1
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -2865,10 +2864,10 @@ Starting test: bn_modnbd.jnl
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
 Starting test: bn_fifty_files.jnl
-           *** NOTE: Coordinates missing on axis LONGITUDE at subscript 2
-           *** NOTE: A dummy axis of subscripts will be used
-           *** NOTE: Coordinates missing on axis LATITUDE at subscript 2
-           *** NOTE: A dummy axis of subscripts will be used
+           *** NOTE: Axis "LONGITUDE" is irregular. Ignoring erroneous point_spacing=even attribute.
+           *** NOTE: Axis has repeated values -- micro-adjusting LONGITUDE
+           *** NOTE: Axis "LATITUDE" is irregular. Ignoring erroneous point_spacing=even attribute.
+           *** NOTE: Axis has repeated values -- micro-adjusting LATITUDE
            *** NOTE: Axis has repeated values -- micro-adjusting TIME
            *** NOTE: Error in bounds "TAX_bnds" or bounds do not enclose point on axis TAX
            *** NOTE: Substituting coordinate midpoints
@@ -3574,6 +3573,7 @@ ooooooooooooooooooooooooooooooooooooooooooo
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
+           *** NOTE: Axis "LON" is irregular. Ignoring erroneous point_spacing=even attribute.
            *** NOTE: Units on axis "ENS" are not recognized: count
            *** NOTE: They will not be convertible:
  LISTing to file mypack.nc
@@ -3839,12 +3839,6 @@ ooooooooooooooooooooooooooooooooooooooooooo
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
- **ERROR: value out of legal range: illegal mode argument. Negative or > 1.e+9,
-set mode desperate 9999999999.
- **ERROR: value out of legal range: illegal mode argument. Negative or > 1.e+9,
-set mode desperate 1234567890123456789
-           *** NOTE: MODE DESPERATE is deprecated. Use MODE FRUGAL
-           *** NOTE: MODE DESPERATE is deprecated. Use MODE FRUGAL
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -4375,10 +4369,12 @@ Replacing definition of axis TDAY
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
+           *** NOTE: Axis "X1_20" is irregular. Ignoring erroneous point_spacing=even attribute.
  LISTing to file aa.nc
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
+           *** NOTE: Axis "X1_20" is irregular. Ignoring erroneous point_spacing=even attribute.
  LISTing to file aa.nc
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -4686,59 +4682,6 @@ set axis/name=.fr x_in_meters
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
 Starting test: bn_let_remote
-           *** NOTE: netCDF bounds variable definition error
-           *** NOTE: Bounds definition "time_bnds" points to no existing axis
-           *** NOTE: Ignoring BOUNDS attribute
-           *** NOTE: netCDF bounds variable definition error
-           *** NOTE: Bounds definition "depth_bnds" points to no existing axis
-           *** NOTE: Ignoring BOUNDS attribute
-           *** NOTE: netCDF bounds variable definition error
-           *** NOTE: Bounds definition "lat_bnds" points to no existing axis
-           *** NOTE: Ignoring BOUNDS attribute
-           *** NOTE: netCDF bounds variable definition error
-           *** NOTE: Bounds definition "lon_bnds" points to no existing axis
-           *** NOTE: Ignoring BOUNDS attribute
-           *** NOTE: netCDF bounds variable definition error
-           *** NOTE: Bounds definition "time_bnds" points to no existing axis
-           *** NOTE: Ignoring BOUNDS attribute
-           *** NOTE: netCDF bounds variable definition error
-           *** NOTE: Bounds definition "depth_bnds" points to no existing axis
-           *** NOTE: Ignoring BOUNDS attribute
-           *** NOTE: netCDF bounds variable definition error
-           *** NOTE: Bounds definition "lat_bnds" points to no existing axis
-           *** NOTE: Ignoring BOUNDS attribute
-           *** NOTE: netCDF bounds variable definition error
-           *** NOTE: Bounds definition "lon_bnds" points to no existing axis
-           *** NOTE: Ignoring BOUNDS attribute
-           *** NOTE: netCDF bounds variable definition error
-           *** NOTE: Bounds definition "time_bnds" points to no existing axis
-           *** NOTE: Ignoring BOUNDS attribute
-           *** NOTE: netCDF bounds variable definition error
-           *** NOTE: Bounds definition "depth_bnds" points to no existing axis
-           *** NOTE: Ignoring BOUNDS attribute
-           *** NOTE: netCDF bounds variable definition error
-           *** NOTE: Bounds definition "lat_bnds" points to no existing axis
-           *** NOTE: Ignoring BOUNDS attribute
-           *** NOTE: netCDF bounds variable definition error
-           *** NOTE: Bounds definition "lon_bnds" points to no existing axis
-           *** NOTE: Ignoring BOUNDS attribute
- **ERROR: command syntax: /REMOTE variable expression may not contain [d=
-DEFINE VARIABLE/D=1/remote rvar = t00an1[d=1,z=1:100@ave]
- **ERROR: command syntax: /REMOTE variable definition must also specify /D=
-DEFINE VARIABLE/remote rvar = t00an1[d=1,z=1:100@ave]
- **netCDF error
-             Unable to open URL with REMOTE variable definitions:
-             Data set: http://ferret.pmel.noaa.gov/nvods/thredds/dodsC/las/woa05_annual/data_ferret.pmel.noaa.gov_pmel_thredds_dodsC_data_PMEL_WOA05nc_annual_t00an1.nc.jnl
- **TMAP ERR: attribute reading error
-             Unable to get varid for LET/REMOTE variable: NetCDF: Variable not found (OPeNDAP/netCDF Error code -49)
-             Data set: http://ferret.pmel.noaa.gov/nvods/thredds/dodsC/las/woa05_annual/data_ferret.pmel.noaa.gov_pmel_thredds_dodsC_data_PMEL_WOA05nc_annual_t00an1.nc.jnl
- **TMAP ERR: attribute reading error
-             Unable to get bad-value for LET/REMOTE variable: NetCDF: Attribute not found (OPeNDAP/netCDF Error code -43)
-             Data set: http://ferret.pmel.noaa.gov/nvods/thredds/dodsC/las/woa05_annual/data_ferret.pmel.noaa.gov_pmel_thredds_dodsC_data_PMEL_WOA05nc_annual_t00an1.nc.jnl
- **netCDF error
-             NetCDF: Variable not found (OPeNDAP/netCDF Error code -49)
-             Data set: http://ferret.pmel.noaa.gov/nvods/thredds/dodsC/las/woa05_annual/data_ferret.pmel.noaa.gov_pmel_thredds_dodsC_data_PMEL_WOA05nc_annual_t00an1.nc.jnl
-list/x=300/y=15 avar
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -5415,7 +5358,7 @@ Replacing definition of axis TDAY
  LISTing to file tmp/tagg_reg_no_T.nc
  LISTing to file tmp/tagg_reg_2_overlarge.nc
            *** NOTE: Not deleted: TDAY
-           *** NOTE: Axis is in use by grid (G099)
+           *** NOTE: Axis is in use by grid (G097)
  LISTing to file tmp/tagg_irreg_1.nc
  LISTing to file tmp/tagg_irreg_2.nc
  LISTing to file tmp/tagg_irreg_3.nc
@@ -5431,7 +5374,7 @@ Replacing definition of axis TDAY
 Replacing definition of axis TDAY_IR
  LISTing to file tmp/tagg_irreg_2_reg.nc
            *** NOTE: Not deleted: TDAY_IR
-           *** NOTE: Axis is in use by grid (G099)
+           *** NOTE: Axis is in use by grid (G097)
  LISTing to file tmp/tagg_T0varying_1.nc
 Replacing definition of axis TDAY_TVAR
  LISTing to file tmp/tagg_T0varying_2.nc
@@ -5467,7 +5410,7 @@ Replacing definition of axis TDAY_TVAR
  LISTing to file tmp/tagg_disjoint_T0varying_3.nc
  LISTing to file tmp/tagg_disjoint_T0varying_4_wrong.nc
            *** NOTE: Not deleted: TDAY_WRONG
-           *** NOTE: Axis is in use by grid (G099)
+           *** NOTE: Axis is in use by grid (G097)
  LISTing to file tmp/tagg_single_1.nc
  LISTing to file tmp/tagg_single_2.nc
  LISTing to file tmp/tagg_single_3.nc
@@ -5475,7 +5418,7 @@ Replacing definition of axis TDAY_TVAR
  LISTing to file tmp/tagg_single_5.nc
  LISTing to file tmp/tagg_single_6.nc
            *** NOTE: Not deleted: TDAY
-           *** NOTE: Axis is in use by grid (G099)
+           *** NOTE: Axis is in use by grid (G097)
            *** NOTE: /FILES is deprecated.  Use /MEMBERS
            *** NOTE: /FILES is deprecated.  Use /MEMBERS
  **ERROR: invalid command: given aggregation dataset name already in use: myagg2
@@ -5525,9 +5468,9 @@ go/garbage tmp/testMe
  **ERROR: unknown command qualifier: garbage
 go/garbage "tmp/testMe"
  **ERROR: unknown command qualifier: garbage
-go/garbage /home/users/ansley/build/pyferret_dev/bench/tmp/testMe.jnl
+go/garbage /home/users/ansley/build/pyferret/bench/tmp/testMe.jnl
  **ERROR: unknown command qualifier: garbage
-go/garbage "/home/users/ansley/build/pyferret_dev/bench/tmp/testMe.jnl"
+go/garbage "/home/users/ansley/build/pyferret/bench/tmp/testMe.jnl"
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -5704,7 +5647,8 @@ Starting test: bn710_bug_fixes
 ooooooooooooooooooooooooooooooooooooooooooo
            *** NOTE: unrepairable repeated axis coords on axis xax at subscript 2
            *** NOTE: A dummy axis of subscripts will be used
-           *** NOTE: unrepairable repeated axis coords on axis yax at subscript 2
+           *** NOTE: Axis "yax" is irregular. Ignoring erroneous point_spacing=even attribute.
+           *** NOTE: Coordinates out of order or missing on axis yax at subscript 3
            *** NOTE: A dummy axis of subscripts will be used
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -6974,6 +6918,18 @@ Replacing definition of axis taxis
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
+           *** NOTE: Axis "XAXIS" is irregular. Ignoring erroneous point_spacing=even attribute.
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
+ **ERROR: unknown command qualifier: p=0:360
+set region/p=0:360
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
 Starting test: bn_iso8601_time
  LISTing to file a.nc
            *** NOTE: regarding ./data/clim_axes_julian.nc ...
@@ -7001,12 +6957,8 @@ list/t=15/k=1/x=-123/y=-3 salt
 list/t=15-09-1983/k=1/x=-123/y=-3 salt
  **ERROR: command syntax: 01-15-2010 invalid date or not valid in this calendar
 define axis/t=01-15-2010:09-01-2010:1/units=days/t0=2010-01-01 taxis
- **ERROR: command syntax: 09-01-2010 invalid date or not valid in this calendar
-define axis/t=01-15-2010:09-01-2010:1/units=days/t0=2010-01-01 taxis
-Replacing definition of axis taxis
  **ERROR: command syntax: 2018-15-01 invalid date or not valid in this calendar
 define axis/t=2018-15-01:2019-01-01:1/units=days taxis
-Replacing definition of axis taxis
  **ERROR: command syntax: 2018--5-01 invalid date or not valid in this calendar
 define axis/t=2018--5-01:2019-01-01:1/units=days taxis
  **ERROR: command syntax: 2010-15-01 invalid date or not valid in this calendar
@@ -7019,22 +6971,40 @@ ooooooooooooooooooooooooooooooooooooooooooo
 Starting test: bn_agg_given_taxis
 
 Bailing out of external function "samplem_multi":
-	Axes of INDEX data must match those in the grid of DATA_TO_SAMPLE. Mismatch in T direction.
+	Both arguments must have an axis in E
+
+Bailing out of external function "samplem_multi":
+	Both arguments must have an axis in E
 
 Bailing out of external function "samplei_multi":
-	Axes of INDEX data must match those in the grid of DATA_TO_SAMPLE. Mismatch in T direction.
+	Both arguments must have an axis in X
+
+Bailing out of external function "samplei_multi":
+	Both arguments must have an axis in X
 
 Bailing out of external function "samplej_multi":
-	Axes of INDEX data must match those in the grid of DATA_TO_SAMPLE. Mismatch in T direction.
+	Both arguments must have an axis in Y
+
+Bailing out of external function "samplej_multi":
+	Both arguments must have an axis in Y
 
 Bailing out of external function "samplek_multi":
-	Axes of INDEX data must match those in the grid of DATA_TO_SAMPLE. Mismatch in T direction.
+	Both arguments must have an axis in Z
+
+Bailing out of external function "samplek_multi":
+	Both arguments must have an axis in Z
 
 Bailing out of external function "samplel_multi":
-	Axes of INDEX data must match those in the grid of DATA_TO_SAMPLE. Mismatch in F direction.
+	Both arguments must have an axis in T
+
+Bailing out of external function "samplel_multi":
+	Both arguments must have an axis in T
 
 Bailing out of external function "samplen_multi":
-	Axes of INDEX data must match those in the grid of DATA_TO_SAMPLE. Mismatch in T direction.
+	Both arguments must have an axis in F
+
+Bailing out of external function "samplen_multi":
+	Both arguments must have an axis in F
            *** NOTE: Time axis coordinates matched using @XACT
 Replacing definition of axis tax
            *** NOTE: Time axis coordinates matched using @BIN
@@ -7084,12 +7054,16 @@ ooooooooooooooooooooooooooooooooooooooooooo
 Starting test: bn_sample_multi
  **ERROR: error in external function
 list samplem_multi(a_2d, b_t)
+ **ERROR: error in external function
+list samplem_multi(a_2, b_1)
            *** NOTE: Ambiguous coordinates on X axis: SAMPLEM_MULTI(A_2D, C_2D)
 Replacing definition of axis aax_a
 Replacing definition of axis aax_b
 Replacing definition of axis sax
  **ERROR: error in external function
 list samplei_multi(a_2d, b_t)
+ **ERROR: error in external function
+list samplei_multi(a_2, b_1)
 Replacing definition of axis bigax
            *** NOTE: Ambiguous coordinates on Y axis: SAMPLEI_MULTI(A_2D, C_2D)
 Replacing definition of axis aax_a
@@ -7097,25 +7071,84 @@ Replacing definition of axis aax_b
 Replacing definition of axis sax
  **ERROR: error in external function
 list samplej_multi(a_2d, b_t)
+ **ERROR: error in external function
+list samplej_multi(a_2, b_1)
 Replacing definition of axis bigax
            *** NOTE: Ambiguous coordinates on X axis: SAMPLEJ_MULTI(A_2D, C_2D)
 Replacing definition of axis aax_a
 Replacing definition of axis aax_b
  **ERROR: error in external function
 list samplek_multi(a_2d, b_t)
+ **ERROR: error in external function
+list samplek_multi(a_2, b_1)
            *** NOTE: Ambiguous coordinates on X axis: SAMPLEK_MULTI(A_2D, C_2D)
 Replacing definition of axis aax_a
 Replacing definition of axis aax_b
 Replacing definition of axis sax2
  **ERROR: error in external function
 list samplel_multi(a_2d, b_f)
+ **ERROR: error in external function
+list samplel_multi(a_2, b_1)
            *** NOTE: Ambiguous coordinates on X axis: SAMPLEL_MULTI(A_2D, C_2D)
 Replacing definition of axis aax_a
 Replacing definition of axis aax_b
 Replacing definition of axis sax2
  **ERROR: error in external function
-list samplen_multi(a_2d, b_f)
+list samplen_multi(a_2d, b_t)
+ **ERROR: error in external function
+list samplen_multi(a_2, b_1)
            *** NOTE: Ambiguous coordinates on X axis: SAMPLEN_MULTI(A_2D, C_2D)
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
+Starting test: bn751_bug_fixes
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
+Replacing definition of axis xaxis
+Replacing definition of axis yaxis
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
+ LISTing to file time_origin_1.nc
+ LISTing to file time_origin_01.nc
+ LISTing to file time_origin_01.nc
+ LISTing to file time_origin_01.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
+           *** NOTE: Axis coordinates are decreasing-ordered. Reversing ordering for axis latitude
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
+ LISTing to file a.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
+           *** NOTE: Axis coordinates are decreasing-ordered. Reversing ordering for axis lev
+           *** NOTE: Axis coordinates are decreasing-ordered. Reversing ordering for axis lev
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
+ LISTing to file a.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -7321,4 +7354,4 @@ Unable to delete drawing segments when writing directly to an image file
            *** NOTE: instead use the "FRAME /FILE=... /FORMAT=..." Ferret command
            *** NOTE: the use of "SET MODE METAFILE" is deprecated;
            *** NOTE: instead use "FRAME /FILE=... /FORMAT=..."
-Ended at Wed Apr 10 15:41:12 PDT 2019
+Ended at Wed Jul 10 14:48:50 PDT 2019

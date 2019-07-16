@@ -53,7 +53,7 @@
 * function return values
       INTEGER      TM_LENSTR1
       CHARACTER*48 LOHI_STRING
-      CHARACTER*14 TM_FMT
+      CHARACTER*48 TM_FMT
       CHARACTER*6  LEFINT
       REAL*8       TM_WORLD
 

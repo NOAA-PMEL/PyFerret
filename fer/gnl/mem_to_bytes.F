@@ -13,7 +13,7 @@
 	INTEGER   slen
 	CHARACTER*(*) mem_str, mem_unit
 
-	CHARACTER TM_FMT_TRIM*64
+	CHARACTER TM_FMT_TRIM*48
 
 	IF (mem .GT. 100000000) THEN
            mem_str = TM_FMT_TRIM( FLOAT(mem*8)/1.E9, -2, 12, slen)

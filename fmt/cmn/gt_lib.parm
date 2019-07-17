@@ -19,7 +19,10 @@
 * V698  3/16 *acm* Removed Philander-Seigel code including diagnostic variables, 
 * pre-defined axes and grids.
 * V698  3/16 *acm* Define monthly climatology for Julian axis.
-
+* V74+  4/18 *acm* Add arbitrary_large_val8 and arbitrary_small_val8
+*                  as in ferret.parm
+* V74+  4/18 *acm* Add no_dim to parameters for direction numbers
+* V74+  4/18 *acm* Add no_var to parameters for variable numbers
 
 * Function return codes
 	INTEGER*4	str_match, atom_not_found
@@ -34,14 +37,19 @@
      .                  deg2m  = deg2km * 1000.  )
 
 * names of dimensions
-	INTEGER		  x_dim,   y_dim,   z_dim,   t_dim,   e_dim,   f_dim
-	PARAMETER	( x_dim=1, y_dim=2, z_dim=3, t_dim=4, e_dim=5, f_dim=6 )
+	INTEGER		  x_dim,   y_dim,   z_dim,   t_dim,   e_dim,   f_dim, no_dim
+	PARAMETER	( x_dim=1, y_dim=2, z_dim=3, t_dim=4, e_dim=5, f_dim=6, no_dim=0 )
 
 * Unspecified values
-	REAL*8		  unspecified_val8
-	INTEGER		  unspecified_int4
+	REAL*8		  unspecified_val8,
+     .			  arbitrary_large_val8,
+     .			  arbitrary_small_val8
+	INTEGER		  unspecified_int4, no_var
 	PARAMETER	( unspecified_val8	= -2E34)
 	PARAMETER	( unspecified_int4	= -999)
+	PARAMETER	( no_var		=    0)
+	PARAMETER	( arbitrary_large_val8	=  1.7976931348623157D+308)  ! DBL_MAX
+	PARAMETER	( arbitrary_small_val8	= (-arbitrary_large_val8) )
 
 * pre-defined grids:.....
 * define "lines" (1 dimensional components of which grids are assembled)

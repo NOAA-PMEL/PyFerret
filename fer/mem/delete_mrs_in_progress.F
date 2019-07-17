@@ -48,6 +48,7 @@
 * V420: 11/95 - also delete un-cached memory vars
 *        2/12 *kms* Add E and F dimensions (use nferdims in tmap_dims.parm)
 * V702:  3/17 *sh* dynamic memory
+* V720:  4/17 *sh* mr_table_entry_only used by DSGs for line memory cache hits
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
@@ -60,6 +61,7 @@
 	DO mr = 1, max_mrs
 
 	   IF ( mr_protected( mr ) .EQ. mr_in_progress
+     .	   .OR. mr_protected( mr ) .EQ. mr_table_entry_only
      .	   .OR. mr_protected( mr ) .EQ. mr_temporary ) THEN
 	      CALL DELETE_VARIABLE( mr )
 	   ELSEIF ( mr_protected( mr ) .GT. mr_not_protected ) THEN

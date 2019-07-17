@@ -137,7 +137,7 @@ C
         REAL vgrat(4,2)        ! line type: 0=tics only, <0=line, >0=dash lengths 
         INTEGER vcolor(*)      ! pen number for graticule lines
 	INTEGER color0	       ! pen number to restore 
-        LOGICAL vline          ! If true, do the lines across.
+        LOGICAL vline, do_line   ! If true, do the lines across.
         LOGICAL solid1, solid2   ! solid lines across at tics
         LOGICAL dashed1, dashed2 ! dashed lines across at tics
         INTEGER ltic, color1, color2
@@ -160,6 +160,8 @@ C set up for plotting graticules across at tic marks
      .            vgrat(3,1).GT.0 .OR.  vgrat(4,1).GT.0 )
         dashed2 = (vgrat(1,2).GT.0 .OR. vgrat(2,2).GT.0 .OR.  
      .            vgrat(3,2).GT.0 .OR.  vgrat(4,2).GT.0 )
+
+	do_line = vline
 
         color1 = vcolor(1)
         color2 = vcolor(2)
@@ -316,6 +318,10 @@ C     LOOP:
           CALL TIME1(1,ITIME,2,' ',I3,ITIME3,SECMON)
           CALL TIME3(ITIME3,IYR3,IMON3,IDAY3,IHR3,IMIN3,ISEC3,ICEN3)
 
+*    do not draw a graticule line along the upper axis
+	   do_line = ( ITIME3(13:14)// ITIME3(1:10).LT.
+     .	              ITIME2(13:14)//ITIME2(1:10)) 
+
 *       Century axis mod
 	IF (cenflag) THEN
 	   IF (IMON3.NE.1) GOTO 11
@@ -323,8 +329,7 @@ C     LOOP:
 	   IF (IYDB .GT. 0) THEN
 	      IF (MOD(ICEN3*100+IYR3,IYDB).EQ.0) THEN
 	         CALL PLOT  (T+TIC,Y,0,0)
-	         CALL PLOTT7(T+TIC,Y,TFACT,YFACT,1,IHVY)
-                 IF ((solid1.OR.dashed1) .AND. vline) THEN ! make line across
+                 IF ((solid1.OR.dashed1) .AND. do_line) THEN ! make line across
                     CALL COLOR(color1)
                     IF (dashed1) THEN
                        CALL DASHSZ(dash1_1,dash1_2,dash1_3,dash1_4)
@@ -336,12 +341,12 @@ C     LOOP:
                     CALL COLOR(color0)
                     CALL VECTRS
                  ENDIF
+	         CALL PLOTT7(T+TIC,Y,TFACT,YFACT,1,IHVY)
 
 	      ELSE
 	         IF(NOT_ZERO_SIZE) THEN
-	         CALL PLOT  (T+TIC,Y,0,0)
-	         CALL PLOTT7(T+TIC,Y,TFACT,YFACT,1,INML)
-                      IF ((solid2.OR.dashed2) .AND. vline) THEN ! make line across
+	            CALL PLOT  (T+TIC,Y,0,0)
+                      IF ((solid2.OR.dashed2) .AND. do_line) THEN ! make line across
                          CALL COLOR(color2)
                          IF (dashed2) THEN
                             CALL DASHSZ(dash2_1,dash2_2,dash2_3,dash2_4)
@@ -353,6 +358,7 @@ C     LOOP:
                          CALL COLOR(color0)
                          CALL VECTRS
                       ENDIF
+	            CALL PLOTT7(T+TIC,Y,TFACT,YFACT,1,INML)
 	      
                  ENDIF
               ENDIF
@@ -360,8 +366,7 @@ C     LOOP:
 	ELSE
 	   IF(IMON3.EQ.1)THEN
 	      CALL PLOT  (T+TIC,Y,0,0)
-	      CALL PLOTT7(T+TIC,Y,TFACT,YFACT,1,IHVY)
-              IF ((solid1.OR.dashed1) .AND. vline) THEN ! make line across
+              IF ((solid1.OR.dashed1) .AND. do_line) THEN ! make line across
                  CALL COLOR(color1)
                  IF (dashed1) THEN
                     CALL DASHSZ(dash1_1,dash1_2,dash1_3,dash1_4)
@@ -373,11 +378,11 @@ C     LOOP:
                  CALL COLOR(color0)
                  CALL VECTRS
               ENDIF
+	      CALL PLOTT7(T+TIC,Y,TFACT,YFACT,1,IHVY)
 	   ELSE
 	      IF(NOT_ZERO_SIZE) THEN
                  CALL PLOT  (T+TIC,Y,0,0)
-                 CALL PLOTT7(T+TIC,Y,TFACT,YFACT,1,INML)
-                 IF ((solid2.OR.dashed2) .AND. vline) THEN ! make line across
+                 IF ((solid2.OR.dashed2) .AND. do_line) THEN ! make line across
                     CALL COLOR(color2)
                     IF (dashed2) THEN
                        CALL DASHSZ(dash2_1,dash2_2,dash2_3,dash2_4)
@@ -389,16 +394,17 @@ C     LOOP:
                     CALL COLOR(color0)
                     CALL VECTRS
                  ENDIF
+                 CALL PLOTT7(T+TIC,Y,TFACT,YFACT,1,INML)
 
               ENDIF
 	   ENDIF
 	ENDIF
 
 C         THE LABELS
-11        CALL TIME3(ITIME,IYR,IMON,IDAY,IHR,IMIN,ISEC,ICEN)
-          IF(IMDB.EQ.0.OR.LABEL.EQ.0) GO TO 50
-          IF(IMON.NE.IMDB*(IMON/IMDB)) GO TO 50
-	  IF (cenflag) GOTO 50 ! No month labels for multiple years
+11      CALL TIME3(ITIME,IYR,IMON,IDAY,IHR,IMIN,ISEC,ICEN)
+	IF(IMDB.EQ.0.OR.LABEL.EQ.0) GO TO 50
+	IF(IMON.NE.IMDB*(IMON/IMDB)) GO TO 50
+	IF (cenflag) GOTO 50 ! No month labels for multiple years
               CALL TIME2(ITIME,SYM)
 	READ(SYM,30)MON,CEN,YR
 30	FORMAT(6X,A3,4X,A2,A2)

@@ -94,6 +94,7 @@
 *       *acm* 4/12 6D Ferret: time axis may be in t or f direction.
 * V683  *acm*10/12 Improve handling of F axes and info about the calendar of the grid.
 * V695  *acm* 2/15 cx_calendar stores info about calendar formatting of T and F axes
+* V720 *sh* 5/17 add support for DSG grids
 * V720: 4/17 *acm* Add direction-changing functions as a subset of grid-changing ones
 
         IMPLICIT NONE
@@ -108,11 +109,14 @@
 	INTEGER	cx, mr, status
 
 * local variable declarations
+	LOGICAL		TM_ITSA_DSG, itsa_dsg
 	INTEGER		idim, uvar
 	CHARACTER	VAR_CODE*128
 
 * initialize
 	uvar = mr_variable( mr )
+	itsa_dsg = TM_ITSA_DSG(cx_grid(cx))
+
 
 * data set:
 * uvar data set is not necessarily the same as the searching context
@@ -126,6 +130,9 @@
 
 * axis limits and subscripts:
 	DO 100 idim = 1, nferdims
+
+* in a DSG only the F axis is treated as "gridded
+	   IF (itsa_dsg .AND. idim.NE.f_dim) CYCLE
 
 * error checks:
 	   IF ( cx_given(idim,cx) ) THEN

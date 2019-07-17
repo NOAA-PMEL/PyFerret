@@ -109,6 +109,8 @@
 * V710 9/16  *acm* ticket 2465: Parsing expressions including attribute references.
 * V702 1/17 *sh* as a part of conversion to dynamic memory fixed bug that 
 *                CHECK_NAN_DATA_SUB was being called on string variables
+* V720 5/17 *sh* enhancements for DSG algebra
+* V720: 4/17 *acm* Add direction-changing functions as a subset of grid-changing ones
 * V720: 4/17 *acm* Add direction-changing functions as a subset of grid-changing ones
 
         IMPLICIT NONE
@@ -133,18 +135,20 @@
 
 * internal variable declarations:
 	LOGICAL	EXPLICIT_UVAR, ITSA_GCVAR, NC_GET_ATTRIB, 
+     .		TM_ITSA_DSG,
      .          its_gc, its_sample, start_sampling, got_it, coordvar,
      .          reset_ss, do_err
 	INTEGER KNOWN_GRID, TM_LENSTR1, GCF_PARENT_UVAR, GCF_PARENT_CHAR,
      .		GCF_FIND_FCN, GCF_ARG_EVAL_ORDER, GET_VAR_GRID,
-     .		MGRID_SIZE, STR_SAME, hi_mr, hi_cx, lo_cx, big_cx,
+     .		MGRID_SIZE, STR_SAME, TM_DSG_ORIENTATION,
+     .		hi_mr, hi_cx, lo_cx, big_cx,
      .		dflt_cx, start, end, saved_grid, ifcn, size,
      .		dset, lo_isp, uvar, item, itype, idim,
      .		nitem, new_mr, len_name, csp1, cat, cvar, 
      .          varid, attlen, attype, maxlen, attoutflag,
      .          ndims, nvars, ngatts, recdim, ivar, vartype, 
      .          nvdims, vdims(8), nvatts, nv, iatt, all_outflag, dot,
-     .          attid, slen
+     .          attid, slen, dsg_grid, orientation
         REAL    counter_const, val
 *                  
 
@@ -444,11 +448,17 @@
 	   cx_stack_ptr = cx_stack_ptr - 1	! release dflt_cx
 	ENDIF
 
-	IF ( cx_lo_ss(hi_cx,idim) .EQ. unspecified_int4 )  CALL ERRMSG
-     .		(ferr_dim_underspec, status,uvar_text(uvar)(start:end), *5000)
 ! temp diag
 	IF ( cx_grid(hi_cx) .EQ. unspecified_int4 ) CALL ERRMSG
      .			( ferr_internal, status, 'isalg_ps', *5000 )
+
+	IF ( TM_ITSA_DSG(cx_grid(hi_cx)) ) THEN
+	   CONTINUE   ! idim can have mnormal axis e.g. X pseudo on time series
+	ELSEIF ( cx_lo_ss(hi_cx,idim) .EQ. unspecified_int4 ) THEN
+	   CALL ERRMSG(ferr_dim_underspec,
+     .		status,uvar_text(uvar)(start:end), *5000)
+	ENDIF
+
 * ... request this variable on the interpretation stack ( via RETURN 1 )
 	CALL PUSH_INTERP_STACK( isp, status )
 	IF ( status .NE. ferr_ok ) RETURN
@@ -848,6 +858,19 @@
 	isp = isp - 1
 	IF ( isp .NE. lo_isp ) 
      .	   CALL ERRMSG( ferr_syntax, status, 'RPN', *5000 )
+
+* DSG logic:
+* if obs and instance variables were combined in the expression just
+* evaluated, then big_cx at this point holds independent information about
+* the E and orientation axes of the DSG -- as if they were orthogonal gridded
+* axes.  Here we correct that into a ragged array representation
+	dsg_grid = cx_grid(big_cx)
+	IF ( TM_ITSA_DSG(dsg_grid) )THEN
+	   orientation = TM_DSG_ORIENTATION(dsg_grid)
+	   CALL FLESH_OUT_AXIS(orientation, big_cx, status)
+	   CALL FLESH_OUT_AXIS(e_dim,       big_cx, status)
+	   CALL TRANSFER_CONTEXT( big_cx, lo_cx )
+	ENDIF
 
 * Deallocate dynamic grid if one is associated with this result
 * This will (I think) only happen if a single component (no IS_DO_OP call)

@@ -1,7 +1,7 @@
 	SUBROUTINE LINE_PLOT_LABELS (var1, nmv, ndv, cx_list, 
      .		this_no_range, overlay, versus, nokey, time_axis, 
      .		tstyle, cal_id_1, ribbon_var, indep_lab, dep_lab, 
-     .		ind_min, dep_len, hlen)
+     .		ind_min, dep_len, hlen, nfeatures, dset, ivar)
 
 *
 *  This software was developed by the Thermal Modeling and Analysis
@@ -47,6 +47,21 @@
 *                  title in the legend labels for both PLOT and PLOT/VS plots.
 * v7.2 *acm* 4/2017 ticket 2446 Drawing formatted time axes on a PLOT/VS, label
 *                  at the top with the year if needed.
+* V74+ *acm*  4/18 additions for plotting trajectories from a dsg dataset
+* V74+ 4/18 *acm*  Automatically do a colored trajectory plot for the command "PLOT var" 
+*                  if it's a DSG trajectory set.
+* V74+ 7/18 *acm*  Get the title right if its a dsg data in an /overlay.
+* V74+ 7/18 *acm*  DSG-enabled Ferret: colorkey labels may be strings from the IDs
+* V74+ 8/18 *acm*  DSG-enabled Ferret: label the independent axis with the variable title 
+*                  as well as the units, 2-line label on a short axis e.g. in a viewport
+* V74+ 3/19 *acm*  If we are plotting lines from a DSG dataset that have been regridded
+*                  to an ordinary time axis, then the labels are just the line labels, not
+*                  feature-id labels
+* V75+ 5/19 *acm*  DSG-enabled Ferret: If there is only one feature (e.g. masked) then 
+*                  multi-var plots are labeled as for non-DSG data, titles of each different 
+*                  variable
+* V751 6/19 *acm*  When multiple datasets are open need to take care to get the right feature-id var
+
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -60,35 +75,86 @@
 	include 'axis_inc.decl'    ! with axis lengths 
 	include 'AXIS.INC'         ! with axis lengths   
 	include 'xcontext.cmn'
+	include 'xvariables.cmn'
+	include 'xdset_info.cmn_text'
+        include 'netcdf.inc'
 
 * calling argument declarations:
 	LOGICAL this_no_range(*), overlay, versus, nokey, time_axis
 	INTEGER var1, nmv, ndv, cx_list(*), cal_id_1, ribbon_var, 
-     .		indep_lab, dep_lab
+     .		indep_lab, dep_lab, nfeatures, dset, ivar
 	REAL	dep_len, hlen
 	REAL*8  ind_min
 	CHARACTER*(*) tstyle
 
 * internal variable declarations:
-	LOGICAL user_title, units_same, do_units
-	INTEGER	TM_LENSTR1, TM_UNIT_ID, STR_SAME, ipl, 
-     .		nline_in_mem, slen, slen1, status, ptitl, style, 
-     .		justify, iunits, istart, i
+	LOGICAL TM_ITSA_DSG, user_title, units_same, do_units, its_dsg,
+     .          reset_dsg, process_feature(nfeatures)
+	INTEGER	TM_LENSTR1, TM_LENSTR, TM_UNIT_ID, STR_SAME, 
+     .		ipl, nline_in_mem, slen, slen1, status, ptitl, style, 
+     .		justify, iunits, istart, i, nfeatr(nfeatures), dtype, 
+     .		fvar_varid
 	
 	CHARACTER*2040	FULL_VAR_TITLE, VAR_TITLE_ONLY, KEY_STRING, 
      .			plot_title, plot_title_1
-	CHARACTER	VAR_UNITS*64, SECS_TO_DATE*20, year*4, buff1*16, ustring*64
+	CHARACTER	VAR_UNITS*64, SECS_TO_DATE*20, TM_FMT*20, 
+     .			SANITARY_VAR_CODE*128, 
+     .			year*4, buff1*16, ustring*64, dummy*1024
 	REAL		xkeypos, ykeypos, xkeysize, ykeysize, 
-     .			lab_ht, labsize
+     .			lab_ht, labsize, value
+	REAL*4		SYMWID, rht
 
 	ptitl = qual_given( slash_title )
 	user_title = ptitl .GT. 0
+
+	its_dsg = .FALSE.
+	reset_dsg = .FALSE.
 
 * * * * * * *    - - - TITLES - - -   * * * * * * * * *
 * if we are starting from a blank screen titling information is centered
 * below the X axis - either a title for a single variable or keys for multiple
 * if we are overlaying on an existing plot put the new variable name on as a
 * key at the lower left
+
+	IF (nfeatures.GT.0) THEN
+	   its_dsg = .TRUE.
+
+* create a mask showing which features to plot and a list of feature-numbers to label
+	   CALL MAKE_DSG_FEATURE_MASK(cx_data_set(cx_list(var1)), cx_list(var1), 
+     .           process_feature, nfeatures)
+	   ipl = 0
+	   DO i = 1, nfeatures
+	      IF (process_feature(i)) THEN
+	         ipl = ipl + 1
+		 nfeatr(ipl) = i
+	      ENDIF
+	   ENDDO
+
+* The varid of the feature-id variable
+ 
+	   dummy = SANITARY_VAR_CODE(cat_file_var, dsg_feature_var(dset) )
+	   CALL CD_GET_VAR_ID  (dset, dummy, fvar_varid, status)
+
+	ENDIF
+
+* One feature but multi-vars. Label with variable names.  Add the feature-id
+* to the dataset title above the plot.
+
+	IF (its_dsg .AND. (ipl.EQ.1 .AND. (nmv-var1)+1.GT.1) ) THEN
+	   reset_dsg = .TRUE.
+	   its_dsg = .FALSE.  ! multi-var, one feature
+	   
+	   CALL CD_READ_ONE ( dset, fvar_varid, nfeatr(ipl), dtype, value, 
+     .                        plot_title_1, slen, status )
+	   CALL GET_DSET_TITLE (dset, dummy, slen)
+	   slen = TM_LENSTR(dummy)
+	   IF (slen .GT. 0) THEN
+	      CALL SET_DSET_TITLE (dset, dummy(:TM_LENSTR1(dummy))//': ID='//plot_title_1)
+	   ELSE
+	      CALL SET_DSET_TITLE (dset, 'ID: '//plot_title_1)
+	   ENDIF
+	ENDIF
+
 
 	IF (ribbon_plot) GOTO 1000
 
@@ -146,6 +212,7 @@
 
 * *ACM* if time axis, then cal_id_1 is set to the calendar.  Label the
 *       plot with the calendar name if there is non-standard calendar
+
 	   CALL DISP_LABELS( cx_plot, year, cal_id_1 )
 
 * If there are multiple variables with different units, do not label 
@@ -171,10 +238,24 @@
      .			   letsize_label, ppl_centered,
      .			   lab_loc_absolute, lab_loc_absolute )
 * ... keys for the dependent vars, or if one, only the title or axis label
+
 	   DO 600 ipl = var1, nmv
 	      nline_in_mem = nline_in_mem + 1
+
 	      IF ( use_keys .AND. (.NOT. nokey) .AND.nmv.GT.var1) THEN
-	         plot_title = KEY_STRING( cx_list(ipl), key_doc, slen )
+
+	         IF ( its_dsg ) THEN 
+
+* Read the feature-level value. If it's numeric turn it into a string
+
+                    CALL CD_READ_ONE ( dset, fvar_varid, nfeatr(ipl), dtype, value, 
+     .                                 plot_title, slen, status )
+		    IF (dtype .NE. NF_CHAR) plot_title = TM_FMT(value, 15, 20, slen)
+
+	         ELSE 
+	            plot_title = KEY_STRING( cx_list(ipl), key_doc, slen )
+	         ENDIF 
+
 	      ELSE
 	         IF (units_same .AND. .NOT.use_keys) THEN 
 	            plot_title = VAR_TITLE_ONLY( cx_list(ipl), slen )
@@ -188,6 +269,7 @@
                  plot_title(slen+1:slen+14) = ' No Valid Data'
                  slen = slen + 14
               ENDIF
+
 	      IF ( ndv .EQ. 1 .OR. user_title ) THEN
 	         IF ( versus ) THEN     ! ("xlen" changed to "dep_len" 11/92)
 	            CALL BOX_LABEL( dep_lab,
@@ -232,9 +314,40 @@
      .                     0.0, 0.0, 0.6*hlen, letsize_label,
      .                     letsize_label, ppl_centered,
      .                     lab_loc_absolute, lab_loc_absolute )
+           ELSE
+	      IF (its_dsg) THEN
+
+* Key was labeled with the feature-ids. Need the variable title, so put it on indep axis
+	         IF (.NOT. nokey) THEN
+		    plot_title = VAR_TITLE_ONLY( cx_list(var1), slen )
+		    plot_title = plot_title(:slen)//
+     .                     '('//ustring(:TM_LENSTR1(ustring))//')'
+     
+		    slen = TM_LENSTR1( plot_title )
+		    rht = letsize_label
+		    IF (ylen .LT. SYMWID(rht, slen, plot_title) ) THEN
+		       plot_title = VAR_TITLE_ONLY( cx_list(var1), slen )
+		       plot_title = plot_title(:slen)//
+     .                     '<NL>('//ustring(:TM_LENSTR1(ustring))//')'
+		    ENDIF
+
+		    slen = TM_LENSTR1( plot_title )
+		    CALL BOX_LABEL( dep_lab,
+     .			   plot_title(:slen),
+     .			   0.0, 0.0, 0.8*dep_len, letsize_label,
+     .			   letsize_label, ppl_centered,
+     .			   lab_loc_absolute, lab_loc_absolute )
+	         ELSE  ! no keys, label w/ var title below the plot
+		    plot_title = FULL_VAR_TITLE( cx_list(var1), do_units, slen )
+	            CALL BOX_LABEL( ppl_title,
+     .			   plot_title(:slen),
+     .			   0.0, 0.0, 0.75*hlen, letsize_title,
+     .			   letsize_title, ppl_centered,
+     .			   lab_loc_absolute, lab_loc_absolute )
+		 ENDIF
+	      ENDIF
+	     
            ENDIF
-
-
 	ENDIF  ! overlay
 	
 	GOTO 5000  ! done
@@ -255,15 +368,25 @@
                  IF ( status .NE. ferr_ok ) GOTO 5000
 	         slen = TM_LENSTR1( plot_title )
 	      ELSE
-	         plot_title = KEY_STRING( cx_list(ipl), cx_xtra_doc, slen )
-		 IF (.NOT.use_keys) plot_title = VAR_TITLE_ONLY( cx_list(ipl), slen )
+
+	         IF ( its_dsg ) THEN 
+* Read the feature-id value. If it's numeric turn it into a string
+                    CALL CD_READ_ONE ( dset, fvar_varid, nfeatr(ipl), dtype, value, 
+     .                                 plot_title, slen, status )
+		    IF (dtype .NE. NF_CHAR) plot_title = TM_FMT(value, 15, 20, slen)
+
+	         ELSE 
+	            plot_title = KEY_STRING( cx_list(ipl), cx_xtra_doc, slen )
+	         ENDIF 
+
+		 IF (.NOT.use_keys .OR. its_dsg) plot_title = VAR_TITLE_ONLY( cx_list(ipl), slen )
 	      ENDIF
               IF (this_no_range(ipl) .AND. mode_nodata_lab) THEN
                  plot_title(slen+1:slen+14) = ' No Valid Data'
                  slen = slen + 14
               ENDIF
 
-              IF (ipl.EQ.ribbon_var) THEN
+              IF (ipl.EQ.ribbon_var .AND. .NOT.its_dsg) THEN
 		 slen1 = TM_LENSTR1( plot_title_1 )
                  plot_title = plot_title_1(1:slen1)//
      .			', Colored by '//plot_title(1:slen)
@@ -330,16 +453,63 @@
      .			   0.0, 0.0, 0.6*dep_len, letsize_label,
      .			   letsize_label, ppl_centered,
      .			   lab_loc_absolute, lab_loc_absolute )
+     
+	      IF (nmv .EQ. 1) THEN
+	         plot_title = 'Longitude (degrees_east)'
+	         slen = TM_LENSTR1( plot_title )
+	         CALL BOX_LABEL( indep_lab,
+     .                     plot_title(:slen),
+     .                     0.0, 0.0, 0.6*hlen, letsize_label,
+     .                     letsize_label, ppl_centered,
+     .                     lab_loc_absolute, lab_loc_absolute )
+
+	         plot_title = 'Latitude (degrees_north)'
+	         slen = TM_LENSTR1( plot_title )	         
+	         CALL BOX_LABEL( dep_lab,
+     .			   plot_title(:slen),
+     .			   0.0, 0.0, 0.6*dep_len, letsize_label,
+     .			   letsize_label, ppl_centered,
+     .			   lab_loc_absolute, lab_loc_absolute )
+	      ENDIF
 	   ENDIF
+
 
 * ... keys for the dependent vars, or if one, only then title or axis label
 ! ribbon_plot
+
+	   IF (nmv.EQ.1 .AND. (versus.AND.ribbon_plot)) THEN
+	   
+	      plot_title = FULL_VAR_TITLE( cx_list(nmv), do_units, slen )
+              IF (this_no_range(nmv) .AND. mode_nodata_lab) THEN
+                 plot_title(slen+1:slen+14) = ' No Valid Data'
+                 slen = slen + 14
+              ENDIF
+	      
+              labsize = letsize_title
+              plot_title = 'Colored by '//plot_title(1:slen)
+
+              IF ( user_title ) THEN     ! user over-ride of title
+                 CALL EQUAL_STR_LC
+     .             ( cmnd_buff(qual_start(ptitl):qual_end(ptitl)),
+     .               plot_title, status )
+                 IF ( status .NE. ferr_ok ) GOTO 5000
+                 labsize = letsize_title
+              ENDIF
+
+              slen = TM_LENSTR1( plot_title )
+              CALL BOX_LABEL( ppl_title,
+     .			   plot_title(:slen),
+     .			   0.0, 0.0, 0.75*hlen, letsize_title,
+     .			   labsize, ppl_centered,
+     .			   lab_loc_absolute, lab_loc_absolute )
+              GOTO 5000
+	   ENDIF 
 
 	   istart = var1
 	   IF (versus .AND. ribbon_plot) istart = 1
 
 	   DO 1600 ipl = istart, var1+1
-	      IF (ipl .EQ. var1 .AND. (versus .AND. ribbon_plot)) GOTO 1600     
+	      IF (ipl.EQ.var1 .AND. (versus.AND.ribbon_plot)) GOTO 1600  
 	      nline_in_mem = nline_in_mem + 1
 	      do_units = .TRUE.
 	      plot_title = FULL_VAR_TITLE( cx_list(ipl), do_units, slen )
@@ -351,6 +521,8 @@
               labsize = letsize_title
               IF (ipl.EQ.ribbon_var) THEN
 	         IF (versus) THEN
+	            IF (add_ribbon) plot_title_1 = 'Trajectory'
+	            IF (add_ribbon) plot_title = 'Trajectory'
                     slen1 = TM_LENSTR1( plot_title_1 )
 		    CALL BOX_LABEL( indep_lab,
      .                     plot_title_1(:slen1),
@@ -387,6 +559,11 @@
 
 	ENDIF ! overlay
 
+5000	CONTINUE
 
- 5000	RETURN
+! Restore dataset title
+	IF (reset_dsg) CALL SET_DSET_TITLE (dset, dummy)
+
+
+	RETURN
 	END

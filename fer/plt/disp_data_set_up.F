@@ -59,6 +59,12 @@
 *       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
 * V69+ *acm*  9/14 Ticket 1758. Memory request uses number of blocks not words
 * V702 1/17 *sh* for trac enhancement #2369 -- dynamic memory management 
+* V73+ *acm* 12/17 additions for plotting several lines from a dsg dataset
+* V74+ *acm*  4/18 additions for plotting trajectories from a dsg dataset
+* V74+ 4/18 *acm*  Automatically do a colored trajectory plot for the command 
+*                  "PLOT var" if it's a DSG trajectory set. Allow color-by-Feature-id.
+* V74+ 7/18 *acm*  DSG trajectory plots colored by ID even if its a string 
+* V75+ 5/19 *acm*  DSG lon/lat plots of profile or timeseries datasets
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -69,30 +75,75 @@
 	include 'xvariables.cmn'
 	include 'xcontext.cmn'
 	include 'xprog_state.cmn'
+#include "tmap_dset.parm"
+	include 'xdset_info.cmn_text'
+	include 'xtm_grid.cmn_text'
+
 	
 * calling argument declarations:
 	INTEGER	ax1_work, ax2_work, status
 
 * internal variable declarations:
-	LOGICAL plot_vs
-	INTEGER	MR_DIM_LEN, CX_DIM_LEN, CGRID_SIZE,
+	LOGICAL TM_ITSA_DSG_RAGGED, TM_ITSA_DSG, plot_vs, typerr
+	INTEGER	MR_DIM_LEN, CX_DIM_LEN, CGRID_SIZE, TM_DSG_NFEATURES,
+     .		TM_DSG_DSET_FROM_GRID,
      .		idim, ndim, dim(nferdims), mr1, cx, ivar,
-     .		factor, loc
+     .		factor, loc, grid, dset, nfeatures, obsdimlen, 
+     .		fline, dtyp, numv
 	INTEGER*8 i8_ax_len
+	REAL	big_val, little_val
 	CHARACTER buff*4
 
 * check for PLOT/VS -- significant in axis buffer sizes
 	plot_vs = cmnd_num .EQ. cmnd_plot
-     .	.AND. qual_given(slash_plot_vs) .GT. 0
+     .	          .AND. qual_given(slash_plot_vs) .GT. 0
 
 * get the requested data somehow  (and leave it protected 1/94)
-	CALL GET_PROT_CMND_DATA (  cx_last, ptype_float, status )
+
+	dset  = cx_data_set(cx_last)
+	dtyp = ptype_float
+
+	IF (dset .GT. pdset_irrelevant) THEN
+	   IF (dsg_ragged(dset)) dtyp = ptype_native
+	ENDIF
+	CALL GET_PROT_CMND_DATA (  cx_last, dtyp, status )
+
 	IF ( status .NE. ferr_ok ) GOTO 5100
+
+	numv = num_uvars_in_cmnd
+
+
+* ragged DSG data?
+* For a trajectory dataset, the variable may be on the instance axis 
+* (color by feature-id). If so set that up. Otherwise insist it's a
+* variable on the obs axis of a ragged-array dataset
+
+         cx = is_cx(1)
+	 grid = cx_grid(cx)
+	 
+	 grid_is_dsg = TM_ITSA_DSG( grid )
+	 IF (cmnd_num .EQ. cmnd_plot .AND. grid_is_dsg) THEN
+	    IF (  qual_given(slash_plot_along) .GT. 0.AND. .NOT.plot_vs )  
+     .	       CALL WARN ('PLOT/ALONG is ignored for discrete DSG data')
+
+	    dset = TM_DSG_DSET_FROM_GRID( grid )
+	    nfeatures = TM_DSG_NFEATURES( grid )	    
+	    CALL TM_DSG_FACTS( grid, idim, obsdimlen, fline )
+
+	    IF (idim .EQ. pfeatureType_Trajectory) THEN
+	       plot_vs = .TRUE.
+	    ELSE IF (.NOT. plot_vs) THEN
+	       typerr = (cx_type(cx) .EQ. ptype_string) 
+	       IF (typerr) GOTO 5200
+	       IF (grid_is_dsg) CALL PLOT_DSG_DATA_SET_UP(nfeatures, obsdimlen, status)
+	       IF (status .NE. ferr_ok) GOTO 5200
+            ENDIF
+	 ENDIF
 
 * PLOT/ALONG -- reinterpret a multi-D data block as a collection of lines
 	IF (  cmnd_num .EQ. cmnd_plot
      .	.AND. qual_given(slash_plot_along) .GT. 0
-     .	.AND. .NOT.plot_vs                       ) THEN
+     .	.AND. .NOT.plot_vs   .AND. .NOT. grid_is_dsg  ) THEN
 	   CALL PLOT_ALONG_DATA_SET_UP(status)
 	   IF (status .NE. ferr_ok) GOTO 5010
 	ENDIF
@@ -133,7 +184,7 @@
 * (2/99: loop over all arguments to find largest requirement)
 * ?? why is CGRID_SIZE needed ... could get very large ??
 	   i8_ax_len = 1
-	   DO 200 ivar = 1, num_uvars_in_cmnd
+	   DO 200 ivar = 1, numv
 	      mr1 = is_mr( ivar )
 	      CALL GET_CX_DIMS( is_cx(ivar), ndim, dim )
 	      i8_ax_len = MAX( i8_ax_len,
@@ -141,10 +192,16 @@
      .		            MR_DIM_LEN( dim(2), mr1 ),
      .			    factor*CX_DIM_LEN(dim(1), is_cx(ivar)),
      .			    factor*CX_DIM_LEN(dim(2), is_cx(ivar)) )
-	      IF (plot_vs) i8_ax_len =
-     .		       MAX( i8_ax_len,
+	      IF (plot_vs) i8_ax_len = MAX( i8_ax_len,
      .		            CGRID_SIZE(is_cx(ivar))  )
  200	   CONTINUE
+
+* trajectory plot from DSG trajectory file needs obs-length 
+* (color var may be feature-length).
+
+	   IF (cmnd_num.EQ.cmnd_plot .AND. grid_is_dsg ) THEN
+              i8_ax_len = obsdimlen
+	   ENDIF
 	ENDIF
 
 * allocate working storage
@@ -162,8 +219,16 @@
  5010	CALL FREE_WS_DYNMEM( ax1_work )
  5020	CALL UNPROTECT_CMND_DATA	! added 2/99
  5100	RETURN
+
+ 5200	CONTINUE
+* ... copied from get_prot_cmnd_data error exit ... 
+        CALL RELEASE_DYN_WORK_SPACE
+        CALL DELETE_MRS_IN_PROGRESS
+        CALL UNPROTECT_ALL_MRS
+        CALL DEALLO_ALL_GRIDS
+        CALL CLEAN_STACK
+	buff = ' '
+
+	IF (typerr) CALL ERRMSG( ferr_data_type, status,buff, *5100 )
+
 	END
-
-
-
-

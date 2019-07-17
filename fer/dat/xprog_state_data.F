@@ -403,7 +403,7 @@
         DATA    allowed_err             / .FALSE. /  ! briefly set true in SHOW VAR/TREE
         DATA    grat_on                 / .FALSE. /
         DATA    num_linecolors          / 6 /
-        DATA    spawn_status            / 0 /        ! last cmnd was successful
+        DATA    spawn_status            / 0 /        ! last cmnd was successfu
 	DATA	date_fmt_out		/ pdate_vax /
 
 	END

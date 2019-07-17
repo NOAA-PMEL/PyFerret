@@ -81,6 +81,7 @@
 *	          so slightly too wide to match the request. Use TM_DFPEQ
 *	          to test for approx. equal values before rejecting the match  
 *	          with what is in memory.
+* V720: 4/17 *sh* special behaviors finding DSG variables 
 * V74+  5/18 *acm* issue 1868: gridding transforms that will grid to same axis
 
 * (V510) How on cache hits on external functions (EFs) work:
@@ -109,8 +110,11 @@
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
+#include "tmap_dset.parm"		  ! int4_init
+        include 'implicit.parm'
 	include 'ferret.parm'
 	include 'errmsg.parm'
+	include 'xdset_info.cmn_text'     ! dsg_loaded_lm
 	include 'xtm_grid.cmn_text'
 	external xgt_grid_data
 	include 'xvariables.cmn'
@@ -122,12 +126,12 @@
 	LOGICAL by_value, valid_search
 
 * internal variable declarations:
-	LOGICAL TM_DFPEQ, REGRID_TO_SELF,
-     .          has_trans, itsa_uvar,
-     .          normal(nferdims), non_modulo(nferdims),
-     .          self(nferdims)
-	INTEGER HASH_CX, line,
-     .		mv, defining_grid, idim, var, mline
+	LOGICAL TM_DFPEQ, TM_ITSA_DSG, REGRID_TO_SELF,
+     .          has_trans, itsa_uvar, itsa_dsg,
+     .          normal(nferdims), non_modulo(nferdims), 
+     .          self(nferdims), transformed
+	INTEGER HASH_CX, line, lm, status,
+     .		mv, defining_grid, idim, var, cat, dset, mline
         REAL*8  TM_WORLD, ww_hi_bound, c_cache_ptr
 
 * initialize
@@ -146,19 +150,45 @@
 * initialize
 	defining_grid = cx_grid( cx )
 	var	      = cx_variable(cx)
+	cat	      = cx_category(cx)
+	dset	      = cx_data_set(cx)
 
 * is there a completed context to look for ?
 	IF ( defining_grid   .EQ. unspecified_int4
-     .	.OR. cx_data_set(cx) .EQ. unspecified_int4
+     .	.OR. dset	     .EQ. unspecified_int4
      .	.OR. var             .EQ. unspecified_int4 ) GOTO 5000
 
 * cat_const_vars are never cached (see IS_CONST_VAR)
 * ditto for cat_string (as-of 1/99)
-	IF ( cx_category(cx) .EQ. cat_const_var
-     .  .OR. cx_category(cx) .EQ. cat_string   ) GOTO 5000
+	IF ( cat .EQ. cat_const_var
+     .  .OR. cat .EQ. cat_string   ) GOTO 5000
 
 * are we looking for  user defined variable ?
-	itsa_uvar = cx_category(cx) .EQ. cat_user_var
+	itsa_uvar = cat .EQ. cat_user_var
+
+* are we hunting for a DSG variable?
+	itsa_dsg = TM_ITSA_DSG(defining_grid)
+
+* check for untransformed DSG coordinate variable or rowSize
+* they are already cached in line memory
+	IF (itsa_dsg .AND. cat.EQ.cat_file_var ) THEN
+	   transformed = cx_unstand_grid(cx)
+	   IF (.NOT.transformed) THEN
+	      DO idim = 1, nferdims
+	         IF (cx_trans(idim, cx) .NE. trans_no_transform) THEN
+	            transformed = .TRUE.
+	            EXIT
+	         ENDIF
+	      ENDDO
+	   ENDIF
+	   lm = dsg_loaded_lm(var)
+	   IF (.NOT.transformed .AND. lm.NE.int4_init) THEN
+* ... create and return an mr table entry pointing to the dsg_linemem
+	      CALL CREATE_LM_TABLE_ONLY_MEM_VAR( cx, lm, mr, status )
+              IF (status .EQ. ferr_ok) GOTO 1000
+* ... in rare chance of error status, the cache hit failed
+	   ENDIF
+	ENDIF
 
 * do we need special checks for transforms ?
 	has_trans = .FALSE.
@@ -168,14 +198,24 @@
 	ENDDO
 
 * flag the normal axes so we can bypass checks on them quickly
+* DSG grids don't have ordinary modulo-ing, don't handle regions as modulo here
+
 	DO 210 idim = 1, nferdims
 	   line = grid_line(idim,defining_grid)
 	   IF (line .EQ. mnormal) THEN
-	      normal(idim) = .TRUE.
+	      IF (itsa_dsg .AND. idim.NE.f_dim) THEN
+* ... DSG constraints are relevant on some mnormal grid axes
+*     e.g. time series features can be subsetted based upon X,Y position
+! huh?  how can this compile?
+	         normal(idim) = cx_lo_ww(idim,cx) .EQ. unspecified_val8
+	      ELSE
+	         normal(idim) = .TRUE.
+	      ENDIF
 	   ELSE 
 	      normal(idim) = .FALSE.
 	      non_modulo(idim) = .NOT.line_modulo(line)
 	   ENDIF
+	   IF (itsa_dsg) non_modulo(idim) = .FALSE.
  210	CONTINUE
 
 * determine memory hash pile to search
@@ -189,13 +229,15 @@
 	ENDIF
 
 * right variable ?
-	IF ( mr_variable ( mv ) .NE. cx_variable(cx)
-     .	.OR. mr_category ( mv ) .NE. cx_category(cx)
-     .	.OR. mr_data_set ( mv ) .NE. cx_data_set(cx)
+	IF ( mr_variable ( mv ) .NE. var
+     .	.OR. mr_category ( mv ) .NE. cat
+     .	.OR. mr_data_set ( mv ) .NE. dset
      .	.OR. mr_grid ( mv ) .NE. defining_grid       ) GOTO 100
 
 * check variable type
 	IF ( mr_type(mv) .NE. cx_type(cx) ) GOTO 100
+
+* DSGTBD: the F axis of a DSG can be treated as a gridded axis: superset ok
 
 * flag for transforms that allow regrid-to-same axis
 
@@ -208,6 +250,7 @@
 	ENDDO
 
 * right instance (coordinate ranges and transformations) ?
+
 	IF ( itsa_uvar ) THEN
 
 * * * * * LOOK FOR A USER-DEFINED VARIABLE BASED ON COORDINATE VALUES  * * * * 
@@ -256,6 +299,15 @@
 
 * transformation correct ?
 	      IF ( mr_trans(idim,mv) .NE. cx_trans(idim,cx) ) GOTO 100
+
+* If it's a DSG grid, then a change to the context in any direction  
+* requires redoing the computation -- the context applies to the list
+* of features/ obs.
+
+	      IF (itsa_dsg) THEN 
+                 IF ( .NOT. TM_DFPEQ(cx_lo_ww(idim,cx),mr_lo_ww(idim,mv)) ) GOTO 100
+                 IF ( .NOT. TM_DFPEQ(cx_hi_ww(idim,cx),mr_hi_ww(idim,mv)) ) GOTO 100
+	      ENDIF
 
 * insist that the  grid stored in memory encompasses the requested data
 
@@ -392,7 +444,7 @@
 	mr = mv
 
 * ... diagnostic message ?
-	IF (mode_diagnostic) CALL DIAGNOSTIC_OUT('found  ',mr,point_to_mr)
+ 1000	IF (mode_diagnostic) CALL DIAGNOSTIC_OUT('found  ',mr,point_to_mr)
 
 * ... send back pointer
 	RETURN

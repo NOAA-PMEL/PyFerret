@@ -75,6 +75,7 @@
 * V680 5/12 *acm* 6D Ferret, changes for DEFINE DATA/AGGREGATE
 * V690 1/14 *sh* removed special behavior for mode_stupid
 * V698 3/16 *sh* added logic for cat_ef_time2d (ACTS_LIKE_FVAR)
+* V720 4/17 *sh* added logic for DSG ragged contiguous grids
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -91,9 +92,11 @@
 	INTEGER	cx
 
 * internal variable declarations:
-	LOGICAL ACTS_LIKE_FVAR, needs_limits, its_unspec
+	LOGICAL ACTS_LIKE_FVAR, TM_ITSA_DSG_RAGGED,
+     .		needs_limits, its_unspec, its_dsg
 	INTEGER TM_GET_GRIDNUM,
-     .          idim, cat, var, grid, mabstract, line, status, grr
+     .          idim, cat, var, grid, mabstract, line, status, grr,
+     .		dsg_obsdimlen, dsg_orientation, dsg_line
 
 * possible skip this routine
 ! commented this out 1/2014 cuz it causes a crash in aux var processing
@@ -106,6 +109,26 @@
 	grid = cx_grid    ( cx )
 
         grr = TM_GET_GRIDNUM ('ABSTRACT')
+
+* *** trap DSG grids for special treatment
+	its_dsg = TM_ITSA_DSG_RAGGED(grid)
+	IF (its_dsg) CALL TM_DSG_FACTS(grid,
+     .		     dsg_orientation, dsg_obsdimlen, dsg_line, its_dsg)
+     
+	IF (its_dsg) THEN
+* ... always set up to read the full 1D obs dim of the variable
+*     Subsetting is done with DEFINE DATA/SUBSET
+	   
+	   DO idim = 1, nferdims
+	      cx_lo_ss(cx,idim) = unspecified_int4
+	      cx_hi_ss(cx,idim) = unspecified_int4
+	   ENDDO
+	   cx_lo_ss(cx,dsg_orientation) = 1
+	   cx_hi_ss(cx,dsg_orientation) = dsg_obsdimlen
+* ... leave the world coordinates as-is
+	   RETURN
+	ENDIF
+* ***
 
 	DO 100 idim = 1, nferdims
 

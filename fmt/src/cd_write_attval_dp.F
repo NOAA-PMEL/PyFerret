@@ -55,6 +55,7 @@
 * V65  *acm* 1/10  Add #ifdef usingDODSf2cUnderscore, for 32-bit linux build
 *                  linked with OPeNDAP library.
 * V6.74 3/12 *acm* cleanup ifdefs and unnecessary include files
+* V7.45 1/19 *acm* deal with string length issues passing string; clean up ifdefs
 
 * argument definitions:
 *     cdfid   - netCDF id number for already opened CDF file
@@ -74,10 +75,6 @@
 #include "gt_lib.parm"
 	include 'cd_lib.parm'
 
-! Declare netcdf function names. 
-! The ones without trailing underscore are declared in netcdf.inc
-#include "netcdf_declareUnderscore.inc"
-
 * argument declarations
       INTEGER cdfid, nval, type, status
       CHARACTER*(*) vname, att
@@ -86,15 +83,11 @@
 * local variable declarations:
       INTEGER TM_LENSTR1, i, 
      .        vlen, alen, cdfstat, varid, attype, attlen, flen    
-      CHARACTER*128 abuff     ! needed because of fussy compilers and // concatenation
+      CHARACTER*128 buff     ! needed because of fussy compilers and // concatenation
 
       PARAMETER (flen=512)      ! size of variable name string
-
-#ifdef sun
-      BYTE      fhol(flen)      ! c-type Hollerith string buffer
-#else
       INTEGER*1 fhol(flen)      ! c-type Hollerith string buffer
-#endif 
+ 
 
 * For error message
       CHARACTER*9 typnam(12)
@@ -103,8 +96,11 @@
      .            'NC_UINT', 'NC_INT64', 'NC_UINT64', 'NC_STRING'/
 
 * initialize
-      vlen = TM_LENSTR1( vname )
-      alen = TM_LENSTR1( att )
+	
+      buff = vname
+      vlen = TM_LENSTR1( buff )
+      buff = att
+      alen = TM_LENSTR1( buff )
       
 * locate the variable id
       IF ( vname .EQ. pcdf_global ) THEN
@@ -148,10 +144,10 @@
      .  'incompatible data type of CDF attribute',
      .  att(:alen), *5900 )
 
- 5300  abuff = att
+ 5300  buff = att
        CALL TM_ERRMSG (status+pcdferr, status, 'CD_WRITE_ATTVAL',
      .     no_descfile, no_stepfile, 
-     .    'data in attribute '//abuff(:alen)//
+     .    'data in attribute '//buff(:alen)//
      .    ' not representable in output type '//typnam(type),
      .     no_errstring, *5900 )
 

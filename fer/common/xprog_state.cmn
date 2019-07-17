@@ -56,10 +56,12 @@
 * V702 2/17 *sh* add mode FRUGAL and spawn_status
 * v720 7/17 *acm* ticket 2552 Make SPAWN_STATUS return the return status, so 0=succcess
 *           SPAWN_STATUS returns the status value, used for SPAWN_OK and SPAWN_STATUS
+* v73+ 12/17 *acm* add flag grid_is_dsg, true when working on a dsg grid, plotting set of features
 * v743  12/18 *acm* Issue 1803, new parameter mode_set_always, for
 *                  New command-line switch -verify for set mode ver:always behavior
 * v745 *acm* 12/18  Issue 1909, option to write dates in ISO8601 format
 *                  new mode datefmt for formatted date output, setting stored in date_fmt_out
+* V745 *acm* 12/18  added plist_dsg for CF-DSG format
 
 	INTEGER		cmnd_buff_len, max_qual_list, max_arg_list,
      .			max_item_list, max_modes, mode_stack_size,
@@ -135,7 +137,7 @@
 	INTEGER plist_default, plist_formatted, plist_unformatted,
      .	        plist_epic, plist_gt, plist_ts, plist_cdf, plist_stream,
      .		plist_comma_del, plist_tab_del, plist_cdf_cache, 
-     .		plist_dods, plist_xml
+     .		plist_dods, plist_xml, plist_dsg
 	PARAMETER     (	plist_default	= 0,
      .	 		plist_formatted	= 1,
      .			plist_unformatted = 2,
@@ -148,7 +150,8 @@
      .			plist_tab_del	= 9,
      .			plist_cdf_cache	= 10,
      .			plist_dods	= 11,
-     .                  plist_xml       = 12 )
+     .                  plist_xml       = 12,
+     .                  plist_dsg       = 13 )
 
 	INTEGER		pif_skip_to_endif,
      .			pif_doing_clause,
@@ -186,7 +189,6 @@
      .          num_linecolors, spawn_status,
      .		date_fmt_out
 
-
 	LOGICAL
      .		list_format_given, list_unformatted, list_dsf, list_redirected,
      .		list_heading, list_append, list_tmap,
@@ -205,7 +207,8 @@
      .          allowed_err,
      .          one_cmnd_mode,
      .		mode_auto_curvi, mode_auto_curvi_last,
-     .		mode_auto_layerz, mode_auto_layerz_last
+     .		mode_auto_layerz, mode_auto_layerz_last,
+     .		grid_is_dsg
 
 
 ! Note: available_char_var is unused
@@ -264,6 +267,7 @@
      .		in_get_grid_mode, 
      .		mode_auto_curvi, mode_auto_curvi_last,
      .		mode_auto_layerz, mode_auto_layerz_last,
+     .		grid_is_dsg,
      .		frame_compress, available_char_var,
      .		journal_file, ppllist_file,
      .		xwind_node, xwind_node_len,

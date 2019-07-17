@@ -85,7 +85,11 @@
 	TDEST_WORLD = ww
 
 * special treatment of calendar time axis
+
+	
 	IF ( idim .EQ. t_dim .OR. idim .EQ. f_dim ) THEN
+* 5/17 Note that this block of code could presumably be replaced by the new
+*   TDEST_WORLD = TDEST_CONVERT(ww)
            IF ( tcnvrt_ok  ) THEN
 	      IF ( grid .NE. cnvrt_src_grid ) THEN
 	         CALL ERRMSG( ferr_internal, status,

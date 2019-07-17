@@ -71,6 +71,7 @@
 * V674 2/12 *acm* 6D Ferret: use nferdims rather than 4 for dimension indexing
 * V680 5/12 *acm* 6D Ferret, changes for DEFINE DATA/AGGREGATE
 * V698 *sh* 1/16 -- added status check/warning, since not checked by callers
+* V74+ 4/18 *acm* Getting DSG grids
 
 * Argument declarations
 
@@ -84,6 +85,7 @@
 #include "gt_lib.parm"
       INCLUDE 'netcdf.inc'
       INCLUDE 'tmap_errors.parm'
+      INCLUDE 'tmap_dims.parm'
 
       INTEGER TM_LENSTR1, NCF_INQ_VAR, slen, flen, rev(8), i, ndx, istat
       PARAMETER (flen=512)      ! size of variable name string
@@ -98,6 +100,10 @@
       nvatts = 0
       coordvar = .FALSE.
       cdfstat = atom_not_found
+
+      DO i = 1, nferdims
+         vdims(i) = line_0
+      ENDDO
 
       IF (dset .EQ. unspecified_int4) RETURN
       IF (ivar .LT. 0) RETURN

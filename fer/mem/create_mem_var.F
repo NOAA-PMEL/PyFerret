@@ -47,11 +47,6 @@
 
 	CALL CREATE_MEM_VAR_W_BUFFER(cx, mr, 1, status )
 
-* diagnostic sanity check of memory after creating new variable
-#ifndef NDEBUG
-        IF ( mode_diagnostic ) CALL SANITY_CHECK_MEMORY("CREATE_MEM_VAR")
-#endif
-
 	RETURN
 	END
 

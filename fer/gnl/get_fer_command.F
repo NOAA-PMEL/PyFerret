@@ -108,8 +108,6 @@
 *                 other related changes when reporting errors in long command lines
 * V7+  6/16 *acm* Ticket 2446: Include the script name in warnings about 
 *                 unclosed IF blocks
-* V75+ 4/19 *acm* Issue 1927 (and 228!) initialize qual_given before parsing.
-*          
 
         IMPLICIT NONE
 
@@ -160,14 +158,6 @@
 	len_cmnd_copy = 0
 	appending_cmnd = .FALSE.
         do_verify = .FALSE.
-
-
-* initialize the qualifiers -- otherwise REPL_EXPRNS tries to take
-* quals from previous commands into account. See tickets 228, 1927 
-
-        DO iqual = 1, max_qual_list
-	   qual_given( iqual ) = 0
-	ENDDO
 
 * if a command was given then execute it immediately
 	IF ( called_string .NE. ' ' ) THEN

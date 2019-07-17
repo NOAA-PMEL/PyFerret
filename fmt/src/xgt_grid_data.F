@@ -74,6 +74,7 @@
 * V698  3/16 *acm* Define monthly climatology for Julian axis.
 * V702 11/16 *sh* Commented out initialization of of grids cuz
 *                 was taking unacceptable long time to compile
+* V720 4/17 *sh* added line_dsg_dset, axis_dimname
 * V72 8/17 *acm*   For trac enhancement #767 -- dynamic coordinate storage
 
 	include 'tmap_dims.parm'
@@ -296,6 +297,8 @@
 	DATA	(line_dattype(i),i=1,line_ceiling)
      .			/line_ceiling*outtype/
 
+	DATA	(line_dsg_dset(i),i=1,line_ceiling)
+     .			/line_ceiling*pline_not_dsg/
 
 	DATA	(grid_name(i),i=ngrd_def+1,grid_ceiling)
      .			/grids_left*char_init16/
@@ -392,5 +395,12 @@
      .          axis_orients(  7 )	/ 'UD' /,   ! up to down
      .          axis_orients(  8 )	/ 'NA' /,   ! not applicable
      .          axis_orients(  9 )	/ 'NA' /    ! ... unused slot ...   
+
+	DATA	axis_dimname( 1 )	/ 'X'	/,
+     .		axis_dimname( 2 )	/ 'Y'	/,
+     .		axis_dimname( 3 )	/ 'Z'	/,
+     .		axis_dimname( 4 )	/ 'T'	/,
+     .		axis_dimname( 5 )	/ 'E'	/,
+     .		axis_dimname( 6 )	/ 'F'	/
 
 	END

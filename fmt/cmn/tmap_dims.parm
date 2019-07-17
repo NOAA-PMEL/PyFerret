@@ -32,7 +32,9 @@
 *                  Increase size of max_gfdl_dsets and max_grids
 *                  Also clean up long-unused lines that were commented out.
 * V710 *acm*  3/16  add dgrid_buff, for a fake grid to use in computing coordinates
-* V72  8/17 *acm*   For trac enhancement #767 -- dynamic coordinate storage, no maxlinestore
+* V720 *sh* 4/17 added max_lm for dynamic line memory
+*      *sh* 5/17 added pdsg_row_size
+* V72 8/17 *acm*   For trac enhancement #767 -- dynamic coordinate storage, no maxlinestore
 * V741 5/18 *acm*   Issue 1657 Double the number of grids allowed
 
 * for TMAP formatted files:
@@ -44,7 +46,7 @@
      .		max_dyn_lines, line_ceiling, grid_ceiling,
      .		tmp_line_hook, tmp_grid_hook, nferdims, maxvar2,
      .		pdsetalloc, pdsets_addl, pdset_dummy, pdset_global, 
-     .		dgrid_buff, num_clim, line_0
+     .		dgrid_buff, max_lm, pdsg_row_size, num_clim, line_0
 
 * parameters used for dimensioning arrays
 	PARAMETER (dgrid_buff = 0)	! scratch buffer for grids (as in ferret.parm)
@@ -79,4 +81,8 @@
 	PARAMETER (num_parm = 15)	! number of add_parm's in descriptor
 	PARAMETER (num_gridfiles = 6)	! number of grid_filenames in descript.
 	PARAMETER (nferdims = 6)	! number of dimensions in Ferret grids.
+* DSG parameters
+	PARAMETER (max_lm = 1000)	! number of dynamic mem lines
+	PARAMETER (pdsg_row_size = -321)! identifies the DSG rowSize variable
+
 	PARAMETER (num_clim = 8)	! number of pre-defined climatological axes.

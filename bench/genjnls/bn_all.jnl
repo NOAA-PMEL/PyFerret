@@ -1163,6 +1163,7 @@ GO bn_tseries_modulo
 GO bn_reset bn_huge_axis
 GO bn_huge_axis
 
+
 GO bn_reset bn_save_as_global
 GO bn_save_as_global
 
@@ -1170,6 +1171,7 @@ GO bn_save_as_global
 
 GO bn_reset bn74_bug_fixes
 GO bn74_bug_fixes
+
 
 GO bn_reset bn_clim_special
 GO bn_clim_special
@@ -1193,7 +1195,6 @@ GO bn_reset bn_center_keylab
 GO bn_center_keylab
 
 ! *********** v7.42 Additions ***********
-
 GO bn_reset bn741_bug_fixes
 GO bn741_bug_fixes
 
@@ -1242,12 +1243,54 @@ GO bn_samplexyzt
 
 GO bn_reset bn_sample_multi
 GO bn_sample_multi
-
-
 ! *********** v7.51 Additions ***********
 
 GO bn_reset bn751_bug_fixes
 GO bn751_bug_fixes
+
+
+
+! *********** DSG Additions ***********
+
+GO bn_reset bn_dsg_tseries
+GO bn_dsg_tseries
+
+GO bn_reset bn_regrid_to_dsg
+GO bn_regrid_to_dsg
+
+GO bn_reset bn_dsg_feature_mask
+GO bn_dsg_feature_mask
+
+GO bn_reset bn_dsg_repeat_m
+GO bn_dsg_repeat_m
+
+GO bn_reset bn_dsg_traj_plot
+GO bn_dsg_traj_plot
+
+GO bn_reset bn_regrid_from_dsg
+GO bn_regrid_from_dsg
+
+go bn_reset bn_dsg_use_feature
+GO bn_dsg_use_feature
+
+GO bn_reset bn_dsg_plot_timeseries
+GO bn_dsg_plot_timeseries
+
+GO bn_reset bn_dsg_save
+GO bn_dsg_save
+
+GO bn_reset bn_dsg_transforms
+GO bn_dsg_transforms
+
+GO bn_reset bn_dsg_one_e_val
+GO bn_dsg_one_e_val
+
+GO bn_reset bn_dsg_list_comma_tab
+GO bn_dsg_list_comma_tab
+
+GO bn_reset bn_dsg_if_exprns
+GO bn_dsg_if_exprns
+
 
 ! *********** PyFerret-specific scripts ***********
 
@@ -1277,7 +1320,11 @@ GO bn_stats_histogram
 GO bn_reset bn_symbolpattern
 GO bn_symbolpattern
 
+GO bn_reset bn_setting_text
+GO bn_setting_text
+
 ENDIF  ! pyferret
+
 
 !  *********** Always do a bn_reset  *********** 
 !  *********** make sure things clean up well **

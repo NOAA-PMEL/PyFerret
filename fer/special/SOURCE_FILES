@@ -1,4 +1,5 @@
 SRCS_F = \
+README_dsg_in_ferret.F\
 aix_routines.F\
 fake_gks.F\
 fake_ppl.F\

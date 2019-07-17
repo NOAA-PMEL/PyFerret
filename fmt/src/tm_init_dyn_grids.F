@@ -1,4 +1,4 @@
-	SUBROUTINE TM_init_dyn_grids
+	SUBROUTINE TM_INIT_DYN_GRIDS
 
 *
 *
@@ -43,6 +43,7 @@
 * V510 *sh* 3/00 - initialize "hooks" for managing temporary grids and lines
 *      *sh* 5/00 - set line_keep_flag everywhere to FALSE
 * V570 *acm*5/04 - remove line_has_edges flag; never used.
+* V720 *sh* 4/17 - initialize malloc'ed line memory 
 
 * Include files
 	include 'tmap_dims.parm'
@@ -51,11 +52,12 @@
 	include 'implicit.parm'
 	include 'xtm_grid.cmn_text'
 	external xgt_grid_data
+	include 'xdyn_linemem.cmn_text'
 
 * Argument definitions
 
 * Local definitions
-	INTEGER i
+	INTEGER i, lm
 
 
 ***** GRIDS *****
@@ -98,8 +100,15 @@
  400	line_flink(i) = i+1
 	line_flink(max_dyn_lines) = 0	! end of chain
 
+* initialize the malloc-created line memory
+	free_dyn_line(plm_free_base) = 1
+	DO lm =  1, max_lm
+	   free_dyn_line(lm) = lm+1
+	   lm_size(lm) = 0
+	   CALL TM_NULLIFY_LM(lm)
+	ENDDO
+	free_dyn_line(max_lm) = plm_free_base  ! loop back to list start
+
 	RETURN
 
 	END
-
-

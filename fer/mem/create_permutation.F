@@ -169,6 +169,9 @@
 
 * permute or kludge around permuting the data
 	IF ( table_entry_only .AND. .NOT.do_shrink) THEN
+! DSGTBD - cleaner to use the new routine CREATE_TABLE_ONLY_MEM_VAR
+!   instead of allocating memory and then freeing it up afterwards
+!   still need to copy mr_c_pointer here, presumably
 * ... point to the original data using permuted limits
 * ... a duplicated pointer, only 
 *     mr_size of the table-entry-only mr will be zero

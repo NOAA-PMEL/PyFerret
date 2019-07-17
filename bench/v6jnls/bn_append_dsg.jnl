@@ -13,6 +13,12 @@
 ! We append more variables to the file, using the same obs dimension.
 ! NOTE With the fix for ticket 2241, we need to add CANCEL MODE UPCASE.
 
+! 2/13/2019, updates for DSG-enabled Ferret
+!   Changing the data in test_save_dsg.nc, to make the lon360 computation more obvious
+!   List the data at the end of this script Note in DSG-enabled Ferret this works 
+!   when the new data is a LET/D variable on the dataset's obs grid or feature-grid.
+
+
 sp rm test_save_dsg.nc 
 sp cp data/test_save_dsg_in.nc test_save_dsg.nc 
 
@@ -21,9 +27,9 @@ use test_save_dsg.nc
 cancel mode upcase
 
 ! Lon in 0-360
-let/title="longitude"/units="degrees_east" lon360 = IF longitude LT 0 THEN longitude+360 else longitude
-define attribute/output lon360.ioos_category = "Location"
-define attribute/output lon360.standard_name = "Longitude"
+let/D=1/like=longitude lon360 = IF longitude LT 0 THEN longitude+360 else longitude
+cancel attribute/output lon360.axis
+cancel attribute/output lon360.actual_range
 define attribute/output lon360.history = "added to test_save_dsg.nc"
 
 save/quiet/append/file=test_save_dsg.nc lon360 
@@ -31,6 +37,12 @@ save/quiet/append/file=test_save_dsg.nc lon360
 ! The longitude and lon360 variables should have the same lowercase (obs) dimension.
 
 sp ncdump -h test_save_dsg.nc
+
+! List it, in dsg-listing format.  Compare longitude and lon360
+can var/all
+can data/all
+use test_save_dsg.nc
+list lon360
 
 set mode/last upcase
 

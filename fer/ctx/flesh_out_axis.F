@@ -81,14 +81,17 @@
 *                  dimension is now an arg to SECS_TO_TSTEP.
 * V683  *acm*10/12  Fix bug 1972: cx_calendar and cx_cal_id are changed only
 *                   if it's the T dimension not the T or F dimension.
-* V690  *sh* 4/14  For curvilinear axes keep ww limits as-is (may exceed axis limits)  
+* V690  *sh* 4/14 For curvilinear axes keep ww lims as-is (may exceed ax lims)
 * V693+ 11/14 *sh* renaming 'sigma' as 'layerz' throughout
 * V695  *acm* 2/15 cx_calendar stores info about calendar formatting of T and F axes
+* V720  *sh*  4/17 support DSG grids
+* V73+ *acm* 12/17 INIT_CXDSG needs nfeatures
 * V741  *acm* 6/18 Fix issue 1868: Let the transform remain in the context when 
 *                  variable is a constant. So let a = 2; list a[x=@trans] will no 
 *                  longer return 2, but will be either computed (for NGD and NBD),
 *                  or will be caught as an error instead of returning 2.
 * V741  *acm* 7/18 Issue 1868, do not wipe out the trans setting in the case of a constant
+* V74+ *acm*10/10 Partial fix to working with E contexts in dsg datasets.
 * V744 *acm* 11/18 Issue 965, change behavior when axis is given with strides in the region
 
         IMPLICIT NONE
@@ -110,22 +113,147 @@
 	INTEGER	idim, cx, status
 
 * internal variable declarations:
-	LOGICAL TM_DATE_OK, TM_FPEQ, INHERITED_LIMITS, 
-     .		point, lim_redundant, is_time, abst_nolim
-	INTEGER	TM_LENSTR1, ISUBSCR_CX,
-     .		ss, lo_ss, hi_ss, axis, grid, cat, var, ispread
+	LOGICAL TM_DATE_OK, TM_FPEQ, INHERITED_LIMITS, TM_ITSA_DSG_RAGGED,
+     .		ITSA_REGRID_FROM_DSG, 
+     .		point, lim_redundant, is_time, fromdsg, abst_nolim, its_dsg
+	INTEGER	TM_LENSTR1, ISUBSCR_CX, DSG_WHATS_IT, TM_DSG_DSET_FROM_GRID,
+     .		TM_DSG_NFEATURES,
+     .		ss, lo_ss, hi_ss, axis, grid, cat, var, ispread,
+     .		orientation, obs_dimlen, obs_line, dsgness, taxis,
+     .		xlate_grid, dset, e_line, nfeatures, i
 	INTEGER TM_GET_CALENDAR_ID, cal_id
-	REAL*8	TM_WORLD, SECS_TO_TSTEP, ww_nrst, ww_given
+	REAL*8	TM_WORLD, SECS_TO_TSTEP, ww_nrst, ww_given, min_ww, max_ww
 	CHARACTER	VAR_CODE*128, string*128
 
 * initialize
 	var  = cx_variable( cx )
 	cat  = cx_category( cx )
 	grid = cx_grid    ( cx )
-	
-* For setting the calendar information
+	axis = grid_line( idim, grid )
+	status = ferr_ok
+	dsgness = DSG_WHATS_IT(grid)
+	fromdsg = ITSA_REGRID_FROM_DSG( cx)
+	its_dsg = .FALSE.
 
-	is_time = idim.EQ.t_dim .OR. idim.EQ.f_dim
+* DSG grids (4/17)
+* For a DSG contiguous ragged array grid (a DSG observation var) the
+* subscript limits are always set to the 1D full limits of the obs axis
+* For a DSG instance variable the 1D subscript limits are always set to
+* the full span of the E (feature) axis.
+* In both observation vars and instance vars if WW limits are provided,
+* they are carried along passively to be used at the time of action
+* commands (LIST, PLOT, etc.) as a filter on which instances
+* of the DSG are to be processed.
+* The F axis of a DSG grid, alone, is processed as a typical gridded axis
+	IF (dsgness .NE. pdsg_not_dsg .OR. fromdsg) THEN
+	   IF (idim .EQ. f_dim) GOTO 1000  ! treat like a gridded axis
+* ... initialize DSG info
+	   its_dsg = .TRUE.
+	   CALL TM_DSG_FACTS(grid, orientation, obs_dimlen, obs_line, its_dsg)
+	   dset = TM_DSG_DSET_FROM_GRID(grid)
+	   IF (.NOT. its_dsg) dsgness = pdsg_not_dsg
+	ENDIF
+	IF (dsgness .NE. pdsg_not_dsg ) THEN
+* as a friendliness feature make E subscript limits behave as if they
+*     were given as WW limits. E=instance=feature axis of a DSG
+	   IF ( idim .EQ. e_dim .AND. cx_given(e_dim,cx) ) THEN
+	      IF (cx_by_ss(e_dim,cx)) THEN
+	         cx_lo_ww(idim,cx) = cx_lo_ss(cx,idim)
+	         cx_hi_ww(idim,cx) = cx_hi_ss(cx,idim)
+	         cx_by_ss(e_dim,cx) = .FALSE.
+	      ENDIF
+	   ELSE IF ( idim .EQ. e_dim .AND. cx_lo_ss(cx,idim).NE.unspecified_int4 ) THEN
+	      IF (cx_by_ss(e_dim,cx)) THEN
+	         cx_lo_ww(idim,cx) = cx_lo_ss(cx,idim)
+	         cx_hi_ww(idim,cx) = cx_hi_ss(cx,idim)
+	         cx_by_ss(e_dim,cx) = .FALSE.
+	      ENDIF
+	   ENDIF
+
+* ignore other limits set by subscript (alt: could flag as a user error)
+	   cx_lo_ss( cx, idim ) = unspecified_int4 
+	   cx_hi_ss( cx, idim ) = unspecified_int4
+	   cx_by_ss(idim,cx) = .FALSE.
+* if a T axis, convert date-times into grid-specific time step values
+* from their representation as negative secs from BC
+	   IF ( idim.EQ. t_dim
+     .	 .AND. cx_hi_ww(idim,cx) .NE. unspecified_val8
+     .	 .AND. cx_calendar(idim,cx)      ) THEN
+	     xlate_grid = dsg_xlate_grid(dset)
+	     taxis = grid_line(t_dim, xlate_grid)
+             cal_id = TM_GET_CALENDAR_ID (line_cal_name(taxis))
+             IF ( TM_DATE_OK( line_t0(taxis), cal_id ) ) THEN
+	         cx_lo_ww(idim,cx) = SECS_TO_TSTEP
+     .                ( xlate_grid, idim, -cx_lo_ww(idim,cx) )
+	         cx_hi_ww(idim,cx) = SECS_TO_TSTEP
+     .                ( xlate_grid, idim, -cx_hi_ww(idim,cx) )
+		 cx_calendar(idim,cx) = .FALSE.
+                 cx_cal_id(cx) = cal_id
+              ENDIF
+	   ENDIF
+* constrain the world limits to the coordinate range of the dataset
+	   CALL DSG_COORD_LIMS(dset, idim, min_ww, max_ww)
+	   IF (min_ww .NE. unspecified_val8 ) THEN
+	      IF  (cx_lo_ww(idim,cx) .EQ. unspecified_val8) THEN
+	         cx_lo_ww(idim,cx) = min_ww
+	         cx_hi_ww(idim,cx) = max_ww
+	      ELSE
+	         IF (cx_lo_ww(idim,cx) .LT. min_ww) cx_lo_ww(idim,cx) = min_ww 
+	         IF (cx_hi_ww(idim,cx) .GT. max_ww) cx_hi_ww(idim,cx) = max_ww 
+	      ENDIF
+	   ENDIF
+* set the subscript limits to capture the full 1D netCDF variable
+	   IF (dsgness .EQ. pdsg_instance) THEN
+	      IF (idim .EQ. e_dim
+     .	    .AND. cx_trans(idim,cx) .LE. trans_compress_code) THEN
+	         cx_lo_ss(cx,idim) = 1
+	         cx_hi_ss(cx,idim) = line_dim(axis) ! E axis length
+	      ENDIF
+	   ELSEIF (dsgness .EQ. pdsg_observation) THEN
+	      IF (idim .EQ. orientation) THEN
+	         cx_lo_ss(cx,idim) = 1
+	         cx_hi_ss(cx,idim) = obs_dimlen   ! DSG observation dim length
+	      ENDIF
+	   ENDIF
+* constraining E axis implicitly constrains the XYZT dimensions
+* For example E=5 of a trajectory collection has
+* only the XYZT extent of that trajectory -- not of the full collection
+	   IF ( idim .EQ. e_dim .AND. cx_given(e_dim,cx) ) THEN
+	      nfeatures = TM_DSG_NFEATURES( grid )
+	      CALL INIT_CXDSG(dset, cx, nfeatures)
+	      CALL APPLY_DSG_E_CONSTRAINTS(dset, cx)
+	   ENDIF
+! DSGTBD: constraining the X axis of a DSG implicitly constrains YZT, too
+! because it may remove features that possess the extreme values in YZ or T
+! Above we have addressed only explicit constraints on E.
+! So as an optimization one might consider recomputing the limits any time
+! any of the constraints are altered.
+	   GOTO 4000
+* When regridding *from* a DSG grid, the ww limits of the DSG become irrelevant
+* Since the DSG context will be available at the time of regridding, the
+* information contained in these limits will be available
+	ELSEIF (fromdsg) THEN
+* Regridding *from* a DSG
+* Leave the E and orientation axes as-is so that user-specified limts will
+* by retained  -- e.g. LIST/L=1:10 vdsg[GT=new_tax]
+	   IF (idim.EQ.e_dim .OR. idim.EQ.orientation) THEN
+	      CONTINUE
+!	      cx_lo_ss(cx,idim) = 1
+!	      cx_hi_ss(cx,idim) = line_dim(axis)
+	   ELSE
+	      cx_by_ss(idim,cx) = .TRUE.
+	      cx_lo_ss(cx,idim) = unspecified_int4
+	      cx_hi_ss(cx,idim) = unspecified_int4
+	      cx_lo_ww(idim,cx) = unspecified_val8  ! unnecessary?
+	      cx_hi_ww(idim,cx) = unspecified_val8  ! unnecessary?
+	   ENDIF
+	ENDIF
+! DSGTBD need to test a variety of target grids - suitable and unsuitable
+* *** DSG grid end
+
+
+* For setting the calendar information
+ 1000	   is_time = idim.EQ.t_dim .OR. idim.EQ.f_dim
 
 * check for special actions needed on user-defined variables
 * ( e.g. how to handle U[K=5] - U[K=1:10] )
@@ -141,9 +269,6 @@
 * are "swallowed" up by the regridding process. Externally applied limits
 * **should** be applied (e.g. A[GT=climatology@MOD,L=1:3] where A=SST[L=lo:hi])
 	IF ( .NOT.INHERITED_LIMITS(idim,cx) )  lim_redundant = .FALSE.
-
-* axis for this dimension
-	axis = grid_line( idim, grid )
 
 	abst_nolim = .FALSE.
 	IF ( line_name(axis) .EQ. 'ABSTRACT' .AND. var.LE.max_uvar) THEN
@@ -348,16 +473,15 @@
 	   cx_hi_ss( cx, idim ) = unspecified_int4
 	   cx_by_ss( idim, cx ) = .FALSE.
 	ENDIF
-	   
+
+ 4000   CONTINUE
+
 * successful completion
-	status = ferr_ok
 	RETURN
 
 * error exits
  5000	RETURN
-! 5100	string = VAR_TRANS( idim, cx, slen )
-!	CALL ERRMSG( ferr_trans_nest, status,
-!     .			'DEFINEd var has fixed limits '//string(:slen), *5000 )
+
  5200	string = VAR_CODE( cx_category(cx), cx_variable(cx) )
 	CALL ERRMSG( ferr_trans_nest, status,
      .		'cannot perform interpolation '//pCR//
@@ -369,4 +493,5 @@
      .		'delta non-positive on '//ww_dim_name(idim)
      .		//' axis of '//VAR_CODE(cx_category(cx),cx_variable(cx)),
      .						*5000)
+
 	END

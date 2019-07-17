@@ -152,6 +152,7 @@
 *                  variables, pre-defined axes and grids, cat_calc_var.
 * V698  3/16 *sh* added logic for cat_ef_time2d (ACTS_LIKE_FVAR)
 *                 more sophisticated logic to determine an implied "@FMRC"
+* V720  5/17 *sh* added support for DSG grids 
 * V74+  5/18 *acm* issue 1868: gridding transforms that will grid to same axis
 
         IMPLICIT NONE
@@ -159,6 +160,7 @@
 	include 'ferret.parm'
 	include 'interp_stack.parm'
 	include 'tmap_dims.parm'
+#   include "tmap_dset.parm"
 	include 'xcontext.cmn'
 	include 'xalgebra.cmn'
 	include 'xtext_info.cmn'
@@ -177,13 +179,16 @@
 
 * internal variable declarations:
         LOGICAL   GEOG_COS_FACTOR, GEOG_LABEL, ACTS_LIKE_FVAR,
-     .		  ITS_FMRC_2DTIME, REGRID_TO_SELF,
+     .		  ITS_FMRC_2DTIME, TM_ITSA_DSG, REGRID_TO_SELF,
      .		  its_dyn, has_impl_axis, explicit_unstd, use_std_grid,
      .		  made_aux_line_dummy, at_fmrc
 	INTEGER	  KNOWN_GRID, TM_UNIT_ID,
+     .		  DSG_WHATS_IT, TM_DSG_DSET_FROM_GRID, TM_DSG_INSTANCE_GRID,
+     .		  TM_DSG_OBS_GRID,
      .		  use_grid, ilo, ihi,
      .		  cat, var, dset, std_grid, std_axis, use_axis, idim,
-     .		  base_grid, impl_grid, src_line, i
+     .		  base_grid, impl_grid, src_line, i,
+     .		  dsgness, orientation, rgrd_xform
 	REAL*8	  SECS_TO_TSTEP, dlo, dhi, delta
 	CHARACTER VAR_CODE*128, AUX_VAR_UNITS*64
 
@@ -204,7 +209,8 @@
 * determine the standard grid for this variable
 	std_grid = KNOWN_GRID( dset, cat, var )
 
-* if the standard grid isn't known then return to the stack to get it
+* if the standard grid isn't known and an implicit grid has been requested
+* then return to the stack to get it
 	IF ( std_grid .EQ. unspecified_int4 ) THEN
 	   IF ( cx_has_impl_grid(cx) ) THEN
 #ifdef debug_dyn_grids
@@ -216,6 +222,77 @@
 	   ENDIF
 	   RETURN
 	ENDIF
+
+* **** DSG grid handling ****
+* The grid of a DSG variable is always known / never implicit
+! DSGTBD: Case of regridding *from* a DSG e.g. "t_25[T=@AVE,GT=uniform_Tax]" 
+	IF (std_grid .NE. unspecified_int4) THEN
+	   IF (.NOT.explicit_unstd .AND. TM_ITSA_DSG(std_grid) ) THEN
+* Handle compressing transformation applied to a DSG grid
+	      dsgness = DSG_WHATS_IT(std_grid)
+	      dset = TM_DSG_DSET_FROM_GRID(std_grid)! always same as cx (?)
+	      orientation = dsg_orientation(dset)
+* ... trap transformations that are nonsense on ragged arrays
+*     transforming "across" (rather than along) the obs axis is nonsense
+	      DO idim = 1, e_dim
+	         IF (cx_trans(idim,cx) .NE. trans_no_transform) THEN
+	            IF (dsgness .EQ. pdsg_observation) THEN
+	               IF (idim .NE. orientation) GOTO 5410
+	            ELSEIF (dsgness .EQ. pdsg_instance) THEN
+	               IF (idim .NE. e_dim      ) GOTO 5420
+	            ENDIF
+	         ENDIF
+	      ENDDO
+	      IF (dsgness .EQ. pdsg_observation) THEN
+	         IF ( cx_trans(orientation,cx) .GT. trans_compress_code ) THEN
+* ... If a compressing transformation is applied along the "orientation" axis
+*     (e.g. T=@AVE on a Tseries feature collection)
+*     the result is a single point per feature -- i.e. an instance variable.
+*     Handle this by replacing the obs grid with the instance grid.
+*     This allows FLESH_OUT_AXIS, DSG_WHATS_IT, etc. to perform correctly on a
+*     orientation-compressed result with no special code.
+	            std_grid = TM_DSG_INSTANCE_GRID(dset)
+	         ENDIF	
+	      ENDIF
+	   ENDIF
+	ENDIF
+	IF (use_grid .NE. unspecified_int4) THEN
+	   IF (explicit_unstd .AND.TM_ITSA_DSG(use_grid) ) THEN
+* Handle regridding *to* a DSG grid
+	      dsgness = DSG_WHATS_IT(use_grid)
+	      dset = TM_DSG_DSET_FROM_GRID(use_grid)
+	      orientation = dsg_orientation(dset)
+* ... error check: source data must exist along the orientation axis
+	      IF (grid_line(orientation,std_grid) .EQ. mnormal) GOTO 5430
+* ... as a friendliness freature substitute the obs grid if they gave
+*     an instance variable as the target
+	      IF (grid_line(orientation,use_grid) .EQ. mnormal) THEN
+	         use_grid = TM_DSG_OBS_GRID(dset)
+	         cx_grid( cx ) = use_grid
+	      ENDIF
+* ... set the regridding transform
+! DSGTBD: multiple regridding algorithms not yet supported
+!     currently chooses the source grid value of the box holding the target pt
+!     Reused "prgrd_nearest". For unequal spaced grid is it always "nearest"?
+!     Linear interpolation option is definitley needed and should be default.
+	      rgrd_xform = prgrd_nearest
+* ... flag the axes to be involved in the regridding
+! DSGTBD: user control over which axes are regridded: eg "GXYT=target"
+!     should allow the Z axis to be excluded: "mode_temp[Z=0,GXYT=my_DSG]"
+!     May require hacks in GET_CONTEXT_MODS.
+	      DO idim = 1, t_dim
+	         IF (dsg_coord_var(idim,dset) .EQ. int4_init) THEN
+	            cx_regrid_trans(idim, cx) = unspecified_int4
+	         ELSE
+	            cx_regrid_trans(idim, cx) = rgrd_xform
+	         ENDIF
+	      ENDDO
+	      cx_regrid_trans(e_dim, cx) = unspecified_int4
+	      RETURN
+	   ENDIF
+	ENDIF
+* SEE REGRIDDING **FROM** DSG GRID AT END
+* **** END OF DSG handling ****
 
 * regridding implied through delta values or special transformations?
 	has_impl_axis = .FALSE.
@@ -507,4 +584,15 @@ c
      .		'Cannot use dates - not a calendar axis: '//
      .		VAR_CODE(cx_category(cx),cx_variable(cx)),
      .								*5000)
+ 5410	CALL ERRMSG( ferr_trans_nest, status,
+     .               'Can only transform the '//ww_dim_name(orientation)
+     .		      //' axis of DSG variable '//
+     .		     VAR_CODE(cx_category(cx),cx_variable(cx)), *5000 )
+ 5420	CALL ERRMSG( ferr_trans_nest, status,
+     .               'Can only transform the E '
+     .		      //' axis of DSG variable '//
+     .		     VAR_CODE(cx_category(cx),cx_variable(cx)), *5000 )
+ 5430	CALL ERRMSG( ferr_trans_nest, status,
+     .         'Source grid has no axis along DSG feature orientation '
+     .		     //VAR_CODE(cx_category(cx),cx_variable(cx)), *5000 )
 	END

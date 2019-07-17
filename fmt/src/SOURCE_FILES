@@ -18,6 +18,12 @@ cd_defer_coord_write.F\
 cd_delete_attribute.F\
 cd_dods_control.F\
 cd_dim_only.F\
+cd_dsg_check_timecoord.F\
+cd_dsg_feature_ok.F\
+cd_dsg_featurename.F\
+cd_dsg_grids.F\
+cd_dsg_read.F\
+cd_dsg_scan_vars.F\
 cd_dset_remoteok.F\
 cd_encode_url.F\
 cd_get_1_axis.F\
@@ -28,10 +34,13 @@ cd_get_attrib.F\
 cd_get_attval.F\
 cd_get_attvalc.F\
 cd_get_attval_l.F\
+cd_get_bad_flags.F\
 cd_get_bounds.F\
 cd_get_calendar_name.F\
 cd_get_chunk_cache.F\
 cd_get_dim_id.F\
+cd_get_dsg_coord_extremes.F\
+cd_get_dsg_instance_var.F\
 cd_get_ds_dims.F\
 cd_get_ds_info.F\
 cd_get_agg_var_info.F\
@@ -81,11 +90,14 @@ cd_rd_ep_arr.F\
 cd_rd_r8_1.F\
 cd_rd_r8_arr.F\
 cd_rd_r8_bnds.F\
+cd_rd_str_1.F\
 cd_rd_ymd_1.F\
 cd_rd_ymd_arr.F\
 cd_read.F\
+cd_read_one.F\
 cd_read_remote.F\
 cd_rec_synch.F\
+cd_release_dsg_instance_vars.F\
 cd_rename_dim.F\
 cd_rename_var.F\
 cd_replace_attr.F\
@@ -110,6 +122,7 @@ cd_write_attval_dp.F\
 cd_write_axis.F\
 cd_write_bndsdim.F\
 cd_write_defer_coord.F\
+cd_write_dsg_data.F\
 cd_write_grid.F\
 cd_write_strdim.F\
 cd_write_var.F\
@@ -199,6 +212,13 @@ tm_digit_test.F\
 tm_dset_number.F\
 tm_dset_deallo_grids.F\
 tm_dset_use_grids.F\
+tm_dsg_dset_from_grid.F\
+tm_dsg_e_axis.F\
+tm_dsg_facts.F\
+tm_dsg_instance_grid.F\
+tm_dsg_nfeatures.F\
+tm_dsg_obs_grid.F\
+tm_dsg_orientation.F\
 tm_errmsg.F\
 tm_exp_code.F\
 tm_f7721bug_inquire.F\
@@ -219,6 +239,7 @@ tm_fpeq_eps.F\
 tm_fpeq_eps_sngl.F\
 tm_fpeq.F\
 tm_fpeq_sngl.F\
+tm_free_lm_dynmem.F\
 tm_friendly_read.F\
 tm_ftoc_strng.F\
 tm_garb_col_grids.F\
@@ -238,6 +259,7 @@ tm_get_like_line.F\
 tm_get_linematch.F\
 tm_get_linematch_sub.F\
 tm_get_linenum.F\
+tm_get_lm_dynmem.F\
 tm_get_varnum.F\
 tm_grid_match.F\
 tm_has_string.F\
@@ -248,6 +270,8 @@ tm_inq_path.F\
 tm_int2_swap.F\
 tm_int4_swap.F\
 tm_irregax_mid.F\
+tm_itsa_dsg.F\
+tm_itsa_dsg_ragged.F\
 tm_its_cdf.F\
 tm_its_index_axis.F\
 tm_its_subspan_modulo.F\
@@ -308,6 +332,8 @@ tm_set_clim_axes.F\
 tm_set_current_calendar.F\
 tm_split_message.F\
 tm_step_to_date.F\
+tm_store_lm_ptr.F\
+tm_store_nul_lm_ptr.F\
 tm_string.F\
 tm_subsc.F\
 tm_switch_bad.F\
@@ -336,8 +362,8 @@ xmachine_data.F\
 xstep_files_data.F\
 xsys_names_data.F\
 xunits_data.F 
-
 SRCS_C = \
+cd_rd_str_1_sub.c\
 cd_read_scale.c\
 cd_read_sub.c\
 cd_write_att_sub.c\
@@ -369,10 +395,13 @@ tm_blockify_ferret_strings.c\
 tm_break_fmt_date_c.c\
 tm_c_rename.c\
 tm_ep_time_convrt.c\
+tm_free_dyn_mem.c\
 tm_ftoc_readline.c\
+tm_get_lm_mem.c\
 tm_get_strlen.c\
 tm_make_relative_ver.c\
 tm_match_capital_name.c\
+tm_nullify_lm.c\
 tm_number_sub.c\
 tm_set_free_event.c\
 tm_unblockify_ferret_strings.c\

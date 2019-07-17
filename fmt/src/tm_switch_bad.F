@@ -39,17 +39,25 @@
 
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 * Ansley Manke  4/2018
+*
+* 8/2018 If the flag in the data is NaN handle that correctly.
 
 * calling argument declarations:
       INTEGER n
       REAL bad_in, bad_out, array(*)
 
 * internal variable declarations:
-      INTEGER i
+      INTEGER TM_CHECK_NAN, i
 
-      DO i = 1, n
-         IF (array(i) .EQ. bad_in) array(i) = bad_out
-      ENDDO
+      IF ( TM_CHECK_NAN(bad_in) .EQ. 1   ) THEN
+         CALL CHECK_NAN_DATA_SUB ( array, n, bad_out )
+      ELSE
+         DO i = 1, n
+            IF (array(i) .EQ. bad_in) then
+	       array(i) = bad_out
+	    ENDIF
+         ENDDO
+      ENDIF
 
       RETURN
       END

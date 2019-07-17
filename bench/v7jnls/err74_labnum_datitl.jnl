@@ -15,4 +15,3 @@ sh sym lab*
 can data/all; use/title="Classic dataset" coads_climatology
 shade/l=1/x=180:200/y=-5:5 sst
 sh sym lab*
-

@@ -53,6 +53,7 @@
 *		  - allow longer char buffer for error message to prevent
 *			crash in pathological cases
 *       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
+* V720 *sh* 5/17 - incorporate merging of a DSG context
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -65,19 +66,21 @@
 	include 'xrisc.cmn'
 
 * calling argument declarations
-	LOGICAL		its_gc
+	LOGICAL		its_gc, its_dsg
 	INTEGER		iarg, dflt_cx, mrg_cx, com_cx, status
 	CHARACTER*(*)	com_str
 
 * local variable declarations
-	LOGICAL		ss_save
+	LOGICAL		TM_ITSA_DSG, ss_save
 	INTEGER		CGRID_AXIS, CX_DIM_LEN, WHICH_GCFCN,
      .			idim, mrg_ax, mrg_len, com_ax, com_len, 
      .			choice(4,5), i, icom, imrg, uvar,
      .			com_str_slen, mrg_str_slen,
      .			com_int_slen, mrg_int_slen, gcfcn,
      .			axis_source(nferdims), lo_off(nferdims),  
-     .			hi_off(nferdims), action(nferdims)
+     .			hi_off(nferdims), action(nferdims),
+     .			dsg_orientation, dsg_obs_dimlen, dsg_obs_line
+
 	CHARACTER	CX_DIM_STR*24, LEFINT*8, com_lims*24, mrg_lims*24,
      .			com_int*8, mrg_int*8
 
@@ -161,6 +164,13 @@
      .	     (choice(i,5),i=1,4) / TAX, TAX, TAX, TAX /
 
 **************************************************************************
+* get the DSG-ness -- GET_UVAR_GRID ensures valid DSG grid merging
+	its_dsg = TM_ITSA_DSG(cx_grid(mrg_cx))
+	IF (its_dsg) THEN
+	   CALL TM_DSG_FACTS(cx_grid(com_cx),
+     .		dsg_orientation, dsg_obs_dimlen, dsg_obs_line, its_dsg)
+	ENDIF
+
 * get the variable under consideration from the merged context
 	uvar = cx_variable( mrg_cx )
 
@@ -233,11 +243,45 @@
 * ignore axes for which region isn't known (e.g. X axis of pseudo-variable "Y")
 	   IF ( cx_lo_ww(idim,com_cx) .EQ. unspecified_val8 ) GOTO 500
 
+* get axes and lengths of data along them
+	   mrg_ax  = CGRID_AXIS( idim, mrg_cx )
+	   com_ax  = CGRID_AXIS( idim, com_cx )
+	   mrg_len = CX_DIM_LEN( idim, mrg_cx )
+	   com_len = CX_DIM_LEN( idim, com_cx )
+
+* Merging DSG contexts (5/17)
+* Only the F axis of a DSG is a "gridded" axis
+* On all others the DSG may have world coordinates, but the subscript limits
+* are irrelevant.  (Always full limits.  No subsetting is possible.)
+	   IF (its_dsg .AND. idim.NE.f_dim) THEN
+* ... insist that consistent constraints are given on all merged contexts
+	      IF (cx_lo_ww(idim,mrg_cx) .EQ. unspecified_val8) THEN
+* ... first component: its world constraints are THE merged constraints
+	         cx_lo_ww(idim,mrg_cx) = cx_lo_ww(idim,com_cx)
+	         cx_hi_ww(idim,mrg_cx) = cx_hi_ww(idim,com_cx)
+	      ELSEIF (cx_lo_ww(idim,mrg_cx) .EQ. cx_lo_ww(idim,com_cx)
+     .		.AND. cx_hi_ww(idim,mrg_cx) .EQ. cx_hi_ww(idim,com_cx)) THEN
+* ... new component matches merged constraints.  Nothing more to do.
+	         GOTO 500
+	      ELSEIF (idim .EQ. dsg_orientation) THEN
+* ... instance vars and obs vars can be combined in IS_DO_OP
+	         CONTINUE	         
+	      ELSE
+* ... inconsistent DSG constraints
+*     e.g. 'lon[T="1-MAY-2017"] GT 180 AND rowSize[T="5-OCT-1995"] LT 35'
+	         GOTO 5030
+	      ENDIF
+	      IF (com_ax.EQ.mnormal .OR. mrg_ax.EQ.mnormal) THEN
+* ... since a DSG context carries ww constraints on mnormal axes need to bypass
+	         GOTO 500
+	      ENDIF
+	   ENDIF
+
 *********************************************************************
 * "documentation merge" option - a patch: 10/27/92
 * For special case where both the component and the merged context represent
 * idle, redundant documentation  e.g. TEMP[L=1:5@AVE] + TEMP[L=2:3@AVE]
-* If the component context is the same as the merged then save it;
+* If the component context is the same as the merged then save it
 * if they differ then throw it away
            IF (cx_given(idim,com_cx)
      .           .AND. cx_lo_ss(com_cx,idim) .EQ. unspecified_int4
@@ -250,12 +294,6 @@
               ENDIF
            ENDIF
 *********************************************************************
-
-* get axes and lengths of data along them
-	   mrg_ax  = CGRID_AXIS( idim, mrg_cx )
-	   com_ax  = CGRID_AXIS( idim, com_cx )
-	   mrg_len = CX_DIM_LEN( idim, mrg_cx )
-	   com_len = CX_DIM_LEN( idim, com_cx )
 
 * PRE-TEST FOR ERROR CONDITIONS
 * ... non-conformable lengths
@@ -323,5 +361,8 @@
  5020	CALL ERRMSG( ferr_inconsist_plane+ghelp_cue, status,
      .		'can''t label '//ww_dim_name(idim)//' axis of '//
      .		risc_buff(:len_rbuff), *5000 )
+ 5030	CALL ERRMSG( ferr_inconsist_plane+ghelp_cue, status,
+     .		'feature constraints on '//ww_dim_name(idim)//
+     .          ' axis of '//risc_buff(:len_rbuff), *5000 )
  9000	CALL ERRMSG( ferr_internal, status, 'merge_cx', *5000 )
 	END

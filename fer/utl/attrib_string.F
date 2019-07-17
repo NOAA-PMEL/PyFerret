@@ -41,6 +41,7 @@
 
 * V600 8/18/05
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
+*       *acm* 6/19 change to a comment
 
         IMPLICIT NONE
 * calling argument declarations
@@ -69,7 +70,7 @@
 	n      = 1
         do_warn = .FALSE.
 
-* Get float values 
+* Get string 
 	got_em = NC_GET_ATTRIB ( dset, varid, attname,
      .                           do_warn, varname, maxlen,
      .                           attlen, aflag, buff, vals )

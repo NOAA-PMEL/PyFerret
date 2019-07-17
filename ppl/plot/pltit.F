@@ -117,7 +117,7 @@
 	REAL	xtm,ytm,xtx,ytx,minx,maxx,miny,maxy
 	INTEGER nxs, nmx, nmy, ivloc, ip1, ip2, ip3, ip4, a_line,
      .          LABELX_save, LABELY_save, LABELT_save
-	LOGICAL DRAW
+	LOGICAL DRAW, did_draw
 
 * TMAP include files with explicit type declarations:
 	include 'parampl5_dat.decl'
@@ -262,8 +262,11 @@ C	SETUP AXIS FOR ALL PLOT TYPES.
 	    is_ribbon = MAKEP.EQ.'RIBPLOT'
 	    CALL SETAX(X,NXS,XF,YF,XL,YL,XH,YH,NMX,NMY,XTI,XTL,is_ribbon)
 
+	    DRAW = .TRUE.
+	    IF (makep.EQ.'FILL' .OR. makep.EQ.'SHADE' .OR. 
+     .          makep.EQ.'POLYGON' .OR. makep.EQ.'FILLPOL') DRAW = .FALSE.
+
 	    IF (ABS(XF) .GT. CMZGE .OR. ABS(YF) .GT. CMZGE) GOTO 3333  ! fill/contour but 1 grid point
-	    DRAW = .FALSE.
 	    CALL DAXIS(XF,YF,NMX,NMY,DRAW)
 
 		XLPLOT=DBLE(XL) 
@@ -536,11 +539,12 @@ c	    CALL PLOTPOL(X,NXS,XF,YF)
 	
 * Draw the plot axes 
 
+	did_draw = draw
 	IF (.NOT.SOVER .OR. axes_on_overlay) THEN
 	   IF (axes_on_overlay) lab1 = ' '
 	   DRAW = .FALSE.
 	   CALL DAXIS(XF,YF,NMX,NMY,DRAW)
-	   DRAW = .TRUE. 
+	   DRAW = (.NOT.did_draw .OR. axes_on_overlay)
 	   CALL DAXIS(XF,YF,NMX,NMY,DRAW)
 	   CALL SCALE(XF,YF,XORG,YORG,XLO,YLO)
 	   axes_on_overlay = .FALSE.

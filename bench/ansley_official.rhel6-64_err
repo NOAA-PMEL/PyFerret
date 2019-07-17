@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/users/ansley/build/working/FERRET/fer/ferret_c
--rwxr-xr-x. 1 ansley tmap 115063912 Jul 10 10:06 /home/users/ansley/build/working/FERRET/fer/ferret_c
+-rwxr-xr-x. 1 ansley tmap 118608127 Jul 16 11:45 /home/users/ansley/build/working/FERRET/fer/ferret_c
 Using external functions from /home/users/ansley/build/working/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: set mode calendar back to minutes in bn_pattern.jnl
+Note: merged FERRET_DSG back to trunk
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DATA=. ./data
@@ -14,15 +14,15 @@ FER_DESCR=. ./data
 FER_DIR=.
 FER_DSETS=. ./data
 FER_EXTERNAL_FUNCTIONS=/home/users/ansley/build/working/FERRET/external_functions/ext_func
-FER_FONTS=/home/users/ansley/PyFerret/ppl/fonts
-FER_GO=. ./v4jnls ./v5jnls ./v6jnls ./v7jnls ./genjnls . /home/users/ansley/PyFerret/go /home/users/ansley/PyFerret/examples /home/users/ansley/PyFerret/contrib
+FER_FONTS=/home/users/tmap/ferret/rhel6-x86_64-linux/ppl/fonts
+FER_GO=. ./v4jnls ./v5jnls ./v6jnls ./v7jnls ./genjnls . /home/users/tmap/ferret/rhel6-x86_64-linux/go /home/users/tmap/ferret/rhel6-x86_64-linux/examples /home/users/tmap/ferret/rhel6-x86_64-linux/contrib
 FER_GRIDS=. ./data
 FER_LIBS=/home/users/tmap/ferret/rhel6-x86_64-linux/lib
-FER_PALETTE=. /home/users/ansley/PyFerret/ppl
+FER_PALETTE=. /home/users/tmap/ferret/rhel6-x86_64-linux/ppl
 FER_WEB_BROWSER=firefox
 PWD=/home/users/ansley/build/working/FERRET/bench
-PYFER_EXTERNAL_FUNCTIONS=/home/users/ansley/PyFerret/ext_func/pylibs
-Beginning at Wed Jul 10 15:11:08 PDT 2019
+PYFER_EXTERNAL_FUNCTIONS=/home/users/tmap/ferret/rhel6-x86_64-linux/ext_func/pylibs
+Beginning at Tue Jul 16 14:26:42 PDT 2019
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -447,8 +447,8 @@ Starting test: bn_cdf
            *** NOTE: This will result in incorrect box sizes on record axis: TCENTURY
            *** NOTE: Write the data initially with the /BOUNDS qualifier
  LISTing to file test2.cdf
- LISTing to file FL.cdf
- LISTing to file FTLON.cdf
+ LISTing to file FL.nc
+ LISTing to file FTLON.nc
  **ERROR: invalid command: /CLOBBER not specified and file exists: test_abs.cdf
 list/format=cdf/l=1:10/file=test_abs.cdf l
  LISTing to file test_abs.cdf
@@ -469,7 +469,7 @@ list/format=cdf/append/file=test_abs.cdf ijkl[k=@ave]
  **TMAP ERR: error in line definition
              disordered output coordinate value:         363  Axis: TCENTURY
 list/format=cdf/l=13/append/file=test_abs.cdf l1
- LISTing to file FI.cdf
+ LISTing to file FI.nc
  LISTing to file test_fil0.cdf
  LISTing to file test_fil0.cdf
  LISTing to file test_fil0.cdf
@@ -2105,8 +2105,6 @@ Replacing definition of axis YFINE
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
- **ERROR: illegal limits: One-point independent axis: Requires a /HLIMIT or /VLIMIT specification
-plot/sym/siz=0.3 0*t[gt=vwnd]
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -2198,10 +2196,10 @@ Starting test: bn_labwid.jnl
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
 Starting test: bn_redefine_taxis_mc.jnl
-Replacing definition of axis TIME12
+Replacing definition of axis TIME14
            *** NOTE: grid GHB2 used by data set coads_clim
            *** NOTE: Redefinition may alter apparent contents of data set
-Replacing definition of axis TIME12
+Replacing definition of axis TIME14
            *** NOTE: grid GHB2 used by data set coads_clim
            *** NOTE: Redefinition may alter apparent contents of data set
  PERMANENT data cleared from memory
@@ -2543,10 +2541,10 @@ Replacing definition of axis X2AX
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
-           *** NOTE: Changing the value of attribute (TIME1).units
-           *** NOTE: Changing the value of attribute (TIME1).units
-           *** NOTE: Changing the value of attribute (TIME1).time_origin
-           *** NOTE: Changing the value of attribute (TIME1).time_origin
+           *** NOTE: Changing the value of attribute (TIME17).units
+           *** NOTE: Changing the value of attribute (TIME17).units
+           *** NOTE: Changing the value of attribute (TIME17).time_origin
+           *** NOTE: Changing the value of attribute (TIME17).time_origin
            *** NOTE: /UNIT=MONTHS is ambiguous ... using 1/12 of 365.2425 days
 Replacing definition of axis TIME
            *** NOTE: Axis coordinates are decreasing-ordered. Reversing ordering for axis l
@@ -2723,7 +2721,7 @@ ooooooooooooooooooooooooooooooooooooooooooo
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
            *** NOTE: /UNIT=MONTHS is ambiguous ... using 1/12 of 365.2425 days
-Replacing definition of axis TIME16
+Replacing definition of axis TIME21
            *** NOTE: grid GSQ1 used by data set coads_climatology
            *** NOTE: Redefinition may alter apparent contents of data set
  PERMANENT data cleared from memory
@@ -3188,8 +3186,8 @@ Starting test: bn_cdf_keepax.jnl
            *** NOTE: This will result in incorrect box sizes on record axis: TCENTURY
            *** NOTE: Write the data initially with the /BOUNDS qualifier
  LISTing to file test2.cdf
- LISTing to file FL.cdf
- LISTing to file FTLON.cdf
+ LISTing to file FL.nc
+ LISTing to file FTLON.nc
  **ERROR: invalid command: /CLOBBER not specified and file exists: test_abs.cdf
 list/format=cdf/keep_axnames/l=1:10/file=test_abs.cdf l
  LISTing to file test_abs.cdf
@@ -3210,7 +3208,7 @@ list/format=cdf/keep_axnames/append/file=test_abs.cdf ijkl[k=@ave]
  **TMAP ERR: error in line definition
              disordered output coordinate value:         363  Axis: TCENTURY
 list/format=cdf/keep_axnames/l=13/append/file=test_abs.cdf l1
- LISTing to file FI.cdf
+ LISTing to file FI.nc
            *** NOTE: /KEEP_AXISNAMES ignored. Inconsistent w/ enhanced heading.
  LISTing to file test_fil0.cdf
            *** NOTE: /KEEP_AXISNAMES ignored. Inconsistent w/ enhanced heading.
@@ -3515,7 +3513,7 @@ ooooooooooooooooooooooooooooooooooooooooooo
            *** NOTE: LON1_15: Writing scaled coordinates not implemented. Suggest using nco operators on output file to pack coord values
            *** NOTE: LAT1800_1800: Writing scaled coordinates not implemented. Suggest using nco operators on output file to pack coord values
            *** NOTE: ENS: Writing scaled coordinates not implemented. Suggest using nco operators on output file to pack coord values
-           *** NOTE: TIME21: Writing scaled coordinates not implemented. Suggest using nco operators on output file to pack coord values
+           *** NOTE: TIME27: Writing scaled coordinates not implemented. Suggest using nco operators on output file to pack coord values
            *** NOTE: Units on axis "ENS" are not recognized: count
            *** NOTE: They will not be convertible:
  PERMANENT data cleared from memory
@@ -4328,8 +4326,6 @@ ooooooooooooooooooooooooooooooooooooooooooo
  LISTing to file aa.nc
  LISTing to file aa.nc
  LISTing to file aa.nc
-           *** NOTE: Axis trajectory is of type char or string
-           *** NOTE: A dummy axis of subscripts will be used
  LISTing to file aa.nc
  LISTing to file aa.nc
 NetCDF: Numeric conversion not representable (OPeNDAP/netCDF Error code -60)
@@ -5660,6 +5656,9 @@ Replacing definition of axis TAX
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
+           *** NOTE: Ignoring non-DSG FeatureType: GRID
+           *** NOTE: Ignoring non-DSG FeatureType: GRID
+           *** NOTE: Ignoring non-DSG FeatureType: GRID
  **TMAP ERR: attribute already defined
              coordinates for variable ZETA
              Data set: testdata
@@ -6634,8 +6633,6 @@ list a[x=@fav]
 ooooooooooooooooooooooooooooooooooooooooooo
            *** NOTE: Coordinates out of order or missing on axis TIME at subscript 15
            *** NOTE: A dummy axis of subscripts will be used
- **ERROR: Unknown error writing data                  +Infinity
-list/l=14 time
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -6741,8 +6738,6 @@ Replacing definition of axis yaxis
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
  LISTing to file manyvars.tsv
-           *** NOTE: Axis time_dim_1 is of type char or string
-           *** NOTE: A dummy axis of subscripts will be used
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -7079,6 +7074,121 @@ ooooooooooooooooooooooooooooooooooooooooooo
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
+Starting test: bn_dsg_tseries
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ **ERROR: inconsistent sizes of data regions: feature constraints on X axis of LONGITUDE
+list t_25[x=95:180] + longitude
+ **ERROR: command syntax: Limits by subscript /L= invalid for DSG data. Use /T= limits or select by feature
+list/l=1:5 t_25
+ **ERROR: command syntax: Limits by subscript /I= invalid for DSG data. Use /X= limits or select by feature
+list/i=200:210 t_25
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ **ERROR: illegal use of transformation: Can only transform the E  axis of DSG variable ROWSIZE
+list rowsize[t=@max]
+ **ERROR: illegal use of transformation: Can only transform the T axis of DSG variable T_25
+list t_25[e=@max]
+ **ERROR: illegal use of transformation: Can only transform the T axis of DSG variable T_25
+list t_25[t=@max,e=@max]
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
+Starting test: bn_regrid_to_dsg
+ LISTing to file fake_model_temp.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+Replacing definition of axis tbig
+Replacing definition of axis ybig
+Replacing definition of axis xbig
+Replacing definition of axis zbig
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
+Starting test: bn_dsg_feature_mask
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
+Starting test: bn_dsg_repeat_m
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
+Starting test: bn_dsg_traj_plot
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
+Starting test: bn_regrid_from_dsg
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
+Starting test: bn_dsg_use_feature
+ **TMAP ERR: Corrupted CF-DSG structure or attributes
+             Required coordinate variables not found. Profile file is missing directions: vert
+SET DAT/FORM=CDF/feature=profile dsg_cross_dateline.nc
+           *** NOTE: Coordinates inconsistent with FeatureType. Trajectory data must have observations along XYT
+ **TMAP ERR: Invalid command
+             Error on SET DATA/FEATURE= applied to an open dataset.
+             Data set: ./data/DSG_ERDDAP_pmelTao5daySst.nc
+ **TMAP ERR: Corrupted CF-DSG structure or attributes
+             Required coordinate variables not found. Trajectory file is missing directions: lat
+SET DAT/FORM=CDF dsg_bad_coord
+ **TMAP ERR: Corrupted CF-DSG structure or attributes
+             Row Size variable w/ sample_dimension not found.
+SET DAT/FORM=CDF dsg_bad_atts1
+ **TMAP ERR: Corrupted CF-DSG structure or attributes
+             Feature-ID variable not found or invalid value of cf_role attribute
+SET DAT/FORM=CDF dsg_bad_atts2
+           *** NOTE: Ambiguous DSG coordinate info. Multiple variables claiming to be E axis: lons, lon360. Check axis attributes.
+           *** NOTE: Ambiguous DSG coordinate info. Multiple variables claiming to be N axis: yindex, lats. Check axis attributes.
+           *** NOTE: SET DATA/FEATURE= applies only to Discrete Sampling Geometries datasets. Ignoring /FEATURE=
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
+Starting test: bn_dsg_plot_timeseries
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
+Starting test: bn_dsg_save
+ LISTing to file a.nc
+ LISTing to file a.nc
+ LISTing to file a.nc
+ LISTing to file a.nc
+ LISTing to file a.nc
+ LISTing to file a.nc
+ LISTing to file a.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
+Starting test: bn_dsg_transforms
+ LISTing to file a.nc
+ LISTing to file a.nc
+           *** NOTE: Transformation @CDA: not customized for Discrete Sampling Geometries: computed over all features.
+           *** NOTE: Transformation @CDB: not customized for Discrete Sampling Geometries: computed over all features.
+           *** NOTE: Transformation @CIA: not customized for Discrete Sampling Geometries: computed over all features.
+           *** NOTE: Transformation @CIB: not customized for Discrete Sampling Geometries: computed over all features.
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
+Starting test: bn_dsg_one_e_val
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
+Starting test: bn_dsg_list_comma_tab
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
+Starting test: bn_dsg_if_exprns
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -7200,4 +7310,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
            *** NOTE: Cannot create new windows when batch mode set
-Ended at Wed Jul 10 15:18:46 PDT 2019
+Ended at Tue Jul 16 14:36:36 PDT 2019

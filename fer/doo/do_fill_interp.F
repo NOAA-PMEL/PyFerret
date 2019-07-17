@@ -62,6 +62,7 @@
 	include	'xvariables.cmn'
 	include	'xmem_subsc.cmn'
 	include	'xprog_state.cmn'
+	include	'xdset_info.cmn_text'
 
 * calling argument declarations:
 	INTEGER	idim, com_mr, com_cx, res_mr, res_cx
@@ -72,17 +73,21 @@
      .               m2lot:m2hit,m2loe:m2hie,m2lof:m2hif )
 
 * internal variable declarations:
-	LOGICAL	TM_ITS_SUBSPAN_MODULO,
+	LOGICAL	TM_ITS_SUBSPAN_MODULO, TM_ITSA_DSG,
      .		modulo_axis, modulo, no_lo_val, has_mod_void
-	INTEGER TM_MODULO_LINE_DIM, CGRID_AXIS,
+	INTEGER TM_MODULO_LINE_DIM, CGRID_AXIS, 
+     .          TM_DSG_DSET_FROM_GRID, TM_DSG_NFEATURES, 
+     .          DO_FILL_INTERP_DSG,
      .		i, j, k, l, m, n, ii, jj, kk, ll, mm, nn,
      .          lo_sub(nferdims), hi_sub(nferdims),
      .		lo_edge, hi_edge, pos0, edge, lo_index, hi_index,
      .		lo_com, hi_com, line, axdim, look,
-     .		coord_lo_ss, coord_hi_ss, next_hi_ss
+     .		coord_lo_ss, coord_hi_ss, next_hi_ss, 
+     .		dset, grid, nfeatures, maxobs, mr_list(2)
 	REAL	bad_res, lo_coord, hi_coord, coord, lo_val, hi_val,
-     .		axlen
+     .		axlen, little_val, big_val
 	REAL*8	TM_MODULO_AXLEN
+
 
 * internal (convenience) equivalences
 	INTEGER	lo_s1, lo_s2, lo_s3, lo_s4, lo_s5, lo_s6,
@@ -106,9 +111,33 @@
 	bad_res = mr_bad_data( com_mr )
 	edge = arg
 
+* DSG-specific initialize
+
+	grid = mr_grid( com_mr )
+	IF (TM_ITSA_DSG(grid)) THEN 
+* DSG ragged array
+	   dset = TM_DSG_DSET_FROM_GRID(grid)
+	   nfeatures = TM_DSG_NFEATURES(grid)
+* ... get the length of the longest feature
+	   CALL DSG_COORD_LIMS(dset, pdsg_row_size, little_val, big_val)
+	   maxobs = big_val
+
+	   mr_list(1) = com_mr
+	   mr_list(2) = res_mr
+	   CALL NON_ARRAY_SUBSC( mr_list, 2 )
+	   CALL DSG_ARRAY_SUBSC( mr_list, 2, dsg_orientation(dset) )
+
+	   DO_FILL_INTERP = DO_FILL_INTERP_DSG( idim, dset, nfeatures, maxobs,
+     .				com, com_mr, com_cx,
+     .				res, res_mr, res_cx,
+     .				coords )
+
+	ELSE  !! not dsg
+
 * limits of the component data provided
 	lo_com = cx_lo_ss(com_cx, idim)
 	hi_com = cx_hi_ss(com_cx, idim)
+
 
 * is it a modulo axis with sufficient component span provided to wrap around
 	line = CGRID_AXIS(idim, com_cx)
@@ -645,12 +674,11 @@
 	      ENDIF
  610	   CONTINUE
 
-* TODO: fill along E and F axes?
 
-* FILL ALONG UNSUPPORTED AXIS
-	ELSE
-           STOP '**ERROR: DO_FILL_INTERP on unsupported axis'
-	ENDIF
+
+        ENDIF  ! 
+
+        ENDIF  !!  IF (TM_ITSA_DSG(grid))
 
 * always success
 	DO_FILL_INTERP = ferr_ok

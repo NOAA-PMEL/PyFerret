@@ -699,7 +699,7 @@ c	   GOTO 5000
 	   ELSEIF ( act .EQ. isact_wgted_eq		) THEN
 	      CALL IS_TRANS(  DO_DIST_LOC, *10, *2500, status )
 	   ELSEIF ( act .EQ. isact_regrid		) THEN
-	      CALL IS_REGRID( *2500, status )
+	      CALL IS_REGRID( *10, *2500, status )
 	   ELSEIF ( act .EQ. isact_auxvar_regrid
      .         .OR. act .EQ. isact_aux_plot_vars	) THEN
 	      CALL IS_AUXVAR_REGRID(  *10, *2500, status )

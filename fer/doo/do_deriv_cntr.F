@@ -55,19 +55,55 @@
 	include	'interp_stack.parm'
 	include	'xprog_state.cmn'
 	include	'xcontext.cmn'
+	include	'xvariables.cmn'
+	include	'xdset_info.cmn_text'
 
 * calling argument declarations:
 	INTEGER	idim, com_mr, com_cx, res_mr, res_cx
 	REAL	arg, box(*), com(*), res(*)
+	
+* internal variable declarations:
+	LOGICAL	TM_ITSA_DSG
+	INTEGER TM_DSG_DSET_FROM_GRID, TM_DSG_NFEATURES, 
+     .		dset, grid, nfeatures, maxobs, mr_list(2)
+	REAL	little_val, big_val
 
 * diagnostic mode output: " doing --> VAR_NAME[x=lo:hi@TRN:n,D=#]"
 	IF ( mode_diagnostic ) 	CALL DIAG_OP
      .				( 'doing', isact_class_trans, res_cx, idim )
 
-	CALL DD2STEP (idim, arg, cx_lo_ss(com_cx,idim),cx_hi_ss(com_cx,idim),
+     
+* DSG-specific initialize
+
+	grid = mr_grid( com_mr )
+	IF (TM_ITSA_DSG(grid)) THEN 
+
+* DSG ragged array
+	   dset = TM_DSG_DSET_FROM_GRID(grid)
+	   nfeatures = TM_DSG_NFEATURES(grid)
+
+* ... get the length of the longest feature
+	   CALL DSG_COORD_LIMS(dset, pdsg_row_size, little_val, big_val)
+	   maxobs = big_val
+     
+	   mr_list(1) = com_mr
+	   mr_list(2) = res_mr
+	   CALL NON_ARRAY_SUBSC( mr_list, 2 )
+	   CALL DSG_ARRAY_SUBSC( mr_list, 2, dsg_orientation(dset) )
+
+	   CALL DD2STEP_DSG (idim, dset, nfeatures, maxobs,
+     .			com, com_mr, com_cx,
+     .			res, res_mr, res_cx,
+     .			box	)
+
+	ELSE 
+
+	   CALL DD2STEP (idim, arg, cx_lo_ss(com_cx,idim),cx_hi_ss(com_cx,idim),
      .			com, com_mr,
      .			res, res_mr, res_cx,
      .			box	)
+
+	ENDIF 
 
 * always success
 	DO_DERIV_CNTR = ferr_ok

@@ -23,6 +23,8 @@ disp_labels.F\
 disp_prep.F\
 disp_reset.F\
 disp_set_up.F\
+dsg_feature_key.F\
+dsg_traj_plot_set_up.F\
 echof_off.F\
 equal_color.F\
 equal_range.F\
@@ -48,6 +50,9 @@ load_curvilinear.F\
 lon_lat_fmt.F\
 merged_whoi_date.F\
 plot_along_data_set_up.F\
+plot_dsg_apply_obs_mask.F\
+plot_dsg_check_lon360.F\
+plot_dsg_data_set_up.F\
 plot_set_up.F\
 polygon_set_up.F\
 pos_lab.F\
@@ -64,6 +69,8 @@ put_key.F\
 put_label.F\
 re_orient.F\
 restore_curvi.F\
+ribbon_plot_set_up.F\
+ribbon_plotkey_setup.F\
 save_frame.F\
 save_frame_name.F\
 seg_off.F\
@@ -71,6 +78,7 @@ seg_on.F\
 send_pltype.F\
 set_annotation.F\
 set_ax_sizes.F\
+set_dsg_id_lev.F\
 set_graticules.F\
 set_plot_size.F\
 set_viewport.F\

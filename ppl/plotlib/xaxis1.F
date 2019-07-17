@@ -57,6 +57,8 @@ C              after applying an offset.)
 *                  /HALFSPAC adds a half space between the degree sign and E/W or N/S
 * *acm* - 8/16   ticket 1787: restore pen 0 correctly after graticule
 * *acm* - 11/16  ticket 2477: incomplete axis on some plots
+* V745 *acm* 3/19 Draw tic marks on top of any graticule lines so 
+*                 dashes or color are covered up by the tic mark
 
 
 C**
@@ -150,7 +152,7 @@ C
 	IF ( interrupted ) RETURN		! TMAP interrupt
 	CALL SMX1(X,XHI,XTIC,NSMTCX,XFACT,YFACT,Y,
      *    yacross,vgrat,vcolor,vline)
-        IF ((solid.OR.dashed) .AND. vline) THEN ! make line across
+        IF ((solid.OR.dashed) .AND. vline .AND. x.GT.xlo) THEN ! make line across
            CALL COLOR(vcolor(1))
            IF (dashed) THEN
               CALL DASHSZ(dash1,dash2,dash3,dash4)
@@ -162,14 +164,14 @@ C
            CALL COLOR(color0)
            CALL VECTRS
         ENDIF
+	CALL PLOTT7(X,Y,XFACT,YFACT,1,-8)
 
 	X=X+XTIC
-	CALL PLOTT7(X,Y,XFACT,YFACT,1,-8)
 100	CONTINUE
 	CALL SMX1(X,XHI,XTIC,NSMTCX,XFACT,YFACT,Y,
      *    yacross,vgrat,vcolor,vline)
         
-        IF ((solid.OR.dashed) .AND. vline) THEN ! make line across
+        IF ((solid.OR.dashed) .AND. vline .AND. x.LT.xhi) THEN ! make line across
            CALL COLOR(vcolor(1))
            IF (dashed) THEN
               CALL DASHSZ(dash1,dash2,dash3,dash4)
@@ -181,6 +183,7 @@ C
            CALL COLOR(color0)
            CALL VECTRS
         ENDIF
+	CALL PLOTT7(X,Y,XFACT,YFACT,1,-8)
 
 	CALL PLOT(XLO,Y,1,0)
 	CALL PLOT(XHI,Y,1,0)

@@ -38,7 +38,8 @@ set view ll3
 set mode labels
 shade/i=1:10/j=1:10 i*j
 set mode logo
-plot/vs/over/line/color=white {1,4}, {1,9}
+! KMS - white changed to green for PyFerret - white causing problems
+plot/vs/over/line/color=green {1,4}, {1,9}
 
 ! but the logo is restored on the next plot command.
 set view lm3

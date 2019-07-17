@@ -44,6 +44,7 @@
 * V698  *sh* 3/16 -- modify the native taxis (axlagt) to become a lag time
 *                 -- look for and read time_bounds 2d array if it exists
 * V72 6/17 *acm* For trac enhancement #767 -- dynamic coordinate storage 
+* v751 *acm*  6/19 Allow for longer strings as attribute values (line_name is length 64)
 
 * include files
         include 'netcdf.inc'
@@ -70,10 +71,10 @@
      .		vlen, blen, bndid, attid, attype, attlen, attoutflag
 	REAL*8  TM_WORLD_AX, avg_lag, uppermost
 	CHARACTER  TM_STRING*13, buff*256
-	CHARACTER bname*48, attname*48
+	CHARACTER bname*64, attname*64
 
 	INTEGER max_slen
-	PARAMETER (max_slen = 48)
+	PARAMETER (max_slen = 64)
 
 * initialize
 	do_warn = .FALSE.

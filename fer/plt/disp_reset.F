@@ -55,6 +55,7 @@
 *                  PLOT/VS plots (LAS ticket 1597 and others)
 * V697  *acm*  1/16 Ticket 2344: if there was a time-plot underlay, use the underlay's 
 *                   time scaling for time overlay plots. TAXUND restores the default.
+* V7.4+ *acm*  8/18 DSG-enabled Ferret: colorkey labels may be strings from the IDs
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -120,6 +121,7 @@ c	CALL PPLCMD ( from, line, 0, 'TXNMTC 0', 1, 1 )
 	CALL PPLCMD ( from, line, 0, 'SIZE 10.2  8.8 ', 1, 1 )
         CALL SET_VIEWPORT( mvp_dflt )   ! remove viewports, restore axis sizes
 	CALL PPLCMD ( from, line, 0, 'GAPLOC 0', 1, 1 )
+	CALL PPLCMD ( from, line, 0, 'CLRKLAB', 1, 1 )
 
 c        CALL COLOR (1)  ! ppl is not always in the right state to call this...
 

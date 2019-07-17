@@ -349,10 +349,18 @@
 	   s1 = mr_size(mv)
 	   s2 = SIZE(memry(mv)%ptr) 
 	   sum = sum + s1
-           IF (s1 .NE. s2) THEN
-	      CALL TM_NOTE( 'SANITY ERR: Dynamic mem size error: '
+	   IF ( mr_protected(mv) .NE. mr_table_entry_only) THEN
+              IF (s1 .NE. s2) THEN
+	         CALL TM_NOTE( 'SANITY ERR: Dynamic mem size error: '
      .			//LEFINT(mv,slen)//LEFINT(s1,slen)
      .			//LEFINT(s2,slen)//tag, ttout_lun)
+	      ENDIF
+	   ELSE
+              IF (s1 .NE. 0) THEN
+	         CALL TM_NOTE( 'SANITY ERR: Table entry size error: '
+     .			//LEFINT(mv,slen)//LEFINT(s1,slen)
+     .			//LEFINT(s2,slen)//tag, ttout_lun)
+	      ENDIF
 	   ENDIF
 	ENDDO
 	IF (sum .NE. total_mem) THEN

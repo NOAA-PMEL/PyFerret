@@ -95,7 +95,7 @@
      .		un_name(pun_decibars)	/ 'dbar'	/,
      .		un_name(11)	/ char_init12	/,
      .		un_name(12)	/ char_init12	/,
-     .		un_name(13)	/ char_init12	/,
+     .		un_name(pun_instance)	/ "instance"	/,
      .		un_name(14)	/ 'level' 	/,
      .		un_name(15)	/ 'layer'	/
 

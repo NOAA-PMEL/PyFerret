@@ -75,6 +75,8 @@
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
 #	include "tmap_dset.parm"
+	include 'implicit.parm'
+	include 'xdset_info.cmn_text'
 	external xgt_grid_data
 	include	'ferret.parm'
 	include 'xtext_info.cmn'
@@ -89,14 +91,15 @@
 
 * local variable declarations:
 	LOGICAL	BKWD_AXIS, GEOG_LABEL, ITSA_TRUEMONTH_AXIS, TM_FPEQ,
-     .          calendar, original, true_month, ss_ok
+     .          calendar, original, true_month, ss_ok, its_dsg_ragged
+
 	INTEGER TM_LENSTR1, TM_SUBSC, TM_GET_CALENDAR_ID, STR_SAME,
      .          lo, hi, i, line, dlen, ndec, status,nlen, naxlen, 
      .          int1, slen, i1ss, inss,cal_id 
 	CHARACTER AX_TITLE*32, TM_FMT*48, lo_str*28, hi_str*28, direction*1,
      .		  title*32, reg*1, modflag*1, truncated*1, frmt*80,
      .		  lo_uvar*20, hi_uvar*20, uvar_desc*40, cstr*3, countstr*20,
-     .		  axname*64
+     .		  axname*64, buff*20
 	REAL*8	TM_WORLD, lo_val8, hi_val8, pts
 
 * local parameter declarations:
@@ -105,6 +108,10 @@
 
 * pull line from grid table
 	line = grid_line( idim, grid )
+
+* is this a DSG ragged contiguous "axis"
+	its_dsg_ragged = idim.NE.e_dim
+     .		   .AND. line_dsg_dset(line).NE.pline_not_dsg
 
 * line ok ?
 	risc_buff = ' '
@@ -293,7 +300,10 @@ c Compressing transfm, w/o limits
 
 	   ENDIF !  uvar, reporting subset, compression
 
-* write info
+* Special description to flag the DSG feature orientation axis
+	   IF (its_dsg_ragged) uvar_desc = "Variable lengths"
+
+* create format adapted to name length (??)
 	   int1 = 34 - (naxlen+1)
 	   naxlen = naxlen + 1
 	   IF (naxlen .LT. 10) THEN
@@ -302,6 +312,8 @@ c Compressing transfm, w/o limits
 	      WRITE (frmt, 3030) int1, naxlen
 	   ENDIF
 
+* write info (see below -- this may get over-written)
+* ?? *sh* 4/17 - could we clean this up? just append the uvar_desc?
 	   WRITE ( risc_buff, frmt )	axname(:nlen),
      .				title (:41-nlen),
      .				line_dim  ( line ),
@@ -313,9 +325,7 @@ c Compressing transfm, w/o limits
 
 * If there is a subset or compression, add that information. This is
 * skipped if it's a SHOW AXIS or SHOW GRID gridname
-
 	   IF (uvar .GT. 0) THEN
-
 	      WRITE ( risc_buff, frmt ) axname (:nlen),
      .				title (:41-nlen),
      .				line_dim  ( line ),
@@ -325,7 +335,6 @@ c Compressing transfm, w/o limits
      .				lo_str,
      .				hi_str,
      .				uvar_desc
-
 	   ENDIF
 	   IF (true_month) THEN
 	      dlen = TM_LENSTR1(risc_buff)

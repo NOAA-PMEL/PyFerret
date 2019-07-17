@@ -73,7 +73,7 @@
 *                  is implicit rather than explicit in the axis definition 
 *                  see err540_strides_rev.jnl 
 * V552:  4/04 *acm* - bug fix.  For @AVE and related transforms @SUM, etc.
-*                     send src_lo_ss and src_hi_ss for the range on the src
+*                     send com_lo_ss and com_hi_ss for the range on the src
 *                     axis.  Previous use of mr_lo_ss and mr_hi_ss can result
 *                     in incorrect results when a larger then needed chunk
 *                     of source data is already in4/15/03 memory
@@ -89,6 +89,7 @@
 * V698 *acm*  3/16 Ticket 2278: add an attribute with time range when
 *                  saving a modulo-regridded variable to netCDF
 * V702 3/17 *sh* for trac enhancement #2369 -- dynamic memory management 
+* V720 5/17 *sh* support for DSG regridding
 * V720: 6/17 *acm* Ticket 2346: new @IIN regridding transform
 * V741  5/18 *acm* issue 1868: gridding transforms that will grid to same axis
 
@@ -101,6 +102,7 @@
 	include	'xcontext.cmn'
 	include	'xvariables.cmn'
 	include	'xalgebra.cmn'   ! with alg_regrid_code
+	include	'xdset_info.cmn_text'
 
 * calling argument declarations:
 	INTEGER	status
@@ -108,36 +110,51 @@
 * exit #1 is to signal completion of the activity at this stack level
 
 * internal variable declarations:
-	LOGICAL	TM_ITS_CDF, 
+	LOGICAL	TM_ITS_CDF, TM_ITSA_DSG, ITSA_REGRID_FROM_DSG,
      .		xy_regrid, valid, valid_y, has_impl_save, done_by_strides,
-     .		itsa_string
-	INTEGER hi_isp, lo_isp, axis, cx_valid, idim,
+     .		itsa_string, its_res_dsg, its_from_dsg
+	INTEGER TM_DSG_DSET_FROM_GRID, TM_DSG_NFEATURES,
+     .		com_isp, res_isp, axis, cx_valid, idim,
      .		rgrd_trans, mrlist(5), wk_size, wk_size2,
-     .		dst_cx, src_cx, dst_mr, src_mr, ngd_mr, ave_mr,
-     .		axis_list(nferdims), naxis, i, nbd_mr, nxsrc
+     .		res_cx, com_cx, dflt_cx, res_mr, com_mr, ngd_mr, ave_mr,
+     .		axis_list(nferdims), naxis, i, nbd_mr, nx,
+     .		res_grid, nobs, nfeatures, dset, frag
 	INTEGER*8 i8_size
 	CHARACTER dtype*4
 
 *        ... interpretation stack setup at the time this is called ...
 *	stack level		stack contents
-*	isp+2	<--	level of next activity
-*	hi_isp	<--	level at which component was obtained
-*	lo_isp	<--	level at which regrid was requested (current isp)
+*	isp+2	<--  level of next activity
+*	com_isp	<--  level at which component was obtained
+*	res_isp	<--  level at which regrid was requested (result - current isp)
 * --- end of introductory code ---
 
 * initialize
-	lo_isp   = isp                     
-	hi_isp   = lo_isp + 1
-	src_mr   = is_mr( hi_isp )
-	dst_cx   = is_cx( lo_isp )
-	src_cx   = is_cx( hi_isp )
-	axis	 = is_axis( lo_isp )
+	res_isp  = isp                     
+	com_isp  = res_isp + 1
+	com_mr   = is_mr( com_isp )
+	res_mr	 = is_mr( res_isp ) ! valid for addl components of DSG regrid
+	res_cx   = is_cx( res_isp )
+	com_cx   = is_cx( com_isp )
+ 	dflt_cx  = is_big_cx( res_isp )
+	axis	 = is_axis( res_isp )
+	frag     = is_sum ( res_isp )
 	naxis	 = 1
 	axis_list(1) = axis
-	itsa_string = cx_type(src_cx) .EQ. ptype_string
+	itsa_string = cx_type(com_cx) .EQ. ptype_string
+	res_grid = cx_grid(res_cx)
+	its_res_dsg  = TM_ITSA_DSG(res_grid)
+	its_from_dsg = ITSA_REGRID_FROM_DSG(res_cx)
+
+* initialize DSG info if it will be needed
+	IF (its_res_dsg .OR. its_from_dsg) THEN
+	   dset = TM_DSG_DSET_FROM_GRID(res_grid)
+	   nobs = dsg_obs_dimlen(dset)
+	   nfeatures = TM_DSG_NFEATURES(res_grid)
+	ENDIF
 
 * what is the regridding transformation for this axis ?
-	rgrd_trans = cx_regrid_trans( axis, dst_cx )
+	rgrd_trans = cx_regrid_trans( axis, res_cx )
 	xy_regrid = ( (rgrd_trans .EQ. prgrd_xy_ave) .OR. 
      .                (rgrd_trans .EQ. prgrd_xy_lin) )
 	IF ( xy_regrid ) THEN
@@ -150,9 +167,9 @@
 
 * bug check:  has someone attempted to regrid a compressed axis?
 * (possible bug in check ... could we have unspec limits for another reason?)
-	IF ( cx_category(src_cx) .EQ. cat_user_var
-     . .AND. cx_lo_ss(src_cx,axis) .EQ. unspecified_int4 ) THEN
-	   IF (  uvar_given(axis,cx_variable(src_cx))
+	IF ( cx_category(com_cx) .EQ. cat_user_var
+     . .AND. cx_lo_ss(com_cx,axis) .EQ. unspecified_int4 ) THEN
+	   IF (  uvar_given(axis,cx_variable(com_cx))
      .	    .NE. uvlim_irrelevant )			 CALL ERRMSG
      .		( ferr_invalid_command, status,
      .		 'attempt to regrid on a compressed axis', *5000 )
@@ -167,49 +184,74 @@
 * for later comparisons, this grid was stored as a static grid, but we have still 
 * read the data using strides, and therefore do not need to do a regridding operation.
 
-	IF ( cx_category(dst_cx) .EQ. cat_file_var ) THEN
+	IF ( cx_category(res_cx) .EQ. cat_file_var ) THEN
 	   done_by_strides = 
-     .		TM_ITS_CDF(cx_data_set(dst_cx), dtype )
-c     .    .AND. cx_has_impl_grid(dst_cx)
-     .	  .AND. cx_delta(axis,src_cx) .NE. unspecified_val8
+     .		TM_ITS_CDF(cx_data_set(res_cx), dtype )
+c     .    .AND. cx_has_impl_grid(res_cx)
+     .	  .AND. cx_delta(axis,com_cx) .NE. unspecified_val8
 	ELSE
 	   done_by_strides = .FALSE.
 	ENDIF
 	IF (done_by_strides) THEN
 	   DO 400 idim = axis+1, nferdims
-	      IF (cx_delta(idim,src_cx) .NE. unspecified_val8) THEN
+	      IF (cx_delta(idim,com_cx) .NE. unspecified_val8) THEN
 	         naxis = naxis + 1
 	         axis_list(naxis) = idim
 	      ENDIF
  400	   CONTINUE
 	ENDIF
 
+* ***** end of initial set up and error checks *****
+
+* This is_phase branch occurs only when additional data has arrived to be
+* accumulated in a DSG-target regrid
+	IF (is_phase(res_isp) .EQ. isphase_accumulate_transform) GOTO 600
+* 11111 start of isphase_initialize_transform 11111 *
+
+
+*** DSG handling
+	IF (its_res_dsg .OR. its_from_dsg) THEN
+* Source and destination contexts are ready to go
+* If the source data range is inadequate the destination data will be unspecif
+! DSGTBD need to be able to accept regrid source data in gathered chunks
+! This create/pre-fill operation must be done only on first chunk arrival
+	   CALL CREATE_MEM_VAR( res_cx, res_mr, status )
+           IF ( status .NE. ferr_ok ) GOTO 5000
+	   IF (its_res_dsg ) THEN
+* ... prefill when regridding to DSG cuz features may be masked my E lims
+	      CALL FILL_MEMORY( res_mr, mr_bad_data(res_mr) )
+	   ENDIF
+	   is_mr( res_isp ) = res_mr
+	   GOTO 600
+	ENDIF
+*** end of DSG handling
+
 * Make the destination context like the source data context on all except
 * the regrid axis.  That one keeps the user-requested size.
 * (Other axes may have been modified by information embedded within a
 * user-variable definition.  An alternative (untested 8/89) approach is to
 * call PASS_AMBIG_LI** for uvars)
-	CALL TRANSFER_CONTEXT( src_cx, cx_buff )
+	CALL TRANSFER_CONTEXT( com_cx, cx_buff )
 	DO 500 i = 1, naxis 
 	   idim = axis_list(i)
-	   CALL TRANSFER_AXIS( idim, dst_cx, cx_buff )
-	   cx_regrid_trans( idim, cx_buff ) = cx_regrid_trans( idim, dst_cx )
+	   CALL TRANSFER_AXIS( idim, res_cx, cx_buff )
+	   cx_regrid_trans( idim, cx_buff ) = cx_regrid_trans( idim, res_cx )
 	   cx_delta(idim,cx_buff) = unspecified_val8
  500	CONTINUE
-	cx_grid( cx_buff ) = cx_grid( dst_cx )
+	cx_grid( cx_buff ) = cx_grid( res_cx )
 	cx_unstand_grid( cx_buff ) = .TRUE.
-	has_impl_save = cx_has_impl_grid(dst_cx)
-	CALL TRANSFER_CONTEXT( cx_buff, dst_cx )
-	cx_has_impl_grid(dst_cx) = has_impl_save	! preserve this flag
+	has_impl_save = cx_has_impl_grid(res_cx)
+	CALL TRANSFER_CONTEXT( cx_buff, res_cx )
+	cx_has_impl_grid(res_cx) = has_impl_save	! preserve this flag
 
 * create a context with the limits that can actually be regridded
 * ... if limits were unspecified in request allow full axis size
 	IF (done_by_strides) THEN
-	   cx_valid = dst_cx
+	   cx_valid = res_cx
 	   valid = .TRUE.
 	ELSE
 	   cx_valid = cx_buff
-	   CALL RCVD_REGRID( src_cx, dst_cx, axis, wk_size,
+	   CALL RCVD_REGRID( com_cx, res_cx, axis, wk_size,
      .		 cx_lo_ss(cx_valid,axis), cx_hi_ss(cx_valid,axis), status )
 	   cx_by_ss( axis, cx_valid ) = .TRUE.
            valid = cx_lo_ss(cx_valid,axis) .LE. cx_hi_ss(cx_valid,axis)  ! 3/93
@@ -218,7 +260,7 @@ c     .    .AND. cx_has_impl_grid(dst_cx)
 	      IF ( status .NE. ferr_ok ) GOTO 5000
            ENDIF
 	   IF ( xy_regrid ) THEN
-	      CALL RCVD_REGRID( src_cx, dst_cx, y_dim, wk_size2,
+	      CALL RCVD_REGRID( com_cx, res_cx, y_dim, wk_size2,
      .		cx_lo_ss(cx_valid,y_dim),cx_hi_ss(cx_valid,y_dim), status)
 	      cx_by_ss( y_dim, cx_valid ) = .TRUE.
               valid_y = cx_lo_ss(cx_valid,y_dim)
@@ -232,33 +274,45 @@ c     .    .AND. cx_has_impl_grid(dst_cx)
 	ENDIF
 
 * create a space for the new result possibly with the edges flagged as bad
-	CALL NEW_MR_W_EDGES(  cx_valid, dst_cx, dst_mr, status )
+	CALL NEW_MR_W_EDGES(  cx_valid, res_cx, res_mr, status )
 	IF ( status .NE. ferr_ok ) GOTO 5000
-	is_mr( lo_isp ) = dst_mr
+	is_mr( res_isp ) = res_mr
 
 * cannot actually regrid if the ranges aren't valid -> all bad result
         IF ( .NOT.valid ) GOTO 1000      ! 3/93
 
+* 11111 end of isphase_initialize_transform 11111 *
+
+* if starting up a split/gather, set stage for next chunk
+ 600	IF (is_phase(res_isp).EQ.isphase_initialize_transform) 
+     .	    is_phase(res_isp)  = isphase_accumulate_transform
+
+* 22222 start of isphase_accumulate_transform 22222 *
+
 * diagnostic message ?
 	IF (mode_diagnostic) THEN
 	   IF (done_by_strides) THEN
-	      CALL DIAGNOSTIC_OUT('nulrgd ',dst_mr,  point_to_mr)
+	      CALL DIAGNOSTIC_OUT('nulrgd ',res_mr,  point_to_mr)
 	   ELSE
-	      CALL DIAGNOSTIC_OUT('regrid ',dst_mr,  point_to_mr)
+	      CALL DIAGNOSTIC_OUT('regrid ',res_mr,  point_to_mr)
 	   ENDIF
 	ENDIF
 
 * set up 4D array limits as unsubscripted variables in COMMON
-	mrlist(1) = src_mr
-	mrlist(2) = dst_mr
+	mrlist(1) = com_mr
+	mrlist(2) = res_mr
 	CALL NON_ARRAY_SUBSC( mrlist, 2 )
 
 * reserve working array space
-	IF ( rgrd_trans .EQ. prgrd_xy_ave) THEN
+	IF (its_res_dsg) THEN
+	   i8_size = 1		! work space not actually used as of 5/17
+	ELSEIF (its_from_dsg) THEN
+	   i8_size = 1		! work space not actually used as of 5/17
+	ELSEIF ( rgrd_trans .EQ. prgrd_xy_ave) THEN
 	   i8_size = wk_size+wk_size2
 	ELSEIF (rgrd_trans .EQ. prgrd_xy_lin) THEN
-	   nxsrc = cx_hi_ss(src_cx,x_dim)-cx_lo_ss(src_cx,x_dim) + 1
-	   i8_size = nxsrc*wk_size2+2*(wk_size+wk_size2)
+	   nx = cx_hi_ss(com_cx,x_dim)-cx_lo_ss(com_cx,x_dim) + 1
+	   i8_size = nx*wk_size2+2*(wk_size+wk_size2)
 	ELSE
 	   i8_size = 2*wk_size
 	ENDIF
@@ -266,78 +320,85 @@ c     .    .AND. cx_has_impl_grid(dst_cx)
 	IF ( status .NE. ferr_ok ) GOTO 5000
 
 * do the regridding
-	IF ( done_by_strides ) THEN
-	   CALL COPY_GRID( memry(src_mr)%ptr,  src_mr,
-     .			   memry(dst_mr)%ptr,  dst_mr )
+	IF ( its_res_dsg ) THEN
+	   CALL DO_REGRID_TO_DSG( com_cx, res_cx, dset, nfeatures, nobs,
+     .			memry(com_mr)%ptr, memry(res_mr)%ptr )
+	ELSEIF ( its_from_dsg ) THEN
+	   CALL DO_REGRID_FROM_DSG( com_cx, res_cx, dset, nfeatures, nobs,
+     .			memry(com_mr)%ptr, memry(res_mr)%ptr, 
+     .			cx_lo_ss(res_cx,axis), cx_hi_ss(res_cx,axis) )
+	ELSEIF ( done_by_strides ) THEN
+	   CALL COPY_GRID( memry(com_mr)%ptr,  com_mr,
+     .			   memry(res_mr)%ptr,  res_mr )
 	ELSEIF ( rgrd_trans .EQ. prgrd_linear_interp ) THEN
 	   IF ( itsa_string ) GOTO 5010
 	   CALL DO_LIN_REGRID( cx_valid, axis,
-     .			memry(src_mr)%ptr, src_mr,
-     .			memry(dst_mr)%ptr, dst_mr,
+     .			memry(com_mr)%ptr, com_mr,
+     .			memry(res_mr)%ptr, res_mr,
      .			workmem(plegacy_work_buffer)%ptr,
      .			wk_size+1, 2*wk_size )
 	ELSEIF ( rgrd_trans .EQ. prgrd_associate ) THEN
 	   CALL DO_ASN_REGRID( cx_valid, axis,
-     .			memry(src_mr)%ptr, src_mr,
-     .			memry(dst_mr)%ptr, dst_mr )
+     .			memry(com_mr)%ptr, com_mr,
+     .			memry(res_mr)%ptr, res_mr )
 	ELSEIF ( rgrd_trans .EQ. prgrd_average
      .	 .OR.    rgrd_trans .EQ. prgrd_variance
      .	 .OR.    rgrd_trans .EQ. prgrd_sum
      .	 .OR.    rgrd_trans .EQ. prgrd_good_pt ) THEN
 	   IF ( itsa_string ) GOTO 5010
 	   CALL DO_AVE_REGRID( cx_valid, axis, rgrd_trans,
-     .			memry(src_mr)%ptr, src_mr,
-     .			memry(dst_mr)%ptr, dst_mr,
-     .			workmem(plegacy_work_buffer)%ptr, src_cx, dst_cx,
+     .			memry(com_mr)%ptr, com_mr,
+     .			memry(res_mr)%ptr, res_mr,
+     .			workmem(plegacy_work_buffer)%ptr, com_cx, res_cx,
      .                  wk_size+1 )
 	ELSEIF ( rgrd_trans .EQ. prgrd_xy_ave ) THEN
 	   IF ( itsa_string ) GOTO 5010
 	   CALL DO_XYAVE_REGRID( cx_valid,
-     .			memry(src_mr)%ptr, src_mr,
-     .			memry(dst_mr)%ptr, dst_mr,
-     .			workmem(plegacy_work_buffer)%ptr, src_cx, dst_cx,
+     .			memry(com_mr)%ptr, com_mr,
+     .			memry(res_mr)%ptr, res_mr,
+     .			workmem(plegacy_work_buffer)%ptr, com_cx, res_cx,
      .                  wk_size+1, wk_size+wk_size2 )
 	ELSEIF ( rgrd_trans .EQ. prgrd_xy_lin ) THEN
 	   IF ( itsa_string ) GOTO 5010
 	   CALL DO_XYLIN_REGRID( cx_valid,
-     .			memry(src_mr)%ptr, src_mr,
-     .			memry(dst_mr)%ptr, dst_mr,
-     .			workmem(plegacy_work_buffer)%ptr, src_cx, dst_cx,
+     .			memry(com_mr)%ptr, com_mr,
+     .			memry(res_mr)%ptr, res_mr,
+     .			workmem(plegacy_work_buffer)%ptr, com_cx, res_cx,
      .                  wk_size+1, 2*wk_size+1, 
      .                  2*wk_size+wk_size2+1, 2*(wk_size+wk_size2)+1, 
-     .                  nxsrc*wk_size2+2*(wk_size+wk_size2) )
+     .                  nx*wk_size2+2*(wk_size+wk_size2) )
 	ELSEIF ( rgrd_trans.EQ.prgrd_min
      .	   .OR. rgrd_trans.EQ.prgrd_max ) THEN
 	   IF ( itsa_string ) GOTO 5010
 	   CALL DO_WINDOW_REGRID( cx_valid, axis, rgrd_trans,
-     .			memry(src_mr)%ptr, src_mr,
-     .			memry(dst_mr)%ptr, dst_mr,
+     .			memry(com_mr)%ptr, com_mr,
+     .			memry(res_mr)%ptr, res_mr,
      .			workmem(plegacy_work_buffer)%ptr, wk_size+1)
 	ELSEIF ( rgrd_trans .EQ. prgrd_xact_pts ) THEN
 	   CALL DO_XACT_REGRID( cx_valid, axis,
-     .			memry(src_mr)%ptr, src_mr,
-     .			memry(dst_mr)%ptr, dst_mr,
+     .			memry(com_mr)%ptr, com_mr,
+     .			memry(res_mr)%ptr, res_mr,
      .			workmem(plegacy_work_buffer)%ptr, wk_size+1,
      .			2*wk_size )
 	ELSEIF ( rgrd_trans .EQ. prgrd_nearest ) THEN
 	   CALL DO_NEAREST_REGRID( cx_valid, axis,
-     .			memry(src_mr)%ptr, src_mr,
-     .			memry(dst_mr)%ptr, dst_mr,
+     .			memry(com_mr)%ptr, com_mr,
+     .			memry(res_mr)%ptr, res_mr,
      .			workmem(plegacy_work_buffer)%ptr, wk_size+1,
      .			2*wk_size )
 	ELSEIF ( rgrd_trans .EQ. prgrd_bin
      .	 .OR.    rgrd_trans .EQ. prgrd_nbin ) THEN
 	   CALL DO_BIN_REGRID( cx_valid, axis, rgrd_trans,
-     .			memry(src_mr)%ptr, src_mr,
-     .			memry(dst_mr)%ptr, dst_mr,
-     .			workmem(plegacy_work_buffer)%ptr, src_cx, dst_cx,
+     .			memry(com_mr)%ptr, com_mr,
+     .			memry(res_mr)%ptr, res_mr,
+     .			workmem(plegacy_work_buffer)%ptr, com_cx, res_cx,
      .                  wk_size+1 )
 
 	ELSEIF ( rgrd_trans .EQ. prgrd_iin ) THEN
 	   CALL DO_IIN_REGRID( cx_valid, axis,
-     .			memry(src_mr)%ptr, src_mr,
-     .			memry(dst_mr)%ptr, dst_mr,
-     .			workmem(plegacy_work_buffer)%ptr, src_cx, dst_cx,
+     .			memry(com_mr)%ptr, com_mr,
+     .			memry(res_mr)%ptr, res_mr,
+     .			workmem(plegacy_work_buffer)%ptr, com_cx, res_cx,
      .                  wk_size+1, status )
      
 	   IF ( status .NE. ferr_ok ) GOTO 5020
@@ -363,7 +424,7 @@ c     .    .AND. cx_has_impl_grid(dst_cx)
 	   mr_regrid_trans ( axis, nbd_mr ) =  prgrd_modnbd
 
 	   IF ( rgrd_trans .EQ. prgrd_modvar ) THEN
-	      CALL NEW_MR_W_EDGES(cx_valid,dst_cx,ave_mr,status)
+	      CALL NEW_MR_W_EDGES(cx_valid,res_cx,ave_mr,status)
 	      IF ( status .NE. ferr_ok ) GOTO 5100
 !	      mr_regrid_trans ( axis, ave_mr ) = prgrd_modulo	! bookkeeping
 	   ENDIF
@@ -374,15 +435,15 @@ c     .    .AND. cx_has_impl_grid(dst_cx)
 	   mrlist(5) = ave_mr
 	   CALL NON_ARRAY_SUBSC( mrlist, 5 )
 	   CALL MODULO_REGRID( cx_valid, axis, rgrd_trans,
-     .			memry(src_mr)%ptr, src_mr,
-     .			memry(dst_mr)%ptr, dst_mr,
+     .			memry(com_mr)%ptr, com_mr,
+     .			memry(res_mr)%ptr, res_mr,
      .			memry(ngd_mr)%ptr, ngd_mr,
      .			memry(nbd_mr)%ptr, nbd_mr,
      .			memry(ave_mr)%ptr, ave_mr )
 
 * ... For modulo regrid in time, add an attribute listing the source dates
 
-	   IF (axis .EQ. t_dim) CALL DEFINE_CLIMAT_ATT (src_cx)
+	   IF (axis .EQ. t_dim) CALL DEFINE_CLIMAT_ATT (com_cx)
 
 * ... delete temporary variables
 	   CALL DELETE_VARIABLE( ngd_mr )
@@ -395,20 +456,37 @@ c     .    .AND. cx_has_impl_grid(dst_cx)
         CALL  RELEASE_DYN_WORK_SPACE
 
 * indicate we are done with the component
- 1000   CALL MR_NOT_IN_USE( src_mr )
-	IF (done_by_strides) CALL DELETE_VARIABLE( src_mr ) ! invalid lims in mr
+ 1000   CALL MR_NOT_IN_USE( com_mr )
+	IF (done_by_strides) CALL DELETE_VARIABLE( com_mr ) ! invalid lims in mr
 
+	IF ( is_phase( res_isp ) .EQ. prgrd_from_ntrmed ) THEN
 * intermediate grid ? deallocate grid space and delete intermediate data
-	IF ( is_phase( lo_isp ) .EQ. prgrd_from_ntrmed ) THEN
 	   CALL DEALLO_GRID( status )
 	   IF ( status .NE. ferr_ok ) GOTO 5000
-	   IF ( mr_protected(src_mr) .EQ. mr_not_protected )
-     .			CALL DELETE_VARIABLE ( src_mr )
+	   IF ( mr_protected(com_mr) .EQ. mr_not_protected )
+     .			CALL DELETE_VARIABLE ( com_mr )
+	ELSEIF (is_phase( res_isp ) .EQ. isphase_accumulate_transform) THEN
+	   IF (cx_hi_ss(com_cx,axis).LT.cx_hi_ss(dflt_cx,axis) ) THEN
+* ... setup to get next fragment
+	      CALL DEFINE_NEXT_CHUNK_CX(axis, com_cx, dflt_cx, frag, status)
+	      IF ( status .NE. ferr_ok ) GOTO 5000
+	      IF ( mode_diagnostic )
+     .		   CALL DIAG_OP('doing', isact_class_cmp_gather_dummy,
+     .							com_cx, axis)
+* ... push the interpretation stack and go get it
+	      isp = com_isp
+	      RETURN 1
+	   ELSE
+* ... all fragments have been processed
+	      cx_stack_ptr = cx_stack_ptr - 1   ! free big_cx
+	   ENDIF
 	ENDIF
 
 * pop off context used by source grid
         cx_stack_ptr = cx_stack_ptr - 1
-	RETURN 1
+	is_phase(res_isp)  =   isphase_completed_transform ! housekeeping
+
+	RETURN 2
 
 * error exits
  5000	RETURN

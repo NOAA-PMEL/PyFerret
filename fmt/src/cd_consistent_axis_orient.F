@@ -96,6 +96,11 @@
       
       REAL, allocatable ::  axes_out_of_order(:)
 
+* We don't need to do all of this for DSG datasets. Their grids
+* are defined by that structure.
+
+      IF (dsg_ragged(dset)) RETURN
+
       iter = 0
       reordered = 0
 

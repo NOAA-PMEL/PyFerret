@@ -43,6 +43,7 @@
 * 10/3/95 for Ferret version 4.2
 * V510 *sh( 4/00 - allow deallocation of non-dynamic lines
 * V600 *acm* 10/05 Call PACK_LINE_STORAGE for irregular axes to reset coord storage.
+* V720 5/17 *sh* init line_dsg_dset
 
 * Include files
 
@@ -50,6 +51,7 @@
 #include "tmap_dset.parm"
 #include "gt_lib.parm"
 	include 'tmap_errors.parm'
+	include 'implicit.parm'
 	include 'xtm_grid.cmn_text'
 	external xgt_grid_data
 	include 'xio.cmn_text'
@@ -83,7 +85,9 @@
 * deallocated without being used
 	ELSEIF ( line_use_cnt(line) .EQ. 0 ) THEN
 
-	   line_name(line) = char_init16
+! there really ought to be a CALL TM_INIT_LINE to clear everything out reliably
+	   line_name(line)     = char_init16
+	   line_dsg_dset(line) = pline_not_dsg
 
 * take this line from the "used" list and put it on the "free" list
 * ... hook onto free list

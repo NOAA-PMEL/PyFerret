@@ -61,6 +61,7 @@
 *  7/98 *js*  - Hacked to add support for permuted binary file reads
 * V530: *sh* 11/00 - delimited file reading added
 *       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
+* V720: *sh*  4/17 support for DSG datasets
 
         IMPLICIT NONE
 * calling argument declarations:
@@ -70,7 +71,7 @@
 * exit #2 is to signal completion of the activity at this stack level
 
 * internal variable declarations:
-	LOGICAL		reprimand
+	LOGICAL		TM_ITSA_DSG_RAGGED, reprimand, its_dsg_ragged
 	DATA       	reprimand/.TRUE./
 	INTEGER 	CGRID_AXIS, cx, dset_num, idim, cat
 
@@ -90,6 +91,7 @@
 * initialize
 	cx = is_cx( isp )
 	dset_num = cx_data_set( cx )
+	its_dsg_ragged = TM_ITSA_DSG_RAGGED(cx_grid(cx))
 
 * for the duration of this routine replace cat_revfile_var with cat_file_var
 * (since most routines cannot cope with cat_revfile_var)
@@ -100,7 +102,7 @@
 	DO 100 idim = 1, nferdims
 	   IF ( cx_lo_ss( cx, idim ) .NE. unspecified_int4 ) GOTO 100
 	   IF ( CGRID_AXIS( idim, cx ) .EQ. mnormal ) GOTO 100
-	   IF ( reprimand ) THEN
+	   IF ( reprimand .AND. .NOT.its_dsg_ragged) THEN
 	      CALL WARN
      .		('FERRET is more efficient if regions are fully specified' )
 	      CALL WARN( ww_dim_name(idim)//

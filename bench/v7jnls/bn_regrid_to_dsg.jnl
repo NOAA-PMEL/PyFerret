@@ -1,0 +1,93 @@
+! bn_regrid_to_dsg.jnl
+
+! test regridding of gridded data to a DSG target
+
+
+! DSGTBD: as of 5/2017 there is more to test.  This tests only 
+!    - time series dsg
+!    - coordinate-complete xyzt source data and coordinate-complete DSG
+!    not tested are under- and over-specified situations
+!      under-specified:
+!        3D XYZ model being sampled onto a 2D XY DSG 
+!        user would need to specify how to reduce Z limits to a point
+!        using a LET definition, say,  LET my_z_restricted = my_var[Z=@ave]
+!      over-specified
+!        fixed time XYZ model being sampled onto an XYT trajectory DSG 
+
+use DSG_ERDDAP_pmelTao5daySst.nc
+
+! create a text dataset
+! fake "temp" values are actually the latitude values
+! ******
+define axis/t=1-jan-2017:1-apr-2017:3/unit=days tfake
+define axis/y=20s:20n:1 yfake
+define axis/x=0:359:1/unit=degrees/modulo xfake
+define axis/z=0:2:.5/unit=meters zfake
+define grid/x=xfake/y=yfake/z=zfake/t=tfake gfake
+let/title=Temperature temp = y[g=gfake] + 0*(x[g=gfake]+z[g=gfake]+t[g=gfake])
+save/clobber/file=fake_model_temp.nc temp
+cancel variables/all
+! ******
+
+! demonstrate regridding model data to DSG using file data
+USE fake_model_temp.nc
+
+! regrid of time series
+list/x=160e:170e temp[d=fake_model_temp,g=t_25[d=DSG_ERDDAP_pmelTao5daySst]]
+cancel mem/all
+SET MODE DIAG
+! notice that the X-restricted LOAD requests a smaller X subscript range 
+load/x=160e:170e temp[d=fake_model_temp,g=t_25[d=DSG_ERDDAP_pmelTao5daySst]]
+load temp[d=fake_model_temp,g=t_25[d=DSG_ERDDAP_pmelTao5daySst]]
+SET MODE/LAST DIAG
+
+! now the same thing, but sampling from a uvar instead of an fvar
+define axis/t=1-jan-2017:1-apr-2017:3/unit=days tlittle
+define axis/y=20.01s:20n:1 ylittle ! offset a little from an exact hit
+define axis/x=0:359:1/unit=degrees/modulo xlittle
+define axis/z=0:2:.5/unit=meters zlittle
+define grid/x=xlittle/y=ylittle/z=zlittle/t=tlittle glittle
+let/title=Temperature little_temp = y[g=glittle] + 0*(x[g=glittle]+z[g=glittle]+t[g=glittle])
+list/x=160e:170e little_temp[g=t_25[d=DSG_ERDDAP_pmelTao5daySst]]
+
+
+! ******* scatter/gather tests
+! see what happens when the source data is too big for memory
+! ==> STRIP/GATHER on T axis
+define axis/t=1-jan-2017:1-apr-2017:.3/unit=days tbig
+define axis/y=20.001s:20n:.5 ybig   ! offset a tiny bit from an exact hit
+define axis/x=0:359:2/unit=degrees/modulo xbig
+define axis/z=0:2:.1/unit=meters zbig
+define grid/x=xbig/y=ybig/z=zbig/t=tbig gbig
+let/title=Temperature big_temp = y[g=gbig] + 0*(x[g=gbig]+z[g=gbig]+t[g=gbig])
+say `big_temp,r=size`
+load big_temp[g=t_25[d=DSG_ERDDAP_pmelTao5daySst]]
+SHOW MEMORY/DIAGNOSTIC
+!stat big_temp[g=t_25[d=DSG_ERDDAP_pmelTao5daySst]] ! not yet DSG-enabled
+
+! Again, this time with T axis size inadequate, so split occurs on Z
+! (same size source data but 1/100 as many time points)
+! ==> STRIP/GATHER on ****Z*** axis
+define axis/t=1-jan-2017:1-apr-2017:`.3*100`/unit=days tbigz
+define axis/y=20.001s:20n:.5 ybigz   ! offset a tiny bit from an exact hit
+define axis/x=0:359:2/unit=degrees/modulo xbigz
+define axis/z=0:2:`.1/100`/unit=meters zbigz
+define grid/x=xbigz/y=ybigz/z=zbigz/t=tbigz gbigz
+let/title=Temperature bigz_temp = y[g=gbigz] + 0*(x[g=gbigz]+z[g=gbigz]+t[g=gbigz])
+say `bigz_temp,r=size`
+load bigz_temp[g=t_25[d=DSG_ERDDAP_pmelTao5daySst]]
+SHOW MEMORY/DIAGNOSTIC
+!stat bigz_temp[g=t_25[d=DSG_ERDDAP_pmelTao5daySst]] ! not yet DSG-enabled
+
+! by constraining the request (in X) the needed source data is reduced
+! (I:81     86  J:    3   81  K:   11   16  L:     49    301)
+cancel memory/all
+SET MODE DIAG
+load/x=160e:170e big_temp[g=t_25[d=DSG_ERDDAP_pmelTao5daySst]]
+
+! constraining on E implicitly constrains XYZT, too
+!(I:    118    118  J:   31   31  K:   11   11  L:     49    301)
+cancel memory/all
+load/e=50 big_temp[g=t_25[d=DSG_ERDDAP_pmelTao5daySst]]
+SET MODE/LAST DIAG
+

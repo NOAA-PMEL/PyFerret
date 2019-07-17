@@ -1,0 +1,18 @@
+! bn_dsg_one_e_val.jnl
+!
+! Return a feature-variable at a specific M.
+! earlier versions listed the value at m=1
+! in the grave-accent returns.
+
+use DSG_ERDDAP_pmelTao5daySst
+
+list/m=1:6 station, rowsize
+list/m=6 station
+
+
+! Previous versions listed the value at m=1.
+
+say `station[m=3]` `station[e=3]`
+say `station[m=5]` `station[e=5]`
+
+say `station[m=3]` `longitude[m=3]` `rowsize[m=3]`

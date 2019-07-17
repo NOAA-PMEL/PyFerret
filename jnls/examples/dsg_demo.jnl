@@ -1,0 +1,113 @@
+! dsg_demo.jnl
+! Demo of using DSG-enabled Ferret 
+! 
+! 9/11/2018 Ansley Manke
+! 
+! On dunkel run the executable ferret_dsg. The datasets are installed
+! in the data directory where Ferret will find them.
+
+! The dataset feature type is detected.
+
+
+!This demo shows auto-detecting of DSG feature type, data listings and
+!plotting.  It demonstrates defining a mask to select a subset of features.
+!Please read the output in the command window as well as viewing the plots.
+
+pause
+
+use saildrone_arctic2018_trajectory_dsg.nc
+show data
+pause
+
+! output of the LIST command selects data in a time/space/E range.
+! It shows the feature number (could be the feature ID)
+! (The lon/lat listed here need more precision!)
+list/t="02-sep-2018:07:55":"02-sep-2018:08:00"/m=2:3 cond_mean, sal_mean
+pause
+
+cancel mode logo
+set win/siz=0.6
+
+! The "Plot" command draws the native plot type for the data.
+! trajectories are drawn as paths colored by the requested variable.
+! Call fland.jnl to overlay land masses
+
+plot/thick temp_ctd_mean
+go fland 5
+pause
+
+! Color-by the trajectory; the colorbar is labeled with trajectory ID.
+! This time draw it as an overlay on a map - but because it's an overlay
+! we don't get all the auto labels
+
+go basemap x=-175:-150 y=50:75 5 black
+plot/over/thick/nolab/key/palette=ten_by_levels trajectory
+
+pause
+
+
+! Define a mask to pick out one or more features. The mask persists as a
+! property of the dataset, until we cancel the mask or close the dataset
+
+
+let/title="Drones 1022 1023" my_mask = if trajectory eq "1022.0" OR trajectory eq "1023.0" then 1
+set data/fmask=my_mask 1
+plot/thick/hlim=-175:-150/vlim=50:75 temp_ctd_mean
+go fland 5
+
+pause
+
+! trajectory data can also be viewed as a timeseries - as we do in LAS.
+! Close the data and open it specifying another feature type. (Or use
+! use/feature=none to view the file as a non-ragged-array feature file.)
+
+cancel data/all
+cancel view
+use/feature=timeseries saildrone_arctic2018_trajectory_dsg
+
+show data
+pause
+
+set win/asp=0.4/siz=0.4
+plot/thick/color cond_mean
+pause
+
+cancel data/all
+cancel view
+set win/asp=1/siz=0.6
+
+! Now a dataset with Feature-type of timeseries
+
+use pmelTao5daySst_timeseries_dsg.nc
+show data
+pause
+
+set win/asp=1/siz=0.6
+! Plot all 70 timeseries - (large # lines could do something else by default)
+plot T_25
+
+pause
+
+! Define a mask using a string function 
+
+! The color line-key is labeled with the feature ID's, so the variable name
+! goes on the dependent axis.
+
+let/title="Stations at 170w" mask170w = if strindex(station, "170w") GT 0 then 1
+set data/fmask=mask170w pmelTao5daySst_timeseries_dsg
+plot/thick t_25
+
+pause
+
+cancel data/all
+set window/aspect=1/size=0.6
+
+
+! Now a Profile dataset
+
+use WestCoastCarbon_profile_dsg.nc
+show data
+pause
+
+plot pco2
+

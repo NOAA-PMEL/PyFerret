@@ -77,11 +77,8 @@
 *                 check its calendar attribute
 *  V75  ACM  2/2018 As in the DSG branch, pass line_direction(iaxis) to 
 *                 cd_get_line_direction as an argument
-*  V75  ACM  2/2018 As in the DSG branch, pass line_direction(iaxis) to 
-*                 cd_get_line_direction as an argument
 *  v744 11/2011   *acm* Issue 1906: Get info for second calendar in T-F grid
 *                 
-
 
 * argument definitions:
 *       dset        - TMAP data set pointer
@@ -179,7 +176,8 @@
 
 	   CALL  CD_GET_VAR_ATT_ID (dset, ivar, "cf_role", attid, status)
 	   IF (status .EQ. merr_ok) THEN
-	      eax = vdims(1)
+	      eax = vdims(1) 
+	      dsg_feature_var(dset) = ivar
 
 * find the instance dimension
 
@@ -271,7 +269,7 @@
 		 eax = 0
 	      ELSE
 	         CALL CD_GET_LINE_DIRECTION (dset, axid, name, linunits, 
-     .                do_warn, line_direction(iaxis) )
+     .                do_warn, .TRUE., line_direction(iaxis))
 	      ENDIF
 
 * save a pointer to the axis just found

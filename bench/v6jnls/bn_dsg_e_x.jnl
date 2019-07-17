@@ -1,4 +1,6 @@
 ! bn_dsg_e.jnl
+! Note: This test is for non-dsg-enabled Ferret.  DSG_enabled ferret
+! sees the file diffrently...
 !
 !  Discrete Sampling Geometries files
 !  Create grids such that the instance dimension

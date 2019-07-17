@@ -55,6 +55,7 @@
 * V600 *acm* 2/06 - Fix for bug 1394, send do_err flag to TM_DATE_REFORMAT
 * V674 2/12 *acm* 6D Ferret: use nferdims rather than 4 for dimension indexing
 * v694 1/15 *acm* (see ticket 2227) handle the line_dim_only flag
+* V720 5/17 *sh* init line_dsg_dset
 
 * Arguments
 	LOGICAL		modulo
@@ -96,6 +97,7 @@
 * initialize
 	line_t0(inline)        = char_init20
 	line_tunit(inline)     = 0
+	line_dsg_dset(inline)  = pline_not_dsg 
 
 * basic defaults on the line to be created
 	line_parent(inline)    = 0

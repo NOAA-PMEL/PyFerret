@@ -68,6 +68,7 @@
 *		    missing-value flag.
 * V695 4/15 *sh* added support for CF auxiliary coordinate variables
 * V74  *acm*  2/2018 Issue # 1861, handling missing- and _FillValue with scale and offset
+* v751 *acm*  6/19 Allow for longer strings as attribute values
 
 
 * argument definitions:
@@ -112,7 +113,7 @@
      .        maxlen, all_outflag, attid
       REAL    val
 * 4/99 *kob* increase size of vname
-      CHARACTER    vname*128, aname*128, buff*128
+      CHARACTER    vname*128, aname*128, buff*1028
       CHARACTER*13 TM_STRING
 
       INTEGER tt  ! nice short name
@@ -134,6 +135,8 @@
       EQUIVALENCE ( ds_precision, cd_data_type )
 
            its_epic = ds_type(dset) .EQ. 'ECDF'
+
+	   maxlen = 1028
 
 * get the vital statistics for this variable
 
@@ -194,8 +197,8 @@ c        ENDIF
 * attribute and use that for the title.
 
           IF (nvatts .GT. 0) THEN
-             maxlen = 128
-             got_it = NC_GET_ATTRIB_STRING( dset, ivcd, 'long_name',
+             maxlen = LEN(ds_var_title(ivtm))
+	     got_it = NC_GET_ATTRIB_STRING( dset, ivcd, 'long_name',
      .                     .NOT.do_warn, vname(:vlen), maxlen, attlen, 
      .                     attoutflag, ds_var_title(ivtm))
 
@@ -207,12 +210,12 @@ c        ENDIF
      .                     attoutflag, ds_var_title(ivtm))
              ENDIF
 
-             maxlen = 128
-             got_it = NC_GET_ATTRIB_STRING( dset, ivcd, 'long_name_mod',
+             maxlen = LEN(ds_var_titl_mod(ivtm))
+	     got_it = NC_GET_ATTRIB_STRING( dset, ivcd, 'long_name_mod',
      .                     .NOT.do_warn, vname(:vlen), maxlen, attlen, 
      .                     attoutflag, ds_var_titl_mod(ivtm))
 
-             maxlen = 64
+             maxlen = LEN(ds_var_units(dset))
              got_it = NC_GET_ATTRIB_STRING( dset, ivcd, 'units',
      .                     do_warn, vname(:vlen), maxlen, attlen, 
      .                     attoutflag, ds_var_units(ivtm))
@@ -239,18 +242,16 @@ c        ENDIF
      .                 istat)
      
              IF (attype .NE. NF_CHAR) THEN
-                got_bad = NC_GET_ATTRIB_FLOAT( dset, ivcd, 
+		got_bad = NC_GET_ATTRIB_FLOAT( dset, ivcd, 
      .                'missing_value',
      .                do_warn, vname(:vlen), attlen,
      .                attoutflag, ds_bad_flag(ivtm))
              ELSE
-  	        maxlen = 128
-                got_bad = NC_GET_ATTRIB( dset, ivcd, 'missing_value',
+                maxlen = LEN(buff)
+		got_bad = NC_GET_ATTRIB( dset, ivcd, 'missing_value',
      .                do_warn, vname(:vlen), maxlen, attlen,
      .                attoutflag, buff,  ds_bad_flag(ivtm))
              ENDIF
-
-
 	     
 	     CALL CD_GET_VAR_ATT_ID (dset, ivcd, '_FillValue', 
      .                  attid, istat)
@@ -264,7 +265,6 @@ c        ENDIF
      .                do_warn, vname(:vlen), attlen,
      .                attoutflag, ds_missing_flag(ivtm))
              ELSE
-  	        maxlen = 128
                 got_missing = NC_GET_ATTRIB( dset, ivcd, '_FillValue',
      .                do_warn, vname(:vlen), maxlen, attlen,
      .                attoutflag, buff,  ds_bad_flag(ivtm))
@@ -333,6 +333,15 @@ c        ENDIF
 		IF (do_warn .AND. tmap_diag_on) CALL WARN(
      .'No missing_value or _FillValue attribute. Using NaN for variable: ' 
      . //vname(:vlen)) 
+! DSGTBD: no warning message needed on essential DSG instance vars
+!  -- coord vars, rowSize or ID -- as these are not allowed to have missing
+!     values (really need to be so strict?)  Instead a warning should be 
+!     issued if they are found to have missing value gaps. ...
+
+
+! DSGTBD: Perhaps the obs mask is initialized with a mask based on valid values of
+!  the appropriate lon, lat, time, depth coordinates which are in the obs direction
+
 
              ENDIF
 

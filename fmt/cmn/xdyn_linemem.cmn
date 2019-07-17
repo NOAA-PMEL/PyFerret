@@ -1,0 +1,4 @@
+* dynamic line (1D coordinate) memory
+	INCLUDE		'TMAP_FORMAT:XDYN_LINEMEM.CMN_TEXT'
+
+	EXTERNAL	XDYN_LINEMEM_DATA

@@ -27,6 +27,34 @@
 * V695+ 4/15 *sh* added ds_its_aux_coord for auxiliary coordinate support
 * V695+ 5/15 *sh* added ds_var_c_cache_ptr - ptr to cached var (typ aux var)
 * V698+ 12/15 *sh* declare larger dset arrays: maxdsets ==> pdsetalloc
+* V720   4/17 *sh* add DSG variables 
+
+**************************************************************************
+* V720
+	COMMON/XDSG_INFO/
+     .		dsg_ragged(pdsetalloc),		! is it a contig ragged dset?
+     .		dsg_feature_type(pdsetalloc),	! which pfeatureType_? 
+     .		dsg_row_size_var(pdsetalloc),   ! the ragged row size
+     .		dsg_row_size_varid(pdsetalloc), ! the ragged row size varid in dset
+     .		dsg_coord_var(4,pdsetalloc),	! DSG coord COMMON var nos
+     .		dsg_orientation(pdsetalloc),	! DSG obs axis orientation
+     .		dsg_obs_dimlen(pdsetalloc),     ! observation axis total len
+     .		dsg_xlate_grid(pdsetalloc),     ! grid of "translation" axes
+     .		dsg_feature_var(pdsetalloc),    ! varid of the "feature" var e.g. station id
+     .		dsg_msk_lm(pdsetalloc),		! dyn line number for feature mask if defined
+     .		dsg_obs_axis,			! ragged vars get this & E axes
+     .		dsg_instance_axis,		! only needed during dset init
+     .		dsg_obs_dim,			! only needed during dset init
+     .		dsg_instance_dim,		! only needed during dset init
+     .		dsg_loaded_lm(maxvars),		! dyn lm number if pre-loaded
+     .		dsg_user_direction		! user-imposed DSG direction
+	LOGICAL dsg_ragged
+	INTEGER	dsg_feature_type, dsg_row_size_var, dsg_row_size_varid, dsg_coord_var,
+     .		dsg_orientation, dsg_obs_axis, dsg_instance_axis,
+     .		dsg_obs_dimlen, dsg_xlate_grid, dsg_feature_var, dsg_obs_dim, 
+     .		dsg_instance_dim, dsg_loaded_lm, dsg_user_direction, dsg_msk_lm
+**************************************************************************
+
 
 	COMMON/XDSET_INFO/
      .		ds_1step(pdsetalloc),ds_lastep(pdsetalloc),

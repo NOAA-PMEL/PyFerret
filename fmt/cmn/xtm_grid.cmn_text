@@ -33,6 +33,7 @@
 * v694 1/15 *acm* for ticket 2227: if a dimension from a nc file is not also a 
 *                 1-D coordinate var, don't write the axis Ferret creates. New flag 
 *                 line_dim_only marking axes that are defined from a dimension only
+* V720 4/17 *sh* added line_dsg_dset, axis_dimname
 
 	CHARACTER*128	grid_filename
 	CHARACTER*20	line_t0
@@ -40,12 +41,14 @@
 	CHARACTER*32	line_cal_name
 	CHARACTER*64	grid_name
 	CHARACTER*2	line_direction, axis_orients
+	CHARACTER*1	axis_dimname
 	INTEGER		line_subsc1, line_dim, line_unit_code, grid_line,
      .			grid_use_cnt, grid_flink,
      .			grid_blink, grid_free_ptr, max_grid_used,
      .			line_parent, line_use_cnt, line_flink, line_blink,
      .			line_class, line_free_ptr, max_line_used,
-     .                  line_offset, line_dattype, line_allocated
+     .                  pline_mem_init, line_offset, line_dattype,
+     .			line_dsg_dset, line_allocated
 	LOGICAL		grid_out_prod, line_regular, line_modulo, line_reversed,
      .			line_keep_flag, line_shift_origin, line_fixname, line_write,
      .			line_dim_only
@@ -67,58 +70,62 @@
         TYPE(line_table_slot) :: linemem(0:line_ceiling)
         TYPE(line_table_slot) :: lineedg(0:line_ceiling)
 
+* Order the common with largest types first
 	COMMON / XGRID /
      .			linemem,
      .			lineedg,
+     .
      .			line_start	( 0:line_ceiling ),
      .			line_delta	( 0:line_ceiling ),
      .			line_modulo_len	( 0:line_ceiling ),
-     .
      .			clim_line_coords( 12, num_clim ),
      .			clim_line_edges	( 13, num_clim ),
+     .			line_tunit	( 0:line_ceiling ),
+     .			grid_rotation	( 0:grid_ceiling ),
      .
-     .			grid_filename	( maxgridfiles),
-     .
-     .			line_name	( 0:line_ceiling ),
-     .			line_name_orig	( 0:line_ceiling ),
-     .			line_subsc1	( 0:line_ceiling ),
-     .			line_dim	( 0:line_ceiling ),
-     .			line_units	( 0:line_ceiling ),
-     .			line_unit_code	( 0:line_ceiling ),
      .			line_regular	( 0:line_ceiling ),
      .			line_modulo	( 0:line_ceiling ),
-     .			line_t0		( 0:line_ceiling ),
-     .			line_tunit	( 0:line_ceiling ),
-     .			line_parent	( 0:line_ceiling ),
-     .			line_use_cnt	( 0:line_ceiling ),
-     .			line_flink	( max_lines:line_ceiling ),
-     .			line_blink	( max_lines:line_ceiling ),
-     .			line_class	( 0:line_ceiling ),
      .			line_keep_flag  ( 0:line_ceiling ),
      .			line_fixname    ( 0:line_ceiling ),
      .			line_shift_origin( 0:line_ceiling ),
      .			line_write      ( 0:line_ceiling ),
      .			line_dim_only   ( 0:line_ceiling ), 
+     .			grid_out_prod	( nferdims, 0:grid_ceiling ),
+     .
+     .			line_subsc1	( 0:line_ceiling ),
+     .			line_dim	( 0:line_ceiling ),
+     .			line_unit_code	( 0:line_ceiling ),
+     .			line_parent	( 0:line_ceiling ),
+     .			line_use_cnt	( 0:line_ceiling ),
+     .			line_flink	( max_lines:line_ceiling ),
+     .			line_blink	( max_lines:line_ceiling ),
+     .			line_class	( 0:line_ceiling ),
+     .			line_dsg_dset   ( 0:line_ceiling ),
      .			line_free_ptr,
      .			max_line_used,
-     .			line_cal_name  ( 0:line_ceiling ),
      .
-     .			grid_name	( 0:grid_ceiling ),
      .			grid_line	( nferdims, 0:grid_ceiling ),
-     .			grid_out_prod	( nferdims, 0:grid_ceiling ),
-     .			grid_rotation	( 0:grid_ceiling ),
+     .			grid_name	( 0:grid_ceiling ),
      .			grid_use_cnt	( 0:grid_ceiling ),
      .			grid_flink	( max_grids:grid_ceiling ),
      .			grid_blink	( max_grids:grid_ceiling ),
      .			grid_free_ptr,
      .			max_grid_used,
      .
-     .			line_direction	( 0:line_ceiling ),
-     .			axis_orients	( 0:max_axis_orients ),
      .                  line_reversed   ( 0:line_ceiling),
      .                  line_offset     ( 0:line_ceiling),
-     .                  line_dattype    ( 0:line_ceiling), 
-     .			line_allocated  ( 0:line_ceiling )
+     .                  line_dattype    ( 0:line_ceiling),
+     .			line_allocated  ( 0:line_ceiling ),
+     .
+     .			grid_filename	( maxgridfiles),
+     .			line_t0		( 0:line_ceiling ),
+     .			line_units	( 0:line_ceiling ),
+     .			line_name	( 0:line_ceiling ),
+     .			line_name_orig	( 0:line_ceiling ),
+     .			line_cal_name   ( 0:line_ceiling ),
+     .			line_direction	( 0:line_ceiling ),
+     .			axis_orients	( 0:max_axis_orients ),
+     .			axis_dimname	( nferdims)
 
 * note: the zero subscript is a scratch buffer
 

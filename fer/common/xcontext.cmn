@@ -20,6 +20,7 @@
 *	         max_context made a variable to allow frames above it
 * V693+ added cx_vtree* vars for ticket #2195 - reporting regridding dependency
 * V694 cx_calendar needs to be 6-D to handle F and T calendar time
+* V73+  12/13 *acm* add cx_feature to store the feature mask
 * V745  3/19 *acm* ticket 1916, special handling getting context for RETURN= outputs
 
 * the declarations below represent a stack of depth max_context for saving
@@ -68,6 +69,8 @@
 *	cx_g_eq_regrid  - flags whether g or gz or delta requested a new axis
 *	cx_grid_needs_dset - flags whether the specified target grid makes
 *		             sense only if the context dset is available
+*	cx_feature	- for DSG datasets, when plotting, the list of feature
+*                         numbers associated with the iline context to b plotted
 
 * allocate some protected contexts at the top of the context stack
 	INTEGER		max_cx
@@ -97,7 +100,8 @@
      .		cx_naux     ( max_cx ),
      .		cx_aux_var  (nferdims, max_cx),
      .		cx_aux_cat  (nferdims, max_cx),
-     .		cx_aux_stat (nferdims, max_cx )
+     .		cx_aux_stat (nferdims, max_cx ),
+     .		cx_feature  ( max_cx )
 
 	LOGICAL	cx_vtree_unknown_grid( nferdims ),
      .     	cx_unstand_grid	( max_cx ),
@@ -145,6 +149,7 @@
      .		cx_aux_var,
      .		cx_aux_cat,
      .		cx_aux_stat,
+     .		cx_feature,
      .		max_context,
      .		cx_valid_aux,
      .		cx_implicit_aux,

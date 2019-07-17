@@ -286,7 +286,7 @@ CCCCCCC data	        tmapdebug/.false./
 	DIMENSION X1(5),Y1(5),Y2(4),X3(2),IX3(5)
 	DIMENSION X4(4)
 	INTEGER	  num_comm
-	PARAMETER(num_comm = 125)
+	PARAMETER(num_comm = 126)
 	CHARACTER COMM(num_comm)*7
 	EQUIVALENCE (DT,X3(1)),(ITYPET,IX3(1)),(TSMX,X4(1))
 	EQUIVALENCE (XLO,X1(1)),(YLO,Y1(1)),
@@ -313,7 +313,7 @@ CCCCCCC data	        tmapdebug/.false./
      *  'SQFILL','FILL', 'PLOTPOL', 'FILLPOL', 'PATSET','CALENDA',
      *  'FLOWLIN', 'S_KEY', 'S_CELL', 'POLYGON', 'XVALOFF', 'YVALOFF',
      *  'LINECOL','RENAMPL','SHRINKY','RIBBON','RIBFAST','RIBMISS',
-     *  'GAPLOC'/
+     *  'GAPLOC','CLRKLAB'/
 
 !  *  'SQFILL','AREA'/ NAME CHANGE *jd*
  
@@ -458,7 +458,7 @@ C       Mod below for brain dead version *JD* 8.2.91
      *	9800,9900,9910,9920,9930,9940,9950,9110,9120,9130,9140,
      *	9150,9160,9170,9180,9190,98,9191,9380,9171,9172,9173,
      *  9174,9175,9390,9165,9166,9183,4401,4501,9192,9960,9970,
-     *  1550,9980,9982,9984),I
+     *  1550,9980,9982,9984,9985),I
         else
 	GOTO (100,200,300,500,99,700,900,1000,1100,1200,1300,
      *	1400,1500,99,1800,1900,2000,2100,2200,2300,2500,2600,
@@ -471,7 +471,7 @@ C       Mod below for brain dead version *JD* 8.2.91
      *	9800,9900,9910,9920,9930,9940,9950,9110,9120,9130,9140,
      *	9150,9160,9170,9180,9190,98,9191,9380,9171,9172,9173,
      *  9174,9175,9390,9165,9166,9183,4401,4501,9192,9960,9970,
-     *  1550,9980,9982,9984),I
+     *  1550,9980,9982,9984,9985),I
         end if
         goto 10
 
@@ -1675,6 +1675,11 @@ C	GAPLOC (PLOT/VS/GAPLOC)
 * end of segments
 	    gap_var = 0
             gap_var = P(1) 
+	    GOTO 10
+
+
+C     CLRKLAB COLOR-KEY LABELS
+9985	    CALL CLRKLAB (LABEL)
 	    GOTO 10
 
 C     RWDSEQ & RWD

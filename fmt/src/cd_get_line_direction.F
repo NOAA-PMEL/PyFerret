@@ -1,5 +1,5 @@
       SUBROUTINE CD_GET_LINE_DIRECTION (dset, ivar,
-     .     vname, linunits, do_warn, dir_code)
+     .     vname, linunits, do_warn, full, dir_code)
      
 
 *  This software was developed by the Thermal Modeling and Analysis
@@ -33,7 +33,7 @@
 *  RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF
 *  CONTRACT, NEGLIGENCE OR OTHER TORTUOUS ACTION, ARISING OUT OF OR IN
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
-*
+
 *  code to determine the direction of a coordinate axis. Pulled out of cd_get_1_axis
 *  V683 ACM 9/2012
 *
@@ -41,10 +41,23 @@
 *  V694 ACM 2/2015 Ensemble axis may have a standard-name attribute "realization"
 *  V694 ACM 4/2015 Fix ticket 2260: set X axis when standard_name is "longitude"
 *  V72+ ACM 10/2015 If using axis names, compare the right # of characters
+*  V73+ ACM 12/2016 Change arguments slightly. Instead of passing in iaxis
+*                   and setting dir_code, set a 2-letter code
 *  V73+ ACM  1/2018 issue 1851: If direction is reduced down to using axis names, 
 *                   see if there were unrelated units that should trump the name
-*  V75  ACM  2/2018 As in the DSG branch, work on DIR_CODE which is line_direction(iaxis)
+* 
+* Arguments
+*  dset		Ferret dataset number
+*  ivar		varid
+*  vname	variable name
+*  linunits	variable units
+*  do_warn	Turn warnings on or off
+*  full		True to use units, false to stop after looking for at the 
+*               axis, coordinate_axis, CoordinateAxisType, cf_role, long_name, 
+*               and standard_name.  If false, it does look for a time origin in the units
+*  dir_code     return: two-letter direction code, either XX,YY,... or WE, SN, UD, DU, TI
 *
+
 *      include files: 
       
         IMPLICIT NONE
@@ -60,8 +73,8 @@
 
 
 * calling arguments
-      LOGICAL do_warn
-      INTEGER dset, ivar, iaxis, idir
+      LOGICAL do_warn, full
+      INTEGER dset, ivar, idir
       CHARACTER*(*) vname, linunits, dir_code
 
 * local declarations
@@ -170,7 +183,7 @@
 
 * ... check for a cf_role attribute, if still undetermined.
 *     Put these axes in the E direction. This attribute may
-*     be on a non-coordinate varable. Those are found in 
+*     be on a non-coordinate variable. Those are found in 
 *     cd_get_generic_grids.
 
       IF (dir_code .EQ. 'NA') THEN
@@ -242,6 +255,9 @@
 
 * Time ax may contain "tunits since T0_date"
 
+      since_T0 = MAX( INDEX(linunits,'since'), INDEX(buff,'SINCE') )
+      IF (since_t0 .GT. 2) dir_code = 'TI'
+
       IF (linunits .EQ. char_init16) THEN
 
          linunits = ' '   ! default
@@ -249,6 +265,7 @@
          got_it = NC_GET_ATTRIB( dset, ivar, 'units', do_warn,
      .                        vname(:vlen), maxlen, attlen, attoutflag, 
      .                        buff, val)
+
          since_T0 = MAX( INDEX(buff,'since'), INDEX(buff,'SINCE') )
          yyyymmdd_time = buff(1:15) .EQ. 'yyyymmddhhmmss'
 
@@ -256,6 +273,7 @@
             linunits = buff(:since_T0-1)  ! just the "tunits" part 
          ELSEIF ( yyyymmdd_time ) THEN
             linunits = 'days'
+	    dir_code = 'TI'
          ELSE
             IF (got_it) linunits = buff
          ENDIF
@@ -267,6 +285,11 @@
          ENDIF
       ENDIF
       
+* Skip this for DSG files.  Looking not just at axes but other vars
+* which may be e.g. degrees heading.
+
+      IF (full) THEN
+
 * ... decode the units
 
       units = TM_UNIT_ID( linunits )
@@ -360,6 +383,8 @@ c     .   .OR. TM_HAS_STRING(linunits, 'degreesS') ! But this matches all degree
 	 ENDIF
       ENDIF
 
+      ENDIF  ! full
+
 ! See if the long-name contains a string that indicates a z axis
       maxlen = bufflen
       got_it = NC_GET_ATTRIB( dset,ivar,'long_name',
@@ -376,6 +401,10 @@ c     .   .OR. TM_HAS_STRING(linunits, 'degreesS') ! But this matches all degree
      .           dir_code = 'DU'
          IF (STR_CASE_BLIND_COMPARE('depth',buff(:5)) .EQ. str_eq) 
      .           dir_code = 'UD'
+         IF (STR_CASE_BLIND_COMPARE('latitude',buff(:8)) .EQ. str_eq) 
+     .           dir_code = 'SN'
+         IF (STR_CASE_BLIND_COMPARE('longitude',buff(:9)) .EQ. str_eq) 
+     .           dir_code = 'WE'
       ENDIF
 
 * the attribute "positive=down", etc. may help
@@ -540,7 +569,7 @@ c     .   .OR. TM_HAS_STRING(linunits, 'degreesS') ! But this matches all degree
 * If the name indicates a direction in obvious ways, use it.  But if there
 * was a units string that did NOT dictate a direction, leave undefined.
 
-      IF (dir_code.EQ.'NA' .AND. units.EQ.no_units) THEN
+      IF (full .AND. dir_code.EQ.'NA' .AND. units.EQ.no_units) THEN
          IF (vupcase(1:3).EQ.'LON') dir_code = 'WE'
          IF (vupcase(1:3).EQ.'LAT') dir_code = 'SN'
          IF (vupcase(1:4).EQ.'TIME') dir_code = 'TI'
@@ -553,5 +582,5 @@ c     .   .OR. TM_HAS_STRING(linunits, 'degreesS') ! But this matches all degree
          IF (vupcase(1:5).EQ.'LEVEL') dir_code = 'DU'
       ENDIF
 
-      RETURN
+ 5000 RETURN
       END

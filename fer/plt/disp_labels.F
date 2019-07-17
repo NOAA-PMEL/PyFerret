@@ -69,6 +69,7 @@
 * V7   *acm* 6/16 see ticket 2435. Tweak to split dataset labels after DATA SET:
 * v74+ *acm* 5/18 See PyFerret issue #53: if the title is blank don't set up 
 *                 the label or the symbol labnum_datitl
+* v74+ *acm* 7/18 For plots of DSG data, write the upper-left labels as world coords
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -89,11 +90,11 @@
 	CHARACTER	year*4
 
 * internal variable declarations:
-	LOGICAL		show_year
+	LOGICAL		show_year, has_mask
 	CHARACTER	AX_TITLE*32, TM_GET_CALENDAR_NAME*32,
      .			line_buff*1024, genl_buff*255, cal_buff*32
 	INTEGER		TM_LENSTR, idim, len, lablen,
-     .			nlabs, dset_num, tlen, lab2
+     .			nlabs, dset_num, tlen, lab2, grid
 	REAL 		ul_yspace, ul_labht, ul_ypos, ul_ysqueeze,
      .			yoff, ur_labht
 	EQUIVALENCE	( ppl_buff, genl_buff )	! save space
@@ -118,11 +119,37 @@
 
 * define the position labels ("LATITUDE:", "DEPTH:", etc)
 * ... stack them above one another in the upper left
+
+        grid = cx_grid(joint_cx)
+        dset_num = cx_data_set(joint_cx)
+        IF (dset_num .GT. pdset_irrelevant) THEN
+           IF ( dsg_ragged(dset_num) ) grid = dsg_xlate_grid(dset_num) 
+        ENDIF
+
 	ul_ypos = ul_yorigin + (nlabs-1)*ul_yspace
 	DO 300 idim = 1, nferdims
 	   IF ( ul_dolab(idim) ) THEN
 	      CALL ASCII_LIMITS( joint_cx, idim, line_buff, len )
-	         genl_buff = AX_TITLE( idim, cx_grid(joint_cx), tlen )
+
+	      IF (idim .EQ. e_dim) THEN
+
+		 CALL GET_DSG_MASK_TITLE (dset_num, genl_buff, has_mask, tlen)
+		 IF (has_mask) THEN
+		    IF (tlen .GT. 0) THEN
+		       line_buff = 'Subset, '//genl_buff(:tlen)
+		    ELSE 
+		       line_buff = '(subset selected)'
+		    ENDIF
+		 ELSE
+		    
+		 ENDIF
+		 
+		 len = TM_LENSTR(line_buff)
+
+	      ENDIF
+
+	      genl_buff = AX_TITLE( idim, grid, tlen )
+
 	      CALL PUT_LABEL( ppl_movlab-idim, ul_xorigin, ul_ypos,
      .			      ppl_left_just,
      .			      ul_labht,

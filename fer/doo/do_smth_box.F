@@ -46,6 +46,7 @@
 *
 * V200:  6/2/89
 *        2/12 *kms* Add E and F dimensions (use nferdims in tmap_dims.parm)
+*        2/19 *acm* Note Data from DSG datsets is handled within CONVOLVE
 
         IMPLICIT NONE
         include 'tmap_dims.parm'

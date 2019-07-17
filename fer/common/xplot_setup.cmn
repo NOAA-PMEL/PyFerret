@@ -39,6 +39,7 @@
      .		need_std,
      .		need_histo,
      .		ribbon_plot,
+     .		add_ribbon,
      .		adjust_time
 	INTEGER	nvect_on,
      .		ncont_on,
@@ -118,6 +119,7 @@
      .		need_std,
      .		need_histo,
      .		ribbon_plot,
+     .		add_ribbon,
      .		adjust_time,
      .          active_win_id,
      .          sym_so_far,

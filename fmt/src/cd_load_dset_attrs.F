@@ -47,6 +47,14 @@
 *                   message attribute, issue the message just once.
 * V698  3/16 *acm* Removed Philander-Seigel code including diagnostic variables, 
 * pre-defined axes and grids.
+* V720 4/17 *sh* identify DSG dataset
+* V720 10/17 *acm* Change the NOTE on unknown featuretype. Web search returns 
+*                  references to netCDF use of this attribute with values of 
+*                  grid, swath, station, fmrc - not CF conventions DSG file
+*                  types, but still valid values of the attribute for files. See 
+*                  for instance the whole discussion under https://cf-trac.llnl.gov/trac/ticket/113
+* V741  6/18 *acm* Apply USE/Feature= for dsg files, if different from native featuretype
+*       7/18 *acm* More on use/feature. Allow /FEATURE=none. Use parameters for directions
 
 * argument definitions:
 *       dset    - pointer to TMAP data set
@@ -73,10 +81,10 @@
 
 
 * local variable declarations:
-      INTEGER TM_HASH_NAME, TM_LENSTR1, STR_SAME,
+      INTEGER TM_HASH_NAME, TM_LENSTR1, STR_SAME, STR_CASE_BLIND_COMPARE,
      .        ndims, nvars, ngatts, recdim, cdfstat, 
      .        i, istep, varid, iatt, attlen, attoutflag, maxlen
-      CHARACTER    TM_STRING*13, name*128
+      CHARACTER    TM_STRING*13, name*128, cbuff32*32
       REAL val
       LOGICAL CD_ISIT_EPIC, NC_GET_ATTRIB, got_it, do_warn
       PARAMETER (do_warn = .TRUE. )
@@ -117,6 +125,8 @@
 * get global attribute from linked list structure
 * loop through global attributes looking for title, title_mod
 
+	dsg_ragged(dset) = .FALSE.
+
 * get global attribute pseudo-variable id
 
         IF (ngatts .GT. 0) THEN
@@ -126,6 +136,59 @@
 
               name = ' '
               CALL CD_GET_VAR_ATT_NAME( dset, varid, iatt, name, status)
+
+* identify a DSG dataset from its featureType attribute
+* ... set dsg_ragged, dsg_feature_type and 
+*     Note that dsg_ragged is only provisionally TRUE
+*     In cd_dsg_init we check if truly a contiguous ragged dset
+              IF (name .EQ. 'featureType') THEN
+
+	         IF (dsg_user_direction .EQ. no_dim) THEN 
+		    ! they said USE/FEATURE='none'
+		    dsg_user_direction = int4_init
+		 ELSE
+	            dsg_ragged(dset) = .TRUE.   
+                    maxlen = 32  ! for cbuff32
+		    got_it = NC_GET_ATTRIB ( dset, varid, name, do_warn, 
+     .                                   '.', maxlen, attlen, attoutflag, 
+     .                                   cbuff32, val)
+	            IF     (STR_CASE_BLIND_COMPARE(cbuff32,"timeseries") .EQ. str_match) THEN
+	              dsg_feature_type(dset) = pfeatureType_timeSeries
+		       dsg_orientation(dset) = t_dim		! T axis
+	            ELSEIF (STR_CASE_BLIND_COMPARE(cbuff32,"profile") .EQ. str_match) THEN
+	              dsg_feature_type(dset) = pfeatureType_profile
+		       dsg_orientation(dset) = z_dim		! Z axis
+	            ELSEIF (STR_CASE_BLIND_COMPARE(cbuff32,"trajectory") .EQ. str_match) THEN
+	               dsg_feature_type(dset) = pfeatureType_Trajectory
+		       dsg_orientation(dset) = x_dim		! X axis (arbitrarily)
+	            ELSEIF ( (STR_CASE_BLIND_COMPARE(cbuff32,"timeseriesprofile")
+     .		           .EQ. str_match)
+     .		    .OR.  (STR_CASE_BLIND_COMPARE(cbuff32,"trajectoryprofile")
+     .			   .EQ. str_match)                                      )THEN
+	               dsg_ragged(dset) = .FALSE.
+	               CALL TM_NOTE("FEATURE NOT YET IMPLEMENTED: "//cbuff32 , lunit_errors)
+	            ELSE
+	               dsg_ragged(dset) = .FALSE.
+	               CALL TM_NOTE("Ignoring non-DSG FeatureType: "//cbuff32 , lunit_errors)
+	            ENDIF
+
+* Apply a user-imposed direction SET DATA/FEATURE= if different from the file direction
+
+		    IF (dsg_user_direction .NE. int4_init) THEN
+		       IF (dsg_user_direction .EQ. dsg_orientation(dset) ) THEN
+		          dsg_user_direction = int4_init
+		       ELSE
+		          dsg_orientation(dset) = dsg_user_direction
+		          IF (dsg_orientation(dset) .GE. pfeatureType_Trajectory .AND.
+     .		              dsg_orientation(dset) .LE. pfeatureType_timeSeries)
+     .		           dsg_feature_type(dset) = dsg_orientation(dset)
+		       ENDIF
+		    ENDIF
+	      
+	         ENDIF  ! dsg_user_direction set to no_dim
+
+	      ENDIF
+
 
 * *kob* 6/96 - don't do this if we have a mc dataset - title comes
 *	       from the descriptor rather than the cdf file
@@ -139,15 +202,13 @@
               ENDIF
 
 * title modifier ?
-
+* !! 4/17 comment: should be using STR_CASE_BLIND_COMPARE: e.g. "Title_mod" should match
               maxlen = LEN(ds_mod_title(dset))
-              IF (name .EQ. 'title_mod' .OR. name .EQ. 'TITLE_MOD')
+               IF (name .EQ. 'title_mod' .OR. name .EQ. 'TITLE_MOD')
      .           got_it = NC_GET_ATTRIB ( dset, varid, name, do_warn, 
      .              '.', maxlen, attlen, attoutflag, 
      .              ds_mod_title(dset), val)
      
-* does it have a message to display upon opening ?
-
 * does it have a message to display upon opening ?
               ds_alert_on_output(dset) = .FALSE.
               maxlen = LEN(ds_message(dset))
@@ -167,6 +228,15 @@
  100       CONTINUE
 
         ENDIF  ! ngatts gt 0
+
+
+* For non-DSG datasets, did they set a /Featuretype?
+        IF (.NOT.dsg_ragged(dset) .AND. dsg_user_direction.NE.int4_init) THEN
+           CALL WARN ('SET DATA/FEATURE= applies only to '//
+     .           'Discrete Sampling Geometries datasets. Ignoring /FEATURE=')
+           dsg_user_direction = int4_init
+	ENDIF
+
 
 * special TMAP parameters ?
 * ... read global attributes beginning with "TMAP"

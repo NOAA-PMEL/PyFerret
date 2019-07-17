@@ -41,6 +41,7 @@
 * V510 *sh* 3/00 - guts of routine in  TM_ALLO_DYN_LINE_SUB
 * V581*acm*  6/05 For fix to bug 1271, add flag line_shift_origin
 * v694 1/15 *acm* (see ticket 2227) handle the line_dim_only flag
+* V720 4/17 *sh* added line_dsg_dset
 
 * Include files
 	include 'tmap_dims.parm'
@@ -73,6 +74,8 @@
 
 	line_subsc1(line)    = int4_init
 	line_dim_only(line)  = .FALSE.
+
+	line_dsg_dset(line)  = pline_not_dsg
 
 	RETURN
 	END

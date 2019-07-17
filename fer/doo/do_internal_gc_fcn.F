@@ -101,6 +101,8 @@
 *      increases to 20480
 * V702 1/17 *sh* for trac enhancement #2369 -- dynamic memory management 
 * V74  3/18 *acm For issue #1199 disallow SPAWN in secure mode
+* V75+ 4/19 *acm For DSG grids, call a routine to compute the *SEQUENCE fcns
+* V75+ 4/19 *acm For RESHAPE to DSG grid, set the result context correctly
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
@@ -141,8 +143,8 @@
 
 * internal variable declarations:
 
-	LOGICAL IS_SECURE
-	INTEGER CX_DIM_LEN,  CGRID_SIZE,
+	LOGICAL IS_SECURE, TM_ITSA_DSG
+	INTEGER CX_DIM_LEN,  CGRID_SIZE, TM_DSG_NFEATURES,
      .		count, size, icom, idim, ii,
      .		cx1, cx2, cx3,
      .           i,   j,   k,   l,   m,   n,
@@ -155,7 +157,7 @@
      .          si1, sj1, sk1, sl1, sm1, sn1,
      .          si2, sj2, sk2, sl2, sm2, sn2,
      .          si3, sj3, sk3, sl3, sm3, sn3,
-     .          ind(nferdims)
+     .          ind(nferdims),  grid, nfeatures, nres
         INTEGER klo, khi, ndx_lo, ioff, ilen
         INTEGER coded_pointer, uvar, item, start, end   ! for TIMES2
         INTEGER*8 i8_size
@@ -214,6 +216,12 @@
 	   ENDIF
  10	CONTINUE
 
+* Is the first argument a variable in a DSG grid? If so the *SEQUENCE 
+* functions will apply any masking needed.
+
+	grid = cx_grid(cx1)
+	IF ( TM_ITSA_DSG(grid) ) nfeatures = TM_DSG_NFEATURES(grid)
+
 * compute the starting subscript for each axis of each component
 * (pre-decrement by 1 delta for looping ahead)
 * NOTE: 
@@ -229,6 +237,14 @@
 
 * "XSEQUENCE" - reshape/flatten the input into a line in X
  1100	IF (typr .EQ. pfcn_rtn_float) THEN
+
+	  IF (TM_ITSA_DSG(grid)) THEN
+	     nres = m10hix - m10lox + 1
+	     CALL SEQUENCE_DSG (grid, com1, res, cx1, nfeatures, 
+     .                          bad1, bad_res, nres)
+	     RETURN
+	  ENDIF
+
           i2 = m10lox
 	  DO 1110 n = cx_lo_s6(cx1), cx_hi_s6(cx1)
 	  DO 1110 m = cx_lo_s5(cx1), cx_hi_s5(cx1)
@@ -369,6 +385,12 @@
  1390	  CONTINUE
 
         ENDIF
+
+* Is this a reshape-to-DSGvar? Set the context to agree with arg2.
+
+        grid = cx_grid(cx2)
+        IF (TM_ITSA_DSG(grid)) CALL TRANSFER_CONTEXT (cx2, res_cx)
+
 	RETURN
 
 
@@ -473,7 +495,17 @@
 
 * "YSEQUENCE" - reshape/flatten the input into a line in Y
  1500	IF (typr .EQ. pfcn_rtn_float) THEN
+
+	  IF (TM_ITSA_DSG(grid)) THEN
+	  
+	     nres = m10hiy - m10loy + 1
+	     CALL SEQUENCE_DSG (grid, com1, res, cx1, nfeatures, 
+     .                          bad1, bad_res, nres)
+	     RETURN
+	  ENDIF
+
 	  j2 = m10loy
+
 	  DO 1510 n = cx_lo_s6(cx1), cx_hi_s6(cx1)
 	  DO 1510 m = cx_lo_s5(cx1), cx_hi_s5(cx1)
 	  DO 1510 l = cx_lo_s4(cx1), cx_hi_s4(cx1)
@@ -507,6 +539,14 @@
 
 * "ZSEQUENCE" - reshape/flatten the input into a line in Z
  1600	IF (typr .EQ. pfcn_rtn_float) THEN
+
+	  IF (TM_ITSA_DSG(grid)) THEN
+	     nres = m10hiz - m10loz + 1
+	     CALL SEQUENCE_DSG (grid, com1, res, cx1, nfeatures, 
+     .                          bad1, bad_res, nres)
+	     RETURN
+	  ENDIF
+
 	  k2 = m10loz
 	  DO 1610 n = cx_lo_s6(cx1), cx_hi_s6(cx1)
 	  DO 1610 m = cx_lo_s5(cx1), cx_hi_s5(cx1)
@@ -541,6 +581,14 @@
 
 * "TSEQUENCE" - reshape/flatten the input into a line in T
  1700	IF (typr .EQ. pfcn_rtn_float) THEN
+
+	  IF (TM_ITSA_DSG(grid)) THEN
+	     nres = m10hit - m10lot + 1
+	     CALL SEQUENCE_DSG (grid, com1, res, cx1, nfeatures, 
+     .                          bad1, bad_res, nres)
+	     RETURN
+	  ENDIF
+
 	  l2 = m10lot
 	  DO 1710 n = cx_lo_s6(cx1), cx_hi_s6(cx1)
 	  DO 1710 m = cx_lo_s5(cx1), cx_hi_s5(cx1)
@@ -575,6 +623,14 @@
 	
 * "ESEQUENCE" - reshape/flatten the input into a line in E
  1800	IF (typr .EQ. pfcn_rtn_float) THEN
+
+	  IF (TM_ITSA_DSG(grid)) THEN
+	     nres = m10hie - m10loe + 1
+	     CALL SEQUENCE_DSG (grid, com1, res, cx1, nfeatures, 
+     .                          bad1, bad_res, nres)
+	     RETURN
+	  ENDIF
+
 	  m2 = m10loe
 	  DO 1810 n = cx_lo_s6(cx1), cx_hi_s6(cx1)
 	  DO 1810 m = cx_lo_s5(cx1), cx_hi_s5(cx1)
@@ -609,6 +665,14 @@
 	
 * "FSEQUENCE" - reshape/flatten the input into a line in F
  1900	IF (typr .EQ. pfcn_rtn_float) THEN
+
+	  IF (TM_ITSA_DSG(grid)) THEN
+	     nres = m10hif - m10lof + 1
+	     CALL SEQUENCE_DSG (grid, com1, res, cx1, nfeatures, 
+     .                          bad1, bad_res, nres)
+	     RETURN
+	  ENDIF
+
 	  n2 = m10lof
 	  DO 1910 n = cx_lo_s6(cx1), cx_hi_s6(cx1)
 	  DO 1910 m = cx_lo_s5(cx1), cx_hi_s5(cx1)

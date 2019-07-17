@@ -38,6 +38,10 @@
 *	Routine to set up the line bundles for color-line plots
 * V691 *acm* 5/14 Fix when defining line bundles for a by-levels palette
 * V694 *acm* 5/15 Fix ticket 2292 line plot thickness and ribbon plots
+* 74+  *acm* 4/18 In working on DSG plotting of trajectories. Make sure enough
+*                 colors are defined when using by-levels palette
+* 74+  *acm* 4/18 Tweaks to color levels on ribbon plots for by-levels palettes 
+*                 and centered-label key
 
 	include 'pltcom_dat.decl'
 	include 'PLTCOM.DAT'
@@ -72,7 +76,7 @@
 	integer		max_pline,max_pmark,max_text,max_fill_area
 	integer		max_pattern,max_color,error
 	integer		fktr, marktype, index, line_color_reserve,
-     .			icolr, ndx, n1, n2, n3, slen
+     .			icolr, ndx, n1, n2, n3, slen, ncolors_to_set
                                        
 	real		thickness, dotsize, frac, r_val, g_val, b_val
 	CHARACTER*100   err_msg
@@ -89,6 +93,10 @@
 
         marktype = 1    ! polymarker type 1=dot
         dotsize = 1
+
+* ncolors_to_set
+	 ncolors_to_set = shd_levels
+	 if (rgb_mapping .eq. by_level) ncolors_to_set = ncl
 
 *	COLOR OR MONOCHROME?
 	if (max_color .le. 2) goto 100
@@ -111,29 +119,29 @@
 
         usable_colors = max_color - line_color_reserve - lo_color_ndx(zwsid)
 
-        if (usable_colors .lt. shd_levels+1) then
+        if (usable_colors .lt. ncolors_to_set+1) then
            write (6,'(/a)') ' PPL warning: You''re attempting to use '//
      .           'more colors than are available.'
            write (6,'(a/)') '             Using PPL SHASET RESET to re-use'//
      .		 ' protected colors may help.'
            lo_color_ndx(zwsid) = max (line_color_reserve + 1,
-     .       max_color - line_color_reserve - (shd_levels+1))
+     .       max_color - line_color_reserve - (ncolors_to_set+1))
         endif
-        hi_color_ndx(zwsid) = lo_color_ndx(zwsid) + (shd_levels+1) - 1
+        hi_color_ndx(zwsid) = lo_color_ndx(zwsid) + (ncolors_to_set+1) - 1
 
 * Plus one more for the bad-value color (e.g. missing data drawn as gray)
 
         hi_color_ndx(zwsid) = hi_color_ndx(zwsid) + 1
-	bad_ribbon_ndx = (shd_levels+1) + 1
+	bad_ribbon_ndx = (ncolors_to_set+1) + 1
 
 *	CHOOSE CUSTOM COLORS OR THE DEFAULT SELECTION
         if (custom_colors) then
-           call setup_color_table (zwsid,lo_color_ndx(zwsid),shd_levels)
+           call setup_color_table (zwsid,lo_color_ndx(zwsid),ncolors_to_set)
            if (meta_actv .and. .not. meta_clsplt) call setup_color_table 
-     .			(meta_wsid,lo_color_ndx(zwsid),shd_levels)
+     .			(meta_wsid,lo_color_ndx(zwsid),ncolors_to_set)
         else
            call set_default_colors (zwsid,zwstype,lo_color_ndx(zwsid),
-     .							shd_levels)
+     .							ncolors_to_set)
         end if
 
 
@@ -146,7 +154,7 @@
 * GKS has a hard-wired MAX_BUNDL_TBL set at 250. This means we are
 * limited on number of colors drawn with thick lines.
 
-        ncolors = shd_levels
+        ncolors = ncolors_to_set
 	IF ((low_index+(nthick-1)*(ncolors+1)+ncolors) .GT. max_bundles) THEN
 
 	    n3 = (low_index+(nthick-1)*(ncolors+1)+ncolors)
@@ -215,7 +223,7 @@
 	   do 30 fktr = 1,nthick     ! thickness
               thickness = REAL(fktr)
 	      icolr = j + lo_color_ndx(zwsid) - 1
-              index = low_index + (fktr-1)* (shd_levels+1) + j
+              index = low_index + (fktr-1)* (ncolors_to_set+1) + j
 
 	      call gspmr (zwsid,index,marktype,dotsize,icolr)
 	      call gsplr (zwsid,index,1,thickness,icolr)

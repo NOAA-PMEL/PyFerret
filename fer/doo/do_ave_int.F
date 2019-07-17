@@ -68,14 +68,7 @@
 	external xunits_data
 	include 'xtm_grid.cmn_text'
 	external xgt_grid_data
-
-* internal variable declarations:
-	LOGICAL	GEOG_COS_FACTOR, ITSA_TRUEMONTH_AXIS,
-     .          need_cos, integrate, point
-	INTEGER i, j, k, l, m, n, grid, pt, lo, hi, axis
-	REAL	BOX_SIZE, unit, bad_com, bad_res, cos_factor,
-     .          ybxlo, ybxhi, bx
-	REAL*8	TM_WORLD, dsum, bsum
+	include	'xdset_info.cmn_text'
 
 * calling argument declarations:
 	INTEGER	action, idim, com_lo, com_hi, com_mr, com_cx, res_mr, res_cx
@@ -86,6 +79,17 @@
      .          weights ( m2lox:m2hix,m2loy:m2hiy,m2loz:m2hiz,
      .                    m2lot:m2hit,m2loe:m2hie,m2lof:m2hif ),
      .		box( com_lo:com_hi )
+
+
+* internal variable declarations:
+	LOGICAL	GEOG_COS_FACTOR, ITSA_TRUEMONTH_AXIS, TM_ITSA_DSG,
+     .          need_cos, integrate, point
+	INTEGER TM_DSG_DSET_FROM_GRID, TM_DSG_NFEATURES, 
+     .          i, j, k, l, m, n, grid, pt, lo, hi, axis, dset, 
+     .          nfeatures, maxobs, mr_list(2)
+	REAL	BOX_SIZE, unit, bad_com, bad_res, cos_factor,
+     .          ybxlo, ybxhi, bx
+	REAL	TM_WORLD, dsum, bsum, little_val, big_val
 
 * --- end of introductory code ---
 
@@ -99,6 +103,29 @@
 	bad_res = mr_bad_data( res_mr )
 	integrate = action .EQ. isact_integ_def
         point = .FALSE.
+
+	
+
+	IF (TM_ITSA_DSG(grid)) THEN 
+* DSG ragged array
+	   dset = TM_DSG_DSET_FROM_GRID(grid)
+	   nfeatures = TM_DSG_NFEATURES(grid)
+* ... get the length of the longest feature
+	   CALL DSG_COORD_LIMS(dset, pdsg_row_size, little_val, big_val)
+	   maxobs = big_val
+
+	   mr_list(1) = com_mr
+	   mr_list(2) = res_mr
+	   CALL NON_ARRAY_SUBSC( mr_list, 2 )
+	   CALL DSG_ARRAY_SUBSC( mr_list, 2, dsg_orientation(dset) )
+
+	   CALL DO_AVE_INT_DSG( action, idim, dset, nfeatures, maxobs,
+     .				com, com_mr, com_cx,
+     .				res, res_mr, res_cx,
+     .				box, weights )
+
+
+	ELSE  ! not dsg
 
 * get and save grid box sizes (weights) just once for efficiency
         IF ( lo .EQ. hi ) THEN    ! 8/92
@@ -330,6 +357,10 @@
  710	   CONTINUE
 
 	ENDIF
+
+
+	ENDIF  ! not dsg
+
 
 	RETURN
 	END

@@ -69,17 +69,35 @@
 * v698 *sh* 12/15 declare larger dset arrays: maxdsets ==> pdsetalloc
 * V701  7/16 *kms* Initialize ds_name and ds_des_name to pdsetalloc*char_init2048 
 *                  instead of pdsetalloc*char_init1024
+* V720   4/17 *sh* add DSG variables 
 
 #include "tmap_dset.parm"		
 	include 'tmap_dims.parm'		! parameter definitions
 	include 'xdset_info.cmn_text'
 
 * local parameters
-	INTEGER		max6axes, maxnvars, maxdsets_aux, maxdsets_parm
+	INTEGER		max6axes, maxnvars, maxdsets_aux, maxdsets_parm, maxdsg_coords
 	PARAMETER	(max6axes = 6*pdsetalloc)
 	PARAMETER	(maxnvars = nferdims*maxvars)
 	PARAMETER	(maxdsets_aux = pdsetalloc*num_aux)
 	PARAMETER	(maxdsets_parm = pdsetalloc*num_parm)
+	PARAMETER	(maxdsg_coords = 4*pdsetalloc)
+
+* for COMMON/XDSG_INFO/
+	DATA	dsg_ragged		/pdsetalloc*.FALSE./
+	DATA	dsg_feature_type	/pdsetalloc*int4_init/
+	DATA	dsg_row_size_var	/pdsetalloc*int4_init/
+	DATA	dsg_orientation		/pdsetalloc*int4_init/
+	DATA	dsg_obs_dimlen		/pdsetalloc*int4_init/
+	DATA	dsg_xlate_grid		/pdsetalloc*int4_init/
+	DATA	dsg_msk_lm		/pdsetalloc*int4_init/
+	DATA	dsg_coord_var		/maxdsg_coords *int4_init/
+	DATA	dsg_obs_axis		/int4_init/
+	DATA	dsg_instance_axis	/int4_init/
+	DATA	dsg_instance_dim	/int4_init/
+	DATA	dsg_obs_dim		/int4_init/
+	DATA	dsg_loaded_lm		/maxvars*int4_init/
+	DATA	dsg_user_direction	/int4_init/
 
 * Initialize variables associated with data set
 	DATA	ds_type			/pdsetalloc*char_init04/

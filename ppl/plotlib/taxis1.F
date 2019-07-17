@@ -123,7 +123,7 @@ C
         REAL vgrat(4,2)        ! line type: 0=tics only, <0=line, >0=dash lengths 
         INTEGER vcolor(*)      ! pen number for graticule lines
 	INTEGER color0	       ! pen number to restore 
-        LOGICAL vline          ! If true, do the lines across.
+        LOGICAL vline, do_line   ! If true, do the lines across.
         LOGICAL solid1, solid2   ! solid lines across at tics
         LOGICAL dashed1, dashed2 ! dashed lines across at tics
 
@@ -152,6 +152,8 @@ C set up for plotting graticules across at tic marks
      .            vgrat(3,1).GT.0 .OR.  vgrat(4,1).GT.0 )
         dashed2 = (vgrat(1,2).GT.0 .OR. vgrat(2,2).GT.0 .OR.  
      .            vgrat(3,2).GT.0 .OR.  vgrat(4,2).GT.0 )
+
+	do_line = vline
 
         color1 = vcolor(1)
         color2 = vcolor(2)
@@ -207,9 +209,9 @@ C     SET PARAMETERS.
 
       CALL PLOT(TLO,Y,0,0)
 	IF(IDAY.EQ.1)THEN
-	CALL PLOTT7(TLO,Y,TFACT,YFACT,1,IHVY)
+	   CALL PLOTT7(TLO,Y,TFACT,YFACT,1,IHVY)
 	ELSE
-	       CALL PLOTT7(TLO,Y,TFACT,YFACT,1,INML)
+	   CALL PLOTT7(TLO,Y,TFACT,YFACT,1,INML)
 	ENDIF
 
       T=TLO
@@ -261,10 +263,16 @@ c ----
 C      LOOP:
    10     CALL PLOT(T,Y,0,0)
 	  IF ( interrupted ) RETURN		! TMAP interrupt
+
+*    do not draw a graticule line along the upper axis
+	  do_line = ( ITIME3(13:14)// ITIME3(1:10).LT.
+     .	              ITIME2(13:14)//ITIME2(1:10)) 
+
           DO 20 I=1,NSMTIC
               CALL PLOTT7(T+FLOAT(I)*TDIST,Y,TFACT,YFACT,1,-7)
               
-                 IF ((solid2.OR.dashed2) .AND. vline) THEN ! make line across
+
+                 IF ((solid2.OR.dashed2) .AND. do_line) THEN ! make line across
                     CALL COLOR(color2)
                     IF (dashed2) THEN
                        CALL DASHSZ(dash2_1,dash2_2,dash2_3,dash2_4)
@@ -279,11 +287,16 @@ C      LOOP:
 
    20         CONTINUE
           CALL TIME1(1,ITIME,2,' ',I3,ITIME3,1440.)
-          CALL TIME3(ITIME3,IYR3,IMON3,IDAY3,IHR3,IMIN3,ISEC3,ICEN3)
-	IF(IDAY3.EQ.1)THEN
-	   CALL PLOTT7(T+TIC,Y,TFACT,YFACT,1,IHVY)
+          CALL TIME3(ITIME3,IYR3,IMON3,IDAY3,IHR3,IMIN3,ISEC3,ICEN3)	
+	  
+*    do not draw a graticule line along the upper axis
+	  do_line = ( ITIME3(13:14)// ITIME3(1:10).LT.
+     .	              ITIME2(13:14)//ITIME2(1:10)) 
+
+          IF(IDAY3.EQ.1)THEN
+	      CALL PLOTT7(T+TIC,Y,TFACT,YFACT,1,IHVY)
                
-                 IF ((solid1.OR.dashed1) .AND. vline) THEN ! make line across
+                 IF ((solid1.OR.dashed1) .AND. do_line) THEN ! make line across
                     CALL COLOR(color1)
                     IF (dashed1) THEN
                        CALL DASHSZ(dash1_1,dash1_2,dash1_3,dash1_4)
@@ -297,9 +310,8 @@ C      LOOP:
                  ENDIF
 
 	ELSE
-	       CALL PLOTT7(T+TIC,Y,TFACT,YFACT,1,INML)
 
-              IF ((solid2.OR.dashed2) .AND. vline) THEN ! make line across
+              IF ((solid2.OR.dashed2) .AND. do_line) THEN ! make line across
                  CALL COLOR(color2)
                  IF (dashed2) THEN
                     CALL DASHSZ(dash2_1,dash2_2,dash2_3,dash2_4)
@@ -311,6 +323,7 @@ C      LOOP:
                  CALL COLOR(color0)
                  CALL VECTRS
               ENDIF
+	      CALL PLOTT7(T+TIC,Y,TFACT,YFACT,1,INML)
 
 	ENDIF
 C         THE LABELS
@@ -362,6 +375,11 @@ c          IF(ITIME.LT.ITIME2) GO TO 10
           IF(ITIME(13:14)//ITIME(1:12) .LT. 
      .       ITIME2(13:14)//ITIME2(1:12) ) GO TO 10
 	     IF(IMDB.EQ.0) RETURN
+
+*     Draw complete time axis
+          CALL PLOT(TLO,Y,0,0)
+          CALL PLOT(T,Y,1,0)
+
 	     
 	IF(IABS(LABEL).EQ.1.AND.IMON.EQ.IMDB*(IMON/IMDB)
      .	.AND.IDAY3.GE.4)THEN

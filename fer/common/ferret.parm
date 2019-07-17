@@ -59,6 +59,7 @@
 *                  uvar_aux_var replaced with calls to LIST routines in NCF_Util.c 
 *                  Increase size of max_gfdl_dsets and max_grids
 * V720: 4/17 *acm* Add direction-changing functions as a subset of grid-changing ones
+* V720: 4/17 *acm* Add direction-changing functions as a subset of grid-changing ones
 * V720: 6/17 *acm* Ticket 2346: new @IIN regridding transform
 * V740: 1/18 *acm* for issue 1854, protection status temporarily reset 
 *             for curvi-coord plot with /SET
@@ -329,7 +330,8 @@
      .			trans_nrst_indx_blw,
      .			trans_event_mask,
      .			trans_avg_wgt,
-     .			trans_4d_avg_wgt
+     .			trans_4d_avg_wgt,
+     .			trans_dsg_e_axis
 
 	PARAMETER     ( trans_compress_code = 30,
      .			trans_no_transform = 1,
@@ -381,7 +383,8 @@
      .                  trans_reduced 	   = trans_compress_code + 17,
      .                  trans_4d_sum 	   = trans_compress_code + 18,
      .                  trans_std_dev      = trans_compress_code + 19,
-     .                  trans_4d_std       = trans_compress_code + 20)
+     .                  trans_4d_std       = trans_compress_code + 20,
+     .			trans_dsg_e_axis   = trans_compress_code + 21)
 
 * codes to designate regridding transformations
 ! unused but required to compile V4.11 code:
@@ -781,3 +784,11 @@
 * flag to indicate this variable is the special 2D tf_times forecast field
 	INTEGER		pagg_promotion_indicator_dset
 	PARAMETER     ( pagg_promotion_indicator_dset = -6767)
+
+* flags to indicate DSG-ness
+	INTEGER		pdsg_not_dsg, pdsg_instance, pdsg_observation
+	PARAMETER     ( pdsg_not_dsg     = 0,
+     .			pdsg_instance    = 1,
+     .			pdsg_observation = 2 )
+	REAL	        dsg_masked_out_flag
+	PARAMETER     ( dsg_masked_out_flag = -12345.)

@@ -1,10 +1,12 @@
 ! bn_global_atts
 ! NOTE With the fix for ticket 2241, we need to add CANCEL MODE UPCASE.
+! Note With auto-detection of DSG files, this is detected as an invalid DSG. 
+! Ignore it's dsg-ness.
 
 cancel mode upcase
 
 sp cp data/global.nc  global_copy.nc
-use global_copy.nc
+use/feature=none global_copy.nc
 ! Lon in 0-360
 let/title="longitude"/units="degrees_east" lon360 = IF longitude LT 0 THEN longitude+360 else longitude
 define attribute/output lon360.ioos_category = "Location"

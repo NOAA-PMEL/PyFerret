@@ -1,0 +1,11 @@
+#! /bin/csh -f
+# remove old benchmark files left by the previous run
+# this must be done in order for GO bn_all to succeed
+
+# *sh* 3/17 Check for corruption warnings in the error log
+
+
+set temp_files = "test.dat test.gt test.unf WV.J34K56L7 F*.cdf test*.cdf newjournal.jnl fort.41 bench.mgm"
+foreach file ($temp_files)
+      /bin/rm -f $file
+end

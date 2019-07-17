@@ -77,6 +77,8 @@
 * V698+ *sh* 11/15 add arg ok_share_taxis so DEFINE DATA/AGG/T can safely 
 *		   modify T axis gleaned from first file in time series
 * V698  *sh*  3/16 pass native_tax to CD_SCAN_AUX_VARS as lag_T ax of the FMRC
+* V74+ 6/18 *acm*  On a dsg file, if the init failed, continue as a non-dsg file
+* V74+ 6/18 *acm*  On a dsg file, if errors found in the DSG it's an error
 
 * include files
 #include "gt_lib.parm"
@@ -124,9 +126,27 @@
       CALL CD_GET_TMAP_PARMS ( dset, cdfid, status )
       IF ( status .NE. merr_ok ) GOTO 5980
 
+* **** 4/2017 DSG: try to process this as a DSG dataset
+
+      IF (dsg_ragged(dset)) THEN
+	 CALL CD_DSG_SCAN_VARS( dset, cdfid, status )
+         IF ( status .NE. merr_ok ) GOTO 5900
+	 IF (.NOT.dsg_ragged(dset)) THEN
+	    GOTO 5900  
+	 ENDIF
+
+	 CALL CD_DSG_GRIDS( dset, cdfid, temp_axnams, status )
+         IF ( status .NE. merr_ok ) GOTO 5900
+	 IF (.NOT.dsg_ragged(dset)) THEN
+	    GOTO 5900  
+	 ENDIF
+	 GOTO 2000
+      ENDIF
+* ****
+
 * read through the netCDF variables to read variable attributes
 * and  load the TMAP axes
-      CALL CD_SCAN_VARS( dset, cdfid, reversed, tregular, use_strict, status )
+ 1000 CALL CD_SCAN_VARS( dset, cdfid, reversed, tregular, use_strict, status )
       IF ( status .NE. merr_ok ) GOTO 5900
 
 * build grids for variables w/out parent grids and associate with variables
@@ -143,7 +163,7 @@
       IF ( status .NE. merr_ok ) GOTO 5900
 
 * replace name linkages between axes and grids with pointers.  Delete dups
-      CALL CD_CLEAN_GRIDS ( dset, cdfid, temp_axnams,
+ 2000 CALL CD_CLEAN_GRIDS ( dset, cdfid, temp_axnams,
      .			    ok_share_taxis, native_tax, status )
       IF ( status .NE. merr_ok ) GOTO 5900
 
@@ -187,6 +207,7 @@ c        sf_lunit( cd_stepfile(dset) ) = file_not_open
       RETURN
 
 * error exit
+
  5900 CALL CD_ABORT_GRIDS
  5980 CONTINUE
       IF (remote_dods_id .NE. 0) istat = NF_CLOSE( remote_dods_id )

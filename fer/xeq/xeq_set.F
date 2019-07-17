@@ -205,6 +205,7 @@
 *                 initialize an aggregation. If given w/o .agg, a hack will look for it.
 * v743  7/18 *acm Issue 1887, numeric dataset names w/o extension, better test 
 *                 for whether it's just a digit, "use n".
+* V74+ 6/18 *acm* Changes to the handling of USE/FEATURE=  
 * v743  12/18 *acm* Issue 1803, New command-line switch -verify for set mode ver:always behavior
 * v745 *acm* 12/18 Issue 1909, option to write dates in ISO8601 format
 *                  new mode datefmt for formatted date output
@@ -280,7 +281,8 @@
      .                  varname*512, attname*128, new_att_calendar*10, 
      .                  new_att_t0*128, new_att_units*128, buff3*512,
      .                  t0string*128, ustring*128, faccess*16, 
-     .                  fposition*16, fstatus*16, c1*1, typflag*10  
+     .                  fposition*16, fstatus*16, c1*1, typflag*10, 
+     .                  fmask_var*128
 	LOGICAL		TM_LEGAL_UNIX_NAME, MATCH4, TM_DIGIT, 
      .                  TM_DIGIT_ONLY,
      .                  TM_HAS_STRING, TM_LEGAL_NAME, MATCH_NAME, TM_FPEQ,
@@ -438,6 +440,7 @@ c *kob* 4/97
 
 * SET DATA_SET data_set1, data_set2, ...
  700    ds_dset_type = ' '
+
  	IF ( qual_given(slash_set_data_save) .GT. 0
      .	.OR. qual_given(slash_set_data_restore) .GT. 0 ) THEN
 	   IF ( num_items.GT.0 .OR. num_qualifiers.GT.1 ) GOTO 5710
@@ -517,6 +520,32 @@ c *kob* 4/97
         loc = qual_given(slash_set_data_strict )
 	use_strict = loc .GT. 0
 
+
+* SET DATA/FEATURE=  Set the DSG feature type
+* Options are 
+*   /feature=trajectory  must have lon, lat in the obs direction
+*   /feature=profile     must have depth/height in the obs direction
+*   /feature=timeseries  must have time in the obs direction
+*   /feature=none        to ignore feature attributes and treat it as a regular gridded file.
+* Code checks to see if it can be handled with the requested feature type.
+
+* Initialize- set this flag only if this SET DATA is a SET DATA/FEATURE (If the set's already
+* open, leave the setting as-is, we're just making this set the default.)
+
+	dsg_user_direction = int4_init
+
+	IF (qual_given(slash_set_data_feature) .GT. 0) THEN
+	   loc = qual_given(slash_set_data_feature)
+	   CALL EQUAL_STRING(
+     .          cmnd_buff(qual_start(loc):qual_end(loc)),
+     .                    ustring, status )
+	   IF (STR_SAME(ustring(1:3), 'tra') .EQ. 0) dsg_user_direction = x_dim ! arbitrarily
+	   IF (STR_SAME(ustring(1:3), 'pro') .EQ. 0) dsg_user_direction = z_dim
+	   IF (STR_SAME(ustring(1:3), 'tim') .EQ. 0) dsg_user_direction = t_dim
+	   IF (STR_SAME(ustring(1:3), 'non') .EQ. 0) dsg_user_direction = no_dim
+	ENDIF
+
+
 * interpret the /ORDER permutation qualifier for a non-EZ data set
 	DO 720 idim = 1, nferdims
  720	perm(idim) = unspecified_int4 ! set default
@@ -534,6 +563,7 @@ c *kob* 4/97
 * 9/95 - replaced "*" with "(I)" read from separate buffer
 * Just check the first character for a digit (ticket 1974)
 	   c1 = cmnd_buff(item_start(item):item_start(item))
+	   buff1 = cmnd_buff(item_start(item):item_end(item))
 	   IF ( c1 .GE. '0' .AND. c1 .LE. '9' ) THEN
 	      buff1 = cmnd_buff(item_start(item):item_end(item))
 * *kob* 4/97
@@ -566,6 +596,10 @@ c *kob* 4/97
      .	      .OR.   dset_num .GT. maxdsets
      .	      .OR.   dset_num .GT. max_gfdl_dsets )	        GOTO 5110
 	      IF ( ds_name( dset_num ) .EQ. char_init2048) 	GOTO 5110
+	      IF (dsg_user_direction .NE. int4_init) THEN
+	         buff1 = ds_des_name(dset_num)
+	         GOTO 740
+	      ENDIF
 	      GOTO 745
 	   ENDIF
 
@@ -573,7 +607,8 @@ c *kob* 4/97
 * is this a designated special format?
  740       loc = qual_given(slash_set_data_form )
            IF ( loc .GT. 0 ) THEN
-              CALL EQUAL_STRING(
+              
+	      CALL EQUAL_STRING(
      .                   cmnd_buff(qual_start(loc):qual_end(loc)),
      .                   data_form, status )              
               IF ( status .NE. ferr_ok ) GOTO 5000
@@ -588,7 +623,8 @@ c *kob* 4/97
            ENDIF
 
 * initialize a TMAP-supported data set
- 	   CALL TM_INIT_DSET( cmnd_buff( item_start(item):item_end(item) ),
+c           CALL TM_INIT_DSET( cmnd_buff( item_start(item):item_end(item) ),
+           CALL TM_INIT_DSET( buff1,
      .			      ok_re_use_existing,
      .			      perm, dset_num, tregular, use_strict, tmap_status )
 
@@ -609,6 +645,7 @@ c *kob* 4/97
 	   IF ( tmap_status .EQ. merr_no_action ) THEN
 	      GOTO 745					! already init'ed
 	   ELSEIF ( tmap_status .NE. merr_ok )	  THEN
+	      status = tmap_status
 	      GOTO 5090					! error in .DES file
 	   ENDIF
 
@@ -632,9 +669,21 @@ c *kob* 4/97
               ds_title(dset_num) = title
            ENDIF
 
- 750	CONTINUE
-	RETURN
+* SET DATA/FMASK= for a dataset that's already open  
+           IF (qual_given(slash_set_data_fmask) .GT. 0) THEN
+	      loc = qual_given(slash_set_data_fmask)
+	      CALL EQUAL_STRING (cmnd_buff(qual_start(loc):qual_end(loc)),
+     .                        fmask_var, status)
 
+	      CALL LOAD_DSG_MASKVAR (dset_num, fmask_var, status)
+	      IF (status .NE. ferr_ok) GOTO 5000
+
+           ENDIF
+
+ 750	CONTINUE
+
+	RETURN
+                
 
 * error in descriptor not detected by GT_INIT_DSET
  790	CALL TM_CLOSE_SET( dset_num, tmap_status )

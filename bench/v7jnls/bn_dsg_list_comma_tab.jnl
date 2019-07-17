@@ -1,0 +1,54 @@
+! bn_dsg_list_comma_tab
+! Tests of comma- and tab-separated output from DSG datasets
+! 5/30/2019
+
+use dsg_cross_dateline
+
+! default listing makes the big header 
+! and includes coordinate and feature info
+
+list/format=comma temp, lons
+
+! subset in longitude
+list/format=comma/x=0:180 temp, lons
+list/x=0:180/m=2:3/form=comma temp, lons
+
+! when coordinate variables are specified they are unformatted.
+list/x=0:180/m=2:3/form=comma lons, lats, time, temp
+
+! /nohead removes all the header except one line with column names
+list/x=0:180/m=2:3/form=comma/nohead temp, lats
+
+! /norow removes the coordinate data 
+list/x=0:180/m=2:3/form=comma/norow temp, lons
+
+! /norow and /nohead.  
+list/x=0:180/m=2:3/form=comma/norow/nohead  lons, lats, time, temp
+
+! tab formats
+list/format=tab temp, lons
+
+! subset in longitude
+list/format=tab/x=0:180 temp, lons
+list/x=0:180/m=2:3/form=tab temp, lons
+
+! when coordinate variables are specified they are unformatted.
+list/x=0:180/m=2:3/form=tab lons, lats, time, temp
+
+! /nohead removes all the header except one line with column names
+list/x=0:180/m=2:3/form=tab/nohead temp, lons
+
+! /norow removes the coordinate data 
+list/x=0:180/m=2:3/form=tab/norow temp, lons
+
+! /norow and /nohead.  
+list/x=0:180/m=2:3/form=tab/norow/nohead  lons, lats, time, temp
+
+
+! Test profile data, automatically include depth in the coordinates
+
+use profile_dsg
+let pmask = {1,,1}
+set data/fmask=pmask profile_dsg
+list/form=comma sal, pot_temp_degc
+

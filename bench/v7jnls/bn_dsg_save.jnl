@@ -1,0 +1,58 @@
+! 
+use dsg_cross_prime.nc
+! simple save keeps all the needed elements for DSG file
+save/clobber/file=a.nc sst
+can data/all; use a
+list sst
+
+use dsg_cross_prime.nc
+
+! now with a mask
+let/bad=-99 emask = {1,-99,1}
+set data/fmask=emask 1
+save/clobber/file=a.nc/title='masked {1,-99,1}' sst
+can data/all; use a
+list sst
+
+use dsg_cross_prime.nc
+
+! or with limits in space-time
+cancel data/fmask 1
+save/clobber/file=a.nc/x=0:180/y=0:90 sst
+list/x=0:180/y=0:90 sst
+can data/all; use a
+list sst
+
+use dsg_cross_prime.nc
+
+! another dataset and mask
+
+use WestCoastCarbon_9d9c_f562_77b5_5f8e_5d19_7b1d.nc
+set var/units=units pco2
+let/title="Where Profile is 80,86,87,88" mask = element_index (profile,{80,86,87,88})
+
+set data/fmask=mask WestCoastCarbon_9d9c_f562_77b5_5f8e_5d19_7b1d
+save/clobber/file=a.nc pco2
+can data/all; use a
+list pco2
+
+use WestCoastCarbon_9d9c_f562_77b5_5f8e_5d19_7b1d.nc
+
+! Also constrained in space
+save/clobber/file=a.nc/z=0:100/y=30:33 pco2
+can data/all; use a
+list pco2
+
+cancel data/all; cancel var/all
+
+! Save an obs variable and a user-defined var on the same grid.
+
+use profile_dsg
+let/like=sal nobig = if sal le 35 then sal
+save/clobber/file=a.nc sal
+save/append/file=a.nc nobig
+
+cancel data/all; cancel var/all
+use a
+show data
+list sal, nobig

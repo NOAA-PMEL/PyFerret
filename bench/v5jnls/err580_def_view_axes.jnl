@@ -9,7 +9,7 @@
 
 ! Does not crash with Ferret v5.50 
 
-define view/x=0.2:0.4/y=.2:.4/text=0.75/axes v1
+define view/x=0.2:0.4/y=.2:.4/axes v1
 
 set window/clear
 set mode metafile viewaxes.plt

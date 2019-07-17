@@ -24,10 +24,9 @@ C**
      *	LDIG(ICNLEV),LWGT(ICNLEV),LCLR(ICNLEV),
      *	NLEV,NLEV_DFLT,HGT,LEV_STD,LEV_MEAN,LEV_MIN,LEV_MAX,LEV_HIST,
      *  NARC,IAUTOC,NLEV2,NLEVsave,NSIGC,INISIG,NEWSIG,CANGLE,IVCOMP,
-     *  CONTOUR_FEWER,CENTERED,SET_DELTA,DELTA,NEGINF,POSINF,CONT_KEY,
+     *  CONTOUR_FEWER,INTLEV,CENTERED,SET_DELTA,DELTA,NEGINF,POSINF,CONT_KEY,
      *  OPENLEV,SET_STD,SET_MEAN,SET_MIN,SET_MAX,NEED_DATA_SCAN,USE_HIST,
-     *  LEV_STR,INTLEV
-
+     *  LEV_STR,colorkey_labs
 c
 c	zlev()	array of levels to be contoured (user units)
 c	ldig()	number opf decimal places in the contour labels
@@ -69,6 +68,7 @@ c	delta		The specified DZ value
 *	lev_min		the values of min and/or max.
 *	lev_max
 *	lev_int		insist that levels values are integer
+*	colorkey_labs   text labels for colorbar labels
 
 
 c*******************************************************************

@@ -62,6 +62,7 @@
 * V581 *acm* 6/05 - For fix to bug 1271, add flag line_shift_origin
 * V614 *acm* 10/08 - Fix bug 1595, comparisons of xx1 and -1*xx2 did
 *                   not take into account that the values may be zero.
+* V720 *sh* 4/17 - special treatment for DSG axes
 
 * Include files
 	include 'tmap_dims.parm'
@@ -110,6 +111,9 @@
 	  ENDIF
 * Check orientation
 	  IF (line_direction(line1) .NE. line_direction(line2)) GOTO 1000
+
+* DSG axes are unique per dataset
+	  IF (line_dsg_dset(line1) .NE. line_dsg_dset(line2))   GOTO 1000
 
 * Check special values for time axis
 	  IF (line_direction(line2) .EQ. 'TI') THEN

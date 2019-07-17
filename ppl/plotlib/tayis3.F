@@ -60,6 +60,8 @@ C *acm*  3/10  Bug 670 fixed: New flag MULTICENFLAG for multi-decade plots,
 C              do not make small tics by default.
 C v7   *acm*  6/16 Fix ticket 2436: # characters used in time-axis labels 
 * *acm* - 8/16   ticket 1787: restore pen 0 correctly after graticule
+* V745 *acm* 3/19 Draw tic marks on top of any graticule lines so 
+*                 dashes or color are covered up by the tic mark
 
 C**
 C**    @(#)tayis3.f	1.1    3/10/88
@@ -134,7 +136,7 @@ C
         REAL hgrat(4,2)        ! line type: 0=tics only, <0=line, >0=dash lengths 
         INTEGER hcolor(*)      ! pen number for graticule lines
 	INTEGER color0	       ! pen number to restore 
-        LOGICAL hline          ! If true, do the lines across.
+        LOGICAL hline, do_line ! If true, do the lines across.
         LOGICAL solid1, solid2   ! solid lines across at tics
         LOGICAL dashed1, dashed2 ! dashed lines across at tics
         INTEGER ltic, color1, color2
@@ -158,6 +160,8 @@ C set up for plotting graticules across at tic marks
      .            hgrat(3,1).GT.0 .OR.  hgrat(4,1).GT.0 )
         dashed2 = (hgrat(1,2).GT.0 .OR. hgrat(2,2).GT.0 .OR.  
      .            hgrat(3,2).GT.0 .OR.  hgrat(4,2).GT.0 )
+
+     	do_line = hline
 
         color1 = hcolor(1)
         color2 = hcolor(2)
@@ -299,14 +303,16 @@ C     LOOP:
 	CALL TIME1(1,ITIME,2,' ',I3,ITIME3,SECMON)
 	CALL TIME3(ITIME3,IYR3,IMON3,IDAY3,IHR3,IMIN3,ISEC3,ICEN3)
 
+*    do not draw a graticule line along the upper axis
+	   do_line = ( ITIME3(13:14)// ITIME3(1:10).LT.
+     .	              ITIME2(13:14)//ITIME2(1:10)) 
+
 *       Century axis mod
 	IF (cenflag) THEN
 	   IF (IMON3.NE.1) GOTO 11
 	
 	   IF (MOD(ICEN3*100+IYR3,IYDB).EQ.0) THEN
-	      CALL PLOTT7(X,T+TIC,XFACT,TFACT,1,IHVY)
-
-              IF ((solid1.OR.dashed1) .AND. hline) THEN ! make line across
+              IF ((solid1.OR.dashed1) .AND. do_line) THEN ! make line across
                  CALL COLOR(color1)
                  IF (dashed1) THEN
                     CALL DASHSZ(dash1_1,dash1_2,dash1_3,dash1_4)
@@ -318,11 +324,12 @@ C     LOOP:
                  CALL COLOR(color0)
                  CALL VECTRS
               ENDIF
+	      CALL PLOTT7(X,T+TIC,XFACT,TFACT,1,IHVY)
+
 	   ELSE
 	      IF(NOT_ZERO_SIZE) THEN ! Don't plot zero length tic
-      	         CALL PLOTT7(X,T+TIC,XFACT,TFACT,1,INML)
 
-                 IF ((solid2.OR.dashed2) .AND. hline) THEN ! make line across
+                 IF ((solid2.OR.dashed2) .AND. do_line) THEN ! make line across
                     CALL COLOR(color2)
                     IF (dashed2) THEN
                        CALL DASHSZ(dash2_1,dash2_2,dash2_3,dash2_4)
@@ -334,13 +341,13 @@ C     LOOP:
                     CALL COLOR(color0)
                     CALL VECTRS
                  ENDIF
+      	         CALL PLOTT7(X,T+TIC,XFACT,TFACT,1,INML)
               ENDIF
 	   ENDIF
 	ELSE
 	   IF(IMON3.EQ.1)THEN
-	      CALL PLOTT7(X,T+TIC,XFACT,TFACT,1,IHVY)
 
-              IF ((solid1.OR.dashed1) .AND. hline) THEN ! make line across
+              IF ((solid1.OR.dashed1) .AND. do_line) THEN ! make line across
                  CALL COLOR(color1)
                  IF (dashed1) THEN
                     CALL DASHSZ(dash1_1,dash1_2,dash1_3,dash1_4)
@@ -352,12 +359,12 @@ C     LOOP:
                  CALL COLOR(color0)
                  CALL VECTRS
               ENDIF
+	      CALL PLOTT7(X,T+TIC,XFACT,TFACT,1,IHVY)
 
 	   ELSE
 	      IF(NOT_ZERO_SIZE) THEN  ! Don't plot zero length tic
-     		CALL PLOTT7(X,T+TIC,XFACT,TFACT,1,INML)
      
-                 IF ((solid2.OR.dashed2) .AND. hline) THEN ! make line across
+                 IF ((solid2.OR.dashed2) .AND. do_line) THEN ! make line across
                     CALL COLOR(color2)
                     IF (dashed2) THEN
                        CALL DASHSZ(dash2_1,dash2_2,dash2_3,dash2_4)
@@ -369,6 +376,7 @@ C     LOOP:
                     CALL COLOR(color0)
                     CALL VECTRS
                  ENDIF
+     		CALL PLOTT7(X,T+TIC,XFACT,TFACT,1,INML)
 
               ENDIF
 

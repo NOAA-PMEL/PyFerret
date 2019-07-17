@@ -15,7 +15,7 @@ label 0.26,0.95,-1,0,.2 @P2@AC<-At 0.25
 label 0.76,0.95,-1,0,.2 @P3@AC<-At 0.75
 
 ! a plot from 0.25 to 0.75
-def view /xlim=0.25:0.75/ylim=0.25:0.75/text=1/axes mid
+def view /xlim=0.25:0.75/ylim=0.25:0.75/axes mid
 set view mid
 plot/vs/hlim=-1:1/vlim=-1:1/line/i=1:200 cos(i/15),sin(i/15)
 show view mid
@@ -23,7 +23,7 @@ ppl list xaxis
 ppl list yaxis
 
 ! guidelines showing origin, axlen, white space
-def view /xlim=0.25:0.75/ylim=0.25:0.75/text=1/axes mid2
+def view /xlim=0.25:0.75/ylim=0.25:0.75/axes mid2
 set view mid2
 ppl origin 0,0
 define symbol xaxl `($PPL$WIDTH)/2`
@@ -50,7 +50,7 @@ ppl list xaxis
 ppl list yaxis
 
 ! guidelines showing origin, axlen, white space
-def view /xlim=0.25:0.75/ylim=0.25:0.75/text=1/axes mid2
+def view /xlim=0.25:0.75/ylim=0.25:0.75/axes mid2
 set view mid2
 ppl origin 0,0
 define symbol xaxl `($PPL$WIDTH)/2`
@@ -67,25 +67,25 @@ show view mid
 
 set wind/clear
 
-def view/axes/xlim=0:0.5/ylim=0:0.5/text=1 llax
+def view/axes/xlim=0:0.5/ylim=0:0.5 llax
 set view llax
 PLOT/VS/LINE/I=1:314/noyadj i*cos(i/20),i*sin(i/20)
 ppl list xaxis
 ppl list yaxis
 
-def view/axes/xlim=0:0.5/ylim=0.5:1/text=1 lrax
+def view/axes/xlim=0:0.5/ylim=0.5:1 lrax
 set view lrax
 PLOT/VS/LINE/I=1:314/noyadj i*cos(i/20),i*sin(i/20)
 ppl list xaxis
 ppl list yaxis
 
-def view/axes/xlim=0.5:1/ylim=0:0.5/text=1 ulax
+def view/axes/xlim=0.5:1/ylim=0:0.5 ulax
 set view ulax
 PLOT/VS/LINE/I=1:314/noyadj i*cos(i/20),i*sin(i/20)
 ppl list xaxis
 ppl list yaxis
 
-def view/axes/xlim=0.5:1/ylim=0.5:1/text=1 urax
+def view/axes/xlim=0.5:1/ylim=0.5:1 urax
 set view urax
 PLOT/VS/LINE/I=1:314/noyadj i*cos(i/20),i*sin(i/20)
 ppl list xaxis

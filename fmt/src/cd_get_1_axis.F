@@ -220,7 +220,6 @@
 * v7445*acm*  4/19 Issue 334: If there was a point_spacing = "even" attr, do more checking.
 *                  But, if they've said USE/REGULART then go ahead and treat it as regular.
 * v7445*acm*  4/19 Fix the calls to TM_SCALE 
-* V7.51 *acm* 5/2019: Issue 1934: error with Epic file where east lons were treated as west
 *
 * argument definitions:
 *       cdfid    - netCDF id number for already opened CDF file  (to go away with new attr. hanling)
@@ -665,8 +664,8 @@ c           IF ( status .NE. merr_ok ) GOTO 1000        ! 3/99 soft error
 * Use attributes to try to determine the orientation and 
 * direction of the axis
 
-      CALL CD_GET_LINE_DIRECTION (dset, ivar, vname, line_units(iaxis), 
-     .   do_warn, line_direction(iaxis))
+      CALL CD_GET_LINE_DIRECTION (dset, ivar, vname, line_units(iaxis),  
+     .   do_warn, .TRUE., line_direction(iaxis))
 
 * longitude axes may be encoded "west" (discontinuous at 180, East negative,
 * West positive) or "east" (standard - 0->360 east from Greenwhich)
@@ -680,17 +679,12 @@ c           IF ( status .NE. merr_ok ) GOTO 1000        ! 3/99 soft error
             west_lon = .TRUE.                        ! convert encodings below
       ENDIF
 
-* If there is a 'positive' attribute, see if it indicates west.
-
-
-      IF (got_it) THEN
-       west_lon = west_lon 
+      west_lon = west_lon 
      .  .OR.    ( line_direction(iaxis) .EQ. 'WE'
      .      .AND. TM_HAS_STRING(buff,'west') )
      .  .OR.    ( its_epic
      .      .AND. (INDEX(vupcase, 'LON') .GT. 0)
      .      .AND. .NOT.TM_HAS_STRING(buff,'east') )
-      ENDIF
 
 * was a regular time axis forced on us by the user?
       IF (tregular) THEN 

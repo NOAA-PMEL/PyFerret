@@ -101,6 +101,7 @@
 /* *acm*  5/18        Write a note if error with attribute type that results in bad_file_attr return   */
 /* *acm* 12/18        Issue 1049: Issue a NOTE if a dimension-named variable is non-numeric so can't 
                       be an axis  */
+/* *acm*  6/19        Don't write a note about string-valued coordinate variables  */
 
 #include <stddef.h>             /* size_t, ptrdiff_t; gfortran on linux rh5*/
 #include <wchar.h>
@@ -993,8 +994,6 @@ int FORTRAN(ncf_add_dset)( int *ncid, int *setnum, char name[], char path[] )
         list_insert_after(nc.dsetvarlist, (char *) &var, sizeof(ncvar), __FILE__, __LINE__);
     }
 
-
-
     /* get info on variables */
     for (iv = 0; iv < nc.nvars; iv++) {
         ncf_init_variable(&var);
@@ -1019,9 +1018,11 @@ int FORTRAN(ncf_add_dset)( int *ncid, int *setnum, char name[], char path[] )
                     var.is_axis = TRUE;
                     if ( (var.type == NC_CHAR) || (var.type == NC_STRING) ) {
                        var.is_axis = FALSE;
-                       fprintf(stderr, "           *** NOTE: Axis %s is of type char or string\n", var.name);
+/*
+					   fprintf(stderr, "           *** NOTE: Axis %s is of type char or string\n", var.name);
                        fprintf(stderr, "           *** NOTE: A dummy axis of subscripts will be used\n");
-                    }
+*/
+					}
                     if ( var.ndims > 1 )
                        var.is_axis = FALSE;
                 }

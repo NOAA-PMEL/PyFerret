@@ -308,6 +308,22 @@ bn_sample_multi.jnl
 bn751_bug_fixes.jnl
 
 !
+! dsg-specific tests
+!
+bn_dsg_tseries.jnl
+bn_regrid_to_dsg.jnl
+bn_dsg_feature_mask.jnl
+bn_dsg_repeat_m.jnl
+bn_dsg_traj_plot.jnl
+bn_regrid_from_dsg.jnl
+bn_dsg_use_feature.jnl
+bn_dsg_plot_timeseries.jnl
+bn_dsg_save.jnl
+bn_dsg_transforms.jnl
+bn_dsg_one_e_val.jnl
+bn_dsg_list_comma_tab.jnl
+bn_dsg_if_exprns.jnl
+!
 ! bn_gif, bn_all_ef, and bn_startupfile at end
 !
 bn_gif.jnl

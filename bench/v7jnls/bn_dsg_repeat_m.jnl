@@ -1,0 +1,18 @@
+! bn_dsg_repeat_m.jnl
+! Can repeat over M to look at individual features
+!  10/3/2018
+
+
+use dsg_cross_dateline
+repeat/m=1:3 (list temp)
+
+plot temp
+repeat/m=1:3 (plot/over/nolab/thick/sym=18/siz=`_m*0.1` temp)
+
+! A time-series with one point previously was an error now plots a point
+use DSG_ERDDAP_pmelTao5daySst.nc
+repeat/m=30:32 (plot/color=blue/thick t_25)
+
+use WestCoastCarbon_9d9c_f562_77b5_5f8e_5d19_7b1d
+plot pco2
+repeat/m=2:6:2 (plot/thick/color=blue pco2)

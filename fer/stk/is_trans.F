@@ -1,4 +1,4 @@
-	SUBROUTINE IS_TRANS(  ROUTINE, *, status )
+	SUBROUTINE IS_TRANS(  ROUTINE, *, *, status )
 
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -84,10 +84,18 @@
 *		   ii) accumulate, and iii) finalize so that compressed axes
 *		   may be split/gathered (in IS_STRIP and IS_GATHER)
 * V702 *sh*  1/17 for trac enhancement #2369 -- dynamic memory management 
-	
+* V720 *sh*  5/17 - support for transformations and DSG variables
+*                  Also the declaration line had only 1 abnormal return
+*                  but somehow it ran fine anyway.  Added the missing one.
+* V741 *acm* 6/18  Last bit of 1868: multi-D trans, if requested w/ some 
+*                  directions orthogonal to grid those should be ignored
+* V74+ *acm* 8/18  DSG development. For a non-compressiong transform on the 
+*                  E axis, don't rearrange subscripts using DSG_ARRAY_SUBSC
+
         IMPLICIT NONE
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
+	include 'xdset_info.cmn_text'   ! DSG stuff
 	include	'ferret.parm'
 	include	'errmsg.parm'
 	include	'interp_stack.parm'
@@ -107,14 +115,15 @@
 
 * internal variable declarations:
 * ... "res"="result" , "com"="component"
-	LOGICAL	ITSA_FILL_TRANS, ITSA_MODULO_AXIS, its_4d, string_bad_good,
-     .		string_com, need_init
+	LOGICAL	ITSA_FILL_TRANS, ITSA_MODULO_AXIS, TM_ITSA_DSG,
+     .		its_4d, string_bad_good, string_com, need_init, its_dsg
 	INTEGER CX_DIM_LEN, MGRID_SIZE_DELTA, DO_4D_STRING_TRANS, CAXIS_LEN,
+     .		TM_DSG_DSET_FROM_GRID,
      .		slen, cx_valid,
      .		res_isp, com_isp, res_cx, com_cx, com_mr, res_mr, idim,
      .		trans, grid, lo_off, hi_off, ss_lo, ss_hi,
      .		mrlist(2), axes(nferdims), idim1, i, ndim, axis, nbuffer,
-     .		dflt_cx, frag
+     .		dflt_cx, frag, dset, orientation
 	INTEGER*8 i8_size
 	REAL	arg
 	REAL*8	TM_WORLD, ww, ww_lo, ww_hi, init_val
@@ -138,6 +147,8 @@
 	string_bad_good = .FALSE.
 	string_com = .FALSE.
 	need_init = .FALSE.
+	cx_valid= cx_buff
+	its_dsg = TM_ITSA_DSG(grid)
 
 * determine if this is a 1D or a 4D (multiple axis) transformation
 	its_4d = .FALSE.
@@ -207,8 +218,13 @@
 	IF (is_phase(res_isp) .EQ. isphase_accumulate_transform) GOTO 500
 * 11111 start of isphase_initialize_transform 11111 *
 
+* trap the simple processing of a DSG here.  res_cx is always ready to use
+	IF (its_dsg) THEN
+	   CALL TRANSFER_CONTEXT( res_cx, cx_valid )
+	   GOTO 400
+	ENDIF
+
 * create a result context based on the received component
-	cx_valid= cx_buff
 	CALL TRANSFER_CONTEXT( com_cx, cx_valid )
 	DO 300 i = 1, ndim
 	   idim = axes(i)
@@ -283,7 +299,7 @@
  300	CONTINUE
 
 * the context is ready - carve out memory space for it
-	CALL TRANSFER_CONTEXT( cx_valid, res_cx )
+ 400	CALL TRANSFER_CONTEXT( cx_valid, res_cx )
 	
 	IF ( cx_type(com_cx) .EQ. ptype_string ) THEN
 	   string_com = .TRUE.
@@ -426,6 +442,12 @@
 	mrlist(1) = com_mr
 	mrlist(2) = res_mr
 	CALL NON_ARRAY_SUBSC( mrlist, 2 )
+	IF (its_dsg .AND. trans.GT.trans_compress_code) THEN
+* ... re-arrange subscripts to make 1D DSG views of the variables
+	   dset = TM_DSG_DSET_FROM_GRID(mr_grid(com_mr))
+	   orientation = dsg_orientation(dset)
+	   CALL DSG_ARRAY_SUBSC( mrlist, 2, orientation )
+	ENDIF
 
 * transformations applied to string arguments
 	IF ( string_com ) THEN

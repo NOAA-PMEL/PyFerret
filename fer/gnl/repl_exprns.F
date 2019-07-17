@@ -126,6 +126,7 @@
 * V73+ *acm* 12/17 Fix issue #1847 - value overflows integer on RETURN=size
 * V74  *acm* 2/18 Issue # 1861, handling missing- and _FillValue with scale and offset
 *                 change to `var,RETURN=bad`
+* V74+ *acm*10/10 Partial fix to working with E contexts in dsg datasets.
 * v745 *acm* 12/18  Issue 1909, option to write dates in ISO8601 format
 * v7441*acm* 12/18 Issue 1910: Allow dates in commands to be in ISO 8601 form, yyyy-mm-dd
 * v745* acm*  2/19 Issue 400:  If a user var is LET var = filevar[d=1] then return the
@@ -158,9 +159,10 @@
 	PARAMETER (max_len = 2048)
 
 * internal variable declarations:
-	LOGICAL   TM_HAS_STRING, TM_DFPEQ, need_formatting, zero_fill, coordvar,
+	LOGICAL   TM_HAS_STRING, TM_DFPEQ, TM_ITSA_DSG, 
+     .		  need_formatting, zero_fill, coordvar,
      .            do_err, do_eval, get_ready, was_dep, const_arr_var,
-     .		  dqote, DQ, orig_name, uvgrid, compressed, grid_reset
+     .		  dqote, DQ, orig_name, uvgrid, compressed, grid_reset, is_dsg
 	INTEGER   CGRID_SIZE, CGRID_AXIS, TM_LENSTR1, CX_DIM_LEN,
      .		  FIND_DSET_NUMBER, GET_ABSTRACT_LINE, TM_LENSTR,
      .		  TM_GET_GRIDNUM, GRID_FROM_NAME, TM_SUBSC, TM_GET_CALENDAR_ID,
@@ -170,7 +172,8 @@
      .            vartype, attype, attlen, inxt, attoutflag, fertype,
      .            attid, ieq, base_isp, base_cx, cat, var, uvar,
      .            i1ss, inss, grid, ucode, dotidx, shorterlen,
-     .            hi_cx, item, itype, start, len_name, var_status
+     .            hi_cx, item, itype, start, len_name, var_status, 
+     .            siz, ifeature
 	REAL	  result, val, aval
 	REAL*8 TM_WORLD, TM_WW_AXLEN, ww
 	CHARACTER TM_FMT*48, LEFINT*16, VAR_TITLE*(max_len),
@@ -202,6 +205,7 @@
         coordvar = .FALSE.
         apply_cx = .FALSE.
 	str_len = 0
+	is_dsg = .FALSE.
 	
 	grid = unspecified_int4
 	cx_only = .FALSE.   ! do merge_grid in mode for not evaluating full context
@@ -1240,18 +1244,56 @@ c		    ENDIF
 	   mr = is_mr(1)
 
 * ... make sure the result is a single, valid value
-	   IF ( CGRID_SIZE(cx) .NE. 1 ) GOTO 5200	! result not a scalar
+	   
+	   is_dsg = .FALSE.
+	   IF ( CGRID_SIZE(cx) .NE. 1 ) THEN
+
+*    For DSG grids the requested region may be just in the WW context in E
+	      is_dsg = TM_ITSA_DSG( cx_grid(cx) )
+	      IF (CGRID_SIZE(cx).GT.1 .AND. is_dsg ) THEN  
+	         siz = 1
+		 ifeature = 0
+	         DO idim = x_dim, t_dim
+	      	      siz = siz * (
+     .                 cx_hi_ss(cx,idim)  - cx_lo_ss(cx,idim) + 1 )
+	      	      IF (cx_lo_ss(cx, idim) .NE. unspecified_int4) 
+     .                 ifeature = cx_lo_ss(cx,idim)
+	         ENDDO
+	         siz = siz * ( 
+     .               cx_hi_ww(e_dim,cx) - cx_lo_ww(e_dim,cx) + 1 )
+	         siz = siz * ( 
+     .               cx_hi_ss(cx,f_dim) - cx_lo_ss(cx,f_dim) + 1 )
+	         IF (siz .NE. 1) GOTO 5200
+
+		 IF (ifeature.EQ.0 .AND. 
+     .               cx_hi_ww(e_dim,cx).NE.unspecified_val8) 
+     .                 ifeature = cx_hi_ww(e_dim,cx)
+		 IF (ifeature.EQ.0 .AND. 
+     .               cx_hi_ww(f_dim,cx).NE.unspecified_val8) 
+     .                 ifeature = cx_hi_ww(f_dim,cx)
+		 IF (ifeature .EQ. 0) ifeature = 1
+	      ELSE
+	         IF ( CGRID_SIZE(cx) .NE. 1 ) GOTO 5200	! result not a scalar
+	      ENDIF
+
+	   ENDIF
 
 * ... extract the result scalar from the (possibly larger) memory variable
 	   CALL CREATE_TEMP_MEM_VAR( cx, mr_temp, status )
 	   IF ( status .NE. ferr_ok ) RETURN
+
 	   CALL COPY_GRID( memry(mr)%ptr, mr,
      .                     memry(mr_temp)%ptr, mr_temp )
+
+           IF (is_dsg) CALL DSG_ONE_INSTANCE_VAL (mr, mr_type(mr_temp), 
+     .                           ifeature, result, repl, max_len, str_len)
 
 	   IF (mr_type(mr_temp) .EQ. ptype_string ) THEN
 
 * ... get one string
-	     repl =  GET_STRING_ELEMENT(
+
+
+	     IF (.NOT. is_dsg) repl =  GET_STRING_ELEMENT(
      .				mr_lo_s1(mr_temp), mr_hi_s1(mr_temp),
      .				mr_lo_s2(mr_temp), mr_hi_s2(mr_temp),
      .				mr_lo_s3(mr_temp), mr_hi_s3(mr_temp),
@@ -1265,7 +1307,8 @@ c		    ENDIF
      .				max_len, str_len)
 	   ELSE
 
-	     result =  memry(mr_temp)%ptr(1)
+	     IF (.NOT. is_dsg) result =  memry(mr_temp)%ptr(1)
+
 	     IF ( result .EQ. mr_bad_data(mr) ) THEN
 	        repl = bad_str
 	        str_len = TM_LENSTR1(bad_str)

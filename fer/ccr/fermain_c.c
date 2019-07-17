@@ -138,6 +138,7 @@
 * *sh*  2/17       - removed global "memory" -- now 1 malloc per Ferret var
 * *acm* 5/17       - restore -memsize switch to make the initial SET MEMORY setting
 * *acm* 12/18      -  Issue 1803, new command-line switch -verify for set mode ver:always behavior
+* *kms*  7/19      - if ./.ferret exists, use it instead of $HOME/.ferret
 */
 
 #include <unistd.h>
@@ -442,19 +443,27 @@ static void command_line_run()
 
   /* set up to execute $HOME/.ferret if it exists: '\GO "$HOME/.ferret"' */
   /* --> need to see if it exists!!! */
-  if (home != NULL ) {
+  /* KMS 07/2019 - if ./.ferret exists, use it instead of $HOME/.ferret */
+  fp = fopen("./.ferret", "r");
+  if ( fp != NULL ) {
+    fclose( fp );
+    strcpy( init_command, "GO \"./.ferret\"" );
+  }
+  else if ( home != NULL ) {
     strcpy( init_command, home );
     strcat( init_command, "/.ferret" );
     fp = fopen( init_command, "r" );
-    if ( fp == NULL ) 
-      strcpy( init_command, " " );
-    else {
+    if ( fp != NULL ) {
+      fclose( fp );
       strcpy( init_command, "GO \"$HOME/.ferret\"" );
-      fclose( fp ); }     /* moved close inside brackets - can't close a null fp *kob* */
-  } else {
+    }
+    else
+      strcpy( init_command, " " );
+  }
+  else {
     strcpy( init_command, " " );
   }
-  
+
   /* If Ferret was started with the -script switch, execute the script with its args. */
   
     if (its_script)

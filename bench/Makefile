@@ -52,13 +52,19 @@ compare_plots:
 	    echo "Comparing GIF files to those in bench/$$results_dir" ;\
 	    for img in `find . -name '*.gif' -a \! -regex './metafile_masters_.*' -exec basename {} \; | sort -u` ; do \
 	        if [ ! -f $$img ] ; then \
-	            echo "*** File $$img is missing ***" ;\
+	            echo "****** File $$img is missing ******" ;\
 	        elif [ ! -f $$results_dir/$$img ] ; then \
-	            echo "*** File $$results_dir/$$img is missing ***" ;\
-	        elif diff -q $$img $$results_dir/$$img ; then \
-	            echo "Files $$img and $$results_dir/$$img are identical" ;\
+	            echo "****** File $$results_dir/$$img is missing ******" ;\
+	        elif diff -q $$img $$results_dir/$$img 1> /dev/null ; then \
+	            echo "(Files $$img and $$results_dir/$$img are identical)" ;\
 	        else \
-	            compare $$img $$results_dir/$$img $${img}_diff.gif ; \
+	            numdiffpix=`compare -quiet -metric AE $$img $$results_dir/$$img $${img}_diff.gif 2>&1` ;\
+	            if [ "$$numdiffpix" = "0" ] ; then \
+	                rm -f $${img}_diff.gif ;\
+	                echo "(Images $$img and $$results_dir/$$img are identical)" ;\
+	            else \
+	                echo "****** Images $$img and $$results_dir/$$img are different ******" ;\
+	            fi ;\
 	        fi ;\
 	    done \
 	)

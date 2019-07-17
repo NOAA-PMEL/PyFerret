@@ -4,3 +4,4 @@
 *.log
 site_specific.mk
 /dylibs/
+/bench/.ferret

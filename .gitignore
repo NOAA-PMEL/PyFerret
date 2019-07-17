@@ -6,3 +6,4 @@ site_specific.mk
 /build/
 /install/
 /dylibs/
+/bench/.ferret

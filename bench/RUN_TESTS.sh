@@ -19,11 +19,7 @@ PS1='$ '
 export PS1
 
 cleanuponerror() {
-   rm -f $HOME/.ferret
-   if [ -f keep.ferret ]; then
-      echo "****** Returning keep.ferret to $HOME/.ferret ******"
-      mv keep.ferret $HOME/.ferret
-   fi
+   rm -f ./.ferret
    exit 129 
 }
 
@@ -122,13 +118,8 @@ fi
 echo "****** Restricting Ferret paths to bench directory ******" >> $log_file
 . ./bench_environment.sh
 
-# always replace $HOME/.ferret with default.ferret so results are consistent
-rm -f keep.ferret
-if [ -f $HOME/.ferret ]; then 
-   echo "****** Temporarily moving $HOME/.ferret to ./keep.ferret ******"
-   mv -f $HOME/.ferret ./keep.ferret
-fi
-cp ./default.ferret $HOME/.ferret
+# copy default.ferret to ./.ferret so results are consistent
+cp ./default.ferret ./.ferret
 trap "cleanuponerror" SIGHUP SIGINT SIGQUIT SIGILL SIGABRT SIGBUS SIGFPE SIGKILL SIGSEGV SIGTERM
 
 echo "Benchmark scripts that will be run:" >> $log_file
@@ -151,9 +142,8 @@ for script in $jnl_scripts; do
    echo "Running ferret script: $script"
 
    if [ $script = "bn_startupfile.jnl" ]; then
-#     bn_startupfile.jnl needs ferret_startup as $HOME/.ferret
-      rm -f $HOME/.ferret
-      cp -f ferret_startup $HOME/.ferret
+#     bn_startupfile.jnl needs the contents of ferret_startup as ./.ferret
+      cp -f ferret_startup ./.ferret
    fi
 
    if [ $script = "bn_dollar.jnl" ]; then
@@ -176,9 +166,8 @@ for script in $jnl_scripts; do
    fi
 
    if [ $script = "bn_startupfile.jnl" ]; then
-#     remove the $HOME/.ferret created for bn_startupfile.jnl
-      rm -f $HOME/.ferret
-      cp -f default.ferret $HOME/.ferret
+#     return ./.ferret to the contents of default.ferret
+      cp -f default.ferret ./.ferret
    fi
 
 #  add the contents of all_ncdump.out to $ncdump_file
@@ -207,12 +196,7 @@ if [ "$ispyferret" -ne 0 ]; then
 fi
 
 trap - SIGHUP SIGINT SIGQUIT SIGILL SIGABRT SIGBUS SIGFPE SIGKILL SIGSEGV SIGTERM
-# Replace $HOME/.ferret if it was removed
-rm -f $HOME/.ferret
-if [ -f keep.ferret ]; then
-   echo "****** Returning keep.ferret to $HOME/.ferret ******"
-   mv keep.ferret $HOME/.ferret
-fi
+rm -f ./.ferret
 
 # Replace insignificant differences with constant values
 cleanups="cleanups.sed"

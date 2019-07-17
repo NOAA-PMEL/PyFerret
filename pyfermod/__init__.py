@@ -490,8 +490,9 @@ def start(memsize=25, journal=True, verify=False, restrict=False,
           server=False, unmapped=False, pngonly=False, quiet=False, 
           linebuffer=False, metaname=None, transparent=False):
     """
-    Initializes Ferret from the arguments given.  
-    Executes any Ferret commands given in $HOME/.ferret
+    Initializes Ferret from the arguments given.  If not restricted,
+    executes any Ferret commands given in ./.ferret if it exists,
+    or $HOME/.ferret if it exists and ./.ferret does not exist.
 
     Arguments:
         memsize: (number)     the maximum amount on memory, in mega (10^6) floats 
@@ -790,19 +791,29 @@ def start(memsize=25, journal=True, verify=False, restrict=False,
     for fname in std_pyefs:
         result = run("define pyfunc pyferret.%s" % fname)
 
-    # run the ${HOME}/.ferret script if it exists and not in a restricted environment
+    # if not in a restricted environment, run the ./.ferret if it exists, 
+    # or ${HOME}/.ferret script if exists and ./ferret does not
     if not restrict:
-        home_val = os.getenv('HOME')
-        if home_val:
-            init_script = os.path.join(home_val, '.ferret')
-            if os.path.exists(init_script):
-                try:
-                    result = run('go "%s"; exit /topy' % init_script)
-                except:
-                    print(" **Error: exception raised in runnning script %s" % init_script, file=sys.stderr)
-                    result = run('exit /program')
-                    # should not get here
-                    raise SystemExit
+        if os.path.exists('./.ferret'):
+            try:
+                result = run('go "./.ferret"; exit /topy')
+            except:
+                print(" **Error: exception raised in runnning script ./.ferret", file=sys.stderr)
+                result = run('exit /program')
+                # should not get here
+                raise SystemExit
+        else:
+            home_val = os.getenv('HOME')
+            if home_val:
+                init_script = os.path.join(home_val, '.ferret')
+                if os.path.exists(init_script):
+                    try:
+                        result = run('go "%s"; exit /topy' % init_script)
+                    except:
+                        print(" **Error: exception raised in runnning script %s" % init_script, file=sys.stderr)
+                        result = run('exit /program')
+                        # should not get here
+                        raise SystemExit
 
     # if journaling desired, turn it on now
     if journal:

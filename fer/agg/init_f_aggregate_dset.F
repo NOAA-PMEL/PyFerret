@@ -153,13 +153,11 @@
 
 * the /TAXIS and /FAXIS options not yet supported for FMRC
         IF ( fline .NE. unspecified_int4 )
-     .     CALL ERRMSG(ferr_syntax, '/FAXIS option '//
-     .             'not currently supported for F-aggregation',
-     .             status, *6000)
+     .     CALL ERRMSG(ferr_syntax, status, '/FAXIS option '//
+     .             'not currently supported for F-aggregation', *6000)
         IF ( tline .NE. unspecified_int4 )
-     .     CALL ERRMSG(ferr_syntax, '/TAXIS option '//
-     .             'not currently supported for F-aggregation',
-     .             status, *6000)
+     .     CALL ERRMSG(ferr_syntax, status, '/TAXIS option '//
+     .             'not currently supported for F-aggregation', *6000)
 
 * must have at least two datasets for an F aggregation
         IF ( nsets .LT. 2 ) GOTO 5050

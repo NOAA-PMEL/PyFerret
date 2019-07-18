@@ -49,10 +49,10 @@ C *kob* 04/07/96 passed in character strings had to be declared
 C                with "*(*)" for the linux port 
 * *acm* - 6/01   changes to allow plot qualifiers to set log axes,
 *                inverse log axes and log depth axes.
-C V695 *acm*  5/15 Restore color after a graticule using defined color 0
 * *acm* - 8/16   ticket 1787: restore pen 0 correctly after graticule
 * V745 *acm* 3/19 Draw tic marks on top of any graticule lines so 
 *                 dashes or color are covered up by the tic mark
+* V751 *acm* 6/19 Tic marks outside of IF for hgrat 
 
 	CHARACTER YLAB*20,IFORMT*(*),YFRMT*12
 	COMMON/TICS/TSMX,TLX,TSMY,TLY,IX,IY
@@ -153,8 +153,6 @@ C
 
 	      DO 100 J=2,9    ! small tics
 
-c                 CALL PLOTT7(X,Y+SGN*(I-1+ALOG10(FLOAT(J))),XFACT,YFACT,1,-5)
-
                  IF ((solid2.OR.dashed2) .AND. hline) THEN ! make line across
                    yt = Y+SGN*(I-1+ALOG10(FLOAT(J)))		   
                    CALL COLOR(hcolor(2))
@@ -167,13 +165,10 @@ c                 CALL PLOTT7(X,Y+SGN*(I-1+ALOG10(FLOAT(J))),XFACT,YFACT,1,-5)
                     CALL PLOT(X,yt,0,0) 
                     CALL COLOR(color0)
                     CALL VECTRS
-		    CALL PLOTT7(X,Y+SGN*(I-1+ALOG10(FLOAT(J))),XFACT,YFACT,1,-5)
-
                  ENDIF
+                 CALL PLOTT7(X,Y+SGN*(I-1+ALOG10(FLOAT(J))),XFACT,YFACT,1,-5)
              
 100           CONTINUE
-
-c              CALL PLOTT7(X,Y+SGN*I,XFACT,YFACT,1,-6) ! draw large tic
 
               IF ((solid1.OR.dashed1) .AND. hline) THEN ! make line across
                  yt = Y+SGN*I
@@ -201,7 +196,6 @@ C  for DEPTH axes, Y plot coordinates are reversed on page.
 	   CALL PLOTT7(X,YTEMP,XFACT,YFACT,1,-6)
 	   DO 130 I=1,NDEC      ! large tics
 	      DO 120 J=2,9      ! small tics
-c                 CALL PLOTT7(X,YTEMP+(I-1+ALOG10(FLOAT(J))),XFACT,YFACT,1,-5)
 
                  IF ((solid2.OR.dashed2) .AND. hline) THEN ! make line across
                    yt = YTEMP+(I-1+ALOG10(FLOAT(J)))
@@ -220,7 +214,6 @@ c                 CALL PLOTT7(X,YTEMP+(I-1+ALOG10(FLOAT(J))),XFACT,YFACT,1,-5)
                  CALL PLOTT7(X,YTEMP+(I-1+ALOG10(FLOAT(J))),XFACT,YFACT,1,-5)
 
 120           CONTINUE
-c              CALL PLOTT7(X,YTEMP+I,XFACT,YFACT,1,-6)  ! make large tic
               
               IF ((solid1.OR.dashed1) .AND. hline) THEN ! make line across
                  yt = ytemp+i
@@ -268,7 +261,6 @@ C
 	ENDIF
 	YWIDT=0.0
 	DO 200 I=0,NDEC
-c	WRITE(YLAB,YFRMT)IFIX(SGN*(Y-TYUNIT+I))	! wrong nums for log depth axis 
 
 	IF (SGN .GE. 0) THEN
             WRITE(YLAB,YFRMT)IFIX((Y-TYUNIT+SGN*I))

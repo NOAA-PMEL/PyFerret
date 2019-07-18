@@ -167,7 +167,6 @@ c	        IF (NL.EQ.1 .AND. J.LE.2) ZLEV(2) = zlev(1)
      .          lab_add, nlab, i, kount, lev1, levn, nspace, shd_lev_hi,
      .		ITYPEX_save, ITYPEY_save, ic, num_dec, maxstr, i_dec, istr_max
 
-
 	real		SYMWID
 	real		x_inc,y_inc,px(4),py(4),rem,kpx(5),kpy(5),flaty(5),flatx(5)
 	real		xmaxx,ymaxx,vwidth,vheight,karht, ksiz_test
@@ -179,7 +178,6 @@ c	        IF (NL.EQ.1 .AND. J.LE.2) ZLEV(2) = zlev(1)
         character*30    txt_out, text, buff
 	logical		TM_FPEQ_SNGL, TM_DFPEQ, ITSA_AXIS_VIEW, TM_HAS_STRING,  
      .                  windof_hold, check_0, nofill, cont_key_keep, 
-
      .                  no_lines, is_viewport, have_neg, string_labs, skip_key
 
 	equivalence 	(px(1),kpx(1)),(py(1),kpy(1))

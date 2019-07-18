@@ -50,6 +50,7 @@
 * v71  12/16 *acm* Ticket 2158: working with true monthly time axes.
 * v72   6/17 *acm* Variable type in aggregations should match what is in the member files
 * v74  10/18 *kms* Split E and F aggregation routines
+* V751 *acm* 6/19 Remove unused declarations
 
       IMPLICIT NONE
         include 'tmap_errors.parm'
@@ -74,7 +75,7 @@
 	CHARACTER*(*) vname, tcoordname
 
 * local variable declarations:
-        LOGICAL NC_GET_ATTRIB, ITS_FMRC_2DTIME, TM_DFPEQ, 
+        LOGICAL ITS_FMRC_2DTIME, TM_DFPEQ, 
      .          its_dynamic, itsa_uvar, has_edges, has_gaps,
      .          found_fvar, ef_ordered_time2d, true_month
 	INTEGER STR_SAME, TM_LENSTR1,

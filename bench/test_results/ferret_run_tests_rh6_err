@@ -379,8 +379,8 @@ list x[x=1:5:0]
            *** NOTE: This will result in incorrect box sizes on record axis: TCENTURY
            *** NOTE: Write the data initially with the /BOUNDS qualifier
  LISTing to file test2.cdf
- LISTing to file FL.cdf
- LISTing to file FTLON.cdf
+ LISTing to file FL.nc
+ LISTing to file FTLON.nc
  **ERROR: invalid command: /CLOBBER not specified and file exists: test_abs.cdf
 list/format=cdf/l=1:10/file=test_abs.cdf l
  LISTing to file test_abs.cdf
@@ -401,7 +401,7 @@ list/format=cdf/append/file=test_abs.cdf ijkl[k=@ave]
  **TMAP ERR: error in line definition
              disordered output coordinate value:         363  Axis: TCENTURY
 list/format=cdf/l=13/append/file=test_abs.cdf l1
- LISTing to file FI.cdf
+ LISTing to file FI.nc
  LISTing to file test_fil0.cdf
  LISTing to file test_fil0.cdf
  LISTing to file test_fil0.cdf
@@ -1528,8 +1528,6 @@ ooooooooooooooooooooooooooooooooooooooooooo
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
- **ERROR: illegal limits: One-point independent axis: Requires a /HLIMIT or /VLIMIT specification
-plot/sym/siz=0.3 0*t[gt=vwnd]
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -2433,8 +2431,8 @@ Replacing definition of axis TAX
            *** NOTE: This will result in incorrect box sizes on record axis: TCENTURY
            *** NOTE: Write the data initially with the /BOUNDS qualifier
  LISTing to file test2.cdf
- LISTing to file FL.cdf
- LISTing to file FTLON.cdf
+ LISTing to file FL.nc
+ LISTing to file FTLON.nc
  **ERROR: invalid command: /CLOBBER not specified and file exists: test_abs.cdf
 list/format=cdf/keep_axnames/l=1:10/file=test_abs.cdf l
  LISTing to file test_abs.cdf
@@ -2455,7 +2453,7 @@ list/format=cdf/keep_axnames/append/file=test_abs.cdf ijkl[k=@ave]
  **TMAP ERR: error in line definition
              disordered output coordinate value:         363  Axis: TCENTURY
 list/format=cdf/keep_axnames/l=13/append/file=test_abs.cdf l1
- LISTing to file FI.cdf
+ LISTing to file FI.nc
            *** NOTE: /KEEP_AXISNAMES ignored. Inconsistent w/ enhanced heading.
  LISTing to file test_fil0.cdf
            *** NOTE: /KEEP_AXISNAMES ignored. Inconsistent w/ enhanced heading.
@@ -3418,8 +3416,6 @@ ooooooooooooooooooooooooooooooooooooooooooo
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
-           *** NOTE: Axis trajectory is of type char or string
-           *** NOTE: A dummy axis of subscripts will be used
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -4724,6 +4720,9 @@ Replacing definition of axis TAX
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
+           *** NOTE: Ignoring non-DSG FeatureType: GRID
+           *** NOTE: Ignoring non-DSG FeatureType: GRID
+           *** NOTE: Ignoring non-DSG FeatureType: GRID
  **TMAP ERR: attribute already defined
              coordinates for variable ZETA
              Data set: testdata
@@ -5591,8 +5590,6 @@ list a[x=@fav]
 ooooooooooooooooooooooooooooooooooooooooooo
            *** NOTE: Coordinates out of order or missing on axis TIME at subscript 15
            *** NOTE: A dummy axis of subscripts will be used
- **ERROR: Unknown error writing data                  +Infinity
-list/l=14 time
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -5723,8 +5720,6 @@ Replacing definition of axis TDATA
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
-           *** NOTE: Axis time_dim_1 is of type char or string
-           *** NOTE: A dummy axis of subscripts will be used
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -5992,6 +5987,78 @@ ooooooooooooooooooooooooooooooooooooooooooo
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
+*** Running ferret script: bn_dsg_tseries.jnl
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ **ERROR: inconsistent sizes of data regions: feature constraints on X axis of LONGITUDE
+list t_25[x=95:180] + longitude
+ **ERROR: command syntax: Limits by subscript /L= invalid for DSG data. Use /T= limits or select by feature
+list/l=1:5 t_25
+ **ERROR: command syntax: Limits by subscript /I= invalid for DSG data. Use /X= limits or select by feature
+list/i=200:210 t_25
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ **ERROR: illegal use of transformation: Can only transform the E  axis of DSG variable ROWSIZE
+list rowsize[t=@max]
+ **ERROR: illegal use of transformation: Can only transform the T axis of DSG variable T_25
+list t_25[e=@max]
+ **ERROR: illegal use of transformation: Can only transform the T axis of DSG variable T_25
+list t_25[t=@max,e=@max]
+*** Running ferret script: bn_regrid_to_dsg.jnl
+ LISTing to file fake_model_temp.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+*** Running ferret script: bn_dsg_feature_mask.jnl
+*** Running ferret script: bn_dsg_repeat_m.jnl
+*** Running ferret script: bn_dsg_traj_plot.jnl
+*** Running ferret script: bn_regrid_from_dsg.jnl
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+*** Running ferret script: bn_dsg_use_feature.jnl
+ **TMAP ERR: Corrupted CF-DSG structure or attributes
+             Required coordinate variables not found. Profile file is missing directions: vert
+SET DAT/FORM=CDF/feature=profile dsg_cross_dateline.nc
+           *** NOTE: Coordinates inconsistent with FeatureType. Trajectory data must have observations along XYT
+ **TMAP ERR: Invalid command
+             Error on SET DATA/FEATURE= applied to an open dataset.
+             Data set: ./data/DSG_ERDDAP_pmelTao5daySst.nc
+ **TMAP ERR: Corrupted CF-DSG structure or attributes
+             Required coordinate variables not found. Trajectory file is missing directions: lat
+SET DAT/FORM=CDF dsg_bad_coord
+ **TMAP ERR: Corrupted CF-DSG structure or attributes
+             Row Size variable w/ sample_dimension not found.
+SET DAT/FORM=CDF dsg_bad_atts1
+ **TMAP ERR: Corrupted CF-DSG structure or attributes
+             Feature-ID variable not found or invalid value of cf_role attribute
+SET DAT/FORM=CDF dsg_bad_atts2
+           *** NOTE: Ambiguous DSG coordinate info. Multiple variables claiming to be E axis: lons, lon360. Check axis attributes.
+           *** NOTE: Ambiguous DSG coordinate info. Multiple variables claiming to be N axis: yindex, lats. Check axis attributes.
+           *** NOTE: SET DATA/FEATURE= applies only to Discrete Sampling Geometries datasets. Ignoring /FEATURE=
+*** Running ferret script: bn_dsg_plot_timeseries.jnl
+*** Running ferret script: bn_dsg_save.jnl
+ LISTing to file a.nc
+ LISTing to file a.nc
+ LISTing to file a.nc
+ LISTing to file a.nc
+ LISTing to file a.nc
+ LISTing to file a.nc
+ LISTing to file a.nc
+*** Running ferret script: bn_dsg_transforms.jnl
+ LISTing to file a.nc
+ LISTing to file a.nc
+           *** NOTE: Transformation @CDA: not customized for Discrete Sampling Geometries: computed over all features.
+           *** NOTE: Transformation @CDB: not customized for Discrete Sampling Geometries: computed over all features.
+           *** NOTE: Transformation @CIA: not customized for Discrete Sampling Geometries: computed over all features.
+           *** NOTE: Transformation @CIB: not customized for Discrete Sampling Geometries: computed over all features.
+*** Running ferret script: bn_dsg_one_e_val.jnl
+*** Running ferret script: bn_dsg_list_comma_tab.jnl
+*** Running ferret script: bn_dsg_if_exprns.jnl
 *** Running ferret script: bn_gif.jnl
  **ERROR: dimensions improperly specified: specified data is not a line
            - its a 2D region: "plot/i=1:10/j=1:20/nolabel i+j"

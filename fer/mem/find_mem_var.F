@@ -108,7 +108,7 @@
 *
 
         IMPLICIT NONE
-        include 'tmap_dims.parm'
+#include "tmap_dset.parm"
 	include 'ferret.parm'
 	include 'errmsg.parm'
 	include 'xtm_grid.cmn_text'

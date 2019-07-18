@@ -110,7 +110,7 @@
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
-#include "tmap_dset.parm"		  ! int4_init
+#include "tmap_dset.parm"
         include 'implicit.parm'
 	include 'ferret.parm'
 	include 'errmsg.parm'

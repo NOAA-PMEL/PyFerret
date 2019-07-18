@@ -12,7 +12,7 @@
 * with a header
 * 
 *  6/2019 *acm* Write strings in id's, dates without quotes (as ERDDAP does)
-
+*  7/2019 *acm* Future: assign precision per variable, but for now use default or user-set prec.
 
 
         include 'netcdf.inc'
@@ -297,7 +297,7 @@
               blen = 0
 	      IF ( (mr_type(mr_list(ivar)) .NE. ptype_string)) THEN
                 bad_buff = '   BAD FLAG : '// 
-     .                  TM_FMT(mr_bad_data(mr),prec_digits,8,blen)
+     .                  TM_FMT(mr_bad_data(mr),list_dsg_digits,8,blen)
               ENDIF
 
 	      IF (blen .GT. 0) THEN
@@ -470,9 +470,9 @@ cc	               ENDIF
 	            ENDIF
 		    
 		    IF (value .EQ. mr_bad_data(mr)) THEN
-		       vstr = TM_FMT(mr_bad_data(mr),prec_digits,8,blen)
+		       vstr = TM_FMT(mr_bad_data(mr),list_dsg_digits,8,blen)
 		    ELSE
-		       vstr = TM_FMT(value,prec_digits,list_dsg_digits,slen)
+		       vstr = TM_FMT(value,list_dsg_digits,list_dsg_digits,slen)
 		    ENDIF
 		 ENDIF
 

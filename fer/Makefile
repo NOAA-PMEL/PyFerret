@@ -111,7 +111,7 @@ ncdf4:
 	$(MAKE) "CFLAGS=$(CFLAGS) $(OPT_FLAGS)" \
 		"FFLAGS=$(FFLAGS) $(OPT_FLAGS)" \
 		"PPLUS_FFLAGS = $(PPLUS_FFLAGS) $(PPLUS_OPT_FLAGS)" \
-		"DEBUG_TITLE = DSG: optimized" \
+		"DEBUG_TITLE = optimized" \
 		"GUI_FAKES=special/gui_fakes.o" \
 		build
 
@@ -121,7 +121,7 @@ debug:
 	$(MAKE) "CFLAGS = $(CFLAGS) $(DBG_FLAGS)"  \
 		"FFLAGS = $(FFLAGS) $(DBG_FLAGS) -fbounds-check" \
 		"PPLUS_FFLAGS = $(PPLUS_FFLAGS) $(DBG_FLAGS)" \
-		"DEBUG_TITLE = DSG: debug" \
+		"DEBUG_TITLE = debug" \
 		"GUI_FAKES=special/gui_fakes.o" \
 		build
 

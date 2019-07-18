@@ -58,6 +58,7 @@
 	include	'xvariables.cmn'
 	include	'xmem_subsc.cmn'
 	include	'xprog_state.cmn'
+	include	'xdset_info.cmn_text'
 
 * calling argument declarations:
 	INTEGER	idim, com_mr, com_cx, res_mr, res_cx
@@ -68,11 +69,15 @@
      .               m2lot:m2hit,m2loe:m2hie,m2lof:m2hif )
 
 * internal variable declarations:
-        LOGICAL first_pt, first_lt
+        LOGICAL TM_ITSA_DSG, first_pt, first_lt
 * *kob* 6.01 - step_val needs to be integer
-	INTEGER step_val, i, j, k, l, m, n,
+	INTEGER TM_DSG_DSET_FROM_GRID, TM_DSG_NFEATURES,
+     .		step_val, i, j, k, l, m, n, grid, dset, 
+     .		nfeatures, orientation, maxobs, mr_list(2),
      .          lo_sub(nferdims), hi_sub(nferdims)
 	REAL	bad_com
+        REAL    little_val, big_val
+
 
 * internal (convenience) equivalences
 	INTEGER	lo_s1, lo_s2, lo_s3, lo_s4, lo_s5, lo_s6,
@@ -87,6 +92,29 @@
 * diagnostic mode output: " doing --> VAR_NAME[x=lo:hi@TRN:n,D=#]"
 	IF ( mode_diagnostic ) 	CALL DIAG_OP
      .				( 'doing', isact_class_trans, res_cx, idim )
+
+
+* DSGs are handled as a separate case
+	grid = cx_grid(com_cx)
+	IF ( TM_ITSA_DSG(grid) ) THEN
+	   dset = TM_DSG_DSET_FROM_GRID(grid)
+	   nfeatures = TM_DSG_NFEATURES(grid)
+	   orientation = dsg_orientation(dset)
+	   mr_list(1) = com_mr
+	   mr_list(2) = res_mr
+	   CALL NON_ARRAY_SUBSC( mr_list, 2 )
+	   CALL DSG_ARRAY_SUBSC( mr_list, 2, orientation )
+	   
+* ... get the length of the longest feature
+           CALL DSG_COORD_LIMS(dset, pdsg_row_size, little_val, big_val)
+           maxobs = big_val
+
+	   CALL DO_EVENT_DSG( idim, arg, dset, nfeatures, maxobs,
+     .				com, com_mr, com_cx,
+     .				res, res_mr, res_cx )
+
+	   GOTO 5000
+	ENDIF
 
 * initialize
 	bad_com = mr_bad_data( com_mr )
@@ -280,7 +308,7 @@
 	ENDIF
 
 * always success
-	DO_EVENT = ferr_ok
+ 5000	DO_EVENT = ferr_ok
 	RETURN
 
 	END

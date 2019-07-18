@@ -44,6 +44,7 @@
 *        2/12 *kms* Add E and F dimensions (use nferdims in tmap_dims.parm)
 * V685+ 10/13 *sh* added auxiliary regridding "aux" variables
 * V692 7/14 *acm* ticket 2183: handle @WGT transform as for integrals
+* V720 5/17 *sh* code in proper handling od DSG ww constraints
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
@@ -55,11 +56,13 @@
 	INTEGER		cx, mr
 
 * internal variable declarations:
+	LOGICAL		TM_ITSA_DSG, its_dsg
 	INTEGER		idim, trans, grid
 	REAL*8		TM_WORLD
 
 * initialize
 	grid = cx_grid( cx ) 
+	its_dsg = TM_ITSA_DSG(grid)
 
 * background info
 	mr_data_set ( mr )	= cx_data_set( cx )
@@ -89,12 +92,13 @@
 * iii) user-defined variables that are based on transformed quantities
 *      (e.g. DEFINE UAVE = U[K=1:3@AVE])
 
-	   IF ( (trans .EQ. trans_integ_indef) .OR.
-     .          (trans .EQ. trans_avg_wgt) .OR.
-     .          (trans .EQ. trans_4d_avg_wgt) .OR.
+	   IF ( its_dsg                        .OR.
+     .		(trans .EQ. trans_integ_indef) .OR.
+     .          (trans .EQ. trans_avg_wgt)     .OR.
+     .          (trans .EQ. trans_4d_avg_wgt)  .OR.
      .          ( (trans .GT. trans_compress_code) .AND.
-     .            (trans .NE. trans_max) .AND.
-     .            (trans .NE. trans_min) ) .OR.
+     .            (trans .NE. trans_max)           .AND.
+     .            (trans .NE. trans_min) )     .OR.
      .          (cx_lo_ss(cx,idim) .EQ. unspecified_int4) ) THEN
 * ... catalog with exact world coordinate limits
 	      mr_lo_ww( idim, mr ) = cx_lo_ww( idim, cx )

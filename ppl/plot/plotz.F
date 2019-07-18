@@ -94,13 +94,7 @@ C
 * v68  *acm* 4/08 Allow shade, vector plots of degenerate regions - world region 
 *              within a grid cell
 * V68  *acm* 1/12  changes for double-precision ferret, single-precision pplus
-* V695 *acm* 3/15 Changes for PyFerret fonts - text group settings for labels along contour lines
 * V698 *acm* 3/16  Ticket 2375: outline color key in black even on an overlay.
-* V720 *acm* 5/17 Ticket 2528: If contour text group not set, apply general SET TEXT settings 
-*                 except get the contour-line color 
-* V74  *acm* 1/18 Issue 1857: restore color of contour label text correctly after a temporary 
-*                 change e.g. for a CONTOUR/OVER or CONTOUR/COLOR=
-* V74  *acm* 2/18 Issue 1857: Also restore text color correctly if the default text color was set.
 
 	INCLUDE 'PARAMPL5.DAT'
 	INCLUDE 'ZGRIDD.INC'
@@ -116,8 +110,6 @@ C
 	INCLUDE 'PLTL.INC'
 	include 'xcurvilinear.cmn'
         INCLUDE 'errmsg.parm'
-	INCLUDE 'pyfonts.cmn'
-
 
 * Argument declarations
 **	DIMENSION Z(NX,NY)
@@ -126,19 +118,19 @@ C
         REAL*8    XLPLOT,YLPLOT,XHPLOT,YHPLOT
 
 * Local declarations
-        INTEGER   status, slen1, slen2, nlev1, ired, igrn, iblu, cgroup
+        INTEGER   status, slen1, slen2, nlev1
         CHARACTER TM_FMT*48, buff1*20, buff2*20, err_msg*40
         REAL*8    DXFF, DXOF, DYFF, DYOF
         REAL      XFF, XOF, YFF, YOF, DMIN, DMAX, DZMAX
         LOGICAL   TM_FPEQ_SNGL
 
-        LOGICAL valid, tmpsetcolor
-	INTEGER ier
+	logical		valid
 
 C*       *jd* Linux port 12.96 add EXTERNAL calls below
         external scale, range
 
-
+C	VAX/VMS
+C
 	DIMENSION IZMRKD(3)
 	DATA IZMRKD/12,16,3/
 
@@ -272,28 +264,6 @@ C
 	IF (IWIND.NE.0) CALL WINDOW(0.0,0.0,XLEN,YLEN)
 	CALL COLOR(IPEN(1))
 
-*  If the user has set text style with SET TEXT for the CONTOUR group, use those settings.
-*  Otherwise get the color fractions for the pen being used for the contours.
-*  Apply any overall SET TEXT settings (other than color). 
-
-       IF (pyfont) THEN
-          cgroup = icont
-          IF (.NOT. pyf_set(icont)) THEN
-	     ired = pyf_red(cgroup)
-	     igrn = pyf_grn(cgroup)
-	     iblu = pyf_blu(cgroup)
-             CALL FGD_GQPEN(IWIND, IPEN(1), ier, pyf_red(cgroup), 
-     .                pyf_grn(cgroup), pyf_blu(cgroup), opaqfrac)
-             pyf_set(icont) = .TRUE.
-             pyf_fontname(icont) = pyfnt_fontname
-             pyf_italic(icont) = pyfnt_italic
-             pyf_bold(icont) = pyfnt_bold
-             pyf_isiz(icont) = pyfnt_isiz
-             tmpsetcolor = .TRUE.
-          ELSE
-             tmpsetcolor = .FALSE.
-          ENDIF
-       ENDIF
 
 C       Calculate the following quantities:
 C       ~FF - multiplication factors to go from axis to page coords?
@@ -393,25 +363,6 @@ C
 C	END VAX/VMS
 C
 	CALL COLOR(IPEN(0))
-
-*  Restore settings in pyfont common
-
-        IF (pyfont) THEN 
-*          Restore settings made above
-           cgroup = icont
-           IF ( tmpsetcolor ) THEN
-c              buff1 = TM_FMT_SNGL (REAL(IPEN(0)), 20, 20, slen1)
-c              CALL PARSE_PYFONT_COLOR (buff1, pyf_red(cgroup), pyf_grn(cgroup), 
-c     .           pyf_blu(cgroup), status)
-              pyf_red(cgroup) = ired
-              pyf_grn(cgroup) = iblu
-              pyf_blu(cgroup) = igrn
-              pyf_set(icont) = .FALSE.
-	      igroup = 0
-           ENDIF
-
-        ENDIF
-
 	CALL SCALE(XF,YF,XORG,YORG,XLO,YLO)
 
 	RETURN
@@ -424,24 +375,8 @@ C  Arrays LWGT, LDIG, and ZLEV are length ICNLEV=500
         buff2 = TM_FMT(DBLE(NLEV2), 0, 20, slen2)
         err_msg = '# of contour levels > '// buff1(1:slen1) //
      .          '  (' // buff2(1:slen2) // ')'
-        CALL errmsg (ferr_out_of_range, status, err_msg, *5001)
- 5001   RETURN
+        CALL errmsg (ferr_out_of_range, status, err_msg, *5002)
 
- 5002   IF (pyfont) THEN 
-*          Restore settings in pyfont common
-           cgroup = icont
-           IF ( tmpsetcolor ) THEN
-c              buff1 = TM_FMT_SNGL (REAL(IPEN(0)), 20, 20, slen1)
-c              CALL PARSE_PYFONT_COLOR (buff1, pyf_red(cgroup), pyf_grn(cgroup), 
-c     .           pyf_blu(cgroup), status)
-              pyf_red(cgroup) = ired
-              pyf_grn(cgroup) = iblu
-              pyf_blu(cgroup) = igrn
-              pyf_set(icont) = .FALSE.
-	      igroup = 0
-           ENDIF
-        ENDIF
-
-        RETURN
+ 5002   return
 
 	END

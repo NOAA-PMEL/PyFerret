@@ -4,10 +4,12 @@
 # like clean_ultra but removes more -- everything with a time stamp
 # ==> this means it chops out some valid lines showing time units, etc.
 # ==> [0-9][0-9]:[0-9][0-9]:[0-9][0-9]'
+# *acm* temporarily get rid of a bunch of lines with TIMEx - extra time
+#       axes are staying around, we don't know why.
 
 # usage:
     # ultra_clean log_file_name
 
 # produces output file name "clean_ultra_{log_file_name}"
 
-sed -e s/\(G...\)/\(G999\)/g -e s/\(AX...\)/\(AX999\)/g < $argv[1] | egrep -v '^ alloc|^ deallo|^ \-DELE|^ getgrid|^ found|^ eval|^PPL plot|^ reading|^ regrid|^ nulgrd|^ nulrgd|^ rdstride|^ pseudo|^ constan cnst|^ const_v|^ pseudo|^ string str|FERRET|^ pass #2|SESSION|DELTA_CPU|CLOCK_SECS|bn_RAND|randu2_randn2|history|Linux|CURRENT_DATE|DEFINE VARIABLE dt|DEFINE VARIABLE sumcpu|DEFINE VARIABLE ten_plots|[0-9][0-9]:[0-9][0-9]:[0-9][0-9]|[0-9]-[DJFMASON][a-z][a-z]-[0-9][0-9] [0-9][0-9]:[0-9][0-9]' >! clean_draconian_$argv[1]
+sed -e s/\(G...\)/\(G999\)/g -e s/\(AX...\)/\(AX999\)/g < $argv[1] | egrep -v '^ alloc|^ deallo|^ \-DELE|^ getgrid|^ found|^ eval|^PPL plot|^ reading|^ regrid|^ nulgrd|^ nulrgd|^ rdstride|^ pseudo|^ constan cnst|^ const_v|^ pseudo|^ string str|FERRET|^ pass #2|SESSION|DELTA_CPU|CLOCK_SECS|bn_RAND|randu2_randn2|history|Linux|CURRENT_DATE|TIME1|TIME2|TIME3|TIME4|TIME5|TIME6|TIME7|TIME8|TIME9|DEFINE VARIABLE dt|DEFINE VARIABLE sumcpu|DEFINE VARIABLE ten_plots|[0-9][0-9]:[0-9][0-9]:[0-9][0-9]|[0-9]-[DJFMASON][a-z][a-z]-[0-9][0-9] [0-9][0-9]:[0-9][0-9]' >! clean_draconian_$argv[1]

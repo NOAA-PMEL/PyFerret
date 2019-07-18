@@ -123,7 +123,14 @@
 * PyFr *kms*  2/18 Add /SYMBOL=<name> for PyFerret named markers; 
 *                  remove dot_sym restrictions as this is now just another named marker
 * V73  3/18 *kms*  make dot_sym (99) a makedot.cmn parameter DOTSYMIM
+* V74+ 4/18 *acm*  Changes for plotting DSG datasets and trajectories. Pulled 
+*                  ribbon-plotting setup into its own routine ribbon_plot_set_up.
+* V74+ 4/18 *acm*  Automatically do a colored trajectory plot for the command "PLOT var" 
+*                  if it's a DSG trajectory set.
+* V74+ 4/18 *acm*  Updates to DSG plotting
 * v744 *acm* 11/18 Issue 1786: graticule lines & axes drawn if PLOT/OVER/AXES given
+* V751 6/19 *acm*  DSG data cannot be subsetted by index in I,J,K,L; only by coordinates
+*                  /X= /Y= /Z= /T=  or with /E= or /M=
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -150,23 +157,24 @@
         include 'cont_inc.decl' ! with iautoc and nlev
         include 'CONT.INC'
         include 'makedot.cmn'
+	include 'xtext_info.cmn'
 
 * calling argument declarations:
 
 * internal variable declarations:
-	LOGICAL		TM_HAS_STRING, 
+	LOGICAL		TM_HAS_STRING, ITSA_DSG_TRAJ,
      .			overlay, transpz, versus,
      .			no_labels, set_up, noaxes, axes, use_line,
      .			is_logh, is_logv, nokey, no_data, no_range,
      .			do_key, spectrum, addgaps, along
 	INTEGER		TM_LENSTR1, TM_LENSTR, STR_UPCASE, STR_SAME,
      .                  FGD_GET_SYMBOLNUM,
-     .                  symbol, icolor, ipen, icolor1, ipen1, status,
+     .                  symbol, color, icolor, ipen, icolor1, ipen1, status,
      .			loc, limit, slen, thick, step_inc,
      .			ax1_work, ax2_work,
      .			do_dash, s1, s2, it_start(4), it_end(4),
      .			nparm, num_it, i, iax(4), i1,
-     .                  loch, locv, nvs, skipsym
+     .                  loch, locv, nvs, skipsym, dsgtype
 	REAL		val, sym_size, dashstyle(4), only_val
         REAL*4          thickness, opacity, thick1
 	CHARACTER	LEFINT*4, buff*128
@@ -202,6 +210,7 @@ CC       => Set values here instead.
 	versus    = qual_given( slash_plot_vs	     ).GT.0
 	set_up	  = qual_given( slash_plot_set_up    ).GT.0
 	along     = qual_given( slash_plot_along     ).GT.0
+	color     = 1
 
 	IF (along .AND. versus) THEN
 	   CALL WARN("/ALONG ignored.  Incompatible with PLOT/VS") 
@@ -212,7 +221,6 @@ CC       => Set values here instead.
 * (e.g.so graticule lines can be overlaid on a final plot.)
 
 	noaxes    = qual_given( slash_noaxes         ).GT.0
-
         IF (overlay) THEN
 	   noaxes = .FALSE.
 	   axes = .FALSE.
@@ -429,168 +437,37 @@ CC       => Set values here instead.
 * PLOT/RIBBON for multi-colored "ribbon" line
 	ribbon_plot = qual_given(slash_plot_ribbon) .GT. 0
 
+* Automatically plot dsg trajectories as if /ribbon/vs with lon, lat, and color
+* If they've sent more than one variable, that's an error unless it's a non-map 
+* scatter plot; use PLOT/VS or PLOT/VS/RIBBON)
+ 
+	IF (grid_is_dsg) THEN
+	   IF (ITSA_DSG_TRAJ (loc) ) THEN
+	      IF (num_uvars_in_cmnd .EQ. 1) THEN  
+	         versus = .TRUE.
+	         ribbon_plot = .TRUE.
+	      ELSE
+	         IF (.NOT. versus) GOTO 5700
+	      ENDIF
+	   ENDIF
+
+* Did they try to limit the data by index, e.g. PLOT/I=  or PLOT/L=
+
+	   DO i = 1, t_dim
+	      IF (cx_lo_ss(cx_cmnd, i) .NE. unspecified_int4) GOTO 5800
+	   ENDDO
+
+	ENDIF
+
 * A "gaps" variable specifies the end of line segments to draw.
 * Implemented only for PLOT/VS/RIBBON
 	addgaps   = qual_given( slash_plot_gap       ).GT.0
 	IF (addgaps .AND. .NOT.ribbon_plot) GOTO 5600
 
-*     3-argument plot/vs/lev xpts, ypts, var
-*     or 4-argument plot/vs/lev xpts, ypts, var, gap
-
 	IF ( ribbon_plot  ) THEN
-
-	   IF (versus) THEN
-	      nvs = 3
-	      IF (addgaps) nvs = 4
-	      IF (num_uvars_in_cmnd .LT. nvs) GOTO 5480
-	      IF (num_uvars_in_cmnd .GT. nvs) THEN
-	         buff = 'PLOT/RIBBON/VS uses just 3 variables. Ignoring extra variables.'
-		 IF (addgaps) buff = 'PLOT/RIBBON/VS/GAPLOC uses 4 variables. Ignoring extra variables.'
-		 CALL WARN (buff)
-	      ENDIF
-           ELSE
-	      IF (num_uvars_in_cmnd .LT. 2) GOTO 5480
-	      IF (num_uvars_in_cmnd .GT. 2)
-     .         CALL WARN (
-     .         'PLOT/RIBBON/LEVELS uses just 2 variables. Ignoring extra variables.')
-           ENDIF
-
-* If a color was given, that's not valid for Ribbon plots.
-	   loc = qual_given( slash_plot_color )
-	   IF ( loc .GT. 0  ) GOTO 5490
-
-* If a thickness is given, set pen number to the thickness, pen=1,2,or 3
-
-	   ipen = 1
- 	   loc = qual_given( slash_plot_thick )
-	   IF ( loc .GT. 0  ) THEN
-
-	      CALL EQUAL_VAL( cmnd_buff(qual_start(loc):qual_end(loc)),
-     .			   val, status )
-
-	      IF ( val .NE. unspecified_val4 ) THEN
-	         thick = NINT( val )	! user-specified line style
-	      ELSE
-	         thick = 2  ! default if no value is specified
-	      ENDIF
-	      ipen = thick 
-	   ENDIF
-	   
-	   ribbon_plot = .TRUE.
-	ENDIF
-
-* A "gaps" variable specifies the end of line segments to draw for PLOT/VS/RIBBON.
-* Issue notes for cases not already handled.
-
-	IF (addgaps .AND. .NOT.versus ) GOTO 5600
-
-* Style: fast for one-color per point, default is to interpolate
-* colors between points
-
-           loc = qual_given( slash_plot_fast  )
-           IF ( loc.GT.0 ) THEN
-     		CALL PPLCMD ( from, line, 0, 'RIBFAST 1', 1, 1 )
-           ELSE
-     		CALL PPLCMD ( from, line, 0, 'RIBFAST 0', 1, 1 )
-           ENDIF
-
-* Missing: how to represent missing color-values. Default is
-* thin black line. Can request /missing=dash, /missing=blank, 
-* /missing= color-palette (e.g. gray_light). The color palette 
-* will typically be a one-color plot, or if a multicolor palette 
-* is given its first color will be used.
-
-* (call this BEFORE setting the main color palette for ribbon plot; so that
-* the setting for palette type: percent, by_level, or by_value is set for the
-* specified palette.)
-
-           loc = qual_given( slash_plot_missing  )
-           IF ( loc.GT.0 ) THEN
-              CALL EQUAL_STR_LC( cmnd_buff(qual_start(loc):qual_end(loc)),
-     .             buff, status )
-              IF ( status .NE. ferr_ok ) RETURN
-
-	      IF (STR_SAME (buff(1:4), 'blan') .EQ. 0) THEN
-                 CALL PPLCMD ( from, line, 0, 'RIBMISS BLANK', 1, 1 )
-              ELSEIF ( buff .EQ. ' ' ) THEN
-                 CALL PPLCMD ( from, line, 0, 'RIBMISS DEFAULT', 1, 1 )
-	      ELSE
-                 CALL PPLCMD ( from, line, 0, 'RIBMISS SPECTRUM='//buff, 1, 1 )
-	      ENDIF
-           ELSE
-	      CALL PPLCMD ( from, line, 0, 'RIBMISS DEFAULT', 1, 1 )
-           ENDIF
-
-* ... PLOT/PALETTE=  for multi-colored "ribbon" line 
-*     3-agument plot/lev/palette xpts, ypts, var
-
-* save old and reset to new color spectrum if requested
-
-        IF (ribbon_plot) THEN
-           loc = qual_given( slash_plot_spectrum  )
-           IF ( loc.GT.0 ) THEN
-              CALL EQUAL_STR_LC( cmnd_buff(qual_start(loc):qual_end(loc)),
-     .             buff, status )
-              IF ( status .NE. ferr_ok ) RETURN
-              IF ( buff .EQ. ' ' ) buff = 'default'
-
-	      slen = TM_LENSTR1(buff)
-              sfile = TM_INQ_PATH (buff(:slen),'FER_PALETTE','.spk',
-     .        	 .false.,status)
-              IF (status .NE. ferr_ok) go to 5300 
-
-              CALL PPL_SHASET( 'SAVE' )
-              CALL PPL_SHASET( 'SPECTRUM='//buff(1:TM_LENSTR1(buff)) )
-	      spectrum = .TRUE.
-
-           ENDIF
-
-
-* default color key
-	   do_key =  (qual_given(slash_plot_key)  .GT. 0)
-     .		.OR. ( (qual_given(slash_plot_key) .EQ. 0)
-     .           .AND. .NOT.overlay
-     .           .AND. .NOT.no_data )
-	   IF (qual_given(slash_plot_nokey) .gt. 0 ) do_key = .FALSE.
-           IF ( do_key ) THEN
-              CALL PPLCMD ( from, line, 0, 'SHAKEY 1,1', 1, 1 )
-* ... /KEY[=continuous,horizontal,centerlabel] ?
-*     /KEY=title is a legal option, but ignored for ribbon plot.
-              loc = qual_given( slash_plot_key )
-	      changed_key = .FALSE.
-
-              IF ( loc .GT. 0) THEN
-                 CALL EQUAL_STRING( cmnd_buff(qual_start(loc):qual_end(loc)),
-     .                        buff, status )
-                 IF ( status .NE. ferr_ok ) GOTO 5000
-                 IF (TM_LENSTR(buff) .GT. 0) THEN
-                    changed_key = .FALSE.
-                    IF ( TM_HAS_STRING(buff, 'CON') ) THEN
-                       changed_key = .TRUE.
-                       CALL PPLCMD (from, line, 0, 'S_KEY 1', 1, 1 )
-                    ENDIF
-                    IF ( TM_HAS_STRING(buff, 'CEN') ) THEN
-                       changed_key = .TRUE.
-                       CALL PPLCMD (from, line, 0, 'S_KEY 2', 1, 1 )
-                    ENDIF
-                    IF ( TM_HAS_STRING(buff, 'HOR') ) THEN
-                       changed_key = .TRUE.
-                       CALL PPLCMD (from, line, 0, 'S_KEY 3', 1, 1 )
-                    ENDIF
-                    IF ( TM_HAS_STRING(buff, 'TIT') ) THEN  
-                       changed_key = .TRUE.
-                       use_keys = .FALSE.
-                    ENDIF
-                    IF (.NOT. changed_key) GOTO 5520
-                 ENDIF
-              ENDIF
-           ELSE
-              CALL PPLCMD ( from, line, 0, 'SHAKEY 0,1', 1, 1 )
-           ENDIF
-
-
-	ENDIF  ! ribbon plot
-
+	   CALL RIBBON_PLOT_SET_UP (versus, num_uvars_in_cmnd, addgaps, 
+     .			            ipen, overlay, spectrum, status)	   
+	ENDIF 
 
 * ... PLOT/STEP[=CONNECTED]
 	loc = qual_given( slash_plot_step )
@@ -813,7 +690,7 @@ c done in plot_set_up.
 	   is_logh = h_logaxis
 	   is_logv = v_logaxis
 	ELSE
-	   h_logaxis= is_logh
+	   h_logaxis = is_logh
 	   v_logaxis = is_logv 
 	ENDIF
 	
@@ -824,11 +701,12 @@ c done in plot_set_up.
               CALL PPL_SHASET( 'SPECTRUM' )
            ENDIF
 
-
 * release the memory used for axis buffers
 ! PLOT/ALONG does a hack to num_uvars_in_cmnd that can lead to a problem
 ! in GET_PROT_CMND_DATA if the same argument string is re-used in the next cmnd
  1000	IF (along) num_uvars_in_cmnd = 1
+ 	IF (grid_is_dsg .AND. .NOT.versus) 
+     .	  CALL RESET_DSG (num_uvars_in_cmnd, is_cx)
  	CALL FREE_WS_DYNMEM( ax1_work )
 	CALL FREE_WS_DYNMEM( ax2_work )
 	CALL UNPROTECT_CMND_DATA			! 1/94
@@ -845,9 +723,6 @@ c done in plot_set_up.
  5220	CALL ERRMSG( ferr_syntax, status, 
      .		cmnd_buff(qual_start(loc):qual_end(loc))//pCR//
      .		'optionally /STEP=connected', *1000 )
- 5300   CALL ERRMSG (ferr_file_not_found, status, 
-     .          'unable to open "' //
-     .	buff(:slen)//'.spk" to set ribbon-plot colors.', *1000)
  5400	CALL ERRMSG( ferr_out_of_range, status, 
      .		cmnd_buff(qual_start(loc):qual_end(loc))//pCR//
      .		'Legal range is 1 to 3', *1000 )
@@ -866,49 +741,29 @@ c done in plot_set_up.
  5460	CALL ERRMSG( ferr_out_of_range, status, 
      .		cmnd_buff(qual_start(loc):qual_end(loc))//pCR//
      .		'/COLOR=WHITE only available with /THICK=1', *1000 )
- 5470	CALL ERRMSG( ferr_syntax, status, 
-     .		cmnd_buff(qual_start(loc):qual_end(loc))//pCR//
-     .	'Ribbon plot PLOT/LEVELS valid only with /VS', *1000 )
- 5480	IF (versus .AND. addgaps .AND. ribbon_plot) THEN
-           CALL ERRMSG( ferr_syntax, status, 
-     .	   'PLOT/VS/RIBBON/GAPLOC plot needs 4 arguments', *1000 )
-        ELSEIF (versus .AND. addgaps) THEN
-           CALL ERRMSG( ferr_syntax, status,
-     .     'PLOT/VS/GAPLOC implemented only for RIBBON plots', *1000)
-        ELSEIF (versus) THEN
-           CALL ERRMSG(ferr_syntax, status,
-     .     'PLOT/VS/RIBBON plot needs 3 arguments', *1000 )
-	ELSE
-           CALL ERRMSG( ferr_syntax, status, 
-     .	   'RIBBON plot needs 2 arguments', *1000 )
-	ENDIF
- 5490	CALL ERRMSG( ferr_syntax, status, 
-     .		cmnd_buff(qual_start(loc):qual_end(loc))//pCR//
-     .	'/COLOR not valid for PLOT/LEVELS ribbon plot', *1000 )
  5500   CALL ERRMSG( ferr_out_of_range, status,
      .          cmnd_buff(qual_start(loc):qual_end(loc))//pCR//
      .          'Value from 0 to 100 must be given', *1000 )
- 5600	CALL ERRMSG( ferr_syntax, status, 
-     .	'PLOT/GAPLOC applies only to PLOT/VS/RIBBON', *1000 )
-
  5510	CALL ERRMSG( ferr_syntax, status, 
      .		cmnd_buff(qual_start(loc):qual_end(loc))//pCR//
      .	'/COLOR must have an argument for PLOT/OVERLAY', *1000 )
-     
- 5520	CALL ERRMSG( ferr_syntax, status, 
-     .		cmnd_buff(qual_start(loc):qual_end(loc))//pCR//
-     .		'Unrecognized argument to KEY command', *1000 )
-
  5530	CALL ERRMSG( ferr_syntax, status, 
      .		cmnd_buff(qual_start(loc):qual_end(loc))//pCR//
      .		'Argument to DegMinSec qualifier must be 1 or 2', *1000 )
-
  5540   CALL ERRMSG( ferr_syntax, status, 
      .          cmnd_buff(qual_start(loc):qual_end(loc))//pCR//
      .          '/SYMBOL= must be followed by a number or name', *1000 )
-
  5550   CALL ERRMSG( ferr_syntax, status, 
      .          cmnd_buff(qual_start(loc):qual_end(loc))//pCR//
      .          '/HIGHLIGHT= only valid with named symbols', *1000 )
+ 5600	CALL ERRMSG( ferr_syntax, status, 
+     .	'PLOT/GAPLOC applies only to PLOT/VS/RIBBON', *1000 )
+ 5700	CALL ERRMSG( ferr_syntax, status, 
+     .	'DSG trajectory map plot uses one variable. '//
+     .		'Did you mean PLOT/VS or PLOT/VS/RIBBON?', *1000 )
+ 5800	CALL ERRMSG( ferr_syntax, status, 
+     .	'Limits by subscript /'//ss_dim_name(i)//
+     .	'= invalid for DSG data. Use /'//ww_dim_name(i)//
+     .	'= limits or select by feature', *1000 )
 
 	END

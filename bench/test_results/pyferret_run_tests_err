@@ -401,8 +401,8 @@ list x[x=1:5:0]
            *** NOTE: This will result in incorrect box sizes on record axis: TCENTURY
            *** NOTE: Write the data initially with the /BOUNDS qualifier
  LISTing to file test2.cdf
- LISTing to file FL.cdf
- LISTing to file FTLON.cdf
+ LISTing to file FL.nc
+ LISTing to file FTLON.nc
  **ERROR: invalid command: /CLOBBER not specified and file exists: test_abs.cdf
 list/format=cdf/l=1:10/file=test_abs.cdf l
  LISTing to file test_abs.cdf
@@ -423,7 +423,7 @@ list/format=cdf/append/file=test_abs.cdf ijkl[k=@ave]
  **TMAP ERR: error in line definition
              disordered output coordinate value:         363  Axis: TCENTURY
 list/format=cdf/l=13/append/file=test_abs.cdf l1
- LISTing to file FI.cdf
+ LISTing to file FI.nc
  LISTing to file test_fil0.cdf
  LISTing to file test_fil0.cdf
  LISTing to file test_fil0.cdf
@@ -877,66 +877,8 @@ ooooooooooooooooooooooooooooooooooooooooooo
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
- **ERROR: illegal limits: VWND does not contain L=102:150
-          Data are available in L =    1:60
-list tsorted_indices, tsorted_wnd
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
-ooooooooooooooooooooooooooooooooooooooooooo
-
-Bailing out of external function "eof_space":
-	 Function EOF_SPACE not available in this version of Ferret. Use EOFSVD_SPACE
- **ERROR: error in external function
-list/l=1:2 eofxyfcn
-
-Bailing out of external function "eof_stat":
-	 Function EOF_STAT not available in this version of Ferret. Use EOFSVD_STAT
- **ERROR: error in external function
-list/i=1:3/j=1:3 eofstat
-
-Bailing out of external function "eof_tfunc":
-	 Function EOF_TFUNC not available in this version of Ferret. Use EOFSVD_TFUNC
- **ERROR: error in external function
-list/i=1:2 eoftime
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
-ooooooooooooooooooooooooooooooooooooooooooo
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
-ooooooooooooooooooooooooooooooooooooooooooo
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
-ooooooooooooooooooooooooooooooooooooooooooo
- **ERROR: command syntax: strindex("Ferret is fun for the whole family - real family fun")
-          The strindex function has an incorrect number of arguments
-list strindex("Ferret is fun for the whole family - real family fun")
- **ERROR: command syntax: strrindex("Ferret is fun for the whole family - real family fun")
-          The strrindex function has an incorrect number of arguments
-list strrindex("Ferret is fun for the whole family - real family fun")
- **ERROR: command syntax: substring("Have you fed your ferret today", 19)
-          The substring function has an incorrect number of arguments
-list substring("Have you fed your ferret today", 19)
- **ERROR: command syntax: substring("Have you fed your ferret today")
-          The substring function has an incorrect number of arguments
-list substring("Have you fed your ferret today")
- **ERROR: command syntax: strcat ("All work and no play")
-          The strcat function has an incorrect number of arguments
-list strcat ("All work and no play")
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
-ooooooooooooooooooooooooooooooooooooooooooo
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
-ooooooooooooooooooooooooooooooooooooooooooo
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
-ooooooooooooooooooooooooooooooooooooooooooo
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
-ooooooooooooooooooooooooooooooooooooooooooo
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
-ooooooooooooooooooooooooooooooooooooooooooo
+/usr/bin/python: symbol lookup error: ....../ext_func/pylibs/sample_fast_i.so: undefined symbol: ef_set_desc_
+****** PYFERRET error: bn_internal_external_functions.jnl failed ******
 *** Running ferret script: bn_modulo_strides.jnl
  LISTing to file test_modulo.cdf
  PERMANENT data cleared from memory
@@ -1214,7 +1156,7 @@ ooooooooooooooooooooooooooooooooooooooooooo
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
-rm: cannot remove ‘input.txt’: No such file or directory
+rm: cannot remove `input.txt': No such file or directory
 ls: cannot access input.txt: No such file or directory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -1311,6 +1253,8 @@ SHOW VAR/XML
 SHOW VAR/XML
 SHOW VAR/XML
  LISTing to file a.nc
+/usr/bin/python: symbol lookup error: ....../ext_func/pylibs/dates.so: undefined symbol: ef_version_test_
+****** PYFERRET error: bn_xml_output.jnl failed ******
 *** Running ferret script: bn_test_nan.jnl
 *** Running ferret script: bn553_bug_fixes.jnl
  PERMANENT data cleared from memory
@@ -1563,8 +1507,6 @@ ooooooooooooooooooooooooooooooooooooooooooo
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
- **ERROR: illegal limits: One-point independent axis: Requires a /HLIMIT or /VLIMIT specification
-plot/sym/siz=0.3 0*t[gt=vwnd]
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -2135,6 +2077,8 @@ set axis/stride=2 NORMAL
 *** Running ferret script: bn_lsl_lowpass.jnl
 *** Running ferret script: bn_return_xmod_tmod.jnl
 *** Running ferret script: bn602_bug_fixes.jnl
+           *** NOTE: the use of "SET MODE METAFILE" is deprecated;
+           *** NOTE: instead use "FRAME /FILE=... /FORMAT=..."
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -2206,6 +2150,8 @@ ooooooooooooooooooooooooooooooooooooooooooo
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
+/usr/bin/python: symbol lookup error: ....../ext_func/pylibs/add_9.so: undefined symbol: ef_version_test_
+****** PYFERRET error: bn605_bug_fixes.jnl failed ******
 *** Running ferret script: bn608_bug_fixes.jnl
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -2463,8 +2409,8 @@ Replacing definition of axis TAX
            *** NOTE: This will result in incorrect box sizes on record axis: TCENTURY
            *** NOTE: Write the data initially with the /BOUNDS qualifier
  LISTing to file test2.cdf
- LISTing to file FL.cdf
- LISTing to file FTLON.cdf
+ LISTing to file FL.nc
+ LISTing to file FTLON.nc
  **ERROR: invalid command: /CLOBBER not specified and file exists: test_abs.cdf
 list/format=cdf/keep_axnames/l=1:10/file=test_abs.cdf l
  LISTing to file test_abs.cdf
@@ -2485,7 +2431,7 @@ list/format=cdf/keep_axnames/append/file=test_abs.cdf ijkl[k=@ave]
  **TMAP ERR: error in line definition
              disordered output coordinate value:         363  Axis: TCENTURY
 list/format=cdf/keep_axnames/l=13/append/file=test_abs.cdf l1
- LISTing to file FI.cdf
+ LISTing to file FI.nc
            *** NOTE: /KEEP_AXISNAMES ignored. Inconsistent w/ enhanced heading.
  LISTing to file test_fil0.cdf
            *** NOTE: /KEEP_AXISNAMES ignored. Inconsistent w/ enhanced heading.
@@ -3429,8 +3375,6 @@ list a.units
 list ..history
  **ERROR: variable unknown or not in data set: ..HISTORY
 list ..history
- **ERROR: command syntax: .
-list .
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -3454,8 +3398,6 @@ ooooooooooooooooooooooooooooooooooooooooooo
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
-           *** NOTE: Axis trajectory is of type char or string
-           *** NOTE: A dummy axis of subscripts will be used
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -3749,7 +3691,7 @@ list substring("hello",1,-2)
  **ERROR: value out of legal range: Negative argument to function. Argument 3 : SUBSTRING
 list substring("hello",1,-3)
 *** Running ferret script: bn_append_dsg.jnl
-rm: cannot remove ‘test_save_dsg.nc’: No such file or directory
+rm: cannot remove `test_save_dsg.nc': No such file or directory
 *** Running ferret script: bn_global_atts.jnl
  LISTing to file anew_global.nc
 *** Running ferret script: bn_conventions_history.jnl
@@ -3873,7 +3815,7 @@ Replacing definition of axis TREDEF
 ooooooooooooooooooooooooooooooooooooooooooo
  **ERROR: invalid command: cairoCFerBind_saveWindow: unrecognized format 'HDF'
 frame/format=hdf/file=a.hdf
-rm: cannot remove ‘a.gif’: No such file or directory
+rm: cannot remove `a.gif': No such file or directory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -3932,7 +3874,6 @@ ooooooooooooooooooooooooooooooooooooooooooo
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
-rm: cannot remove ‘WestCoastCarbon_9d9c_f562_77b5_5.nc’: No such file or directory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -3980,7 +3921,7 @@ def anno/nou/xpos=0/hal=1/val=0 "My Lab"
  **ERROR: invalid command: Specify only one of /USER /NOUSER /NORM
 def anno/nou/user/xpos=0/ypos=0 "My Lab"
 *** Running ferret script: bn_auxiliary.jnl
-rm: cannot remove ‘layerz_test_data.txt’: No such file or directory
+rm: cannot remove `layerz_test_data.txt': No such file or directory
  LISTing to file layerz_test_data.txt
  **ERROR: variable unknown or not in data set: (data set ok ?): noexist
 SET VAR/layerz=depth noexist
@@ -4753,6 +4694,9 @@ Replacing definition of axis TAX
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
+           *** NOTE: Ignoring non-DSG FeatureType: GRID
+           *** NOTE: Ignoring non-DSG FeatureType: GRID
+           *** NOTE: Ignoring non-DSG FeatureType: GRID
  **TMAP ERR: attribute already defined
              coordinates for variable ZETA
              Data set: testdata
@@ -4859,8 +4803,8 @@ list index,edtim,udtim,udate,edate
  LISTing to file a.nc
 *** Running ferret script: bn_spawn_fail.jnl
 ls: cannot access notafile.nowhere: No such file or directory
-rm: cannot remove ‘nothing.dat’: No such file or directory
-cp: cannot stat ‘nofile.dat’: No such file or directory
+rm: cannot remove `nothing.dat': No such file or directory
+cp: cannot stat `nofile.dat': No such file or directory
 *** Running ferret script: bn_ave_of_ave.jnl
 *** Running ferret script: bn_agg_member_syntax.jnl
  **ERROR: unknown data set: D=5.3
@@ -5620,8 +5564,6 @@ list a[x=@fav]
 ooooooooooooooooooooooooooooooooooooooooooo
            *** NOTE: Coordinates out of order or missing on axis TIME at subscript 15
            *** NOTE: A dummy axis of subscripts will be used
- **ERROR: Unknown error writing data                   Infinity
-list/l=14 time
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -5750,8 +5692,6 @@ Replacing definition of axis TDATA
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
-           *** NOTE: Axis time_dim_1 is of type char or string
-           *** NOTE: A dummy axis of subscripts will be used
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -5823,45 +5763,6 @@ set axis/t0=2010-15-01 TIME1
  **ERROR: command syntax: invalid date string: 2010-15-01
 set axis/t0=2010-15-01 TIME1
 *** Running ferret script: bn_agg_given_taxis.jnl
-/bin/ls: cannot access aggf/forecast_??.nc: No such file or directory
- LISTing to file aggf/forecast_01.nc
- LISTing to file aggf/forecast_02.nc
- LISTing to file aggf/forecast_03.nc
- LISTing to file aggf/forecast_04.nc
- LISTing to file aggf/forecast_05.nc
- LISTing to file aggf/forecast_06.nc
- LISTing to file aggf/forecast_07.nc
- LISTing to file aggf/forecast_08.nc
- LISTing to file aggf/forecast_09.nc
- LISTing to file aggf/forecast_10.nc
- LISTing to file aggf/forecast_11.nc
- LISTing to file aggf/forecast_12.nc
- LISTing to file aggf/forecast_13.nc
- LISTing to file aggf/forecast_14.nc
- LISTing to file aggf/forecast_15.nc
- LISTing to file aggf/forecast_16.nc
- LISTing to file aggf/forecast_17.nc
- LISTing to file aggf/forecast_18.nc
- LISTing to file aggf/forecast_19.nc
- LISTing to file aggf/forecast_20.nc
- LISTing to file aggf/forecast_21.nc
- LISTing to file aggf/forecast_22.nc
- LISTing to file aggf/forecast_23.nc
- LISTing to file aggf/forecast_24.nc
- LISTing to file aggf/forecast_25.nc
- LISTing to file aggf/forecast_26.nc
- LISTing to file aggf/forecast_27.nc
- LISTing to file aggf/forecast_28.nc
- LISTing to file aggf/forecast_29.nc
- LISTing to file aggf/forecast_30.nc
- LISTing to file aggf/forecast_31.nc
- LISTing to file aggf/forecast_32.nc
- LISTing to file aggf/forecast_33.nc
- LISTing to file aggf/forecast_34.nc
- LISTing to file aggf/forecast_35.nc
- LISTing to file aggf/forecast_36.nc
- LISTing to file aggf/forecast_37.nc
- LISTing to file aggf/forecast_38.nc
            *** NOTE: Time axis coordinates matched using @XACT
            *** NOTE: Time axis coordinates matched using @BIN
            *** NOTE: Time axis coordinates matched using @ASN
@@ -6137,11 +6038,8 @@ Re-defining viewport UM6
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
- **ERROR: command syntax: unknown region name: @w
-set region/@w
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
-ooooooooooooooooooooooooooooooooooooooooooo
+/usr/bin/python: symbol lookup error: ....../ext_func/pylibs/add_9.so: undefined symbol: ef_version_test_
+****** PYFERRET error: bn_all_ef.jnl failed ******
 *** Running ferret script: bn_startupfile.jnl
            *** NOTE: the use of "SET MODE METAFILE" is deprecated;
            *** NOTE: instead use "FRAME /FILE=... /FORMAT=..."
@@ -6181,11 +6079,11 @@ set text/bold  nogroup
 *** Running python script: testfervar.py
 >>> ... ... >>> >>> >>> Traceback (most recent call last):
   File "<stdin>", line 1, in <module>
-  File "....../lib/python2.7/site-packages/pyferret/ferdset.py", line 230, in __delattr__
+  File "....../lib/python2.6/site-packages/pyferret/ferdset.py", line 230, in __delattr__
     self.__delitem__(name)
-  File "....../lib/python2.7/site-packages/pyferret/ferdset.py", line 165, in __delitem__
+  File "....../lib/python2.6/site-packages/pyferret/ferdset.py", line 165, in __delitem__
     value._removefromferret()
-  File "....../lib/python2.7/site-packages/pyferret/fervar.py", line 882, in _removefromferret
+  File "....../lib/python2.6/site-packages/pyferret/fervar.py", line 882, in _removefromferret
     raise NotImplementedError('%s is a file variable; close the dataset to remove' % fername)
 NotImplementedError: SST[d=coads_climatology.cdf] is a file variable; close the dataset to remove
 

@@ -206,10 +206,8 @@
 	ENDIF
 
 	axes      = qual_given( slash_cont_axes      ).GT.0
-
-	is_logh   = .FALSE.
-	is_logv   = .FALSE.
-        sp        = qual_given( slash_cont_spectrum  )
+        
+	sp        = qual_given( slash_cont_spectrum  )
 
         spectrum  = sp .GT. 0 .AND. fill
         is_shade  = .FALSE.

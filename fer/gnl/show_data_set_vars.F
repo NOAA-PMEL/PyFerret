@@ -84,10 +84,13 @@
 * V7    acm  6/16 Ticket 2437: Deprecating mode_6d_lab. 
 *		  Adjust output to 6-D or 4-D grids
 * V720  3/17 *acm*  clean up long commented-out code referring to aggregations 
+*       4/17 *sh* report DSG ragged axis length as "tot 15"
 * V720 *acm* 5/17 Implement specific calls in place of CD_GET_VAR_INFO
 * V741 *acm* 5/18 Promoting global attributes to a variable in ensembles: list 
 *                 the variables synthesized by aggregations with a separator ---
 * V743 *acm* 10/10 Fix issue 1897: datasets with E or F axis in any grids gets 6 columns
+* V74+ 7/18 *acm* For DSG datasets, if we synthesized a RowSize var, don't show it.
+* V751 *acm* 6/19 Remove unused declarations
 * V751 6/19 *acm* TM_FMT rewrite: formatting of lon/lat coordinate strings
 
         IMPLICIT NONE
@@ -115,13 +118,15 @@
 	INTEGER	lun, dset, status
 	
 * local variable declarations:
-	LOGICAL		FOUR_D_GRID,
-     .			first_time, its_delimited, is_undetermined, first_note
-	INTEGER 	TM_LENSTR1, TM_LENSTR, TM_GET_CALENDAR_ID, GRID_FROM_NAME,
+
+	LOGICAL		FOUR_D_GRID, TM_ITSA_DSG_RAGGED,
+     .			first_time, its_delimited, is_undetermined, coordvar,
+     .			its_dsg, grid_dsg, first_note, got_it, has_mask
+	INTEGER 	TM_LENSTR1, TM_LENSTR, TM_GET_CALENDAR_ID, GRID_FROM_NAME, 
      .			ivar, i, dlen, len, grid, taxis, slen(nferdims), tlen, 
      .			nfields, kvar, field_types(maxezvars), 
      .			cal_id, len_cal, j, num_indices, rlen(nferdims), iok,
-     .			listdims, idim, igrid, nv, varid, ndec
+     .			listdims, idim, igrid, nv, varid, dsg_orient, ndec
 	CHARACTER	LEFINT*16, LOHI_STRING*48, TM_FMT*48, 
      .			TM_GET_CAL*32, 
      .			line*255, cal_name*32
@@ -140,10 +145,56 @@
 * initialize
 	its_delimited = ds_type(dset) .EQ. pds_type_ez
      .            .AND. ds_parm_text(1,dset)(:4) .eq. 'DELI'
-
 	IF (its_delimited) THEN
 	   CALL GET_DELIMITED_INFO(nfields, field_types, delims, 
      .				   ds_file_info_ptr(dset) )
+	ENDIF
+
+* If the dataset is a DSG dataset, note the FeatureType
+        its_dsg = .FALSE.
+	DO ivar = 1, maxvars
+	   igrid = ds_grid_number(ivar)
+	   IF (igrid .EQ. int4_init) CYCLE
+	   IF (TM_ITSA_DSG_RAGGED(igrid)) THEN
+	      its_dsg = .TRUE.
+	      EXIT
+	   ENDIF
+	ENDDO
+	IF (its_dsg) THEN
+
+	   dsg_orient = dsg_orientation(dset)
+
+	   risc_buff = '       DSG Feature type '
+	   tlen = TM_LENSTR1( risc_buff )
+
+	   IF (dsg_orient .EQ. pfeatureType_Trajectory) THEN
+	      risc_buff = risc_buff(:tlen)//' Trajectory'
+	   ELSEIF (dsg_orient .EQ. pfeatureType_Point) THEN
+	      risc_buff = risc_buff(:tlen)//' Point'
+	   ELSEIF (dsg_orient .EQ. pfeatureType_profile) THEN
+	      risc_buff = risc_buff(:tlen)//' Profile'
+	   ELSEIF (dsg_orient .EQ. pfeatureType_timeSeries) THEN
+	      risc_buff = risc_buff(:tlen)//'  Timeseries'
+	   ELSE
+	      risc_buff = ''
+	   ENDIF
+
+	   tlen = TM_LENSTR1( risc_buff )
+	   IF (tlen .GT. 0)  CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0) 
+	   
+* Is a feature mask set on this dataset?
+	   IF (dsg_msk_lm(dset) .NE. unspecified_int4) THEN 
+	      risc_buff = 'Mask on features has been set: '
+	      tlen = TM_LENSTR1( risc_buff ) + 1
+	      
+	      CALL GET_DSG_MASK_TITLE (dset, risc_buff(tlen+1:), has_mask, dlen)
+
+	      tlen = TM_LENSTR1( risc_buff ) 
+	      IF (dlen .EQ. 0) tlen = tlen - 1
+
+	      IF (tlen .GT. 0)  CALL SPLIT_LIST(pttmode_explct, lun, risc_buff(:tlen), 0) 
+	   ENDIF ! feature-mask
+
 	ENDIF
 
 	first_note = .TRUE.
@@ -218,6 +269,9 @@
 	   IF ( ds_var_setnum(ivar) .NE. dset ) GOTO 400
 	   kvar = kvar + 1
            IF ( ds_var_code(ivar) .EQ. '-' ) GOTO 400  
+
+	   IF (its_dsg .AND. ds_var_code(ivar) .EQ. 'ferRowSize') GOTO 400
+	   
 * ... output variable code, title and subscript bounds within grid
 
 	   is_undetermined = .TRUE.
@@ -263,6 +317,8 @@
            ENDIF
 
            IF (.NOT.is_undetermined) THEN
+	      grid_dsg = TM_ITSA_DSG_RAGGED(igrid)
+	      IF (grid_dsg) dsg_orient = dsg_orientation(dset)
 
               DO 100 i = 1, listdims
                  WRITE( rbuff(i+listdims),'(I8)' ) ds_grid_start(i,ivar)
@@ -320,6 +376,12 @@
 		    risc_buff(tlen:tlen+2) = '...'
 	         ENDIF
  150	      CONTINUE
+* *sh* 4/17 a DSG obs axis actually shows the total of feature lengths
+	      IF (grid_dsg) THEN
+	         tlen = 34 + (dsg_orient*10) - 2
+	         risc_buff(tlen:tlen+4+rlen(dsg_orient))
+     .			= 'tot '//rbuff(dsg_orient)(:rlen(dsg_orient))
+	      ENDIF
 
            ENDIF
 

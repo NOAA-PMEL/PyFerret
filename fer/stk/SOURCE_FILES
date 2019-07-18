@@ -13,6 +13,8 @@ const_var_context.F\
 crawl_dependencies.F\
 define_next_chunk_cx.F\
 diagnostic_out.F\
+dsg_array_subsc.F\
+dsg_operate.F\
 eval_context.F\
 eval_expr.F\
 exit_dependency_mode.F\
@@ -73,7 +75,9 @@ randn.F\
 randn2.F\
 randu.F\
 rcvd_regrid.F\
+regrid_from_dsg_lims.F\
 regrid_lims.F\
+regrid_to_dsg_lims.F\
 rqst_regrid.F\
 setup_gather.F\
 setup_sample.F\

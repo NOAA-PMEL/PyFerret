@@ -70,10 +70,12 @@
      .               m2lot:m2hit,m2loe:m2hie,m2lof:m2hif )
 
 * internal variable declarations:
+	LOGICAL TM_ITSA_DSG
 	INTEGER i, j, k, l, m, n, grid, uplim, dnlim, offlim,
      .		delta, las_index
 	REAL	bad_com, bad_res
 	REAL*8  TM_WORLD
+	CHARACTER*150 VAR_TRANS, buff
 
 * --- end of introductory code ---
 
@@ -81,6 +83,18 @@
 	grid = mr_grid( com_mr )
 	bad_com = mr_bad_data( com_mr )
 	bad_res = mr_bad_data( res_mr )
+
+
+* These not customized for DSG data, not sure they really make sense to apply. Write a note.
+
+	IF ( TM_ITSA_DSG(grid) ) THEN 
+	   buff = VAR_TRANS(idim, res_cx, j)
+	   i = INDEX(buff, '@')
+
+	   CALL WARN ('Transformation '//buff(i:i+4)//
+     .     ' not customized for Discrete Sampling Geometries: computed over all features.')
+	ENDIF
+
 
 * determine axis limits along axis of transformation
 	IF ( find_above ) THEN		     ! @NRDA and @NRIA

@@ -98,6 +98,8 @@
 *                  Initialize the information stored for this scaling
 * V74+ 54/18 *acm*  Noticed that symbols LAB1, LAB6 etc labels persisted from 
 *                   prev. plots, also LABKEY. Delete them
+* V7.4+ *acm*  8/18 DSG-enabled Ferret: colorkey labels may be strings from the IDs
+* V7.4+ *acm*  9/18 All moveable labels should be reset
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -142,6 +144,7 @@
 	CALL PPLCMD ( from, line, 0, 'AXTYPE 1,1', 1, 1 )
 	CALL PPLCMD ( from, line, 0, 'XVALOFF 0', 1, 1 )
 	CALL PPLCMD ( from, line, 0, 'YVALOFF 0', 1, 1 )
+	CALL PPLCMD ( from, line, 0, 'CLRKLAB', 1, 1 )
 
 * Label numbers for the Ferret logo (if drawn) for pyFerret text settings
 	
@@ -149,8 +152,8 @@
 	   logolab(i) = 0
 	ENDDO
 
-* clear rotations from first 10 moveable labels
-	DO i = 1, 10
+* clear rotations from first 50 moveable labels
+	DO i = 1, 50
 	   CALL PPLCMD ( from, line, 0, 'RLABS '//LEFINT(i,slen) , 1, 1)
 	ENDDO
 

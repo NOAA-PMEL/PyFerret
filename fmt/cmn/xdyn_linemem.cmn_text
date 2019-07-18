@@ -1,0 +1,19 @@
+* dynamic memory pointers to line memory
+* patterned after mr and ws storage in Ferret
+* ... an array of pointers to 1D arrays in F90
+
+	INTEGER plm_free_base   ! base of the free list
+	PARAMETER ( plm_free_base = 0 )
+
+        TYPE lm_table_slot
+           SEQUENCE     ! force data elements to be memory-contiguous
+           REAL(8), POINTER :: ptr(:)
+        END TYPE
+        TYPE(lm_table_slot) :: dsg_linemem(max_lm)
+        INTEGER*8 total_line_mem
+	INTEGER free_dyn_line, lm_size
+        COMMON / XDYN_dsg_linemem /  
+     .          dsg_linemem,
+     .          total_line_mem,
+     .		lm_size(max_lm),
+     .		free_dyn_line(plm_free_base:max_lm)

@@ -1,4 +1,5 @@
 SRCS_F = \
+README_dsg_in_ferret.F\
 fakes3.F\
 ferret_dispatch.F\
 gui_fakes.F\

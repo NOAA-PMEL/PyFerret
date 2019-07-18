@@ -82,7 +82,7 @@
      
 	CHARACTER symbuff30*30, title*32
 
-      INTEGER TM_LENSTR1, STR_SAME, i, ier, ilen, slen, ist, nc, nl
+      INTEGER TM_LENSTR1, STR_SAME, i, ier, ilen, slen, nc, nl, ist
       LOGICAL TM_FPEQ_EPS_SNGL, reglevs
 
 * Lowest and highest Z level

@@ -137,6 +137,10 @@
 * v7.11    4/19/2017 Tag before GFDL visit 4/2017
 * v7.12    5/11/2017 
 * v7.13    6/ 6/2017  fixes to tickets 2538, 2539
+
+* v7.11    4/19/2017 Tag before GFDL visit 4/2017
+* v7.12    5/11/2017 
+* v7.13    6/ 6/2017  fixes to tickets 2538, 2539
 * v7.20    7/11/2017 7.20 release
 * v7.21    9 /2017 7.21 release
 * v7.22    9/14/2017 7.22 dnamic coordinate storage
@@ -154,6 +158,6 @@
 
 	DATA program_name	/ 'PyFerret' /
 	DATA len_program_name	/  8         /
-	DATA revision_level	/  7.505     /
+	DATA revision_level	/  7.51     /
 
 	END

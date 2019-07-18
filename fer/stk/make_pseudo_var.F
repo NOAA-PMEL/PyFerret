@@ -50,6 +50,7 @@
 *      *acm* 4/12 Add new MODE FOURDEE to allow E,F,M,N,etc as user-vars
 * V71 12/16 *acm* For ticket 2158: working with true monthly time axes.
 *                 (no actual changes, just modernizing the code a bit.)
+* V720 *sh* 5/17 support for DSG coordinates as pseduo-variables
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -58,20 +59,37 @@
 	include 'xvariables.cmn'
 	include 'xcontext.cmn'
 	include	'xalgebra.cmn'
+	include	'xdset_info.cmn_text'
+	include 'xdyn_linemem.cmn_text'
 
 * calling argument declarations:
 	INTEGER	cx, mr, idim, lo_ss, hi_ss
 	REAL	pvar( lo_ss:hi_ss )
 
 * internal variable declarations:
-	INTEGER	grid, dset, pv, i, iaxis
+	LOGICAL	TM_ITSA_DSG, its_dsg
+	INTEGER	TM_DSG_DSET_FROM_GRID, TM_DSG_NFEATURES,
+     .		grid, dset, pv, i, iaxis,
+     .		dsg_var, dsg_lm, iobs, nobs, ifeature, nfeatures
 	REAL	BOX_SIZE, TM_WORLD
 
 * initialize
 
 * defining grid for output data
 	grid = cx_grid( cx )
-	dset = cx_data_set( cx )
+	its_dsg = idim .NE. f_dim .AND. TM_ITSA_DSG(grid)
+
+	IF (its_dsg) THEN
+	   dset = TM_DSG_DSET_FROM_GRID(grid)
+	   IF (idim .EQ. e_dim) THEN
+	      dsg_var = dsg_row_size_var(dset)
+	   ELSE
+	      dsg_var = dsg_coord_var(idim, dset)
+	   ENDIF
+	   dsg_lm = dsg_loaded_lm(dsg_var)
+	ELSE
+	   dset = cx_data_set( cx )
+	ENDIF
 
 	pv = (mr_variable(mr)-1) / nferdims  + 1
 
@@ -80,25 +98,62 @@
 	GOTO (  100, 200, 300, 400, 500 ) pv
 
 * "I", "J", "K", "L", "M", "N"
- 100	DO 110 i = lo_ss, hi_ss
- 110	pvar( i ) = i
+ 100	IF (its_dsg) THEN
+	   nfeatures = TM_DSG_NFEATURES(grid)
+	   IF (lm_size(dsg_lm) .EQ. nfeatures) THEN
+* ... DSG instance indices
+	      DO ifeature = lo_ss, hi_ss   ! always 1 to nfeatures
+	         pvar(ifeature) = ifeature
+	      ENDDO
+	   ELSE
+* ... DSG obs indices - start from 1 on each feature
+	      dsg_var = dsg_row_size_var(dset)
+	      dsg_lm  = dsg_loaded_lm(dsg_var)
+	      i = 0
+	      DO ifeature = 1, nfeatures
+	         nobs = dsg_linemem(dsg_lm)%ptr(ifeature)
+	         DO iobs = 1, nobs
+	            i = i + 1
+	            pvar( i ) = iobs
+	         ENDDO
+	      ENDDO
+	   ENDIF
+	ELSE
+	   DO i = lo_ss, hi_ss
+	      pvar( i ) = i
+	   ENDDO
+	ENDIF
 	RETURN
 
 * "X", "Y", "Z", "T", "E", "F"
 * TM_WORLD returns days if it is a true-month time axis
-
- 200	DO i = lo_ss, hi_ss
-	   pvar( i ) = TM_WORLD( i,grid,idim,box_middle )
-	ENDDO
+ 200	IF (its_dsg) THEN
+!DSGTBD: more efficient would be to just retuen the pointer dsg_linemem(dsg_lm)%ptr
+!  an example of how to do this is found in FIND_MEM_VAR
+!  In IS_PSEUDO would need to trap the X,Y,Z,T pseudo-variable case
+	   DO i = lo_ss, hi_ss   ! always full DSG obs or instance dimension
+	      pvar(i) = dsg_linemem(dsg_lm)%ptr(i)
+	   ENDDO
+	ELSE
+	   DO i = lo_ss, hi_ss
+	      pvar( i ) = TM_WORLD( i,grid,idim,box_middle )
+	   ENDDO
+	ENDIF
 	RETURN
 
 * "XBOX", "YBOX", "ZBOX", "TBOX", "EBOX", "FBOX"
+!DSGTBD: BOX, BOXLO, and BOXHI are useful values to return for the coordinates
+! that are observation variable, but not for the coordinates that are instance
+! variables.
+!       Currently these are trapped as errors in PSEUDO_VAR_CONTEXT
  300	DO i = lo_ss, hi_ss
 	   pvar( i ) = BOX_SIZE( i, grid, idim )
 	ENDDO
 	RETURN
 
 * "XBOXLO", "YBOXLO", "ZBOXLO", "TBOXLO", "EBOXLO", "FBOXLO"
+!DSGTBD: e.g. the low value of XBOXLO for a trajectory feature can be returned
+!    as the midpoint between X-observation and X-previous-observation
  400	DO i = lo_ss, hi_ss
 	   pvar( i ) =  TM_WORLD( i,grid,idim,box_lo_lim )
 	ENDDO

@@ -94,6 +94,7 @@
 * V701  7/16 *kms* Compare ds_name to char_init2048 instead of char_init1024
 *                  Initialize ds_name and ds_des_name to char_init2048
 *                  sf_name initialized to char_init2048
+* V720 4/17 *sh*  Initialize DSG variables
 
 * arguments:
 *	ds_num	- (input) data set number (see COMMON /XSTEP_FILES/)
@@ -107,6 +108,7 @@
 	external xstep_files_data
 	include 'xdset_info.cmn_text'
 	external xdset_info_data
+	include 'xtm_grid.cmn_text'
 
 * argument declarations
 	LOGICAL deallo
@@ -115,7 +117,8 @@
 * internal variable declarations
         LOGICAL   its_cdf
 	INTEGER   NCF_DELETE_DSET, STR_SAME,
-     .            f_num, ivar, iparm, iaux, idim
+     .            f_num, ivar, iparm, iaux, idim,
+     .            grid, line, lm, var
 
 * initialize: do we have an open set?
 	IF (ds_name(ds_num) .EQ. char_init2048) GOTO 9000
@@ -125,6 +128,50 @@
      .     .OR.   ds_type(ds_num) .EQ. 'FCT'
      .     .OR.   ds_type(ds_num) .EQ. 'CDF'
      .     .OR.   ds_type(ds_num) .EQ. 'ECDF' 
+
+* special steps to close a DSG dataset
+	IF (dsg_ragged(ds_num)) THEN
+           CALL CD_RELEASE_DSG_INSTANCE_VARS(ds_num)
+* ... remove the special axes and grids used for coordinate formatting
+	   grid = dsg_xlate_grid(ds_num)
+	   CALL TM_DEALLO_DYN_GRID(grid)
+* re-init the special DSG variables
+	   dsg_ragged(ds_num) = .FALSE.
+! these could optionally be init'ed, but AFAIK there is no need
+!	   dsg_feature_type	/pdsetalloc*int4_init/
+!	   dsg_row_size_var	/pdsetalloc*int4_init/
+!	   dsg_orientation	/pdsetalloc*int4_init/
+!	   dsg_obs_dimlen	/pdsetalloc*int4_init/
+!	   dsg_xlate_grid	/pdsetalloc*int4_init/
+!	   line_dsg_dset from the E and orientation axes
+	ENDIF
+
+* Clear variables associated only with data set number
+
+* free the coordinate memory for the time axis of an aggregation
+	IF (ds_type(ds_num) .EQ. 'FCT' .OR. STR_SAME(ds_type(ds_num), ' MC') .EQ. 0) THEN
+	   IF (ds_time_axis(ds_num).NE.int4_init .AND. ds_time_axis(ds_num).NE.unspecified_int4)
+     .         CALL FREE_LINE_DYNMEM (ds_time_axis(ds_num))
+        ENDIF
+
+* special steps to close a DSG dataset
+	IF (dsg_ragged(ds_num)) THEN
+           CALL CD_RELEASE_DSG_INSTANCE_VARS(ds_num)
+* ... remove the special axes and grids used for coordinate formatting
+	   grid = dsg_xlate_grid(ds_num)
+	   CALL TM_DEALLO_DYN_GRID(grid)
+* re-init the special DSG variables
+	   dsg_ragged(ds_num) = .FALSE.
+! these could optionally be init'ed, but AFAIK there is no need
+!	   dsg_feature_type	/pdsetalloc*int4_init/
+!	   dsg_row_size_var	/pdsetalloc*int4_init/
+!	   dsg_orientation	/pdsetalloc*int4_init/
+!	   dsg_obs_dimlen	/pdsetalloc*int4_init/
+!	   dsg_xlate_grid	/pdsetalloc*int4_init/
+!	   line_dsg_dset from the E and orientation axes
+	ENDIF
+
+* Clear variables associated only with data set number
 
 * free the coordinate memory for the time axis of an aggregation
 	IF (ds_type(ds_num) .EQ. 'FCT' .OR. STR_SAME(ds_type(ds_num), ' MC') .EQ. 0) THEN

@@ -180,7 +180,6 @@
 
       new = cdfstat .NE. NF_NOERR
 
-
 * already exists: limited consistency check - size of each axis, only
       IF ( .NOT.new ) THEN
          cdfstat = NF_INQ_VAR (cdfid, varid, vname, vartyp, 
@@ -465,6 +464,7 @@ C     Turn on deflate_lev and chunking
 
 * successful completion
  1000 status = merr_ok
+
       RETURN
 
 * error messages

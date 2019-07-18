@@ -53,6 +53,8 @@ C                with "*(*)" for the linux port
 C V695 *acm*  5/15 Restore color after a graticule using defined color 0
 *
 *acm* - 8/16   ticket 1787: restore pen 0 correctly after graticule
+* V745 *acm* 3/19 Draw tic marks on top of any graticule lines so 
+*                 dashes or color are covered up by the tic mark
 
 	CHARACTER XLAB*20,IFORMT*(*),XFRMT*12
 	COMMON/TICS/TSMX,TLX,TSMY,TLY,IX,IY
@@ -154,10 +156,10 @@ C
 	   CALL PLOTT7(X,Y,XFACT,YFACT,1,-8)
 	   DO 110 I=1,NDEC  ! large tics
 	      DO 100 J=2,9     ! small tics
-                 CALL PLOTT7(X+SGN*(I-1+ALOG10(FLOAT(J))),Y,XFACT,YFACT,1,-7)
 
                  IF ((solid2.OR.dashed2) .AND. vline) THEN ! make line across
                     xt = X+SGN*(I-1+ALOG10(FLOAT(J)))
+
                     CALL COLOR(vcolor(2))
                     IF (dashed2) THEN
                        CALL DASHSZ(dash2_1,dash2_2,dash2_3,dash2_4)
@@ -169,9 +171,9 @@ C
                     CALL COLOR(color0)
                     CALL VECTRS
                  ENDIF
+                 CALL PLOTT7(X+SGN*(I-1+ALOG10(FLOAT(J))),Y,XFACT,YFACT,1,-7)
 
 100           CONTINUE
-              CALL PLOTT7(X+SGN*I,Y,XFACT,YFACT,1,-8)
          
               IF ((solid1.OR.dashed1) .AND. vline) THEN ! make line across
                  xt = X+SGN*I
@@ -186,6 +188,7 @@ C
                  CALL COLOR(color0)
                  CALL VECTRS
               ENDIF
+              CALL PLOTT7(X+SGN*I,Y,XFACT,YFACT,1,-8)
 
 110        CONTINUE
 	ELSE
@@ -197,7 +200,6 @@ C  for DEPTH axes, X plot coordinates are reversed on page.
 	   CALL PLOTT7(XTEMP,Y,XFACT,YFACT,1,-8)
 	   DO 130 I=1,NDEC
 	      DO 120 J=2,9
-                 CALL PLOTT7(XTEMP+(I-1+ALOG10(FLOAT(J))),Y,XFACT,YFACT,1,-7)
                  
                  IF ((solid2.OR.dashed2) .AND. vline) THEN ! make line across
                     xt = XTEMP+(I-1+ALOG10(FLOAT(J)))
@@ -212,9 +214,9 @@ C  for DEPTH axes, X plot coordinates are reversed on page.
                     CALL COLOR(color0)
                     CALL VECTRS
                  ENDIF
+                 CALL PLOTT7(XTEMP+(I-1+ALOG10(FLOAT(J))),Y,XFACT,YFACT,1,-7)
 
 120           CONTINUE
-              CALL PLOTT7(XTEMP+I,Y,XFACT,YFACT,1,-8)
 
               IF ((solid1.OR.dashed1) .AND. vline) THEN ! make line across
                  xt = XTEMP+I
@@ -229,6 +231,7 @@ C  for DEPTH axes, X plot coordinates are reversed on page.
                  CALL COLOR(color0)
                  CALL VECTRS
               ENDIF
+              CALL PLOTT7(XTEMP+I,Y,XFACT,YFACT,1,-8)
 
 130        CONTINUE
 

@@ -33,7 +33,10 @@ let tol3 = ($tol_var)
 
 LET control = 2
 
-USE "($infile)"
+! This script is written for non-DSG-enabled Ferret. Do not treat the
+! file as a DSG file.
+
+USE/feature=none "($infile)"
 
 ! The names in the input and output file must match.
 ! To accomplish that we will rename the variables in the input file.
@@ -232,7 +235,7 @@ LET ($vname) = RESHAPE(($vname)_s, x[gx=obs]);\
 SET ATT/LIKE=($vname)_in ($vname);\
 SET ATT/OUTPUT=all ($vname);\
 SAVE/QUIET/APPEND/FILE="($outfile)" ($vname) )
-
+show data; pause
 can data/all
 can var/all
 can sym/all

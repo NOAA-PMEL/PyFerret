@@ -56,6 +56,7 @@
 * V602 *acm* 1/07 - use risc_buff rather than local variable buff, for solution to bug 1482
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 *                  Do not use GT format
+* V745 *acm* 12/18  added plist_dsg for CF-DSG format
 
         IMPLICIT NONE
 * calling argument declarations
@@ -105,6 +106,8 @@
            list_fmt_type = plist_dods
         ELSEIF ( upcase3 .EQ. 'XML' ) THEN
            list_fmt_type = plist_xml
+        ELSEIF ( upcase3 .EQ. 'DSG' ) THEN
+           list_fmt_type = plist_dsg
         ELSE
 
 * ... check out user-specified format

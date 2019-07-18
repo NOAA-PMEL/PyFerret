@@ -107,7 +107,7 @@ C
         REAL vgrat(4,2)        ! line type: 0=tics only, <0=line, >0=dash lengths 
         INTEGER vcolor(*)      ! pen number for graticule lines
 	INTEGER color0	       ! pen number to restore
-        LOGICAL vline          ! If true, do the lines across.
+        LOGICAL vline, do_line ! If true, do the lines across.
         LOGICAL solid1, solid2   ! solid lines across at tics
         LOGICAL dashed1, dashed2 ! dashed lines across at tics
         INTEGER ltic, color1, color2
@@ -194,6 +194,8 @@ C set up for plotting graticules across at tic marks
      .            vgrat(3,1).GT.0 .OR.  vgrat(4,1).GT.0 )
         dashed2 = (vgrat(1,2).GT.0 .OR. vgrat(2,2).GT.0 .OR.  
      .            vgrat(3,2).GT.0 .OR.  vgrat(4,2).GT.0 )
+
+	do_line = vline
 
         color1 = vcolor(1)
         color2 = vcolor(2)
@@ -348,11 +350,13 @@ C     LOOP:  Draw the axis line, tics, and labels
    10 CALL PLOT(T,Y,0,0)
       IF ( interrupted ) RETURN		! TMAP interrupt
 
+*    do not draw a graticule line along the upper axis
+	   do_line = ( ITIME3(13:14)// ITIME3(1:10).LT.
+     .	              ITIME2(13:14)//ITIME2(1:10)) 
 c        Any small tics?
       DO 20 I=1,NSMTIC
-         CALL PLOTT7(T+FLOAT(I)*TDIST,Y,TFACT,YFACT,1,-7)
 
-         IF ((solid2.OR.dashed2) .AND. vline) THEN ! make line across
+         IF ((solid2.OR.dashed2) .AND. do_line) THEN ! make line across
             CALL COLOR(color2)
             IF (dashed2) THEN
                CALL DASHSZ(dash2_1,dash2_2,dash2_3,dash2_4)
@@ -364,9 +368,14 @@ c        Any small tics?
             CALL COLOR(color0)
             CALL VECTRS
          ENDIF
+         CALL PLOTT7(T+FLOAT(I)*TDIST,Y,TFACT,YFACT,1,-7)
    20 CONTINUE
 
       CALL TIME3(ITIME,IYR,IMON,IDAY,IHR,IMIN,ISEC,ICEN)
+
+*    do not draw a graticule line along the upper axis
+      do_line = ( ITIME3(13:14)// ITIME3(1:10).LT.
+     .	              ITIME2(13:14)//ITIME2(1:10)) 
 	  
       hvytic = (MOD(imin,labint) .EQ. 0)
       IF (heavy_at_labels) THEN
@@ -375,9 +384,8 @@ c        Any small tics?
      .               ltic.EQ.0 )
       ENDIF
 
-      IF(hvytic)THEN
-         CALL PLOTT7(T+TIC,Y,TFACT,YFACT,1,IHVY)	
-         IF ((solid1.OR.dashed1) .AND. vline) THEN ! make line across
+      IF(hvytic)THEN	
+         IF ((solid1.OR.dashed1) .AND. do_line) THEN ! make line across
             CALL COLOR(color1)
             IF (dashed1) THEN
                CALL DASHSZ(dash1_1,dash1_2,dash1_3,dash1_4)
@@ -389,11 +397,11 @@ c        Any small tics?
             CALL COLOR(color0)
             CALL VECTRS
          ENDIF
+         CALL PLOTT7(T+TIC,Y,TFACT,YFACT,1,IHVY)
       ELSE
-         IF (MOD(imin,ticint).EQ.0) THEN
-            CALL PLOTT7(T+TIC,Y,TFACT,YFACT,1,INML)		    
+         IF (MOD(imin,ticint).EQ.0) THEN	    
 c           graticule line at tic
-            IF ((solid2.OR.dashed2) .AND. vline) THEN ! make line across
+            IF ((solid2.OR.dashed2) .AND. do_line) THEN ! make line across
                CALL COLOR(color2)
                IF (dashed2) THEN
                   CALL DASHSZ(dash2_1,dash2_1,dash2_3,dash2_4)
@@ -405,6 +413,7 @@ c           graticule line at tic
                CALL COLOR(color0)
                CALL VECTRS
             ENDIF
+            CALL PLOTT7(T+TIC,Y,TFACT,YFACT,1,INML)	
          ELSE 
             CALL PLOT(T+TIC,Y,1,0)
          ENDIF

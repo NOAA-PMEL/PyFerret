@@ -82,9 +82,11 @@
 * V694 5/14  *acm* Ticket 2234: Issue an error instead of returning missing results on 
 *                  inappropriate use of string arguments in numeric expressions or mixed
 *                  string/numeric expressions with logic operators. See bn_strings.jnl
+* V720 5/17 *sh*  added support for operations on DSG ragged arrays 
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
+	include	'xdset_info.cmn_text'
 	include	'ferret.parm'
 	include	'errmsg.parm'
 	include	'rpn.parm'
@@ -100,12 +102,14 @@
 	CHARACTER*(*)	alg_text
 
 * local variables
-	LOGICAL	ITS_UN_CACHED, not_reusable, arg_types_matched,
-     .		numerical_op
+	LOGICAL	ITS_UN_CACHED, TM_ITSA_DSG,
+     .		not_reusable, arg_types_matched, numerical_op, its_dsg
 	INTEGER	CX_DIM_LEN, STR_MATCH, MGRID_SIZE_DELTA,
+     .		TM_DSG_DSET_FROM_GRID, TM_DSG_NFEATURES,
      .		ifcn, iop, ilogic, icom, idim, num_com, mr, res_cx,
      .		mr1, mr2, mr3, mr4, impl_grid, arg_type, i1,
-     .		frame_bottom, op_num, res_len, com_len, com_cx, res_mr
+     .		frame_bottom, op_num, res_len, com_len, com_cx, res_mr,
+     .		dsg_grid, dset, i8_size, nfeatures, nobs, orientation
 
 * convenience equivalences
 	INTEGER	com(5)
@@ -133,6 +137,21 @@
 * the "frame_bottom" is the isp level that will be left when the components of
 * the current calculation (1 to 3) are reduced to a single value.
 * on exit isp will point to the frame bottom and the result will be left there
+
+* initialize DSG info
+* since an abstract grid is substituted below for the result, and we may be
+* operating on entirely intermediate results, we cannot follow the usual route
+* of learning the DSG-ness of the calculation from the grid.  Instead we
+* look at the grid of the result uvar
+! TBD: not sure if it matters whether we use is_big_cx or is_cx
+	dsg_grid = cx_grid(is_big_cx(lo_isp))
+	its_dsg = TM_ITSA_DSG(dsg_grid)
+	IF (its_dsg) THEN
+          dset      = TM_DSG_DSET_FROM_GRID( dsg_grid )
+          nfeatures = TM_DSG_NFEATURES( dsg_grid )
+          nobs        = dsg_obs_dimlen(dset)
+	  orientation = dsg_orientation(dset)
+	ENDIF
 
 * identify the text of the particular item within the algebraic class
 * ... function
@@ -215,6 +234,18 @@
 	      ENDIF
  200	   CONTINUE
  210	CONTINUE
+
+* Fix up the DSG result context
+* A DSG ragged array may appear as a 2D obs X E grid at this point
+* If so, remove the E, as the orientation axis is the full ragged dim in length
+	IF (its_dsg) THEN
+	    IF (cx_hi_ss(res_cx,orientation) .NE. unspecified_int4) THEN
+	       IF (cx_hi_ss(res_cx, e_dim) .NE. unspecified_int4) THEN
+	    	  cx_lo_ss(res_cx, e_dim) = unspecified_int4 
+	          cx_hi_ss(res_cx, e_dim) = unspecified_int4
+	       ENDIF
+	    ENDIF
+	ENDIF
  
 * allocate memory space for result
 	CALL CREATE_MEM_VAR( res_cx, res_mr, status )
@@ -245,8 +276,29 @@
      .     .OR. (op_num.GT.offset_logic_struc)   )
 
 * perform the operation
+	IF (its_dsg) THEN
+* ... adjust the indices into 2D form for convenient DSG processing
+	  CALL DSG_ARRAY_SUBSC( com, 5, orientation )
+* ... good housekeeping: flag unprocessed features of the DSG result
+*     to make them readily visible during code development
+! DSGTBD: eventually this will be needed only in diagnostic mode
+	  CALL FILL_MEMORY ( res_mr, dsg_masked_out_flag ) 
+* ... get work space needed for masks
+	  i8_size = nfeatures
+	  CALL GET_DYN_WORK_SPACE( i8_size, status )
+* ... finally do the operation
+! DSGTBD:  still need DSG versions of string subroutines below
+	  CALL DSG_OPERATE (op_num, num_com, ifv, res_cx, is_cx(frame_bottom),
+     .			 dset,
+     .			 nfeatures,
+     .			 workmem(plegacy_work_buffer)%ptr,
+     .			 memry(mr1)%ptr,   mr1,
+     .			 memry(mr2)%ptr,   mr2,
+     .			 memry(mr3)%ptr,   mr3,
+     .			 memry(mr4)%ptr,   mr4,
+     .			 memry(res_mr)%ptr, res_mr )
 
-	IF (.NOT.arg_types_matched ) THEN 
+	ELSEIF (.NOT.arg_types_matched ) THEN 
 * ... allow mix of float and string arguments (lets us use symbols as numbers)
 	    CALL FILL_MEMORY ( res_mr, mr_bad_data(res_mr) )
 

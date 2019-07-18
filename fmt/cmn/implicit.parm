@@ -1,6 +1,7 @@
 * implicit.PARM
 *
 * 10/95 *sh* - parameters for dynamic lines
+*  4/17 *sh* added pline_not_dsg
 
 * codes for dynamic lines (axes)
 	INTEGER pline_class_basic, pline_class_stride,  pline_class_midpt,
@@ -10,3 +11,8 @@
      .			pline_class_midpt   = 2,
      .			pline_class_foreign = 3,
      .			pline_class_fft     = 4 )
+
+
+* code for special DSG "lines"
+	INTEGER pline_not_dsg
+	PARAMETER    ( pline_not_dsg = -678 )

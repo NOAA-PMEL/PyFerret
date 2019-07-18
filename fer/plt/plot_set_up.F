@@ -194,16 +194,35 @@
 * V7.2 *acm* 4/2017 In fix for 2212, make sure ind_min,ind_max are defined before using them 
 *                   to check log limits on log axis.  Make sure the limits are actually applied.
 * V7.2 *acm* 5/2017 restore correct longitude moduloing for PLOT/VS overlay plots
+* V7.22 *acm* 10/2017 Fix ticket 2565, duplicate and sometimes shifted labels on PLOT/over time plots
 * V73+ 1/18 *acm* Changes for Issue 1009; precsision in time info sent to pplus for 2D plots
 *                 handle line plots over scaled 2D plot
 *                 On time plots overlaid on a 2D plot, set up time-axis information even when
 *                 not labeling the plot.
 * V7434 10/18 *acm* minor cleanup: initialize variable the_taxis
+* V74+ *acm*  4/18 additions for plotting trajectories from a dsg dataset
+* V74+ 4/18 *acm*  Automatically do a colored trajectory plot for the command 
+*                  "PLOT var" if it's a DSG trajectory set. 
+* V74+ 4/18 *acm*  Updates to DSG plotting: trajectories or sets of timeseries etc
+* V74+ 7/18 *acm*  Updates to DSG plotting: 
+*                   - Fixes for modulo longitude ranges in the context
+*                   - Upper-left labels with plot range in world coordinates
+* V7.4+ *acm*  8/18 DSG-enabled Ferret: line-key labels may be strings from the IDs
+* V7.4+ *acm* 10/18 Handle single-point plots: plot a symbol
 * V75   10/18 *acm* ticket 1926 F-axis line plots were trying to get time-origin from t-axis
 *                   of the grid.
+* V7.5+ *acm*  4/18 PLOT/VS plots from DSG data that are not native-trajectory plots
+* V75   10/18 *acm* ticket 1926 F-axis line plots were trying to get time-origin from t-axis
+*                   of the grid.
+* V75    4/19 *acm* For data in profile DSG dataset, 2- or 3-argument ribbon plot
+*                   may need an argument expanded to the obs length, e.g ribbon/vs time, depth, var
+* V7.5+ *acm*  6/19 changes to the call of PLOT_DSG_CHECK_LON360
 * V751   6/19 *acm* Issue 1940, dependent variable on a time axis with /vlimits.  The call to
 *                   EQUAL_RANGE specified that the dependent-axis limits be translated as dates 
 *                   on the independent time axis.
+* V751   6/19 *acm* For DSG data update calls to PLOT_DSG_APPLY_OBS_MASK
+* V751   7/19 *acm* For DSG data, set a flag controling a PLOT/VS plot with station locations as
+*                   opposed to exanding variables to the obs axis.
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -228,6 +247,9 @@
         include 'switch_inc.decl'
         include 'SWITCH.INC'
         include 'pyfonts.cmn'
+	include 'xdset_info.cmn_text'
+
+#include "tmap_dset.parm"
 
 * calling argument declarations:
 	LOGICAL		overlay, transpz, versus, no_labels, use_line,
@@ -240,14 +262,15 @@
  
 * V500 *kob* 3/99- up VAR_CODE and VAR_UNITS to 64 chars
 * internal variable declarations:
+
 	LOGICAL		NO_LINE_RANGE, GEOG_LABEL, ITS_FMRC,
-     .                  ITSA_TRUEMONTH_AXIS, TM_HAS_STRING,
+     .                  ITSA_TRUEMONTH_AXIS, TM_HAS_STRING, TM_ITSA_DSG,
      .			flip, time_axis,
      .			all_1_ind, formatted,
      .			indep_is_log, dep_is_log, use_nice,
      .                  this_no_range(max_line_on_plot), set_axis,
      .                  timeax_both, do_units, doing_ribbon_color,
-     .                  x_is_time, y_is_time
+     .                  x_is_time, y_is_time, its_traj, its_dsg, expand_dsg_ok
 	CHARACTER*2040	FULL_VAR_TITLE,  KEY_STRING, plot_title
 	CHARACTER	INTERNAL_WHOI_DATE*14, VAR_UNITS*64,
      .			SECS_TO_DATE*20, LEFINT*8, MERGED_WHOI_DATE*14, 
@@ -258,6 +281,7 @@
      .			whoimin*14, whoimax*14, 
      .			whoimin_axlo*14, whoimax_axhi*14
 	INTEGER		TM_LENSTR1, CX_DIM_LEN, CGRID_SIZE, CGRID_AXIS, 
+     .			TM_DSG_DSET_FROM_GRID, TM_DSG_NFEATURES,
      .			mv, cx, slen, ito, indep_lab, dep_lab, nline_in_mem,
      .			indep_dim, npts, dep_dim, npts2, ndv, var1,
      .			grid, grid1, ipl, ndim, dims(6),
@@ -266,7 +290,9 @@
      .			dep_axtyp, indep_axtyp, the_taxis, ribbon_var, 
      .			gap_var, iiunits, iaxis, hblk1, mvh_temp, 
      .			nkey_entries, t_axtyp, since_T0, itmp, igrd_save, 
-     .			icode, dep_dir
+     .			icode, dset, nfeatures, obsdimlen, fline, orientation, 
+     .			dtype, fvar, nload_all, numv, nok, line_symbol, 
+     .			dsg_fmt_grid, dep_dir, nmasked
 
 	INTEGER         TM_GET_CALENDAR_ID, cal_id_1, cal_id_2,
      .			cal_id_old, cal_id_new
@@ -277,7 +303,7 @@
      .			ind_len, first, last, hlen, hrs, 
      .			bc_min, bc_max, step_lo, step_hi, ascale, aoff
 	REAL		TSTEP_TO_SECS, SECS_TO_TSTEP, DATE_TO_TSTEP, 
-     .			WHOI2BC,ind_min, ind_max, dep_min, dep_max, 
+     .			WHOI2BC, GET_LINE_COORD, ind_min, ind_max, dep_min, dep_max, 
      .			delta, tmp, dum, ww_save, cen, yr
 	REAL*4 rbad
 
@@ -295,10 +321,82 @@
 
 * limits error check
         IF (nmv .GT. max_line_on_plot) GOTO 5050
+	
+* initialize
+
+	ind_max = arbitrary_small_val8
+	ind_min = arbitrary_large_val8
+	cx   = cx_list( 1 )
+	mv   = mv_list( 1 )
+	grid1 = cx_grid( cx )
+	grid = cx_grid(is_cx(1))
+	dset = cx_data_set(cx)
+	indep_dim = plot_axis(1)
+
+	numv = nmv  ! local copy
+	line_symbol = symbol
+
+* ragged DSG data?  Get number of features and obsdimlen.
+* If it's a Trajectory dataset and they did "PLOT var", set that up.
+
+	 nfeatures = 0
+	 its_dsg = .FALSE.
+	 IF (dset .EQ. pdset_irrelevant) THEN
+	     cx = is_cx(nmv)
+	    grid1 = cx_grid( cx )
+	    dset = cx_data_set(cx)
+	 ENDIF
+
+	 IF (dset .GT. pdset_irrelevant) THEN
+	 IF ( dsg_ragged(dset) ) THEN
+	    IF (  qual_given(slash_plot_along) .GT. 0.AND. .NOT.versus )  
+     .	       CALL WARN ('PLOT/ALONG is ignored for discrete DSG data')
+
+	    grid = cx_grid(is_cx(nmv))
+	    dset = TM_DSG_DSET_FROM_GRID( grid )
+	    nfeatures = TM_DSG_NFEATURES( grid )	    
+	    its_dsg = .TRUE.
+	    CALL TM_DSG_FACTS( grid, orientation, obsdimlen, fline, its_dsg )
+	    IF (its_dsg) THEN
+
+	       its_traj = dsg_feature_type(dset).EQ.pfeatureType_Trajectory
+	    
+* Is this just a regular ribon plot with 3 variables (not a lon/lat traj plot)? 
+* OR a PLOT/VS var1,var2 from a DSG dataset for var1,var2 not lon/lat?
+* This may turn off ribbon_plot
+
+	       CALL CHECK_PLOT_TRAJ (versus, numv, its_traj)
+
+*  numv = 1 if we're doing the trajectory ribbon plot automatically with PLOT var
+*  Still allow doing it the old fashioned way numv = 2  for plot/vs lon, lat
+*  If it's a trajectory dataset we still might send in say, lon,lat with a map projection
+*  specified, so allow for that too.
+
+	       IF ( (numv.EQ.1 .OR. nmv.EQ.3) .AND. its_traj) THEN 
+	          ul_dolab(x_dim) = .FALSE.
+	          ul_dolab(y_dim) = .FALSE.
+	          ul_dolab(t_dim) = .TRUE.
+	          ul_dolab(e_dim) = .TRUE.
+	          ul_nlabs = 2
+
+	          CALL DSG_TRAJ_PLOT_SET_UP ( 
+     .              overlay, no_labels, symbol, sym_size, color, color1, 
+     .              use_line, do_dash, dashstyle, nokey, all_1_dep, only_val, 
+     .              skipsym, mv_list, cx_list, numv, indep_dat, dep_dat, status )
+	          GOTO 1000
+	       ENDIF
+
+	    ENDIF ! its_dsg
+
+* Plot a variable e.g. as a set of timeseries per feature
+
+	 ENDIF ! dsg_ragged
+	 ENDIF ! dset
 
 * initialize
-!	dep_max = arbitrary_small_val8
-!	dep_min = arbitrary_large_val8
+
+	dep_max = arbitrary_small_val8
+	dep_min = arbitrary_large_val8
 	ind_max = arbitrary_small_val8
 	ind_min = arbitrary_large_val8
 	cx   = cx_list( 1 )
@@ -322,7 +420,7 @@
 	adjust_time = .FALSE.
         cx_x = cx_list(1)
 	xtra_lab = ' '
-        nkey_entries = nmv
+        nkey_entries = numv
 	itmp = mnormal
 	do_units = .TRUE.
 	x_is_time = .FALSE.
@@ -332,10 +430,10 @@
 	icode = 0
 	t1_date = ' '
 	tref = ' '
-c	 CALL PPLCMD ( from, line, 0, 'TIME', 1, 1 )
+	ribbon_var = 0
 
 * set limit on the number of plot keys
-        IF (.NOT.nokey  .AND.  nmv.GT.max_key_entries) THEN
+        IF (.NOT.nokey  .AND.  numv.GT.max_key_entries) THEN
            buff1 = LEFINT( max_key_entries,  slen  )
            CALL WARN('Too many lines to label. Labeling initial '
      .                          //buff1(:slen) )
@@ -344,11 +442,9 @@ c	 CALL PPLCMD ( from, line, 0, 'TIME', 1, 1 )
 
 * determine PLOT+ memory required
         plot_mem_used = 0
-        DO 10 ipl = 1, nmv
+        DO 10 ipl = 1, numv
  10     plot_mem_used = plot_mem_used
      .		      + 2*step_inc*CGRID_SIZE( cx_list(ipl) )
-c        IF ( plot_mem_used .GT. 0.999*pplmem_nsize ) GOTO 5150  ! test is now in
-                                                                ! pplldx_envelope
 
 * check for improper data supplied
 	IF ( versus ) THEN
@@ -440,8 +536,13 @@ c        IF ( plot_mem_used .GT. 0.999*pplmem_nsize ) GOTO 5150  ! test is now i
 	   ELSE
 	      pdeplim = pvlim
 	   ENDIF 
-	ENDIF
+	ENDIF	   
 
+* do not re-draw the main label, logo, other labels from the underlay plot
+	IF (overlay) THEN
+	   nlabs_on = 0  
+	   CALL PPLCMD ( from, line, 0, 'LABS ', 1, 1 )	
+	ENDIF
 	   
 * do not re-draw the main label, logo, other labels from the underlay plot
 	IF (overlay) THEN
@@ -468,16 +569,43 @@ c        IF ( plot_mem_used .GT. 0.999*pplmem_nsize ) GOTO 5150  ! test is now i
      .			    status	)
 	   IF ( status .NE. ferr_ok ) GOTO 5000
 	   var1 = 2		! since first var is independent axis
-	   ndv  = nmv - 1	! # of dependent variables
+	   ndv  = numv - 1	! # of dependent variables
 	   use_keys = .FALSE.
 	   plot_title = FULL_VAR_TITLE( cx_list(1), .TRUE., slen )
+
+* ... Is this a dsg Profile dataset? Are we doing a vs plot? If so we may need to expand the 
+*     first or second variable to the OBS axis.
+
+	   expand_dsg_ok = .TRUE.
+	   IF (its_dsg) THEN  ! Get the size of the second variable and decide whether to expand to obs axis.
+
+	      npts2 = CGRID_SIZE( cx_list(var1) )
+
+	      expand_dsg_ok = (npts.NE.nfeatures .OR. npts2.NE.nfeatures)
+	      dsg_fmt_grid = 0
+
+	      IF ( orientation.EQ.pfeatureType_profile .AND. 
+     .	           versus .AND. expand_dsg_ok) THEN
+
+	         CALL DSG_OBS_BY_FEATURE_VAR (dset, cx, nfeatures, obsdimlen, indep_dat)
+	         npts = obsdimlen
+	         dsg_fmt_grid = dsg_xlate_grid(dset)
+	      ENDIF
+	   ENDIF
+
+* ... Is this a dsg dataset and we're doing a DSG plot (not a native trajectory plot)  then 
+*     apply an obs mask. Resets npts.
+
+	   IF (grid_is_dsg .AND. .NOT.its_traj .AND.expand_dsg_ok) 
+     .            CALL PLOT_DSG_APPLY_OBS_MASK (dset, cx, nfeatures, obsdimlen, 
+     .             indep_dat, npts)
 
 * ... label the independent axis as the first var given
 c     set up axis info even if no-lables: needed for time overlays on 2D time plots
 c	   IF ( .NOT.no_labels) THEN
 	      buff1 = VAR_UNITS(cx_x)
 	      iunits = TM_UNIT_ID(buff1)
-	      
+
 * Does it have time units? If so draw a formatted time axis
 	      x_is_time = .FALSE.
 	      since_T0 = MAX( INDEX(buff1,'since'), INDEX(buff1,'SINCE') )
@@ -495,8 +623,7 @@ c	   IF ( .NOT.no_labels) THEN
 		    line_tunit(itmp) = un_convert(line_unit_code(itmp))
 		    line_cal_name(itmp) = 'GREGORIAN'
 		    line_direction( itmp ) = 'TI'
-
-	            CALL MINMAX( indep_dat, npts, mr_bad_data(mv), lo, hi )
+		    CALL MINMAX( indep_dat, npts, mr_bad_data(mv), lo, hi, nok )
 		    grid_line(the_taxis, mgrid_buff) = itmp
 		 
 		    igrd_save =  cx_grid(cx_list(1))
@@ -507,13 +634,17 @@ c	   IF ( .NOT.no_labels) THEN
 		    ind_min = TSTEP_TO_SECS (mgrid_buff, the_taxis, lo)
 		    ind_max = TSTEP_TO_SECS (mgrid_buff, the_taxis, hi)
 
+		    IF (dsg_fmt_grid .GT. 0) THEN
+		       ind_min = TSTEP_TO_SECS (dsg_fmt_grid, t_dim, lo)
+		       ind_max = TSTEP_TO_SECS (dsg_fmt_grid, t_dim, hi)
+		    ENDIF
+
 * Plotting short time range? If so recompute tref     
 * axis length in hours from time since BC in seconds
 		    IF (.NOT.overlay) THEN
                        hrs = ( ind_max - ind_min ) / 3600.
                        IF (hrs.LT.24) tref = 
-     .                  MERGED_WHOI_DATE( cx_list(var1), the_taxis, nmv, .TRUE. )
-
+     .                  MERGED_WHOI_DATE( cx_list(var1), the_taxis, numv, .TRUE. )
                        all_1_ind = ind_min .EQ. ind_max
                        IF ( all_1_ind ) THEN
                           ind_min = ind_min - 1.
@@ -534,12 +665,31 @@ c	   IF ( .NOT.no_labels) THEN
 		    IF (itmp .NE. mnormal) CALL TM_DEALLO_DYN_LINE( itmp )
 		    itmp = mnormal
 	         ENDIF
+
 	      ELSE  ! not time axis
 	      
-	         CALL MINMAX( indep_dat, npts, mr_bad_data(mv), ind_min, ind_max )
+	         CALL MINMAX( indep_dat, npts, mr_bad_data(mv), lo, hi, nok )
+	         ind_min = MIN(ind_min, lo)
+	         ind_max = MAX(ind_max, hi)
+
 	      ENDIF
 
 	      slen = TM_LENSTR1(plot_title)
+
+*  Check for lon-360 issues?  Crossing the dateline
+
+              CALL GEOG_LABEL_VS (buff1, iunits, x_dim, axis_x_dir)
+              IF (iunits .EQ. 4) THEN
+                 delta = MAX(1., (ind_max-ind_min)/10.)  ! just a rough guess, will be set later
+                 CALL GET_AXIS_FORMAT( ind_min, ind_max, delta, fmt, use_nice )
+
+                 IF (grid_is_dsg .AND. versus .AND. use_nice .AND.
+     .               axis_x_dir .EQ. x_dim) THEN
+		    CALL PLOT_DSG_CHECK_LON360 (dset, cx, indep_dat, mr_bad_data(mv), 
+     .                    npts, nfeatures, ind_min, ind_max)
+
+                 ENDIF
+              ENDIF
 
 	      IF (.NOT.no_labels .AND. iunits .NE. 4) 
      .           CALL BOX_LABEL( indep_lab,
@@ -604,8 +754,8 @@ c	   ENDIF  ! setting up time overlay information
 	         ind_max = val1 + delta
 	      ENDIF
 	   ELSE
-	      CALL MINMAX( indep_dat, npts, mr_bad_data(mv), lo, hi )
-	      IF (lo .EQ. arbitrary_large_val4) THEN ! all missing
+	      CALL MINMAX( indep_dat, npts, mr_bad_data(mv), lo, hi, nok )
+	      IF (nok .EQ. 0) THEN ! all missing
 	         ind_min = -1.
 	         ind_max =  1.
 	      ElSE
@@ -617,7 +767,6 @@ c	   ENDIF  ! setting up time overlay information
 * Set up modulo longitude handling if /vs and variable has units
 * of longitude
 
-	   
 	   cx_x = cx_list(1)	 
 	   cx_y = cx_list(2)
 	   buff1 = VAR_UNITS(cx_x)
@@ -626,6 +775,7 @@ c	   ENDIF  ! setting up time overlay information
 
 
 	   IF (.NOT.overlay) THEN
+
 	      CALL AXIS_ENDS(indep_ax,indep_dim,grid1,ind_min,ind_max,
      .                       delta, indep_is_log, indep_axtyp, versus, status)
 	      IF ( status .NE. ferr_ok ) THEN
@@ -636,6 +786,8 @@ c	   ENDIF  ! setting up time overlay information
 
 * This routine checks the units and the setting for formatted lon/lat (time?) axes
 * If the formatting has been turned off, resets iunits and flag mod_vs_x.
+* If the axes are labeled with longitude, latitude, or time, then set ul_dolab to not
+* put upper-left labels on the plot with the ranges.
 
               CALL GEOG_LABEL_VS (buff1, iunits, x_dim, axis_x_dir)
 
@@ -648,25 +800,30 @@ c	   ENDIF  ! setting up time overlay information
      .                  ',''''LONE'''')'
                        CALL PPLCMD ( from, line, 0, ppl_buff, 1, 1 )
                        CALL LON_LAT_FMT (x_dim, 'X')
-		       mod_vs_x = .TRUE.
+                       mod_vs_x = .TRUE.
+                       ul_dolab(x_dim) = .FALSE.
+
                     ELSEIF (axis_x_dir .EQ. y_dim) THEN
                        ppl_buff = 'XFOR,('//fmt(:TM_LENSTR1(fmt))//
      .                  ',''''LAT'''')'
                        CALL PPLCMD ( from, line, 0, ppl_buff, 1, 1 )
                        CALL LON_LAT_FMT (y_dim, 'Y')
+                       ul_dolab(y_dim) = .FALSE.
                     ELSE
                        ppl_buff = 'XFOR,('//fmt(:TM_LENSTR1(fmt))//
      .                  ',''''LONE'''')' 
                        CALL PPLCMD ( from, line, 0, ppl_buff, 1, 1 )
                        CALL LON_LAT_FMT (x_dim, 'X')
+                       ul_dolab(x_dim) = .FALSE.
                     ENDIF
                  ENDIF
               ELSEIF (iunits .LT. 0) THEN ! time axis formatting
                  CALL PPLCMD ( from, line, 0, 'TIME', 1, 1 )
                  CALL PPLCMD ( from, line, 0, 'TAXIS 60,ON', 1, 1 )
-	         ppl_buff = ' '
-	         WRITE ( ppl_buff, 3004 ) 'GREGORIAN'
+                 ppl_buff = ' '
+                 WRITE ( ppl_buff, 3004 ) 'GREGORIAN'
                  CALL PPLCMD (from, line, 0, ppl_buff, 1, 1)
+                 ul_dolab(t_dim) = .FALSE.
 	      ELSE
                  CALL PPLCMD ( from, line, 0, 'XFOR 0', 1, 1 )	 
               ENDIF	 
@@ -705,7 +862,7 @@ c	   ENDIF  ! setting up time overlay information
 	   ENDIF
 
 	   var1 = 1
-	   ndv  = nmv
+	   ndv  = numv
 	   ito  = 0
 	   time_axis =	indep_dim.EQ.t_dim .OR. indep_dim.EQ.f_dim
 	   IF ( time_axis ) THEN	! 11/95: are ALL vars time vars?
@@ -718,7 +875,7 @@ c	   ENDIF  ! setting up time overlay information
               cal_name = line_cal_name(tax)
               cal_id_1 = TM_GET_CALENDAR_ID ( cal_name )
 
-	      DO 100 ipl = var1, nmv
+	      DO 100 ipl = var1, numv
 	         time_axis = time_axis
      .			.AND. GEOG_LABEL( the_taxis, cx_grid(cx_list(ipl)) )
                  tax = grid_line(the_taxis,cx_grid(cx_list(ipl)) )
@@ -751,8 +908,10 @@ c	   ENDIF  ! setting up time overlay information
 	      ppl_buff = ' '
 	      WRITE ( ppl_buff, 3004 ) cal_name
               CALL PPLCMD (from, line, 0, ppl_buff, 1, 1)
+
+	      ul_dolab(t_dim) = .FALSE.
 	   ENDIF
-	ENDIF
+	ENDIF  ! end of  IF (versus)
  3004   FORMAT ('CALENDAR ', A7)
 
 * set up PLOT5 to ignore bad data flag
@@ -776,7 +935,7 @@ c	   ENDIF  ! setting up time overlay information
 * * * * * * *    - - - LOAD DATA - - - * * * * * * * * *
 * 11/95: determine T0 reference time for time axis
 	IF ( time_axis .AND. .NOT.overlay ) THEN
-	   tref = MERGED_WHOI_DATE( cx_list(var1), the_taxis, nmv, .FALSE. )
+	   tref = MERGED_WHOI_DATE( cx_list(var1), the_taxis, numv, .FALSE. )
 	ELSE
 	   tref = ' '		! overlays reuse previous tref
 	ENDIF
@@ -786,10 +945,13 @@ c	   ENDIF  ! setting up time overlay information
 	all_1_dep = .TRUE.
 	set_axis = .TRUE.
 	only_val  = bad_val4
-	DO 200 ipl = var1, nmv
+	nload_all = 0
+
+	DO 200 ipl = var1, numv
 	   mv   = mv_list( ipl )
 	   cx   = cx_list( ipl )
 	   grid = cx_grid( cx )
+	   dset = cx_data_set(cx)
            IF (.NOT.versus) THEN 
               CALL GET_CX_DIMS( cx, ndim, dims )
               IF (ndim .GT. 1) GOTO 5110
@@ -808,6 +970,50 @@ c	   ENDIF  ! setting up time overlay information
  
 	   IF ( status .NE. ferr_ok ) GOTO 5000
 
+* ... If this is a profile or timeseries collection maybe we are just makinga map with 
+*     the stations so dep_dat and indep dat are the longitudes and latitudes. The flag
+*     expand_dsg_ok false, says just plot the instance variables
+	   
+* ... Or, is this a dsg Profile dataset? Are we doing a vs plot? If so we may need to expand the 
+*     first or second variable to the OBS axis.
+
+	   IF (its_dsg .AND. 
+     .	       orientation.EQ.pfeatureType_profile .AND. 
+     .	       versus .AND. npts2.EQ.nfeatures .AND. expand_dsg_ok) THEN
+	      CALL DSG_OBS_BY_FEATURE_VAR (dset, cx, nfeatures, obsdimlen, dep_dat)
+	      npts2 = obsdimlen
+	      dsg_fmt_grid = dsg_xlate_grid(dset)
+	   ENDIF
+
+* ... For a dsg dataset, can ask to color by a feature-level variable
+*     such as an ID.
+
+	   doing_ribbon_color = ribbon_plot .AND. ipl.EQ.ribbon_var
+
+	   IF (its_dsg .AND. doing_ribbon_color .AND. 
+     .		 versus .AND.  npts2.LT.obsdimlen) THEN
+	      IF (its_dsg) THEN 
+		 CALL SET_DSG_ID_LEV (dset, cx, nfeatures, 
+     .		      dep_dat, mr_type(mv), changed_key)
+		 IF (npts2 .EQ. nfeatures) THEN
+		    DO i = 1, npts2
+		       dep_dat(i) = i
+		    ENDDO
+		    IF (expand_dsg_ok) THEN
+		       CALL DSG_OBS_BY_FEATURE_VAR (dset, cx, nfeatures,
+     .		         obsdimlen, dep_dat)
+		       npts2 = obsdimlen
+	            ENDIF
+		 ENDIF
+	      ENDIF
+	   ENDIF
+
+* ... Is this a dsg dataset?  if so apply an obs mask. Resets npts2
+
+	   IF (grid_is_dsg .AND. .NOT.its_traj .AND. versus .AND. expand_dsg_ok) 
+     .       CALL PLOT_DSG_APPLY_OBS_MASK (dset, cx, nfeatures, 
+     .       obsdimlen,  dep_dat, npts2)
+
 * ... replicate points to create a "step" plot if requested  (1/01)
 	   nload = npts2 * step_inc
            IF (step_inc .EQ. 2) THEN
@@ -822,11 +1028,9 @@ c	   ENDIF  ! setting up time overlay information
 	         dep_dat(3*i-2) = dep_dat(i)
 	      END DO
 	   ENDIF
+
 * set up corresponding independent axis
 * ( note - each variable may have different points on the indep. axis )
-
-
-	   doing_ribbon_color = ribbon_plot .AND. ipl.EQ.ribbon_var
 
 	   IF ( versus ) THEN
 * ... number of values must be equal in independ. and depend. for ordered pairs
@@ -838,13 +1042,13 @@ c	   ENDIF  ! setting up time overlay information
 	      IF (ribbon_plot .OR. addgaps) set_axis = (ipl .EQ. var1)
               IF (set_axis) THEN
 	         IF (.NOT.overlay) THEN
-	            CALL MINMAX( dep_dat, npts, mr_bad_data(mv), lo, hi )
- 	            IF (lo .EQ. arbitrary_large_val4) THEN ! all missing
+	            CALL MINMAX( dep_dat, npts, mr_bad_data(mv), lo, hi, nok )
+ 	            IF (nok .EQ. 0) THEN ! all missing
  	               dep_min = -1
  	               dep_max =  1
  	            ELSE
- 	               dep_min = lo
- 	               dep_max = hi
+ 	               dep_min = MIN(dep_min, lo)
+ 	               dep_max = MAX(dep_max, hi)
  	            ENDIF
 		 ENDIF
 
@@ -882,9 +1086,8 @@ c	   ENDIF  ! setting up time overlay information
 		       cx_grid(cx_list(1)) = mgrid_buff
 		       ww_save = cx_lo_ww(the_taxis,cx_list(1) ) 
 		       cx_lo_ww(the_taxis,cx_list(1)) = lo
-
-		       dep_min = TSTEP_TO_SECS (mgrid_buff, the_taxis, lo)
-		       dep_max = TSTEP_TO_SECS (mgrid_buff, the_taxis, hi)
+		       dep_min = MIN(dep_min, TSTEP_TO_SECS (mgrid_buff, the_taxis, lo))
+		       dep_max = MAX(dep_max, TSTEP_TO_SECS (mgrid_buff, the_taxis, hi))
 		    
 		       CALL TAXIS_STYLE( dep_ax, dep_min, dep_max, tstyle, xtra_lab )
 * 11/16 Get the min and max as used by PPLUS.  That function uses WHOI formatted time
@@ -919,44 +1122,55 @@ c	   ENDIF  ! setting up time overlay information
 * e.g. if they said just degrees_n for the x dir, but just "degrees" for the y var, 
 * use east for the vert. If they said degrees_e for the y var but just degrees for the x,
 * use lon for the y axis.
-
+* If the axes are labeled with longitude, latitude, or time, then set ul_dolab to not
+* put upper-left labels on the plot with the ranges.
 
                        IF (axis_x_dir.EQ.y_dim .AND. axis_y_dir.EQ.no_dim) THEN
-		          IF (iunits .EQ. 4) ppl_buff = 'YFOR,('//fmt(:TM_LENSTR1(fmt))//
+		          IF (iunits .EQ. 4) THEN
+		             ppl_buff = 'YFOR,('//fmt(:TM_LENSTR1(fmt))//
      .                       ',''''LONE'''')' 
+		             ul_dolab(x_dim) = .FALSE.
+		          ENDIF
+
                        ELSEIF (axis_y_dir .EQ. x_dim) THEN
 		          ppl_buff = 'YFOR,('//fmt(:TM_LENSTR1(fmt))//
      .                       ',''''LONE'''')' 
 		          mod_vs_y = .TRUE.
+		          ul_dolab(x_dim) = .FALSE.
+
 		          IF (axis_x_dir .EQ. no_dim) THEN
 		             buff1 = VAR_UNITS(cx_x)
 		             iiunits = TM_UNIT_ID(buff1)
 		             CALL GEOG_LABEL_VS (buff1, iiunits, x_dim, axis_x_dir)
-		             IF (iiunits .EQ. 4) ppl_buff = 'XFOR,('//fmt(:TM_LENSTR1(fmt))//
+		             IF (iiunits .EQ. 4) THEN
+		                ppl_buff = 'XFOR,('//fmt(:TM_LENSTR1(fmt))//
      .                           ',''''LAT'''')'
+		                ul_dolab(y_dim) = .FALSE.
+		             ENDIF
 		          ENDIF
                        ELSEIF (axis_y_dir .EQ. y_dim) THEN
                            ppl_buff = 'YFOR,('//fmt(:TM_LENSTR1(fmt))//
      .                       ',''''LAT'''')'
+                           ul_dolab(y_dim) = .FALSE.
                        ELSE
-		          ppl_buff = 'YFOR,('//fmt(:TM_LENSTR1(fmt))//
+                           ppl_buff = 'YFOR,('//fmt(:TM_LENSTR1(fmt))//
      .                       ',''''LAT'''')' 
+                           ul_dolab(y_dim) = .FALSE.
                        ENDIF
 
                        CALL PPLCMD ( from, line, 0, ppl_buff, 1, 1 )
                     ENDIF
-		 
-		 
+
                  ELSEIF (iunits .LT. 0) THEN ! time axis formatting
                     CALL PPLCMD ( from, line, 0, 'TIME', 1, 1 )
                     CALL PPLCMD ( from, line, 0, 'TAXIS/YAXIS 60,ON', 1, 1 )
-	            ppl_buff = ' '
-	            WRITE ( ppl_buff, 3004 ) 'GREGORIAN'
+                    ppl_buff = ' '
+                    WRITE ( ppl_buff, 3004 ) 'GREGORIAN'
                     CALL PPLCMD (from, line, 0, ppl_buff, 1, 1)
-
+                    ul_dolab(t_dim) = .FALSE.
 
 	         ELSE
-                 CALL PPLCMD ( from, line, 0, 'YFOR 0', 1, 1 )	 
+                   CALL PPLCMD ( from, line, 0, 'YFOR 0', 1, 1 )	 
                  ENDIF	
 	         ENDIF  ! not overlay
               ENDIF  ! set_axis
@@ -981,16 +1195,21 @@ c	   ENDIF  ! setting up time overlay information
 	         IF (.NOT.overlay) THEN
 	            hrs = ( ind_max - ind_min ) / 3600.
 		    IF (hrs.LT.24)
-     . 	            tref = MERGED_WHOI_DATE( cx_list(var1), the_taxis, nmv, .TRUE. )
+     . 	            tref = MERGED_WHOI_DATE( cx_list(var1), the_taxis, numv, .TRUE. )
 		 ENDIF
 	      ELSE
-	         ind_min = MIN( ind_min, DBLE(indep_dat(1)) )
-	         ind_max = MAX( ind_max, DBLE(indep_dat(nload)) )
+	         
+	         CALL MINMAX( indep_dat, npts, mr_bad_data(mv), lo, hi, nok )
+	         ind_min = MIN(ind_min, lo)
+	         ind_max = MAX(ind_max, hi)
+
 	      ENDIF
 	      all_1_ind = ind_min .EQ. ind_max
 	      IF ( all_1_ind ) THEN
+
 	         delta = 1.0
-		 IF (ind_min .NE. 0) delta = 0.1* ind_min
+	         IF (ind_min .NE. 0) delta = 0.1* ind_min
+	         IF (indep_dim .EQ. the_taxis) delta = 240*3600
 	         ind_min = ind_min - delta
 	         ind_max = ind_max + delta
 	      ENDIF
@@ -1016,7 +1235,7 @@ c	   ENDIF  ! setting up time overlay information
 * ... clean up temporary variable
                  CALL DELETE_VARIABLE( mvh_temp )
               ELSE 
-	         rbad = bad_val4
+		 rbad = bad_val4
                  CALL COMPUTE_MNSTD (dep_dat, mr_bad_data(mv), need_std, npts, rbad, status)
                  IF (need_std .AND. status.NE.ferr_ok) THEN
 * ... set up for automatic levels
@@ -1074,7 +1293,6 @@ c	   ENDIF  ! setting up time overlay information
                        GO TO 5160
 	            ENDIF
                  ENDIF
-
               ENDIF
               t1_date = INTERNAL_WHOI_DATE( grid, the_taxis, 1.0D0 )
            ELSE
@@ -1099,7 +1317,7 @@ c	   ENDIF  ! setting up time overlay information
 	   ENDIF
 
 * put colorvar in the right place
-	   IF (doing_ribbon_color) THEN
+	   IF (doing_ribbon_color) THEN   !!! .AND. .NOT.add_ribbon
 	      flip = .FALSE.
 	      IF (indep_dim .EQ. z_dim) THEN
 	         WRITE ( ppl_buff, 3005 ) mr_bad_data( mv ), indep_ax
@@ -1134,7 +1352,7 @@ c	   ENDIF  ! setting up time overlay information
 
 		 cx_grid(cx_list(1)) = igrd_save
 		 cx_lo_ww(the_taxis,cx_list(1) ) = ww_save 
-		 IF (ipl .EQ. nmv) THEN
+		 IF (ipl .EQ. numv) THEN
 		    IF (itmp .NE. mnormal) CALL TM_DEALLO_DYN_LINE( itmp )
 		    itmp = mnormal
 		 ENDIF
@@ -1154,7 +1372,7 @@ c	   ENDIF  ! setting up time overlay information
 
 		 cx_grid(cx_list(1)) = igrd_save
 		 cx_lo_ww(the_taxis,cx_list(1) ) = ww_save 
-		 IF (ipl .EQ. nmv) THEN
+		 IF (ipl .EQ. numv) THEN
 		    IF (itmp .NE. mnormal) CALL TM_DEALLO_DYN_LINE( itmp )
 		    itmp = mnormal
 		 ENDIF
@@ -1193,10 +1411,10 @@ c	   ENDIF  ! setting up time overlay information
 	   nline_on     = nline_on     + 1
 	   nline_in_mem = nline_in_mem + 1
 * ... assign line style for the data plotting:
-	   CALL LINE_STYLE(symbol, sym_size, skipsym, color, color1, use_line,
+	   CALL LINE_STYLE(line_symbol, sym_size, skipsym, color, color1, use_line,
      .			   do_dash, dashstyle, nline_in_mem, nline_on)
 
-
+	   nload_all = MAX(nload, nload_all)
  200	CONTINUE
 
         nline_on = nline_on + color1 - 1
@@ -1206,7 +1424,9 @@ c	   ENDIF  ! setting up time overlay information
 
 	IF ( .NOT.overlay ) THEN
 	   IF ( .NOT. versus ) THEN
+	      
 	      delta = unspecified_val8
+
 	      IF ( pindeplim .GT. 0 ) THEN
 	         IF (pxlim.GT.0 .AND. .NOT.denig_xylim_msg_done) THEN
 	            CALL WARN( '/XLIMITS and /YLIMITS are deprecated.')
@@ -1221,7 +1441,7 @@ c	   ENDIF  ! setting up time overlay information
 		 
 *  Check for valid log axis before proceeding
 	         IF (indep_is_log) THEN
-	         CALL AXIS_ENDS  ( indep_ax, indep_dim, grid1,
+	            CALL AXIS_ENDS  ( indep_ax, indep_dim, grid1,
      .				   ind_min, ind_max, delta, 
      .				   indep_is_log, indep_axtyp, versus, status )
 	            IF ( status .NE. ferr_OK ) THEN
@@ -1256,7 +1476,28 @@ c	   ENDIF  ! setting up time overlay information
 	            ind_max = SECS_TO_TSTEP( grid1, the_taxis, ind_max )
 	         ENDIF
               ELSE   ! /HLIM or /VLIM not used; check for range in indep direction
-                 IF (nload .EQ. 1) GOTO 5180
+
+c one-point on the independent axis, still make a nominal plot?
+c                 IF (nload_all .EQ. 1) GOTO 5180
+
+                 IF (nload_all .EQ. 1) THEN
+		    IF ( indep_dim .EQ. the_taxis) THEN  ! nominally +/- 10 day
+c		       ind_min = indep_dat(1) - 240*3600
+c		       ind_max = indep_dat(1) + 240*3600
+		       pindeplim = ind_max - ind_min
+		    ELSE
+		       ind_min = ind_min - 1.
+		       ind_max = ind_max + 1.
+		       pindeplim = 2.
+		    ENDIF
+		    IF (line_symbol.EQ.qual_off .OR. 
+     .               line_symbol.EQ.unspecified_int4) 
+     .               line_symbol = qual_on  ! draw point with a symbol
+		    CALL LINE_STYLE(line_symbol, sym_size, skipsym, color, color1, use_line,
+     .			   do_dash, dashstyle, nline_in_mem, 1)
+		    
+                 ENDIF
+
 	      ENDIF
 	      IF ( time_axis ) THEN
 	         IF ( pindeplim .GT. 0 ) CALL PPL_TIME( ind_min,ind_max,
@@ -1305,8 +1546,8 @@ c	   ENDIF  ! setting up time overlay information
 *  First make sure the min and max are set.
 	      IF (dep_is_log) THEN
 	      
-	         CALL MINMAX( dep_dat, npts, mr_bad_data(mv), lo, hi )
-		 IF (lo .EQ. arbitrary_large_val4) GOTO 5171
+	         CALL MINMAX( dep_dat, npts, mr_bad_data(mv), lo, hi, nok )
+		 IF (nok .EQ. 0) GOTO 5171
 	         dep_min = lo
 	         dep_max = hi
 	         
@@ -1362,8 +1603,8 @@ c	   ENDIF  ! setting up time overlay information
 		  GOTO 5170
 	      ENDIF   
 	   ELSEIF (dep_is_log) THEN	! get dependent var scaling and set up log axis
-	      CALL MINMAX( dep_dat, npts, mr_bad_data(mv), lo, hi )
-	      IF (lo .EQ. arbitrary_large_val4) GOTO 5171  ! all missing
+	      CALL MINMAX( dep_dat, npts, mr_bad_data(mv), lo, hi, nok )
+	      IF (nok .EQ. 0) GOTO 5171  ! all missing
 	      dep_min = lo
 	      dep_max = hi
 	      
@@ -1410,11 +1651,18 @@ c	   ENDIF  ! setting up time overlay information
            READ (t1_date(1:2), *) yr
            ind_min = 100*cen + yr 
         ENDIF
+
+* Line-key labels
+
+        fvar = 0
+        IF (dset .GT. pdset_irrelevant) THEN
+           fvar = dsg_feature_var(dset)
+        ENDIF
 	IF ( .NOT.no_labels ) 
      .          CALL LINE_PLOT_LABELS (var1, nkey_entries, ndv, cx_list, 
      .		this_no_range, overlay, versus, nokey, time_axis, 
      .		tstyle, cal_id_1, ribbon_var, indep_lab, dep_lab, 
-     .		ind_min, dep_len, hlen)
+     .		ind_min, dep_len, hlen, nfeatures, dset, fvar )
 
 * successful completion
  1000	CONTINUE
@@ -1491,4 +1739,7 @@ c	   ENDIF  ! setting up time overlay information
  5190	CALL ERRMSG( ferr_syntax, status,
      . 'PLOT/VS/GAPLOC only for a single dependent variable', *5000 )
 
+ 5200	CALL ERRMSG( ferr_grid_definition, status,
+     .		'Data grid is not a DSG grid ',
+     .		*5000 )
 	END

@@ -76,7 +76,8 @@
 	INTEGER	cx, mr, status
 
 * internal variable declarations:
-	LOGICAL	has_a_stride, has_strides(nferdims)
+	LOGICAL	TM_ITSA_DSG_RAGGED,
+     .		has_a_stride, has_strides(nferdims), its_dsg
 	INTEGER MGRID_SIZE_DELTA,
      .			idim, variable, category, data_set, grid,
      .			sf_num, tmap_status, 
@@ -105,6 +106,7 @@
 	variable = cx_variable( cx )
 	grid = cx_grid( cx )
 	variable_code = VAR_CODE( category, variable )
+	its_dsg = TM_ITSA_DSG_RAGGED(grid)
 
 * check data type
 	IF ( cx_type(cx) .NE. ds_var_type(variable) ) THEN
@@ -125,6 +127,9 @@
      .		CALL INIT_C_STRING_ARRAY( MGRID_SIZE_DELTA(mr),
      .			                  memry(mr)%ptr,
      .					  mr_c_pointer(mr)      )
+
+* If this is a DSG ragged array variable, that is a separate path
+	IF (its_dsg) GOTO 500
 
 * un-cache it?
 * Turns out that uncaching the result here causes all of its descendants to
@@ -240,7 +245,7 @@
  300	CONTINUE
 
 * diagnostic output
-	IF (mode_diagnostic) THEN
+ 500	IF (mode_diagnostic) THEN
 	   IF ( has_a_stride) THEN
 	     CALL DIAGNOSTIC_OUT('rdstride',cx,point_to_cx)
 	   ELSE
@@ -250,16 +255,24 @@
 
 * read the data
 
-	CALL TM_READ  ( data_set,
-     .			variable_code,
-     .			lo_s1, lo_s2, lo_s3, lo_s4, lo_s5, lo_s6, 
-     .			hi_s1, hi_s2, hi_s3, hi_s4, hi_s5, hi_s6,
-     .			lo_ss,
-     .			hi_ss,
-     .			stride,
-     .			memry( mr )%ptr,
-     .			sf_num,
-     .			tmap_status		)
+	IF (its_dsg) THEN
+	   CALL CD_DSG_READ(data_set,
+     .			    variable,
+     .			    memry(mr)%ptr,
+     .			    mr_type(mr),
+     .			    tmap_status	)
+	ELSE
+	   CALL TM_READ( data_set,
+     .			 variable_code,
+     .			 lo_s1, lo_s2, lo_s3, lo_s4, lo_s5, lo_s6, 
+     .			 hi_s1, hi_s2, hi_s3, hi_s4, hi_s5, hi_s6,
+     .			 lo_ss,
+     .			 hi_ss,
+     .			 stride,
+     .			 memry( mr )%ptr,
+     .			 sf_num,
+     .			 tmap_status		)
+	ENDIF 
 	IF ( tmap_status .NE. merr_ok ) THEN
 	   CALL DELETE_VARIABLE( mr )
 	   GOTO 5010

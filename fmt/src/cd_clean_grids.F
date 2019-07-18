@@ -69,6 +69,7 @@
 * v694 1/15 *acm* for ticket 2227: if a dimension from a nc file is not also a 
 *                 1-D coordinate var, don't write the axis Ferret creates
 * V698 11/15 *sh* new args control whether sharing of T axis is allowed
+* V741  6/18 *acm* small cleanup: catch error on TM_ALLO_TMP_GRID
 
 * argument definitions:
 *       dset    - pointer to TMAP data set
@@ -288,6 +289,30 @@
      .                          npts, istat )
            ds_time_axis(dset) = TM_GET_LINENUM( vname )
         ENDIF
+
+* For DSG dataset, create a coordinate translation grid
+	IF (dsg_ragged(dset)) THEN
+* ... allocate a temp grid
+*     it triggers grid finalization & use counts in TM_GARB_COL_GRIDS
+	   CALL TM_ALLO_TMP_GRID(igrid, status)
+	   IF (status .NE. merr_ok) GOTO 5900
+           grid_name(igrid) = 'GDSG_COORDS'
+           CALL TM_NEW_GRID_NAME( grid_name(igrid), vname )
+           grid_name(igrid) = vname
+* ... all of the coordinate variables of this DSG are included
+	   DO idim = 1, 4
+	      iaxis = ds_basic_axes(idim, dset)
+	      IF (iaxis .NE. int4_init) THEN
+	         grid_line(idim, igrid) = iaxis
+	      ELSE
+	         grid_line(idim, igrid) = mpsnorm
+	      ENDIF	
+	   ENDDO
+	   grid_line(E_dim, igrid) = dsg_instance_axis
+	   grid_line(F_dim, igrid) = mpsnorm
+* ... save pointer to this grid as part of the dataset
+	   dsg_xlate_grid(dset) = igrid
+	ENDIF
 
 * successful completion
  	status = merr_ok

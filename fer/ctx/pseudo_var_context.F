@@ -72,6 +72,8 @@
 *       *acm* 4/12 Add new MODE FOURDEE to allow E,F,M,N,etc as user-vars
 * V695  *acm* 2/15 cx_calendar stores info about calendar formatting of T and F axes
 * V720  *acm* 2/17 ticket 2511 Dynamic grids on user-defined variables
+* V720 *sh* 5/17 DSG pseudo-variables -- depend on grid, not axis
+* V74+ 7/18 *acm* When rowsize variable was synthesized, it's marked with a negative var-id
 
         IMPLICIT NONE
 	include	'ferret.parm'
@@ -87,15 +89,20 @@
 	include 'xunits.cmn_text'
 	include 'implicit.parm'
 	include 'xtm_grid.cmn_text'
+	include 'xdset_info.cmn_text'
+# include "tmap_dset.parm"
 
 * calling argument declarations:
 	INTEGER		dflt_cx, pvar_cx, pvdim, status
 	CHARACTER*(*)	full_pvar_name
 
 * internal variable declarations:
-	LOGICAL		its_dyn, has_impl_axis, calendar, alloed_tmp
-	INTEGER		CGRID_AXIS, mods_cx, idim, pvax, base_grid,
-     .			impl_grid, like, tmp, the_real_ABSTRACT
+	LOGICAL		TM_ITSA_DSG, its_dyn, has_impl_axis, calendar,
+     .			alloed_tmp, its_dsg, has_coords
+	INTEGER		CGRID_AXIS, TM_DSG_DSET_FROM_GRID,
+     .			mods_cx, idim, pvax, base_grid,
+     .			impl_grid, like, tmp, the_real_ABSTRACT, dset,
+     .			coord_var, pvtype
 
 * internal parameter declarations
 	REAL*8		daysinsecs
@@ -123,8 +130,7 @@
 	cx_type( pvar_cx ) = ptype_float 
 
 * axis of pseudo_var
-
-	pvdim = MOD( cx_variable(pvar_cx)-1, 6 ) + 1
+	pvdim = MOD( cx_variable(pvar_cx)-1, nferdims ) + 1
 
 * temporary bug check: may not transform pseudo-variable
 	IF ( cx_trans(pvdim,pvar_cx) .NE. trans_no_transform ) CALL ERRMSG
@@ -142,6 +148,36 @@
 * bug check
 	IF ( cx_category(pvar_cx) .NE. cat_pseudo_var ) CALL ERRMSG
      .			( ferr_internal, status, 'pseud_v', *5000 )
+
+* is this a DSG pseudo-variable? 5/17
+	base_grid = cx_grid(pvar_cx)
+	IF ( base_grid .GT. unspecified_int4) THEN
+	   its_dsg = TM_ITSA_DSG(base_grid)
+	ELSE
+	   its_dsg = .FALSE.   ! for now, anyway
+	ENDIF
+
+	IF (its_dsg .AND. pvdim.NE.f_dim) THEN
+* ... type of pseudo-var  1=IJKLMN, 2=XYZTEF, 3=BOX, 4=BOXHI, 5=BOXLO
+	   pvtype = (cx_variable(pvar_cx)-1) / nferdims  + 1
+	   IF (pvtype .GE.3) GOTO 5300
+* ... choose the grid (instance or obs) of the indicated coordinate var
+	   dset = TM_DSG_DSET_FROM_GRID(base_grid)
+	   IF (pvdim .EQ. e_dim) THEN
+	      coord_var = ABS(dsg_row_size_var(dset))
+	   ELSE
+	      coord_var = dsg_coord_var(pvdim,dset)
+	   ENDIF
+	   has_coords = coord_var .NE. int4_init
+	   IF (has_coords) THEN
+	      cx_grid(pvar_cx) = ds_grid_number(coord_var)
+	   ELSE
+* ... no DSG coor var exists, so treat this as an abstract axis
+	      cx_grid(pvar_cx) = mgrid_xabstract + pvdim - 1  ! ?? ok to do ??
+	   ENDIF      
+	ELSE
+	   its_dsg = .FALSE.
+	ENDIF
 
 * implicit axis of the form I[I=1:10:2] used?
 	has_impl_axis = cx_delta(pvdim,pvar_cx) .NE. unspecified_val8
@@ -314,7 +350,7 @@
 
 * does the grid have a suitable axis for the pseudo-variable ?
 	pvax = CGRID_AXIS( pvdim, pvar_cx )
-	IF ( pvax.EQ.mnormal ) THEN
+	IF ( pvax.EQ.mnormal .AND. .NOT.its_dsg) THEN
 	   cx_grid(pvar_cx) = mgrid_xabstract + pvdim - 1  ! 2/22/99
 	ELSEIF (pvax.EQ. munknown ) THEN
 	   GOTO 5100
@@ -325,7 +361,7 @@
 
 * flesh out context removing all axes except those explicitly given
 	DO 100 idim = 1, nferdims
-	   IF ( idim .NE. pvdim ) THEN
+	   IF ( idim .NE. pvdim .AND. .NOT.its_dsg) THEN
 	      CALL DEL_CX_DIM( idim, pvar_cx )
 	   ELSE
 	      CALL CONFINE_AXIS  ( idim, pvar_cx, status )
@@ -347,4 +383,6 @@
  5200	risc_buff = full_pvar_name
 	CALL ERRMSG( ferr_invalid_command, status, 
      .	'non-positive delta value: '//risc_buff, *5000 )
+ 5300	CALL ERRMSG( ferr_inconsist_grid, status, 
+     .              'BOX pseudovar on DSG data'//full_pvar_name, *5000 )
 	END

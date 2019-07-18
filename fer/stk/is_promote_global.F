@@ -35,6 +35,7 @@
 * Issue 1667
 * create a string or float abstract array containing an attribute value
 * from a global attribute of the dataset
+* v751 *acm*  6/19 Allow for longer strings as attribute values
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
@@ -53,13 +54,14 @@
 
 * internal variable declarations:
         LOGICAL	NC_GET_ATTRIB, att_done, got_it, gedit
-	CHARACTER*128 VAR_CODE, varname, rqst_name, attname, buff
+	CHARACTER*128 VAR_CODE, varname, rqst_name, attname
+	CHARACTER*1028 buff
 	CHARACTER*48  TM_FMT, numstr
 	CHARACTER*1   null, comma
 	INTEGER	CGRID_SIZE, STR_SAME, TM_LENSTR1,
      .		mr, cx, size, n, dset, vtype, varid, rqst_type, attype, 
      .          attlen, ndims, nvars, ngatts, recdim, iatt, nvatts, idim, 
-     .          nd, attoutflag, i, cat, attid, npts, nddims, blen, nlen
+     .          nd, attoutflag, i, cat, attid, npts, nddims, blen, nlen, maxlen
 	INTEGER*8 n8
 	REAL	bad
 
@@ -75,6 +77,7 @@
 	bad  = cx_bad_data(cx)
 	null = ''
 	attype = ptype_unknown
+	maxlen = 1028
         
         IF (dset .LE. pdset_irrelevant) dset = cx_data_set( is_cx(isp-1) )
 
@@ -161,7 +164,7 @@
 		    ALLOCATE (attvals(attlen))
 
 		    got_it = NC_GET_ATTRIB ( dset, varid, attname,
-     .                           .FALSE., varname, attlen,
+     .                           .FALSE., varname, maxlen,
      .                           attlen, attoutflag, buff, attvals )
 		    IF (.NOT. got_it) GOTO 5000
 

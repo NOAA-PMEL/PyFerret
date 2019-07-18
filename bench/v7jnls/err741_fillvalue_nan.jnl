@@ -1,10 +1,17 @@
 ! err741_fillvalue_nan.jnl
 ! issue 1883.  _FillValue = nan, no missing_value
 
-use fill_is_nan
+! _FillValue is NaN in longitude and latitude too.
+
+use dsg_fill_is_nan
 
 show att TEMP_IR_UNCOR_MEAN
 show att O2_RBR_SAT_MEAN
+
+! The nan must be replaced in the longitude and latitude coordinate variables
+! missing-values are ok (for now?) in DSG files for any coordinate except time
+
+plot O2_RBR_SAT_MEAN
 
 ! previously TEMP_IR_UNCOR_MEAN with only a _FillValue of NaN 
 ! and no missing_vlue had no fill or missing attribute written

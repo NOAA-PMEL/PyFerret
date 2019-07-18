@@ -57,7 +57,7 @@
 
 #include <Python.h>
 #include <netcdf.h>   /* for many NC_... values */
-#include "ferret.h"   /* for NFERDIMS */
+#include "ferret.h"   /* for NFERDIMS and NFERDIMSP1 */
 
 /* .................... Defines ..................... */
 

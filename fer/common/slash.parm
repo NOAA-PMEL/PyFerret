@@ -80,7 +80,7 @@
 * V722 *kms* 10/17 Remove threddsBrowser (too big, outdated, and unused)
 * V723 *acm* 11/17 New SAVE/ASGLOBAL option to write global attribute to netCDF file
 * V740 *kms*  3/18 Add PyFerret PLOT/HIGHLIGHT=
-
+* V7.4+ *acm* 9/18 DSG-enabled Ferret: SET DATA/FMASK= specifies a feature mask
 
 * command qualifier states
 	INTEGER		qual_on,
@@ -212,6 +212,8 @@
      .			slash_set_data_tregular,
      .			slash_set_data_delimiters,
      .                  slash_set_data_strict,
+     .                  slash_set_data_feature,
+     .                  slash_set_data_fmask,
      .
      .			slash_set_var_title,
      .			slash_set_var_unit,
@@ -537,7 +539,9 @@
      .			slash_set_data_swap     = 12,
      .			slash_set_data_tregular = 13,
      .			slash_set_data_delimiters = 14,
-     .                  slash_set_data_strict   = 16,
+     .                  slash_set_data_strict   = 15,
+     .                  slash_set_data_feature  = 16,
+     .                  slash_set_data_fmask	= 17,
      .
      .			slash_set_var_title	= 1,
      .			slash_set_var_unit	= 2,

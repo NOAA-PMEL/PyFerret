@@ -8,6 +8,7 @@ buffer_fillpoly.F\
 bc2whoi.F\
 calendar_blkdat.F\
 check_t_scale.F\
+clrklab.F\
 cmdini.F\
 compute_histo_bins.F\
 compute_mnstd.F\
@@ -30,8 +31,10 @@ key_lo_inf_horz.F\
 key_hi_inf_horz.F\
 key_lo_inf_vert.F\
 key_hi_inf_vert.F\
+key_set_up.F\
 kurv.F\
 line_key.F\
+minmax_sngl.F\
 minmax_sngl.F\
 minmax_sngl.F\
 new_gks_window.F\

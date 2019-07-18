@@ -52,6 +52,7 @@
 	include	'xcontext.cmn'
 	include	'xvariables.cmn'
 	include	'xmem_subsc.cmn'
+	include	'xdset_info.cmn_text'
 
 * calling argument declarations:
 	INTEGER	idim, hlen, com_mr, com_cx, res_mr, res_cx
@@ -62,12 +63,15 @@
      .		     m2lot:m2hit,m2loe:m2hie,m2lof:m2hif )
 
 * internal variable declarations:
-	LOGICAL TM_ITS_SUBSPAN_MODULO, has_mod_void
+	LOGICAL TM_ITS_SUBSPAN_MODULO, TM_ITSA_DSG, has_mod_void
 	INTEGER	TM_MODULO_LINE_DIM, CGRID_AXIS, 
+     .		TM_DSG_DSET_FROM_GRID, TM_DSG_NFEATURES,
      .		i, j, k, l, m, n, ii,
      .		lo_sub(nferdims), hi_sub(nferdims), lo_lim, hi_lim,
-     .		hlen1, lo_modlim, hi_modlim, nmod, nmod_prev, modlen
+     .		hlen1, lo_modlim, hi_modlim, nmod, nmod_prev, modlen,
+     .		grid, dset, nfeatures, orientation, mr_list(2)
 	REAL	bad_com, bad_res, comp, sum, wsum
+
 
 * internal (convenience) equivalences
 	INTEGER lo_s1, lo_s2, lo_s3, lo_s4, lo_s5, lo_s6,
@@ -78,6 +82,26 @@
      .		    (hi_s1, hi_sub(1)) , (hi_s2, hi_sub(2)),
      .		    (hi_s3, hi_sub(3)) , (hi_s4, hi_sub(4)),
      .		    (hi_s5, hi_sub(5)) , (hi_s6, hi_sub(6))
+
+     
+
+* DSGs are handled as a separate case
+	grid = cx_grid(com_cx)
+	IF ( TM_ITSA_DSG(grid) ) THEN
+	   dset = TM_DSG_DSET_FROM_GRID(grid)
+	   nfeatures = TM_DSG_NFEATURES(grid)
+	   orientation = dsg_orientation(dset)
+	   mr_list(1) = com_mr
+	   mr_list(2) = res_mr
+	   CALL NON_ARRAY_SUBSC( mr_list, 2 )
+	   CALL DSG_ARRAY_SUBSC( mr_list, 2, orientation )
+           CALL CONVOLVE_P_DSG (idim, hlen, wt, dset, nfeatures,
+     .                       com, com_mr, com_cx,
+     .                       res, res_mr, res_cx )
+	   RETURN
+	ENDIF
+
+
 
 * initialize
 	bad_com = mr_bad_data( res_mr )

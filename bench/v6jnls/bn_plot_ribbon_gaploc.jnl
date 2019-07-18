@@ -18,7 +18,14 @@ plot/ov/ribbon/nolab/vs/thick/line/lev=10/sym=21/siz=.3/gapl xpts, 10.2*ypts, co
 plot/ov/ribbon/nolab/fast/vs/thick/line/lev=10/sym=21/siz=.3 xpts, 9.9*ypts, color
 plot/ov/ribbon/nolab/fast/vs/thick/line/lev=10/sym=21/siz=.3/gap xpts, 9.7*ypts, color, gvar
 
-use 39839D6273F1749BABAD6C1441B2BBDD_netcdf.nc
+! DSGTBD
+! The original  file came from SOCAT; it has all depths missing.
+! Also, the masking-style expression used to define gaploc below does not
+! work at least for this trajectory set as of 10/2/2017.
+
+! This file is a version dsg attributes pulled out.
+
+use 39839D6273F1749BABAD6C1441B2BBDD_netcdf_notdsg.nc
 
 ! The line is connected across what should be a gap
 set view left
@@ -26,6 +33,11 @@ plot/vs/hlim=63.5:68/ribbon/line/thick=3/key longitude, latitude, fco2_recommend
 
 ! The gaploc variable is 1 at the location marking the start of gaps.
 let gaploc = if sample_number[I=@DDF] NE 1 THEN 1 ELSE 0
+
+! Or, because DDF on an axis with units will get those units applied, use a shift:
+let gap = sample_number - sample_number[i=@shf:-1]
+let gaploc = if gap ne 1 then 1 else 0
+
 set view right
 plot/vs/hlim=63.5:68/ribbon/line/thick=3/key/gap longitude, latitude, fco2_recommended, gaploc
 

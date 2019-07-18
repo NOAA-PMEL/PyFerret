@@ -136,6 +136,7 @@
 * v745 *acm* 12/18 Issue 1909, option to write dates in ISO8601 format
 * v75 *acm*   5/19 Issue 1933, recompute T0 datestring length after it
 *                  possibly was reformatted
+* v751 *acm*  6/19 Allow for longer strings as attribute values
 
 * argument definitions:
 *     dset    - dset (if netcdf file, for getting name and attribute 
@@ -204,9 +205,8 @@
 * *acm* 6/06 - change axis name lengths to 128
       CHARACTER CD_CHILDAX_NAME*128, CD_AXIS_NAME*128, CD_AXIS_OUTNAME*128, 
      .       TM_FMT*48, name*128, name_in*128, units*48, datebuff*40, 
-     .       buff*140, buff2*140, attname*128, dimstr*12, varstr*12, 
+     .       buff*512, buff2*512, attname*128, dimstr*12, varstr*12, 
      .       name_bnds*140, axis_dir*1
-
 
 !      REAL*8 val8_cdf, val8_tmap
 * 12/97
@@ -510,7 +510,7 @@
             CALL CD_GET_VAR_ATT_INFO (dset_num, varid, 
      .               iatt, attname, attype, attlen, attoutflag, status )
 
-            maxlen = 140
+            maxlen = 512
             got_it = NC_GET_ATTRIB ( dset_num, varid, attname, 
      .               do_warn, name_in, maxlen, attlen, attoutflag, 
      .               buff, vals)
@@ -760,7 +760,7 @@
             IF (attid .GT. 0) CALL CD_GET_VAR_ATT_INFO (dset_num, varid, 
      .              attid, attname, attype, attlen, attoutflag, istat )
 
-            maxlen = 140
+            maxlen = 512
             got_it = NC_GET_ATTRIB ( dset_num, varid, attname, 
      .               do_warn, name_in, maxlen, attlen, attoutflag, 
      .               buff, vals)

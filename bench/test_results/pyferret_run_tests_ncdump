@@ -94,6 +94,7 @@ data:
 *** Running ferret script: bn_flowlines.jnl
 *** Running ferret script: bn_logaxes.jnl
 *** Running ferret script: bn_internal_external_functions.jnl
+****** PYFERRET error: bn_internal_external_functions.jnl failed ******
 *** Running ferret script: bn_modulo_strides.jnl
 *** Running ferret script: bn_axis_viewports.jnl
 *** Running ferret script: bn_strings.jnl
@@ -231,6 +232,7 @@ err550_nc_seconds.jnl --- seconds of time axis
 *** Running ferret script: bn_many_polygons.jnl
 *** Running ferret script: bn_fill_irregular.jnl
 *** Running ferret script: bn_xml_output.jnl
+****** PYFERRET error: bn_xml_output.jnl failed ******
 *** Running ferret script: bn_test_nan.jnl
 *** Running ferret script: bn553_bug_fixes.jnl
 *** Running ferret script: bn_graticules.jnl
@@ -2308,6 +2310,7 @@ variables:
 *** Running ferret script: bn_set_var_name.jnl
 *** Running ferret script: bn_memory_symbol.jnl
 *** Running ferret script: bn605_bug_fixes.jnl
+****** PYFERRET error: bn605_bug_fixes.jnl failed ******
 *** Running ferret script: bn608_bug_fixes.jnl
 *** Running ferret script: bn_shade_trim.jnl
 *** Running ferret script: bn_mode_nlevels.jnl
@@ -3115,9 +3118,20 @@ variables:
 *** Running ferret script: bn_samplexyzt.jnl
 *** Running ferret script: bn_sample_multi.jnl
 *** Running ferret script: bn751_bug_fixes.jnl
+*** Running ferret script: bn_dsg_tseries.jnl
+*** Running ferret script: bn_regrid_to_dsg.jnl
+*** Running ferret script: bn_dsg_feature_mask.jnl
+*** Running ferret script: bn_dsg_repeat_m.jnl
+*** Running ferret script: bn_dsg_traj_plot.jnl
+*** Running ferret script: bn_regrid_from_dsg.jnl
+*** Running ferret script: bn_dsg_use_feature.jnl
+*** Running ferret script: bn_dsg_plot_timeseries.jnl
+*** Running ferret script: bn_dsg_save.jnl
+*** Running ferret script: bn_dsg_transforms.jnl
 *** Running ferret script: bn_gif.jnl
 *** Running ferret script: bn_ps.jnl
 *** Running ferret script: bn_all_ef.jnl
+****** PYFERRET error: bn_all_ef.jnl failed ******
 *** Running ferret script: bn_startupfile.jnl
 *** Running ferret script: err700_decimate.jnl
 netcdf \492C19881104_dec {

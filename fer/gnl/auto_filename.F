@@ -54,10 +54,12 @@
 *	12/19/89 - eliminated the possibility of multiple data set variables
 * Unix/RISC port - 9/91 - GET_DSET_NAME --> GET_SHORT_DSET_NAME (no path)
 * SUN port - cleaned up the calculation of flen using risc_buff
-* V230:  6/9/92 - distinct requirements for netCDF: "F" leadin character and
+* V230:  6/9/92 - distinct requirements for netCDF: "F" leading character and
 *                 extension ".cdf"
 *               - also added protections against name overflowing buffer
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
+* V745 *acm* 12/18  added plist_dsg for CF-DSG format.  
+*                   Also change .cdf extension to .nc
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -117,7 +119,7 @@
         ELSEIF ( list_fmt_type .EQ. plist_gt ) THEN
            risc_buff = 'GT'
            flen = 2
-        ELSEIF ( list_fmt_type .EQ. plist_CDF ) THEN
+        ELSEIF ( list_fmt_type.EQ.plist_CDF .OR. list_fmt_type.EQ.plist_dsg ) THEN
            risc_buff = 'F'
            flen = 1
         ELSE
@@ -141,9 +143,9 @@
 	   flen = TM_LENSTR( risc_buff(:flen+4) )
 	ENDIF
 
-* netCDF filenames replace the elaborate AUTOFILENAME extension with ".cdf"
-        IF ( list_fmt_type .EQ. plist_CDF ) THEN
-           risc_buff = risc_buff(:flen) // '.cdf'
+* netCDF filenames replace the elaborate AUTOFILENAME extension with ".nc"
+        IF ( list_fmt_type.EQ.plist_CDF .OR. list_fmt_type.EQ.plist_dsg  ) THEN
+           risc_buff = risc_buff(:flen) // '.nc'
            flen = flen + 4
         ELSE
 * non-netCDF filenames:

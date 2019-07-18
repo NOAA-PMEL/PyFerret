@@ -152,7 +152,6 @@ C
 	logical         line_it, fill_it
         integer         slen1, slen2, ICNT, ii, IY
         CHARACTER       TM_FMT*48, buff1*20, buff2*20, err_msg*40
-
         real             epsilon
         parameter       (epsilon = 1e-6)
 
@@ -297,7 +296,7 @@ C      set already.
 * assemble the vertices into arrays in units of plot coordinates
 * note: all points in the polygon are guaranteed to be "valid"
 	   nvertex = 0
-
+ 
 * Check that the polygon has a nonzero size in both directions
 * PyFerret fails e.g. on a zero-height rectangle. This is not a 
 * perfect test but will catch most cases.
@@ -306,16 +305,18 @@ C      set already.
 
            x1val = x(IBASE+1)
            y1val = x(iy+IBASE+1)
-	   xdel = 0.
-	   ydel = 0.
+          xdel = 0.
+          ydel = 0.
+
 	   DO 150 J=IBASE+1,IBASE+llen
 	      nvertex = nvertex + 1
 	      x(xvertexbase+nvertex-1) = x(j)
 	      x(ypolybase+nvertex-1) = x(iy+j)
               IF (j .GT. ibase+1) THEN
-	         xdel = MAX( xdel, ABS(x1val-x(j)) )
-	         ydel = MAX( ydel, ABS(y1val-x(iy+j)) )
+                xdel = MAX( xdel, ABS(x1val-x(j)) )
+                ydel = MAX( ydel, ABS(y1val-x(iy+j)) )
               ENDIF
+
  150	   CONTINUE
 
 	   if (fill_it) then

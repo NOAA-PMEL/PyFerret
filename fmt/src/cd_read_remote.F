@@ -44,7 +44,7 @@
 * 1 time series) from TMAP data sets with LET/REMOTE definition.
 *
 * written 2/2013 by Ansley Manke PMEL/TMAP, from TM_CHOOSE_READ and CD_READ
-*                     
+* V751 *acm* 6/19 Remove unused declarations
 
 * include files
         include 'netcdf.inc'
@@ -88,8 +88,7 @@
 * local definitions
 * *kob* explicit definitions not allowed on decl line in linux...
 *       moved it to parameter line 10/96
-	LOGICAL      NC_GET_ATTRIB, 
-     .               do_warn, already_scaled, got_it, tf2, 
+	LOGICAL      do_warn, already_scaled, got_it, tf2, 
      .               coordvar
         INTEGER      TM_LENSTR1,
      .               cdfid, varid, idim, lasdim, cdfstat, dim, idim2,

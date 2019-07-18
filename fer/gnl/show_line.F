@@ -53,9 +53,11 @@
 * V695+  *sh* 5/15 show T0 for forecast calendar axes, too
 * V697  12/15 *acm* Changes to add details on SHOW GRID uvar to indicate 
 *                   compressed or subsetted axes
+* V720 4/17 *sh* - support for DSG contiguous ragged arrays
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
+	include 'implicit.parm'
 	include 'xtm_grid.cmn_text'
 	external xgt_grid_data
 	include 'xunits.cmn_text'
@@ -124,6 +126,9 @@
 	idum = -1
 	CALL LINE_FACTS( show_lun, idim, mgrid_buff, orient, idum )
 	IF ( brief ) RETURN
+* nothing more to show if the "line" represents a contiguous ragged array
+	IF (idim.NE.e_dim .AND. line_dsg_dset(line).NE.pline_not_dsg) RETURN
+!DSGTBD Is there more we'd like to tell about the contiguous ragged array?
 
 * report /T0= for formatted time axis
 	IF  ( line_direction(line) .EQ. 'TI' 

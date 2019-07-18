@@ -137,7 +137,6 @@
 *                  start of command on an error
 * V697  3/16 Ticket 2376: parsing backslash escapes within repeat loops.
 * V697  3/16  *acm* ticket 2356 scale back change for multiple slash at end of command
-* V71  *acm* 1/17   Change to return 16 digits by default for grave-accent expressions was lost
 * V73   7/17  *acm* ticket 2551 Report an error for unmatched parentheses in a REPEAT loop.
 * V75   4/19  *acm* Issue   660 Evaluate a grave-accent expression that appears right after
 *                               a slash in the position of a qualifier

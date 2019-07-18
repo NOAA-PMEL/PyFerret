@@ -1,4 +1,4 @@
-	SUBROUTINE MINMAX( array, n, bad_flag, lo, hi )
+	SUBROUTINE MINMAX( array, n, bad_flag, lo, hi, nok )
 
 *
 *
@@ -43,12 +43,13 @@
 *
 * revision 0.0 - 9/20/88
 *       *acm* 3/12 cleanup ifdefs and unnecessary include files
+* V74+ *acm* 10/18 return additional argument: count of valid data
 
         IMPLICIT NONE
 	include	'ferret.parm'
 
 * calling argument declarations:
-	INTEGER	n
+	INTEGER	n, nok
 	REAL    array(n), bad_flag, lo, hi
 
 * internal variable declarations:
@@ -57,6 +58,7 @@
 * initialize
 	lo = arbitrary_large_val4
 	hi = arbitrary_small_val4
+	nok = 0
 
 * search
 	DO 100 i = 1, n
@@ -64,6 +66,7 @@
 	   IF ( array(i) .EQ. bad_flag ) GOTO 100
 	   IF ( array(i) .LT. lo ) lo = array(i)
 	   IF ( array(i) .GT. hi ) hi = array(i)
+	   nok = nok + 1
 
  100	CONTINUE
 

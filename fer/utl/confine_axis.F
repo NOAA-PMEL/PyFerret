@@ -77,9 +77,12 @@
 * V680 *acm*  612  6D Ferret: Pull the calendar correction into a separate routine.
 * V683  *acm*10/12 Improve handling of F axes and info about the calendar of the grid.
 * V695  *acm* 2/15 cx_calendar stores info about calendar formatting of T and F axes
+* V720  *sh*  4/17 support for DSG ragged contiguous grids
+* V741 6/18 *acm* Handle modulo longitudes in DSG files
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
+	include 'implicit.parm'
 	include	'xtm_grid.cmn_text'
 	external xgt_grid_data
 	include	'ferret.parm'
@@ -94,9 +97,11 @@
 
 * internal variable declarations:
 !	LOGICAL lim_redundant
-	LOGICAL its_irrelevant
-	INTEGER	ISUBSCRIPT, TM_LENSTR1, ss, min_ss, max_ss, lo_ss, hi_ss,
-     .		axis, grid, lenstr, slen, cat, var, istat
+	LOGICAL TM_ITSA_DSG, its_irrelevant, its_dsg
+	INTEGER	ISUBSCRIPT, TM_LENSTR1, TM_DSG_DSET_FROM_GRID,
+     .		dset, ss, min_ss, max_ss, lo_ss, hi_ss,
+     .		axis, grid, lenstr, slen, cat, var, istat,
+     .		orientation, obs_dimlen, fline
 	REAL*8	ww, min_ww, max_ww, lo_ww, hi_ww
 *                  and VAR_TITLE from 24 to 128
 	CHARACTER VAR_CODE*128, CX_DIM_STR*48, VAR_TITLE*128,
@@ -110,10 +115,17 @@
      .		    err_ww_lims = -88 )
 
 * initialize
-
 	grid = cx_grid( cx )
 	cat  = cx_category(cx)
 	var  = cx_variable(cx)
+	its_dsg = TM_ITSA_DSG(grid)
+	IF (its_dsg) THEN
+	   dset = TM_DSG_DSET_FROM_GRID( grid )
+	   CALL TM_DSG_FACTS( grid, orientation, obs_dimlen, fline, its_dsg )
+	ENDIF
+
+
+
 * (11/95) expressions such as "2+2"
 	IF (cat .EQ. cat_user_var) THEN
 	   its_irrelevant = uvar_given(idim,var)
@@ -130,6 +142,23 @@
 	   status = ferr_grid_definition
 	   GOTO 5010
 	
+! this block of code appears in FLESH_OUT_AXIS instead, because cannot
+! constrain the T axis limits until after they are converted to taxis encoding
+!* *** DSG grid (4/17)
+!	ELSEIF ( its_dsg .AND. idim.NE.f_dim		) THEN
+!	   dset = TM_DSG_DSET_FROM_GRID(grid)
+!	   CALL DSG_COORD_LIMS(dset, idim, min_ww, max_ww)
+!	   IF (min_ww .EQ. unspecified_val8) GOTO 1000   ! irrelevant axis
+!* ... constrain to the ww datset extremes
+!	   IF  (cx_lo_ww(idim,cx) .EQ. unspecified_val8) THEN
+!	      cx_lo_ww(idim,cx) = min_ww
+!	      cx_hi_ww(idim,cx) = max_ww
+!	   ELSE
+!	      IF (cx_lo_ww(idim,cx) .LT. min_ww) cx_lo_ww(idim,cx) = min_ww 
+!	      IF (cx_hi_ww(idim,cx) .GT. max_ww) cx_hi_ww(idim,cx) = max_ww 
+!	   ENDIF
+!	   GOTO 1000
+
 * irrelevant normal axis  (was based on lim_redundant prior to 11/95)
 	ELSEIF ( axis .EQ. mnormal ) THEN
 	   GOTO 1000
@@ -184,6 +213,12 @@
  4000	   CALL GRID_WORLD_EXTREMES( min_ww, max_ww, grid, idim )
 	   lo_ww = MAX( cx_lo_ww( idim, cx ), min_ww )
 	   hi_ww = MIN( cx_hi_ww( idim, cx ), max_ww )
+
+	   IF (its_dsg .AND. idim.EQ.x_dim .AND. orientation.EQ.x_dim) THEN
+	      lo_ww = cx_lo_ww( idim, cx_cmnd ) 
+	      hi_ww = cx_hi_ww( idim, cx_cmnd )
+	   ENDIF
+
 * ... check for error in limits and possibly remove transformation
 	   IF ( lo_ww .GT. hi_ww ) THEN
 	      GOTO 5010

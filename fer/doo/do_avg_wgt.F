@@ -55,23 +55,50 @@
 	include	'interp_stack.parm'
 	include	'xcontext.cmn'
 	include	'xprog_state.cmn'
+	include	'xvariables.cmn'
+	include	'xdset_info.cmn_text'
 
 * calling argument declarations:
 	INTEGER	idim, com_mr, com_cx, res_mr, res_cx
 	REAL	arg, com(*), res(*), box(*)
 
 * internal variable declarations:
-* ...
+	LOGICAL	TM_ITSA_DSG
+	INTEGER TM_DSG_DSET_FROM_GRID, TM_DSG_NFEATURES, 
+     .		dset, grid, nfeatures, orientation, mr_list(2)
 
 * diagnostic mode output: " doing --> VAR_NAME[x=lo:hi@TRN:n,D=#]"
 	IF ( mode_diagnostic ) 	CALL DIAG_OP
      .				( 'doing', isact_class_trans, res_cx, idim )
 
-	CALL DO_WGT( isact_avg_wgt, idim,
+* DSG-specific initialize
+
+	grid = mr_grid( com_mr )
+
+	IF (TM_ITSA_DSG(grid)) THEN 
+* DSG ragged array
+	   dset = TM_DSG_DSET_FROM_GRID(grid)
+	   nfeatures = TM_DSG_NFEATURES(grid)
+	   orientation = dsg_orientation(dset)
+	   mr_list(1) = com_mr
+	   mr_list(2) = res_mr
+	   CALL NON_ARRAY_SUBSC( mr_list, 2 )
+	   CALL DSG_ARRAY_SUBSC( mr_list, 2, orientation )
+
+	   CALL DO_WGT_DSG ( isact_avg_wgt, idim, dset, nfeatures,
+     .			 com, com_mr, com_cx,
+     .			 res, res_mr, res_cx,
+     .			 box )
+
+	ELSE  ! not dsg
+
+	   CALL DO_WGT( isact_avg_wgt, idim,
      .			 cx_lo_ss(com_cx,idim), cx_hi_ss(com_cx,idim),
      .			 com, com_mr, com_cx,
      .			 res, res_mr, res_cx,
      .			 box )
+     
+	ENDIF
 
 	DO_AVG_WGT = ferr_ok
 

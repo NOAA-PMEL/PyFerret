@@ -256,11 +256,12 @@
 *	      3/17 Added SHOW MEMORY/DIAGNOSTIC
 * V720 *acm*  3/17 Ticket 2512: Add STAT/PRECISION=
 * V720 *acm*  5/17 Ticket 2530 add WIRE/COLOR= 
-* PyFr *kms*  5/17 Ticket 2530 add WIRE/COLOR= /OPACITY= /THICKNESS=
 * V722 *kms* 10/17 Remove threddsBrowser (too big, outdated, and unused)
 * V723 *acm* 11/17 New SAVE/ASGLOBAL option to write global attribute to netCDF file
 * V74  *acm*  2/17 New DEFINE AXIS/LIKE and DEFINE VARIABLE/LIKE
 * V740 *kms*  3/18 Add space for PyFerret PLOT/HIGHLIGHT=
+* V7.4+ *acm* 9/18 DSG-enabled Ferret: SET DATA/FMASK= specifies a feature mask
+* V74+ *acm*  9/18 Add aliases FMASK for SET DATA/FMASK and CLEARMASK for CANCEL DATA/FMASK
 *
 *
 * !!!!!!!!!!
@@ -399,9 +400,9 @@
 		DATA qualifiers  (nqual_at1g+11) / 'SWAP'       / 
 		DATA qualifiers  (nqual_at1g+12) / 'REGULART'   /
 		DATA qualifiers  (nqual_at1g+13) / 'DELIMITE'   /
-		DATA qualifiers  (nqual_at1g+14) / '****'       /
-		DATA qualifiers  (nqual_at1g+15) / 'STRICT'     /
-		DATA qualifiers  (nqual_at1g+16) / '****'       /
+		DATA qualifiers  (nqual_at1g+14) / 'STRICT'     /
+		DATA qualifiers  (nqual_at1g+15) / 'FEATURE'    /
+		DATA qualifiers  (nqual_at1g+16) / 'FMASK'      /
 		DATA qualifiers  (nqual_at1g+17) / '****'       /
 		DATA qualifiers  (nqual_at1g+18) / '****'       /
 		DATA qualifiers  (nqual_at1g+19) / '****'       /
@@ -833,6 +834,7 @@
 * CANCEL DATA /ALL
 		DATA qualifiers  (nqual_at3g+0)	/ 'ALL '	/
 		DATA qualifiers  (nqual_at3g+1)	/ 'NOERROR'	/
+		DATA qualifiers  (nqual_at3g+2)	/ 'FMASK'	/
 * CANCEL MODE
 	   DATA subcommands      (nsub_at3 + 7)	/ 'MODE'	/
 	   DATA num_qualifs      (nsub_at3 + 7)	/ nqual3h	/
@@ -1898,14 +1900,19 @@
      .		alias_name(25)	/ 'UNION' /,
      .		alias_len(25)	/ 22 /,
      .		alias(25)	/ 'DEFINE DATA/AGGREGAT/U' /
+     .		alias_name(26)	/ 'FMASK' /,
+     .		alias_len(26)	/ 14 /,
+     .		alias(26)	/ 'SET DATA/FMASK' /
+     .		alias_name(27)	/ 'CLEARMASK' /,
+     .		alias_len(27)	/ 17 /,
+     .		alias(27)	/ 'CANCEL DATA/FMASK' /
 
         DATA
      .		(alias_name(i),i=num_predefined_alias+1,150)
-     .                   / 125*unspecified_name4 /,
-     .		(alias_len(i),i=num_predefined_alias+1,150) / 125*4 /,
+     .                   / 123*unspecified_name4 /,
+     .		(alias_len(i),i=num_predefined_alias+1,150) / 123*4 /,
      .		(alias(i),i=num_predefined_alias+1,150)
-     .                   / 125*unspecified_name4 /
-
+     .                   / 123*unspecified_name4 /
 
 	DATA queries(1) / 'STATUS' /,
      .	     queries(2) / 'MESSAGE' /,

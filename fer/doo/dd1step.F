@@ -154,7 +154,7 @@
 	         IF ( lo_com.EQ.bad_res .OR. hi_com.EQ.bad_res ) THEN
 	            res(i,j,k,l,m,n) = bad_res
 	         ELSE
-	            res(i,j,k,l,m,n) = (hi_com-lo_com) / box(i)
+		    res(i,j,k,l,m,n) = (hi_com-lo_com) / box(i)
 	            IF ( need_cos )
      .                 res(i,j,k,l,m,n) = res(i,j,k,l,m,n)/cos_factor
 	         ENDIF

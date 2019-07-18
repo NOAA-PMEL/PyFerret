@@ -56,8 +56,9 @@
 * when a single expression contains more than one transform -- e.g.
 * "V[x=@ave,t=@sum]" or "V[gt=clim@mod,x=@ave]".  In general such syntaxes
 * should be discouraged.
-
 * V702  3/17 *sh* Code extracted from IS_STRIP and several refinements added
+* V720 5/17 *sh* added support for DSG regridding splits
+*      fixed undetected bug in POTENT_AX_LIMS call for min_mem_used below
 * V7.21 9/17 *acm Fix ticket 2561. Multiple transformations and multiple-axis 
 *                 transformations on the split axis.stk/setup_gath
 * V740  3/18 *acm* Introduce parameter abstractax_len for abstract axis length 99999999
@@ -88,12 +89,13 @@
 	INTEGER	aclass, res_cx, src_cx, lo_isp, axis, status
 
 * internal variable declarations:
-	LOGICAL ITSA_MODULO_REGRID,
+	LOGICAL ITSA_MODULO_REGRID, TM_ITSA_DSG,
      .		itsa_uvar, split_on_compressed_ax, dup_split,
      .		inadequate_split_length, use_caution, no_axis_found,
      .		multiax_trans(nferdims),
      .		ax_splittable(nferdims),
-     .		ax_compressed(nferdims)
+     .		ax_compressed(nferdims),
+     .		its_dsg
 	INTEGER	POTENT_SIZE, CGRID_UVAR_SIZE, CGRID_SIZE_MAX,
      .		i, i1, i2, dset, var, cat, big_cx, split_ax, ax_trans,
      .		frag, lo_ss, hi_ss, trans, nbuffers, ax1, ax2,
@@ -121,6 +123,11 @@
 	itsa_uvar = cat .EQ. cat_user_var
 	use_caution = mode_state(pmode_frugal,1)
 	status = ferr_ok
+	IF ( aclass.EQ.isact_class_trans ) THEN
+	   its_dsg = .FALSE.
+	ELSE
+	   its_dsg = TM_ITSA_DSG(cx_grid(res_cx))
+	ENDIF
 
 * if we are returning here as part of a multi-axis split, then the isp stack
 * level just above us will also be isact_gather.  If so, learn the amount of
@@ -144,6 +151,7 @@
 	ELSE					! modulo regrid
 ! ... FIXME: CGRID_SIZE_MAX is buggy, and a calc like POTENT_SIZE is needed
 !            if modulo regridding and @AVE are combined on a single variable
+!        For a regrid to DSG the source data size calc should be correct
 	   src_size = CGRID_SIZE_MAX( src_cx )	! unknown lims get len=line_dim
 	   trans = trans_no_transform
 	ENDIF
@@ -180,6 +188,8 @@
 	   ELSE
 	      nbuffers = 2
 	   ENDIF
+	ELSEIF (its_dsg) THEN
+	   nbuffers = 2  !   really, 1.5 since DSG result usually much smaller
 	ELSE
 	   IF (cx_regrid_trans(axis,res_cx) .EQ. prgrd_modvar) THEN
 	      nbuffers = 4   ! see IS_REGRID
@@ -272,7 +282,13 @@
 	      IF ( uvar_given(split_ax,var) .NE. uvlim_needed ) CYCLE
 	   ENDIF
 
-	   CALL POTENT_AX_LIMS(res_cx, split_ax, lo_ss, hi_ss)
+! 5/17 bug fix: was "axis" instead of "split_ax" here
+	   IF (its_dsg) THEN
+	      CALL POTENT_AX_LIMS(src_cx, split_ax, lo_ss, hi_ss)
+	   ELSE
+! 5/17 quite likely could get lims from src_cx, but if it aint broke ...
+	      CALL POTENT_AX_LIMS(res_cx, split_ax, lo_ss, hi_ss)
+	   ENDIF
 	   split_ax_len = hi_ss - lo_ss + 1
 	   IF (split_ax_len .EQ. 1) CYCLE
 
@@ -308,7 +324,11 @@
 	   IF (split_on_compressed_ax) THEN
 	      min_mem_used = nbuffers*res_size
      .			   + (ncomp*rsrc_size)/split_ax_len
+	   ELSEIF (its_dsg) THEN
+	      min_mem_used = res_size
+     .			   + (ncomp*rsrc_size)/split_ax_len
 	   ELSE
+! NOTE:  MODULO REGRIDDING has not ben thought through carefully
 	      min_mem_used = res_size
      .			   + (nbuffers*res_size+ncomp*rsrc_size)/split_ax_len
 	   ENDIF
@@ -428,7 +448,7 @@
 * a compressed axis is represented as lo/hi_ss=-999, which is not what we want
 * so if splitting on a compressed axis, store src_cx
  1000	axis = split_ax
-	IF (split_on_compressed_ax) THEN
+	IF (split_on_compressed_ax .OR. its_dsg) THEN
 * ... when splitting on a compressed axis the stack activity remains the 
 *     compressing transform.  It is IS_TRANS, instead of IS_GATHER, that
 *     will control the fetching of fragment after fragment
@@ -444,7 +464,12 @@
 * cancel result pointer to indicate no result yet
 	is_mr( lo_isp ) = unspecified_int4
 * determine the number of subscripts that can be processed in each chunk
-	CALL POTENT_AX_LIMS(res_cx, axis, lo_ss, hi_ss)
+	IF (its_dsg) THEN
+	   CALL POTENT_AX_LIMS(src_cx, axis, lo_ss, hi_ss)
+	ELSE
+! 5/17 quite likely could get lims from src_cx, but if it aint broke ...
+	   CALL POTENT_AX_LIMS(res_cx, axis, lo_ss, hi_ss)
+	ENDIF
 	split_ax_len = hi_ss - lo_ss + 1
 	IF (split_on_compressed_ax) THEN
 	   reduction_factor_needed = ncomp*rsrc_size
@@ -467,7 +492,8 @@
 *    (this is a "dummy" interp stack activity in the sense that is_act is
 *     never actually given this activity.  It exists only to generate an
 *     informative diagnostic report)
-	IF ( mode_diagnostic .AND. split_on_compressed_ax ) THEN
+	IF ( mode_diagnostic
+     .	.AND. (split_on_compressed_ax.OR.its_dsg) ) THEN
 	   CALL DIAG_OP('strip', isact_class_cmp_gather_dummy, big_cx, axis)
 	   CALL DIAG_OP('doing', isact_class_cmp_gather_dummy, src_cx, axis)
 	ENDIF

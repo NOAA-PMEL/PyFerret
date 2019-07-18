@@ -97,6 +97,7 @@
 * V740 *acm*  3/18 Issue 950: Allow simplified I formats
 * V741 *acm*  4/18 Issue 1870: Check Format more closely when finding an I Format
 * V741 *acm*  4/18 Issue 1878: Ferret error if the WRITE results in an error
+* V74+ *acm* 10/18 routine minmax returns count of valid data
 * V751 6/19 *acm* TM_FMT rewrite: formatting of lon/lat coordinate strings
 
         IMPLICIT NONE
@@ -147,7 +148,8 @@
      .			cleft, usable_line_len, max_fields, row_ax,
      .			col_ax, places, col_dec, row_dec, row_wld, 
      .			numbers, first, slen, llen, axis, lp, cal_id,
-     .                  wkblk, ndig(nferdims), ival, num_it, slen1, i1, ndx, n_alloc
+     .                  wkblk, ndig(nferdims), ival, num_it, slen1, 
+     .                  i1, nok, ndx, n_alloc
 	CHARACTER*255	VAR_TITLE, VAR_TITLE_MOD, PAREN_SURROUND, vname_buff
 * V500: *kob* 3/99 - up VAR_UNITS from 32 to 64 
 	CHARACTER	AX_TITLE*32, VAR_UNITS*64, LEFINT*8, TM_FMT*48,
@@ -912,8 +914,8 @@ c	   IF ( GEOG_LABEL(col_ax,grid) ) row_dec = MAX(row_dec, ax_dec_pt(col_ax))
 	   nleft = GET_MAX_C_STRING_LEN(mr_c_pointer(mr), MGRID_SIZE(mr))
 	   all_bad = .FALSE.
 	ELSE
-	   CALL MINMAX(grid_data, MGRID_SIZE(mr), bad_data, small, big)
-	   all_bad = small .EQ. arbitrary_large_val4
+	   CALL MINMAX(grid_data, MGRID_SIZE(mr), bad_data, small, big, nok)
+	   all_bad = nok .EQ. 0
 
 * . . . how many digits right and left of decimal point ?
  	   biggest = MAX( ABS( small ), big )

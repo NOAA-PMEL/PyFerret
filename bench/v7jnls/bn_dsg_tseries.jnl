@@ -1,0 +1,145 @@
+! bn_dsg_tseries.jnl
+! 5/2017 -- exercise native DSG support
+
+use DSG_ERDDAP_pmelTao5daySst.nc
+
+SHOW grid t_25
+
+!basic file variable listings
+list longitude[y=5:10]
+list rowsize[x=95:180,y=5:10]
+list/e=59:60 rowsize[x=95:180,y=5:10]
+list t_25[x=95:180,y=5:10,t=19-mar-2017:22-mar-2017]
+
+
+
+! for convenience /M= is equivalent to /E=
+! other subscripts are ignored (F axis functionality remains to be tested)
+list/m=59:60 rowsize[x=95:180,y=5:10]
+
+! String variables station id and str_temp on the obs axis
+list/m=7:12 station, rowsize
+
+list/x=95:180/y=5:10/t=19-mar-2017:22-mar-2017 t_25, str_temp, depth, station
+
+! simple DSG algebra listings
+let a = longitude*0 + rowsize
+list/e=11:15 a
+list a[x=95:180,y=5:10,t=15-mar-2017:22-mar-2017]
+list a[x=95:180,y=5:10,t=15-mar-2017:22-mar-2017,e=59:60]
+
+! verify cache behaviors
+! cache hit should occur on obtaining restricted region - look for 'found b'
+! in the second list
+! Note: feature subset depends upon T constraints even though expression 'B
+! is a pure instance expression
+cancel memory/all
+let b = longitude*0 + rowsize
+list b[x=75:180,y=-5:10]
+set mode diagnostic
+list b[x=95:180,y=5:10,t=15-mar-2017:22-mar-2017]
+set mode/last diagnostic
+
+! cache hit should not occur when region gets relaxed - no 'found c'
+let c = longitude*0 + rowsize
+list c[x=95:180,y=5:10]  
+set mode diagnostic
+list c[x=75:180,y=5:10] ! relax existing constraint
+set mode/last diagnostic
+
+! cache hit shoud not occur when new constraint is added - no 'found d'
+let d = longitude*0 + rowsize
+list d[x=95:180,y=5:10] 
+set mode diagnostic
+list d[x=95:180]    ! remove  a constraint
+set mode/last diagnostic
+
+! defined regions may be helpful working with DSG datasets
+! Note: be alert for cache hit errors if the regions definition gets changed
+! If the region name is used *inside* of a LET definition then changing the 
+! region actually changes the LET definition, but does not cause uvar memory
+! to be purged.  I don't *think* this will be a problem for DSG variables
+let a = longitude*0 + rowsize
+define region/x=95:180/y=5:10/t=15-mar-2017:20-mar-2017 my_reg
+list a[@my_reg]
+
+! Intentional errors 
+set mode ignore
+
+! trap inconsistent DSG constraints
+list t_25[x=95:180] + longitude
+
+! Cannot select DSG data by index in i,j,k,l
+list/l=1:5 t_25
+list/i=200:210 t_25
+
+list/m=31:32 t_25  ! by feature number is ok
+
+set mode/last ignore
+
+! pseudo-variable tests
+list/e=5:6 x[g=t_25]
+list y[g=rowsize,e=14:18]
+list/e=13:15 t[g=t_25,x=60:100,t=1-mar-2017:15-mar-2017]  ! field width DSGTBD
+list i[g=rowsize,e=6:12]
+list/t=1-feb-2017:25-feb-2017 l[g=rowsize,e=12:15]
+
+! multi-variable listing test
+list/y=5n rowsize, IF rowsize LT 10 then 1
+list/y=2s/x=165:185/t=15-MAR-2017:27-MAR-2017 rowsize, t_25
+
+! compressing transform tests (using @MAX)
+! ... compress instance variable along E axis
+list rowsize[e=@max]
+
+! ... demonstrate that constraints are used in the transformation
+list/e=30:33 rowsize
+list/e=30:33 rowsize[e=@max]
+list/e=31:32 rowsize[e=@max]
+
+! ... compress obs variable along orientation axis
+list/e=40:43 t_25[t=@max]
+
+! ... mix instance and point variables in same listing 
+list/e=14:18  rowsize, rowsize[e=@max], t_25[t=@max]
+
+! ... mix obs, point and instance variables in same listing 
+list/e=14:18/t=10-mar-2017:15-mar-2017  t_25, rowsize[e=@max], t_25[t=@max]
+
+! ...confirm that observation-level flitering is happening
+let a = l[g=t_25]
+list/e=17:18/t=10-mar-2017:15-mar-2017  a, a[t=@max]
+
+! ... confirm no cache hit on narrowing compressing transform limits
+canc mem/all
+list/e=17:18/t=10-mar-2017:18-mar-2017  a, a[t=@max]
+list/e=17:18/t=10-mar-2017:15-mar-2017  a, a[t=@max]
+
+! illegal transformations
+set mode ignore
+list rowsize[t=@max]
+list t_25[e=@max]
+list t_25[t=@max,e=@max]
+set mode/last ignore
+
+! build a LET-pyramid involving a DSG transformation
+let a = t_25[t=@max]
+list a[e=@max]
+list a[e=6:8]
+let b = a[e=@max]
+list b
+
+! smoothing transformation 
+list/e=17:18 t_25[t=@sbx], t_25, t_25-t_25[t=@sbx]
+
+! ... smoothed results should not be changed by obs filtering
+list/e=17:18/t=15-feb-2017:15-mar-2017 t_25[t=@sbx], t_25, t_25-t_25[t=@sbx]
+
+! ... smoothing along E axis also allowed (but is it useful?)
+list rowsize, rowsize[e=@sbx] - rowsize
+
+! ... identical smoothing result, despite feature filtering
+list/e=67:70 rowsize, rowsize[e=@sbx] - rowsize
+
+! tbd tests
+! - regridding

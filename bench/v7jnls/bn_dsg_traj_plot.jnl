@@ -1,0 +1,111 @@
+! bn_dsg_traj_plot.jnl
+!  4/24/2018 ACM
+!
+! Trajectory plots:
+!   * Automatically pick up the pen between trajectories
+!   * If only lon, lat given and it's a dsg trajectory, color-by feature
+!   * Trajectories which cross the dateline, e.g. longitude lists such as
+!       {-178, -179, 177} or {354, 355, 3, 1}
+!       are corrected internally, only when drawing.
+
+! Set up to mimic fland and basemap behavior
+use coads_climatology
+let land = if sst[d=1,L=1] then 0 else 1
+
+! Picking up the pen between trajectories
+! Correcting for crossing the prime meridion or dateline
+
+use dsg_cross_prime
+
+! classic method: plot/vs/ribbon with 3 vars.
+! This will still work, but no need for the /GAPVAR
+! construct of earlier Ferret versions.  Also handles
+! modulo longitude
+
+set view upper
+plot/vs/ribbon/line/thick/lev=v lons, lats, sst
+
+! Or, call to just PLOT SST makes the trajectory plot.
+
+set view lower
+plot/vs/ribbon/line/thick/lev=v sst
+frame/file=dsg_traj_1.gif
+cancel view
+
+! Overlay on a map
+
+set view ul
+shade/x=-180:180/y=-80:80/pal=gray_light/lev=(1)/nokey/nolab land
+
+! Note how the longitudes cross the prime meridion within trajectories
+use dsg_cross_prime
+
+list lons
+plot/nolab/over/line/thick/key sst
+
+
+! or overlay land as in "go fland"
+! The region is set by the lon/lat data in the dsg file
+
+set view ur
+plot/line/thick/lev=v sst
+shade/over/nolab/pal=gray_light/lev=(1)/nokey/nolab land
+
+! Test longitudes crossing the dateline
+
+set view ll
+shade/x=0:360/y=-80:80/pal=gray_light/lev=(1)/nokey/nolab land
+
+use dsg_cross_dateline
+list lons
+plot/over/line/thick/pal=ten_by_levels/key=horiz id
+
+! These contain some wacky longitude values, -1741, 999.
+! The algorithm cannot correct and issues a NOTE, but still 
+! draws the plot.
+
+set view lr
+shade/x=0:360/y=-80:80/pal=gray_light/lev=(1)/nokey/nolab land
+
+use dsg_cross_dateline_bad.nc
+list lons
+plot/over/line/thick/key/pal=ten_by_levels/pal=ten_by_levels id
+
+frame/file=dsg_traj_2.gif
+cancel view
+
+! Plot a variable colored by feature number,using PLOT/VS/RIBBON
+! Use PLOT/VS for plots in other directions than lon/lat trajectories.
+! When coloring by ID, the labels on color keys are automatically centered
+
+use dsg_cross_dateline.nc
+set view upper
+plot/vs/ribbon/line/thick/pal=ten_by_levels lons, temp,  id
+
+set view lower
+plot/vs/ribbon/line/thick/key=hor/pal=ten_by_levels time, temp, id
+frame/file=dsg_traj_3.gif
+
+! Label by any feature-level metadata variable, whether it's numeric, string, 
+! the ID or something else. Labels drawn at an angle if not enough space along key.
+
+cancel data/all
+cancel view
+
+use dsg_cross_dateline
+set view ul
+plot/thick/pal=ten_by_levels id
+
+use dsg_string_id
+show data
+set view ll
+plot/line/thick/pal=ten_by_levels id
+
+define view/x=0.6:0.9/y=0.5:1 upnarrow
+
+set view upnarrow
+plot/nolab/line/thick/pal=ten_by_levels/key=horiz institution
+set v lr
+plot/nolab/line/thick/pal=ten_by_levels rowsize
+
+frame/file=dsg_traj_4.gif

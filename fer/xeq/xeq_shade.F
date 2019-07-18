@@ -177,11 +177,11 @@
 * (e.g.so graticule lines can be overlaid on a final plot.)
 
 	noaxes    = qual_given( slash_noaxes         ).GT.0
-
-        IF (overlay) THEN
+	IF (overlay) THEN
 	   noaxes = .FALSE.
 	   axes = .FALSE.
 	ENDIF
+	axes      = qual_given( slash_shad_axes      ).GT.0
 
 	axes      = qual_given( slash_shad_axes      ).GT.0
 

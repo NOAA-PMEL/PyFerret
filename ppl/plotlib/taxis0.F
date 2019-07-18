@@ -117,7 +117,7 @@ C
         REAL vgrat(4,2)        ! line type: 0=tics only, <0=line, >0=dash lengths 
         INTEGER vcolor(*)      ! pen number for graticule lines
 	INTEGER color0	       ! pen number to restore
-        LOGICAL vline          ! If true, do the lines across.
+        LOGICAL vline, do_line   ! If true, do the lines across.
         LOGICAL solid1, solid2   ! solid lines across at tics
         LOGICAL dashed1, dashed2 ! dashed lines across at tics
         INTEGER ltic, color1, color2
@@ -166,6 +166,8 @@ C set up for plotting graticules across at tic marks
            dash2_3 = vgrat(3,2)
            dash2_4 = vgrat(4,2)
         ENDIF
+	
+	do_line = vline
 C
 C     SET PARAMETERS.
       TIC = 60./DT
@@ -232,6 +234,10 @@ C      LOOP:
 	CALL TIME3(ITIME,IYR,IMON,IDAY,IHR,IMIN,ISEC,ICEN)
 	CALL TIME1(1,ITIME,2,' ',I3,ITIME3,60.)
 	ITIME=ITIME3
+	
+*    do not draw a graticule line along the upper axis
+	do_line = ( ITIME3(13:14)// ITIME3(1:10).LT.
+     .	              ITIME2(13:14)//ITIME2(1:10)) 
 
 	IF(ITIME(13:14)//ITIME(1:12) .LE.
      .       ITIME2(13:14)//ITIME2(1:12)) THEN
@@ -270,9 +276,8 @@ C      LOOP:
    10     CALL PLOT(T,Y,0,0)
 	  IF ( interrupted ) RETURN		! TMAP interrupt
           DO 20 I=1,NSMTIC
-              CALL PLOTT7(T+FLOAT(I)*TDIST,Y,TFACT,YFACT,1,-7)
      
-                 IF ((solid2.OR.dashed2) .AND. vline) THEN ! make line across
+                 IF ((solid2.OR.dashed2) .AND. do_line) THEN ! make line across
                     CALL COLOR(color2)
                     IF (dashed2) THEN
                        CALL DASHSZ(dash2_1,dash2_2,dash2_3,dash2_4)
@@ -284,12 +289,12 @@ C      LOOP:
                     CALL COLOR(color0)
                     CALL VECTRS
                  ENDIF
+              CALL PLOTT7(T+FLOAT(I)*TDIST,Y,TFACT,YFACT,1,-7)
 
    20         CONTINUE
           CALL TIME3(ITIME,IYR,IMON,IDAY,IHR,IMIN,ISEC,ICEN)
 	IF(IHR.EQ.0)THEN
-	CALL PLOTT7(T+TIC,Y,TFACT,YFACT,1,IHVY)
-              IF ((solid1.OR.dashed1) .AND. vline) THEN ! make line across
+              IF ((solid1.OR.dashed1) .AND. do_line) THEN ! make line across
                  CALL COLOR(color1)
                  IF (dashed1) THEN
                     CALL DASHSZ(dash1_1,dash1_2,dash1_3,dash1_4)
@@ -301,11 +306,11 @@ C      LOOP:
                  CALL COLOR(color0)
                  CALL VECTRS
               ENDIF
+              CALL PLOTT7(T+TIC,Y,TFACT,YFACT,1,IHVY)
       
 	ELSE
-	       CALL PLOTT7(T+TIC,Y,TFACT,YFACT,1,INML)
      
-               IF ((solid2.OR.dashed2) .AND. vline) THEN ! make line across at small tics
+               IF ((solid2.OR.dashed2) .AND. do_line) THEN ! make line across at small tics
                   CALL COLOR(color2)
                   IF (dashed1) THEN
                      CALL DASHSZ(dash2_1,dash2_1,dash2_3,dash2_4)
@@ -317,6 +322,7 @@ C      LOOP:
                   CALL COLOR(color0)
                   CALL VECTRS
                ENDIF
+	       CALL PLOTT7(T+TIC,Y,TFACT,YFACT,1,INML)
 
 	ENDIF
 C         THE LABELS

@@ -64,6 +64,7 @@
 	include 'xvariables.cmn'
 	include	'xmem_subsc.cmn'
 	include 'xprog_state.cmn'
+	include	'xdset_info.cmn_text'
 
 * calling argument declarations:
 	INTEGER	idim, com_mr, com_cx, res_mr, res_cx
@@ -74,8 +75,11 @@
      .               m2lot:m2hit,m2loe:m2hie,m2lof:m2hif )
 
 * internal variable declarations:
-	INTEGER ii, shf, i, j, k, l, m, n,
-     .          lo_sub(nferdims), hi_sub(nferdims)
+	LOGICAL TM_ITSA_DSG
+	INTEGER TM_DSG_DSET_FROM_GRID, TM_DSG_NFEATURES, DO_SHIFT_DSG,
+     .          ii, shf, i, j, k, l, m, n,
+     .          lo_sub(nferdims), hi_sub(nferdims),
+     .          grid, dset, nfeatures, mr_list(2)
 	REAL	bad_res
 
 * internal (convenience) equivalences
@@ -91,6 +95,29 @@
 * diagnostic mode output: " doing --> VAR_NAME[x=lo:hi@TRN:n,D=#]"
 	IF ( mode_diagnostic ) 	CALL DIAG_OP
      .				( 'doing', isact_class_trans, res_cx, idim )
+
+
+
+	grid = mr_grid( com_mr )
+
+	IF (TM_ITSA_DSG(grid)) THEN 
+* DSG ragged array
+	
+	   dset = TM_DSG_DSET_FROM_GRID(grid)
+	   nfeatures = TM_DSG_NFEATURES(grid)
+
+	   mr_list(1) = com_mr
+	   mr_list(2) = res_mr
+	   CALL NON_ARRAY_SUBSC( mr_list, 2 )
+	   CALL DSG_ARRAY_SUBSC( mr_list, 2, dsg_orientation(dset) )
+
+	   DO_SHIFT = DO_SHIFT_DSG (	idim, arg, dset, nfeatures,
+     .					com, com_mr, com_cx,
+     .					res, res_mr, res_cx,
+     .					wkbuf	)
+	   GOTO 5000
+
+	ENDIF  ! not dsg
 
 * initialize
 	shf = INT(arg)
@@ -171,7 +198,7 @@
 	ENDIF
 
 * always successful
-	DO_SHIFT = ferr_ok
+ 5000	DO_SHIFT = ferr_ok
 
 	RETURN
 	END

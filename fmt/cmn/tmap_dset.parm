@@ -12,7 +12,7 @@
 * V68  *acm* 1/12 Real variables should be declared REAL (conversion to double prec.)
 * V701  7/16 *kms* Add char_init2048 (for ds_name and ds_des_name) 
 *                  and increase char_init to CHARACTER*2048
-
+* V720   4/17 *sh* add DSG variables 
 
 * codes for data sets
 	INTEGER		set_not_open,set_open,file_not_open
@@ -185,3 +185,15 @@
 * codes for auxiliary data sets
 	INTEGER		main_set
 	PARAMETER	(main_set	= 0)
+
+* codes for DSG dataset featureType
+	INTEGER 	pfeatureType_point,
+     .			pfeatureType_Trajectory,
+     .			pfeatureType_xyzTrajectory,
+     .			pfeatureType_profile,
+     .			pfeatureType_timeSeries
+	PARAMETER      (pfeatureType_point 	   = 0,
+     .			pfeatureType_Trajectory    = 1,
+     .			pfeatureType_xyzTrajectory = 2,     ! may not be needed
+     .			pfeatureType_profile	   = 3,
+     .			pfeatureType_timeSeries	   = 4  )

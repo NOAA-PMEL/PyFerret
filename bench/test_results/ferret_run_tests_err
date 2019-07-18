@@ -379,8 +379,8 @@ list x[x=1:5:0]
            *** NOTE: This will result in incorrect box sizes on record axis: TCENTURY
            *** NOTE: Write the data initially with the /BOUNDS qualifier
  LISTing to file test2.cdf
- LISTing to file FL.cdf
- LISTing to file FTLON.cdf
+ LISTing to file FL.nc
+ LISTing to file FTLON.nc
  **ERROR: invalid command: /CLOBBER not specified and file exists: test_abs.cdf
 list/format=cdf/l=1:10/file=test_abs.cdf l
  LISTing to file test_abs.cdf
@@ -401,7 +401,7 @@ list/format=cdf/append/file=test_abs.cdf ijkl[k=@ave]
  **TMAP ERR: error in line definition
              disordered output coordinate value:         363  Axis: TCENTURY
 list/format=cdf/l=13/append/file=test_abs.cdf l1
- LISTing to file FI.cdf
+ LISTing to file FI.nc
  LISTing to file test_fil0.cdf
  LISTing to file test_fil0.cdf
  LISTing to file test_fil0.cdf
@@ -1528,8 +1528,6 @@ ooooooooooooooooooooooooooooooooooooooooooo
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
- **ERROR: illegal limits: One-point independent axis: Requires a /HLIMIT or /VLIMIT specification
-plot/sym/siz=0.3 0*t[gt=vwnd]
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -2433,8 +2431,8 @@ Replacing definition of axis TAX
            *** NOTE: This will result in incorrect box sizes on record axis: TCENTURY
            *** NOTE: Write the data initially with the /BOUNDS qualifier
  LISTing to file test2.cdf
- LISTing to file FL.cdf
- LISTing to file FTLON.cdf
+ LISTing to file FL.nc
+ LISTing to file FTLON.nc
  **ERROR: invalid command: /CLOBBER not specified and file exists: test_abs.cdf
 list/format=cdf/keep_axnames/l=1:10/file=test_abs.cdf l
  LISTing to file test_abs.cdf
@@ -2455,7 +2453,7 @@ list/format=cdf/keep_axnames/append/file=test_abs.cdf ijkl[k=@ave]
  **TMAP ERR: error in line definition
              disordered output coordinate value:         363  Axis: TCENTURY
 list/format=cdf/keep_axnames/l=13/append/file=test_abs.cdf l1
- LISTing to file FI.cdf
+ LISTing to file FI.nc
            *** NOTE: /KEEP_AXISNAMES ignored. Inconsistent w/ enhanced heading.
  LISTing to file test_fil0.cdf
            *** NOTE: /KEEP_AXISNAMES ignored. Inconsistent w/ enhanced heading.
@@ -4726,6 +4724,9 @@ Replacing definition of axis TAX
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
+           *** NOTE: Ignoring non-DSG FeatureType: GRID
+           *** NOTE: Ignoring non-DSG FeatureType: GRID
+           *** NOTE: Ignoring non-DSG FeatureType: GRID
  **TMAP ERR: attribute already defined
              coordinates for variable ZETA
              Data set: testdata
@@ -5789,8 +5790,12 @@ list/t=15/k=1/x=-123/y=-3 salt
 list/t=15-09-1983/k=1/x=-123/y=-3 salt
  **ERROR: command syntax: 01-15-2010 invalid date or not valid in this calendar
 define axis/t=01-15-2010:09-01-2010:1/units=days/t0=2010-01-01 taxis
+ **ERROR: command syntax: 09-01-2010 invalid date or not valid in this calendar
+define axis/t=01-15-2010:09-01-2010:1/units=days/t0=2010-01-01 taxis
+Replacing definition of axis TAXIS
  **ERROR: command syntax: 2018-15-01 invalid date or not valid in this calendar
 define axis/t=2018-15-01:2019-01-01:1/units=days taxis
+Replacing definition of axis TAXIS
  **ERROR: command syntax: 2018--5-01 invalid date or not valid in this calendar
 define axis/t=2018--5-01:2019-01-01:1/units=days taxis
  **ERROR: command syntax: 2010-15-01 invalid date or not valid in this calendar
@@ -5948,23 +5953,6 @@ Bailing out of external function "samplen_multi":
  **ERROR: error in external function
 list samplen_multi(a_2, b_1)
            *** NOTE: Ambiguous coordinates on X axis: SAMPLEN_MULTI(A_2D, C_2D)
-*** Running ferret script: bn751_bug_fixes.jnl
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
-ooooooooooooooooooooooooooooooooooooooooooo
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
-ooooooooooooooooooooooooooooooooooooooooooo
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
-ooooooooooooooooooooooooooooooooooooooooooo
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
-ooooooooooooooooooooooooooooooooooooooooooo
- LISTing to file time_origin_1.nc
- LISTing to file time_origin_01.nc
- LISTing to file time_origin_01.nc
- LISTing to file time_origin_01.nc
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo

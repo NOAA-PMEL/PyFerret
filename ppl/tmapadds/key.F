@@ -119,8 +119,7 @@ c	        IF (NL.EQ.1 .AND. J.LE.2) ZLEV(2) = zlev(1)
 * V6.95 *acm* 3/15 Changes for PyFerret fonts. Scoot the vertical color key over to the left.
 * V697 *acm* 12/15 Fix ticket 2326: single level plus (inf) and/or (-inf)
 * V7.0 *acm*  6/16 Fix ticket 2440: alignment of colorbar labels, vertical colorbars.
-* V701 *acm*  8/16 Fix ticket 2440 when SHAKEY settings were made.
-* V71  *acm*  1/17 Fix ticket 2491: labels on colorbar when it's a ribbon/vlog, ribbon/hlog plot
+* V701 *acm*  8/16 Fix ticket 2440 when SHAKEY settings were made.* V71  *acm*  1/17 Fix ticket 2491: labels on colorbar when it's a ribbon/vlog, ribbon/hlog plot
 * V71  *acm*  1/17 Fix ticket 2491: Tweak to key labels, code adding .0 to numbers for consistency
 * V72  *acm*  7/17 See example, ticket 2550 small exponential labels need more precision in key labels
 * V74+  *acm* 3/18 Issue 1607.  /KEY=centerlab
@@ -128,14 +127,14 @@ c	        IF (NL.EQ.1 .AND. J.LE.2) ZLEV(2) = zlev(1)
 *         the middle of the colors not the contour lines between colors.
 *         Interpolate /LEVELS values to obtain new edge-values for the contours
 *         and patch-edges
+* V74+  *acm* 8/18 dsg plotting; keys keys labeled with text.
+* V74+  *acm* 8/18 dsg plotting; text-based key labels may be drawn at an angle.
 * V74+  *acm* 11/18 When drawing in a viewport w/ limited space, key labels include 
 *          negative values they run off the edges. Issue 1904
 *       *acm* 12/18 For vertical colorbars that are short, like in viewports, adjust
 *          the labeling interval so they aren't crowded.
-* v751  *acm* prevent tiny text in labels. Pre-compute max length for strings computed by TM_FMT_SNGL
-* v751  *acm* Also keep from switching back and forth between exponential and fixed-format in the labels
-*             if possible. Use string comparison when checking to see if we are using enough
-*             precision to differentiate the levels labels.
+* v751  *acm* 7/2/19 pyferret_DSG branch.  Starting now with the FERRET_DSG version
+*                    and getting pyferret changes into it.
 
         IMPLICIT NONE
 
@@ -162,46 +161,37 @@ c	        IF (NL.EQ.1 .AND. J.LE.2) ZLEV(2) = zlev(1)
 
 	include        'gkspar.inc'
 	include        'pyfonts.cmn'
-	
 
-	integer TM_LENSTR1, TM_LENSTR, 
+     	integer TM_LENSTR1, TM_LENSTR, 
      .          ndx,str_len,max_len,incr,lab_digits, nhi, ncount,
      .          lab_add, nlab, i, kount, lev1, levn, nspace, shd_lev_hi,
-     .		ITYPEX_save, ITYPEY_save, ic, num_dec, maxstr, i_dec, 
-     .		have_exp, nl
+     .		ITYPEX_save, ITYPEY_save, ic, num_dec, maxstr, i_dec, istr_max
+
 
 	real		SYMWID
 	real		x_inc,y_inc,px(4),py(4),rem,kpx(5),kpy(5),flaty(5),flatx(5)
 	real		xmaxx,ymaxx,vwidth,vheight,karht, ksiz_test
-	real		xx,yy,xxx,yyy, xx1, xxn, xxlen, wid, xpos, xp
+	real		xx,yy,xxx,yyy, xx1, xxn, xxlen, xpos, wid, xp
         real            kx_lo_def, kx_hi_def, ky_lo_def, ky_hi_def,
      .                  val, del, x_inc_inf, y_inc_inf, frac, fixx, inc_min, 
-     .                  center_add, ht_ann
+     .                  center_add, ht_ann, keylab_angl
         character*48    TM_FMT_SNGL
-        character*12    text, txt_out, blanks
-        character*20    buff
-	logical		TM_FPEQ_SNGL, ITSA_AXIS_VIEW, TM_HAS_STRING,  
-     .                  windof_hold, check_0, increase_digits, nofill, cont_key_keep, 
-     .                  no_lines, is_viewport, have_neg
+        character*30    txt_out, text, buff
+	logical		TM_FPEQ_SNGL, TM_DFPEQ, ITSA_AXIS_VIEW, TM_HAS_STRING,  
+     .                  windof_hold, check_0, nofill, cont_key_keep, 
+
+     .                  no_lines, is_viewport, have_neg, string_labs, skip_key
+
+	equivalence 	(px(1),kpx(1)),(py(1),kpy(1))
 
 	include 	'ppl_in_ferret.cmn'	
 
-        DATA      blanks/'            '/
 
 *******************************************************************************
 
 *	CANCEL WINDOW ON IF SET
 	windof_hold = windof
 	windof = .false.
-
-* Save the axis ITYPE settings (log axes or not) so they aren'tn used for color key
-* label locations, which are linear. Will restore them at the end.  See the
-* examples in bn_polygon_log.jnl
-
-	ITYPEX_save = ITYPEX
-	ITYPEY_save = ITYPEY
-	ITYPEX = 1
-	ITYPEY = 1	
 
 * pyferret font settings
 
@@ -213,99 +203,31 @@ c	        IF (NL.EQ.1 .AND. J.LE.2) ZLEV(2) = zlev(1)
 	cont_key_keep = cont_key
 	center_add = 0.
 	if (center_key_labels) center_add = 0.5
+	keylab_angl = 0.
 
 	incr = 0
 
-* Decide whether to check for small numeric values in the key labels.
-* If delta is large, we dont want 0.000005 to be labelled in an exponential
-* format (it is zero with a bit of noise). But if all the numbers are 
-* small, label them as is. 
+	string_labs = TM_LENSTR( colorkey_labs(1) ) .GT. 0
 
-        del = 1
-        check_0 = .TRUE.
+	CALL KEY_SET_UP (string_labs, skip_key, max_len, lab_digits, 
+     .      check_0, lab_add, num_dec, lev1, levn, incr)
 
-        lev1 = 1
-        levn = nlev2
-	IF (levn.EQ.1) ZLEV(2) = zlev(1)
-        IF (neginf) lev1 = 2
-        IF (posinf) levn = nlev2 - 1
-        IF (neginf.AND.posinf .AND.shd_levels.EQ.1) levn = nlev2
+* If the plot has log axes, the location of labels is adjusted in routine
+* point_convert.  We do not want that on the color key, so reset the flag
+* here, and restore the values at the end
 
-	nofill = (levn .EQ. 1 .AND. zlev(1) .GE. 1.e33)
 	IF (nofill) GOTO 2000
 
-        IF (shd_levels .GT. 1) del = zlev(lev1+1) - zlev(lev1)
-        IF (TM_FPEQ_SNGL(del,0.)) check_0 = .FALSE.
-        
+	itypex_save = itypex
+	itypey_save = itypey
+	itypex = 1
+	itypey = 1
+
+
 ! IF (INF) levels, will force triangles to be at least 5% of length of colorbar
 
         frac = 0.05
         ncount = 1./frac
-
-* See if klab_dig is enough digits to distinguish the levels. 
-
-        lab_digits = klab_dig
-        lab_add = 0
-        increase_digits = .TRUE.
-
-	if (klab_incr .eq. 0) then
-	   incr = (shd_levels/25) + 1
-	else
-	   incr = klab_incr
-	end if
-
-	kount = 0
-        DO WHILE (increase_digits .AND. ABS(lab_digits) .LE. klab_len .AND.kount.LT.10)
-           buff = ' '
-           val = zlev(lev1)
-           IF (center_key_labels) val = zlevsave(lev1)
-           IF (TM_FPEQ_SNGL(val,0.) .AND. check_0) val = 0.
- 	   text = TM_FMT_SNGL(val,lab_digits,klab_len+5,str_len)
-
-           increase_digits = .FALSE.
-	   
- 	   have_exp = 0
- 	   IF (INDEX(buff, 'E') .GT.0) have_exp = 1
- 	   nl = 1
-
-           num_dec = 0
-           have_neg = .FALSE.
-	   max_len = 0
-
-	   DO 30 ndx = lev1+incr, shd_levels, incr
-             val = zlev(ndx)
-             IF (center_key_labels) THEN
-                IF (ndx.GE.shd_levels) EXIT ! from loop
-                val = zlevsave(ndx)
-             ENDIF
-             IF (TM_FPEQ_SNGL(val,0.) .AND. check_0) val = 0.
-             buff = TM_FMT_SNGL(val,lab_digits,klab_len+5,str_len)
-
-             increase_digits = (buff .EQ. text)   ! Are labels different, one to the next?
-             text = buff
-
-             IF (max_len .lt. str_len) max_len = str_len
-	     
-             i = INDEX(buff, '.')
-             IF (i .GT. 0) num_dec = MAX(num_dec, str_len-i)
-             have_neg = have_neg .OR. val.LT.0 
-             nl = nl + 1
-             IF (INDEX(buff, 'E') .GT.0) have_exp = have_exp + 1
-
-   30      CONTINUE
-
-           IF (increase_digits) THEN
-              IF (lab_digits .GT. 0) lab_digits = lab_digits + 1
-              IF (lab_digits .LT. 0) lab_digits = lab_digits - 1
-              lab_add = lab_add + 1
-           ENDIF
-
-* If some labels are formatted as exponentials and some not, try
-* using less digits for all exponential.
-           IF (have_exp .GT. 0 .AND. .NOT.increase_digits) lab_digits = lab_digits - 1
-
-           kount = kount + 1
-        ENDDO
 
 * Account for magnitude and formatting of data in the labels as found by TM_FMT_SNGL
 
@@ -400,7 +322,7 @@ c	        IF (NL.EQ.1 .AND. J.LE.2) ZLEV(2) = zlev(1)
            ENDIF
         ENDIF
 
-* Dont draw lines between color levels when they will be too close together (see ticket 1535)
+* Don't draw lines between color levels when they will be too close together (see ticket 1535)
 
 c	inc_min = 50
 c	no_lines = .FALSE.
@@ -419,7 +341,9 @@ c	IF ( no_lines ) cont_key = .TRUE.
 
 	karht = amin1 (xcsize*1000.0,
      .		1.0*x_inc*real(incr)/real(max_len))/1000.0
-	if (klab_size .NE. 0) karht = ABS(klab_size)  
+	if (klab_size .NE. 0) karht = ABS(klab_size)    
+	
+	ksiz_test = 0
 
 * Is there room for the labels at their current size?
 * If not adjust the size and/or increment
@@ -438,7 +362,6 @@ c	IF ( no_lines ) cont_key = .TRUE.
 
 	   ksiz_test = 0.06 * xcsize
 	   IF (pyfont) ksiz_test = 0.06
-	   ksiz_test = 0.06
            IF (klab_size .NE. 0) THEN
 	      IF (ABS(klab_size) .LT. ksiz_test) ksiz_test = ABS(klab_size)
 	   ENDIF
@@ -462,13 +385,29 @@ c	IF ( no_lines ) cont_key = .TRUE.
 	   ENDDO
 	   IF (karht .GT. ksiz_test) karht = ksiz_test
 	ENDIF
-	
+
+* Use angled labels and label each one. 
+* (Could use this for numeric labels that run together too...)
+
+	IF (string_labs .AND. incr.GT.1) THEN
+	   incr = 1
+	   karht = 0.07
+	   center_add = 0.
+	   keylab_angl = 30.
+	ENDIF
+
 *	GENERATE THE KEY FOR EACH COLOR/SHADE
 	max_len = 0
-	val = zlev(lev1)
-	IF (center_key_labels) val = zlevsave(lev1)
-	IF (TM_FPEQ_SNGL(val,0.) .AND. check_0) val = 0.
-	text = TM_FMT_SNGL(val,lab_digits,klab_len+lab_add,str_len)  
+	IF (string_labs) THEN
+	   text = colorkey_labs(lev1)
+	   str_len = TM_LENSTR1(text)
+	   istr_max = lev1
+	ELSE
+	   val = zlev(lev1)
+	   IF (center_key_labels) val = zlevsave(lev1)
+	   IF (TM_FPEQ_SNGL(val,0.) .AND. check_0) val = 0.
+	   text = TM_FMT_SNGL (val,lab_digits,klab_len+lab_add,str_len)  
+	ENDIF
         if (max_len .lt. str_len) max_len = str_len
         
         nhi = MAX(2,shd_levels+1)
@@ -489,7 +428,7 @@ c	IF ( no_lines ) cont_key = .TRUE.
               kpy(1) = ky_hi
               kpy(4) = ky_hi
            ENDIF
-	   ht_ann = 0.9*karht
+           ht_ann = 0.9*karht
 
            IF ( (ndx.EQ.2) .AND. (annotate_key.EQ.1) .AND. 
      .          (.NOT.neginf) ) CALL key_annotate 
@@ -516,26 +455,78 @@ c	IF ( no_lines ) cont_key = .TRUE.
 
            ELSE
 
-*	      CALL FILL AREA FOR THIS COLOR/GRAY VALUE
+*	   CALL FILL AREA FOR THIS COLOR/GRAY VALUE
               CALL set_fill_ndx (ndx)
               CALL FGD_GFA(4,kpx,kpy)
 
-              kpx(5) = kpx(1)
-              kpy(5) = kpy(1)
-              IF (.NOT. cont_key) CALL FGD_GPL(5,kpx,kpy)
+	   kpx(5) = kpx(1)
+	   kpy(5) = kpy(1)
+
+	   IF (.NOT. cont_key) CALL FGD_GPL(5,kpx,kpy)
 
            ENDIF ! neginf or posinf
 
            IF (ndx .GE. lev1 .AND. ndx .LE. levn) THEN
-              val = zlev(ndx)
-              IF (center_key_labels) val = zlevsave(ndx)
-              IF (TM_FPEQ_SNGL(val,0.) .AND. check_0) val = 0.
-	      text = TM_FMT_SNGL(val,lab_digits,klab_len+lab_add,str_len)
-	      if (max_len .lt. str_len) max_len = str_len
+
+              IF (string_labs) THEN
+                 text = colorkey_labs(ndx)
+                 str_len = TM_LENSTR1(text)
+		 IF (max_len .LT. str_len) istr_max = ndx
+              ELSE
+                 val = zlev(ndx)
+                 IF (center_key_labels) val = zlevsave(ndx)
+                 IF (TM_FPEQ_SNGL(val,0.) .AND. check_0) val = 0.
+	         text = TM_FMT_SNGL (val,lab_digits,klab_len+lab_add,str_len)   
+              ENDIF
+	      IF (max_len .LT. str_len) max_len = str_len
            ENDIF
 10	continue
 
         IF (incr .GT. 0) THEN
+
+* Incr etc may have changed, so set of labels written could be different.
+* Recompute the decimal digits and max_len as formatted for these labels.
+
+	IF (string_labs) THEN
+	   buff = colorkey_labs(istr_max)
+	   max_len = TM_LENSTR1(text)
+	   wid = 0.5* karht
+	ELSE
+
+	   num_dec = 0
+	   DO ndx = lev1+incr, shd_levels, incr
+              val = zlev(ndx)
+              IF (center_key_labels .AND. ndx.GE.shd_levels) EXIT ! from loop
+              IF (TM_FPEQ_SNGL(val,0.) .AND. check_0) val = 0.
+	      buff = TM_FMT_SNGL (val,lab_digits,klab_len+lab_add,str_len)
+              i = INDEX(buff, '.')
+              IF (i .GT. 0) num_dec = MAX(num_dec, str_len-i)
+	   ENDDO
+
+	   max_len = 0
+
+	   DO ndx = lev1+incr, shd_levels, incr
+              val = zlev(ndx)
+              IF (center_key_labels) THEN
+                 IF (ndx.GE.shd_levels) EXIT ! from loop
+	         val = zlevsave(ndx)
+              ENDIF
+
+              IF (TM_FPEQ_SNGL(val,0.) .AND. check_0) val = 0.
+	      buff = TM_FMT_SNGL (val,lab_digits,klab_len+lab_add,str_len)
+              i = INDEX(buff, '.')
+              i_dec = -1
+              IF (i .GT. 0) i_dec = str_len-i
+              IF (i_dec.LT.num_dec) str_len = str_len + num_dec-i_dec
+
+              IF (max_len .lt. str_len) THEN
+	         max_len = str_len
+	         txt_out = buff
+	      ENDIF
+	   ENDDO
+
+	ENDIF
+
 
 	shd_lev_hi = shd_levels+1
 	IF (center_key_labels .AND. posinf) shd_lev_hi = shd_levels
@@ -544,21 +535,27 @@ c	IF ( no_lines ) cont_key = .TRUE.
 
 *	   WRITE OUT CORRESPONDING VALUE
 
-	   val = zlev(ndx)
-	   IF (center_key_labels) THEN
-	      IF (ndx .EQ. shd_lev_hi) EXIT ! from loop
-	      val = zlevsave(ndx)
+	   IF (string_labs) THEN
+              text = colorkey_labs(ndx)
+              str_len = TM_LENSTR1(text)
+	   ELSE
+	      val = zlev(ndx)
+	      IF (center_key_labels) THEN
+	         IF (ndx .EQ. shd_lev_hi) EXIT ! from loop
+	         val = zlevsave(ndx)
+	      ENDIF
+	      IF (TM_FPEQ_SNGL(val,0.) .AND. check_0) val = 0.
+	      text = TM_FMT_SNGL (val,lab_digits,klab_len+lab_add,str_len)
 	   ENDIF
-	   IF (TM_FPEQ_SNGL(val,0.) .AND. check_0) val = 0.
-	   text = TM_FMT_SNGL(val,lab_digits,klab_len+lab_add,str_len)
-
 	   IF (ndx .EQ. 1 .AND. neginf) text = " "
 	   IF (ndx .EQ. levn+1 .AND. posinf) text = " "
-
+	     
 * Add a .0 with the right number of 0's if the other labels have 
 * decimal-point .xx but this one does not.
 
-	   IF (num_dec.GT.0 .AND. INDEX(text, 'E').EQ.0 .AND. TM_LENSTR(text).GT.0) THEN
+	   IF (.NOT. string_labs .AND. num_dec.GT.0 .AND. 
+     .         INDEX(text, 'E').EQ.0 .AND. TM_LENSTR(text).GT.0) THEN
+
 	      IF (INDEX(text, '.') .EQ. 0) THEN
 	         text = text(:TM_LENSTR1(text))//'.0'
 	         IF (num_dec .GT. 1) THEN
@@ -566,21 +563,30 @@ c	IF ( no_lines ) cont_key = .TRUE.
 		       text = text(:TM_LENSTR1(text))//'0'
 	            ENDDO
 	         ENDIF
-	         str_len = str_len + num_dec+1
-	      ENDIF
 
-	      IF (str_len.LT.max_len .AND. INDEX(text, 'E').EQ.0) THEN
+	      ELSE IF (str_len.LT.max_len .AND. INDEX(text, 'E').EQ.0) THEN
 	         maxstr = max_len
-	         IF (have_neg .AND. val .GE. 0.) maxstr = maxstr - 1
-	         DO i = str_len+1, maxstr
-		    text = text(:TM_LENSTR1(text))//'0'
-	         ENDDO
-	         IF (str_len+1 .LT. maxstr) str_len = max_len
-	      ENDIF
-	   ENDIF
+		 IF (have_neg .AND. val .GE. 0.) maxstr = maxstr - 1
+		 
+		 i = INDEX(text, '.')
+		 i_dec = 0
+		 IF (i .GT. 0) i_dec = str_len-i
 
-	   xx = (kx_lo + x_inc*(center_add+real(ndx-1)))/1000.0
+	         DO i = i_dec+1, num_dec
+		    text = text(:TM_LENSTR1(text))//'0'
+	         ENDDO 
+		 
+	      ENDIF
+   
+	   ENDIF
+	   str_len = TM_LENSTR(text)
+
+	   IF (keylab_angl .EQ. 0.) THEN
+	      xx = (kx_lo + x_inc*(center_add+real(ndx-1)))/1000.0
      .		 - karht*real(str_len)/2.0 - xorg
+	   ELSE
+	      xx = (kx_lo + x_inc*(real(ndx-1)))/1000.0 + karht - xorg
+	   ENDIF
 	   yy = (ky_hi - 5.0 * y_inc)/1000.0 - yorg - 1.5*karht
            IF (kuser_loc(3) .OR. kuser_loc(4) ) 
      .            yy = (ky_lo - y_inc)/1000.0-yorg-1.5*karht
@@ -601,7 +607,7 @@ c	IF ( no_lines ) cont_key = .TRUE.
               call point_convert (xx,yy,xxx,yyy)
 	   endif
 
-	   call symbel (xxx,yyy,0.0,karht,str_len,text(1:str_len))
+	   call symbel (xxx,yyy,keylab_angl,karht,str_len,text(1:str_len))
 
 20	continue
         ENDIF
@@ -624,12 +630,11 @@ c	IF ( no_lines ) cont_key = .TRUE.
            IF (ITSA_AXIS_VIEW(1)) vwidth = (xlen + xorg )* 1.15
            if (vwidth .le. xlen + xorg) goto 2000
 
-	   rem = vwidth - (xlen + xorg)
-	   xmaxx = 0.22*xlen
+           rem = vwidth - (xlen + xorg)
+           xmaxx = 0.22*xlen
 
            kx_lo_def = 1000.0 * (xorg + xlen + 0.17*min (rem,xmaxx))
-           kx_hi_def = 1000.0 * min (xorg + xlen + xmaxx,vwidth-0.1*rem)
-
+           kx_hi_def = 1000.0 * min (xorg + xlen + xmaxx,vwidth-0.08*rem)
            ky_lo_def = 1000.0 *  yorg
            ky_hi_def = 1000.0 * (yorg + ylen)
         else
@@ -708,7 +713,7 @@ c	IF ( no_lines ) cont_key = .TRUE.
 
 *	SET CHARACTER HEIGHT IN WORLD COORDINATES, AND INCR INDEX
         if (klab_size .eq. 0.0) then
-	   karht = amin1 (ycsize*1000.0,500.0*rem/real(max_len))/1000.0
+	   karht = AMIN1 (ycsize*1000.0,500.0*rem/real(max_len))/1000.0
 	else
 	   karht = ABS(klab_size)
 	end if
@@ -720,9 +725,16 @@ c	IF ( no_lines ) cont_key = .TRUE.
 *	GENERATE THE KEY FOR EACH COLOR/SHADE
 	max_len = 0
 
-        val = zlev(lev1)
-        IF (TM_FPEQ_SNGL(val,0.) .AND. check_0) val = 0.
-	text = TM_FMT_SNGL(val,lab_digits,klab_len+lab_add,str_len)
+        IF (string_labs) THEN
+           text = colorkey_labs(lev1)
+           str_len = TM_LENSTR1(text)
+	   IF (max_len .LT. str_len) istr_max = lev1
+        ELSE
+           val = zlev(lev1)
+           IF (TM_FPEQ_SNGL(val,0.) .AND. check_0) val = 0.
+	   text = TM_FMT_SNGL (val,lab_digits,klab_len+lab_add,str_len)
+        ENDIF
+
 	if (max_len .lt. str_len) max_len = str_len	
 
         nhi = MAX(2,shd_levels+1)
@@ -749,7 +761,7 @@ c	IF ( no_lines ) cont_key = .TRUE.
 	   kpy(3) = ky_lo + real (ndx - 1) * y_inc
 	   kpy(4) = ky_lo + real (ndx - 1) * y_inc
 
-	   ht_ann = 0.9*karht
+           ht_ann = 0.9*karht
            IF ( (ndx.EQ.2) .AND. (annotate_key.EQ.1) .AND.
      .          (.NOT. neginf) ) CALL key_annotate 
      .          (kpx, kpy, lab_digits, ht_ann, 1, 1)
@@ -779,17 +791,30 @@ c	IF ( no_lines ) cont_key = .TRUE.
 	      call set_fill_ndx (ndx)
 	      call FGD_GFA(4,kpx,kpy)
 
+*	   TO RETAIN ABILITY FOR COLOR OR HATCHING IN METAFILE, WRITE 
+*	   NDX TO PRIVATE ITEM - forget it 10.22
+*	   if (meta_actv .and. .not. area_bundles) call meta_fill_ndx (ndx)
+
               kpx(5) = kpx(1)
               kpy(5) = kpy(1)
-              IF (.NOT. cont_key) call FGD_GPL(5,kpx,kpy)
+
+              IF (.NOT. cont_key) CALL FGD_GPL(5,kpx,kpy)
 
            ENDIF ! neginf or posinf
 
            IF (ndx .GE. lev1 .AND. ndx .LE. levn) THEN
-              val = zlev(ndx)
-              IF (TM_FPEQ_SNGL(val,0.) .AND. check_0) val = 0.
-              text = TM_FMT_SNGL(val,lab_digits,klab_len+lab_add,str_len)
-              if (max_len .lt. str_len) max_len = str_len
+              
+	      IF (string_labs) THEN
+	         text = colorkey_labs(ndx)
+	         str_len = TM_LENSTR1(text)
+		 IF (max_len .LT. str_len) istr_max = ndx
+	      ELSE
+	         val = zlev(ndx)
+	         IF (TM_FPEQ_SNGL(val,0.) .AND. check_0) val = 0.
+	         text = TM_FMT_SNGL (val,lab_digits,klab_len+lab_add,str_len)
+	      ENDIF
+	      if (max_len .lt. str_len) max_len = str_len
+
            ENDIF
 1010	continue
 
@@ -808,40 +833,61 @@ c	IF ( no_lines ) cont_key = .TRUE.
 	shd_lev_hi = shd_levels+1
 	IF (center_key_labels .AND. posinf) shd_lev_hi = shd_levels
 
-* Recompute max_len as formatted for these labels.  incr etc may have changed,
-* so the set of numbers written could be different.
+* Incr etc may have changed, so set of labels written could be different.
+* Recompute the decimal digits and max_len as formatted for these labels.
 
-	have_neg = (zlev(lev1) .LT. 0.)
+	IF (string_labs) THEN
+	   buff = colorkey_labs(istr_max)
+	   max_len = TM_LENSTR1(text)
+	   wid = 0.5* karht
+	ELSE
 
-	max_len = 0
-	DO ndx = lev1+incr, shd_levels, incr
-           val = zlev(ndx)
-           IF (center_key_labels) THEN
-              IF (ndx.GE.shd_levels) EXIT ! from loop
-	      val = zlevsave(ndx)
-           ENDIF
 
-           IF (TM_FPEQ_SNGL(val,0.) .AND. check_0) val = 0.
-     	   buff = TM_FMT_SNGL(val,lab_digits,klab_len+lab_add,str_len)
+	   num_dec = 0
+	   DO ndx = lev1+incr, shd_levels, incr
+              val = zlev(ndx)
+              IF (center_key_labels .AND. ndx.GE.shd_levels) EXIT ! from loop
+              IF (TM_FPEQ_SNGL(val,0.) .AND. check_0) val = 0.
+	      buff = TM_FMT_SNGL (val,lab_digits,klab_len+lab_add,str_len)
+              i = INDEX(buff, '.')
+              IF (i .GT. 0) num_dec = MAX(num_dec, str_len-i)
+	   ENDDO
 
-           i = INDEX(buff, '.')
-           i_dec = -1
-           IF (i .GT. 0) i_dec = str_len-i
-           IF (i_dec.LT.num_dec) str_len = str_len + num_dec-i_dec
-           IF (max_len .lt. str_len) THEN
-	      max_len = str_len
-	      txt_out = buff
-	   ENDIF
-	   have_neg = have_neg .OR. val.LT.0
+	   have_neg = .FALSE.
+	   max_len = 0
 
-	ENDDO
-	buff = txt_out
+	   DO ndx = lev1+incr, shd_levels, incr
+              val = zlev(ndx)
+              IF (center_key_labels) THEN
+                 IF (ndx.GE.shd_levels) EXIT ! from loop
+	         val = zlevsave(ndx)
+              ENDIF
 
-! Use SYMWID to right-justify
+              IF (TM_FPEQ_SNGL(val,0.) .AND. check_0) val = 0.
+	      buff = TM_FMT_SNGL (val,lab_digits,klab_len+lab_add,str_len)
+              i = INDEX(buff, '.')
+              i_dec = -1
+              IF (i .GT. 0) i_dec = str_len-i
+              IF (i_dec.LT.num_dec) str_len = str_len + num_dec-i_dec
+
+              IF (max_len .lt. str_len) THEN
+	         max_len = str_len
+	         txt_out = buff
+	      ENDIF
+	      have_neg = have_neg .OR. val.LT.0 
+	   ENDDO
+	   buff = txt_out
+
+! Use SYMWID to right-justify numeric labels
+
+           txt_out = buff(:max_len)//'X'   ! extra space between key and label
+           wid = SYMWID(karht,max_len+1,txt_out(:max_len))
+	ENDIF
+
 ! Set xpos = position of end of string, right-justify from there.
 
         xpos = kpx(2)/ 1000.0 - xorg
-	
+
 * Keep the labels from running off the edge
         IF (have_neg) THEN
            xpos = xpos - 0.2*karht
@@ -855,7 +901,7 @@ c	IF ( no_lines ) cont_key = .TRUE.
 	ndx = max_len
 	IF (pyfont) ndx = ndx-1
 
-	buff = 'X'
+        buff = 'X'
         DO i = 1, ndx
            buff = buff(:i)//'X'   ! extra space between key and label
         ENDDO
@@ -869,14 +915,14 @@ c	IF ( no_lines ) cont_key = .TRUE.
         IF (klab_size .LT. 0) THEN
            wid = SYMWID(karht,1,'X')
            xpos = kx_lo/1000.0 - xorg - wid
-	ENDIF
+        ENDIF
 
 * If the user set the label size, leave it. If we are drawing in a viewport,
 * leave the label sizes as-is.  The user can control whether the labels may
 * run into the next viewport or a margin. Otherwise make labels smaller to 
 * try to fit them on the page.
 
-	IF (klab_size.EQ.0 .AND. .NOT.is_viewport .AND. xpos+xorg.GT.vwidth) THEN
+        IF (klab_size.EQ.0 .AND. .NOT.is_viewport .AND. xpos+xorg.GT.vwidth) THEN
 
            ic = 0
            DO WHILE (xpos+xorg .GT. vwidth .AND. ic.LT.5)
@@ -896,10 +942,15 @@ c	IF ( no_lines ) cont_key = .TRUE.
 
            ENDDO
 
+
            xpos = kpx(2)/ 1000.0 - xorg + wid
 	ENDIF
 
-	IF (have_neg) xpos = xpos + 0.8* karht 
+c	IF (klab_size.EQ.0 .AND. karht .LT. 0.05) THEN
+c	   karht = 0.07
+c	   IF (center_key_labels) center_add = 0.8
+c	   keylab_angl = -50.
+c	ENDIF
 
         do 1020 ndx = lev1,shd_lev_hi,incr
 *	   WRITE OUT CORRESPONDING VALUE
@@ -908,8 +959,14 @@ c	IF ( no_lines ) cont_key = .TRUE.
 	      IF (ndx .EQ. shd_lev_hi) EXIT ! from loop
 	      val = zlevsave(ndx)
 	   ENDIF
-	   IF (TM_FPEQ_SNGL(val,0.) .AND. check_0) val = 0.
-     	   text = TM_FMT_SNGL(val,lab_digits,klab_len+lab_add,str_len)
+	   	         
+	   IF (string_labs) THEN
+	      text = colorkey_labs(ndx)
+	      str_len = TM_LENSTR1(text)
+	   ELSE
+	      IF (TM_FPEQ_SNGL(val,0.) .AND. check_0) val = 0.
+	      text = TM_FMT_SNGL (val,lab_digits,klab_len+lab_add,str_len)
+	   ENDIF
 	   IF (ndx .EQ. 1 .AND. neginf) text = " "
 	   IF (ndx .EQ. levn+1 .AND. posinf) text = " "
 
@@ -917,7 +974,8 @@ c	IF ( no_lines ) cont_key = .TRUE.
 * decimal-point .xx but this one does not. Add trailing 0's for 
 * non-scientific-notation numbers so they're all the same length.
 
-	   IF (num_dec.GT.0 .AND. INDEX(text, 'E').EQ.0 .AND. TM_LENSTR(text).GT.0) THEN
+	   IF (.NOT.string_labs .AND. num_dec.GT.0 .AND. 
+     .         INDEX(text, 'E').EQ.0 .AND. TM_LENSTR(text).GT.0) THEN
 	      IF (INDEX(text, '.') .EQ. 0) THEN
 	         text = text(:TM_LENSTR1(text))//'.0'
 	         IF (num_dec .GT. 1) THEN
@@ -947,6 +1005,7 @@ c	IF ( no_lines ) cont_key = .TRUE.
 
 	   txt_out = text
 	   wid = SYMWID(karht,str_len,txt_out)
+	   IF (string_labs) wid = 0.
 	   xx = xpos - WID
 
 	   yy = ( ky_lo + y_inc* (center_add+ real(ndx-1)) )/1000.0 - 
@@ -961,7 +1020,7 @@ c	IF ( no_lines ) cont_key = .TRUE.
               call point_convert (xx,yy,xxx,yyy)
 	   endif
 
-	   call symbel (xxx,yyy,0.0,karht,str_len,txt_out(1:str_len))
+	   call symbel (xxx,yyy,keylab_angl,karht,str_len,txt_out(1:str_len))
 
 1020	continue
         ENDIF
@@ -971,14 +1030,18 @@ c	IF ( no_lines ) cont_key = .TRUE.
         kx_hi = kpx(2)
 
 2000	windof = windof_hold
-        cont_key = cont_key_keep
+	cont_key = cont_key_keep
+
 
 * Undo the shift for centered-key-levels, so overlays are done right
 
 	IF (center_key_labels) CALL SET_LEVELS_CENTERKEY (.FALSE.)
 
-        IF (pyfont .AND. pyf_set(icbar)) igroup = fnt_all
+	keylab_angl = 0.
+	
+	IF (pyfont .AND. pyf_set(icbar)) igroup = fnt_all
 
+* Restore axis-type settings
 	ITYPEX = ITYPEX_save
 	ITYPEY = ITYPEY_save
 

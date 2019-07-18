@@ -56,6 +56,8 @@
 * V604 6/07 *acm* New merr_remote_open for errors opening remote datasets
 * V697 12/15*acm* New merr_axis_att reporting errors in axis attributes, 
 *                 e.g. calendars (For ticket 2332)
+* v741 6/18 *acm* New merr_dsg_grid and merr_invalid, reporting DSG grid errors
+* v741 7/18 *acm* New merr_dsg_struc, reporting DSG attribute errors
 
 	include 'tmap_errors.parm'		! parameter definitions
 	include 'xerror_text.cmn_text'	! common declaration
@@ -145,22 +147,28 @@
      .		/'1st variable in datafile different from descriptor'/,
      .	msg_regular(merr_dsetnf - pregular)
      .		/'Data set requested is not initialized             '/,
-     .	msg_regular(merr_stepnf-pregular)
+     .	msg_regular(merr_stepnf - pregular)
      .		/'No stepfiles found for requested data set         '/,
-     .	msg_regular(merr_badcolmn-pregular)
+     .	msg_regular(merr_badcolmn - pregular)
      .		/'# of columns not a multiple of # of vars          '/,
-     .	msg_regular(merr_attalready-pregular)
+     .	msg_regular(merr_attalready - pregular)
      .		/'attribute already defined                         '/,
-     .	msg_regular(merr_badfileatt-pregular)
+     .	msg_regular(merr_badfileatt - pregular)
      .		/'attribute reading error                           '/,
-     .	msg_regular(merr_nc_open-pregular)
+     .	msg_regular(merr_nc_open - pregular)
      .		/'error opening netCDF file                         '/,
-     .	msg_regular(merr_remote_open-pregular)
+     .	msg_regular(merr_remote_open - pregular)
      .		/'error opening remote data file                    '/,
-     .	msg_regular(merr_chunk_spec-pregular)
+     .	msg_regular(merr_chunk_spec - pregular)
      .		/'error specifying chunk sizes                      '/
-     .	msg_regular(merr_time_string-pregular)
+     .	msg_regular(merr_time_string - pregular)
      .		/'error creating time string                        '/
-     .	msg_regular(merr_axis_att-pregular)
-     .		/'error in axis attributes                        '/
+     .	msg_regular(merr_axis_att - pregular)
+     .		/'error in axis attributes                          '/
+     .	msg_regular(merr_dsg_grid - pregular )
+     .		/'Coordinates inconsistent with FeatureType         '/
+     .	msg_regular(merr_dsg_struc - pregular )
+     .		/'Corrupted CF-DSG structure or attributes          '/
+     .	msg_regular(merr_invalid - pregular )
+     .		/'Invalid command                        '/
 	END

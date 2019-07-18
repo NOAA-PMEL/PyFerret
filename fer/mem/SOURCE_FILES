@@ -6,6 +6,7 @@ assign_variable.F\
 cgrid_size_delta.F\
 create_dyn_wrkspc.F\
 create_full_range_context.F\
+create_lm_table_only_mem_var.F\
 create_mem_var.F\
 create_mem_var_w_buffer.F\
 create_permutation.F\

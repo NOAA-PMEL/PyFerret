@@ -472,6 +472,7 @@ static PyObject *pyferretStart(PyObject *self, PyObject *args, PyObject *kwds)
 
 /*
  * Called by the Ferret core to reallocate for more PPL memory
+ * Preface the message with **ERROR so it gets shown as an error within PyFerret by LAS
  */
 void reallo_ppl_memory(int new_size)
 {
@@ -479,7 +480,7 @@ void reallo_ppl_memory(int new_size)
         FerMem_Free(pplMemory, __FILE__, __LINE__);
     pplMemory = (float *) FerMem_Malloc((size_t)new_size * sizeof(float), __FILE__, __LINE__);
     if ( pplMemory == NULL ) {
-        printf("Unable to allocate the requested %d words of PLOT memory.\n", new_size);
+        printf("**ERROR: PyFerret. Unable to allocate the requested %d words of PLOT memory.\n", new_size);
         exit(1);
     }
     set_ppl_memory(pplMemory, new_size);

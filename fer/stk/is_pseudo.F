@@ -50,6 +50,7 @@
 *       *acm* 4/12 Add new MODE FOURDEE to allow E,F,M,N,etc as user-vars
 *       *sh*  2/17 pre-check for 99999999 in order to issue nicer error message
 * v74   *acm* 3/18 Introduce parameter abstractax_len replacing 99999999
+* Vxx *sh* 5/17 DSG support
 
         IMPLICIT NONE
 	include	'tmap_dims.parm'
@@ -65,7 +66,8 @@
 	INTEGER	status
 
 * internal variable declarations:
-	INTEGER	CX_DIM_LEN, mr, cx, idim, pvlen
+	LOGICAL TM_ITSA_DSG, its_dsg
+	INTEGER	CX_DIM_LEN, mr, cx, idim, pvlen, lo, hi
 
 * --- end of introductory code ---
 * initialize
@@ -78,6 +80,9 @@
 
 * Get the direction of the pseudo-variable.
 	idim = MOD( cx_variable(cx)-1, nferdims ) + 1
+
+* check for DSG
+	its_dsg = idim .NE. f_dim .AND. TM_ITSA_DSG(cx_grid(cx))
 
 * pre-check to make sure limits were given
 	pvlen = CX_DIM_LEN(idim, cx)
@@ -92,10 +97,15 @@
 	IF (mode_diagnostic) CALL DIAGNOSTIC_OUT('pseudo ',mr,point_to_mr)
 
 * fill the space with the desired data
+	IF (its_dsg) THEN
+	   lo = 1
+	   hi = mr_size(mr)
+	ELSE
+	   lo = mr_lo_ss(mr,idim)
+	   hi = mr_hi_ss(mr,idim)
+	ENDIF
 
-
-	CALL MAKE_PSEUDO_VAR( cx, idim, memry(mr)%ptr, mr,
-     .			      mr_lo_ss(mr,idim), mr_hi_ss(mr,idim) )
+	CALL MAKE_PSEUDO_VAR( cx, idim, memry(mr)%ptr, mr, lo, hi)
 
 	RETURN 1
 

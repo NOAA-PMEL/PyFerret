@@ -52,13 +52,17 @@
 	include	'errmsg.parm'
 	include	'interp_stack.parm'
 	include	'xprog_state.cmn'
+	include 'xcontext.cmn'
+	include	'xdset_info.cmn_text'
 
 * calling argument declarations:
 	INTEGER	idim, com_mr, com_cx, res_mr, res_cx
 	REAL	arg, work(*), com(*), res(*)
 
 * internal variable declarations
-	INTEGER	wlen, status
+	LOGICAL	TM_ITSA_DSG
+	INTEGER	TM_DSG_DSET_FROM_GRID, TM_DSG_NFEATURES,
+     .          wlen, grid, dset, nfeatures, orientation, mr_list(2), status
 
 * diagnostic mode output: " doing --> VAR_NAME[x=lo:hi@TRN:n,D=#]"
 	IF ( mode_diagnostic ) 	CALL DIAG_OP
@@ -70,10 +74,33 @@
 	IF ( MOD(wlen,2).EQ.0 )  CALL ERRMSG(ferr_out_of_range, status,
      .			'Median smoother length must be odd', *5000 )
 
+* initialize
+	grid = cx_grid(res_cx)
+	
+	IF (TM_ITSA_DSG(grid)) THEN 
+
+* DSG ragged array
+	   dset = TM_DSG_DSET_FROM_GRID(grid)
+	   nfeatures = TM_DSG_NFEATURES(grid)
+	   orientation = dsg_orientation(dset)
+	   mr_list(1) = com_mr
+	   mr_list(2) = res_mr
+	   CALL NON_ARRAY_SUBSC( mr_list, 2 )
+	   CALL DSG_ARRAY_SUBSC( mr_list, 2, orientation )
+
 * now smooth this along the desired axis of the grid
-	CALL MEDIAN(	idim, wlen,
+	   CALL MEDIAN_DSG ( idim, wlen, dset, nfeatures,
      .			com, com_mr, com_cx,
      .			res, res_mr, res_cx, work )
+
+	ELSE
+
+* now smooth this along the desired axis of the grid
+	   CALL MEDIAN(	idim, wlen,
+     .			com, com_mr, com_cx,
+     .			res, res_mr, res_cx, work )
+
+	ENDIF
 
 * success
 	DO_SMTH_MEDIAN = ferr_ok

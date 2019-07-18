@@ -61,6 +61,7 @@
 * V698  *acm* 5/16 Ticket 2405: MODE CALENDAR:auto
 * V698 *sh* 4/16 hack to format E axis limits as integers
 *	         Note:  this is a poor fix.  See 4/16 note below
+* V74+ *acm* 8/18 DSG dataset? If so find coordinates on the dsg_xlate_grid 
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -72,6 +73,8 @@
 	include 'xvariables.cmn'	! added 3/90
 	include 'xfr_grid.cmn'		! added 3/90
 	include 'xunits.cmn_text'
+	include 'xdset_info.cmn_text'
+
 
 * calling argument declarations
 	LOGICAL	full_prec
@@ -79,8 +82,10 @@
 	CHARACTER*(*) to_word
 
 * internal variable declarations:
-	LOGICAL	SCALAR_GRID_LINE, aux_span_compress, its_float
-	INTEGER	DATE_PREC, sub_len, ndec, grid, line, status, 
+	LOGICAL	SCALAR_GRID_LINE, TM_ITSA_DSG_RAGGED, TM_ITSA_DSG, 
+     .          aux_span_compress, its_float, its_dsg
+	INTEGER	DATE_PREC, TM_DSG_DSET_FROM_GRID, 
+     .          dset, sub_len, ndec, grid, line, status, 
      .          cx_try, cat, var, loss, hiss, delss, j, decimal
 	REAL*8	TM_WORLD, BOX_SIZE, bc_to_t0, lo, hi, small
 	CHARACTER*40	LOHI_STRING
@@ -116,6 +121,20 @@
         ELSE
            grid = cx_grid( cx )
         ENDIF
+
+* variable/grid from a dsg dataset?  Use the DSG xlate grid.
+
+	its_dsg = TM_ITSA_DSG(grid)
+
+        dset = pdset_irrelevant
+	IF (cx .GT. cx_none) dset = cx_data_set(cx)
+	IF (dset .GT. pdset_irrelevant) THEN
+	   IF ( dsg_ragged(dset) ) THEN
+	      IF (dset .EQ. TM_DSG_DSET_FROM_GRID(grid)) 
+     .	        grid = dsg_xlate_grid(dset)
+	   ENDIF
+	ENDIF
+
 	IF ( grid .EQ. unspecified_int4 ) grid = mgrid_abstract
 
 * is this just a single grid box with the world coord box edges given ?
@@ -124,10 +143,16 @@
 * than the point coordinate.  Look at cx_regrid_trans to decide.
  200	   IF ( cx_lo_ss(cx,idim) .NE. unspecified_int4
      .	.AND.cx_lo_ss(cx,idim) .EQ. cx_hi_ss(cx,idim) 
-     .	.AND. .NOT.aux_span_compress				) THEN
+     .	.AND. .NOT.aux_span_compress                            ) THEN
 	   lo = TM_WORLD( cx_lo_ss(cx,idim),grid, idim, box_middle )
 	   hi = lo
 	ELSE
+	   lo = cx_lo_ww( idim, cx )
+	   hi = cx_hi_ww( idim, cx )
+	ENDIF
+
+	IF (idim.EQ.t_dim .AND. its_dsg .AND. 
+     .	    cx_lo_ww( idim,cx ).NE.unspecified_val8) THEN
 	   lo = cx_lo_ww( idim, cx )
 	   hi = cx_hi_ww( idim, cx )
 	ENDIF

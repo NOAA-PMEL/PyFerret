@@ -52,9 +52,17 @@
 * V71  *acm* 12/16 Send extra-buffer space that was allocated for the 
 *                 accumulation/finalization, to store counts. To distinguish 
 *                 all-missing data with a value of zero, from a zero max.
+* V720 *sh*  5/17 Support for @MAX on a DSG variable
+
+!DSGTBD: other compressing transforms remain to be implemented
+!        this should serve as a basic example
 
         IMPLICIT NONE
+	include 'ferret.parm'
 	include	'errmsg.parm'
+	include	'tmap_dims.parm'
+	include 'xcontext.cmn'
+	include	'xdset_info.cmn_text'
 
 * calling argument declarations:
 	INTEGER	idim, com_mr, com_cx, res_mr, res_cx
@@ -62,17 +70,44 @@
      .          com( * ), res( * )
 
 * internal variable declarations:
-         INTEGER CGRID_SIZE, size
+	LOGICAL TM_ITSA_DSG
+        INTEGER CGRID_SIZE, TM_DSG_DSET_FROM_GRID, TM_DSG_NFEATURES,
+     .		size, grid, dset, nfeatures, maxobs, mr_list(2)
+	REAL	little_val, big_val
 
-* Get size of result array to locate buffer area just beyond
-* Pass extra-buffer portion of res array to accumulate counts
+* initialize
+	grid = cx_grid(res_cx)
 
+* Get size of result array to locate buffer area just beyond end of result
+* This is the accumulation area for transforms like @AVE
+* e.g. @AVE needs to accumulate 2 quantities: values and weights
 	size = CGRID_SIZE(res_cx)
 
-	CALL DO_MAX_SUB (idim, arg,
-     .                   com, com_mr, com_cx,
-     .                   res, res_mr, res_cx,
-     .                   res(size+1)	)
+	IF (TM_ITSA_DSG(grid)) THEN 
+* DSG ragged array
+	   dset = TM_DSG_DSET_FROM_GRID(grid)
+	   nfeatures = TM_DSG_NFEATURES(grid)
+* ... get the length of the longest feature
+	   CALL DSG_COORD_LIMS(dset, pdsg_row_size, little_val, big_val)
+	   maxobs = big_val
+
+	   mr_list(1) = com_mr
+	   mr_list(2) = res_mr
+	   CALL NON_ARRAY_SUBSC( mr_list, 2 )
+	   CALL DSG_ARRAY_SUBSC( mr_list, 2, dsg_orientation(dset) )
+
+	   CALL DO_MAX_DSG (idim, arg, dset, nfeatures, maxobs,
+     .                      com, com_mr, com_cx,
+     .                      res, res_mr, res_cx,
+     .                      res(size+1)	)
+
+	ELSE
+* traditional gridded variable
+	   CALL DO_MAX_SUB (idim, arg,
+     .                      com, com_mr, com_cx,
+     .                      res, res_mr, res_cx,
+     .                      res(size+1)	)
+	ENDIF
 
 	DO_MAX = ferr_ok
 

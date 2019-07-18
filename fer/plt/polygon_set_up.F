@@ -145,6 +145,7 @@
 * v722 *acm* 9/17  Fixes for 2562, polymark and other polygons over log axis.
 * V73+ 1/18 *acm* Changes for Issue 1009; precsision in time info sent to pplus for 2D plots
 *                 scaling for axis coords and box edges
+* V74+ *acm* 10/18 routine minmax returns a new argument: count of valid data
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -208,7 +209,7 @@
      .			phlim, pvlim, pxdenig, pydenig,
      .                  cal_id, tax, x_axtyp, y_axtyp, n,
      .			ss_x_save, ss_y_save, mvh_temp, ier, nc, skipsym,
-     .			nsiz, ngood, count
+     .			nsiz, ngood, count, nok
 
 	REAL		x_len, y_len, lo, hi, lox, hix, loy, hiy,
      .			xkeypos, ykeypos, xkeysize, ykeysize, lab_ht,
@@ -681,13 +682,13 @@ c	ind_dim = plot_axis(1)
 c	   IF ( npoly         .GE. NPOLYGON   ) GOTO 5160
 
 * ... maintain check on x data range for PLOT+ auto-scaling
-	   CALL MINMAX( x_dat(start), npts, mr_bad_data(mr_x), lo, hi)
-	   IF (lo .NE. arbitrary_large_val4) THEN ! if it is arb-large, then all missing
+	   CALL MINMAX( x_dat(start), npts, mr_bad_data(mr_x), lo, hi, nok)
+	   IF (nok .GT. 0) THEN 
 	      IF (lo .LT. lox) lox = lo
 	      IF (hi .GT. hix) hix = hi
 	   ENDIF
-	   CALL MINMAX( y_dat(start), npts, mr_bad_data(mr_y), lo, hi)
-	   IF (lo .NE. arbitrary_large_val4) THEN ! if it is arb-large, then all missing
+	   CALL MINMAX( y_dat(start), npts, mr_bad_data(mr_y), lo, hi, nok)
+	   IF (nok .GT. 0) THEN 
 	      IF (lo .LT. loy) loy = lo
 	      IF (hi .GT. hiy) hiy = hi
 	   ENDIF

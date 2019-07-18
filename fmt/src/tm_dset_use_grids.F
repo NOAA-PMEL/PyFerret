@@ -40,6 +40,7 @@
 
 * V510 *sh* 4/00
 * V6.74 3/12 *acm* cleanup ifdefs and unnecessary include files
+* V7.4  6/18 *acm* Allow cleanup with grids created while initializing dsg files
 
 * Include files
 	include 'tmap_dims.parm'
@@ -56,8 +57,12 @@
 	INTEGER i
 
 * bump the use counts of grids used by variables in this data set
+* if called as part of cleanup in unsuccessful grid creation, 
+* ds_var_setnum(i) may have been set, but not ds_grid_number(i)
+
 	DO 50 i = 1, maxvars
-	   IF ( ds_var_setnum(i) .EQ. dset ) THEN
+	   IF ( ds_var_setnum(i) .EQ. dset 
+     .         .AND. ds_grid_number(i).NE.int4_init) THEN
 	      CALL TM_USE_DYN_GRID( ds_grid_number(i))
 	   ENDIF
  50	CONTINUE

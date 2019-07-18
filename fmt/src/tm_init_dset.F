@@ -117,6 +117,8 @@
 * v741 5/18 *acm* Issue 1651 - "use my" will look for my.agg and run it as a script to
 *                 initialize an aggregation. If given w/o .agg, a hack will look for it.
 * v742 7/18 *acm* add .agg to the error message when file not found.
+* v741 6/18 *acm*  Initializing data, apply /FEATURE= for dsg datsets here
+*      7/18 *acm*  If datset is already open then USE/FEATURE= is invalid.
 
 * arguments:
 *	dset_name	- filename of DESCRIPTOR file (input)
@@ -166,12 +168,12 @@
 	CHARACTER*42	reading_nml
 	CHARACTER*512   TM_INQ_PATH
 	CHARACTER*2048  des_name
-	INTEGER*4	set_cnt, lunit, cnt, aux_cnt, tcnt, dlen, dlen2,
+	INTEGER 	set_cnt, lunit, cnt, aux_cnt, tcnt, dlen, dlen2,
      .			rcnt, parm_cnt, grd_cnt, equal_pos, istat
-	INTEGER*4	TM_LENSTR, TM_LENSTR1, STR_SAME, STR_UPCASE, ic
-	LOGICAL		TM_HAS_STRING, match, ok_share_taxis,
+	INTEGER 	TM_LENSTR, TM_LENSTR1, STR_SAME, STR_UPCASE, ic, du
+	LOGICAL		TM_HAS_STRING, CD_DSG_FEATURE_OK, match, ok_share_taxis,
      .			opened, got_lun, dods_url, nocache,
-     .                  explicit_ext                 ! 7/97
+     .                  explicit_ext, cdfid
 	DATA		known_type/'  GT','  TS','  MC','  MG','  MT'/
 	DATA		format_rev/'  1C',
      .				   '  1A',
@@ -213,7 +215,7 @@
 * DEFINE DATA/AG/T myname = file1, file, file3) and as a side benefit it
 * bypasses directory inquiries when the user gives the full, exact path on the
 * SET DATA command
-	IF (ok_re_use_existing) THEN
+	IF (ok_re_use_existing .AND. dsg_user_direction.EQ.int4_init) THEN
 	   DO set_cnt = 1, maxdsets
 	      IF ( ds_des_name(set_cnt) .EQ. dset_name ) THEN
 	         dset_num = set_cnt
@@ -364,7 +366,23 @@
 	      IF ( match ) THEN
 	         dset_num = set_cnt
 	         status = merr_no_action
-	         GOTO 9999
+
+* For DSG datasets, did they set a /Featuretype ?
+* If so, re-initialize the dataset with that type (First should check to see
+* that this is going to be a legal reset.)
+
+	         IF (dsg_user_direction .NE. int4_init) THEN
+		    IF ( CD_DSG_FEATURE_OK (dset_num, dsg_user_direction) ) THEN
+		       du = dsg_user_direction
+	               CALL CANCEL_DATA_SET( dset_num, status )  
+		       dsg_user_direction = du
+	               IF ( status .NE. merr_ok ) GOTO 5700  
+		    ELSE
+		       GOTO 5700
+		    ENDIF
+	         ELSE
+	            GOTO 9999
+	          ENDIF
 	       ENDIF
   100	   CONTINUE
 	ENDIF
@@ -387,9 +405,10 @@
 * netCDF file ?
  120    IF ( ds_dset_type .EQ. 'CDF' ) THEN
            ds_dset_type = ' '     ! reset the coaching shared by outside world
+
            CALL CD_INIT_DSET( dset_num, perm, tregular, use_strict,
      .				ok_share_taxis, status )
-           IF ( status .NE. merr_ok ) GOTO 9900
+           IF ( status .NE. merr_ok )GOTO 9900
            RETURN
         ENDIF
 
@@ -620,6 +639,15 @@
      .		'Dataset type not supported for double-precision Ferret '
      .			//dset_name,
      .			no_errstring, *9900)
+
+* Invalid command, so it's an error but don't close the dataset that's already open
+ 5700	CALL TM_ERRMSG (merr_invalid, status, 'TM_INIT_DSET',
+     .			dset_num, no_stepfile,
+     .			'Error on SET DATA/FEATURE= applied to an '//
+     .			'open dataset. ',
+     .			no_errstring, *5701)
+ 5701	status = merr_no_action
+	GOTO 9999
 
 * get out from error
  9900	CALL TM_CLOSE_SET ( dset_num, istat )

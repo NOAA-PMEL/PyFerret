@@ -125,6 +125,8 @@
 * V500 *kob* 3/99- up VAR_CODE and vcode decl's to 64 chars and KEY_STRING
 *                  to 128 and VAR_UNITS to 64
 * V552 *acm* 4/03- up VAR_CODE and vcode decl's from 64 to 128 chars
+* V74+ *acm* 10/18 routine minmax returns a new argument: count of valid data
+
 * local variable declarations:
 	LOGICAL		TM_HAS_STRING, TM_DIGIT, all_bad, do_unform, ss_save, 
      .                  do_tab_del, do_comma_del, norow, has_string, has_int
@@ -136,7 +138,7 @@
      .			ivar, point, iwd, dset, ax, new_ax,
      .			min_width, row_ww_wid, lp, prec_digits, ndigits, ww,
      .			lo(nferdims), hi(nferdims), del(nferdims), 
-     .			pt(nferdims), valid_ax(nferdims), lloc, num_it, ival
+     .			pt(nferdims), valid_ax(nferdims), lloc, num_it, ival, nok
 	CHARACTER*255	VAR_TITLE, VAR_TITLE_MOD, PAREN_SURROUND, vname_buff
 	CHARACTER	KEY_STRING*128, AX_TITLE*32, VAR_UNITS*64, LEFINT*8,
      .			CX_DIM_STR*16, VAR_CODE*128, TM_FMT*48,
@@ -620,8 +622,8 @@
      .					  memry(mr_list(ivar))%ptr )
 	   ELSE 
 	      CALL MINMAX( memry(mr_list(ivar))%ptr, msize(ivar),
-     .			   bad(ivar), small, big )
-	      all_bad = small .EQ. arbitrary_large_val4
+     .			   bad(ivar), small, big, nok)
+	      all_bad = nok .EQ. 0
 
 * . . . how many digits right and left of decimal point ?
 	      biggest = MAX( ABS( small ), big )

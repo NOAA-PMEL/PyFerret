@@ -118,6 +118,7 @@
 *                 of other exprns.
 * V695 *acm* 6/16 Fix ticket 1602. Do not substitute abstract axes for normal axes
 *                 when merging a constant.
+* V720: 4/17 *sh* special behaviors defining DSG grids
 * V72  *acm* 6/17 For the above change, ticket 1602, and also for comment #3 of 2313, 
 *                 do the check differently. If the the grid of the component is 
 *                 all-abstract (and the variable is a constant), do not add abstract 
@@ -126,6 +127,8 @@
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
+	include 'implicit.parm'    ! has pline_not_dsg
+#include "tmap_dset.parm"
 	include 'grid_chg_fcns.parm'
 	include	'xtm_grid.cmn_text'
 	external xgt_grid_data
@@ -136,6 +139,7 @@
 	include	'xvariables.cmn'
 	include	'xprog_state.cmn'
 	include	'xtext_info.cmn'
+	include 'xdset_info.cmn_text'
 	include	'xfr_grid.cmn'
 
 * calling argument declarations
@@ -144,15 +148,18 @@
 	CHARACTER	com_text*(*)
 
 * local variable declarations
-	LOGICAL		INHERITED_LIMITS, ITSA_PURE_SUM_VAR,
-     .			same, nest, expl_com_lim, abstgrid, normabst, var_is_const
+	LOGICAL		INHERITED_LIMITS, ITSA_PURE_SUM_VAR, TM_ITSA_DSG,
+     .			ITSA_COMPATIBLE_DSG_GRID,
+     .			same, nest, expl_com_lim, abstgrid, normabst,
+     .			var_is_const, its_dsg
 	INTEGER		CX_DIM_LEN, TM_LENSTR1, REGION_CLASS,
      .			NEST_REGION_CLASS,  WHICH_GCFCN, GCF_RTN_TYPE,
+     .			TM_DSG_DSET_FROM_GRID,
      .			mrg_grd, mrg_ax, mrg_len, com_grd, com_ax, com_len,
      .			idim, i, icom, imrg, com_uvar, com_class, mrg_class,
      .			uv_class, ax_choice(6,5), joint_match(0:3,0:3),
      .			lims_gvn, gcfcn, axis_source(nferdims), uvar_test,
-     .			naux, blen, mabstract, iline
+     .			naux, blen, mabstract, iline, dsg_dset
 	CHARACTER	VAR_CODE*128, buff*128
 
 * local parameter declarations
@@ -261,7 +268,6 @@
 
 **************************************************************************
 * is this a grid changing variable? (1/97)
-	
 	IF (its_gc) THEN
 	   gcfcn = WHICH_GCFCN(uvar)
 	   CALL GCF_GET_AXIS_SRCS(gcfcn, iarg, axis_source)
@@ -270,6 +276,20 @@
 * initialize
 	mrg_grd = cx_grid( mrg_cx )
 	com_grd = cx_grid( com_cx )
+
+* is this a DSG variable?
+! DSGTBD: DSG grids are handled as small hacks in this complex routine
+! If this leads to trouble consider a separate dsg_merge_grid subroutine
+! DSG merges are very simple - E is always present.  The "orientation"
+! axis may or may not be.  There is just one acceptable axis for either
+! of these slots.  All other axes are always normal.
+! A DSG context violates gridded norms in that will carry ww coodinate
+! limits on mnormal axes
+	its_dsg = TM_ITSA_DSG(com_grd)
+	IF (its_dsg) THEN
+	   IF (.NOT.ITSA_COMPATIBLE_DSG_GRID(mrg_grd, com_grd)) GOTO 5100
+	   dsg_dset = TM_DSG_DSET_FROM_GRID(com_grd)
+	ENDIF
 
 * do we have nested user-defined variables ?
 	nest = cx_category( com_cx ) .EQ. cat_user_var
@@ -391,18 +411,21 @@
 	   com_len = CX_DIM_LEN( idim, com_cx  )
 	   mrg_len = CX_DIM_LEN( idim, mrg_cx  )
 
+* 5/17 ignore normal axis of new component  (but why only for DSG?)
+	   IF (its_dsg .AND. com_ax.EQ.mnormal) GOTO 500
+
 * arg of grid-changing function?
-	IF (its_gc ) THEN
-	   IF (    axis_source(idim).EQ.pgc_ignore_axis) THEN
-	      GOTO 500
-	   ELSEIF (axis_source(idim).EQ.pgc_impose_axis) THEN
+	   IF (its_gc ) THEN
+	      IF (    axis_source(idim).EQ.pgc_ignore_axis) THEN
+	         GOTO 500
+	      ELSEIF (axis_source(idim).EQ.pgc_impose_axis) THEN
 * ... imposed axes are handled later by GCF_IMPOSE_AXES
-	      GOTO 500
-	   ELSE
+	         GOTO 500
+	      ELSE
 * ... it is evidently, a mergible axis ... continue on
-	      CONTINUE
-	   ENDIF	      
-	ENDIF
+	         CONTINUE
+	      ENDIF	      
+	   ENDIF
 
 * ignore axes with unknown limits
 * 2/27/96 - kludge bug fix
@@ -593,7 +616,16 @@ c	   IF (.NOT. (normabst) .AND. var_is_const) GOTO 400
 * e.g. LIST/K=1:5 U - U[K=3]
 * (the /K limits are lacking in the overall expression)
 !    2/28/98: replaced:  	   .OR. .NOT.cx_given(idim,com_cx)
-	   IF ( uvar_given(idim,uvar).GE. uvlim_needed
+	   IF (its_dsg .AND. idim.NE.f_dim) THEN
+! *sh* these settings are educated guesses -- concepts don't apply to DSGs
+	      IF (idim.EQ.e_dim) THEN
+	         uvar_given(idim,uvar) = uvlim_needed
+	      ELSEIF (dsg_coord_var(idim,dsg_dset).EQ.int4_init) THEN
+	         uvar_given(idim,uvar) = uvlim_irrelevant
+	      ELSE
+	         uvar_given(idim,uvar) = uvlim_needed
+	      ENDIF
+	   ELSEIF ( uvar_given(idim,uvar).GE. uvlim_needed
      .	   .OR. .NOT.expl_com_lim
      .	   .OR. .NOT.INHERITED_LIMITS(idim,com_cx) ) THEN
 	      uvar_given(idim,uvar) = uv_class + uvlim_needed
@@ -623,4 +655,10 @@ c	   IF (.NOT. (normabst) .AND. var_is_const) GOTO 400
 * error exit
  5000	RETURN
  9000	CALL ERRMSG( ferr_internal, status, 'mrg_grd_err', *5000 )
+
+ 5100	CALL ERRMSG( ferr_grid_definition, status,
+     .		    "feature data must be regridded"//
+     .		    " to combine it with gridded data", *5000)
+
+
 	END

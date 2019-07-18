@@ -58,6 +58,7 @@
 * V6.85 2/13 *acm* Fix ticket 2038: making warning message for too-long string
 * V697 12/15 *acm* Increased length of command-line string and risc_buff buffer
 * V697  2/16 *acm* DO NOT increase length of command-line string and risc_buff buffer
+* v751 *acm*  6/19 Allow for longer strings as attribute values
 
 * argument definitions:
 *	dset	 - dataset number
@@ -106,7 +107,7 @@
        IF (varid .LT. 0) RETURN
 
 * initialize
-       string(:maxlen) = ' '
+       string(:) = ' '
        too_long = .FALSE.
 
 * inquire about the attribute by name, using its id number

@@ -51,6 +51,8 @@ C                with "*(*)" for the linux port
 *                inverse log axes and log depth axes.
 C V695 *acm*  5/15 Restore color after a graticule using defined color 0
 * *acm* - 8/16   ticket 1787: restore pen 0 correctly after graticule
+* V745 *acm* 3/19 Draw tic marks on top of any graticule lines so 
+*                 dashes or color are covered up by the tic mark
 
 	CHARACTER YLAB*20,IFORMT*(*),YFRMT*12
 	COMMON/TICS/TSMX,TLX,TSMY,TLY,IX,IY
@@ -102,6 +104,7 @@ C               GE 2  GIVES THE INVERSE SCALE OF IAXIS = 1
       TYLO=IFIX(1.0001*YLO)
       TYHI=IFIX(1.0001*YHI)
       TYUNIT=IFIX(1.0001*YUNIT)
+      YTEMP = 0.
       NDEC=TYHI-TYLO
 !      IF(NDEC.LT.1) STOP 'YLO,YHI'
       IF(NDEC.LT.1) THEN
@@ -150,10 +153,10 @@ C
 
 	      DO 100 J=2,9    ! small tics
 
-                 CALL PLOTT7(X,Y+SGN*(I-1+ALOG10(FLOAT(J))),XFACT,YFACT,1,-5)
+c                 CALL PLOTT7(X,Y+SGN*(I-1+ALOG10(FLOAT(J))),XFACT,YFACT,1,-5)
 
                  IF ((solid2.OR.dashed2) .AND. hline) THEN ! make line across
-                   yt = Y+SGN*(I-1+ALOG10(FLOAT(J)))
+                   yt = Y+SGN*(I-1+ALOG10(FLOAT(J)))		   
                    CALL COLOR(hcolor(2))
                     IF (dashed2) THEN
                        CALL DASHSZ(dash2_1,dash2_2,dash2_3,dash2_4)
@@ -164,11 +167,13 @@ C
                     CALL PLOT(X,yt,0,0) 
                     CALL COLOR(color0)
                     CALL VECTRS
+		    CALL PLOTT7(X,Y+SGN*(I-1+ALOG10(FLOAT(J))),XFACT,YFACT,1,-5)
+
                  ENDIF
              
 100           CONTINUE
 
-              CALL PLOTT7(X,Y+SGN*I,XFACT,YFACT,1,-6) ! draw large tic
+c              CALL PLOTT7(X,Y+SGN*I,XFACT,YFACT,1,-6) ! draw large tic
 
               IF ((solid1.OR.dashed1) .AND. hline) THEN ! make line across
                  yt = Y+SGN*I
@@ -183,6 +188,7 @@ C
                  CALL COLOR(color0)
                  CALL VECTRS
               ENDIF
+              CALL PLOTT7(X,Y+SGN*I,XFACT,YFACT,1,-6) ! draw large tic
 
 110        CONTINUE
 
@@ -195,10 +201,11 @@ C  for DEPTH axes, Y plot coordinates are reversed on page.
 	   CALL PLOTT7(X,YTEMP,XFACT,YFACT,1,-6)
 	   DO 130 I=1,NDEC      ! large tics
 	      DO 120 J=2,9      ! small tics
-                 CALL PLOTT7(X,YTEMP+(I-1+ALOG10(FLOAT(J))),XFACT,YFACT,1,-5)
+c                 CALL PLOTT7(X,YTEMP+(I-1+ALOG10(FLOAT(J))),XFACT,YFACT,1,-5)
 
                  IF ((solid2.OR.dashed2) .AND. hline) THEN ! make line across
                    yt = YTEMP+(I-1+ALOG10(FLOAT(J)))
+
                    CALL COLOR(hcolor(2))
                     IF (dashed2) THEN
                        CALL DASHSZ(dash2_1,dash2_2,dash2_3,dash2_4)
@@ -210,9 +217,10 @@ C  for DEPTH axes, Y plot coordinates are reversed on page.
                     CALL COLOR(color0)
                     CALL VECTRS
                  ENDIF
+                 CALL PLOTT7(X,YTEMP+(I-1+ALOG10(FLOAT(J))),XFACT,YFACT,1,-5)
 
 120           CONTINUE
-              CALL PLOTT7(X,YTEMP+I,XFACT,YFACT,1,-6)  ! make large tic
+c              CALL PLOTT7(X,YTEMP+I,XFACT,YFACT,1,-6)  ! make large tic
               
               IF ((solid1.OR.dashed1) .AND. hline) THEN ! make line across
                  yt = ytemp+i
@@ -227,9 +235,14 @@ C  for DEPTH axes, Y plot coordinates are reversed on page.
                  CALL COLOR(color0)
                  CALL VECTRS
               ENDIF
+              CALL PLOTT7(X,YTEMP+I,XFACT,YFACT,1,-6)  ! make large tic
 
 130        CONTINUE
         ENDIF
+
+		
+	call plot (x, ytemp, 1, 0)
+	call plot (x, ytemp, 0, 0)
 C
 C	DRAW LABELS
 C
@@ -272,6 +285,7 @@ C  for DEPTH axes, Y plot coordinates are reversed on page.
 
 	IF(WID.GT.YWIDT)YWIDT=WID
 200	CONTINUE
+
 	YWID=YWID+YWIDT
 	RETURN
 	END

@@ -47,6 +47,8 @@
 * V6.74 3/12 *acm* cleanup ifdefs and unnecessary include files
 * V6.85+ 12/13*acm* catch up to 6-D Ferret
 * V710 9/16 *acm* Use ww_dim_name from xtext_info.cmn
+* v751 *acm*  6/19 Allow for longer strings as attribute values (line_name is length 64)
+
 
 * argument definitions:
 *     dset    - dset (if netcdf file, for getting name and attribute 
@@ -74,7 +76,7 @@
      .  attlen, maxlen, attoutflag, alen
       REAL val
 
-      CHARACTER varname*130, buff*128, attname*128
+      CHARACTER varname*130, buff*64, attname*128
 
 * initialize
       iaxis = grid_line(idim, grid)
@@ -102,7 +104,7 @@
          attname = 'orig_file_axname' 
          alen = 18
 
-         maxlen = 128
+         maxlen = 64
          got_it = NC_GET_ATTRIB(dset, varid, attname(1:alen),
      .                       .FALSE., varname(1:nlen), maxlen, attlen, 
      .                       attoutflag, buff, val)

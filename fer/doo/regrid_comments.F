@@ -51,6 +51,8 @@
 * V693+ 11/14 *sh* renaming 'sigma' as 'layerz' throughout
 * V698  1/16 *sh*  special formatting of T-F plane FMRC regridding comments
 * V741  5/18 *acm* issue 1868: gridding transforms that will grid to same axis
+* V741  6/18 *acm* For DSG-file listings, check that cx_regrid_trans was set 
+*                  before using it
 
         IMPLICIT NONE
 	include	'tmap_dims.parm'
@@ -196,7 +198,7 @@
      .					//ww_dim_name(idim)
 	         mlen = MIN( maxlen, mlen+4 )
 * ... @transform
-	         IF (non_atlin) THEN
+	         IF (non_atlin .AND. cx_regrid_trans(idim,cx).NE.unspecified_int4 ) THEN
 	            trans = alg_regrid_code(cx_regrid_trans(idim,cx))
 	            IF ( trans(:4) .NE. unspecified_name4 ) THEN
 	              buff = buff(:mlen)//'@'//trans

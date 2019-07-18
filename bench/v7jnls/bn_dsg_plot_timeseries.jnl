@@ -1,0 +1,39 @@
+! bn_dsg_plot_timeseries.jnl
+! Line plots of tseries data
+
+
+use DSG_ERDDAP_pmelTao5daySst.nc
+
+! A subset using x/y/t  Label the key with IDs
+! Upper left labels reflect the subset
+set view upper
+plot/x=0:100/y=5:20/thick T_25
+
+! A subset in M
+set view lower
+plot/m=5:13/thick t_25
+
+frame/file=dsg_tseries_plot_1.gif
+
+! Plot an instance variable as a line in e direction
+plot t_25[t=@max]
+
+! Now USE/FEATURE= to access a trajectory dataset as timeseries data.
+! Note how upper-left labels adjust to show dimensions orthogonal to the plots
+
+cancel view
+cancel data/all
+
+! This is a trajectory set
+use dsg_cross_dateline
+show data
+set view ul
+plot/thick temp
+
+! Now reinitialize it as timeseries data.
+use/feature="timeseries" dsg_cross_dateline
+show data
+set view lower
+plot/thick/color temp
+
+frame/file=dsg_tseries_plot_2.gif

@@ -1,0 +1,45 @@
+! bn_dsg_if_exprns.jnl
+! Test computing expressions with IF
+! ACM 7/11/19
+
+! The data has a lot of missing values. Make sure those are handled
+! correctly
+
+use uwnd_dsg.nc
+
+! Defining masks  IF condition THEN 1
+
+let ugt = if uwnd_abs gt 6.   then 1
+let uge = if uwnd_abs ge 6.76 then 1
+list uwnd_abs, ugt, uge
+
+let ult = if uwnd_abs LT 6.   then 1
+let ule = if uwnd_abs LE 6.76 then 1
+list uwnd_abs, ult, ule
+
+let une = if uwnd_abs NE 6.76 then 1
+let ueq = if uwnd_abs EQ 6.76 then 1
+list uwnd_abs, une, ueq 
+
+
+! Now with ELSE another-variable
+
+let ugt = if uwnd_abs gt 6    then uwnd_abs else uwnd_mean
+let uge = if uwnd_abs ge 6.27 then uwnd_abs else uwnd_mean
+list uwnd_abs, ugt, uge
+
+let ult = if uwnd_abs LT 6    then uwnd_abs else uwnd_mean
+let ule = if uwnd_abs LE 6.27 then uwnd_abs else uwnd_mean
+list uwnd_abs, ult, ule
+
+let une = if uwnd_abs NE 5.8 then uwnd_abs else uwnd_mean
+let ueq = if uwnd_abs EQ 5.8 then uwnd_abs else uwnd_mean
+list uwnd_abs, une, ueq
+ 
+! expressions that replace missing data with a constant or variable
+
+let valid_else_100 = if uwnd_abs then uwnd_abs else 100
+let valid_else_lon = if uwnd_abs then uwnd_abs else longitude
+let eqval_else_100 = if uwnd_abs eq 5.8 then uwnd_abs else 100
+list uwnd_abs, valid_else_100, valid_else_lon, eqval_else_100
+

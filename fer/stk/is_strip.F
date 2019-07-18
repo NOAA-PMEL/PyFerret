@@ -78,9 +78,11 @@
 * V7   5/12 *acm* Union aggregations: DEFINE DATA/AGG/U
 * V702 11/16 *sh* Allow split/gather logic to be used on axis of a compressing
 *                 transform.
+* V720  5/17 *sh* support for DSG operations
 * V741 *acm* 5/18 Promoting global attributes to a variable in ensembles
 * V741 *acm* 6/18  Last bit of 1868: multi-D trans, if requested w/ some 
 *                  directions orthogonal to grid, those should be ignored
+* V751 *acm* 6/19 Remove unused declarations
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -93,6 +95,7 @@
 	include	'xalgebra.cmn'
 	include	'xax_speed.cmn'
         include 'xtm_grid.cmn_text'
+        include 'xdset_info.cmn_text'   ! DSG stuff
         include 'xfr_grid.cmn'
 
 * calling argument declarations:
@@ -100,15 +103,16 @@
 * RETURN 1 - goes back to strip off any remaining transformations
 
 * internal variable declarations:
-	LOGICAL	ITSA_MODULO_REGRID, TM_ITS_SUBSPAN_MODULO, NC_GET_ATTRIB,
-     .		NC_GET_ATTRIB_STRING, ITSA_MODULO_AXIS, TM_SAME_GRID_DEF,
-     .		SCALAR_GRID_LINE, 
+	LOGICAL	ITSA_MODULO_REGRID, TM_ITS_SUBSPAN_MODULO,
+     .		ITSA_MODULO_AXIS, TM_SAME_GRID_DEF,
+     .		SCALAR_GRID_LINE, TM_ITSA_DSG, ITSA_REGRID_FROM_DSG,
      .		itsa_uvar, modulo_dest_regrid, allatonce, attoutflag, 
-     .		got_it
+     .		got_it, its_dsg
 	INTEGER	CGRID_SIZE_MAX, CAXIS_LEN, CAXIS_MODLEN, CX_DIM_LEN, 
      .		AUX_AXIS_FROM_ARG, CGRID_AXIS, POTENT_SIZE, 
      .		ISUBSCR_CX, TM_AXES_REVERSED, CGRID_SIZE, MODULO_PARITY,
-     .		STR_SAME, TM_LENSTR1, KNOWN_GRID,
+     .		STR_SAME, TM_LENSTR1, KNOWN_GRID, 
+     .		TM_DSG_DSET_FROM_GRID, TM_DSG_OBS_GRID, TM_DSG_ORIENTATION,
      .		nrev, reversed(nferdims), idel,
      .		trans, grid, dset, lo_off, hi_off, aclass,
      .		lo_cx, hi_cx, big_cx, lo_isp, i, axis,
@@ -116,8 +120,8 @@
      .		nmod, nmodhi, npts, xlate, dup_cx, i4d,
      .          line, imemb, imemb_dset, grids_dset, len, ncomp,
      .		orig_grid, iline, attlen, maxlen, orig_cat, orig_var,
-     .		memb_dset, hi_cat, hi_var, hi_grid, agg_vlen, memb_vlen, 
-     .		slen, itrns, ndim
+     .		memb_dset, hi_cat, hi_var, hi_grid, agg_vlen, memb_vlen, slen,
+     .		orientation, itrns, ndim
 	INTEGER*8 available_mem, biggest_allowed
 	REAL*8	TM_WORLD, ww_given, ww_nrst
 	CHARACTER*128 VAR_CODE, agg_vname, memb_vname
@@ -139,6 +143,7 @@
 	modulo_dest_regrid = .FALSE.		! if regrid requires modulo
 	big_cx = lo_cx   ! initialize default. Used in compressed split/gather
 	trans  = trans_no_transform
+	its_dsg = TM_ITSA_DSG(grid)
 
 * set up a context buffer to be modified for various grids needed
 	CALL CREATE_NEW_CONTEXT( lo_cx, hi_cx, status )	! pushes stack
@@ -317,6 +322,34 @@ c	   CALL TRANSFER_CONTEXT( hi_cx, lo_cx )
 *-*-*-*-*-*-*-*-*-*-
 
 **************
+	ELSEIF ( its_dsg .AND. aclass.EQ.isact_class_trans) THEN
+
+* SET UP FOR A DSG TRANSFORMATION
+	   trans  = cx_trans( axis, lo_cx )
+	   is_act  ( lo_isp ) = isact_trans_code + trans
+	   is_phase( lo_isp ) = isphase_allatonce
+	   cx_trans    ( axis, hi_cx ) = trans_no_transform
+	   cx_trans_arg( axis, hi_cx ) = bad_val4
+* if a compressing transformation on the orientation axis 
+* (e.g. T=@AVE on a tSeries) then the source data (hi_cx) will be on the
+* DSG observation grid, whereas the result (lo_cx) is on the instance grid
+* see get_context_grid
+	   IF ( trans .GT. trans_compress_code ) THEN
+	      dset = TM_DSG_DSET_FROM_GRID(grid)
+	      orientation = dsg_orientation(dset)
+	      IF (axis .EQ. orientation) THEN
+* ... replace obs grid with instance grid
+*     FLESH_OUT_AXIS will insert the correct ss limits
+	         cx_grid(hi_cx) = TM_DSG_OBS_GRID(dset)
+	      ENDIF
+* ... set ss limits to full nfeature or nobs as the case may be
+	      CALL FLESH_OUT_AXIS( axis, hi_cx, status )
+	   IF ( status .NE. ferr_ok ) GOTO 5000
+	   ENDIF
+* no fleshing out of axes is needed -- always get full-dset limits and always
+* carry along the WW limits to use as constraints when working on the data
+
+**************
 	ELSEIF ( aclass .EQ. isact_class_trans) THEN
 
 * SET UP FOR A TRANSFORMATION
@@ -355,7 +388,6 @@ c	   CALL TRANSFER_CONTEXT( hi_cx, lo_cx )
      .	 .AND.  trans .NE. trans_interpolate ) GOTO 200   ! 2/90
 
 * possibly need different limits for component than for result
-
 	   IF ( grid .NE. unspecified_int4 ) THEN
 	      IF ( trans .LT. trans_compress_code ) THEN
 	         CALL OFFSET_SS( axis, lo_cx, lo_off, hi_off, status )
@@ -426,7 +458,17 @@ c	   CALL TRANSFER_CONTEXT( hi_cx, lo_cx )
 
 	ELSEIF( aclass .EQ. isact_class_regrid ) THEN
 * SET UP FOR REGRIDDING
-	   IF (cx_naux(lo_cx) .EQ. 0 ) THEN
+	   IF (its_dsg) THEN
+	      CALL REGRID_TO_DSG_LIMS( lo_cx, hi_cx, status )
+	      IF ( status .NE. ferr_ok ) GOTO 5000
+	      axis = TM_DSG_ORIENTATION(grid)   ! really any old value ...
+	      is_act ( lo_isp ) = isact_regrid
+	   ELSEIF (ITSA_REGRID_FROM_DSG(lo_cx)) THEN
+	      CALL REGRID_FROM_DSG_LIMS( lo_cx, hi_cx, status )
+	      IF ( status .NE. ferr_ok ) GOTO 5000
+	      axis = TM_DSG_ORIENTATION(grid)   ! really any old value ...
+	      is_act ( lo_isp ) = isact_regrid
+	   ELSEIF (cx_naux(lo_cx) .EQ. 0 ) THEN
 * ... normal regridding
 	      CALL REGRID_LIMS( lo_cx, hi_cx, axis, status, *6000 ) !ab ret->mod
 	      IF ( status .NE. ferr_ok ) GOTO 5000
@@ -613,11 +655,14 @@ c	   CALL TRANSFER_CONTEXT( hi_cx, lo_cx )
 * the required data is 100x100x25x100 - TOO BIG !!
 * Similarly, modulo regrids may involve source data greatly in excess
 * of the result
-	IF ( aclass.EQ.isact_class_trans
+! DSGTBD need to support split/gather on DSG regrids - temporarily bypassed
+	IF ( (aclass.EQ.isact_class_trans
      .		.AND. trans.GT.trans_compress_code
      .		.AND. trans.NE.trans_interpolate
-     . .OR.  aclass.EQ.isact_class_regrid
-     .		.AND. ITSA_MODULO_REGRID(lo_cx, axis)		) THEN
+     .		.AND. .NOT.its_dsg)
+     . .OR.  (aclass.EQ.isact_class_regrid
+     .		.AND. (its_dsg
+     .		  .OR. ITSA_MODULO_REGRID(lo_cx,axis)))		) THEN
 * ... create the context of the first chunk, if possible
 *     SETUP_GATHER may change nothing, or it may set up split/gather
 *     in hi_cx, axis and the is_* variables

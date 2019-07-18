@@ -58,6 +58,7 @@
 	include	'xvariables.cmn'
 	include	'xmem_subsc.cmn'
 	include	'xprog_state.cmn'
+	include	'xdset_info.cmn_text'
 
 * calling argument declarations:
 	INTEGER	idim, com_mr, com_cx, res_mr, res_cx
@@ -68,14 +69,17 @@
      .               m2lot:m2hit,m2loe:m2hie,m2lof:m2hif )
 
 * internal variable declarations:
-	LOGICAL	TM_ITS_SUBSPAN_MODULO, has_mod_void
+	LOGICAL	TM_ITS_SUBSPAN_MODULO, has_mod_void, TM_ITSA_DSG
 	INTEGER	TM_MODULO_LINE_DIM, CGRID_AXIS, 
+     .          TM_DSG_DSET_FROM_GRID, TM_DSG_NFEATURES, 
+     .          DO_FILL_AVE_DSG,
      .		i, j, k, l, m, n, ii, cnt, haf,
      .          lo_sub(nferdims), hi_sub(nferdims),
      .		ii_com, lo_com, hi_com, lo_com0, hi_com0,
-     .		lo_modlim, hi_modlim, nmod, nmod_prev, modlen
+     .		lo_modlim, hi_modlim, nmod, nmod_prev, modlen, 
+     .		dset, grid, nfeatures, maxobs, mr_list(2)
 
-	REAL	bad_res, sum, comp
+	REAL	bad_res, sum, comp, little_val, big_val
 
 * internal (convenience) equivalences
 	INTEGER	lo_s1, lo_s2, lo_s3, lo_s4, lo_s5, lo_s6,
@@ -95,6 +99,31 @@
 	haf = arg * .5
 	bad_res = mr_bad_data( com_mr )
 	nmod_prev = -99999
+
+* DSG-specific initialize
+
+	grid = mr_grid( com_mr )
+	IF (TM_ITSA_DSG(grid)) THEN 
+
+* DSG ragged array
+	   dset = TM_DSG_DSET_FROM_GRID(grid)
+	   nfeatures = TM_DSG_NFEATURES(grid)
+* ... get the length of the longest feature
+	   CALL DSG_COORD_LIMS(dset, pdsg_row_size, little_val, big_val)
+	   maxobs = big_val
+
+	   mr_list(1) = com_mr
+	   mr_list(2) = res_mr
+	   CALL NON_ARRAY_SUBSC( mr_list, 2 )
+	   CALL DSG_ARRAY_SUBSC( mr_list, 2, dsg_orientation(dset) )
+
+	   DO_FILL_AVE = DO_FILL_AVE_DSG ( 
+     .				idim, haf, dset, nfeatures, maxobs,
+     .				com, com_mr, com_cx,
+     .				res, res_mr, res_cx)
+
+	ELSE  !! not dsg
+
 
 * compute limits within which calculation is straightforward
 	DO 10 ii = 1, nferdims
@@ -401,6 +430,9 @@
  620	   CONTINUE
 
 	ENDIF
+
+        ENDIF  !!  IF (TM_ITSA_DSG(grid))
+
 
 * always success
 	DO_FILL_AVE = ferr_ok

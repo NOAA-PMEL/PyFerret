@@ -46,7 +46,8 @@ C V7.1 *acm* 8/2016 Ticket 2466: Graticule lines too dense
 * *acm* - 1/17   Fix too-many labels on tic marks. Add year to Month-Day labels
 * *acm* - 3/18   Issue #1856 Additions for high-res time axes; e.g. plot a minute of data
 * V74  *acm* -11/18 Issue #1900 Fixes for tic marks and PLOT/OVERLAY with short-interval time
-
+* V745 *acm* 3/19 Draw tic marks on top of any graticule lines so 
+*                 dashes or color are covered up by the tic mark
 C
 C**
 C**    @(#)tayis4.f	1.1   12/09/15
@@ -111,7 +112,7 @@ C
         REAL hgrat(4,2)        ! line type: 0=tics only, <0=line, >0=dash lengths 
         INTEGER hcolor(*)      ! pen number for graticule lines
 	INTEGER hcolor0	       ! pen number to restore
-        LOGICAL hline          ! If true, do the lines across.
+        LOGICAL hline, do_line ! If true, do the lines across.
         LOGICAL solid1, solid2   ! solid lines across at tics
         LOGICAL dashed1, dashed2 ! dashed lines across at tics
         INTEGER ltic, color1, color2
@@ -198,6 +199,8 @@ C set up for plotting graticules across at tic marks
      .            hgrat(3,1).GT.0 .OR.  hgrat(4,1).GT.0 )
         dashed2 = (hgrat(1,2).GT.0 .OR. hgrat(2,2).GT.0 .OR.  
      .            hgrat(3,2).GT.0 .OR.  hgrat(4,2).GT.0 )
+
+     	do_line = hline
 
         color1 = hcolor(1)
         color2 = hcolor(2)
@@ -354,12 +357,15 @@ C     LOOP:  Draw the axis line, tics, and labels
 
    10 CALL PLOT(X,T,0,0)
       IF ( interrupted ) RETURN		! TMAP interrupt
+      
+*    do not draw a graticule line along the upper axis
+	   do_line = ( ITIME3(13:14)// ITIME3(1:10).LT.
+     .	              ITIME2(13:14)//ITIME2(1:10)) 
 
 c        Any small tics?
       DO 20 I=1,NSMTIC
-              CALL PLOTT7(X,T+FLOAT(I)*TDIST,XFACT,TFACT,1,INML)
 
-              IF ((solid2.OR.dashed2) .AND. hline) THEN ! make line across
+              IF ((solid2.OR.dashed2) .AND. do_line) THEN ! make line across
                  CALL COLOR(color2)
                  IF (dashed2) THEN
                     CALL DASHSZ(dash2_1,dash2_2,dash2_3,dash2_4)
@@ -371,9 +377,14 @@ c        Any small tics?
                  CALL COLOR(color0)
                  CALL VECTRS
               ENDIF
+              CALL PLOTT7(X,T+FLOAT(I)*TDIST,XFACT,TFACT,1,INML)
 
    20 CONTINUE
       CALL TIME3(ITIME,IYR,IMON,IDAY,IHR,IMIN,ISEC,ICEN)
+
+*    do not draw a graticule line along the upper axis
+	   do_line = ( ITIME3(13:14)// ITIME3(1:10).LT.
+     .	              ITIME2(13:14)//ITIME2(1:10)) 
 	  
       hvytic = (MOD(imin,labint) .EQ. 0)
       IF (heavy_at_labels) THEN
@@ -383,9 +394,8 @@ c        Any small tics?
       ENDIF
 
       IF(hvytic)THEN
-             CALL PLOTT7(X,T+TIC,XFACT,TFACT,1,IHVY)
 	
-              IF ((solid1.OR.dashed1) .AND. hline) THEN ! make line across
+              IF ((solid1.OR.dashed1) .AND. do_line) THEN ! make line across
                  CALL COLOR(color1)
                  IF (dashed1) THEN
                     CALL DASHSZ(dash1_1,dash1_2,dash1_3,dash1_4)
@@ -397,13 +407,13 @@ c        Any small tics?
                  CALL COLOR(color0)
                  CALL VECTRS
               ENDIF
+             CALL PLOTT7(X,T+TIC,XFACT,TFACT,1,IHVY)
       
       ELSE
          IF (MOD(imin,ticint).EQ.0) THEN
-            CALL PLOTT7(X,T+TIC,XFACT,TFACT,1,INML)
 		    
 c           graticule line at tic
-            IF ((solid2.OR.dashed2) .AND. hline) THEN ! make line across
+            IF ((solid2.OR.dashed2) .AND. do_line) THEN ! make line across
                CALL COLOR(color2)
                IF (dashed2) THEN
                   CALL DASHSZ(dash2_1,dash2_1,dash2_3,dash2_4)
@@ -415,6 +425,7 @@ c           graticule line at tic
                CALL COLOR(color0)
                CALL VECTRS
             ENDIF
+            CALL PLOTT7(X,T+TIC,XFACT,TFACT,1,INML)
 
          ELSE 
             CALL PLOT(X,T+TIC,1,0)

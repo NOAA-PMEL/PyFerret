@@ -1,0 +1,44 @@
+! bn_regrid_from_dsg.jnl
+
+! test regridding from a DSG obs variable to a uniform orthogonal grid
+
+! DSGTBD: as of 5/2017 there is more to test.  This tests only 
+!    - time series dsg
+!    - algebra involving the result gridded variable with other grids
+!      (this grid still possesses the special E axis of the DSG) 
+
+use DSG_ERDDAP_pmelTao5daySst.nc
+
+define axis/t="15-jan-2017:12:00":21-apr-2017:10/unit=days tuniform ! hit L=1
+
+! basic, no constraints
+list/e=1/t=15-jan-2017:20-jan-2017 t_25, L[g=t_25] ! note result on first tstep
+list/prec=6 t_25[gt=tuniform]
+canc mem/all
+
+! compute only a subset of the gridded result
+set mode diag
+list/prec=6/e=29:34/l=3:7 t_25[gt=tuniform]
+canc mem/all
+
+! confirm cache hits are occuring
+load t_25[gt=tuniform]
+list/prec=6/e=29:34/l=5:8 t_25[gt=tuniform]
+set mode/last diag
+
+! now some operations where the numerical results are apparent
+! to confirm that results are right
+define axis/t="1-apr-2017:12:00":15-apr-2017:1/unit=days tapril
+LET feature_l = 0*t_25 + L   ! grid of L implicit, as with classic grids
+list/e=29:34/t=1-apr-2017:15-apr-2017 feature_l  ! a chunk from the middle
+list/e=29:34 feature_l[gt=tapril]
+
+! TSEQUENCE as an easy way to get out of DSG-ness
+! just proving that it works at this stage ...
+stat TSEQUENCE(t_25)
+stat TSEQUENCE(T[g=t_25])
+
+! DSGTBD: a good benchmark test/demo:
+!   - sort and de-dup the T values
+!   - create a time axis that has all of the tsteps of the DSG
+!   - regrid to this time axis  

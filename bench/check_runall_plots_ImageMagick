@@ -1,0 +1,92 @@
+#!/bin/csh
+# script to check plot files (.png, .pdf) created after a run of the 
+# benchmark routine against master metafiles. 
+# kob  10/97
+# ...
+# acm  
+# acm  10/18 for pyferret
+
+# ALSO NOTE THE compare utility (on stout)
+# Here is a way to compare two images by subtracting them using ImageMagick's
+# "composite" utility.
+# 
+#   composite -compose subtract input1.png input2.png output.png
+# 
+# Pixels which are the same in both input images will be black in the output
+# image.
+
+# Clean up anything left from a previous check_metafiles_ImageMagick
+
+rm -f *.diff.png*
+rm -f *.diff.pdf*
+
+set png_files = `ls *.png`
+set pdf_files = `ls *.pdf`
+set num_png_files = `ls -l *.png | wc -l `
+set num_pdf_files = `ls -l *.pdf | wc -l `
+   
+set err_png = 0
+set total_png_files = 26
+if ($num_png_files < $total_png_files ) then
+	echo "too fiew png files written"
+	set err_png = 1
+endif
+
+foreach plt_file ($png_files)
+    set size = `ls -l $plt_file | awk '{print $5}'`
+    if (-e runall_master_plots/$plt_file) then
+       set size2 = `ls -l runall_master_plots/$plt_file | awk '{print $5}'`
+       if ("$size" != "$size2") then
+          echo "plt files differ $plt_file size $size runall_master_plots/ size $size2" 
+
+          compare runall_master_plots/$plt_file $plt_file $plt_file.diff.png
+          display runall_master_plots/$plt_file & 
+          display $plt_file & 
+          display $plt_file.diff.png
+
+          set err_png = 1
+       endif
+    else
+       echo "file not found runall_master_plots/$plt_file"
+       set err_png = 1
+    endif    
+end
+   
+set err_pdf = 0
+set total_pdf_files = 17
+if ($num_pdf_files < $total_pdf_files ) then
+	echo "too fiew pdf files written"
+	set err_pdf = 1
+endif
+
+foreach plt_file ($pdf_files)
+    set size = `ls -l $plt_file | awk '{print $5}'`
+    set size2 = `ls -l runall_master_plots/$plt_file | awk '{print $5}'`
+    if ("$size" != "$size2") then
+       echo "plt files differ $plt_file size $size runall_master_plots/ size $size2" 
+
+       compare runall_master_plots/$plt_file $plt_file $plt_file.diff.pdf
+       display runall_master_plots/$plt_file & 
+       display $plt_file & 
+       display $plt_file.diff.pdf
+
+       set err_pdf = 1
+    endif    
+end
+
+if ($err_png) then
+	echo "CHECK pdf FILES - THERE HAS BEEN AN ERROR"
+else
+	echo "    pdf files look good....."
+endif 
+if ($err_pdf) then
+	echo "CHECK pdf FILES - THERE HAS BEEN AN ERROR"
+else
+	echo "    pdf files look good....."
+endif
+
+
+
+# clean up
+rm -f *.diff.png*
+rm -f *.diff.pdf*

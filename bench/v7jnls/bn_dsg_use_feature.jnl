@@ -1,0 +1,98 @@
+! bn_dsg_use_feature
+! Tests of use/FEATURE=
+! 7/2018  Save a plot
+! 9/2018  Allow USE/Feature= on open datasets. If the new
+!         feature type will work for the dataset, it's re-initialized.
+
+! This dataset has featuretype=Trajectory but it also has a time 
+! coordinate variable. It can be treated as a timeseries dataset
+
+use dsg_cross_dateline.nc
+show data
+
+! plots as a set of paths
+set v upper
+plot/thick/title="native trajectories" temp
+
+! OR, look at as a timeseries.  Can specify this change on an open dataset
+use/feature=timeseries 1
+show data
+
+! plots as a set of timeseries
+set v lower
+plot/thick/title="/feature=timeseries" temp
+
+frame/file=dsg_use_feature.gif
+
+cancel data/all
+
+! use/feature with its native featuretype is no-op
+
+use/feature=Trajectory dsg_cross_dateline.nc
+show data
+
+! use/feature=none ignores DSG attributes and treats it as
+! a classic gridded file
+
+use/feature=none dsg_cross_dateline.nc
+show data
+
+! intentional errors:
+! This is an error: there is no depth coordinate data
+
+cancel data/all
+set mode ignore
+use/feature=profile dsg_cross_dateline.nc
+
+! A timeseries dataset can't be used as a trajectory (unless
+! there were lon/lat along the obs axis)
+
+use DSG_ERDDAP_pmelTao5daySst
+show data
+
+! This is an error
+use/feature=trajectory DSG_ERDDAP_pmelTao5daySst
+
+! but the dataset is still open from the earlier initializatin
+show data
+
+cancel data/all
+
+! Intentionally incomplete files. These are rejected as a DSG
+! coaching suggests setting /feature=none
+
+! Missing a latitude coordinate. 
+use dsg_bad_coord
+sh dat
+can dat/all
+
+! Missing the attribute on the RowSize variable
+use dsg_bad_atts1
+sh dat
+can dat/all
+
+! Missing the attribute on the feature-id variable
+use dsg_bad_atts2
+sh dat
+
+can dat/all
+
+
+set mode /last ignore
+
+! Multiple variables with an axis attribute and units of lon/ lat.
+! Here lon and lon360 variables - using the wrong one may be harmless
+! the lat and yindex variables are different, so the grid will be wrong.
+! This is handled as a warning.  
+
+use dsg_multi_coord
+
+! lats is latitude values, but yindex got used for latitude
+list sst, lons, lon360, yindex, lats
+
+cancel data/all
+
+! use/feature on a non-dsg dataset issues a warning
+use/feature=trajectory coads_climatology
+show data
+

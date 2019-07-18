@@ -123,6 +123,7 @@ echo " " > $ncdump_file
 
 #set up external functions search path
 setenv FER_EXTERNAL_FUNCTIONS $efdir
+setenv PYFER_EXTERNAL_FUNCTIONS $efdir
 
 # set up the binary unformatted stream test file as a machine-specific link
 set machine_stream = "data/stream10by5_{$machine}.unf"
@@ -267,6 +268,10 @@ echo  "Ended at $now"
 echo "open test_trans.html in a browser to test transparency option in gif mode. The continents should be gray"
 # save size of log file as part of the history record
 ls -l $log_file >>&  $bench_hist
+
+#let's check the plt and gif and ps files to make sure they look okay
+echo "Checking PNG and PDF files......."
+./check_runall_plots_ImageMagick
 
 # make a clean version of the log file that can easily be compared
 ./clean_draconian $log_file

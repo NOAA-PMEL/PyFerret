@@ -43,6 +43,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include "fmtprotos.h"
+#include <string.h>
+#include "fmtprotos.h"
 #include "deleted_list.h"
 #include "FerMem.h"
 

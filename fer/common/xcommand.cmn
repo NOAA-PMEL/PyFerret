@@ -63,6 +63,7 @@
 * V722 *kms* 10/17 Remove threddsBrowser (too big, outdated, and unused)
 * V740 *acm*  2/18 Issue 966: LET/LIKE= Get attributes from another variable
 * V740 *kms*  3/18 Add space for PyFerret PLOT/HIGHLIGHT=
+* V74+ *acm*  9/18 Add aliases FMASK for SET DATA/FMASK and CLEARMASK for CANCEL DATA/FMASK
 
 * PARAMETERS are used to store numbers of subcommands and qualifiers for use
 * in BLOCK DATA XCOMMAND_DATA.  They are also used to compute pointers into
@@ -236,7 +237,7 @@
      .			nqual3d = 3, nqual_at3e = nqual_at3d + nqual3d,	!'MEMO'
      .			nqual3e = 1, nqual_at3f = nqual_at3e + nqual3e,	!'EXPR'
      .			nqual3f = 7, nqual_at3g = nqual_at3f + nqual3f,	!'LIST'
-     .			nqual3g = 2, nqual_at3h = nqual_at3g + nqual3g,	!'DATA'
+     .			nqual3g = 3, nqual_at3h = nqual_at3g + nqual3g,	!'DATA'
      .			nqual3h = 1, nqual_at3i = nqual_at3h + nqual3h,	!'MODE'
      .			nqual3i = 1, nqual_at3j = nqual_at3i + nqual3i,	!'MOVI'
      .			nqual3j = 1, nqual_at3k = nqual_at3j + nqual3j,	!'VIEW'
@@ -447,7 +448,7 @@
      .			total_num_commands	= 30,
      .			total_num_subcommands	= nsub_at31 - 1,
      .			total_num_qualifiers	= nqual_at31a - 1,
-     .	                num_predefined_alias    = 25,
+     .	                num_predefined_alias    = 27,
      .			max_queries		= 50 )
 
 * declarations

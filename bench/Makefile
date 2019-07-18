@@ -27,7 +27,7 @@ check_noremote:
 .PHONY: run_tests
 run_tests:
 	@( \
-	    ferret_exe=/home/users/ansley/ferret_distributions/rhel6_64/bin/ferret ;\
+	    ferret_exe=`which ferret` ;\
 	    if [ $$ferret_exe = "" -o "$(FER_DIR)" = "" ] ; then \
 	        echo "*** Ferret must be installed and the ferret_paths script must have sourced for these tests ***" ;\
 	        exit 1 ;\

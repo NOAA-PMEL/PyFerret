@@ -183,8 +183,6 @@
 	ENDIF
 	axes      = qual_given( slash_shad_axes      ).GT.0
 
-	axes      = qual_given( slash_shad_axes      ).GT.0
-
 	is_logh   = .FALSE.	  ! Not valid quals
 	is_logv   = .FALSE.	  ! for shade
         spectrum  = sp .GT. 0 

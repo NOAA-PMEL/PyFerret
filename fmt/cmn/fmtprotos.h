@@ -31,6 +31,7 @@ void FORTRAN(cd_read_scale)(int *cdfid, int *varid, int *dims, DFTYPE *offset, D
 void FORTRAN(cd_read_sub)(int *cdfid, int *varid, int *dims, 
                           int *tmp_start, int *tmp_count, int *tmp_stride, int *tmp_imap, 
                           char **dat, int *permuted, int *strided, int *cdfstat);
+void FORTRAN(cd_rd_str_1_sub)(int *cdfid, int *varid, int *tmp_start, char* buff, int *slen, int *cdfstat);
 void FORTRAN(cd_write_att_dp_sub)(int *cdfid, int *varid, char* attname, int *attype, int *nval, void *val, int *status);
 void FORTRAN(cd_write_att_sub)(int *cdfid, int *varid, char* attname, int *attype, int *nval, void *val, int *status);
 void FORTRAN(cd_write_var_sub)(int *cdfid, int *varid, int *vartyp, int *dims, 
@@ -67,12 +68,16 @@ char *FORTRAN(tm_c_ver_name)(char *name, char *next_name, char *path);
 int  FORTRAN(tm_check_inf)(DFTYPE *src);
 int  FORTRAN(tm_check_nan)(DFTYPE *src);
 void FORTRAN(tm_ep_time_convrt)(int *epjday, int *epmsec, int *mon, int *day, int *yr, int *hour, int *min, DFTYPE *sec);
+void FORTRAN(tm_free_dyn_mem)(double *lm);
 int  FORTRAN(tm_ftoc_readline)(char *prompt, char *buff);
+void FORTRAN(tm_get_lm_mem)(int *index, long *alen, int *status);
 void FORTRAN(tm_get_strlen)(int *len_str, int *whole_len, char *in_string);
 void FORTRAN(tm_make_relative_ver)(char *curr_ver, char *fname, char *path, int *real_ver);
 void FORTRAN(tm_match_captial_name)(char *test_name, char *model_name, int *len_str, int *result);
+void FORTRAN(tm_nullify_lm)(int *lm);
 void FORTRAN(tm_number_sub)(char *string, int *result);
 void FORTRAN(tm_set_free_event)(int *n);
+void FORTRAN(tm_store_lm_ptr)(int *index, long *alen, double *pointer);
 double FORTRAN(tm_world_recur)(int *isubscript, int *iaxis, int *where_in_box, int *max_lines, 
                                double line_mem[], int line_parent[], int line_class[], int line_dim[], 
                                double line_start[], double line_delta[], int line_subsc1[], 
@@ -80,74 +85,74 @@ double FORTRAN(tm_world_recur)(int *isubscript, int *iaxis, int *where_in_box, i
 int  FORTRAN(url_encode)(char *str, char *outstr, int *outlen);
 
 /* defined in NCF_Util.c */
-int  FORTRAN(ncf_inq_ds)( int *, int *, int *, int *, int *);
-int  FORTRAN(ncf_inq_ds_dims)( int *, int *, char *, int *, int *);
-int  FORTRAN(ncf_inq_var) (int *, int *, char *, int *, int *, int *, int *, int *, int *, int * );
+int  FORTRAN(ncf_inq_ds)(int *, int *, int *, int *, int *);
+int  FORTRAN(ncf_inq_ds_dims)(int *, int *, char *, int *, int *);
+int  FORTRAN(ncf_inq_var)(int *, int *, char *, int *, int *, int *, int *, int *, int *, int * );
 
-int  FORTRAN(ncf_inq_var_att)( int *, int *, int *, char *, int *, int *, int *, int *);
+int  FORTRAN(ncf_inq_var_att)(int *, int *, int *, char *, int *, int *, int *, int *);
 
-int  FORTRAN(ncf_get_dsnum)( char * );
-int  FORTRAN(ncf_get_dsname)( int *, char *);
-int  FORTRAN(ncf_get_dim_id)( int *, char *);
+int  FORTRAN(ncf_get_dsnum)(char * );
+int  FORTRAN(ncf_get_dsname)(int *, char *);
+int  FORTRAN(ncf_get_dim_id)(int *, char *);
 
-int  FORTRAN(ncf_get_var_name)( int *, int *, char *, int *);
-int  FORTRAN(ncf_get_var_id)( int *, int*, char *);
-int  FORTRAN(ncf_get_var_id_case)( int *, int*, char *);
-int  FORTRAN(ncf_get_var_axflag)( int *, int *, int *, int *);
-int  FORTRAN(ncf_get_var_attr_name) (int *, int *, int *, int *, char*);
-int  FORTRAN(ncf_get_var_attr_id) (int *, int *, char* , int*);
-int  FORTRAN(ncf_get_var_attr_id_case) (int *, int *, char* , int*);
-int  FORTRAN(ncf_get_var_attr) (int *, int *, char* , char* , int *, double *);
-int  FORTRAN(ncf_get_attr_from_id) (int *, int *, int * , int *, double* );
+int  FORTRAN(ncf_get_var_name)(int *, int *, char *, int *);
+int  FORTRAN(ncf_get_var_id)(int *, int*, char *);
+int  FORTRAN(ncf_get_var_id_case)(int *, int*, char *);
+int  FORTRAN(ncf_get_var_axflag)(int *, int *, int *, int *);
+int  FORTRAN(ncf_get_var_attr_name)(int *, int *, int *, int *, char*);
+int  FORTRAN(ncf_get_var_attr_id)(int *, int *, char* , int*);
+int  FORTRAN(ncf_get_var_attr_id_case)(int *, int *, char* , int*);
+int  FORTRAN(ncf_get_var_attr)(int *, int *, char* , char* , int *, double *);
+int  FORTRAN(ncf_get_attr_from_id)(int *, int *, int * , int *, double* );
 
-int  FORTRAN(ncf_get_var_outflag) (int *, int *, int *);
-int  FORTRAN(ncf_get_var_outtype) (int *, int *, int *);
-int  FORTRAN(ncf_get_var_type) (int *, int *, int *);
-int  FORTRAN(ncf_get_var_uvflag) (int *, int *, int *);
+int  FORTRAN(ncf_get_var_outflag)(int *, int *, int *);
+int  FORTRAN(ncf_get_var_outtype)(int *, int *, int *);
+int  FORTRAN(ncf_get_var_type)(int *, int *, int *);
+int  FORTRAN(ncf_get_var_uvflag)(int *, int *, int *);
 
-int  FORTRAN(ncf_init_uvar_dset)( int *);
-int  FORTRAN(ncf_init_uax_dset)( int *);
+int  FORTRAN(ncf_init_uvar_dset)(int *);
+int  FORTRAN(ncf_init_uax_dset)(int *);
 void FORTRAN(ncf_datasets_list_clear)(void);
-int  FORTRAN(ncf_add_dset)( int *, int *, char *, char *);
-int  FORTRAN(ncf_init_other_dset)( int *, char *, char *);
-int  FORTRAN(ncf_delete_dset)( int *);
-int  FORTRAN(ncf_delete_var_att)( int *, int *, char *);
-int  FORTRAN(ncf_delete_var)( int *, char *);
+int  FORTRAN(ncf_add_dset)(int *, int *, char *, char *);
+int  FORTRAN(ncf_init_other_dset)(int *, char *, char *);
+int  FORTRAN(ncf_delete_dset)(int *);
+int  FORTRAN(ncf_delete_var_att)(int *, int *, char *);
+int  FORTRAN(ncf_delete_var)(int *, char *);
 
-int  FORTRAN(ncf_add_var)( int *, int *, int *, int *, char *, char *, char *, double *);
-int  FORTRAN(ncf_add_coord_var)( int *, int *, int *, int *, char *, char *, double *);
+int  FORTRAN(ncf_add_var)(int *, int *, int *, int *, char *, char *, char *, double *);
+int  FORTRAN(ncf_add_coord_var)(int *, int *, int *, int *, char *, char *, double *);
 
-int  FORTRAN(ncf_add_var_num_att)( int *, int *, char *, int *, int *, int *, DFTYPE *);
-int  FORTRAN(ncf_add_var_num_att_dp)( int *, int *, char *, int *, int *, int *, double *);
-int  FORTRAN(ncf_add_var_str_att)( int *, int *, char *, int *, int *, int *, char *);
+int  FORTRAN(ncf_add_var_num_att)(int *, int *, char *, int *, int *, int *, DFTYPE *);
+int  FORTRAN(ncf_add_var_num_att_dp)(int *, int *, char *, int *, int *, int *, double *);
+int  FORTRAN(ncf_add_var_str_att)(int *, int *, char *, int *, int *, int *, char *);
 
-int  FORTRAN(ncf_rename_var)( int *, int *, char *);
-int  FORTRAN(ncf_rename_dim)( int *, int *, char *);
+int  FORTRAN(ncf_rename_var)(int *, int *, char *);
+int  FORTRAN(ncf_rename_dim)(int *, int *, char *);
 
-int  FORTRAN(ncf_repl_var_att)( int *, int *, char *, int *, int *, DFTYPE *, char *);
-int  FORTRAN(ncf_repl_var_att_dp)( int *, int *, char *, int *, int *, double *, char *);
-int  FORTRAN(ncf_set_att_flag)( int *, int *, char *, int *);
-int  FORTRAN(ncf_set_var_out_flag)( int *, int *, int *);
-int  FORTRAN(ncf_set_var_outtype)( int *, int *, int *);
+int  FORTRAN(ncf_repl_var_att)(int *, int *, char *, int *, int *, DFTYPE *, char *);
+int  FORTRAN(ncf_repl_var_att_dp)(int *, int *, char *, int *, int *, double *, char *);
+int  FORTRAN(ncf_set_att_flag)(int *, int *, char *, int *);
+int  FORTRAN(ncf_set_var_out_flag)(int *, int *, int *);
+int  FORTRAN(ncf_set_var_outtype)(int *, int *, int *);
 int  FORTRAN(ncf_set_axdir)(int *, int *, int *);
 int  FORTRAN(ncf_transfer_att)(int *, int *, int *, int *, int *);
 
-int  FORTRAN(ncf_init_agg_dset)( int *, char *);
-int  FORTRAN(ncf_add_agg_member)( int *, int *, int *);
-int  FORTRAN(ncf_get_agg_count)( int *, int *);
-int  FORTRAN(ncf_get_agg_member)( int *, int *, int *);
-int  FORTRAN(ncf_get_agg_var_info)( int *, int *, int *, int *, int *, int *, int *, int *);
-int  FORTRAN(ncf_put_agg_memb_grid)( int *, int *, int *, int *);
+int  FORTRAN(ncf_init_agg_dset)(int *, char *);
+int  FORTRAN(ncf_add_agg_member)(int *, int *, int *);
+int  FORTRAN(ncf_get_agg_count)(int *, int *);
+int  FORTRAN(ncf_get_agg_member)(int *, int *, int *);
+int  FORTRAN(ncf_get_agg_var_info)(int *, int *, int *, int *, int *, int *, int *, int *);
+int  FORTRAN(ncf_put_agg_memb_grid)(int *, int *, int *, int *);
 
 /* uvar grid management functions */
-int  FORTRAN(ncf_free_uvar_grid_list)( int *, int *);
-int  FORTRAN(ncf_set_uvar_grid)( int *, int *, int *, int *, int *);
-int  FORTRAN(ncf_get_uvar_grid)( int *, int *, int *, int *, int *);
-int  FORTRAN(ncf_set_uvar_aux_info)( int *, int *, int *, int *, int *);
-int  FORTRAN(ncf_get_uvar_aux_info)( int *, int *, int *, int *, int *);
-int  FORTRAN(ncf_get_uvar_grid_list_len)( int *, int *, int *);
-int  FORTRAN(ncf_delete_uvar_grid)( int *, int *, int *);
-int  FORTRAN(ncf_next_uvar_grid_in_list)( int *, int *, int *, int *);
+int  FORTRAN(ncf_free_uvar_grid_list)(int *, int *);
+int  FORTRAN(ncf_set_uvar_grid)(int *, int *, int *, int *, int *);
+int  FORTRAN(ncf_get_uvar_grid)(int *, int *, int *, int *, int *);
+int  FORTRAN(ncf_set_uvar_aux_info)(int *, int *, int *, int *, int *);
+int  FORTRAN(ncf_get_uvar_aux_info)(int *, int *, int *, int *, int *);
+int  FORTRAN(ncf_get_uvar_grid_list_len)(int *, int *, int *);
+int  FORTRAN(ncf_delete_uvar_grid)(int *, int *, int *);
+int  FORTRAN(ncf_next_uvar_grid_in_list)(int *, int *, int *, int *);
 
 /* Fortran functions called by C functions */
 int  FORTRAN(free_time)(void);

@@ -2,7 +2,7 @@
 ! 4/29/19 ACM
 ! See issue 1927. Error parsing the grave-accent expr 
 ! when a previous command had qualifiers
-exit/script
+
 let obs_yr1 = 1880
 let obs_yr2 = 2014
 

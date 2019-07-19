@@ -65,8 +65,7 @@
 	INTEGER*4	gvn_len, tst_len, istat, ic
 	CHARACTER	lname*128, c*1
 
-* initiaslize
-	gvn_len  = TM_LENSTR1(lname)  ! ? why is this here? length of prev. value...
+* initialize
 	dup_name = .FALSE.
 	dup_guts = .FALSE.
 	lname    = line_name(gvn)

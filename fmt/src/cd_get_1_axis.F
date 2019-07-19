@@ -220,6 +220,7 @@
 * v7445*acm*  4/19 Issue 334: If there was a point_spacing = "even" attr, do more checking.
 *                  But, if they've said USE/REGULART then go ahead and treat it as regular.
 * v7445*acm*  4/19 Fix the calls to TM_SCALE 
+* V7.51 *acm* 5/2019: Issue 1934: error with Epic file where east lons were treated as west
 *
 * argument definitions:
 *       cdfid    - netCDF id number for already opened CDF file  (to go away with new attr. hanling)
@@ -679,12 +680,17 @@ c           IF ( status .NE. merr_ok ) GOTO 1000        ! 3/99 soft error
             west_lon = .TRUE.                        ! convert encodings below
       ENDIF
 
-      west_lon = west_lon 
+* If there is a 'positive' attribute, see if it indicates west.
+
+
+      IF (got_it) THEN
+       west_lon = west_lon 
      .  .OR.    ( line_direction(iaxis) .EQ. 'WE'
      .      .AND. TM_HAS_STRING(buff,'west') )
      .  .OR.    ( its_epic
      .      .AND. (INDEX(vupcase, 'LON') .GT. 0)
      .      .AND. .NOT.TM_HAS_STRING(buff,'east') )
+      ENDIF
 
 * was a regular time axis forced on us by the user?
       IF (tregular) THEN 
@@ -993,7 +999,7 @@ c           IF ( status .NE. merr_ok ) GOTO 1000        ! 3/99 soft error
            secs1590 = TM_SECS_FROM_BC (GREGORIAN, 1590,1,1,0,0,0,status)
             IF ( status .NE. merr_ok ) GOTO 5900
 
-* ... correct axis if crosses 1590 threshhold
+* ... correct axis if crosses 1590 threshold
            IF (secs2firststep .GT. secs1590) THEN
               line_t0(iaxis) = '30-DEC-0000 00:00:00'
               line_shift_origin(iaxis) = .TRUE.

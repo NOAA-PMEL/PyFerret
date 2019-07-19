@@ -1,25 +1,5 @@
-/*
- * use gcc -c tm_nullify_lm.c
- *
- * set the F90 array pointer to null
- *
- * V72 1/17 *sh* -- dynamic line memory management
- *
- */
-
-
 #include <stdlib.h>
-/*  the relevant definition of "FORTRAN" pulled from
- *   #include "../common/ferret.h"
- */
-#ifndef FORTRAN
-#ifdef NO_ENTRY_NAME_UNDERSCORES
-#define FORTRAN(a) a
-#else
-#define FORTRAN(a) a##_
-#endif
-#endif
-
+#include "fmtprotos.h"
 
 void FORTRAN(tm_nullify_lm)( int *lm )
 

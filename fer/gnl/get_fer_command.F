@@ -1,4 +1,4 @@
-	SUBROUTINE GET_FER_COMMAND(  called_string, status, * )
+	SUBROUTINE GET_FER_COMMAND( called_string, status, * )
 
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -125,7 +125,7 @@
 	LOGICAL re_verify, do_verify, arg1_quoted,
      .		pure_comment, appending_cmnd 
 	INTEGER	TM_LENSTR, TM_LENSTR1,
-     .		iqual, ilist, cmnd_len, double_eof,
+     .		iqual, ilist, cmnd_len, error_count,
      .          has_more, i, cmnd_len_w_cmnt, i1, i2
 	CHARACTER prefix*5, raw_cmnd_buff*2048
 	CHARACTER symbuff*32, scriptname*512
@@ -155,7 +155,7 @@
 
 * initialize
 	gui_status = ferr_ok	! start w/ a clean bill o' health
-	double_eof = 0
+	error_count = 0
 	max_context = max_noframe_context  ! 2/2014
 	len_cmnd_copy = 0
 	appending_cmnd = .FALSE.
@@ -206,6 +206,7 @@
 	   cmnd_len_w_cmnt = TM_LENSTR( cmnd_buff )
 
 	ELSE
+
 * operator sitting at his keyboard
 !	   WRITE (ttout_lun,3000) prompt(1:prompt_len)
 ! 3000	   FORMAT (1X,A,$)	! vms
@@ -213,18 +214,19 @@
 !	   READ  ( ttin_lun,'(A)',END=2000 ) cmnd_buff
 !	   cmnd_len_w_cmnt = TM_LENSTR( cmnd_buff )
 
-! check for multiple ^D's from the keyboard (or EOF on stdin redirect)
-	   double_eof = double_eof + 1
-	   IF (double_eof .GT. 2) STOP       ! 1/18/95
-
-* ... gnu readline with a FORTRAN jacket
-	   IF ( appending_cmnd ) THEN
+           error_count = error_count + 1
+           IF (error_count .GT. 2) THEN
+* orderly shutdown on multiple errors
+              cmnd_buff = 'EXIT /PROGRAM'
+           ELSE IF ( appending_cmnd ) THEN
               CALL TM_FRIENDLY_READ('...? ',cmnd_buff,*20)
-	   ELSE
+           ELSE
               CALL TM_FRIENDLY_READ(prompt(:prompt_len),cmnd_buff,*20)
-	   ENDIF
-	   cmnd_len_w_cmnt = TM_LENSTR( cmnd_buff )
-	   double_eof = 0	! in case comment or blank line returns here
+           ENDIF
+* clear interrupted if Ctrl-C was entered while typing command
+           INTERRUPTED = .FALSE.
+           cmnd_len_w_cmnt = TM_LENSTR( cmnd_buff )
+           error_count = 0      ! in case comment or blank line returns here
 
 	ENDIF
 

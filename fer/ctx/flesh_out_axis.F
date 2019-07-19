@@ -133,7 +133,6 @@
 	status = ferr_ok
 	dsgness = DSG_WHATS_IT(grid)
 	fromdsg = ITSA_REGRID_FROM_DSG( cx)
-	its_dsg = .FALSE.
 
 * DSG grids (4/17)
 * For a DSG contiguous ragged array grid (a DSG observation var) the
@@ -292,7 +291,6 @@
      .            cx_trans(idim,cx) .NE.  trans_avg_wgt) abst_nolim = .FALSE.
 
 	ENDIF
-
 
 	IF ( axis .EQ. mnormal ) THEN
 * THIS AXIS IS NORMAL TO THE DEFINING GRID

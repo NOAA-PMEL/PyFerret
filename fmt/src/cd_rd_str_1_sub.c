@@ -37,10 +37,12 @@
 /*   
     cd_rd_str_1_sub.c from cd_read_sub, just read one string from a 1-D var
 	The calling routine has checked the grid to make sure it's 1-D.
+*/
 
+#include <Python.h> /* make sure Python.h is first */
 #include <stddef.h>  /* size_t, ptrdiff_t; gfortran on linux rh5*/
-#include <wchar.h>
 #include <stdlib.h>
+#include <string.h>
 #include <netcdf.h>
 #include "fmtprotos.h"
 #include "list.h"

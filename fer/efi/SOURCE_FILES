@@ -71,7 +71,6 @@ flag2ddups.F\
 freverse.F\
 ft_to_orthogonal.F\
 gausswt.F\
-gausswt_v0.F\
 gridding_subs.F\
 heap2_str.F\
 dot_x.F\
@@ -140,12 +139,6 @@ scat2gridgauss_xz.F\
 scat2gridgauss_yt.F\
 scat2gridgauss_yz.F\
 scat2gridgauss_zt.F\
-scat2gridgauss_xt_v0.F\
-scat2gridgauss_xy_v0.F\
-scat2gridgauss_xz_v0.F\
-scat2gridgauss_yt_v0.F\
-scat2gridgauss_yz_v0.F\
-scat2gridgauss_zt_v0.F\
 scat2gridlaplace_xy.F\
 scat2gridlaplace_xz.F\
 scat2gridlaplace_yz.F\

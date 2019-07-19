@@ -36,6 +36,7 @@
 
 #include <Python.h> /* make sure Python.h is first */
 #include <stdio.h>
+#include "fmtprotos.h"
 
 
 /* Function called by tm_number to test if a string is a valid number
@@ -45,9 +46,6 @@
  *acm*  1/12      - Ferret 6.8 ifdef double_p for double-precision ferret, see the
 *					 definition of macro DFTYPE in ferretmacros.h.
 */
-
-#include <stdio.h>
-#include "fmtprotos.h"
 
 void FORTRAN(tm_number_sub)(char *string, int *result)
 {

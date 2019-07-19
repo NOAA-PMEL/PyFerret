@@ -8,8 +8,8 @@ run each test, and does not display any plots. Expected results are given
 under the `bench/test_results` directory.
 
 The manual testing uses a script to run all the tests in a single instance 
-of pyferret. Plots are displayed as the tests are run. Expected results from 
-**ferret** are given by the `bench/ansley_official*` files.
+of pyferret. Plots are displayed as the tests are run. Expected results are
+given by the `bench/ansley_official*` files.
 
 Note that these tests expect the nco utility programs `ncdump` and `ncatted` 
 to be found on the system path. If there programs do not exist the tests will 
@@ -85,13 +85,12 @@ where the name contains the date and time of the benchmark run, and the extensio
 refers to the machine type or operating system. In addition a number of plot 
 output files are created and compared to reference output by the benchmark script.
 
-In the benchmark directory are "official" output files from **ferret** from supported 
-operating systems. To compare your output logs, choose one to compare with your 
-output. There are lines in the benchmark output which may differ from one run of 
-the benchmarks to another and which do not indicate problems with the benchmark 
-run. We may remove them by running the script `clean_ultra` (or `clean_draconian`) 
-and piping the output to a new file, for the official benchmark log file and the 
-one just created:
+In the benchmark directory are "official" output files.  To compare your output 
+logs, choose one to compare with your output. There are lines in the benchmark 
+output which may differ from one run of the benchmarks to another and which do not 
+indicate problems with the benchmark run. We may remove them by running the script 
+`clean_ultra` (or `clean_draconian`) and piping the output to a new file, for the 
+official benchmark log file and the one just created:
 
 > $ clean_ultra ansley_official.x86_64-linux_log \> cleaned_ansley_official.x86_64-linux_log  
 > $ clean_ultra all_01nov16at0959.x86_64-linux_log \> cleaned_all_01nov16at0959.x86_64-linux_log  
@@ -122,8 +121,5 @@ logs from different operating systems.
 which this output is written to the log file may vary from run to run or from 
 system to system. Occasional garbled output is the result of this effect. 
 
-6. There are some differences in the benchmark scripts in PyFerret and those
-in Ferret and, thus, differences in the output.
-
-7. PyFerret generates PostScript (.ps) files where Ferret generates .plt files.
+6. PyFerret generates PostScript (.ps) files where Ferret generates .plt files.
 

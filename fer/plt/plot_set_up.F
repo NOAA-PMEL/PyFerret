@@ -938,8 +938,11 @@ c	      ul_dolab(t_dim) = .FALSE.  ! why was this added?
 	DO 200 ipl = var1, numv
 	   IF (grid_is_dsg .AND. versus .AND. .NOT.its_traj .AND. ipl.EQ.gap_var) THEN
 
-c  create the gaps-var
+*  create the gaps-var.  IF npts2 = nfeatures (e.g. a plot of lon vs lat for timeseries stations)
+*  then the gap-var will be all 0's, e.g. no gaps.
+	      cx = cx_list( 1 )
 	      CALL DSG_OBS_MARK_GAPS (dset, cx, nfeatures, npts2, dep_dat)
+	      status = ferr_ok
 	   
 	   ELSE
 	      mv   = mv_list( ipl )

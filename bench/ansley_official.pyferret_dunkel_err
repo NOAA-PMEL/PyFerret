@@ -3,8 +3,8 @@ Running FERRET version /home/users/ansley/PyFerret/bin/pyferret
 -rwxr-xr-x. 1 ansley tmap 1858 May 16 17:18 /home/users/ansley/PyFerret/bin/pyferret
 Using external functions from /home/users/ansley/PyFerret/ext_func/pylibs
 Running the tests of external functions y
-Benchmark run by ansley
-Note: tkt 1944: remove scat2gridgauss_*_v0 fcns
+Benchmark run by anslesy
+Note: merges from the trunk 7/26/19 updates
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DATA=. ./data
@@ -15,13 +15,13 @@ FER_DIR=.
 FER_DSETS=. ./data
 FER_EXTERNAL_FUNCTIONS=/home/users/ansley/PyFerret/ext_func/pylibs
 FER_FONTS=/home/users/ansley/PyFerret/ppl/fonts
-FER_GO=. ./v4jnls ./v5jnls ./v6jnls ./v7jnls ./pyjnls ./genjnls . /home/users/ansley/PyFerret/go /home/users/ansley/PyFerret/examples /home/users/ansley/PyFerret/contrib
+FER_GO=. ./v4jnls ./v5jnls ./v6jnls ./v7jnls ./pyjnls ./genjnls . ./v4jnls ./v5jnls ./v6jnls ./v7jnls ./pyjnls ./genjnls . /home/users/ansley/PyFerret/go /home/users/ansley/PyFerret/examples /home/users/ansley/PyFerret/contrib
 FER_GRIDS=. ./data
 FER_LIBS=/home/users/tmap/ferret/rhel6-x86_64-linux/lib
 FER_PALETTE=. /home/users/ansley/PyFerret/ppl
 FER_WEB_BROWSER=firefox
 PYFER_EXTERNAL_FUNCTIONS=/home/users/ansley/PyFerret/ext_func/pylibs
-Beginning at Fri Jul 19 10:09:48 PDT 2019
+Beginning at Fri Jul 26 14:20:53 PDT 2019
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -7517,7 +7517,8 @@ Starting test: bn_dsg_tseries
 list t_25[x=95:180] + longitude
  **ERROR: command syntax: Limits by subscript /L= invalid for DSG data. Use /T= limits or select by feature
 list/l=1:5 t_25
- **ERROR: command syntax: Limits by subscript /I= invalid for DSG data. Use /X= limits or select by feature
+ **ERROR: illegal limits: "T_25" is not in the range I=200:210
+          Axis extremes are I=1:70
 list/i=200:210 t_25
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -7622,6 +7623,10 @@ Starting test: bn_dsg_list_comma_tab
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
 Starting test: bn_dsg_if_exprns
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
+Starting test: bn_dsg_subset
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -7827,4 +7832,4 @@ Unable to delete drawing segments when writing directly to an image file
            *** NOTE: instead use the "FRAME /FILE=... /FORMAT=..." Ferret command
            *** NOTE: the use of "SET MODE METAFILE" is deprecated;
            *** NOTE: instead use "FRAME /FILE=... /FORMAT=..."
-Ended at Fri Jul 19 10:23:43 PDT 2019
+Ended at Fri Jul 26 14:35:52 PDT 2019

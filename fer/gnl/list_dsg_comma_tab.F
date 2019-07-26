@@ -13,6 +13,7 @@
 * 
 *  6/2019 *acm* Write strings in id's, dates without quotes (as ERDDAP does)
 *  7/2019 *acm* Future: assign precision per variable, but for now use default or user-set prec.
+* V751 7/18 *acm* Call single routine for DSG feature-type names
 
 
         include 'netcdf.inc'
@@ -55,7 +56,8 @@
      .		icol, ipad, sdim, blen, status
 	REAL	value
 	CHARACTER VAR_CODE*128, TM_FMT*16, VAR_UNITS*64, 
-     .		FMT*20, AX_TITLE*32, AX_TITLE_UNITS*64, SANITARY_VAR_CODE*128,
+     .		FMT*20, AX_TITLE*32, AX_TITLE_UNITS*64, SANITARY_VAR_CODE*128, 
+     .		CD_DSG_FEATURENAME*20,
      .		strbuff*128, line_buff*10000, vcode(nvar)*128,  bad_buff*32,
      .		col_head_format*64, pstr*15, feature_idname*14, id_buff*128,  
      .		tab_or_comma*1, cn*8
@@ -100,14 +102,9 @@
 	row_size_lm = dsg_loaded_lm(dsg_row_size_var(dset))
 
 	feature_idname = 'feature-id'
-	IF (dsg_orientation(dset) .EQ. pfeatureType_Trajectory) THEN
-	   feature_idname = 'trajectory-id'
-	ELSEIF (dsg_orientation(dset) .EQ. pfeatureType_Point) THEN
-	   feature_idname = 'point-id'
-	ELSEIF (dsg_orientation(dset) .EQ. pfeatureType_profile) THEN
-	   feature_idname = 'profile-id'
-	ELSEIF (dsg_orientation(dset) .EQ. pfeatureType_timeSeries) THEN
-	   feature_idname = 'timeseries-id'	   
+	IF (orientation.GE.pfeatureType_point .AND.  orientation.LE.pfeatureType_timeSeries) THEN
+	   strbuff = CD_DSG_FEATURENAME(orientation)
+	   feature_idname = strbuff(:tm_lenstr1(strbuff)) // '-id'
 	ENDIF
 
 	pstr = '               '

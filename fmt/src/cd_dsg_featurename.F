@@ -42,9 +42,9 @@
 
 	DATA	feattype(0) / 'Point ' /,
      .		feattype(1) / 'Trajectory ' /,
-     .		feattype(2) / 'TrajectoryProfile ' /,
+     .		feattype(2) / 'Trajectoryprofile ' /,
      .		feattype(3) / 'Profile ' /,
-     .		feattype(4) / 'TimeSeries' /
+     .		feattype(4) / 'Timeseries' /
 
 	CD_DSG_FEATURENAME = '***'
 

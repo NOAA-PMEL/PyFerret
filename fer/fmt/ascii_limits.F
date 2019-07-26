@@ -61,6 +61,7 @@
 * V698 *sh* 4/16 document a true E ensemble axis with dataset identifier
 * V75+ *acm*5/19 Issue 1930. Do not write member name in header unless we're 
 *                looking at just one ensemble member (typo fix).
+* V751 *acm*5/19 If DSG dataset, get the calendar of the time var
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -158,12 +159,18 @@
 	   slen = MIN( max_len, slen+len_trans+3 )
 	ENDIF
 
-* calendar name requiring comment ?
+* calendar name requiring comment ?  If DSG dataset, get the calendar of the time var
+
 
 	IF ((idim.EQ.t_dim .OR. idim.EQ.f_dim) .AND. 
      .      cx_lo_ww( idim, cx ) .NE. unspecified_val8 ) THEN
 
 	   grid = cx_grid(cx)
+
+	   IF (dset .GT. pdset_irrelevant) THEN
+	      IF (dsg_ragged(dset)) grid = dsg_xlate_grid(dset) 
+	   ENDIF
+
 	   IF (idim.EQ.t_dim) cal_name = TM_GET_CAL (grid)
 	   IF (idim.EQ.f_dim) cal_name = TM_GET_F_CAL (grid)
 	   cal_id = TM_GET_CALENDAR_ID (cal_name)

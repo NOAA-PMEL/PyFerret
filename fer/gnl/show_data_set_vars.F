@@ -92,6 +92,7 @@
 * V74+ 7/18 *acm* For DSG datasets, if we synthesized a RowSize var, don't show it.
 * V751 *acm* 6/19 Remove unused declarations
 * V751 6/19 *acm* TM_FMT rewrite: formatting of lon/lat coordinate strings
+* V751 7/18 *acm* Call single routine for DSG feature-type names
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -128,7 +129,7 @@
      .			cal_id, len_cal, j, num_indices, rlen(nferdims), iok,
      .			listdims, idim, igrid, nv, varid, dsg_orient, ndec
 	CHARACTER	LEFINT*16, LOHI_STRING*48, TM_FMT*48, 
-     .			TM_GET_CAL*32, 
+     .			TM_GET_CAL*32, CD_DSG_FEATURENAME*20,
      .			line*255, cal_name*32
 	REAL*8		TM_WORLD, lo, hi
         CHARACTER       rbuff(12)*8, short*6, long*16, delims*128, c*1
@@ -165,19 +166,12 @@
 	   dsg_orient = dsg_orientation(dset)
 
 	   risc_buff = '       DSG Feature type '
-	   tlen = TM_LENSTR1( risc_buff )
+	   tlen = TM_LENSTR1( risc_buff ) + 1
+	   risc_buff = risc_buff(:tlen)//  CD_DSG_FEATURENAME(dsg_orient)
 
-	   IF (dsg_orient .EQ. pfeatureType_Trajectory) THEN
-	      risc_buff = risc_buff(:tlen)//' Trajectory'
-	   ELSEIF (dsg_orient .EQ. pfeatureType_Point) THEN
-	      risc_buff = risc_buff(:tlen)//' Point'
-	   ELSEIF (dsg_orient .EQ. pfeatureType_profile) THEN
-	      risc_buff = risc_buff(:tlen)//' Profile'
-	   ELSEIF (dsg_orient .EQ. pfeatureType_timeSeries) THEN
-	      risc_buff = risc_buff(:tlen)//'  Timeseries'
-	   ELSE
-	      risc_buff = ''
-	   ENDIF
+	   IF (dsg_orient.LT.pfeatureType_Point .OR. 
+     .         dsg_orient.GT.pfeatureType_timeSeries) risc_buff = ''
+
 
 	   tlen = TM_LENSTR1( risc_buff )
 	   IF (tlen .GT. 0)  CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0) 

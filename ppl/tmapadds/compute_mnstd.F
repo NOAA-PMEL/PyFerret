@@ -51,6 +51,7 @@ C**
 *                 for data outside 3*std correction wasn't made.
 * V720 *acm* 2/17 Make sure zmin and zmax have been computed. May not be done yet for 
 *                 plot/vs/ribbon plots.
+* V751 *acm* 7/19 Call to MINMAX needs final argument, nok
 
         IMPLICIT NONE
 	include 'parampl5_dat.decl'
@@ -74,7 +75,7 @@ C**
 	REAL  zero, rbad
 	REAL*8 x, xmean, sum2, sumc, variance_c, xdelta, 
      .         z_max_tol, z_min_tol, zlo, zhi
-	INTEGER i, n, n2
+	INTEGER i, n, n2, nok
 
         IF (.not. need_std .AND. centered) THEN
 	   zstd = lev_std
@@ -85,7 +86,7 @@ C**
 c  Already have zmin, zmax? (not true for ribbon plots...)
 
 	IF (zmin.EQ.0.0 .AND. zmax.EQ.0.0) THEN
-	   CALL MINMAX( z, nsize, badz, zlo, zhi )
+	   CALL MINMAX( z, nsize, badz, zlo, zhi, nok )
 	   zmin = zlo
 	   zmax = zhi
 	ENDIF

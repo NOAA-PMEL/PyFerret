@@ -46,7 +46,9 @@
 *
 * V7.4+ *acm*  4/2018
 * V7.5+ *acm*  6/2019  Do obs masking as we go, so if using just subsets of features 
-*                      the gaps are in the right places
+*                      the gaps are in the right places2018
+* V7.51 *acm*  7/2019  If the length sent in is the nfeatures length, send back an
+*                      array that's all zero.
 
 	include 'tmap_dims.parm'
 	include 'xdset_info.cmn_text'
@@ -62,6 +64,18 @@
 	INTEGER	ifeature, iobs, nobs, row_size_lm, base, fobs, nmasked, nobsf
 
 	row_size_lm = dsg_loaded_lm(dsg_row_size_var(dset))
+
+* If the operation's being done on a feature-variable, set the "gaps" to all 0.
+* e.g. a plot of lon vs lat for a set of timeseries stations.
+
+	IF (nobs_total .EQ. nfeatures) THEN
+	   DO iobs = 1, nobs_total
+	      vals(iobs) = 0.
+	   ENDDO
+
+	   RETURN
+
+	ENDIF
 
 * create variable that's 1 at the start of each trajectory, 0 otherwise
 

@@ -1,0 +1,18 @@
+! bn_dsg_subset.jnl
+! 7/24/2019 ACM
+! testing subsetting in Time, space.  Particularly that a time subset
+! is correctly done on non-timeseries dsg dataset.
+! More tests for timeseries data are in bn_dsg_tseries
+
+use dsg_cross_prime.nc
+
+! Subset trajectory data in time then in lon/ time
+list sst
+list/t=1-mar-2017:14-mar-2017 sst
+list/y=-20:0/t=1-mar-2017:14-mar-2017 sst
+
+! subset profile data in z, in z/ time, in lon/lat/z
+use profile_dsg
+list/z=5:20 sal, pot_temp_degc
+list/z=0:15/x=-121:-120 sal
+

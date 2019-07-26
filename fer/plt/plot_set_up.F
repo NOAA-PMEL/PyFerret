@@ -468,6 +468,9 @@
 	ENDIF
 
 * Mark the gap-variable, for PLOT/VS only
+
+	IF (grid_is_dsg .AND. versus .AND. .NOT.its_traj) addgaps = .TRUE.
+
 	IF (versus .AND. addgaps) THEN
 	   IF (ribbon_plot) THEN
 	      gap_var = 4
@@ -573,7 +576,8 @@
 	      IF ( orientation.EQ.pfeatureType_profile .AND. 
      .	           versus .AND. expand_dsg_ok) THEN
 
-	         CALL DSG_OBS_BY_FEATURE_VAR (dset, cx, nfeatures, obsdimlen, indep_dat)
+	         IF (npts .EQ. nfeatures) CALL DSG_OBS_BY_FEATURE_VAR 
+     .	             (dset, cx, nfeatures, obsdimlen, indep_dat)
 	         npts = obsdimlen
 	         dsg_fmt_grid = dsg_xlate_grid(dset)
 	      ENDIF
@@ -928,18 +932,28 @@ c	      ul_dolab(t_dim) = .FALSE.  ! why was this added?
 	only_val  = bad_val4
 	nload_all = 0
 
-	DO 200 ipl = var1, numv
-	   mv   = mv_list( ipl )
-	   cx   = cx_list( ipl )
-	   grid = cx_grid( cx )
-	   dset = cx_data_set(cx)
-           IF (.NOT.versus) THEN 
-              CALL GET_CX_DIMS( cx, ndim, dims )
-              IF (ndim .GT. 1) GOTO 5110
-           ENDIF
+	IF (grid_is_dsg .AND. versus .AND. .NOT.its_traj ) numv = numv + 1 ! fake a gap-var
 
-* set up a dependent variable
-	   CALL EXTRACT_LINE (	cx,
+
+	DO 200 ipl = var1, numv
+	   IF (grid_is_dsg .AND. versus .AND. .NOT.its_traj .AND. ipl.EQ.gap_var) THEN
+
+c  create the gaps-var
+	      CALL DSG_OBS_MARK_GAPS (dset, cx, nfeatures, npts2, dep_dat)
+	   
+	   ELSE
+	      mv   = mv_list( ipl )
+	      cx   = cx_list( ipl )
+	      grid = cx_grid( cx )
+	      dset = cx_data_set(cx)
+              IF (.NOT.versus) THEN 
+                 CALL GET_CX_DIMS( cx, ndim, dims )
+                 IF (ndim .GT. 1) GOTO 5110
+              ENDIF
+
+* set up a dependent variable.
+
+	      CALL EXTRACT_LINE (	cx,
      .				memry(mv)%ptr,
      .				mv,
      .				dep_dat,
@@ -947,6 +961,7 @@ c	      ul_dolab(t_dim) = .FALSE.  ! why was this added?
      .				ndim,
      .				npts2,
      .				status	)
+           ENDIF
            iaxis = CGRID_AXIS(dep_dim,cx)
  
 	   IF ( status .NE. ferr_ok ) GOTO 5000
@@ -961,7 +976,8 @@ c	      ul_dolab(t_dim) = .FALSE.  ! why was this added?
 	   IF (its_dsg .AND. 
      .	       orientation.EQ.pfeatureType_profile .AND. 
      .	       versus .AND. npts2.EQ.nfeatures .AND. expand_dsg_ok) THEN
-	      CALL DSG_OBS_BY_FEATURE_VAR (dset, cx, nfeatures, obsdimlen, dep_dat)
+	      IF (npts2 .EQ. nfeatures) CALL DSG_OBS_BY_FEATURE_VAR 
+     .	           (dset, cx, nfeatures, obsdimlen, dep_dat)
 	      npts2 = obsdimlen
 	      dsg_fmt_grid = dsg_xlate_grid(dset)
 	   ENDIF

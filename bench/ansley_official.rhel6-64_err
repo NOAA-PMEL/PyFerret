@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/users/ansley/build/working/FERRET/fer/ferret_c
--rwxr-xr-x. 1 ansley tmap 118306833 Jul 18 16:19 /home/users/ansley/build/working/FERRET/fer/ferret_c
+-rwxr-xr-x. 1 ansley tmap 118314470 Jul 26 11:26 /home/users/ansley/build/working/FERRET/fer/ferret_c
 Using external functions from /home/users/ansley/build/working/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: removed scat2gridgauss_*_v0 functions
+Note: fixes and updates from LAS testing. Clean up header info for ascii listings of DSG data.
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DATA=. ./data
@@ -14,15 +14,15 @@ FER_DESCR=. ./data
 FER_DIR=.
 FER_DSETS=. ./data
 FER_EXTERNAL_FUNCTIONS=/home/users/ansley/build/working/FERRET/external_functions/ext_func
-FER_FONTS=/home/users/ansley/PyFerret/ppl/fonts
-FER_GO=. ./v4jnls ./v5jnls ./v6jnls ./v7jnls ./genjnls . ./v4jnls ./v5jnls ./v6jnls ./v7jnls ./pyjnls ./genjnls . /home/users/ansley/PyFerret/go /home/users/ansley/PyFerret/examples /home/users/ansley/PyFerret/contrib
+FER_FONTS=/home/users/ansley/ferret_distributions/rhel6_64/ppl/fonts
+FER_GO=. ./v4jnls ./v5jnls ./v6jnls ./v7jnls ./genjnls . /home/users/ansley/ferret_distributions/rhel6_64/go /home/users/ansley/ferret_distributions/rhel6_64/examples /home/users/ansley/ferret_distributions/rhel6_64/contrib
 FER_GRIDS=. ./data
 FER_LIBS=/home/users/tmap/ferret/rhel6-x86_64-linux/lib
-FER_PALETTE=. /home/users/ansley/PyFerret/ppl
+FER_PALETTE=. /home/users/ansley/ferret_distributions/rhel6_64/ppl
 FER_WEB_BROWSER=firefox
 PWD=/home/users/ansley/build/working/FERRET/bench
 PYFER_EXTERNAL_FUNCTIONS=/home/users/ansley/PyFerret/ext_func/pylibs
-Beginning at Thu Jul 18 16:23:04 PDT 2019
+Beginning at Fri Jul 26 11:27:31 PDT 2019
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -7444,7 +7444,8 @@ Starting test: bn_dsg_tseries
 list t_25[x=95:180] + longitude
  **ERROR: command syntax: Limits by subscript /L= invalid for DSG data. Use /T= limits or select by feature
 list/l=1:5 t_25
- **ERROR: command syntax: Limits by subscript /I= invalid for DSG data. Use /X= limits or select by feature
+ **ERROR: illegal limits: "T_25" is not in the range I=200:210
+          Axis extremes are I=1:70
 list/i=200:210 t_25
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -7549,6 +7550,10 @@ Starting test: bn_dsg_list_comma_tab
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
 Starting test: bn_dsg_if_exprns
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
+Starting test: bn_dsg_subset
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -7673,4 +7678,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
            *** NOTE: Cannot create new windows when batch mode set
-Ended at Thu Jul 18 16:32:05 PDT 2019
+Ended at Fri Jul 26 11:36:25 PDT 2019

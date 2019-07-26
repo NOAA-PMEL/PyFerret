@@ -159,7 +159,8 @@
      .			idim, i, icom, imrg, com_uvar, com_class, mrg_class,
      .			uv_class, ax_choice(6,5), joint_match(0:3,0:3),
      .			lims_gvn, gcfcn, axis_source(nferdims), uvar_test,
-     .			naux, blen, mabstract, iline, dsg_dset
+     .			naux, blen, mabstract, iline, dsg_dset, dsg_orient, 
+     .			obsdimlen, fline
 	CHARACTER	VAR_CODE*128, buff*128
 
 * local parameter declarations
@@ -280,15 +281,42 @@
 * is this a DSG variable?
 ! DSGTBD: DSG grids are handled as small hacks in this complex routine
 ! If this leads to trouble consider a separate dsg_merge_grid subroutine
-! DSG merges are very simple - E is always present.  The "orientation"
+! DSG merges are very simple - E is always present.  The "dsg_orient"
 ! axis may or may not be.  There is just one acceptable axis for either
 ! of these slots.  All other axes are always normal.
 ! A DSG context violates gridded norms in that will carry ww coodinate
 ! limits on mnormal axes
+!
+! When merging DSG grids that have info in the obs direction, then use the dsg_xlate_grid
+! storing that in mgrid_buff, a scratch grid used just locally in this routine.
+! dsg_xlate_grid(dsg_dset) used to translate to world coords, but only for X,Y,Z,T
+
 	its_dsg = TM_ITSA_DSG(com_grd)
 	IF (its_dsg) THEN
 	   IF (.NOT.ITSA_COMPATIBLE_DSG_GRID(mrg_grd, com_grd)) GOTO 5100
 	   dsg_dset = TM_DSG_DSET_FROM_GRID(com_grd)
+
+* Grid has XYZT directions - not just an instance grid?
+	   normabst = .TRUE.
+	   DO idim = x_dim, t_dim
+	      IF (grid_line(idim, com_grd) .NE. mnormal) normabst = .FALSE.
+	   ENDDO
+
+* If the grid has axes in the XYZT directions, then they represent coordiates
+* and we want to use dsg_xlate_grid for those dimensions.
+
+	   IF (.NOT.normabst .AND. dsg_xlate_grid(dsg_dset) .GT. mgrid_buff) THEN 
+	      
+	      CALL TM_DSG_FACTS( com_grd, dsg_orient, obsdimlen, fline, its_dsg )
+	      DO idim = x_dim, t_dim
+	         grid_line(idim, mgrid_buff)  = grid_line(idim, dsg_xlate_grid(dsg_dset))
+	      ENDDO
+	      DO idim = t_dim+1, nferdims
+	         grid_line(idim, mgrid_buff)  = grid_line(idim, com_grd)
+	      ENDDO
+
+	      com_grd = mgrid_buff  ! dummy grid used just locally
+	   ENDIF
 	ENDIF
 
 * do we have nested user-defined variables ?

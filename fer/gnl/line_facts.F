@@ -70,6 +70,7 @@
 * v75  *acm* 3/18  Issue 1856, changes to allow for timesteps in fractional seconds
 * v74  *acm* 3/18  Backing off the fix for 1575, see comments 3/16/2018
 * V751 6/19 *acm* TM_FMT rewrite: formatting of lon/lat coordinate strings
+* V751 6/19 *acm* For DSG data indicate the obs dimension
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -91,11 +92,12 @@
 
 * local variable declarations:
 	LOGICAL	BKWD_AXIS, GEOG_LABEL, ITSA_TRUEMONTH_AXIS, TM_FPEQ,
-     .          calendar, original, true_month, ss_ok, its_dsg_ragged
+     .          calendar, original, true_month, ss_ok, its_dsg_ragged, its_dsg
 
 	INTEGER TM_LENSTR1, TM_SUBSC, TM_GET_CALENDAR_ID, STR_SAME,
      .          lo, hi, i, line, dlen, ndec, status,nlen, naxlen, 
-     .          int1, slen, i1ss, inss,cal_id 
+     .          int1, slen, i1ss, inss, cal_id, dsg_orient, obsdimlen, 
+     .          feature_line
 	CHARACTER AX_TITLE*32, TM_FMT*48, lo_str*28, hi_str*28, direction*1,
      .		  title*32, reg*1, modflag*1, truncated*1, frmt*80,
      .		  lo_uvar*20, hi_uvar*20, uvar_desc*40, cstr*3, countstr*20,
@@ -301,7 +303,22 @@ c Compressing transfm, w/o limits
 	   ENDIF !  uvar, reporting subset, compression
 
 * Special description to flag the DSG feature orientation axis
-	   IF (its_dsg_ragged) uvar_desc = "Variable lengths"
+* If the grid is pointing to th dsg_xlate_grid don't show the 
+* axes other than the one in the dsg-orientation direction.
+
+	   IF (its_dsg_ragged) THEN
+	      CALL TM_DSG_FACTS( grid, dsg_orient, obsdimlen, 
+     .                  feature_line, its_dsg )
+     
+	      IF (its_dsg_ragged .AND. idim.LE.t_dim .AND. idim.NE.dsg_orient) THEN
+	         title = 'normal'
+	         WRITE ( risc_buff, 3010 ) title, ww_dim_name( idim )
+		 CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
+		 GOTO 5000
+	      ENDIF
+	      IF (idim .LE. t_dim) uvar_desc = " " 
+	      IF (idim .EQ. dsg_orient) uvar_desc = "Variable lengths"
+	   ENDIF 
 
 * create format adapted to name length (??)
 	   int1 = 34 - (naxlen+1)
@@ -340,11 +357,13 @@ c Compressing transfm, w/o limits
 	      dlen = TM_LENSTR1(risc_buff)
 	      IF (dlen.GT.1) risc_buff = risc_buff(:dlen)//' (True Monthly)'
 	   ENDIF
+	   
 
 	   CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0)
 
 	ENDIF
-	RETURN
+
+ 5000	RETURN
 
  3010	FORMAT ( T2,A8,T12,A1 )
 

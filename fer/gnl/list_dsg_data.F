@@ -48,6 +48,8 @@
 *                 Need comprehensive update to string-lenghts of names and attributes 
 * V75+ 4/19 *acm* Note any transformation applied.
 * V75+ 4/19 *acm* Changes to SUBSET listing in header
+* V751 7/19 *acm* Changes to units and transforms listed in the header for all vars.
+* V751 7/18 *acm* Call single routine for DSG feature-type names
 
         include 'netcdf.inc'
 	include 'tmap_dims.parm'
@@ -90,7 +92,7 @@
      .		nok, direc(nvar), min_width, vstrlen, paren, trans, status
 	REAL	value, small, big, biggest
 	CHARACTER LEFINT*8, VAR_CODE*128, TM_FMT*16, VAR_UNITS*64, 
-     .		FMT*20, AX_TITLE*32, SANITARY_VAR_CODE*128,
+     .		FMT*20, AX_TITLE*32, SANITARY_VAR_CODE*128, CD_DSG_FEATURENAME*20,
      .		strbuff*128, line_buff*10000, vcode(nvar)*128,  
      .		col_head_format*32, pstr*15, feature_idname*10, buff*128,  
      .		good_fmt(max_intrp)*10, bad_fmt*10
@@ -134,16 +136,11 @@
 	row_size_lm = dsg_loaded_lm(dsg_row_size_var(dset))
 
 	feature_idname = 'feature'
-	IF (dsg_orientation(dset) .EQ. pfeatureType_Trajectory) THEN
-	   feature_idname = 'trajectory'
-	ELSEIF (dsg_orientation(dset) .EQ. pfeatureType_Point) THEN
-	   feature_idname = 'point'
-	ELSEIF (dsg_orientation(dset) .EQ. pfeatureType_profile) THEN
-	   feature_idname = 'profile'
-	ELSEIF (dsg_orientation(dset) .EQ. pfeatureType_timeSeries) THEN
-	   feature_idname = 'timeseries'	   
-	ENDIF
 
+	IF (orientation.GE.pfeatureType_point .AND.  orientation.LE.pfeatureType_timeSeries) THEN
+	   strbuff = CD_DSG_FEATURENAME(orientation)
+	   feature_idname = strbuff(:tm_lenstr1(strbuff)) // '-id'
+	ENDIF
 
 * determine precision for outputting values
 
@@ -382,20 +379,24 @@
 	      alen = TM_LENSTR1( strbuff )
 	      vname_buff   = VAR_TITLE( cx )
 	      clen   = TM_LENSTR1( vname_buff )
-	      vname_buff   = vname_buff(:clen)//' '//
-     .	   	   	      PAREN_SURROUND(VAR_UNITS(cx), slen1)
+	      buff = PAREN_SURROUND(VAR_UNITS(cx), slen1)
+	      IF (INDEX( buff, '(# of points)') .GT. 0) slen1 = 0
+	      vname_buff   = vname_buff(:clen)//' '//buff(:slen1)
+   	   	      
 	      clen = clen+1+slen1
-	      vname_buff   =  vname_buff(:clen)//
-     .	   	   	      PAREN_SURROUND(VAR_TITLE_MOD(cx),slen2)
-	      clen = clen+slen2
-	      risc_buff = ' '
 
-	      WRITE ( risc_buff, FMT ) 
-     .           strbuff(:vname_len), vname_buff(:clen)
+* Add anything about regridding, or axis description, but not transforms, which are done below.
+	      buff   =  PAREN_SURROUND(VAR_TITLE_MOD(cx),slen2)
+	      IF (INDEX(buff, "regrid").GT.0 .OR. INDEX(buff, "(axis").GT.0) 
+     .	   	           vname_buff = vname_buff(:clen)//' '//buff(:slen2)
+	      clen = clen+1+slen2
+
+	      risc_buff = ' '
+	      WRITE ( risc_buff, FMT ) strbuff(:vname_len), vname_buff(:clen)
               slen1 = TM_LENSTR1(risc_buff)
 
 * Was there a transformation?
-*     buff describes any transformation done on the obs axis for each feature.
+*     buff describes any transformation done on the obs axis for each feature. 
 	
 	      buff = ' '
 	      DO idim = 1, 4
@@ -406,17 +407,28 @@
 	            IF ( trans .NE. trans_no_transform ) THEN
 	               clen = INDEX( line_buff(1:slen1), '(', .TRUE.)  ! last paren in string
 	               IF (clen.GT.0) THEN
-	                  buff = line_buff(clen:slen1) 
-	                  slen1 = clen-1
-	               ENDIF
+	                  buff = line_buff(clen:slen1) 			  
+			  clen = TM_LENSTR1( buff )
+
+* Put "each feature" in the label except for "closest distance" trans which are not done per feature
+
+			  slen1 = TM_LENSTR1( risc_buff )
+
+			  IF ( INDEX( buff, 'closest ') .GT. 0 ) THEN
+			     risc_buff(slen1+1:slen+clen) = ' '
+			     risc_buff(slen1+1:) = ' '//buff(:clen)
+			  ELSE
+			     risc_buff(slen1+1:) = ' '//buff(:clen-1)// ', each '//
+     .	   	            feature_idname(:TM_LENSTR1(feature_idname))//')'
+			  ENDIF
+
+		       ENDIF
 	            ENDIF
 
 	         ENDIF
 	      ENDDO
 
-	      clen = TM_LENSTR1( buff ) 
-	      IF (clen .GT. 1) risc_buff(slen1+1:) = '     '//buff(:clen-1)// ' each '//
-     .	   	 feature_idname(:TM_LENSTR1(feature_idname))//')'
+
 
 	      CALL SPLIT_LIST(pttmode_explct, list_lun, risc_buff, 0)
 

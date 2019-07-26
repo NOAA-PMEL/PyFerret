@@ -46,17 +46,13 @@ end
    
 set err_gif = 0
 foreach gif_file ($gif_files)
-    set numdiffpix=`compare -quiet -metric AE $gif_file metafile_masters_64bit_rh6/$gif_file $gif_file.diff_gif.gif` ;\
-    if ("$numdiffpix" != "0") then
-       echo "gif files differ $gif_file size $size metafile_masters_64bit_rh6/ size $size2" 
-       compare $gif_file metafile_masters_64bit_rh6/$gif_file $gif_file.diff_gif.gif
-       display  -title new_$gif_file $gif_file &
-       display  -title stored_$gif_file metafile_masters_64bit_rh6/$gif_file &
-       display $gif_file.diff_gif.gif
-       set err_gif = 1
-    else
-       rm -f $gif_file.diff_gif.gif
+    compare -quiet -metric AE $gif_file metafile_masters_64bit_rh6/$gif_file $gif_file.diff_gif.gif >& gif.out 
+    set val = `cat gif.out` 
+    if ( $val != "0" ) then 
+      display $gif_file.diff_gif.gif
     endif
+    rm -f $gif_file.diff_gif.gif
+    rm -f gif.out
 end
 
 set err_ps = 0

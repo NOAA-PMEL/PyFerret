@@ -1291,6 +1291,8 @@ GO bn_dsg_list_comma_tab
 GO bn_reset bn_dsg_if_exprns
 GO bn_dsg_if_exprns
 
+GO bn_reset bn_dsg_subset
+GO bn_dsg_subset
 
 ! *********** PyFerret-specific scripts ***********
 

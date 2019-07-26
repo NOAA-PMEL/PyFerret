@@ -31,6 +31,7 @@
 # acm*  1/14 Change the order of the questions asked: test efs? If so what directory are they in?
 #            Also list the contents of the external fucntions directory
 # *sh* 3/17 Check for corruption warnings in the error log
+# *acm* 7/19 Do a make clean before starting, cleaning up tmp/ files for consistent log output.
 #
 # usage % run_all
 
@@ -123,6 +124,9 @@ set ncdump_file = "all_ncdump.out"
 rm -f ncdump_file $ncdump_file
 echo " " > $ncdump_file
 
+# For consistent log output, remove tmp files
+make clean
+
 #set up external functions search path
 setenv FER_EXTERNAL_FUNCTIONS $efdir
 
@@ -160,6 +164,7 @@ rm -f bn_test_stream.jnl
 # else
 #     ln -s v5jnls/bn_test_stream_big.jnl bn_test_stream.jnl
 # endif
+
 
 #Set up for metafile/gif testing
 set check_met = check_metafiles_rh6

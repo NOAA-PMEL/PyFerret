@@ -72,7 +72,6 @@ list t_25[x=95:180] + longitude
 ! Cannot select DSG data by index in i,j,k,l
 list/l=1:5 t_25
 list/i=200:210 t_25
-pause
 list/m=31:32 t_25  ! by feature number is ok
 
 set mode/last ignore

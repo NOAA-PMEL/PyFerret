@@ -61,6 +61,8 @@
 *                  multi-var plots are labeled as for non-DSG data, titles of each different 
 *                  variable
 * V751 6/19 *acm*  When multiple datasets are open need to take care to get the right feature-id var
+* V751 7/19 *acm*  DSG-enabled Ferret: PLOT/KEY for DSG data will make a line legend consistent
+*                  with multi-feature plots, even if there's just one feature.
 
 
         IMPLICIT NONE
@@ -89,7 +91,7 @@
 
 * internal variable declarations:
 	LOGICAL TM_ITSA_DSG, user_title, units_same, do_units, its_dsg,
-     .          reset_dsg, process_feature(nfeatures)
+     .          reset_dsg, process_feature(nfeatures), yes_key
 	INTEGER	TM_LENSTR1, TM_LENSTR, TM_UNIT_ID, STR_SAME, 
      .		ipl, nline_in_mem, slen, slen1, status, ptitl, style, 
      .		justify, iunits, istart, i, nfeatr(nfeatures), dtype, 
@@ -237,12 +239,17 @@
      .			   0.0, 0.0, 0.6*dep_len, letsize_label,
      .			   letsize_label, ppl_centered,
      .			   lab_loc_absolute, lab_loc_absolute )
+
 * ... keys for the dependent vars, or if one, only the title or axis label
+*     To do a line-legend key even for one line, issue PLOT command with PLOT/KEY
 
 	   DO 600 ipl = var1, nmv
 	      nline_in_mem = nline_in_mem + 1
 
-	      IF ( use_keys .AND. (.NOT. nokey) .AND.nmv.GT.var1) THEN
+	      yes_key = use_keys .AND. (.NOT. nokey) .AND.nmv.GT.var1
+	      IF (its_dsg .AND. nmv.EQ.1) yes_key = qual_given(slash_plot_key) .GT. 0
+
+	      IF ( yes_key) THEN
 
 	         IF ( its_dsg ) THEN 
 
@@ -270,7 +277,7 @@
                  slen = slen + 14
               ENDIF
 
-	      IF ( ndv .EQ. 1 .OR. user_title ) THEN
+	      IF ( .NOT.yes_key .AND. (ndv .EQ. 1 .OR. user_title) ) THEN
 	         IF ( versus ) THEN     ! ("xlen" changed to "dep_len" 11/92)
 	            CALL BOX_LABEL( dep_lab,
      .			   plot_title(:slen),
@@ -318,27 +325,37 @@
 	      IF (its_dsg) THEN
 
 * Key was labeled with the feature-ids. Need the variable title, so put it on indep axis
-	         IF (.NOT. nokey) THEN
+	         IF (yes_key) THEN
 		    plot_title = VAR_TITLE_ONLY( cx_list(var1), slen )
-		    plot_title = plot_title(:slen)//
-     .                     '('//ustring(:TM_LENSTR1(ustring))//')'
-     
+
+		    IF ( user_title ) CALL EQUAL_STR_LC(
+     .			cmnd_buff(qual_start(ptitl):qual_end(ptitl)),
+     .                  plot_title, status )
+
+
 		    slen = TM_LENSTR1( plot_title )
+		    plot_title_1 = plot_title(:slen)//
+     .                     ' ('//ustring(:TM_LENSTR1(ustring))//')'
+
+		    slen = TM_LENSTR1( plot_title_1 )
 		    rht = letsize_label
-		    IF (ylen .LT. SYMWID(rht, slen, plot_title) ) THEN
-		       plot_title = VAR_TITLE_ONLY( cx_list(var1), slen )
-		       plot_title = plot_title(:slen)//
+		    IF (ylen .LT. SYMWID(rht, slen, plot_title_1) ) THEN
+		       plot_title_1 = plot_title(:TM_LENSTR1(plot_title))//
      .                     '<NL>('//ustring(:TM_LENSTR1(ustring))//')'
 		    ENDIF
 
-		    slen = TM_LENSTR1( plot_title )
+		    slen = TM_LENSTR1( plot_title_1 )
 		    CALL BOX_LABEL( dep_lab,
-     .			   plot_title(:slen),
+     .			   plot_title_1(:slen),
      .			   0.0, 0.0, 0.8*dep_len, letsize_label,
      .			   letsize_label, ppl_centered,
      .			   lab_loc_absolute, lab_loc_absolute )
 	         ELSE  ! no keys, label w/ var title below the plot
 		    plot_title = FULL_VAR_TITLE( cx_list(var1), do_units, slen )
+		    IF ( user_title ) CALL EQUAL_STR_LC(
+     .			cmnd_buff(qual_start(ptitl):qual_end(ptitl)),
+     .                  plot_title, status )
+		    slen = TM_LENSTR1( plot_title )
 	            CALL BOX_LABEL( ppl_title,
      .			   plot_title(:slen),
      .			   0.0, 0.0, 0.75*hlen, letsize_title,

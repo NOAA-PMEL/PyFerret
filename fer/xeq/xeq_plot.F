@@ -125,6 +125,7 @@
 * v744 *acm* 11/18 Issue 1786: graticule lines & axes drawn if PLOT/OVER/AXES given
 * V751 6/19 *acm*  DSG data cannot be subsetted by index in I,J,K,L; only by coordinates
 *                  /X= /Y= /Z= /T=  or with /E= or /M=
+* V751 7/19 *acm*  DSG-enabled Ferret: More control of line legends with PLOT/KEY and PLOT/NOKEY
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -527,6 +528,8 @@ c	      limit = num_fancy_lines 			!was num_plain 1/94
 
 	nokey = qual_given(slash_plot_nokey) .GT. 0
      .     .OR. (qual_given(slash_plot_title) .GT. 0 .AND. .NOT.overlay)
+	
+	IF (grid_is_dsg) nokey = qual_given(slash_plot_nokey) .GT. 0
 
 * set up the axes and title and load the data into PPLUS
 

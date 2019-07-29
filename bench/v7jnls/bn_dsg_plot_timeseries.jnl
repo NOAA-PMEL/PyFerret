@@ -15,25 +15,58 @@ plot/m=5:13/thick t_25
 
 frame/file=dsg_tseries_plot_1.gif
 
-! Plot an instance variable as a line in e direction
-plot t_25[t=@max]
-
 ! Now USE/FEATURE= to access a trajectory dataset as timeseries data.
 ! Note how upper-left labels adjust to show dimensions orthogonal to the plots
 
 cancel view
 cancel data/all
 
-! This is a trajectory set
+! This is a trajectory set.  Plot it as a trajectory and then view it as
+! a timeseries. Test PLOT/TITLE= here as well.
+ 
 use dsg_cross_dateline
 show data
 set view ul
-plot/thick temp
+plot/thick/title="My Title" temp
 
-! Now reinitialize it as timeseries data.
+! Now reinitialize it as timeseries data. 
 use/feature="timeseries" dsg_cross_dateline
 show data
 set view lower
-plot/thick/color temp
+plot/thick/color/title="My Title" temp
+
 
 frame/file=dsg_tseries_plot_2.gif
+
+
+cancel view
+! Plot an instance variable as a line in e direction
+
+use DSG_ERDDAP_pmelTao5daySst.nc
+set view upper
+plot/NOKEY t_25[t=@max]
+frame/file=dsg_tseries_plot_3.gif
+
+cancel view
+
+! /NOKEY and /KEY qualifiers
+! Multi-feature plots automatically get a legend labeled with feature ids
+! PLOT/KEY with just one line drawn will also generate a legend key.
+! Also testing PLOT/TITLE here
+
+set view ul
+plot/m=1:3/thick/color/title="My Title" t_25
+set view ur
+plot/nokey/m=1:3/thick/color/title="My Title" t_25
+
+
+! Now just one timeseries.  By default there's no line legend, label below plot
+! But PLOT/KEY makes a legend like a multi-feature plot.
+
+set view ll
+plot/m=5/thick/color/title="My Title" t_25
+set view lr
+plot/key/m=5/thick/color/title="My Title" t_25
+
+
+frame/file=dsg_tseries_plot_4.gif

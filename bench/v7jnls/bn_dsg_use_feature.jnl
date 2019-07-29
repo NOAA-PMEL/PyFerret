@@ -20,7 +20,7 @@ show data
 
 ! plots as a set of timeseries
 set v lower
-plot/thick/title="/feature=timeseries" temp
+plot/thick/title="With /feature=timeseries" temp
 
 frame/file=dsg_use_feature.gif
 

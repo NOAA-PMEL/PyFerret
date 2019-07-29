@@ -46,13 +46,19 @@ end
    
 set err_gif = 0
 foreach gif_file ($gif_files)
-    compare -quiet -metric AE $gif_file metafile_masters_64bit_rh6/$gif_file $gif_file.diff_gif.gif >& gif.out 
-    set val = `cat gif.out` 
-    if ( $val != "0" ) then 
-      display $gif_file.diff_gif.gif
+    if  (-e metafile_masters_64bit_rh6/$gif_file) then
+       compare -quiet -metric AE $gif_file metafile_masters_64bit_rh6/$gif_file $gif_file.diff_gif.gif >& gif.out 
+       set val = `cat gif.out` 
+       if ( $val != "0" ) then 
+         display $gif_file.diff_gif.gif
+       else
+          rm -f $gif_file.diff_gif.gif
+       endif
+       rm -f gif.out
+    else 
+       echo metafile_masters_64bit_rh6/$gif_file Not Found
+       cp $gif_file $gif_file.diff_missing_gif.gif
     endif
-    rm -f $gif_file.diff_gif.gif
-    rm -f gif.out
 end
 
 set err_ps = 0

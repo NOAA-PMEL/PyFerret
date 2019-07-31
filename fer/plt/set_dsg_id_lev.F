@@ -36,6 +36,7 @@
 * V7.4+ ACM 7/18  DSG file development
 * V7.4+ ACM 9/18  Key label intermediate variable does not need plot settings
 * V7.51 6/2019 ACM Use Ampersand to separate strings. Only do up to 20 strings
+* V7.51 7/2019 ACM Handle cases when the number of values is really large.
 *
 * for a DSG plot colored by a variable in the feature direction, set the levels 
 * and key to plot with levels of 1 to nfeature, and center-labeled color bar. 
@@ -52,7 +53,8 @@
 	include 'CONT.INC'
 	include 'xvariables.cmn'
 	include 'shade_vars.cmn'
-        include 'netcdf.inc'
+	include 'xprog_state.cmn'
+	include 'slash.parm'
 
 * Argument declarations
 	LOGICAL changed_key
@@ -69,6 +71,11 @@
 	CHARACTER TM_FMT*30, GET_STRING_ELEMENT*30,
      .		str_buff*30, all_keylab*(tot_len), labsym_buff*30, c*1, num_buff*12
 
+
+* If the user has set /LEVELS, keep the setting
+
+	IF (qual_given( slash_plot_levels ) .NE. 0) GOTO 5000
+
 * Set up a levels string, /LEVEL=(f1,f2,1) and labels if there aren't too many
 * TODO: allow for the mask to be non-contiguous, and set up levels (1)(8)(13)
 
@@ -76,6 +83,8 @@
 	
 * If there are too many features to label nicely along the color bar just let it use numbers. 
 * make up a  nominal /lev=(1,n_shown,del)
+
+
 	count = 0
 	DO i = 1, nfeatures
 	   IF ( fmask(i) ) count = count+1
@@ -133,10 +142,11 @@ c		 ENDDO
 	IF (alen .GT. 0 .AND. count.LT.20)
      .	CALL PPLCMD( from, line, 0, 'CLRKLAB '//all_keylab(:alen ), 1, 1 )
 
+* For large numbers of levels do something nicer like (0,180,5)
 
 	IF (contig) THEN
-	   ndel = 1
-	   IF (count .GT. 60) ndel=2
+	   ndel = MAX(1, INT(0.5+FLOAT(count)/40.) )
+	   IF (ndel .GT. 2) f1 = 0
 	   WRITE (str_buff, 100) f1, f2, ndel
 
  100	   FORMAT( '(', 2(i3,','), i3, ')' )

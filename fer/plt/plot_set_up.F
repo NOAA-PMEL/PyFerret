@@ -265,7 +265,8 @@
      .			indep_is_log, dep_is_log, use_nice,
      .                  this_no_range(max_line_on_plot), set_axis,
      .                  timeax_both, do_units, doing_ribbon_color,
-     .                  x_is_time, y_is_time, its_traj, its_dsg, expand_dsg_ok
+     .                  x_is_time, y_is_time, its_traj, its_dsg, 
+     .                  expand_dsg_ok, color_dsg_id
 	CHARACTER*2040	FULL_VAR_TITLE,  KEY_STRING, plot_title
 	CHARACTER	INTERNAL_WHOI_DATE*14, VAR_UNITS*64,
      .			SECS_TO_DATE*20, LEFINT*8, MERGED_WHOI_DATE*14, 
@@ -986,26 +987,29 @@ c	      ul_dolab(t_dim) = .FALSE.  ! why was this added?
 	   ENDIF
 
 * ... For a dsg dataset, can ask to color by a feature-level variable
-*     such as an ID.
+*     such as an ID or a string-valued feature variable. 
 
 	   doing_ribbon_color = ribbon_plot .AND. ipl.EQ.ribbon_var
 
-	   IF (its_dsg .AND. doing_ribbon_color .AND. 
-     .		 versus .AND.  npts2.LT.obsdimlen) THEN
-	      IF (its_dsg) THEN 
-		 CALL SET_DSG_ID_LEV (dset, cx, nfeatures, 
-     .		      dep_dat, mr_type(mv), changed_key)
-		 IF (npts2 .EQ. nfeatures) THEN
+	   IF (its_dsg .AND. doing_ribbon_color .AND. versus) THEN
+
+	      color_dsg_id = (cx_variable(cx).EQ.dsg_feature_var(dset) )  .OR. 
+     .		             (npts2.LT.obsdimlen .AND. cx_type(cx).EQ.ptype_string)
+	      IF (color_dsg_id ) CALL SET_DSG_ID_LEV
+     .		      (dset, cx, nfeatures, dep_dat, mr_type(mv), changed_key)
+
+	      IF (npts2 .EQ. nfeatures) THEN
+		 IF (color_dsg_id) THEN
 		    DO i = 1, npts2
 		       dep_dat(i) = i
 		    ENDDO
-		    IF (expand_dsg_ok) THEN
-		       CALL DSG_OBS_BY_FEATURE_VAR (dset, cx, nfeatures,
-     .		         obsdimlen, dep_dat)
-		       npts2 = obsdimlen
-	            ENDIF
 		 ENDIF
+		 IF (expand_dsg_ok) THEN
+		    CALL DSG_OBS_BY_FEATURE_VAR (dset, cx, nfeatures, obsdimlen, dep_dat)
+		    npts2 = obsdimlen
+	         ENDIF
 	      ENDIF
+
 	   ENDIF
 
 * ... Is this a dsg dataset?  if so apply an obs mask. Resets npts2

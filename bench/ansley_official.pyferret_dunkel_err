@@ -3,8 +3,8 @@ Running FERRET version /home/users/ansley/PyFerret/bin/pyferret
 -rwxr-xr-x. 1 ansley tmap 1858 May 16 17:18 /home/users/ansley/PyFerret/bin/pyferret
 Using external functions from /home/users/ansley/PyFerret/ext_func/pylibs
 Running the tests of external functions y
-Benchmark run by anslesy
-Note: merges from the trunk 7/26/19 updates
+Benchmark run by ansley
+Note: updates from the trunk: color-by-id
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DATA=. ./data
@@ -15,13 +15,13 @@ FER_DIR=.
 FER_DSETS=. ./data
 FER_EXTERNAL_FUNCTIONS=/home/users/ansley/PyFerret/ext_func/pylibs
 FER_FONTS=/home/users/ansley/PyFerret/ppl/fonts
-FER_GO=. ./v4jnls ./v5jnls ./v6jnls ./v7jnls ./pyjnls ./genjnls . ./v4jnls ./v5jnls ./v6jnls ./v7jnls ./pyjnls ./genjnls . /home/users/ansley/PyFerret/go /home/users/ansley/PyFerret/examples /home/users/ansley/PyFerret/contrib
+FER_GO=. ./v4jnls ./v5jnls ./v6jnls ./v7jnls ./pyjnls ./genjnls . /home/users/ansley/PyFerret/go /home/users/ansley/PyFerret/examples /home/users/ansley/PyFerret/contrib
 FER_GRIDS=. ./data
 FER_LIBS=/home/users/tmap/ferret/rhel6-x86_64-linux/lib
 FER_PALETTE=. /home/users/ansley/PyFerret/ppl
 FER_WEB_BROWSER=firefox
 PYFER_EXTERNAL_FUNCTIONS=/home/users/ansley/PyFerret/ext_func/pylibs
-Beginning at Fri Jul 26 14:20:53 PDT 2019
+Beginning at Wed Jul 31 10:57:20 PDT 2019
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -7832,4 +7832,4 @@ Unable to delete drawing segments when writing directly to an image file
            *** NOTE: instead use the "FRAME /FILE=... /FORMAT=..." Ferret command
            *** NOTE: the use of "SET MODE METAFILE" is deprecated;
            *** NOTE: instead use "FRAME /FILE=... /FORMAT=..."
-Ended at Fri Jul 26 14:35:52 PDT 2019
+Ended at Wed Jul 31 11:12:59 PDT 2019

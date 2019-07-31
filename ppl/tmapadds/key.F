@@ -135,6 +135,8 @@ c	        IF (NL.EQ.1 .AND. J.LE.2) ZLEV(2) = zlev(1)
 *          the labeling interval so they aren't crowded.
 * v751  *acm* 7/2/19 pyferret_DSG branch.  Starting now with the FERRET_DSG version
 *                    and getting pyferret changes into it.
+* V7.51 *acm*  7/19 Simplify the center-labeled key logic; put values to use in labels
+*                   into the array val_lab.
 
         IMPLICIT NONE
 
@@ -173,7 +175,8 @@ c	        IF (NL.EQ.1 .AND. J.LE.2) ZLEV(2) = zlev(1)
 	real		xx,yy,xxx,yyy, xx1, xxn, xxlen, xpos, wid, xp
         real            kx_lo_def, kx_hi_def, ky_lo_def, ky_hi_def,
      .                  val, del, x_inc_inf, y_inc_inf, frac, fixx, inc_min, 
-     .                  center_add, ht_ann, keylab_angl
+     .                  center_add, ht_ann, keylab_angl, val_lab(ICNLEV)
+
         character*48    TM_FMT_SNGL
         character*30    txt_out, text, buff
 	logical		TM_FPEQ_SNGL, TM_DFPEQ, ITSA_AXIS_VIEW, TM_HAS_STRING,  
@@ -204,6 +207,14 @@ c	        IF (NL.EQ.1 .AND. J.LE.2) ZLEV(2) = zlev(1)
 	keylab_angl = 0.
 
 	incr = 0
+
+	DO i = 1, icnlev
+	   IF (center_key_labels) THEN
+	      val_lab(i) = zlevsave(i)
+	   ELSE
+	      val_lab(i) = zlev(i)
+	   ENDIF
+	ENDDO
 
 	string_labs = TM_LENSTR( colorkey_labs(1) ) .GT. 0
 
@@ -401,8 +412,7 @@ c	IF ( no_lines ) cont_key = .TRUE.
 	   str_len = TM_LENSTR1(text)
 	   istr_max = lev1
 	ELSE
-	   val = zlev(lev1)
-	   IF (center_key_labels) val = zlevsave(lev1)
+	   val = val_lab(lev1)
 	   IF (TM_FPEQ_SNGL(val,0.) .AND. check_0) val = 0.
 	   text = TM_FMT_SNGL (val,lab_digits,klab_len+lab_add,str_len)  
 	ENDIF
@@ -471,8 +481,7 @@ c	IF ( no_lines ) cont_key = .TRUE.
                  str_len = TM_LENSTR1(text)
 		 IF (max_len .LT. str_len) istr_max = ndx
               ELSE
-                 val = zlev(ndx)
-                 IF (center_key_labels) val = zlevsave(ndx)
+                 val = val_lab(ndx)
                  IF (TM_FPEQ_SNGL(val,0.) .AND. check_0) val = 0.
 	         text = TM_FMT_SNGL (val,lab_digits,klab_len+lab_add,str_len)   
               ENDIF
@@ -493,7 +502,7 @@ c	IF ( no_lines ) cont_key = .TRUE.
 
 	   num_dec = 0
 	   DO ndx = lev1+incr, shd_levels, incr
-              val = zlev(ndx)
+              val = val_lab(ndx)
               IF (center_key_labels .AND. ndx.GE.shd_levels) EXIT ! from loop
               IF (TM_FPEQ_SNGL(val,0.) .AND. check_0) val = 0.
 	      buff = TM_FMT_SNGL (val,lab_digits,klab_len+lab_add,str_len)
@@ -504,11 +513,8 @@ c	IF ( no_lines ) cont_key = .TRUE.
 	   max_len = 0
 
 	   DO ndx = lev1+incr, shd_levels, incr
-              val = zlev(ndx)
-              IF (center_key_labels) THEN
-                 IF (ndx.GE.shd_levels) EXIT ! from loop
-	         val = zlevsave(ndx)
-              ENDIF
+              val = val_lab(ndx)
+	      IF (center_key_labels .AND. ndx.GE.shd_levels) EXIT ! from loop
 
               IF (TM_FPEQ_SNGL(val,0.) .AND. check_0) val = 0.
 	      buff = TM_FMT_SNGL (val,lab_digits,klab_len+lab_add,str_len)
@@ -537,11 +543,8 @@ c	IF ( no_lines ) cont_key = .TRUE.
               text = colorkey_labs(ndx)
               str_len = TM_LENSTR1(text)
 	   ELSE
-	      val = zlev(ndx)
-	      IF (center_key_labels) THEN
-	         IF (ndx .EQ. shd_lev_hi) EXIT ! from loop
-	         val = zlevsave(ndx)
-	      ENDIF
+	      val = val_lab(ndx)
+	      IF (center_key_labels .AND. ndx.GE.shd_lev_hi) EXIT ! from loop
 	      IF (TM_FPEQ_SNGL(val,0.) .AND. check_0) val = 0.
 	      text = TM_FMT_SNGL (val,lab_digits,klab_len+lab_add,str_len)
 	   ENDIF
@@ -728,7 +731,7 @@ c	IF ( no_lines ) cont_key = .TRUE.
            str_len = TM_LENSTR1(text)
 	   IF (max_len .LT. str_len) istr_max = lev1
         ELSE
-           val = zlev(lev1)
+           val = val_lab(lev1)
            IF (TM_FPEQ_SNGL(val,0.) .AND. check_0) val = 0.
 	   text = TM_FMT_SNGL (val,lab_digits,klab_len+lab_add,str_len)
         ENDIF
@@ -807,7 +810,7 @@ c	IF ( no_lines ) cont_key = .TRUE.
 	         str_len = TM_LENSTR1(text)
 		 IF (max_len .LT. str_len) istr_max = ndx
 	      ELSE
-	         val = zlev(ndx)
+	         val = val_lab(ndx)
 	         IF (TM_FPEQ_SNGL(val,0.) .AND. check_0) val = 0.
 	         text = TM_FMT_SNGL (val,lab_digits,klab_len+lab_add,str_len)
 	      ENDIF
@@ -843,8 +846,8 @@ c	IF ( no_lines ) cont_key = .TRUE.
 
 	   num_dec = 0
 	   DO ndx = lev1+incr, shd_levels, incr
-              val = zlev(ndx)
-              IF (center_key_labels .AND. ndx.GE.shd_levels) EXIT ! from loop
+              val = val_lab(ndx)
+c              IF (center_key_labels .AND. ndx.GE.shd_levels) EXIT ! from loop	
               IF (TM_FPEQ_SNGL(val,0.) .AND. check_0) val = 0.
 	      buff = TM_FMT_SNGL (val,lab_digits,klab_len+lab_add,str_len)
               i = INDEX(buff, '.')
@@ -855,11 +858,7 @@ c	IF ( no_lines ) cont_key = .TRUE.
 	   max_len = 0
 
 	   DO ndx = lev1+incr, shd_levels, incr
-              val = zlev(ndx)
-              IF (center_key_labels) THEN
-                 IF (ndx.GE.shd_levels) EXIT ! from loop
-	         val = zlevsave(ndx)
-              ENDIF
+              val = val_lab(ndx)
 
               IF (TM_FPEQ_SNGL(val,0.) .AND. check_0) val = 0.
 	      buff = TM_FMT_SNGL (val,lab_digits,klab_len+lab_add,str_len)
@@ -952,16 +951,13 @@ c	ENDIF
 
         do 1020 ndx = lev1,shd_lev_hi,incr
 *	   WRITE OUT CORRESPONDING VALUE
-	   val = zlev(ndx)
-	   IF (center_key_labels) THEN
-	      IF (ndx .EQ. shd_lev_hi) EXIT ! from loop
-	      val = zlevsave(ndx)
-	   ENDIF
 	   	         
 	   IF (string_labs) THEN
 	      text = colorkey_labs(ndx)
 	      str_len = TM_LENSTR1(text)
 	   ELSE
+	      val = val_lab(ndx)
+	      IF (center_key_labels .AND. ndx.GE.shd_lev_hi) EXIT ! from loop
 	      IF (TM_FPEQ_SNGL(val,0.) .AND. check_0) val = 0.
 	      text = TM_FMT_SNGL (val,lab_digits,klab_len+lab_add,str_len)
 	   ENDIF

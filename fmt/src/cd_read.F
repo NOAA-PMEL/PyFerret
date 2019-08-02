@@ -83,6 +83,8 @@
 *             4/2018 for the 1861 fix, need to deal with different missing_value and _FillValue
 * V751 *acm*  5/2019 Issue # 1935.  If there is a _FillValue but no missing_value don't treat
 *                    things as if missing_value = 0 ! 
+* V751 *acm*  8/2019 Issue # 1948. Correct the logic for when there is scaled variable that has
+*                    a missing_value but no _FillValue.
 
 * include files
         include 'netcdf.inc'
@@ -381,7 +383,7 @@
 
 * Consolidate to one bad-value - needed for the fix to 1861...
 
-	   IF (tf2) CALL TM_SWITCH_BAD ( fill_in, bad_in, var, totsize )
+	   IF (tf1 .AND. tf2) CALL TM_SWITCH_BAD ( fill_in, bad_in, var, totsize )
 	   IF (tf1 .AND. .NOT.tf2) bad_in = fill_in
 
 	   CALL TM_SCALE_SWITCH_BAD ( cd_scale_factor(ivar), cd_add_offset(ivar), 

@@ -1,0 +1,25 @@
+! err75_scale_missingval.jnl
+! Ticket 1948: variable with a missing_value flag only
+! has zero's mis-handled.
+
+! Additionally the values for missing and fill were not initialized, 
+! so the bug only shows up intermittantly. Reading a scaled var with 
+! bad=0 causes them to be set to 0 as in a fresh session.
+
+let/bad=0 a = 1
+define att/output a.scale_factor = 10
+save/clobber/file=a.nc a
+cancel var a
+use a.nc
+list a
+cancel data/all
+
+! The variable has a missing_value flag but not _FillValue
+! The 0 in var was shown as missing
+use scale_test
+show attributes var1
+list var1
+
+! with a _FillValue attribute, it's treated correctly
+show attributes var2
+list var2

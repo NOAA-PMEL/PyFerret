@@ -6,38 +6,33 @@
 ## Full path name of the directory containing this file (the ferret root directory).
 ## Do not use $(shell pwd) since this is included in Makefiles in other directories.
 ## =========================
-# DIR_PREFIX = $(HOME)/build/trunk/FERRET
-DIR_PREFIX = $(HOME)/git/Ferret
-# DIR_PREFIX = $(HOME)/svn/ferret
+# DIR_PREFIX = $(HOME)/build/pyferret_dev
+DIR_PREFIX = $(HOME)/git/PyFerret
+# DIR_PREFIX = $(HOME)/svn/pyferret
 
 ## =========================
-## Machine for which to build Ferret.
-## Use $(HOSTTYPE) to build natively for the machine you are using.
-## =========================
-# BUILDTYPE = $(HOSTTYPE)
-BUILDTYPE = x86_64-linux
-# BUILDTYPE = i386-linux
-# BUILDTYPE = intel-mac
-
-## =========================
-## Installation directory for built Ferret using the "install" Makefile target.
-## This Makefile target circumvents the need to create the fer_*.tar.gz files
-## just for creating a Ferret installation.
+## Installation directory for built PyFerret.
+## Using the "install" Makefile target creates a generic pyferret-*.tar.gz file
+## and then extracts it to create a PyFerret installation at this location.
 ## =========================
 # INSTALL_FER_DIR = $(HOME)/ferret_distributions/rhel6_64
-INSTALL_FER_DIR = $(HOME)/Ferret
+INSTALL_FER_DIR = $(HOME)/PyFerret
 # INSTALL_FER_DIR = $(FER_DIR)
 
 ## =========================
-## C and Fortran compilers to use.  The construct "$(shell which gcc)" assigns
-## the response to "which gcc" run from a Bourne shell (such as bash).
-## When compiling for Mac OS X, one may wish to use clang instead of gcc.
-## If you wish to use values already defined in you shell environment when 
-## you run make, comment out all definitions of CC and FC (do NOT leave blank).
+## Machine type for which to build Ferret/PyFerret
+##   x86_64-linux      for 64-bit RHEL
+##   x86_64-linux-gnu  for 64-bit Ubuntu and many "free" Linux systems
+##   i386-linux        for 32-bit RHEL
+##   i386-linux-gnu    for 32-bit Ubuntu and many "free" Linux systems
+##   intel-mac         for Mac OSX
 ## =========================
-# CC = $(shell which clang)
-CC = $(shell which gcc)
-FC = $(shell which gfortran)
+# BUILDTYPE = $(HOSTTYPE)
+BUILDTYPE = x86_64-linux
+# BUILDTYPE = x86_64-linux-gnu
+# BUILDTYPE = i386-linux
+# BUILDTYPE = i386-linux-gnu
+# BUILDTYPE = intel-mac
 
 ## =========================
 ## C and Fortran compilers to use.  The construct "$(shell which gcc)" assigns
@@ -53,63 +48,28 @@ FC = $(shell which gfortran)
 ## =========================
 ## Python executable to invoke for build and install.
 ## =========================
-HDF5_LIBDIR = /usr/local/hdf5-1.10.5/lib
-# HDF5_LIBDIR = $(HOME)/.local/lib
-# HDF5_LIBDIR = /usr/local/lib
-# HDF5_LIBDIR = /usr/lib64
-# HDF5_LIBDIR = /usr/lib
-# HDF5_LIBDIR =
+# PYTHON_EXE = python2.6
+PYTHON_EXE = python2.7
+# PYTHON_EXE = python3.4
+# PYTHON_EXE = python3.5
+# PYTHON_EXE = python3.6
+# PYTHON_EXE = python3.7
 
 ## =========================
-## Location of the SZ compression static library.
-## This value should be given only if the SZ compression library was used in
-## building the HDF5 library, and the NetCDF and HDF5 static libraries are
-## being used (HDF5_LIBDIR is specified).
-##
-## If given and not empty, and if HDF5_LIBDIR is given and not empty, the SZ
-## compression static library is used.
-##
-## If empty or not given, and if HDF5_LIBDIR is given and not empty, the SZ
-## compression library will not be used, which is what you want if the HDF5
-## libraries were built using the Z compression library.
+## Full path to the python include files directory.
+## Should not need any modifications.
 ## =========================
-# SZ_LIBDIR = $(HOME)/.local/lib
-# SZ_LIBDIR = /usr/local/lib
-# SZ_LIBDIR = /usr/lib64
-# SZ_LIBDIR = /usr/lib
-SZ_LIBDIR =
+PYTHONINCDIR := $(shell $(PYTHON_EXE) -c "from __future__ import print_function ; import distutils.sysconfig; print(distutils.sysconfig.get_python_inc())")
 
 ## =========================
-## Location of the NetCDF libraries.
-## Include files are assumed to be located in an "include" sibling directory.
-## If HDF5_LIBDIR is given and not empty, the static libraries will be used.
-## If HDF5_LIBDIR is empty or not given, NetCDF shared-object libraries will be used.
+## If given and not empty, the full path name to the gfortran library to use.
+## This is primarily used for the intel-mac build.
+## The given scripts (commented out) should provide the correct value for the gfortran libraries.
+## If empty or not given, the gfortran library is linked in using the "-lgfortran" flag.
 ## =========================
-NETCDF_LIBDIR = /usr/local/netcdf-4.6.3/lib
-# NETCDF_LIBDIR = $(HOME)/.local/lib
-# NETCDF_LIBDIR = /usr/local/lib
-# NETCDF_LIBDIR = /usr/lib64
-# NETCDF_LIBDIR = /usr/lib
-
-## =========================
-## Directory containing the (GNU) readline static libraries.
-## Include files are assumed to be located in an "include" sibling directory.
-##
-## If the readline provided by the system is not actually (GNU) readline (e.g.;
-## on Mac, where it is actually editline), it may not have the ability to specify
-## a function to repeatedly call while waiting for user input (the rl_event_hook).
-## Ferret uses this ability to keep plot windows refreshed and responsive, so in
-## this case, an actual GNU readline (and history) static library must be built
-## and installed.
-##
-## If the readline provided by the system does provide this required functionality
-## (i.e; is GNU readline, which is the case for most Linux systems), do not define
-## this value (or leave it blank).  In this case the system's readline and history
-## shared-object libraries will be used.
-## =========================
-# READLINE_LIBDIR = $(HOME)/.local/Cellar/readline/8.0.0/lib
-# READLINE_LIBDIR = /usr/local/Cellar/readline/8.0.0/lib
-READLINE_LIBDIR =
+# GFORTRAN_LIB = $(shell $(FC) --print-file-name=libgfortran.dylib)
+# GFORTRAN_LIB = $(shell $(FC) --print-file-name=libgfortran.a)
+GFORTRAN_LIB =
 
 ## =========================
 ## Directory containing the Cairo static libraries (v1.12 or later).

@@ -37,5 +37,6 @@ let/units=degrees_north/title=LATITUDE ylat = lat_bounds
 
 ! Here the overlay plot triggered by the /MODULO did not apply the specified levels
 ! but just computed levels from the data and also drew the key for those new levels.
-polygon/modulo/hlim=-10:60/vlim=30:60/line/fill/pal=rainbow/lev=(-5,0,1)(0,2.6,0.2) ylon, ylat, yvar
+! The left-hand side of the plot east of 20E was way too yellow.
+polygon/modulo/hlim=-10:60/vlim=30:60/fill/pal=rainbow/lev=(-5,0,1)(0,2.6,0.2) ylon, ylat, yvar
 frame/file=poly_modulo_levels.gif

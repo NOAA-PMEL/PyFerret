@@ -51,6 +51,7 @@
 * V500 *sh*  6/99 - added user_perm (permutation) input argument allowing the
 *		user to coach this routine on the ordering of the axes
 * V674 2/12 *acm* 6D Ferret: use nferdims rather than 4 for dimension indexing
+* V751 8/19 *acm* Issue 1947: Add coaching about the USE/ORDER= qualifier
 
         include 'tmap_dims.parm'
 #include "tmap_dset.parm"
@@ -291,6 +292,7 @@
       vlen = LEN(vname)
       CALL TM_NOTE( 'Unspecified or unsupported ordering of axes in variable '
      .               //risc_buff(:vlen), tt )
+      CALL TM_NOTE( 'Check the dimensions: can USE/ORDER= be applied?', tt )
       CALL TM_NOTE( 'The default ordering will be used', tt )
 
       RETURN

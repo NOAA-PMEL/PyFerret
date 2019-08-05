@@ -4,7 +4,7 @@ Running FERRET version /home/users/ansley/PyFerret/bin/pyferret
 Using external functions from /home/users/ansley/PyFerret/ext_func/pylibs
 Running the tests of external functions y
 Benchmark run by ansley
-Note: updates from the trunk: color-by-id
+Note: extra code block in line_plot_labels
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DATA=. ./data
@@ -15,13 +15,13 @@ FER_DIR=.
 FER_DSETS=. ./data
 FER_EXTERNAL_FUNCTIONS=/home/users/ansley/PyFerret/ext_func/pylibs
 FER_FONTS=/home/users/ansley/PyFerret/ppl/fonts
-FER_GO=. ./v4jnls ./v5jnls ./v6jnls ./v7jnls ./pyjnls ./genjnls . /home/users/ansley/PyFerret/go /home/users/ansley/PyFerret/examples /home/users/ansley/PyFerret/contrib
+FER_GO=. ./v4jnls ./v5jnls ./v6jnls ./v7jnls ./pyjnls ./genjnls . ./v4jnls ./v5jnls ./v6jnls ./v7jnls ./pyjnls ./genjnls . /home/users/ansley/PyFerret/go /home/users/ansley/PyFerret/examples /home/users/ansley/PyFerret/contrib
 FER_GRIDS=. ./data
 FER_LIBS=/home/users/tmap/ferret/rhel6-x86_64-linux/lib
 FER_PALETTE=. /home/users/ansley/PyFerret/ppl
 FER_WEB_BROWSER=firefox
 PYFER_EXTERNAL_FUNCTIONS=/home/users/ansley/PyFerret/ext_func/pylibs
-Beginning at Wed Jul 31 10:57:20 PDT 2019
+Beginning at Mon Aug 5 13:40:16 PDT 2019
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -7510,6 +7510,10 @@ ooooooooooooooooooooooooooooooooooooooooooo
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
+ LISTing to file a.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
 Starting test: bn_dsg_tseries
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -7832,4 +7836,4 @@ Unable to delete drawing segments when writing directly to an image file
            *** NOTE: instead use the "FRAME /FILE=... /FORMAT=..." Ferret command
            *** NOTE: the use of "SET MODE METAFILE" is deprecated;
            *** NOTE: instead use "FRAME /FILE=... /FORMAT=..."
-Ended at Wed Jul 31 11:12:59 PDT 2019
+Ended at Mon Aug 5 13:52:10 PDT 2019

@@ -386,15 +386,7 @@
 	         slen = TM_LENSTR1( plot_title )
 	      ELSE
 
-	         IF ( its_dsg ) THEN 
-* Read the feature-id value. If it's numeric turn it into a string
-                    IF (ipl .GT. nfeatures) CYCLE
-                    CALL CD_READ_ONE ( dset, fvar_varid, nfeatr(ipl), dtype, value, 
-     .                                 plot_title, slen, status )
-		    IF (dtype .NE. NF_CHAR) plot_title = TM_FMT(value, 15, 20, slen)
-	         ELSE 
-	            plot_title = KEY_STRING( cx_list(ipl), cx_xtra_doc, slen )
-	         ENDIF 
+	         IF ( .NOT. its_dsg ) plot_title = KEY_STRING( cx_list(ipl), cx_xtra_doc, slen ) 
 
 	         IF (.NOT.use_keys .OR. its_dsg) plot_title = VAR_TITLE_ONLY( cx_list(ipl), slen )
 

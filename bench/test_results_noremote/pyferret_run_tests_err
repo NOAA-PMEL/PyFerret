@@ -5978,6 +5978,10 @@ ooooooooooooooooooooooooooooooooooooooooooo
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
+ LISTing to file a.nc
 *** Running ferret script: bn_dsg_tseries.jnl
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -5985,7 +5989,8 @@ ooooooooooooooooooooooooooooooooooooooooooo
 list t_25[x=95:180] + longitude
  **ERROR: command syntax: Limits by subscript /L= invalid for DSG data. Use /T= limits or select by feature
 list/l=1:5 t_25
- **ERROR: command syntax: Limits by subscript /I= invalid for DSG data. Use /X= limits or select by feature
+ **ERROR: illegal limits: "T_25" is not in the range I=200:210
+          Axis extremes are I=1:70
 list/i=200:210 t_25
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -6050,6 +6055,7 @@ SET DAT/FORM=CDF dsg_bad_atts2
 *** Running ferret script: bn_dsg_one_e_val.jnl
 *** Running ferret script: bn_dsg_list_comma_tab.jnl
 *** Running ferret script: bn_dsg_if_exprns.jnl
+*** Running ferret script: bn_dsg_subset.jnl
 *** Running ferret script: bn_gif_noremote.jnl
  **ERROR: dimensions improperly specified: specified data is not a line
            - its a 2D region: "plot/i=1:10/j=1:20/nolabel i+j"

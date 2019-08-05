@@ -137,6 +137,7 @@
 * v75 *acm*   5/19 Issue 1933, recompute T0 datestring length after it
 *                  possibly was reformatted
 * v751 *acm*  6/19 Allow for longer strings as attribute values
+* V751 *acm*  8/19 Issue 1947: If axis attr doesn't match grid direction, don't write it.
 
 * argument definitions:
 *     dset    - dset (if netcdf file, for getting name and attribute 
@@ -533,6 +534,16 @@
             IF (MATCH_NAME (attname,  TM_LENSTR1(attname), 
      .           '_FILLVALUE', 10) ) attoutflag = 0
 		
+* If there is an axis attribute check that it matches the direction in the grid
+* and skip writing it if not.
+
+            IF (attoutflag.EQ.1 .AND. MATCH_NAME (attname,  TM_LENSTR1(attname), 'axis', 4) ) THEN
+	       IF ( .NOT. MATCH_NAME (buff, 1, ww_dim_name(idim), 1) ) THEN
+	          attoutflag = 0
+		  got_axis = .TRUE.
+	       ENDIF
+            ENDIF
+ 
 * Write the attribute, but skip this for the point-spacing attr on record axis.
 
             IF ( MATCH_NAME (attname,  TM_LENSTR1(attname), 
@@ -702,7 +713,7 @@
      .        	       slen, datebuff(:slen) )
 	ENDIF
 
-!  Write the calendar name
+*  Write the calendar name
 
         IF (cal_id .NE. 1) THEN
           slen = TM_LENSTR1( line_cal_name(iaxis) )

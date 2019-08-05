@@ -3128,6 +3128,7 @@ variables:
 *** Running ferret script: bn_dsg_one_e_val.jnl
 *** Running ferret script: bn_dsg_list_comma_tab.jnl
 *** Running ferret script: bn_dsg_if_exprns.jnl
+*** Running ferret script: bn_dsg_subset.jnl
 *** Running ferret script: bn_gif.jnl
 *** Running ferret script: bn_ps.jnl
 *** Running ferret script: bn_all_ef.jnl

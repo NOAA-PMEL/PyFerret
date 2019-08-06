@@ -165,6 +165,7 @@
 *                    change only for netCDF outputs not ascii multi-var listings
 * V751 6/19 *acm*  DSG data cannot be subsetted by index in I,J,K,L; only by coordinates
 *                  /X= /Y= /Z= /T=  or with /E= or /M=
+* v751 *acm*  8/19 Issue 1946, allow for user-set string dimension length, SAVE/STRLEN
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -204,7 +205,7 @@
      .                  edges_flag, keepax_flag, nn, slen, do_bounds,
      .			my_mr(max_intrp), my_cx(max_intrp), frame_bottom,
      .			nvars2list, grid, dsg_type, dset, nfeatures, var,
-     .			longest_feature, nctype, cdfid, strmlen
+     .			longest_feature, nctype, cdfid, strmlen, usr_maxstrlen
 	INTEGER*8	i8_size
 	REAL		big_val, little_val
 
@@ -321,6 +322,18 @@
         as_global = qual_given( slash_list_asglobal ) .GT. 0
         IF (.NOT. do_cdf .AND. as_global) CALL WARN(
      .          '/ASGLOBAL is valid only for NetCDF output. Ignored')
+
+* /STRLEN to write string-dimension the given length.
+
+	usr_maxstrlen = unspecified_int4
+	i = qual_given(slash_list_strlen)
+	IF ( i .GT. 0 ) THEN
+	   CALL EQUAL_VAL( cmnd_buff(qual_start(i):qual_end(i)),
+     .			      big_val, status )
+	   usr_maxstrlen = big_val
+	ENDIF	
+        IF (.NOT. do_cdf .AND. usr_maxstrlen.GT.0) CALL WARN(
+     .          '/STRLEN is valid only for NetCDF output. Ignored')
 
 * /EDGES for netCDF ?
         edges_flag = 0
@@ -809,7 +822,7 @@ c     .		 .AND. .NOT.do_comma_del
      .                    list_at_eof, cdf_recax, nvars2list,
      .			  mr_perm, my_cx, buff, head_enh,
      .			  pcdf_mode_normal, clobber, edges_flag, do_bounds,
-     .                    keepax_flag, out_type, quiet, as_global, status )
+     .                    keepax_flag, out_type, quiet, as_global, usr_maxstrlen, status )
 
 * ASCII custom output for dsg-file data
 	ELSEIF ( has_dsg ) THEN

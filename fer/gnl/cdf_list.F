@@ -461,6 +461,11 @@
 		 usr_maxstrlen = 0
 	      ENDIF
 
+* Here, for user-variables, we COULD arbitrarily set maxstrlen to something larger than 
+* the maxstrlen computed for this write, when the user hasn't set a value with /STRLEN, 
+* maybe only when the grid has a time axis, e.g. IF(tax.NE.mnormal), so that appends 
+* with longer strings would work.  See ticket 1946.
+
 	      IF (itsa_uvar .AND. .NOT.append) THEN
 	         IF (usr_maxstrlen.GT.0 .AND. usr_maxstrlen.LT.maxstrlen) GOTO 5600
 		 IF (usr_maxstrlen.GT.0) maxstrlen = usr_maxstrlen

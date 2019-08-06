@@ -97,6 +97,7 @@
 * V710  9/16 *acm* Ticket 2459: If axis is already in the file with a different
 *                  direction write axis with a unique name for this direction.
 * v745 *acm* 12/18 Issue 1909, option to write dates in ISO8601 format
+* v751 *acm*  8/19 Issue 1946, allow for user-set string dimension length, SAVE/STRLEN
 
 * argument definitions:
 *     cdfid   - netCDF id number for already opened CDF file
@@ -152,7 +153,7 @@
      .        dimid(8), iaxis, cdfstat, dims, idim, varid, vartyp,
      .        nvdims, vdims(8), nvatts, nlen, glen, vlen, ax_type,
      .        lo2(nferdims), hi2(nferdims), what_recdim, strdim, dimsize,
-     .        chunk_set, duplines, jaxis, ii
+     .        chunk_set, duplines, jaxis, ii, slen, strdimlen
       REAL    val
 * *kob*  - change lengths of CD_CHILDAX_NAME, CD_AXIS_NAME, lname,
 *          cdfname, vname and gname to 64 from 24
@@ -194,7 +195,10 @@
 	 IF (type .NE. vartyp) GOTO 5050
 * ... first dimension of string variable is actually max string len
 	 IF (itsa_strvar) THEN
-	   maxstrlen = vdims(1)
+	   strdim = vdims(1)
+	   cdfstat = NF_INQ_DIMLEN(cdfid, strdim, slen)
+	   IF (maxstrlen .GT. slen) GOTO 5300
+
 	   DO 10 idim = 1, 5
  10	   vdims(idim) = vdims(idim+1)
 	   nvdims = nvdims - 1
@@ -205,12 +209,6 @@
      .      .OR. lo(idim) .EQ. unspecified_int4    ) GOTO 100
             dims = dims + 1
             IF ( dims .GT. nvdims ) GOTO 5100
-! this check removed to cd_write_var to enable over-writing partial hyperslabs
-!            IF ( idim .NE. recdim ) THEN
-!               npts = CD_AXLEN( cdfid, vdims(dims), status )
-!               IF ( status .NE. merr_ok ) GOTO 5900
-!               IF ( npts .NE. hi(idim)-lo(idim)+1 ) GOTO 5300
-!            ENDIF
  100     CONTINUE
          IF ( dims .NE. nvdims ) GOTO 5100    ! number of dimensions match ?
          GOTO 1000
@@ -298,6 +296,8 @@
 	 IF (itsa_strvar) strdim = CD_WRITE_STRDIM(cdfid, maxstrlen, stringdimname, status)
          IF ( status .NE. merr_ok ) GOTO 5900
       ENDIF
+
+	
 
       do idim = 1, nferdims+1
 	 dimid(idim) = 0
@@ -489,14 +489,15 @@ C     Turn on deflate_lev and chunking
      .   //vname(:vlen)//' doesnt match CDF file',
      .   no_errstring, *5900 )
 
-! 5300 CALL TM_ERRMSG
-!     . ( merr_linepredef, status, 'CD_MAKE_VAR', unspecified_int4,
-!     .   unspecified_int4,
-!     .   dimnam(idim)//' axis length of '//vname(:vlen)//
-!     .   ' inconsist. w/ CDF file',
-!     .   no_errstring, *5900 )
+ 5300  c_str = TM_FMT(FLOAT(maxstrlen), 5, 12, clen)
+       CALL TM_ERRMSG
+     . ( merr_linepredef, status, 'CD_MAKE_VAR', unspecified_int4,
+     .   unspecified_int4,
+     .   'String length for variable '//vname(:vlen)//
+     .   ' inconsistent w/ CDF file. On first write, use /STRLEN= at least '//
+     .   c_str(:clen), no_errstring, *5900 )
 
- 5400       CALL TM_ERRMSG
+ 5400 CALL TM_ERRMSG
      .     ( cdfstat+pcdferr, status, 'CD_MAKE_VAR', cdfid,
      .       unspecified_int4, 'Failed creating variable '
      .       //vname(:vlen), no_errstring, *5900 )

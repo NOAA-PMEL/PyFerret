@@ -73,6 +73,7 @@
 * V720 *acm*  5/17 Ticket 2530 add WIRE/COLOR= and draw the color with pen 1
 * V722 *kms* 10/17 Remove threddsBrowser (too big, outdated, and unused)
 * V723 *acm* 11/17 New SAVE/ASGLOBAL option to write global attribute to netCDF file
+* v751 *acm*  8/19 Issue 1946, allow for user-set string dimension length, SAVE/STRLEN
 
 
 * command qualifier states
@@ -179,7 +180,8 @@
      .			slash_list_outtype,
      .			slash_list_curvi,
      .			slash_list_layerz,
-     .			slash_list_asglobal
+     .			slash_list_asglobal,
+     .			slash_list_strlen
 
 	INTEGER		
      .			slash_set_data_ez,
@@ -478,7 +480,8 @@
      .			slash_list_outtype = 1+53,
      .			slash_list_curvi   = 1+54,
      .			slash_list_layerz  = 1+55,
-     .			slash_list_asglobal = 1+56 )
+     .			slash_list_asglobal = 1+56,
+     .			slash_list_strlen  = 1+57)
 
 	PARAMETER     (
      .			slash_set_data_ez	= 1,

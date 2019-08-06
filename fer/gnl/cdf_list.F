@@ -2,7 +2,7 @@
      .			      mr_list, cx_list, title, enhead, mode,
      .			      clobber, edges_flag, do_bounds, 
      .			      keepax_flag, out_type, quiet, as_global,
-     .			      status )
+     .			      usr_maxstrlen, status )
 
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -141,6 +141,8 @@
 * V743 *acm* 7/18 Issue 1883: var with only a _FillValue which is NaN got no
 *                 _FillValue or missing_value attribute written
 * v745 *acm* 12/18  Issue 1909, option to write dates in ISO8601 format
+* V751 *acm* 7/19 Ticket 1946: File with user-variable strings truncates strings appended later.
+*		  - Allow for the user to set a length for string-length dimension
 
         IMPLICIT NONE
         include 'netcdf.inc'
@@ -165,7 +167,8 @@
 * calling argument declarations:
         LOGICAL         append, enhead, clobber, quiet
 	INTEGER		nvars, mr_list(nvars), cx_list(nvars), mode,
-     .			edges_flag, keepax_flag, do_bounds, status
+     .			edges_flag, keepax_flag, do_bounds, usr_maxstrlen, 
+     .			status
         CHARACTER*(*)   fname, title, out_type
         CHARACTER*1     crecdim
 
@@ -294,6 +297,7 @@
            IF ( status .NE. merr_ok ) GOTO 5800
 	ENDIF
 
+* Did they set a string-length?
 
 * DODS URL saved as a global attribute (11/96)
 	IF ( DODS_cache ) THEN
@@ -461,10 +465,25 @@
 * if a string variable, then find max len
 * If the len comes back as 0 the variable contains just null strings.
 * Set maxstrlen to 1, else we cant define the variable.
+* Ticket 1946
+* For file variables we use the string-length dimension from the input file.
+* For user-variables allow the user to set a length. A file created with 
+* initial strings of shorter length then truncated strings appended later.
+
 	   IF (itsa_string) THEN
 	      maxstrlen = GET_MAX_C_STRING_LEN(
      .				   mr_c_pointer(mr), MGRID_SIZE(mr))
 	      IF (maxstrlen .LE. 0) maxstrlen = 1
+
+	      IF (usr_maxstrlen.GT.0 .AND. append .AND. do_warn) THEN 
+	         CALL WARN ('SAVE/STRLEN= is ignored when appending to the file')
+		 usr_maxstrlen = 0
+	      ENDIF
+
+	      IF (itsa_uvar .AND. .NOT.append) THEN
+	         IF (usr_maxstrlen.GT.0 .AND. usr_maxstrlen.LT.maxstrlen) GOTO 5600
+		 IF (usr_maxstrlen.GT.0) maxstrlen = usr_maxstrlen
+	      ENDIF
 	   ELSE
 	      maxstrlen = 0
 	   ENDIF
@@ -602,11 +621,24 @@
              ENDIF
            ENDIF
 
-           IF (.NOT. as_global) THEN
-           CALL CD_MAKE_VAR( cdfid, dset_num, varcode, type, maxstrlen,
+	   IF (varid .GT. 0) THEN
+              CALL  CD_GET_VAR_VARNAME (dset, varid, varname, status)
+              varcode = varname
+              IF (mode_upcase_output) CALL STR_UPCASE( varcode, varname)
+	   ENDIF
+
+* If they set a larger string-len, use it
+           IF (usr_maxstrlen .GT. 0) THEN 
+	      IF (usr_maxstrlen .LT. maxstrlen .AND. do_warn) CALL WARN 
+     .        ('/STRLEN setting shorter than max string length. Strings will be truncated.'
+     .        //pCR//'Variable: '//varcode )
+	      maxstrlen = MAX(maxstrlen, usr_maxstrlen)  
+           ENDIF
+
+	   CALL CD_MAKE_VAR( cdfid, dset_num, varcode, type, maxstrlen,
      .               grid, make_lo, make_hi, recdim, enhead, new, 
      .               edges_flag, do_bounds, mode_upcase_output, 
-     .               keepax_flag, date_fmt_out,
+     .               keepax_flag, date_fmt_out, 
      .               netcdf4_type, xchunk_size, 
      .               ychunk_size, zchunk_size, tchunk_size, 
      .               deflate_lev, shuffle_flag, endian_code, buff2,
@@ -1328,6 +1360,19 @@
      .			//pCR//'Variable: '//varcode, *5800 )
 
  5400    CALL ERRMSG ( ferr_TMAP_error, status, ' ', *5990 )
+
+ 5500    CALL ERRMSG ( ferr_TMAP_error, status,
+     .                 'unable to set variable type for output: '//varcode,
+     .                 *5800 )
+     
+* User-specified string-length is too short (aname used as dummy string here)
+
+ 5600	buff = TM_FMT(FLOAT(maxstrlen), 5, 12, slen)
+ 	aname = TM_FMT(FLOAT(usr_maxstrlen), 5, 12, alen)
+	CALL ERRMSG ( ferr_invalid_command, status,
+     .          'Strings are length '//buff(:slen)//
+     .		': longer than /STRLEN setting of '//aname(:alen) 
+     .		//pCR//'Variable: '//varcode, *5800 )
 
  5800   CALL ERRMSG ( ferr_TMAP_error, final_status, ' ', *5810 )
  5810	nready = ivar - 1

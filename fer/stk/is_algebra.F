@@ -586,10 +586,6 @@
 	   CALL FLESH_OUT_AXIS(orientation, big_cx, status)
 	   CALL FLESH_OUT_AXIS(e_dim,       big_cx, status)
 	   CALL TRANSFER_CONTEXT( big_cx, lo_cx )
-	   
-c	   cx_data_set( big_cx ) = TM_DSG_DSET_FROM_GRID( cx_grid(big_cx) )
-c	   cx_variable( big_cx ) = uvar
-c	   cx_category( big_cx ) = cat_user_var
 	ENDIF
 
 * Deallocate dynamic grid if one is associated with this result

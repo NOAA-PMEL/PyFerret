@@ -1,0 +1,76 @@
+! bn_cdf_strlen.jnl
+!  New SAVE/STRLEN= qualifier, when saving user-defined strings to netCDF
+!  Also when writing user-defined variable, extend the string length to make
+!  room in the string dimension for possible appending.
+! See issue #1946
+
+let strings = {"abc", "defg", "hijkl", "lmnopq"}
+define axis/t=1:4:1 taxis
+let tt = t[gt=taxis]
+let tstrings = reshape(strings, tt)
+let tstrings_long = STRCAT(tstrings, "_1234567890")
+
+! Write user-defined variable to netCDF.  Default is to set the 
+! string-dimension length to the max length of the strings written.
+
+save/clobber/file=a.nc tstrings, tstrings_long
+sp ncdump a.nc
+
+! or /STRLEN sets the length
+
+save/clobber/file=a.nc/STRLEN=7 tstrings
+sp ncdump a.nc
+
+! If /STRLEN specified it applies to all string variables
+
+save/clobber/file=a.nc/L=1/STRLEN=20 tstrings, tstrings_long
+save/append/file=a.nc/L=2:4 tstrings, tstrings_long
+
+sp ncdump a.nc
+
+!
+! SAVE/STRLEN can be used when writing data out of netCDF files.
+! Note it doesn't change the name of the string dimension
+
+use string_on_time.nc
+list t_25, str_temp
+save/clobber/file=a.nc/L=1:3/strlen=15 t_25, str_temp
+save/append/file=a.nc/L=4:12 t_25, str_temp
+sp ncdump a.nc
+
+! /STRLEN is silently ignored writing numeric data.
+
+save/clobber/file=a.nc/L=1:10/strlen=15 t_25
+sp ncdump a.nc
+
+! Warnings
+
+! SAVE/STRLEN is applied only on the first WRITE, not on /APPEND
+
+save/clobber/file=a.nc/L=1/strlen=6 tstrings
+save/append/file=a.nc/L=2:4/strlen=10 tstrings
+sp ncdump a.nc
+
+! Intentional errors
+set mode ignore
+
+! This needs length of 15.
+
+let strings = {"abc", "defg", "hijkl", "lmnopqrstuvwxyz"}
+
+save/clobber/file=a.nc/L=1 tstrings, tstrings_long
+save/append/file=a.nc/L=2:4 tstrings, tstrings_long
+
+! save/append/strlen=  cannot be used to change the string length 
+
+save/clobber/file=a.nc/L=1/strlen=4 tstrings
+save/append/file=a.nc/L=2:4/strlen=10 tstrings
+
+! /STRLEN applies to all the variables on the command line
+! 7 is not long enough for 1st var not for 2nd variable
+
+sp rm a.nc
+save/clobber/file=a.nc/STRLEN=7 tstrings, tstrings_long
+sp ncdump a.nc
+
+set mode/last ignore

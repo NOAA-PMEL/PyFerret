@@ -308,7 +308,7 @@ bn_tagg_overlaps.jnl
 bn_samplexyzt.jnl
 bn_sample_multi.jnl
 bn751_bug_fixes.jnl
-
+bn_cdf_strlen.jnl
 !
 ! dsg-specific tests
 !

@@ -262,6 +262,7 @@
 * V740 *kms*  3/18 Add space for PyFerret PLOT/HIGHLIGHT=
 * V7.4+ *acm* 9/18 DSG-enabled Ferret: SET DATA/FMASK= specifies a feature mask
 * V74+ *acm*  9/18 Add aliases FMASK for SET DATA/FMASK and CLEARMASK for CANCEL DATA/FMASK
+* v751 *acm*  8/19 Issue 1946, allow for user-set string dimension length, SAVE/STRLEN
 *
 *
 * !!!!!!!!!!
@@ -1048,7 +1049,7 @@
 		DATA qualifiers  (nqual_at5a+54)/ 'CURVILIN'/
 		DATA qualifiers  (nqual_at5a+55)/ 'LAYERZ'/
 		DATA qualifiers  (nqual_at5a+56)/ 'ASGLOBAL'/
-		DATA qualifiers  (nqual_at5a+57)/ '****'/
+		DATA qualifiers  (nqual_at5a+57)/ 'STRLEN'/  ! user-set length of string-dimension
 		DATA qualifiers  (nqual_at5a+58)/ '****'/
 		DATA qualifiers  (nqual_at5a+59)/ '****'/
 

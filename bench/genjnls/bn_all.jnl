@@ -1242,10 +1242,14 @@ GO bn_samplexyzt
 
 GO bn_reset bn_sample_multi
 GO bn_sample_multi
+
 ! *********** v7.51 Additions ***********
 
 GO bn_reset bn751_bug_fixes
 GO bn751_bug_fixes
+
+GO bn_reset bn_cdf_strlen
+GO bn_cdf_strlen
 
 ! *********** DSG Additions ***********
 
@@ -1290,6 +1294,8 @@ GO bn_dsg_if_exprns
 
 GO bn_reset bn_dsg_subset
 GO bn_dsg_subset
+
+
 
 ! *********** PyFerret-specific scripts ***********
 

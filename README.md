@@ -46,36 +46,46 @@ only need to update the existing installation using `conda update -n FERRET pyfe
 (assuming `FERRET` is the name of the environment used).
 Or you can install under a new environment name if you wish to keep multiple versions 
 of PyFerret.  
-You may first need to update conda itself `conda update --all` before updating PyFerret.*
+You may first need to update conda itself `conda update conda; conda update --all` 
+before updating PyFerret.
+If you are using a Python 2.x version of miniconda, you will need to install the 
+Python 3.x version of miniconda and then install PyFerret in that version of miniconda
+in order to get the latest version of PyFerret.*
 
 Download and install minicoda for your system from
 [https://docs.conda.io/en/latest/miniconda.html](https://docs.conda.io/en/latest/miniconda.html)
 Note that Windows 10 bash must use the Linux version!
-Either python version of miniconda is fine; PyFerret works with ether python 2.x or python 3.x
+Install the Python 3.x version of minicoda to get the latest versions of PyFerret.
+(Although PyFerret works with ether Python 2.x or Python 3.x,
+Python 2.x itself will no longer be supported after 2019.)
+Allow miniconda to add its initialization code to your start-up scripts (e.g.,
+`$HOME/.bashrc`) and open a new login window when the installation is complete.
+One thing with will do is add the conda bin directory to your path of directories 
+to search for executables.
 
 Execute the following command on the terminal to install `pyferret` as well as
 `ferret_datasets` (the default Ferret/PyFerret datasets) into conda:
 ```shell
-/my/path/to/miniconda/bin/conda create -n FERRET -c conda-forge pyferret ferret_datasets --yes
+conda create -n FERRET -c conda-forge pyferret ferret_datasets --yes
 ```
-(substituting `/my/path/to/miniconda` with the appropriate value).
+(`FERRET` is the environment name where `pyferret` is installed.
+You can change that to any name you like, such as `PyFerret`.)
 
-To start using PyFerret, execute the following command from a Bourne shell
-(such as bash) that you will be working in:
+To start using PyFerret, execute the following command:
 ```shell
-. /my/path/to/miniconda/bin/activate FERRET
+conda activate FERRET
 ```
-(In bash shells, `source` can be used instead of `.` if desired.)
+(replacing `FERRET` with whatever environment name you used.)
 
 Once you are done working with PyFerret you can leave this environment,
 if you wish, with the command:
 ```shell
-. /my/path/to/miniconda/bin/deactivate FERRET
+conda deactivate
 ```
 
-In the commands above, `FERRET` is the environment name where `pyferret` is installed.
-You can change that to any name you like but we do not recommend installing `pyferret`
-in the root environment of miniconda.
+As mention above `FERRET` is the environment name where `pyferret` is installed,
+and can be any name you like (such as `PyFerret`).
+We do not recommend installing `pyferret` in the root environment of miniconda.
 The main reason is to take advantage of the `activate` and `deactivate` scripts that
 will set up all the variables that PyFerret needs.
 (You can test whether the PyFerret environment is activated by issuing the command
@@ -84,14 +94,18 @@ will set up all the variables that PyFerret needs.
 If you usually work under a C-shell (such as tcsh) or outside the conda environment,
 you may want to create a Bourne shell script that activates and runs PyFerret within
 the Bourne shell that is created for running the script.
-Such a script would look something like the following
+Such a script would look something like the following (replacing `FERRET` with 
+whatever environment name you used):
 ```shell
-#! /bin/sh
-. /my/path/to/miniconda/bin/activate FERRET
-/my/path/to/miniconda/envs/FERRET/bin/pyferret $*
+#! /bin/sh -l
+## initialize the environment for running PyFerret
+conda activate FERRET
+## You may wish to add directories to FER_DATA and FER_GO
+# export FER_DATA="$FER_DATA /my/path/to/big/data/dir"
+# export FER_GO="$FER_GO /my/path/to/custom/ferret/scripts"
+## Now execute PyFerret with all the command-line arguments given to this script
+pyferret $*
 ```
-(substituting `/my/path/to/miniconda` with the appropriate value.  If you used another
-name for the environment, substitute that name for `FERRET` in the above script.)
 If this script was called `pyferret.sh`, made executable (`chmod 755 pyferret.sh`),
 and placed in a directory listed in your `$PATH` enviroment variable, you can just type
 `pyferret.sh` (followed by any desired arguments) from the command line to run PyFerret.

@@ -219,6 +219,7 @@
 * V751   6/19 *acm* For DSG data update calls to PLOT_DSG_APPLY_OBS_MASK
 * V751   7/19 *acm* For DSG data, set a flag controling a PLOT/VS plot with station locations as
 *                   opposed to exanding variables to the obs axis.
+* V751 7/19 *acm*  DSG-enabled Ferret: plotting user-defined variables
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -288,7 +289,7 @@
      .			nkey_entries, t_axtyp, since_T0, itmp, igrd_save, 
      .			icode, dset, nfeatures, obsdimlen, fline, orientation, 
      .			dtype, fvar, nload_all, numv, nok, line_symbol, 
-     .			dsg_fmt_grid, dep_dir, nmasked
+     .			dsg_fmt_grid, dep_dir, nmasked, dset_dsg
 
 	INTEGER         TM_GET_CALENDAR_ID, cal_id_1, cal_id_2,
      .			cal_id_old, cal_id_new
@@ -343,8 +344,18 @@
 	    dset = cx_data_set(cx)
 	 ENDIF
 
-	 IF (dset .GT. pdset_irrelevant) THEN
-	 IF ( dsg_ragged(dset) ) THEN
+* a user-var or expression where the grid is dsg?
+
+	 IF (dset .GT. pdset_irrelevant) its_dsg = dsg_ragged(dset)
+
+	 dset_dsg = TM_DSG_DSET_FROM_GRID( grid )
+	 IF (dset_dsg .GT. pdset_irrelevant) THEN
+	    IF (.NOT. its_dsg) dset = dset_dsg
+	    its_dsg = dsg_ragged(dset_dsg)
+	 ENDIF
+	 
+	 IF (its_dsg ) THEN
+	    
 	    IF (  qual_given(slash_plot_along) .GT. 0.AND. .NOT.versus )  
      .	       CALL WARN ('PLOT/ALONG is ignored for discrete DSG data')
 
@@ -361,7 +372,7 @@
 * OR a PLOT/VS var1,var2 from a DSG dataset for var1,var2 not lon/lat?
 * This may turn off ribbon_plot
 
-	       CALL CHECK_PLOT_TRAJ (versus, numv, its_traj)
+	       CALL CHECK_PLOT_TRAJ (versus, numv, grid, its_traj)
 
 *  numv = 1 if we're doing the trajectory ribbon plot automatically with PLOT var
 *  Still allow doing it the old fashioned way numv = 2  for plot/vs lon, lat
@@ -387,7 +398,6 @@
 * Plot a variable e.g. as a set of timeseries per feature
 
 	 ENDIF ! dsg_ragged
-	 ENDIF ! dset
 
 * initialize
 

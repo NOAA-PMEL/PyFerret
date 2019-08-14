@@ -58,6 +58,7 @@ dir_line.F\
 display_dependency.F\
 display_dependency_sub.F\
 dsg_coord_lims.F\
+dsg_coord_updn.F\
 dsg_feature_lims.F\
 dsg_id_cx.F\
 dsg_obs_by_feature_var.F\

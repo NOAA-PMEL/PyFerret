@@ -70,6 +70,7 @@
 * v74+ *acm* 5/18 See PyFerret issue #53: if the title is blank don't set up 
 *                 the label or the symbol labnum_datitl
 * v74+ *acm* 7/18 For plots of DSG data, write the upper-left labels as world coords
+* v751 *acm* 9/18 Updates for user-defined variables on DSG grids
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -93,8 +94,9 @@
 	LOGICAL		show_year, has_mask
 	CHARACTER	AX_TITLE*32, TM_GET_CALENDAR_NAME*32,
      .			line_buff*1024, genl_buff*255, cal_buff*32
-	INTEGER		TM_LENSTR, idim, len, lablen,
-     .			nlabs, dset_num, tlen, lab2, grid
+	INTEGER		TM_LENSTR, TM_DSG_DSET_FROM_GRID, 
+     .			idim, len, lablen,
+     .			nlabs, dset_num, tlen, lab2, grid, dset_dsg
 	REAL 		ul_yspace, ul_labht, ul_ypos, ul_ysqueeze,
      .			yoff, ur_labht
 	EQUIVALENCE	( ppl_buff, genl_buff )	! save space
@@ -123,7 +125,12 @@
         grid = cx_grid(joint_cx)
         dset_num = cx_data_set(joint_cx)
         IF (dset_num .GT. pdset_irrelevant) THEN
-           IF ( dsg_ragged(dset_num) ) grid = dsg_xlate_grid(dset_num) 
+	   dset_dsg = TM_DSG_DSET_FROM_GRID( grid )
+           IF (dset_dsg .GT. pdset_irrelevant) THEN
+	      IF ( dsg_ragged(dset_dsg) ) grid = dsg_xlate_grid(dset_dsg) 
+	      cx_grid(joint_cx) = grid
+	      cx_data_set(joint_cx) = dset_dsg
+	   ENDIF
         ENDIF
 
 	ul_ypos = ul_yorigin + (nlabs-1)*ul_yspace

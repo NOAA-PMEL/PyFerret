@@ -1,0 +1,39 @@
+! bn_regrid_to_dsg_prof.jnl
+! test regridding to a DSG profile grid
+!
+! Create gridded data file: values are based on z-values
+
+define axis/t=11-aug-2009:14-aug-2009:6/units=hours tfake
+define axis/x=-124:-120:0.5/units=degrees_east/modulo xfake
+define axis/y=35:45:0.5/units=degrees_north yfake
+define axis/z=1:35:2/depth/unit=meters zfake
+define grid/x=xfake/y=yfake/z=zfake/t=tfake gfake
+let/title="z from the grid" zz =2 + z[g=gfake] + 0*(x[g=gfake]+y[g=gfake]+t[g=gfake])
+save/clobber/file=fake_model_temp.nc/outtype=float zz
+cancel variables/all
+
+! ******
+! demonstrate regridding model data to DSG using file data
+
+! profile data where depths in each profile are listed
+! from deepest to shallowest 
+
+use  profile_dsg_downup
+USE fake_model_temp.nc
+list /i=1/j=1/l=1 zz
+
+! Regrid gridded data to grid of profile dataset
+list zz[d=fake_model_temp,g=temp[d=1]]
+
+cancel data/all
+
+
+! profile data where depths in each profile are listed 
+! from shallowest to deepest
+
+use  profile_dsg_updown
+USE fake_model_temp.nc
+
+! Regrid gridded data to grid of profile dataset
+list zz[d=fake_model_temp,g=temp[d=1]]
+

@@ -113,6 +113,7 @@
 * V720: 4/17 *acm* Add direction-changing functions as a subset of grid-changing ones
 * V720: 4/17 *acm* Add direction-changing functions as a subset of grid-changing ones
 * V751: 8/19 *acm* Remove the code for returning attributes to new routine attr_context.F
+* V751 7/19 *acm*  DSG-enabled Ferret: working with user-defined variables
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -580,8 +581,10 @@
 * evaluated, then big_cx at this point holds independent information about
 * the E and orientation axes of the DSG -- as if they were orthogonal gridded
 * axes.  Here we correct that into a ragged array representation
+
 	dsg_grid = cx_grid(big_cx)
-	IF ( TM_ITSA_DSG(dsg_grid) )THEN
+	IF ( TM_ITSA_DSG(dsg_grid) .AND.  
+     .	     cx_data_set(big_cx) .EQ. cx_data_set(lo_cx) ) THEN
 	   orientation = TM_DSG_ORIENTATION(dsg_grid)
 	   CALL FLESH_OUT_AXIS(orientation, big_cx, status)
 	   CALL FLESH_OUT_AXIS(e_dim,       big_cx, status)

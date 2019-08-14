@@ -1,0 +1,158 @@
+! bn_dsg_save_uvars.jnl
+! tests of SAVEing user-defined variables to netCDF
+! 8/13/2019 ACM
+
+! Create gridded data file: values are based on latitude/longitudes
+! test regridding to a DSG trajectory grid
+
+define axis/t=17-may-2019:20-may-2019:1/units=hours tfake
+define axis/x=-168:-165:0.2/units=degrees_east xfake
+define axis/y=54:57:0.2/units=degrees_north yfake
+define grid/x=xfake/y=yfake/t=tfake gfake
+let/title="Gridded Temperature"/Units="Degrees_C" temp = y[g=gfake] + 0.1*x[g=gfake] + 0*t[g=gfake]
+save/clobber/file=fake_model_temp.nc/outtype=float temp
+can var/all
+
+sp cp data/sail_2019.nc sail_copy.nc
+use sail_2019.nc
+use fake_model_temp.nc
+
+
+LET/title="Temp regridded from gridded to DSG" temp_from_grid = temp[d=2,g=temp_ctd_rbr_mean[d=1]]
+save/append/file=sail_copy.nc temp_from_grid
+can data/all; can var/all
+
+
+use sail_copy.nc
+show data
+plot/thick temp_ctd_rbr_mean - temp_from_grid
+
+can data/all; can var/all
+
+
+! Write just a user-var defined on dsg grid to a file.
+
+use sail_2019.nc
+use fake_model_temp.nc
+LET/title="Temp regridded from gridded to DSG" temp_from_grid = temp[d=2,g=temp_ctd_rbr_mean[d=1]]
+save/clobber/file=sail_copy.nc temp_from_grid
+can data/all; can var/all
+
+use sail_copy
+show data
+
+can data/all; can var/all
+
+
+
+! Write subsets of our user-var regrid to dsg-grid 
+
+use sail_2019.nc
+use fake_model_temp.nc
+LET/title="Temp regridded from gridded to DSG" temp_from_grid = temp[d=2,g=temp_ctd_rbr_mean[d=1]]
+save/clobber/file=sail_copy.nc/e=2 temp_from_grid
+can dat/all; can var/all
+
+use sail_copy
+show data
+
+
+can data/all; can var/all
+
+! subset by masking
+
+use sail_2019.nc
+use fake_model_temp.nc
+LET temp_from_grid = temp[d=2,g=temp_ctd_rbr_mean[d=1]]
+save/clobber/file=sail_copy.nc/y=55:56 temp_from_grid
+can data/all; can var/all
+
+use sail_copy.nc
+
+show data
+
+! Make a plot of the original data and the subset with fake-data values
+
+use sail_2019
+plot/thick/pal=rnb2 temp_ctd_rbr_mean
+use sail_copy
+plot/over/sym=19/siz=0.12/pal=grayscale/key=horiz temp_from_grid
+
+can data/all; can var/all
+
+!  Treat the feature-data as a timeseries.  SAVE writes timeseries data
+
+use/feature=time sail_2019.nc
+save/clobber/file=a.nc/t="18-may-2019:12:00":"19-may-2019:00:00"  temp_ctd_rbr_mean
+can dat/all; can var/all
+
+use a.nc
+show dat/att
+list temp_ctd_rbr_mean
+
+! Intentional errors
+set mode ignore
+
+! Save a subset and try to append to that  - nfeatures or nobs don't match
+! should be an error
+
+use sail_2019.nc
+save/clobber/e=2/file=sail_copy.nc temp_ctd_rbr_mean
+can data/all; can var/all
+
+! Now try appending data from the original set to the subset-dataset - 
+! nfeatures doesn't match
+
+use sail_2019.nc
+
+use fake_model_temp.nc
+LET/title="Temp regridded from gridded to DSG" temp_from_grid = temp[d=2,g=temp_ctd_rbr_mean[d=1]]
+save/append/file=sail_copy.nc temp_from_grid
+
+can data/all; can var/all
+
+
+! Save a subset in the obs direction and try to append to that  - nobs does't match
+
+
+use sail_2019.nc
+save/clobber/x=-166.8:-166.2/file=sail_copy.nc temp_ctd_rbr_mean
+can data/all; can var/all
+
+use sail_2019.nc
+
+use fake_model_temp.nc
+LET/title="Temp regridded from gridded to DSG" temp_from_grid = temp[d=2,g=temp_ctd_rbr_mean[d=1]]
+save/append/file=sail_copy.nc temp_from_grid
+
+
+can data/all; can var/all
+
+!Try to append a subset to the full data, again nobs/nfeatures mismatches
+
+
+sp cp data/sail_2019.nc sail_copy.nc
+
+use sail_2019.nc
+
+use fake_model_temp.nc
+LET/title="Temp regridded from gridded to DSG" temp_from_grid = temp[d=2,g=temp_ctd_rbr_mean[d=1]]
+save/append/e=2/file=sail_copy.nc temp_from_grid
+
+can data/all; can var/all
+
+! Try to append timeseries data to a trajectory dataset
+
+sp cp data/sail_2019.nc sail_copy.nc
+
+! Write a dsg file of type timeseries
+
+use/feature=timeseries sail_2019
+set variable/name=my_temp_data temp_ctd_rbr_mean
+save/clobber/file=a.nc my_temp_data
+
+cancel data/all
+
+! try to append timeseries data to trajectory dataset
+use a.nc
+save/append/file=sail_copy.nc my_temp_data

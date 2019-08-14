@@ -50,6 +50,7 @@
 *         subroutine calls report any errors.  When appending, masks etc
 *         get set up, but it doesn't make any sense to apply them.  
 *  6/2019 *acm* MASK_DSG_OBSVAR call has changed, for use by trajectory-plotting 
+*  8/2019 *acm* Allow writing user-defined varaibles to DSG datasets
 
         include 'netcdf.inc'
 #include "netcdf_declareUnderscore.inc"
@@ -92,10 +93,10 @@
      .                  has_mask, have_dimname,
      .                  instance_coord(4), relevant_coord(4),
      .                  instance_var(nvars), point_var(nvars),
-     .                  instance_vars_only, point_vars_only, synthetic_rowsiz
+     .                  instance_vars_only, point_vars_only, synthetic_rowsiz, ragged
 
-	INTEGER		TM_LENSTR1, GET_MAX_C_STRING_LEN, STR_SAME,
-     .			MGRID_SIZE, CGRID_SIZE, DSG_WHATS_IT, STR_DNCASE,
+	INTEGER		TM_LENSTR1, GET_MAX_C_STRING_LEN, STR_SAME,MGRID_SIZE, 
+     .			CGRID_SIZE, DSG_WHATS_IT, STR_DNCASE, TM_DSG_DSET_FROM_GRID,
      .			cx, mr, grid,  ivar, nready, lbuff, cdfstat, 
      .                  idim, i, recdim, do_bounds, cat, var, cat1, var1, 
      .			iaxis, final_status, type, maxstrlen, 
@@ -110,8 +111,8 @@
      .                  orientation, obsdimlen, featr_ivar, featr_mr, coord_lm(4), 
      .                  ptr, bufflen, line, gxlate, row_size_lm, clen, nblank,
      .                  slen1, slen2, idummy_line, base, fobs, count,
-     .                  line_fcoord, line_obscoord, dummy, nmasked
-
+     .                  line_fcoord, line_obscoord, dummy, nmasked, dset_dsg,
+     .                  dndims, dlen, dnv, ngatts, ftype, f_direc
 	REAL*8		GET_LINE_COORD, vals(100), bad, val, scalefac, addoff
 
 	CHARACTER	SANITARY_VAR_CODE*128, TM_FMT*12, 
@@ -148,17 +149,23 @@
 	mode_up_in =  mode_upcase_output
 	mode_upcase_output = .FALSE.
 
+	egrid = mgrid_buff
+	ogrid = mgrid_buff
+	line_fcoord = mnormal
+	line_obscoord = mnormal
+
 * Some sanity checking
 
 	ivar = 1
 	cx  = cx_list(ivar)
 	grid	= cx_grid( cx )
 	grid_is_dsg = TM_ITSA_DSG( grid )
-	IF (.NOT. grid_is_dsg) GOTO 4100    ! data not from dsg.  For now, just subsets of dsg data
 
-* Not user-defined variables, at least for now.
+* For handling user-vars and expressions based in another non-dsg dataset
+	dset_dsg = TM_DSG_DSET_FROM_GRID( grid )  
+
 	dset_num = cx_data_set( cx_list(ivar) )
-	IF (dset_num .NE. dset) GOTO 4100
+	dset_num = dset_dsg
 
 * The variables must all be from the same DSG dataset.
 
@@ -167,8 +174,8 @@
 	instance_vars_only = .TRUE.
 	DO ivar = 1, nvars
 	   cx  = cx_list(ivar)
-           IF (cx_data_set( cx ) .NE. dset) GOTO 4200  ! error message for inconsistent datasets
-                                                       ! LET/D variables probably ok?	   
+           IF (cx_data_set( cx ).GT.pdset_irrelevant .AND. cx_data_set(cx).NE.dset) GOTO 4200  ! error message for inconsistent datasets
+
 	   instance_var(ivar) = DSG_WHATS_IT(grid) .EQ. pdsg_instance
 	   point_var(ivar) = CGRID_SIZE(cx) .EQ. 1
 	   IF (.NOT.point_var(ivar)   ) point_vars_only    = .FALSE.
@@ -177,10 +184,12 @@
 	   orientation = dsg_orientation(dset_num)
 	ENDDO
 
+
 * The varid of the feature-id variable
  
 	varcode = SANITARY_VAR_CODE(cat_file_var, dsg_feature_var(dset) )
 	CALL CD_GET_VAR_ID  (dset, varcode, fvar_varid, status)
+	buff1 = varcode
 
 * which dimensions are relevant to show
 
@@ -212,7 +221,7 @@
 
 	ENDDO
 
-* The feature-id var has been loaded, after the data variables requested 
+* For new files, the feature-id var has been loaded, after the data variables requested 
 * in the LIST command. Find it and keep track its order as loaded.
 
 	featr_ivar = var_name_nonexist
@@ -231,7 +240,6 @@
 	      EXIT
 	   ENDIF
 	ENDDO
-
 
 	ivar = 1
 	cx   = cx_list(ivar)
@@ -272,6 +280,38 @@
 * Empty request is an error
 	IF (n_feat .EQ. 0) GOTO 4300  ! 
 
+* Sanity check: names and size of dimensions of appended variable against file.
+* (should check the rowsize coords too...)
+
+	IF (append) THEN
+
+	   status = NF_INQ ( cdfid, dndims, dnv, ngatts, recdim )
+	   recdim = no_dim
+
+	   CALL CD_DSG_GET_FEATURETYPE (cdfid, ftype, f_direc, ragged, do_warn)
+	   IF (orientation.NE.f_direc .OR. .NOT.ragged) GOTO 4400
+
+
+	   DO i = 1, dndims
+	      status = NF_INQ_DIMNAME (cdfid, i, varname)
+	      IF (STR_SAME(buff1, varname) .EQ. 0) THEN
+	         status =  NF_INQ_DIMLEN(cdfid, i, dlen)
+		 IF (status .EQ. NF_NOERR) THEN
+		    idim = 5
+		    IF (dlen .NE. n_feat) GOTO 4500
+		 ENDIF
+	      ENDIF
+
+	      IF (STR_SAME(obsdimname, varname) .EQ. 0) THEN
+	         status =  NF_INQ_DIMLEN(cdfid, i, dlen)
+		 IF (status .EQ. NF_NOERR) THEN
+		    idim = orientation
+		    IF (dlen .NE. n_obs) GOTO 4500
+		 ENDIF
+	      ENDIF
+	   ENDDO 
+	ENDIF
+
 * write the featureType global attribute
 
 	ftrname = CD_DSG_FEATURENAME(dsg_orientation(dset))
@@ -299,7 +339,7 @@
 * get feature dimension name
 
 	CALL CD_GET_VAR_DIMS_INFO (dset, fvar_varid, varcode, nvdims, vdims, status)
-	CALL CD_GET_VAR_TYPE (dset, varid, fvar_varid, vartype, status)
+	CALL CD_GET_VAR_TYPE (dset, fvar_varid, varcode, vartype, status)
 	IF (vartype .EQ. NF_CHAR) THEN 
 	   CALL CD_GET_DS_DIMS (dset, vdims(2), line_name(line_fcoord), i, status)
 	ELSE
@@ -571,8 +611,6 @@ c	IF (.NOT. instance_vars_only) THEN
 
 	ENDIF   ! IF (.NOT. append) THEN  *-*-*-*-*-*-*-*-*-*-*-*-
 
-
-
 *  Loop to create all of the variables
 *  (defer writing of binary data until end) 
 
@@ -629,10 +667,6 @@ c	IF (.NOT. instance_vars_only) THEN
 	   dset = cx_data_set(cx)
 	   IF (dset .EQ. pdset_irrelevant) dset = pdset_uvars
 	   IF (itsa_uvar .AND. dset .LE. pdset_irrelevant)  dset = pdset_uvars
-	   IF (itsa_uvar.OR. dset.EQ.pdset_irrelevant) THEN
-c	      CALL WARN ('writing user-variables to DSG files not implementd')
-c	      CYCLE ! for now, anyway
-	   ENDIF
 
 	   CALL CD_GET_VAR_ID (dset, varcode, varid, status)
 	   IF (status .NE. ferr_ok) THEN
@@ -680,10 +714,16 @@ c	      CYCLE ! for now, anyway
 
 * create the variable and its grid (coordinate output gets deferred)
 
+	   IF (varid .GT. 0) THEN
+              CALL  CD_GET_VAR_VARNAME (dset, varid, varname, status)
+              varcode = varname
+              IF (mode_upcase_output) CALL STR_UPCASE( varcode, varname)
+	   ENDIF
+
 * If this is a user var the axes are based on the defining dset (if any).
 	   dset_num = dset
 	   IF (dset.EQ.pdset_uvars .AND. cx_data_set( cx ).GT.0)
-     .        dset_num = cx_data_set( cx )  
+     .        dset_num = cx_data_set( cx ) 
 
 * Use the max string length from the originating dataset.
 * buff2 is dimension name for string-length.
@@ -698,7 +738,7 @@ c	      CYCLE ! for now, anyway
 
 	   IF (instance_var(ivar) ) THEN
 	      grid = egrid 
-	      CALL CD_MAKE_VAR( cdfid, dset_num, varcode, outtype, maxstrlen,
+	      CALL CD_MAKE_VAR( cdfid, dset_dsg, varcode, outtype, maxstrlen,
      .               grid, lo_e, hi_e, recdim, enhead, new, 
      .               edges_flag, do_bounds, mode_upcase_output, 
      .               keepax_flag, date_fmt_out,
@@ -709,7 +749,7 @@ c	      CYCLE ! for now, anyway
 
 	   ELSE
 	      grid = ogrid
-	      CALL CD_MAKE_VAR( cdfid, dset_num, varcode, outtype, maxstrlen,
+	      CALL CD_MAKE_VAR( cdfid, dset_dsg, varcode, outtype, maxstrlen,
      .               grid, lo_o, hi_o, recdim, enhead, new, 
      .               edges_flag, do_bounds, mode_upcase_output, 
      .               keepax_flag, date_fmt_out,
@@ -732,11 +772,11 @@ c	      CYCLE ! for now, anyway
 
 * Write the attributes from a dataset variable as requested by the settings 
 * The title, units, and history may be updated later.
-* But, if the variable came in with an "axis" attribute, the DSG 
-* file won'tbe correct, so don't write that attrib.
+* (If a file variable came in with an "axis" attribute, the DSG file won't be 
+*  correct - axis atts are only on coordinates - so don't write that attrib.)
 	      
               CALL CD_GET_VAR_ATT_ID (dset, varid, "axis", attid, status)
-	      IF (attid .GT. 0) CALL CD_SET_ATT_FLAG(dset, varid, "axis", 0, status)
+	      IF (attid.GT.0 .AND. dset.GT.pdset_irrelevant) CALL CD_SET_ATT_FLAG(dset, varid, "axis", 0, status)
 
 	      IF (all_outflag.GT.0 .AND. varid.GT.0) 
      .          CALL CDF_LIST_DSETVAR_ATTS (dset, itsa_uvar, its_cdf, 
@@ -758,6 +798,8 @@ c	      CYCLE ! for now, anyway
 
 	nready = nvars
 
+	dset = dset_dsg
+
 *****
 * Finally, write all of the coordinates and data values -- in netCDF DATA mode
 * Note that this block of code is also executed following an error to
@@ -766,8 +808,10 @@ c	      CYCLE ! for now, anyway
 *
 * ...  write the deferred coordinates
 *
-	CALL CD_WRITE_DEFER_COORD( cdfid, status )
-	IF ( status .NE. merr_OK ) GOTO 5800
+	IF (.NOT. append) THEN
+	   CALL CD_WRITE_DEFER_COORD( cdfid, status )
+	   IF ( status .NE. merr_OK ) GOTO 5800
+	ENDIF
 
 * ...
 * ...
@@ -913,6 +957,7 @@ c	      CYCLE ! for now, anyway
 	   varcode = SANITARY_VAR_CODE( cat, var )
 	   itsa_uvar = cat .EQ. cat_user_var
 
+	   dset = dset_dsg
 
 * Check that they haven't asked to write the feature-variable, rowsize, 
 * or a coordinate. Those are already done.
@@ -933,18 +978,35 @@ c	      CYCLE ! for now, anyway
 	      ENDIF
 	   ENDDO
 
-	   CALL CD_GET_VAR_ID (dset, varcode, varid, status)  ! is it in the linked-list for dset
 
-* Get varcode into original upper/lowercase form. If mode upcase_output is set, 
-* then upcase the variable name.
+* For user-defined variables, with double-precision Ferret, write as double-precision
+* unless the user has requested otherwise.  Use the same upper- or lower-case spelling
+* as when the variable was created above.
 
-	   IF (status .EQ. ferr_ok) THEN
-	      CALL CD_GET_VAR_INFO (dset, 
-     .                  varid, varname, vartype,  nvdims, vdims,
-     .                  nvatts, coordvar, all_outflag, status) 
-	      varcode = varname
-	      IF (mode_upcase_output) CALL STR_UPCASE( varcode, varname)
+	   itsa_uvar = cat .EQ. cat_user_var
+
+	   dset = cx_data_set(cx)
+	   IF (dset .EQ. pdset_irrelevant) dset = pdset_uvars
+	   IF (itsa_uvar .AND. dset .LE. pdset_irrelevant)  dset = pdset_uvars
+
+	   CALL CD_GET_VAR_ID (dset, varcode, varid, status)
+	   IF (status .NE. ferr_ok) THEN
+	      IF (itsa_uvar .AND. dset.GE.pdset_irrelevant) THEN
+	         dset = pdset_uvars
+	         CALL CD_GET_VAR_ID (dset, varcode, varid, status)
+	         IF (status .NE. ferr_ok) dset = dset_last
+	      ENDIF
 	   ENDIF
+
+	   vartype = 0
+	   outtype = 0
+ 
+	   IF (status .EQ. ferr_ok) 
+     .       CALL CD_GET_VAR_INFO (dset, varid, varname, vartype, nvdims, 
+     .            vdims, nvatts, coordvar, all_outflag, status)
+     
+	   varcode = varname
+	   IF (mode_upcase_output) CALL STR_UPCASE( varcode, varname)
 
 * check for interrupts - dont check again until entire variable is written
 	   IF (interrupted) CALL ERRMSG(ferr_interrupt,status,' ',*5800)
@@ -962,7 +1024,7 @@ c	      CYCLE ! for now, anyway
 	      write_lo(e_dim) = 1
 	      write_hi(e_dim) = n_feat
 
-	      CALL MASK_DSG_FVAR ( nfeatures, process_feature, dset, 
+	      CALL MASK_DSG_FVAR ( nfeatures, process_feature, dset_dsg, 
      .              memry(mr)%ptr, lineedg(line_fcoord)%ptr )
 
 	      CALL CD_WRITE_DSG_DATA (cdfid, varcode, grid, 
@@ -979,7 +1041,7 @@ c	      CYCLE ! for now, anyway
 	      write_hi(orientation) = n_obs
 
 	      CALL MASK_DSG_OBSVAR ( nfeatures, process_feature, process_obs,
-     .            dsg_linemem(row_size_lm)%ptr, dset, cx, 
+     .            dsg_linemem(row_size_lm)%ptr, dset_dsg, cx, 
      .            memry(mr)%ptr, lineedg(line_obscoord)%ptr, nmasked )
 
 	      CALL CD_WRITE_DSG_DATA (cdfid, varcode, grid, 
@@ -1007,23 +1069,30 @@ c	      CYCLE ! for now, anyway
  5000	CONTINUE
 
 * Deallocate the temporary grids and axes used (as in RESET_DSG)
-	CALL TM_DEALLO_DYN_GRID( egrid )
-	CALL TM_DEALLO_DYN_GRID( ogrid )
+	IF (egrid .NE. mgrid_buff) CALL TM_DEALLO_DYN_GRID( egrid )
+	IF (ogrid .NE. mgrid_buff) CALL TM_DEALLO_DYN_GRID( ogrid )
 
-	CALL FREE_LINE_DYNMEM (line_fcoord)
-	CALL FREE_LINE_DYNMEM (line_obscoord)
+	IF (line_fcoord .NE. mnormal) CALL FREE_LINE_DYNMEM (line_fcoord)
+	IF (line_obscoord .NE. mnormal) CALL FREE_LINE_DYNMEM (line_obscoord)
 
 	RETURN
 
 * error exit(s)
- 4100	CALL ERRMSG ( ferr_invalid_command, status,
-     .        'Writing to DSG file: from input DSG dataset only (for now): '//varcode,
-     .        *5000 )
+
  4200	CALL ERRMSG ( ferr_invalid_command, status,
      .        'Writing to DSG file: variables must all be from the same DSG dataset: '//varcode,
      .        *5000 )
  4300	CALL ERRMSG ( ferr_invalid_command, status,
      .        'Writing to DSG file: Subset or mask results in no data: '//varcode,
+     .        *5000 )
+
+ 4400	CALL ERRMSG ( ferr_invalid_command, status,
+     .        'Appending DSG variable to file that is not DSG or different featureType',
+     .        *5000 )
+
+ 4500	CALL ERRMSG ( ferr_invalid_command, status,
+     .        'Appending to DSG file: Size of '//varname(:TM_LENSTR1(varname))//
+     .        ' dimension does not match dimension in file: '//varcode,
      .        *5000 )
 
  5100    CALL ERRMSG ( ferr_invalid_command, status,

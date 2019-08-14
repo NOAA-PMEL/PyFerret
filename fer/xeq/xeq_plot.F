@@ -126,6 +126,7 @@
 * V751 6/19 *acm*  DSG data cannot be subsetted by index in I,J,K,L; only by coordinates
 *                  /X= /Y= /Z= /T=  or with /E= or /M=
 * V751 7/19 *acm*  DSG-enabled Ferret: More control of line legends with PLOT/KEY and PLOT/NOKEY
+* V751 8/19 *acm*  DSG-enabled Ferret: argumemnt to ITSA_DSG_TRAJ is no longer a dummy
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -417,7 +418,7 @@ c	      limit = num_fancy_lines 			!was num_plain 1/94
 * scatter plot; use PLOT/VS or PLOT/VS/RIBBON)
  
 	IF (grid_is_dsg) THEN
-	   IF (ITSA_DSG_TRAJ (loc) ) THEN
+	   IF (ITSA_DSG_TRAJ (is_cx(1)) ) THEN
 	      IF (num_uvars_in_cmnd .EQ. 1) THEN  
 	         versus = .TRUE.
 	         ribbon_plot = .TRUE.

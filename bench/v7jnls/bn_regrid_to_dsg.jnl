@@ -4,7 +4,6 @@
 
 
 ! DSGTBD: as of 5/2017 there is more to test.  This tests only 
-!    - time series dsg
 !    - coordinate-complete xyzt source data and coordinate-complete DSG
 !    not tested are under- and over-specified situations
 !      under-specified:
@@ -13,10 +12,15 @@
 !        using a LET definition, say,  LET my_z_restricted = my_var[Z=@ave]
 !      over-specified
 !        fixed time XYZ model being sampled onto an XYT trajectory DSG 
+! 
+! 8/19 adding tests for 
+!   grid-to-trajectory
+!   grid-to-profile                
+
 
 use DSG_ERDDAP_pmelTao5daySst.nc
 
-! create a text dataset
+! create a test dataset
 ! fake "temp" values are actually the latitude values
 ! ******
 define axis/t=1-jan-2017:1-apr-2017:3/unit=days tfake
@@ -25,7 +29,7 @@ define axis/x=0:359:1/unit=degrees/modulo xfake
 define axis/z=0:2:.5/unit=meters zfake
 define grid/x=xfake/y=yfake/z=zfake/t=tfake gfake
 let/title=Temperature temp = y[g=gfake] + 0*(x[g=gfake]+z[g=gfake]+t[g=gfake])
-save/clobber/file=fake_model_temp.nc temp
+save/clobber/file=fake_model_temp.nc/outtype=float temp
 cancel variables/all
 ! ******
 
@@ -50,6 +54,16 @@ define grid/x=xlittle/y=ylittle/z=zlittle/t=tlittle glittle
 let/title=Temperature little_temp = y[g=glittle] + 0*(x[g=glittle]+z[g=glittle]+t[g=glittle])
 list/x=160e:170e little_temp[g=t_25[d=DSG_ERDDAP_pmelTao5daySst]]
 
+! Test some plots: the legend line samples should be labeled with the station IDs
+let regridded_var = temp[d=2,g=t_25[d=1]]
+
+set v ul; plot/x=160e:170e t_25[d=1]
+set v ur; plot/x=160e:170e regridded_var
+
+set v ll; plot/m=35:43 t_25[d=1]
+set v lr; plot/m=35:43 regridded_var
+frame/file=regrid_to_dsg_ts.gif
+cancel view
 
 ! ******* scatter/gather tests
 ! see what happens when the source data is too big for memory
@@ -90,4 +104,116 @@ load/x=160e:170e big_temp[g=t_25[d=DSG_ERDDAP_pmelTao5daySst]]
 cancel memory/all
 load/e=50 big_temp[g=t_25[d=DSG_ERDDAP_pmelTao5daySst]]
 SET MODE/LAST DIAG
+
+! Gridded-to-Trajectory
+cancel data/all
+cancel var/all
+
+use sail_2019.nc
+
+define axis/t=17-may-2019:20-may-2019:1/units=hours tfake
+define axis/x=-168:-165:0.2/units=degrees_east xfake
+define axis/y=54:57:0.2/units=degrees_north yfake
+define grid/x=xfake/y=yfake/t=tfake gfake
+let/title="Gridded Temp"/Units="Degrees_C" temp = y[g=gfake] + 0*(x[g=gfake]+t[g=gfake])
+save/clobber/file=fake_model_temp.nc/outtype=float temp
+can var/all
+
+! The data is latitude values
+use fake_model_temp.nc
+
+set v ul
+plot temp[d=2,g=temp_ctd_rbr_mean[d=1]]
+
+! With a title
+set v ur
+LET/title="Temp grid2DSG" temp_from_grid = temp[d=2,g=temp_ctd_rbr_mean[d=1]]
+plot temp_from_grid
+
+! test modulo in X
+define axis/t=17-may-2019:20-may-2019:1/units=hours tfake
+define axis/x=192:195:0.2/units=degrees_east xfake
+define axis/y=54:57:0.2/units=degrees_north yfake
+define grid/x=xfake/y=yfake/t=tfake gfake
+let/title="Gridded Temp"/Units="Degrees_C" temp = y[g=gfake] + 0*(x[g=gfake]+t[g=gfake])
+save/clobber/file=fake_model_temp.nc/outtype=float temp
+can var/all
+
+use fake_model_temp.nc
+
+set v ll
+plot/title="Modulo Longitudes" temp[d=2,g=temp_ctd_rbr_mean[d=1]]
+
+set v lr
+LET/title="grid2DSG w/ mod" temp_from_grid = temp[d=2,g=temp_ctd_rbr_mean[d=1]]
+plot temp_from_grid
+frame/file=regrid_to_dsg_traj.gif
+cancel view
+
+! constrain in T and E
+set mode diag
+list/e=2/t="18-may-2019:12:00":"19-MAY-2019 23:00" temp[d=2,g=temp_ctd_rbr_mean[d=1]]
+can mode diag
+
+! finer grid, do we get scatter/gather?
+can dat/all
+define symbol save_mem = ($ferret_memory)
+set mem/siz=2mb
+
+use sail_2019.nc 
+
+! Test scatter/gather
+define axis/t=17-may-2019:20-may-2019:1/units=minutes tbig
+
+define axis/x=0:359:.5/unit=degrees/modulo xbig
+define axis/y=54:57:0.2/units=degrees_north ybig
+define grid/x=xbig/y=ybig/t=tbig gbig
+let big_temp = y[g=gbig] + 0*(x[g=gbig]+t[g=gbig])
+
+say `big_temp,r=size`
+
+load big_temp[g=temp_ctd_rbr_mean[d=1]]
+show mem/diag
+
+set mem/siz=($save_mem)
+
+! Gridded-to-profile
+cancel data/all
+cancel var/all
+
+! Make some fake gridded data: Z from the gridded z axis, 
+! with small variations in X and Y
+
+define axis/t=11-aug-2009:14-aug-2009:6/units=hours tfake
+define axis/x=236:240:0.5/units=degrees_east/modulo xfake
+define axis/y=35:45:0.5/units=degrees_north yfake
+define axis/z=0:35:1/depth/unit=meters zfake
+define grid/x=xfake/y=yfake/z=zfake/t=tfake gfake
+let/title="z from grid with a little xy" zz = z[g=gfake] + 0.05*x[g=gfake]+ 0.1* y[g=gfake]+ 0*t[g=gfake]
+save/clobber/file=fake_model_temp.nc/outtype=float zz
+cancel variables/all
+
+! ******
+! demonstrate regridding model data to DSG using file data
+
+! The depths are listed from deepest to shallowest in each profile
+
+use  profile_dsg_downup
+list/e=1 depth
+
+USE fake_model_temp.nc
+list zz[d=fake_model_temp,g=temp[d=1]]
+
+cancel data/all
+
+! The depths in this file are listed from shallowest to deepest in each profile. 
+! The results are the same, only inverted.
+
+use  profile_dsg_updown
+USE fake_model_temp.nc
+list zz[d=fake_model_temp,g=temp[d=1]]
+
+! Just list a point or two out of the grid.  They match the above
+list/nohead/x=120.4W/y= 44.11N/z=26.6257/l=1 zz
+list/nohead/x=121W/y=38.8/z=14.8822/L=1 zz
 

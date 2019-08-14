@@ -1,4 +1,4 @@
-	LOGICAL FUNCTION ITSA_DSG_TRAJ ( dummy )
+	LOGICAL FUNCTION ITSA_DSG_TRAJ ( cx )
 
 *
 *
@@ -35,9 +35,10 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
-* determine if the current default context points to a Trajectory DSG dataset.
+* determine if the given context points to a Trajectory DSG dataset.
 
 * V74+ *acm* 6/18
+* V751 8/19 *acm* argumemnt to ITSA_DSG_TRAJ is no longer a dummy
 
       include 'tmap_dims.parm'
       include 'ferret.parm'
@@ -47,14 +48,13 @@
       include 'xvariables.cmn'
 #include "tmap_dset.parm"
 
-	INTEGER dummy
+	INTEGER cx
 
 * internal variable declarations
-	INTEGER TM_DSG_DSET_FROM_GRID, grid, dset, cx
+	INTEGER TM_DSG_DSET_FROM_GRID, grid, dset
 
 * initialize
 
-	cx   = is_cx( 1 )
 	grid = cx_grid( cx )
 	dset = TM_DSG_DSET_FROM_GRID( grid )
 

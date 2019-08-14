@@ -166,6 +166,7 @@
 * V751 6/19 *acm*  DSG data cannot be subsetted by index in I,J,K,L; only by coordinates
 *                  /X= /Y= /Z= /T=  or with /E= or /M=
 * v751 *acm*  8/19 Issue 1946, allow for user-set string dimension length, SAVE/STRLEN
+* v751 *acm*  8/19 SAVE/APPEND to dsg datasets
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -391,7 +392,7 @@ c     .		 .AND. .NOT.do_comma_del
 	   ENDDO
 	ENDIF
 
-	IF (do_cdf .AND. has_dsg) THEN 
+	IF (do_cdf .AND. has_dsg .AND..NOT.list_at_eof) THEN 
 	   buff = cmnd_buff
 	   CALL ADD_DSG_VARS (dset, cmnd_buff)
 	   

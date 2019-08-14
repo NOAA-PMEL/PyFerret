@@ -42,6 +42,7 @@
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 *
 * V720:  *sh* 5/17
+* V751: *acm* 8/19 tweaks for grid-to-trajectory 
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -63,8 +64,7 @@
      .          dst(nobs)
 
 * local variable declarations:
-	LOGICAL fmask(nfeatures)
-	LOGICAL sampled_ax(4)
+	LOGICAL ITSA_DSG_TRAJ, fmask(nfeatures), sampled_ax(4)
 * ... sample_ax is not the same as cxdsg_has_coord cuz the source data may
 *     have fixed coordinates on some of the DSG coordinates
 	INTEGER ISUBSCRIPT, TM_DSG_DSET_FROM_GRID,
@@ -80,6 +80,9 @@
 * initialize
 	src_grid = cx_grid(src_cx)
 	dst_grid = cx_grid(dst_cx)
+	dset = TM_DSG_DSET_FROM_GRID(dst_grid)
+	dst_grid = dsg_xlate_grid(dset)
+
 !	bad_src = cx_bad_data( src_cx )   ! not needed here but
 !	bad_dst = cx_bad_data( dst_cx )   ! will be needed for interpolation
 
@@ -88,7 +91,6 @@
 	IF (status .NE. ferr_ok) RETURN
 
 * DSG-specific initialize
-	dset = TM_DSG_DSET_FROM_GRID(dst_grid)
 	row_size_lm = dsg_loaded_lm(dsg_row_size_var(dset))
 
 * determine relevant axes, coordinate limits, and unsampled subscripts

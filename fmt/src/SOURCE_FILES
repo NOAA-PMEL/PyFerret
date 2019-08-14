@@ -21,6 +21,7 @@ cd_dim_only.F\
 cd_dsg_check_timecoord.F\
 cd_dsg_feature_ok.F\
 cd_dsg_featurename.F\
+cd_dsg_get_featuretype.F\
 cd_dsg_grids.F\
 cd_dsg_read.F\
 cd_dsg_scan_vars.F\

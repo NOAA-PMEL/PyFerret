@@ -45,6 +45,7 @@
 *                  "PLOT var" if it's a DSG trajectory set. 
 * V74+ 4/18 *acm*  Call RIBBON_PLOTKEY_SETUP to handle setting up the color key 
 * V7.5+ *acm*  4/18 PLOT/VS plots from DSG data that are not native-trajectory plots
+* V751 7/19 *acm*  DSG-enabled Ferret: change to call of CHECK_PLOT_TRAJ
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -79,7 +80,7 @@
 	grid = cx_grid(cx)
 
 	IF (grid_is_dsg .AND. versus) THEN
-	   CALL CHECK_PLOT_TRAJ (versus, nvars, its_traj)
+	   CALL CHECK_PLOT_TRAJ (versus, nvars, grid, its_traj)
 	   IF (.NOT. ribbon_plot) RETURN
 	ENDIF
 

@@ -1,5 +1,5 @@
 	SUBROUTINE DO_REGRID_FROM_DSG( dsg_cx, grd_cx, dset, nfeatures, nobs,
-     .				       dsg, grd, grd_lo, grd_hi)
+     .				       dsg, grd, grd_lo, grd_hi, status)
 
 *
 *
@@ -43,6 +43,8 @@
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 *
 * V720:  *sh* 5/17
+* V751: *acm* 8/19 Handle profile regrid to a single axis, checking for 
+*                  ascending or descending z-coordinate data in the DSG profiles
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -71,7 +73,8 @@
      .		dsg_grid, grd_grid, dsg_fmt_grid,
      .		row_size_lm, orient, dsg_coord_lm,
      .		i, idim, ifeature, base, lastbase, flen,
-     .		ss(nferdims), status, igrd, idsg, ss12(grd_lo:grd_hi)
+     .		ss(nferdims), status, igrd, idsg, ss12(grd_lo:grd_hi),
+     .		del
 	REAL	TM_WORLD, TDEST_CONVERT,
      .          coef(grd_lo:grd_hi), c1, c2, v1, v2,
      .		grd_coord(grd_lo:grd_hi), bad_dsg, bad_grd
@@ -80,7 +83,6 @@
 	INTEGER   pnolastyet
 	PARAMETER (pnolastyet = -9)
 	LOGICAL   ascending
-	PARAMETER (ascending = .TRUE.)
 
 ! DSGTBD only linear interpolation is offered as of 5/2017
 !      that may be sufficient, but need to have error traps in case the user
@@ -102,8 +104,13 @@
 	dsg_coord_lm = cxdsg_coord_lm(orient)
 
 * initialize for conversion of the gridded time axis onto DSG times
-	CALL TDEST_WORLD_INIT(grd_grid, dsg_fmt_grid, t_dim, status)
-	IF (status .NE. ferr_ok) RETURN   ! untrapped error
+* -for regridding to grid with time. 
+* ( we never return a msg on status out of TDEST_WORLD_INIT)
+
+	IF (grid_line(t_dim, grd_grid) .NE. mnormal) THEN
+	   CALL TDEST_WORLD_INIT(grd_grid, dsg_fmt_grid, t_dim, status)
+	   IF (status .NE. ferr_ok) GOTO 5000  
+	ENDIF
 
 * set the indices on the fixed, unvarying coordinate axes of the grid
 * only the E and orient axes will be over-ridden later
@@ -125,6 +132,9 @@
 
 * get feature mask
 
+	ascending = .TRUE.  ! may change for profiles
+
+
 * ****** PERFORM THE REGRIDDING *****
 	base = 0    ! obs index at end of preceding feature
 * Loop over the features
@@ -143,6 +153,14 @@
 !   dsg_linemem(dsg_coord_lm)%ptr(base+1)  and "lastbase + 1"
 	      repeat_of_same_coords = .FALSE.  ! for debugging purposes
 	   ENDIF
+
+* ... If a profile regrid, see if the dsg coordinates are ascending
+	   IF (orient .EQ. z_dim) THEN
+	      CALL DSG_COORDS_UPDN (flen, dsg_linemem(dsg_coord_lm)%ptr(base+1), 
+     .           bad_dsg, ascending, status)
+	      IF (status .NE. ferr_ok) GOTO 5000
+	   ENDIF
+	      
 
 * ... analyze the feature coordinates against the target axis coordinates
 *     to find neighboring subscripts and interpolation coefficients
@@ -166,6 +184,9 @@
 !	   CALL MAKE_DSG_OBS_MASK(dset, cx, ifeature, base,
 !     .				  process_obs, flen)
 
+	   del = 1
+	   IF (.NOT.ascending) del = -1
+
 * Loop over the target gridded axis points
 	   DO igrd = grd_lo, grd_hi
 
@@ -186,7 +207,7 @@
 
 * ... surrounding dsg (ragged array source) data points
               v1 = dsg(idsg)
-	      IF (.NOT.xact) v2 = dsg(idsg+1)  ! avoid index out of bounds
+	      IF (.NOT.xact) v2 = dsg(idsg+del)  ! avoid index out of bounds
 
 * ... interpolate
               IF (v1.EQ.bad_dsg .OR. v2.EQ.bad_dsg ) THEN
@@ -205,8 +226,7 @@
  500	   base = base + flen
 	ENDDO    ! feature loop
 
-	RETURN
-
-! 5000	RETURN
+ 5000	RETURN
+ 
 	END
 

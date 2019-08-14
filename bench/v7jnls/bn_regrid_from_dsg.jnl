@@ -3,9 +3,12 @@
 ! test regridding from a DSG obs variable to a uniform orthogonal grid
 
 ! DSGTBD: as of 5/2017 there is more to test.  This tests only 
-!    - time series dsg
 !    - algebra involving the result gridded variable with other grids
 !      (this grid still possesses the special E axis of the DSG) 
+!
+! 8/19 adding tests for 
+!   Trajectory-to-grid requests (not implemented, return an error message)
+!   Profile dsg regrid to common z axis.               
 
 use DSG_ERDDAP_pmelTao5daySst.nc
 
@@ -42,3 +45,39 @@ stat TSEQUENCE(T[g=t_25])
 !   - sort and de-dup the T values
 !   - create a time axis that has all of the tsteps of the DSG
 !   - regrid to this time axis  
+CANCEL DATA/ALL
+CANCEL VAR/ALL
+
+! intentional errors
+! Trajectory-to-gridded not implemented at this time.  Return an error
+
+use sail_2019.nc
+define axis/t=1-may-2019:31-may-2019:31/edges/units=days time_all
+define axis/x=-168:-165:0.2/units=degrees_east xreg
+define axis/y=54:57:0.2/units=degrees_north yreg
+define grid/x=xreg/y=yreg/t=time_all grid_reg
+
+let reg_var = x[gx=xreg] + 0*y[gy=yreg] + 0*t[gt=time_all]
+
+set mode ignore
+load  TEMP_CTD_RBR_MEAN[d=1,g=reg_var]
+
+cancel mode ignore
+
+! Profile to fixed z axis
+
+use  profile_dsg2
+list pot_temp_degc
+
+! Define a regular z axis
+define axis/z=2:34:2/units=m/depth zreg
+
+! Sanity check - regrid the depth variable should reproduce the reg-axis depths
+list/order=ez/pre=6 depth[gz=zreg]
+
+! Regrid temperature
+list/order=ez/pre=6 pot_temp_degc[gz=zreg]
+
+list/order=ez/pre=6/z=10:26 pot_temp_degc[gz=zreg]
+
+

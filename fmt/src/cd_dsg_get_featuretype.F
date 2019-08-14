@@ -1,7 +1,6 @@
-	LOGICAL FUNCTION ITSA_DSG_TRAJ ( cx )
+	SUBROUTINE CD_DSG_GET_FEATURETYPE (cdfid, ftype, orientation, dsg_ragged, do_warn)
 
-*
-*
+
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -35,30 +34,59 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
-* determine if the given context points to a Trajectory DSG dataset.
+* Find the featureType attribute and return the feature-type information
+* for the dataset
 
-* V74+ *acm* 6/18
-* V751 8/19 *acm* argumemnt to ITSA_DSG_TRAJ is no longer a dummy
-
-      include 'tmap_dims.parm'
-      include 'ferret.parm'
-      include 'xcontext.cmn'
-      include 'xtm_grid.cmn_text'
-      include 'xdset_info.cmn_text'
-      include 'xvariables.cmn'
+        include 'netcdf.inc'
+        include 'tmap_errors.parm'
+c	include 'tmap_dims.parm'
+#include "gt_lib.parm"
 #include "tmap_dset.parm"
+	include 'xio.cmn_text'
 
-	INTEGER cx
 
-* internal variable declarations
-	INTEGER TM_DSG_DSET_FROM_GRID, grid, dset
+	INTEGER cdfid, ftype, orientation
+	LOGICAL	dsg_ragged, do_warn
 
-* initialize
+	LOGICAL got_it, CD_GET_ATTRIB
+	INTEGER STR_CASE_BLIND_COMPARE, varid, attlen, maxlen
+	CHARACTER buff*32
 
-	grid = cx_grid( cx )
-	dset = TM_DSG_DSET_FROM_GRID( grid )
+	ftype = pfeatureType_point
+	orientation = no_dim
+	dsg_ragged = .FALSE.
+	maxlen = 32
 
-	ITSA_DSG_TRAJ = dsg_feature_type(dset) .EQ. pfeatureType_Trajectory
+	varid = NF_GLOBAL
+	got_it = CD_GET_ATTRIB ( cdfid, varid, 'featureType', do_warn, '.',
+     .                           buff, attlen, maxlen )
+	IF (.NOT. got_it) RETURN
 
-        RETURN
-        END
+	IF (STR_CASE_BLIND_COMPARE(buff,"timeseries") .EQ. str_match) THEN
+	   ftype = pfeatureType_timeSeries
+	   orientation = t_dim		! T axis
+	   dsg_ragged = .TRUE.
+
+	ELSEIF (STR_CASE_BLIND_COMPARE(buff,"profile") .EQ. str_match) THEN
+	   ftype = pfeatureType_profile
+	   orientation = z_dim		! Z axis
+	   dsg_ragged = .TRUE.
+
+	ELSEIF (STR_CASE_BLIND_COMPARE(buff,"trajectory") .EQ. str_match) THEN
+	   ftype = pfeatureType_Trajectory
+	   orientation = x_dim		! X axis (arbitrarily)
+	   dsg_ragged = .TRUE.
+
+	ELSEIF ( (STR_CASE_BLIND_COMPARE(buff,"timeseriesprofile") .EQ. str_match)
+     .     .OR.  (STR_CASE_BLIND_COMPARE(buff,"trajectoryprofile") .EQ. str_match) )THEN
+	   dsg_ragged = .FALSE.
+	   IF (do_warn) CALL TM_NOTE("FEATURE NOT YET IMPLEMENTED: "//buff , lunit_errors)
+
+	ELSE
+	   dsg_ragged = .FALSE.
+	   IF (do_warn) CALL TM_NOTE("Ignoring non-DSG FeatureType: "//buff , lunit_errors)
+
+	ENDIF
+
+	RETURN
+	END

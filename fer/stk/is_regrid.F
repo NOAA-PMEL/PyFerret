@@ -92,6 +92,8 @@
 * V720 5/17 *sh* support for DSG regridding
 * V720: 6/17 *acm* Ticket 2346: new @IIN regridding transform
 * V741  5/18 *acm* issue 1868: gridding transforms that will grid to same axis
+* V751  8/19 *acm* DSG-enabled Ferret, return an error if it's trajectory-to-grid
+*                  -- not implemented for now.
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -110,7 +112,7 @@
 * exit #1 is to signal completion of the activity at this stack level
 
 * internal variable declarations:
-	LOGICAL	TM_ITS_CDF, TM_ITSA_DSG, ITSA_REGRID_FROM_DSG,
+	LOGICAL	TM_ITS_CDF, TM_ITSA_DSG, ITSA_REGRID_FROM_DSG, ITSA_DSG_TRAJ,
      .		xy_regrid, valid, valid_y, has_impl_save, done_by_strides,
      .		itsa_string, its_res_dsg, its_from_dsg
 	INTEGER TM_DSG_DSET_FROM_GRID, TM_DSG_NFEATURES,
@@ -147,8 +149,16 @@
 	its_from_dsg = ITSA_REGRID_FROM_DSG(res_cx)
 
 * initialize DSG info if it will be needed
+* Not implementing trajectory-to-grid at this time...
+* Notes for DSG trajectory to grid regridding:
+*  For each result timestep and depth, and each feature,
+*  call something like one of the scat-2-grid routines,
+*  including maybe the option of the tracks2grid function
+*  that we use for SOCAT gridding.
+
 	IF (its_res_dsg .OR. its_from_dsg) THEN
 	   dset = TM_DSG_DSET_FROM_GRID(res_grid)
+	   IF (its_from_dsg .AND. ITSA_DSG_TRAJ (res_cx) ) GOTO 5030
 	   nobs = dsg_obs_dimlen(dset)
 	   nfeatures = TM_DSG_NFEATURES(res_grid)
 	ENDIF
@@ -323,10 +333,12 @@ c     .    .AND. cx_has_impl_grid(res_cx)
 	IF ( its_res_dsg ) THEN
 	   CALL DO_REGRID_TO_DSG( com_cx, res_cx, dset, nfeatures, nobs,
      .			memry(com_mr)%ptr, memry(res_mr)%ptr )
+
 	ELSEIF ( its_from_dsg ) THEN
 	   CALL DO_REGRID_FROM_DSG( com_cx, res_cx, dset, nfeatures, nobs,
      .			memry(com_mr)%ptr, memry(res_mr)%ptr, 
-     .			cx_lo_ss(res_cx,axis), cx_hi_ss(res_cx,axis) )
+     .			cx_lo_ss(res_cx,axis), cx_hi_ss(res_cx,axis), status )
+	   IF ( status .NE. ferr_ok ) GOTO 5000
 	ELSEIF ( done_by_strides ) THEN
 	   CALL COPY_GRID( memry(com_mr)%ptr,  com_mr,
      .			   memry(res_mr)%ptr,  res_mr )
@@ -496,11 +508,8 @@ c     .    .AND. cx_has_impl_grid(res_cx)
  5020	CALL ERRMSG( ferr_invalid_command, status,
      .   'Units of source and destination axis must match: @'
      .   //alg_regrid_code(rgrd_trans), *5000)
+ 5030	CALL ERRMSG( ferr_invalid_command, status,
+     .		'Regridding DSG Trajectory data to grids is not implemented', *5000)
  5100	CALL DELETE_MRS_IN_PROGRESS
 	GOTO 5000
 	END	
-
-
-
-
-

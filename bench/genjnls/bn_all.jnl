@@ -1296,6 +1296,14 @@ GO bn_reset bn_dsg_subset
 GO bn_dsg_subset
 
 
+GO bn_reset bn_regrid_to_dsg_prof
+GO bn_regrid_to_dsg_prof
+
+GO bn_reset bn_regrid_to_dsg_traj
+GO bn_regrid_to_dsg_traj
+
+GO bn_reset bn_dsg_save_uvars
+GO bn_dsg_save_uvars
 
 ! *********** PyFerret-specific scripts ***********
 

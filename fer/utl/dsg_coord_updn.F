@@ -1,4 +1,5 @@
-	LOGICAL FUNCTION ITSA_DSG_TRAJ ( cx )
+	SUBROUTINE DSG_COORDS_UPDN (npts, coords, bad, ascending, status)
+	      
 
 *
 *
@@ -35,30 +36,59 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
-* determine if the given context points to a Trajectory DSG dataset.
+* Are the coordinates in ascending or decending order?
 
-* V74+ *acm* 6/18
-* V751 8/19 *acm* argumemnt to ITSA_DSG_TRAJ is no longer a dummy
+* NOAA/PMEL, Seattle, WA - Science Data Integration Group
+* V751 8/19 *acm* 
 
-      include 'tmap_dims.parm'
-      include 'ferret.parm'
-      include 'xcontext.cmn'
-      include 'xtm_grid.cmn_text'
-      include 'xdset_info.cmn_text'
-      include 'xvariables.cmn'
-#include "tmap_dset.parm"
+        IMPLICIT NONE
+	include 'ferret.parm'
+	include 'errmsg.parm'
 
-	INTEGER cx
+* calling argument declarations:
+	LOGICAL ascending
+	INTEGER npts, status
+	REAL	coords(*), bad
 
-* internal variable declarations
-	INTEGER TM_DSG_DSET_FROM_GRID, grid, dset
+* internal variable declarations:
+        INTEGER i, ic, change
+	REAL	val0
 
-* initialize
+	status = ferr_ok
 
-	grid = cx_grid( cx )
-	dset = TM_DSG_DSET_FROM_GRID( grid )
+* ... find first valid value
 
-	ITSA_DSG_TRAJ = dsg_feature_type(dset) .EQ. pfeatureType_Trajectory
+	ic = 1
+	DO i = 1, npts
+	   val0 = coords(1)
+	   ic = i
+	   IF (val0 .NE. bad) EXIT
+	ENDDO
 
-        RETURN
-        END
+* ... all bad, or only the last one valid (shouldn't happen)
+	IF (ic .EQ. npts) RETURN
+
+* ... Are the values ascending or descending? 
+*     If they change more than once, that's an error
+
+	change = 0
+	DO i = ic+1, npts
+	   IF (coords(i).LT.val0 .AND. ascending) THEN
+	      ascending = .FALSE.
+	      change = change+1
+	      IF (change .GT. 1) GOTO 5100
+	   ENDIF
+
+	   IF (coords(i).GT.val0 .AND. .NOT.ascending) THEN
+	      ascending = .TRUE.
+	      change = change+1
+	      IF (change .GT. 1) GOTO 5100
+	   ENDIF
+	   val0 = coords(i)
+	ENDDO
+
+ 5000	RETURN
+
+ 5100	CALL ERRMSG( ferr_regrid, status,
+     .		'Z coordinates within profiles are not monotonic', *5000)
+	END

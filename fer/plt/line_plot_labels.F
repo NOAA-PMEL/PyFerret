@@ -64,6 +64,7 @@
 * V751 6/19 *acm*  When multiple datasets are open need to take care to get the right feature-id var
 * V751 7/19 *acm*  DSG-enabled Ferret: PLOT/KEY for DSG data will make a line legend consistent
 *                  with multi-feature plots, even if there's just one feature.
+* V751 7/19 *acm*  DSG-enabled Ferret: labels when plotting user-defined variables
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -92,10 +93,10 @@
 * internal variable declarations:
 	LOGICAL TM_ITSA_DSG, user_title, units_same, do_units, its_dsg,
      .          reset_dsg, process_feature(nfeatures), yes_key
-	INTEGER	TM_LENSTR1, TM_LENSTR, TM_UNIT_ID, STR_SAME, 
+	INTEGER	TM_LENSTR1, TM_LENSTR, TM_UNIT_ID, STR_SAME, TM_DSG_DSET_FROM_GRID,
      .		ipl, nline_in_mem, slen, slen1, status, ptitl, style, 
      .		justify, iunits, istart, i, nfeatr(nfeatures), dtype, 
-     .		fvar_varid
+     .		fvar_varid, dset_dsg
 	
 	CHARACTER*2040	FULL_VAR_TITLE, VAR_TITLE_ONLY, KEY_STRING, 
      .			plot_title, plot_title_1
@@ -122,8 +123,10 @@
 	   its_dsg = .TRUE.
 
 * create a mask showing which features to plot and a list of feature-numbers to label
-	   CALL MAKE_DSG_FEATURE_MASK(cx_data_set(cx_list(var1)), cx_list(var1), 
-     .           process_feature, nfeatures)
+* This may be a user-defined variable or expression on a DSG grid. Get the DSG dataset number.
+
+	   dset_dsg = TM_DSG_DSET_FROM_GRID( cx_grid(is_cx(var1)) )
+	   CALL MAKE_DSG_FEATURE_MASK(dset_dsg, cx_list(var1), process_feature, nfeatures)
 	   ipl = 0
 	   DO i = 1, nfeatures
 	      IF (process_feature(i)) THEN
@@ -134,8 +137,8 @@
 
 * The varid of the feature-id variable
  
-	   dummy = SANITARY_VAR_CODE(cat_file_var, dsg_feature_var(dset) )
-	   CALL CD_GET_VAR_ID  (dset, dummy, fvar_varid, status)
+	   dummy = SANITARY_VAR_CODE(cat_file_var, dsg_feature_var(dset_dsg) )
+	   CALL CD_GET_VAR_ID  (dset_dsg, dummy, fvar_varid, status)
 
 	ENDIF
 
@@ -146,14 +149,14 @@
 	   reset_dsg = .TRUE.
 	   its_dsg = .FALSE.  ! multi-var, one feature
 	   
-	   CALL CD_READ_ONE ( dset, fvar_varid, nfeatr(ipl), dtype, value, 
+	   CALL CD_READ_ONE ( dset_dsg, fvar_varid, nfeatr(ipl), dtype, value, 
      .                        plot_title_1, slen, status )
-	   CALL GET_DSET_TITLE (dset, dummy, slen)
+	   CALL GET_DSET_TITLE (dset_dsg, dummy, slen)
 	   slen = TM_LENSTR(dummy)
 	   IF (slen .GT. 0) THEN
-	      CALL SET_DSET_TITLE (dset, dummy(:TM_LENSTR1(dummy))//': ID='//plot_title_1)
+	      CALL SET_DSET_TITLE (dset_dsg, dummy(:TM_LENSTR1(dummy))//': ID='//plot_title_1)
 	   ELSE
-	      CALL SET_DSET_TITLE (dset, 'ID: '//plot_title_1)
+	      CALL SET_DSET_TITLE (dset_dsg, 'ID: '//plot_title_1)
 	   ENDIF
 	ENDIF
 
@@ -255,7 +258,7 @@
 
 * Read the feature-id value. If it's numeric turn it into a string
 
-                    CALL CD_READ_ONE ( dset, fvar_varid, nfeatr(ipl), dtype, value, 
+                    CALL CD_READ_ONE ( dset_dsg, fvar_varid, nfeatr(ipl), dtype, value, 
      .                                 plot_title, slen, status )
 		    IF (dtype .NE. NF_CHAR) plot_title = TM_FMT(value, 15, 20, slen)
 
@@ -570,7 +573,7 @@
 5000	CONTINUE
 
 ! Restore dataset title
-	IF (reset_dsg) CALL SET_DSET_TITLE (dset, dummy)
+	IF (reset_dsg) CALL SET_DSET_TITLE (dset_dsg, dummy)
 
 
 	RETURN

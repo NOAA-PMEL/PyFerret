@@ -156,3 +156,7 @@ cancel data/all
 ! try to append timeseries data to trajectory dataset
 use a.nc
 save/append/file=sail_copy.nc my_temp_data
+
+
+sp rm sail_copy.nc
+set mode/last ignore

@@ -125,8 +125,13 @@ grdelBool cairoCFerBind_saveWindow(CFerBind *self, const char *filename,
         return 0;
     }
 
-    /* Check the surface type */
+    /* Check the surface type - 
+     *    PNG from -png command line option
+     *    PDF from metadata mode
+     *    REC from normal opertaions
+     */
     if ( (instdata->imageformat != CCFBIF_PNG) &&
+         (instdata->imageformat != CCFBIF_PDF) &&
          (instdata->imageformat != CCFBIF_REC) ) {
         /* Silently ignore this command since this was probably called automatically */
         return 1;

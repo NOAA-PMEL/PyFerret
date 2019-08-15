@@ -366,7 +366,7 @@
 	   IF (nvdim .GT. 1) THEN
 	      cdfstat = NF_INQ_DIMLEN(cdfid, vdims(2), ax2_len)
 	      IF (ax2_len .GT. 1) THEN
-	         buff = 'DSG ragged array must observation variables must be 1-D'
+	         buff = 'DSG ragged array: observation variables must be 1-D '//vname(:vlen)
 		 GOTO 5400
 	      ENDIF
 	   ENDIF

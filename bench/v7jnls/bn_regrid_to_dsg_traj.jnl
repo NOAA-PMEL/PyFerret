@@ -66,7 +66,7 @@ set mem/siz=($save_mem)
 
 ! Finally, trajectory datasets can have depths. 
 ! Synthesize a depth variable in a trajectory dataset.
-sp cp sail_2019.nc sail_copy.nc
+sp cp data/sail_2019.nc sail_copy.nc
 use sail_2019.nc
 
 ! Good test of a dsg-variable made up of several expressions

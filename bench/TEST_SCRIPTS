@@ -1,4 +1,6 @@
+!
 ! Ferret scripts must have the .jnl extension
+!
 bn_syntax.jnl
 bn_dollar.jnl
 bn_grave.jnl
@@ -306,7 +308,7 @@ bn_tagg_overlaps.jnl
 bn_samplexyzt.jnl
 bn_sample_multi.jnl
 bn751_bug_fixes.jnl
-
+bn_cdf_strlen.jnl
 !
 ! bn_gif, bn_all_ef, and bn_startupfile at end
 !
@@ -315,6 +317,7 @@ bn_ps.jnl
 bn_all_ef.jnl
 bn_startupfile.jnl
 !
-! Test SOCAT decimation script (not part of normal benchmark tests)
+! Test SOCAT decimation script
+! (not part of normal benchmark tests)
 !
 err700_decimate.jnl

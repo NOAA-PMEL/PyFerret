@@ -3132,7 +3132,6 @@ variables:
 *** Running ferret script: bn_dsg_subset.jnl
 *** Running ferret script: bn_regrid_to_dsg_prof.jnl
 *** Running ferret script: bn_regrid_to_dsg_traj.jnl
-****** FERRET error: bn_regrid_to_dsg_traj.jnl failed ******
 *** Running ferret script: bn_dsg_save_uvars.jnl
 *** Running ferret script: bn_gif.jnl
 *** Running ferret script: bn_ps.jnl

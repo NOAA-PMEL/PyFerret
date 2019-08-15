@@ -6306,13 +6306,11 @@ gsetmarkerrep()   66 Polymarker index is invalid
 gsetlinerep()   60 Polyline index is invalid
 gsetmarkerrep()   66 Polymarker index is invalid
 gsetlinerep()   60 Polyline index is invalid
-cp: cannot stat ‘sail_2019.nc’: No such file or directory
  LISTing to file sail_copy.nc
- **ERROR: invalid command: Appending DSG variable to file that is not DSG or different featureType
-LIST/FORMAT=CDF/append/file=sail_copy.nc depth
-Command file, command group, or REPEAT execution aborted
-ERROR RUNNING SCRIPT
-****** FERRET error: bn_regrid_to_dsg_traj.jnl failed ******
+Replacing definition of axis XFAKE
+Replacing definition of grid GFAKE
+ LISTing to file fake_model_temp.nc
+ LISTing to file sample_xyzt_to_traj.nc
 *** Running ferret script: bn_dsg_save_uvars.jnl
  LISTing to file fake_model_temp.nc
  LISTing to file sail_copy.nc

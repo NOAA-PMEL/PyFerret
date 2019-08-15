@@ -58,11 +58,8 @@ LD = $(shell which gfortran)
 ## =========================
 ## Python version used by PyFerret
 ## =========================
-# PYTHON_EXE = python2.6
-PYTHON_EXE = python2.7
-# PYTHON_EXE = python3.4
-# PYTHON_EXE = python3.5
-# PYTHON_EXE = python3.6
+# PYTHON_EXE = python2.7
+PYTHON_EXE = python3.6
 # PYTHON_EXE = python3.7
 
 ## =========================

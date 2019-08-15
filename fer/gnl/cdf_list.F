@@ -320,6 +320,7 @@
         varid = 0      
 	cx  = cx_list(1)
         dset = cx_data_set( cx )
+	its_cdf = .FALSE.
 
         IF (dset .GT. pdset_irrelevant) THEN
            its_cdf = (ds_type(dset).EQ.'CDF' .OR. ds_type(dset).EQ.'ECDF' 
@@ -332,7 +333,7 @@
 * the CDF_LIST_DSG routine
 
 	has_dsg = .FALSE.
-	IF (its_cdf .AND. .NOT.as_global) THEN
+	IF (.NOT.as_global) THEN
 	   DO ivar = 1, nvars
               cx = cx_list(ivar)
               grid = cx_grid(cx)

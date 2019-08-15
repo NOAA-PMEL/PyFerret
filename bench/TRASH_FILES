@@ -87,9 +87,7 @@ foo.bar1
 foo.bar2
 foo.bar3
 foo.cdf
-FI.nc
-FL.nc
-FTLON.nc
+FTLON.cdf
 FTLON.nc
 gh.nc
 global_copy.nc

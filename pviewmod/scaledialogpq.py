@@ -10,15 +10,6 @@ from __future__ import print_function
 
 import sys
 
-try:
-    import sip
-except ImportError:
-    import PyQt4.sip as sip
-try:
-    sip.setapi('QVariant', 2)
-except Exception:
-    pass
-
 # First try to import PyQt5, then try PyQt4 if that fails
 try:
     import PyQt5

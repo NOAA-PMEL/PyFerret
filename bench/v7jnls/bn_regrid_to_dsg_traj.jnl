@@ -99,3 +99,5 @@ sh dat
 LET/title="Temp regridded from gridded to DSG" temp_from_grid = temp[d=2,g=temp_ctd_rbr_mean[d=1]]
 save/clobber/file=sample_xyzt_to_traj.nc temp_from_grid
 
+
+sp rm sail_copy.nc

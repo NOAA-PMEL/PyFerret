@@ -144,6 +144,8 @@ redirect_stderr.txt
 redirect_stdout.txt
 redirect.txt
 revision.nc
+sail_copy.nc
+sample_xyzt_to_traj.nc
 snoopy.dat
 sst_new.nc
 startup_tests.jnl

@@ -678,7 +678,6 @@ GO bn_grads_z.jnl
 GO bn_reset bn_clock_syms
 GO bn_clock_syms
 
-
 ! ******** V6.3 Additions below ***********
 ! Note that allowing mouse-click operations in the current
 ! window, not only in window 1, is implemented in v6.3. Not
@@ -695,7 +694,6 @@ GO bn_isdepth
 
 GO bn_reset bn_var_hist_levels.jnl
 GO bn_var_hist_levels.jnl
-
 
 ! ******** V6.4 Additions below ***********
 
@@ -1195,6 +1193,7 @@ GO bn_reset bn_center_keylab
 GO bn_center_keylab
 
 ! *********** v7.42 Additions ***********
+
 GO bn_reset bn741_bug_fixes
 GO bn741_bug_fixes
 
@@ -1252,8 +1251,6 @@ GO bn751_bug_fixes
 GO bn_reset bn_cdf_strlen
 GO bn_cdf_strlen
 
-
-
 ! *********** DSG Additions ***********
 
 GO bn_reset bn_dsg_tseries
@@ -1298,7 +1295,6 @@ GO bn_dsg_if_exprns
 GO bn_reset bn_dsg_subset
 GO bn_dsg_subset
 
-
 GO bn_reset bn_regrid_to_dsg_prof
 GO bn_regrid_to_dsg_prof
 
@@ -1340,7 +1336,6 @@ GO bn_reset bn_setting_text
 GO bn_setting_text
 
 ENDIF  ! pyferret
-
 
 !  *********** Always do a bn_reset  *********** 
 !  *********** make sure things clean up well **

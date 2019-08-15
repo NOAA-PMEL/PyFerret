@@ -3612,6 +3612,59 @@ set axis/name=45 x_in_meters
  **ERROR: invalid command: illegal new name given for axis .fr
 set axis/name=.fr x_in_meters
 *** Running ferret script: bn_let_remote.jnl
+           *** NOTE: netCDF bounds variable definition error
+           *** NOTE: Bounds definition "time_bnds" points to no existing axis
+           *** NOTE: Ignoring BOUNDS attribute
+           *** NOTE: netCDF bounds variable definition error
+           *** NOTE: Bounds definition "depth_bnds" points to no existing axis
+           *** NOTE: Ignoring BOUNDS attribute
+           *** NOTE: netCDF bounds variable definition error
+           *** NOTE: Bounds definition "lat_bnds" points to no existing axis
+           *** NOTE: Ignoring BOUNDS attribute
+           *** NOTE: netCDF bounds variable definition error
+           *** NOTE: Bounds definition "lon_bnds" points to no existing axis
+           *** NOTE: Ignoring BOUNDS attribute
+           *** NOTE: netCDF bounds variable definition error
+           *** NOTE: Bounds definition "time_bnds" points to no existing axis
+           *** NOTE: Ignoring BOUNDS attribute
+           *** NOTE: netCDF bounds variable definition error
+           *** NOTE: Bounds definition "depth_bnds" points to no existing axis
+           *** NOTE: Ignoring BOUNDS attribute
+           *** NOTE: netCDF bounds variable definition error
+           *** NOTE: Bounds definition "lat_bnds" points to no existing axis
+           *** NOTE: Ignoring BOUNDS attribute
+           *** NOTE: netCDF bounds variable definition error
+           *** NOTE: Bounds definition "lon_bnds" points to no existing axis
+           *** NOTE: Ignoring BOUNDS attribute
+           *** NOTE: netCDF bounds variable definition error
+           *** NOTE: Bounds definition "time_bnds" points to no existing axis
+           *** NOTE: Ignoring BOUNDS attribute
+           *** NOTE: netCDF bounds variable definition error
+           *** NOTE: Bounds definition "depth_bnds" points to no existing axis
+           *** NOTE: Ignoring BOUNDS attribute
+           *** NOTE: netCDF bounds variable definition error
+           *** NOTE: Bounds definition "lat_bnds" points to no existing axis
+           *** NOTE: Ignoring BOUNDS attribute
+           *** NOTE: netCDF bounds variable definition error
+           *** NOTE: Bounds definition "lon_bnds" points to no existing axis
+           *** NOTE: Ignoring BOUNDS attribute
+ **ERROR: command syntax: /REMOTE variable expression may not contain [d=
+DEFINE VARIABLE/D=1/remote rvar = t00an1[d=1,z=1:100@ave]
+ **ERROR: command syntax: /REMOTE variable definition must also specify /D=
+DEFINE VARIABLE/remote rvar = t00an1[d=1,z=1:100@ave]
+ **netCDF error
+             Unable to open URL with REMOTE variable definitions:
+             Data set: http://ferret.pmel.noaa.gov/nvods/thredds/dodsC/las/woa05_annual/data_ferret.pmel.noaa.gov_pmel_thredds_dodsC_data_PMEL_WOA05nc_annual_t00an1.nc.jnl
+ **TMAP ERR: attribute reading error
+             Unable to get varid for LET/REMOTE variable: NetCDF: Variable not found (OPeNDAP/netCDF Error code -49)
+             Data set: http://ferret.pmel.noaa.gov/nvods/thredds/dodsC/las/woa05_annual/data_ferret.pmel.noaa.gov_pmel_thredds_dodsC_data_PMEL_WOA05nc_annual_t00an1.nc.jnl
+ **TMAP ERR: attribute reading error
+             Unable to get bad-value for LET/REMOTE variable: NetCDF: Attribute not found (OPeNDAP/netCDF Error code -43)
+             Data set: http://ferret.pmel.noaa.gov/nvods/thredds/dodsC/las/woa05_annual/data_ferret.pmel.noaa.gov_pmel_thredds_dodsC_data_PMEL_WOA05nc_annual_t00an1.nc.jnl
+ **netCDF error
+             NetCDF: Variable not found (OPeNDAP/netCDF Error code -49)
+             Data set: http://ferret.pmel.noaa.gov/nvods/thredds/dodsC/las/woa05_annual/data_ferret.pmel.noaa.gov_pmel_thredds_dodsC_data_PMEL_WOA05nc_annual_t00an1.nc.jnl
+list/x=300/y=15 avar
 *** Running ferret script: bn691_bug_fixes.jnl
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -6016,6 +6069,33 @@ ooooooooooooooooooooooooooooooooooooooooooo
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
  LISTing to file a.nc
+*** Running ferret script: bn_cdf_strlen.jnl
+ LISTing to file a.nc
+ LISTing to file a.nc
+ LISTing to file a.nc
+ LISTing to file a.nc
+ LISTing to file a.nc
+ LISTing to file a.nc
+ LISTing to file a.nc
+ LISTing to file a.nc
+ LISTing to file a.nc
+           *** NOTE: SAVE/STRLEN= is ignored when appending to the file
+ LISTing to file a.nc
+ LISTing to file a.nc
+ **TMAP ERR: attempt to redefine line
+             String length for variable TSTRINGS inconsistent w/ CDF file. On first write, use /STRLEN= at least 15
+LIST/FORMAT=CDF/append/file=a.nc/L=2:4 tstrings, tstrings_long
+ LISTing to file a.nc
+ LISTing to file a.nc
+           *** NOTE: SAVE/STRLEN= is ignored when appending to the file
+ **TMAP ERR: attempt to redefine line
+             String length for variable TSTRINGS inconsistent w/ CDF file. On first write, use /STRLEN= at least 15
+LIST/FORMAT=CDF/append/file=a.nc/L=2:4/strlen=10 tstrings
+ LISTing to file a.nc
+ **ERROR: invalid command: Strings are length 15: longer than /STRLEN setting of 7
+          Variable: TSTRINGS
+LIST/FORMAT=CDF/clobber/file=a.nc/STRLEN=7 tstrings, tstrings_long
+LIST/FORMAT=CDF/clobber/file=a.nc/STRLEN=7 tstrings, tstrings_long
 *** Running ferret script: bn_dsg_tseries.jnl
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -6042,6 +6122,28 @@ list t_25[t=@max,e=@max]
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+           *** NOTE: No missing_value or _FillValue attribute. Using NaN for variable: trajectory
+           *** NOTE: No missing_value or _FillValue attribute. Using NaN for variable: rowSize
+           *** NOTE: No missing_value or _FillValue attribute. Using NaN for variable: time
+Replacing definition of axis TFAKE
+Replacing definition of axis XFAKE
+Replacing definition of axis YFAKE
+Replacing definition of grid GFAKE
+ LISTing to file fake_model_temp.nc
+Replacing definition of axis XFAKE
+           *** NOTE: grid GIL1 used by data set fake_model_temp
+           *** NOTE: Redefinition may alter apparent contents of data set
+ LISTing to file fake_model_temp.nc
+Replacing definition of axis TBIG
+Replacing definition of axis XBIG
+Replacing definition of axis YBIG
+Replacing definition of grid GBIG
+Replacing definition of axis TFAKE
+Replacing definition of axis XFAKE
+Replacing definition of axis YFAKE
+Replacing definition of axis ZFAKE
+Replacing definition of grid GFAKE
+ LISTing to file fake_model_temp.nc
 *** Running ferret script: bn_dsg_feature_mask.jnl
 *** Running ferret script: bn_dsg_repeat_m.jnl
 *** Running ferret script: bn_dsg_traj_plot.jnl
@@ -6050,6 +6152,11 @@ list t_25[t=@max,e=@max]
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+           *** NOTE: No missing_value or _FillValue attribute. Using NaN for variable: trajectory
+           *** NOTE: No missing_value or _FillValue attribute. Using NaN for variable: rowSize
+           *** NOTE: No missing_value or _FillValue attribute. Using NaN for variable: time
+ **ERROR: invalid command: Regridding DSG Trajectory data to grids is not implemented
+load  TEMP_CTD_RBR_MEAN[d=1,g=reg_var]
 *** Running ferret script: bn_dsg_use_feature.jnl
  **TMAP ERR: Corrupted CF-DSG structure or attributes
              Required coordinate variables not found. Profile file is missing directions: vert
@@ -6090,6 +6197,41 @@ SET DAT/FORM=CDF dsg_bad_atts2
 *** Running ferret script: bn_dsg_list_comma_tab.jnl
 *** Running ferret script: bn_dsg_if_exprns.jnl
 *** Running ferret script: bn_dsg_subset.jnl
+*** Running ferret script: bn_regrid_to_dsg_prof.jnl
+ LISTing to file fake_model_temp.nc
+*** Running ferret script: bn_regrid_to_dsg_traj.jnl
+ LISTing to file fake_model_temp.nc
+Replacing definition of axis XFAKE
+           *** NOTE: grid GIL1 used by data set fake_model_temp
+           *** NOTE: Redefinition may alter apparent contents of data set
+ LISTing to file fake_model_temp.nc
+ LISTing to file sail_copy.nc
+Replacing definition of axis XFAKE
+Replacing definition of grid GFAKE
+ LISTing to file fake_model_temp.nc
+ LISTing to file sample_xyzt_to_traj.nc
+*** Running ferret script: bn_dsg_save_uvars.jnl
+ LISTing to file fake_model_temp.nc
+ LISTing to file sail_copy.nc
+ LISTing to file sail_copy.nc
+ LISTing to file sail_copy.nc
+ LISTing to file sail_copy.nc
+ LISTing to file a.nc
+ LISTing to file sail_copy.nc
+ LISTing to file sail_copy.nc
+ **ERROR: invalid command: Appending to DSG file: Size of trajectory dimension does not match dimension in file: TEMP_FROM_GRID
+LIST/FORMAT=CDF/append/file=sail_copy.nc temp_from_grid
+ LISTing to file sail_copy.nc
+ LISTing to file sail_copy.nc
+ **ERROR: invalid command: Appending to DSG file: Size of obs dimension does not match dimension in file: TEMP_FROM_GRID
+LIST/FORMAT=CDF/append/file=sail_copy.nc temp_from_grid
+ LISTing to file sail_copy.nc
+ **ERROR: invalid command: Appending to DSG file: Size of trajectory dimension does not match dimension in file: TEMP_FROM_GRID
+LIST/FORMAT=CDF/append/e=2/file=sail_copy.nc temp_from_grid
+ LISTing to file a.nc
+ LISTing to file sail_copy.nc
+ **ERROR: invalid command: Appending DSG variable to file that is not DSG or different featureType
+LIST/FORMAT=CDF/append/file=sail_copy.nc my_temp_data
 *** Running ferret script: bn_gif.jnl
  **ERROR: dimensions improperly specified: specified data is not a line
            - its a 2D region: "plot/i=1:10/j=1:20/nolabel i+j"

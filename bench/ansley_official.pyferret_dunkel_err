@@ -4,7 +4,7 @@ Running FERRET version /home/users/ansley/PyFerret/bin/pyferret
 Using external functions from /home/users/ansley/PyFerret/ext_func/pylibs
 Running the tests of external functions y
 Benchmark run by ansley
-Note: extra code block in line_plot_labels
+Note: merged from the trunk: regrid to dsg traj and prof, save user-variables to dsg, subsets to dsg
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DATA=. ./data
@@ -15,13 +15,13 @@ FER_DIR=.
 FER_DSETS=. ./data
 FER_EXTERNAL_FUNCTIONS=/home/users/ansley/PyFerret/ext_func/pylibs
 FER_FONTS=/home/users/ansley/PyFerret/ppl/fonts
-FER_GO=. ./v4jnls ./v5jnls ./v6jnls ./v7jnls ./pyjnls ./genjnls . ./v4jnls ./v5jnls ./v6jnls ./v7jnls ./pyjnls ./genjnls . /home/users/ansley/PyFerret/go /home/users/ansley/PyFerret/examples /home/users/ansley/PyFerret/contrib
+FER_GO=. ./v4jnls ./v5jnls ./v6jnls ./v7jnls ./pyjnls ./genjnls . /home/users/ansley/PyFerret/go /home/users/ansley/PyFerret/examples /home/users/ansley/PyFerret/contrib
 FER_GRIDS=. ./data
 FER_LIBS=/home/users/tmap/ferret/rhel6-x86_64-linux/lib
 FER_PALETTE=. /home/users/ansley/PyFerret/ppl
 FER_WEB_BROWSER=firefox
 PYFER_EXTERNAL_FUNCTIONS=/home/users/ansley/PyFerret/ext_func/pylibs
-Beginning at Mon Aug 5 13:40:16 PDT 2019
+Beginning at Wed Aug 14 16:49:21 PDT 2019
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -4679,6 +4679,59 @@ set axis/name=.fr x_in_meters
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
 Starting test: bn_let_remote
+           *** NOTE: netCDF bounds variable definition error
+           *** NOTE: Bounds definition "time_bnds" points to no existing axis
+           *** NOTE: Ignoring BOUNDS attribute
+           *** NOTE: netCDF bounds variable definition error
+           *** NOTE: Bounds definition "depth_bnds" points to no existing axis
+           *** NOTE: Ignoring BOUNDS attribute
+           *** NOTE: netCDF bounds variable definition error
+           *** NOTE: Bounds definition "lat_bnds" points to no existing axis
+           *** NOTE: Ignoring BOUNDS attribute
+           *** NOTE: netCDF bounds variable definition error
+           *** NOTE: Bounds definition "lon_bnds" points to no existing axis
+           *** NOTE: Ignoring BOUNDS attribute
+           *** NOTE: netCDF bounds variable definition error
+           *** NOTE: Bounds definition "time_bnds" points to no existing axis
+           *** NOTE: Ignoring BOUNDS attribute
+           *** NOTE: netCDF bounds variable definition error
+           *** NOTE: Bounds definition "depth_bnds" points to no existing axis
+           *** NOTE: Ignoring BOUNDS attribute
+           *** NOTE: netCDF bounds variable definition error
+           *** NOTE: Bounds definition "lat_bnds" points to no existing axis
+           *** NOTE: Ignoring BOUNDS attribute
+           *** NOTE: netCDF bounds variable definition error
+           *** NOTE: Bounds definition "lon_bnds" points to no existing axis
+           *** NOTE: Ignoring BOUNDS attribute
+           *** NOTE: netCDF bounds variable definition error
+           *** NOTE: Bounds definition "time_bnds" points to no existing axis
+           *** NOTE: Ignoring BOUNDS attribute
+           *** NOTE: netCDF bounds variable definition error
+           *** NOTE: Bounds definition "depth_bnds" points to no existing axis
+           *** NOTE: Ignoring BOUNDS attribute
+           *** NOTE: netCDF bounds variable definition error
+           *** NOTE: Bounds definition "lat_bnds" points to no existing axis
+           *** NOTE: Ignoring BOUNDS attribute
+           *** NOTE: netCDF bounds variable definition error
+           *** NOTE: Bounds definition "lon_bnds" points to no existing axis
+           *** NOTE: Ignoring BOUNDS attribute
+ **ERROR: command syntax: /REMOTE variable expression may not contain [d=
+DEFINE VARIABLE/D=1/remote rvar = t00an1[d=1,z=1:100@ave]
+ **ERROR: command syntax: /REMOTE variable definition must also specify /D=
+DEFINE VARIABLE/remote rvar = t00an1[d=1,z=1:100@ave]
+ **netCDF error
+             Unable to open URL with REMOTE variable definitions:
+             Data set: http://ferret.pmel.noaa.gov/nvods/thredds/dodsC/las/woa05_annual/data_ferret.pmel.noaa.gov_pmel_thredds_dodsC_data_PMEL_WOA05nc_annual_t00an1.nc.jnl
+ **TMAP ERR: attribute reading error
+             Unable to get varid for LET/REMOTE variable: NetCDF: Variable not found (OPeNDAP/netCDF Error code -49)
+             Data set: http://ferret.pmel.noaa.gov/nvods/thredds/dodsC/las/woa05_annual/data_ferret.pmel.noaa.gov_pmel_thredds_dodsC_data_PMEL_WOA05nc_annual_t00an1.nc.jnl
+ **TMAP ERR: attribute reading error
+             Unable to get bad-value for LET/REMOTE variable: NetCDF: Attribute not found (OPeNDAP/netCDF Error code -43)
+             Data set: http://ferret.pmel.noaa.gov/nvods/thredds/dodsC/las/woa05_annual/data_ferret.pmel.noaa.gov_pmel_thredds_dodsC_data_PMEL_WOA05nc_annual_t00an1.nc.jnl
+ **netCDF error
+             NetCDF: Variable not found (OPeNDAP/netCDF Error code -49)
+             Data set: http://ferret.pmel.noaa.gov/nvods/thredds/dodsC/las/woa05_annual/data_ferret.pmel.noaa.gov_pmel_thredds_dodsC_data_PMEL_WOA05nc_annual_t00an1.nc.jnl
+list/x=300/y=15 avar
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -7514,6 +7567,37 @@ ooooooooooooooooooooooooooooooooooooooooooo
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
+Starting test: bn_cdf_strlen
+Replacing definition of axis taxis
+ LISTing to file a.nc
+ LISTing to file a.nc
+ LISTing to file a.nc
+ LISTing to file a.nc
+ LISTing to file a.nc
+ LISTing to file a.nc
+ LISTing to file a.nc
+ LISTing to file a.nc
+ LISTing to file a.nc
+           *** NOTE: SAVE/STRLEN= is ignored when appending to the file
+ LISTing to file a.nc
+ LISTing to file a.nc
+ **TMAP ERR: attempt to redefine line
+             String length for variable tstrings inconsistent w/ CDF file. On first write, use /STRLEN= at least 15
+LIST/FORMAT=CDF/append/file=a.nc/L=2:4 tstrings, tstrings_long
+ LISTing to file a.nc
+ LISTing to file a.nc
+           *** NOTE: SAVE/STRLEN= is ignored when appending to the file
+ **TMAP ERR: attempt to redefine line
+             String length for variable tstrings inconsistent w/ CDF file. On first write, use /STRLEN= at least 15
+LIST/FORMAT=CDF/append/file=a.nc/L=2:4/strlen=10 tstrings
+ LISTing to file a.nc
+ **ERROR: invalid command: Strings are length 15: longer than /STRLEN setting of 7
+          Variable: TSTRINGS
+LIST/FORMAT=CDF/clobber/file=a.nc/STRLEN=7 tstrings, tstrings_long
+LIST/FORMAT=CDF/clobber/file=a.nc/STRLEN=7 tstrings, tstrings_long
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
 Starting test: bn_dsg_tseries
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -7547,6 +7631,28 @@ Replacing definition of axis zbig
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+           *** NOTE: No missing_value or _FillValue attribute. Using NaN for variable: trajectory
+           *** NOTE: No missing_value or _FillValue attribute. Using NaN for variable: rowSize
+           *** NOTE: No missing_value or _FillValue attribute. Using NaN for variable: time
+Replacing definition of axis tfake
+Replacing definition of axis xfake
+Replacing definition of axis yfake
+Replacing definition of grid GFAKE
+ LISTing to file fake_model_temp.nc
+Replacing definition of axis xfake
+           *** NOTE: grid GIL1 used by data set fake_model_temp
+           *** NOTE: Redefinition may alter apparent contents of data set
+ LISTing to file fake_model_temp.nc
+Replacing definition of axis tbig
+Replacing definition of axis xbig
+Replacing definition of axis ybig
+Replacing definition of grid GBIG
+Replacing definition of axis tfake
+Replacing definition of axis xfake
+Replacing definition of axis yfake
+Replacing definition of axis zfake
+Replacing definition of grid GFAKE
+ LISTing to file fake_model_temp.nc
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -7567,6 +7673,11 @@ Starting test: bn_regrid_from_dsg
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+           *** NOTE: No missing_value or _FillValue attribute. Using NaN for variable: trajectory
+           *** NOTE: No missing_value or _FillValue attribute. Using NaN for variable: rowSize
+           *** NOTE: No missing_value or _FillValue attribute. Using NaN for variable: time
+ **ERROR: invalid command: Regridding DSG Trajectory data to grids is not implemented
+load  TEMP_CTD_RBR_MEAN[d=1,g=reg_var]
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -7634,78 +7745,28 @@ Starting test: bn_dsg_subset
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
-Starting test: bn_color_wire
+Starting test: bn_regrid_to_dsg_prof
+Replacing definition of axis xfake
+Replacing definition of axis zfake
+ LISTing to file fake_model_temp.nc
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
-Starting test: bn_inf2missing
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
-ooooooooooooooooooooooooooooooooooooooooooo
-Starting test: bn_pointplots
-Replacing definition of axis xax
-Replacing definition of axis yax
- **ERROR: command syntax: highlight
-          /HIGHLIGHT= only valid with named symbols
-plot /over /nokey /size=0.45 /symbol=12 /color=green /highlight /vs {8.0},{1.0}
-           *** NOTE: Not deleted: YAX
-           *** NOTE: Axis is in use by grid GFORMAT
-           *** NOTE: Not deleted: XAX
-           *** NOTE: Axis is in use by grid GFORMAT
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
-ooooooooooooooooooooooooooooooooooooooooooo
-Starting test: bn_symbolcolors
-Replacing definition of axis yax
-           *** NOTE: Not deleted: YAX
-           *** NOTE: Axis is in use by grid GFORMAT
-           *** NOTE: Not deleted: XAX
-           *** NOTE: Axis is in use by grid GFORMAT
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
-ooooooooooooooooooooooooooooooooooooooooooo
-Starting test: bn_contourcolor
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
-ooooooooooooooooooooooooooooooooooooooooooo
-Starting test: bn_outline_poly
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
-ooooooooooooooooooooooooooooooooooooooooooo
-Starting test: bn_stats_histogram
-Replacing definition of axis yax
-Replacing definition of axis zax
-           *** NOTE: Not deleted: ZAX
-           *** NOTE: Axis is in use by grid THREE_D_GRD
-           *** NOTE: Not deleted: YAX
-           *** NOTE: Axis is in use by grid GFORMAT
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
-ooooooooooooooooooooooooooooooooooooooooooo
-Starting test: bn_symbolpattern
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
-ooooooooooooooooooooooooooooooooooooooooooo
-Starting test: bn_setting_text
-Replacing definition of axis xaxis
-Replacing definition of axis yaxis
- **ERROR: invalid command: SET TEXT/FONT=what? See Unix system fonts
-set text/font
- **ERROR: invalid command: SET TEXT Font is Hershey. No other SET TEXT settings apply.
-set text/font=hershey/color=green/bold
- **ERROR: invalid command: SET TEXT Font is Hershey. No other SET TEXT settings apply.
-set text/isiz=3/bold title
- **ERROR: value out of legal range: 6
-          SET TEXT            ISIZ argument must be between -4 and 4
-set text/font=helvetica/isiz=6
- **ERROR: command syntax: indigo
-          SET TEXT/COLOR=(R,G,B) takes 3 arguments, or valid color name or number
-set text/color=indigo/font=helvetica
- **ERROR: invalid command: SET TEXT  with unknown text-group name
-set text/bold  nogroup
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
-ooooooooooooooooooooooooooooooooooooooooooo
+Starting test: bn_regrid_to_dsg_traj
+Replacing definition of axis tfake
+Replacing definition of axis xfake
+Replacing definition of axis yfake
+Replacing definition of grid GFAKE
+ LISTing to file fake_model_temp.nc
+Replacing definition of axis xfake
+           *** NOTE: grid GIL1 used by data set fake_model_temp
+           *** NOTE: Redefinition may alter apparent contents of data set
+ LISTing to file fake_model_temp.nc
+cp: cannot stat `sail_2019.nc': No such file or directory
+ LISTing to file sail_copy.nc
+ **ERROR: invalid command: Appending DSG variable to file that is not DSG or different featureType
+LIST/FORMAT=CDF/append/file=sail_copy.nc depth
+Command file, command group, or REPEAT execution aborted
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -7836,4 +7897,4 @@ Unable to delete drawing segments when writing directly to an image file
            *** NOTE: instead use the "FRAME /FILE=... /FORMAT=..." Ferret command
            *** NOTE: the use of "SET MODE METAFILE" is deprecated;
            *** NOTE: instead use "FRAME /FILE=... /FORMAT=..."
-Ended at Mon Aug 5 13:52:10 PDT 2019
+Ended at Wed Aug 14 17:00:51 PDT 2019

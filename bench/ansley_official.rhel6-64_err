@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/users/ansley/build/working/FERRET/fer/ferret_c
--rwxr-xr-x. 1 ansley tmap 118395134 Aug 14 11:26 /home/users/ansley/build/working/FERRET/fer/ferret_c
+-rwxr-xr-x. 1 ansley tmap 118394041 Aug 16 12:27 /home/users/ansley/build/working/FERRET/fer/ferret_c
 Using external functions from /home/users/ansley/build/working/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: regrid to dsg traj and prof, save user-variables to dsg, subsets to dsg
+Note: allow constant lon/lat for DSG profiles, timeseries, etc
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DATA=. ./data
@@ -22,7 +22,7 @@ FER_PALETTE=. /home/users/tmap/ferret/rhel6-x86_64-linux/ppl
 FER_WEB_BROWSER=firefox
 PWD=/home/users/ansley/build/working/FERRET/bench
 PYFER_EXTERNAL_FUNCTIONS=/home/users/tmap/ferret/rhel6-x86_64-linux/ext_func/pylibs
-Beginning at Wed Aug 14 11:27:21 PDT 2019
+Beginning at Fri Aug 16 12:33:15 PDT 2019
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -7813,7 +7813,6 @@ Replacing definition of axis xfake
            *** NOTE: Cannot draw /THICK=3 lines with current number of color levels = 48; THICK=1 or 2 will be ok
            *** NOTE: Graphics limits settings to 250 line/thickness combinations plus existing spectrum colors
            *** NOTE: Cannot draw /THICK=2 lines with current number of color levels = 48; THICK=1 will be ok
-cp: cannot stat `sail_2019.nc': No such file or directory
  LISTing to file sail_copy.nc
 Replacing definition of axis xfake
 Replacing definition of axis zfake
@@ -7970,4 +7969,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
            *** NOTE: Cannot create new windows when batch mode set
-Ended at Wed Aug 14 11:35:59 PDT 2019
+Ended at Fri Aug 16 12:42:26 PDT 2019

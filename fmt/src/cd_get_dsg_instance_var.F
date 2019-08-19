@@ -94,9 +94,9 @@
      .          TM_GET_CALENDAR_ID, TM_UNITS_CAL, STR_UPCASE,
      .          dtype, attlen, vlen, attoutflag, iaxis,
      .          start(2), numpts(2), i, vtype, since_t0, days_neg4713,
-     .		units, cal_id, slen
+     .		units, cal_id, slen, flen
         REAL    vals(2), delta, coord, coord_min, coord_max, bad
-        CHARACTER axname*9, buff*256
+        CHARACTER CD_DSG_FEATURENAME*20, axname*9, buff*256, ftrname*20
 
 * local parameter declaration
 	LOGICAL	    do_warn
@@ -110,6 +110,10 @@
 
 * initialize
         vlen = TM_LENSTR1(ds_var_code(ivtm))
+
+	ftrname = CD_DSG_FEATURENAME( dsg_orientation(dset))
+	flen = TM_LENSTR1(ftrname)
+
 
 * allocate memory for the variable
         rqst_n = npts
@@ -247,29 +251,31 @@
 	   ENDIF
 
 * ...  Basic checks on data ranges   dsg_orientation(dset).EQ.Z_dim
+*      Allow constant time, lon, lat on profile data, 
+*      or constant lon,lat on timeseries data or profile data
+*      or constant depth on timeseries or trajectory data.  For this case,
+*      we just ignore depth as a coordinate
 
 	   IF (coord_min.EQ.coord_max .AND. idim.EQ.t_dim ) THEN 
-	      IF (npts.EQ.1 .AND. dsg_feature_type(dset) .EQ. pfeatureType_profile) THEN 
-	         CALL WARN ('Single time step in profile file.')	     
+	      IF (dsg_feature_type(dset) .EQ. pfeatureType_profile) THEN 
+	         CALL WARN ('Constant time step in '//ftrname(:flen)//'  file.')	     
 	      ELSE
 	         GOTO 5500
 	      ENDIF
 	   ENDIF
-
+	   
 	   IF (coord_min.EQ.coord_max .AND. (idim.EQ.x_dim .OR. idim.EQ.y_dim)  
-     .        .AND. dsg_feature_type(dset) .EQ. pfeatureType_profile) THEN 
-	      IF (npts.EQ.1) THEN 
-	         CALL WARN ('Single lon/lat in profile file.')	     
-	      ELSE
-	         GOTO 5600
-	      ENDIF
+     .        .AND. (dsg_feature_type(dset) .EQ. pfeatureType_profile 
+     .         .OR.  dsg_feature_type(dset) .EQ. pfeatureType_Timeseries) ) THEN 
+	         CALL WARN ('Constant lon/lat in '//ftrname(:flen)//' file.')	     
 	   ENDIF
 
-	   IF (coord_min.EQ.coord_max .AND. idim.EQ.z_dim) THEN
-	     IF (dsg_orientation(dset).EQ.Z_dim) THEN
+	   IF (coord_min.EQ.coord_max .AND. idim.EQ.z_dim) THEN 
+	      IF (dsg_feature_type(dset) .EQ. pfeatureType_Timeseries
+     .         .OR. dsg_feature_type(dset) .EQ. pfeatureType_Trajectory ) THEN
+	         GOTO 5700 
+	      ELSE IF (dsg_feature_type(dset).EQ.pfeatureType_profile) THEN
 	         GOTO 5600
-	      ELSE
-	         GOTO 5700  
 	      ENDIF
 	   ENDIF
 

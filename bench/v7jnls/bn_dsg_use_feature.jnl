@@ -8,7 +8,8 @@
 ! coordinate variable. It can be treated as a timeseries dataset
 
 use dsg_cross_dateline.nc
-show data
+! SHOW DATA/FULL lists more details and for DSG data adds region info
+show data/full
 
 ! plots as a set of paths
 set v upper
@@ -16,7 +17,7 @@ plot/thick/title="native trajectories" temp
 
 ! OR, look at as a timeseries.  Can specify this change on an open dataset
 use/feature=timeseries 1
-show data
+show data/full
 
 ! plots as a set of timeseries
 set v lower

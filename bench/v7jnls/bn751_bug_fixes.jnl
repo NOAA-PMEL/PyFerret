@@ -40,3 +40,6 @@ GO err75_key_labels
 
 GO bn_reset
 GO err75_scale_missingval
+
+GO bn_reset
+GO err751_dsg_fmask

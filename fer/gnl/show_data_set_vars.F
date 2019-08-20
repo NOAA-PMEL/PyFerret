@@ -122,6 +122,7 @@
      .			first_time, its_delimited, is_undetermined, coordvar,
      .			its_dsg, grid_dsg, first_note, got_it, has_mask
 	INTEGER 	TM_LENSTR1, TM_LENSTR, TM_GET_CALENDAR_ID, GRID_FROM_NAME, 
+     .			STR_DNCASE,  
      .			ivar, i, dlen, len, grid, taxis, slen(nferdims), tlen, 
      .			nfields, kvar, field_types(maxezvars), 
      .			cal_id, len_cal, j, num_indices, rlen(nferdims), iok,
@@ -532,6 +533,37 @@
 
  400	CONTINUE
 
+* If the dataset is a DSG dataset, show the x, y , z range from the 
+* observarion variables.
+
+
+	IF ( full  .AND. grid_dsg) THEN
+	   CALL SPLIT_LIST(pttmode_explct, lun, ' ', 1)
+
+	   igrid =  dsg_xlate_grid(dset)
+	   ndec = 5
+	   
+	   DO idim = 1, z_dim
+	   	
+	      lo = TM_WORLD( 1, igrid, idim, box_middle )
+	      hi = TM_WORLD( line_dim(grid_line(idim, igrid)), igrid, idim, box_middle )
+	      IF (lo .EQ. unspecified_val8) CYCLE
+	   
+	      CALL TRANSLATE_TO_WORLD( lo, idim, igrid, ndec, line )
+	      dlen = TM_LENSTR1(line)
+	      line(dlen+1:) = ' to ' 
+	      
+	      CALL TRANSLATE_TO_WORLD( hi, idim, igrid, ndec, line(dlen+5:) )
+	      dlen = TM_LENSTR1(line)
+
+	      status = STR_DNCASE(long, axis_title(idim))
+
+	      CALL SPLIT_LIST(pttmode_explct, lun,
+     .			'  '//long(:TM_LENSTR1(long))//' range: '//line(:dlen), 0) 
+
+	   ENDDO
+	ENDIF
+
 * describe the time range (uses "grid" from last variable displayed)
 	taxis = ds_time_axis(dset)
 * ... check among the static grids
@@ -549,7 +581,7 @@
 	   lo = TM_WORLD( 1,   grid, t_dim, box_middle )
 	   hi = TM_WORLD( len, grid, t_dim, box_middle )
 	   line = LOHI_STRING( lo,hi,t_dim,grid,' to ',ax_dec_pt(t_dim),dlen )
-	   CALL SPLIT_LIST(pttmode_explct, lun, ' ', 1)
+	   IF (.NOT. grid_dsg) CALL SPLIT_LIST(pttmode_explct, lun, ' ', 1)
 
 * calendar name?  only if not Gregorian.
 	   cal_name = TM_GET_CAL (grid)

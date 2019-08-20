@@ -36,10 +36,20 @@ else
 	PIXMAN_INCLUDE	= -I$(PIXMAN_LIBDIR)/../include
 endif
 
+# Pango uses harfbuzz whose include files may reside in their own "harfbuzz" subdirectory 
+# but the source files do not include this subdirectory in the includes statements
 ifeq ($(strip $(PANGO_LIBDIR)),)
+ifeq ($(shell /bin/ls -d /usr/include/harfbuzz 2>/dev/null),/usr/include/harfbuzz)
+	PANGO_INCLUDE	= -I/usr/include/pango-1.0 -I/usr/include/harfbuzz
+else
 	PANGO_INCLUDE	= -I/usr/include/pango-1.0
+endif
+else
+ifeq ($(shell /bin/ls -d $(PANGO_LIBDIR)/../include/harfbuzz 2>/dev/null),$(PANGO_LIBDIR)/../include/harfbuzz)
+	PANGO_INCLUDE	= -I$(PANGO_LIBDIR)/../include/pango-1.0 -I$(PANGO_LIBDIR)/../include/harfbuzz
 else
 	PANGO_INCLUDE	= -I$(PANGO_LIBDIR)/../include/pango-1.0
+endif
 endif
 
 ifeq ($(strip $(GLIB2_LIBDIR)),)

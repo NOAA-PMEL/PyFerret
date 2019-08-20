@@ -48,21 +48,31 @@
 #define EF_MAX_WORK_ARRAYS 9
 #define EF_MAX_COMPUTE_ARGS 19 /* = EF_MAX_ARGS + EF_MAX_WORK_ARRAYS + 1 */
 
-enum { EF_C=1, EF_F, EF_PYTHON } EF_LANGUAGE_type;
+/* EF_C was 1 but never used */
+#define EF_F 2
+#define EF_PYTHON 3
 
-enum { X_AXIS=0, Y_AXIS, Z_AXIS, T_AXIS, E_AXIS, F_AXIS } EF_AXIS_type;
+/* These are indices into C arrays (zero based) */
+#define X_AXIS 0
+#define Y_AXIS 1
+#define Z_AXIS 2
+#define T_AXIS 3
+#define E_AXIS 4
+#define F_AXIS 5
 
-/* The next two lines of parameters need to match numbers in ferret.parm */
-enum { CUSTOM=101, IMPLIED_BY_ARGS, NORMAL, ABSTRACT } EF_AXIS_SOURCE_type;
-enum { RETAINED=201, REDUCED } EF_AXIS_REDUCTION_type;
+/* These parameters need to match numbers in ferret.parm */
+#define CUSTOM 101
+#define IMPLIED_BY_ARGS 102
+#define NORMAL 103
+#define ABSTRACT 104
+#define RETAINED 201
+#define REDUCED 202
 
 /* These parameters need to match numbers in grid_chg_fcns.parm */
-enum { FLOAT_ARG=1, STRING_ARG } EF_ARG_type;
-
-/* These parameters need to match numbers in grid_chg_fcns.parm */
-enum { FLOAT_RETURN=1, STRING_RETURN } EF_RETURN_type;
-
-enum { CANNOT_ALLOCATE, INSUFFICIENT_DATA } EF_ERROR_type;
+#define FLOAT_ARG 1
+#define STRING_ARG 2
+#define FLOAT_RETURN 1
+#define STRING_RETURN 2
 
 /* .................... Typedefs .................... */
 

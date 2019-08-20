@@ -212,6 +212,7 @@
 * v7441*acm* 12/18 Issue 1910: Allow dates in commands to be in ISO 8601 form, yyyy-mm-dd-
 * v751 *acm*  6/19 cleanup: remove code related to SET MOVIE 
 * V751 *acm* 6/19 Issue 1903: memory set and reported in terms of bytes
+* V751 *acm* 6/19  When setting a new DSG fmask, clear variables from memory
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -674,9 +675,19 @@ c           CALL TM_INIT_DSET( cmnd_buff( item_start(item):item_end(item) ),
 	      loc = qual_given(slash_set_data_fmask)
 	      CALL EQUAL_STRING (cmnd_buff(qual_start(loc):qual_end(loc)),
      .                        fmask_var, status)
+	      IF (status .NE. ferr_ok) GOTO 5000
+
+* ... eliminate all memory-resident user-defined vars and their uvar_grid 's
+	      CALL PURGE_ALL_UVARS
+
+	      DO mr = 1,max_mr_avail
+	         IF ( mr_protected( mr ) .EQ. mr_deleted ) CYCLE
+	         IF (mr_category(mr) .EQ. cat_user_var) CALL PURGE_ALL_UVARS_SUB( mr_variable(mr) )
+	         CALL DELETE_VARIABLE( mr )
+	      ENDDO
 
 	      CALL LOAD_DSG_MASKVAR (dset_num, fmask_var, status)
-	      IF (status .NE. ferr_ok) GOTO 5000
+	      
 
            ENDIF
 

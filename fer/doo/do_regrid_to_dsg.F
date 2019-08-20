@@ -43,6 +43,7 @@
 *
 * V720:  *sh* 5/17
 * V751: *acm* 8/19 tweaks for grid-to-trajectory 
+* V751: *acm* 8/19 apply obs-level masking 
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -64,7 +65,9 @@
      .          dst(nobs)
 
 * local variable declarations:
-	LOGICAL ITSA_DSG_TRAJ, fmask(nfeatures), sampled_ax(4)
+	LOGICAL ITSA_DSG_TRAJ, fmask(nfeatures), 
+     .		process_obs(nobs), sampled_ax(4)
+
 * ... sample_ax is not the same as cxdsg_has_coord cuz the source data may
 *     have fixed coordinates on some of the DSG coordinates
 	INTEGER ISUBSCRIPT, TM_DSG_DSET_FROM_GRID,
@@ -139,10 +142,9 @@
 	      ENDIF
 	   ENDDO
 
-! DSGTBD Need obs-level masking -- patterned after LIST_DSG_DATA
-!* ... get observation-level mask for this feature
-!	   CALL MAKE_DSG_OBS_MASK(dset, cx, ifeature, base,
-!     .				  process_obs, obs_in_feature)
+* ... get observation-level mask for this feature
+	   CALL MAKE_DSG_OBS_MASK(dset, dst_cx, ifeature, base,
+     .				  process_obs, obs_in_feature)
 
 ! DSGTBD Performance optimization possible using a variation on ISUBSCRIPT
 ! ISUBSCRIPT is where the compute-intensive parts of this procedure occur. 
@@ -153,8 +155,8 @@
 	   DO iobs = 1, obs_in_feature
 	      ptr = base + iobs  ! pointer (index) into the ragged contig array
 
-!* ... have the user's constraints removed this observation?
-!	      IF (.NOT.process_obs(iobs)) CYCLE
+* ... have the user's constraints removed this observation?
+	      IF (.NOT.process_obs(iobs)) CYCLE
 
 * ... get the obs-level subscripts in the source data
 	      DO idim = 1, 4

@@ -43,7 +43,7 @@ else
 endif
 
 ifeq ($(strip $(GLIB2_LIBDIR)),)
-ifeq ($(shell /bin/ls -d /usr/lib64/glib-2.0/include),/usr/lib64/glib-2.0/include)
+ifeq ($(shell /bin/ls -d /usr/lib64/glib-2.0/include 2>/dev/null),/usr/lib64/glib-2.0/include)
 	GLIB2_INCLUDE	= -I/usr/include/glib-2.0 -I/usr/lib64/glib-2.0/include
 else
 	GLIB2_INCLUDE	= -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include

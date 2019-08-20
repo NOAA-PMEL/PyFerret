@@ -49,6 +49,7 @@
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 * V7.2 *sh* 5/17 - patterned on OPERATE.F
 * V7.5 *acm* 7/19 -fixes to indexing for some operations
+* V7.51 *acm* 8/19 - more fixes to indexing for some operations
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -459,9 +460,9 @@
 	      res(1) = bad_res
 	   ELSE
 	      IF ( arg1.NE.0.0 .AND. arg2.NE.0.0 ) THEN
-	  	 res(iobs) = 1.0
+	  	 res(1) = 1.0
 	      ELSE
-	  	 res(iobs) = op_repl
+	  	 res(1) = op_repl
 	      ENDIF
 	   ENDIF
 	   RETURN
@@ -498,7 +499,7 @@
               IF (is_obs_2) arg2 = com2(iobs)
 
               IF (arg1.EQ.bad1 .OR. arg2.EQ.bad2) THEN
-	         res(1) = bad_res
+	         res(iobs) = bad_res
               ELSE
 	         IF ( arg1.NE.0.0 .AND. arg2.NE.0.0 ) THEN
 	  	    res(iobs) = 1.0
@@ -520,9 +521,9 @@
 	      res(1) = bad_res
 	   ELSE
 	      IF ( arg1.NE.0.0 .OR. arg2.NE.0.0 ) THEN
-	  	 res(iobs) = 1.0
+	  	 res(1) = 1.0
 	      ELSE
-	  	 res(iobs) = op_repl
+	  	 res(1) = op_repl
 	      ENDIF
 	   ENDIF
 	   RETURN
@@ -559,7 +560,7 @@
               IF (is_obs_2) arg2 = com2(iobs)
 
               IF (arg1.EQ.bad1 .OR. arg2.EQ.bad2) THEN
-	         res(1) = bad_res
+	         res(iobs) = bad_res
               ELSE
 	         IF ( arg1.NE.0.0 .OR. arg2.NE.0.0 ) THEN
 	  	    res(iobs) = 1.0
@@ -584,9 +585,9 @@
 	      res(1) = bad_res
 	   ELSE
 	      IF ( arg1 .GT. arg2 ) THEN
-	  	 res(iobs) = 1.0
+	  	 res(1) = 1.0
 	      ELSE
-	  	 res(iobs) = op_repl
+	  	 res(1) = op_repl
 	      ENDIF
 	   ENDIF
 	   RETURN
@@ -646,9 +647,9 @@
 	      res(1) = bad_res
 	   ELSE
 	      IF ( arg1 .GE. arg2 ) THEN
-	  	 res(iobs) = 1.0
+	  	 res(1) = 1.0
 	      ELSE
-	  	 res(iobs) = op_repl
+	  	 res(1) = op_repl
 	      ENDIF
 	   ENDIF
 	   RETURN
@@ -709,9 +710,9 @@
 	      res(1) = bad_res
 	   ELSE
 	      IF ( arg1 .LT. arg2 ) THEN
-	  	 res(iobs) = 1.0
+	  	 res(1) = 1.0
 	      ELSE
-	  	 res(iobs) = op_repl
+	  	 res(1) = op_repl
 	      ENDIF
 	   ENDIF
 	   RETURN
@@ -769,9 +770,9 @@
 	      res(1) = bad_res
 	   ELSE
 	      IF ( arg1 .LE. arg2 ) THEN
-	  	 res(iobs) = 1.0
+	  	 res(1) = 1.0
 	      ELSE
-	  	 res(iobs) = op_repl
+	  	 res(1) = op_repl
 	      ENDIF
 	   ENDIF
 	   RETURN
@@ -833,9 +834,9 @@
 	      res(1) = bad_res
 	   ELSE
 	      IF ( arg1 .EQ. arg2 ) THEN
-	  	 res(iobs) = 1.0
+	  	 res(1) = 1.0
 	      ELSE
-	  	 res(iobs) = op_repl
+	  	 res(1) = op_repl
 	      ENDIF
 	   ENDIF
 	   RETURN
@@ -1729,11 +1730,11 @@
               IF (is_obs_2) arg2 = com2(iobs)
 	      
 	      IF (arg1.EQ.bad1 .OR. arg2.EQ.bad2 ) THEN
-	         res(1) = bad_res
+	         res(iobs) = bad_res
 	      ELSEIF (arg1.EQ.0. .AND. arg2.EQ.0. ) THEN 
-	         res(1) = bad_res
+	         res(iobs) = bad_res
 	      ELSE
-	         res(1) = ATAN2 (arg1, arg2)
+	         res(iobs) = ATAN2 (arg1, arg2)
 	      ENDIF
 	   RETURN
            ENDDO

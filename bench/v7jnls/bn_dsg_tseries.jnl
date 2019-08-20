@@ -5,6 +5,9 @@ use DSG_ERDDAP_pmelTao5daySst.nc
 
 SHOW grid t_25
 
+! SHOW DATA/FULL lists more details and for DSG data adds region info
+show data/full
+
 !basic file variable listings
 list longitude[y=5:10]
 list rowsize[x=95:180,y=5:10]

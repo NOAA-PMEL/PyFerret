@@ -45,6 +45,7 @@
 * V720:  *sh* 5/17
 * V751: *acm* 8/19 Handle profile regrid to a single axis, checking for 
 *                  ascending or descending z-coordinate data in the DSG profiles
+* V751: *acm* 8/19 Initialize the result, needed when mask applied to DSG grid
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -94,6 +95,8 @@
 	grd_grid = cx_grid(grd_cx)
 	bad_dsg  = cx_bad_data(dsg_cx)
 	bad_grd  = cx_bad_data(grd_cx)
+
+	grd = bad_grd
 
 * DSG-specific initialize
 	dset = TM_DSG_DSET_FROM_GRID(dsg_grid)

@@ -161,6 +161,7 @@
 *                  information needs to be canceled particulary that saved in SAVE_UVAR_GRID
 * V751 *acm*  6/19 Canceling a feature-mask for Discrete Sampling Geometries datasets
 * V751 *acm* 6/19  With dyn mem managemnent, change so that CAN MEM/PERM works correctly
+* V751 *acm* 6/19  When canceling a DSG fmask, clear variables from memory
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -433,6 +434,14 @@
 		    varid = 0
 		    attname = '__feature_mask_'
 		    CALL CD_DELETE_ATTRIBUTE (iset, varid, attname, status )
+		     
+* and eliminate all memory-resident user-defined vars and their uvar_grid 's
+		    CALL PURGE_ALL_UVARS
+		    DO mr = 1,max_mr_avail
+	              IF ( mr_protected( mr ) .EQ. mr_deleted ) CYCLE
+	               IF (mr_category(mr) .EQ. cat_user_var) CALL PURGE_ALL_UVARS_SUB( mr_variable(mr) )
+	               CALL DELETE_VARIABLE( mr )
+		    ENDDO
 
 	         ENDIF
 	         GOTO 790 

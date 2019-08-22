@@ -43,6 +43,8 @@
 
 * V720 4/17 *sh*
 * V741 6/18 *acm* Handle modulo longitudes
+* TODO:  Should return the count of .TRUE. in the mask so the calling routine 
+*        could skip applying the mask if count=nobs
 
 	include 'tmap_dims.parm'
 	include 'ferret.parm'

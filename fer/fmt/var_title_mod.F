@@ -89,13 +89,13 @@
 	INTEGER cx
 
 * internal variable declarations
-	LOGICAL	TM_ITSA_DSG, add_on, all_q, vcalc, false_regrid
+	LOGICAL	TM_ITSA_DSG, add_on, all_q, vcalc, false_regrid, its_dsg
 	INTEGER	TM_LENSTR, TM_LENSTR1, CX_DIM_LEN, TM_DSG_DSET_FROM_GRID,
      .		var, categ, dset, cairt, cairt_dset,
      .		mlen, t_len, maxlen, idim, trans, slen, k_lo
 	CHARACTER ALG_TRANS_TITL*20, TM_FMT*48,
      .		REGRID_COMMENTS*64, CD_DSG_FEATURENAME*20,
-     .          trans_title*40, buffer*24, dummy*60
+     .          trans_title*40, buffer*24, dummy*256
 
 * initialize
 	var     = cx_variable( cx )
@@ -177,7 +177,7 @@
 	   ENDIF
 
 *    ... special label if it was a regrid-to-DSG
-	   IF ( TM_ITSA_DSG(cx_grid(cx)) ) THEN
+	   IF ( TM_ITSA_DSG(cx_grid(cx))  ) THEN
 	      dset = TM_DSG_DSET_FROM_GRID(cx_grid(cx))
 	      buffer = CD_DSG_FEATURENAME(dsg_orientation(dset))
 	      slen = TM_LENSTR1( buffer )
@@ -187,8 +187,27 @@
 	      slen = slen + 13
 
   	  ELSE
-	      var_title_mod =  var_title_mod(:mlen)//'regrid: '//
-     .			REGRID_COMMENTS(cx, slen)
+	      dummy = REGRID_COMMENTS(cx, slen)
+
+*    ... This catches more cases of regrid-to-dsg, but doesn't relabel regrid from dsg
+*    ... to fixed time or z axis
+
+              IF (TM_DSG_DSET_FROM_GRID(cx_grid(cx)) .GT. pdset_irrelevant .AND. .NOT.its_dsg) THEN
+	         IF (INDEX(dummy, ' on E') .GT. 0) THEN 
+	            dset = TM_DSG_DSET_FROM_GRID(cx_grid(cx))
+	            buffer = CD_DSG_FEATURENAME(dsg_orientation(dset))
+	            slen = TM_LENSTR1( buffer )
+	            dummy = 'regrid: to '//buffer(:slen)//' DSG grid'
+	            var_title_mod =  var_title_mod(:mlen)//'regrid: to '//buffer(:slen)//' DSG grid'
+	            slen = slen + 13
+	         ELSE
+	            var_title_mod =  var_title_mod(:mlen)//'regrid: '//dummy
+		 ENDIF
+	      ELSE
+	         var_title_mod =  var_title_mod(:mlen)//'regrid: '//dummy
+	      ENDIF
+
+
 	  ENDIF
 	   mlen = MIN( maxlen, mlen + 8 + slen )
 	ENDIF

@@ -178,7 +178,7 @@
 	   IF (tlen .GT. 0)  CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0) 
 	   
 * Is a feature mask set on this dataset?
-	   IF (dsg_msk_lm(dset) .NE. unspecified_int4) THEN 
+	   IF (dsg_msk_lm(dset) .NE. int4_init .AND. dsg_msk_lm(dset).NE.unspecified_int4) THEN 
 	      risc_buff = 'Mask on features has been set: '
 	      tlen = TM_LENSTR1( risc_buff ) + 1
 	      

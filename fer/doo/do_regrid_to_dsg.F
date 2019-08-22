@@ -44,6 +44,9 @@
 * V720:  *sh* 5/17
 * V751: *acm* 8/19 tweaks for grid-to-trajectory 
 * V751: *acm* 8/19 apply obs-level masking 
+* V751: *acm* 8/19 Handle regrids to timeseries or trajectory
+*                  where the grid doesn't have z but the DSG data does
+*                  and vice versa (untested). 
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -66,15 +69,16 @@
 
 * local variable declarations:
 	LOGICAL ITSA_DSG_TRAJ, fmask(nfeatures), 
-     .		process_obs(nobs), sampled_ax(4)
+     .		process_obs(nobs), sampled_ax(4), skipz
 
 * ... sample_ax is not the same as cxdsg_has_coord cuz the source data may
 *     have fixed coordinates on some of the DSG coordinates
-	INTEGER ISUBSCRIPT, TM_DSG_DSET_FROM_GRID,
+	INTEGER ISUBSCRIPT, TM_DSG_DSET_FROM_GRID, TM_LENSTR1,
      .		src_grid, dst_grid, row_size_lm,
      .		idim, ifeature, iobs, ptr, base, ivar, obs_in_feature,
-     .		ss(nferdims), status
+     .		ss(nferdims), orient, status
 	REAL	TDEST_CONVERT, ww_lo(4), ww_hi(4), coord
+	CHARACTER*20  CD_DSG_FEATURENAME, buff
 
 ! DSGTBD need to offer linear interpolation option
 !      as well as current point-in-box
@@ -96,8 +100,27 @@
 * DSG-specific initialize
 	row_size_lm = dsg_loaded_lm(dsg_row_size_var(dset))
 
+
+* if the orientation is trajectory or timeseries, and if only one of the source 
+* and destination grids has z coordinates then ignore it in the other. 
+
+	skipz = .FALSE.
+	orient = dsg_orientation(dset)
+	IF (orient .NE. z_dim) THEN 
+	   IF ( (grid_line(z_dim,src_grid).NE.mnormal .AND. grid_line(z_dim,dst_grid).EQ.mnormal) .OR.
+     .          (grid_line(z_dim,src_grid).EQ.mnormal .AND. grid_line(z_dim,dst_grid).NE.mnormal) ) THEN
+              skipz = .TRUE.
+	      buff = CD_DSG_FEATURENAME(orient)
+	      IF (grid_line(z_dim,src_grid).EQ.mnormal) CALL WARN ('Gridded data has no Z axis, but '//
+     .          buff(:TM_LENSTR1(buff))//' data does.  Ignoring the z coordinate')
+	      IF (grid_line(z_dim,dst_grid).EQ.mnormal) CALL WARN ('Gridded data has a Z axis, but '//
+     .         buff(:TM_LENSTR1(buff))//' data does not. Use surface data from gridded dataset')
+	   ENDIF 
+	ENDIF
+
 * determine relevant axes, coordinate limits, and unsampled subscripts
 	DO idim = 1, 4
+	   IF (idim.EQ.z_dim .AND. skipz) CYCLE
 	   sampled_ax(idim) = cx_regrid_trans(idim,dst_cx)
      .			  .NE. unspecified_int4
 	   IF ( sampled_ax(idim) ) THEN
@@ -129,6 +152,7 @@
 * ... get the instance-level subscripts in the source data
 *     screen out of range instance coordinates in the process
 	   DO idim = 1, 4
+	      IF (idim.EQ.z_dim .AND. skipz) CYCLE
 	      IF ( sampled_ax(idim) ) THEN
 	         IF (.NOT.cxdsg_is_obs_coord(idim)) THEN
 	            coord = dsg_linemem(cxdsg_coord_lm(idim))%ptr(ifeature)
@@ -141,6 +165,7 @@
 	         ENDIF
 	      ENDIF
 	   ENDDO
+	   IF (skipz) ss(3) = m1loz
 
 * ... get observation-level mask for this feature
 	   CALL MAKE_DSG_OBS_MASK(dset, dst_cx, ifeature, base,
@@ -160,6 +185,7 @@
 
 * ... get the obs-level subscripts in the source data
 	      DO idim = 1, 4
+	         IF (idim.EQ.z_dim .AND. skipz) CYCLE
 	         IF ( sampled_ax(idim) ) THEN
 	            IF (cxdsg_is_obs_coord(idim)) THEN
 	               coord = dsg_linemem(cxdsg_coord_lm(idim))%ptr(ptr)

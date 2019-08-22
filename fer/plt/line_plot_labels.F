@@ -65,6 +65,7 @@
 * V751 7/19 *acm*  DSG-enabled Ferret: PLOT/KEY for DSG data will make a line legend consistent
 *                  with multi-feature plots, even if there's just one feature.
 * V751 7/19 *acm*  DSG-enabled Ferret: labels when plotting user-defined variables
+* V751 8/19 *acm*  DSG-enabled Ferret: labels for modifications such as regridding operation
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -93,7 +94,8 @@
 * internal variable declarations:
 	LOGICAL TM_ITSA_DSG, user_title, units_same, do_units, its_dsg,
      .          reset_dsg, process_feature(nfeatures), yes_key
-	INTEGER	TM_LENSTR1, TM_LENSTR, TM_UNIT_ID, STR_SAME, TM_DSG_DSET_FROM_GRID,
+	INTEGER	TM_LENSTR1, TM_LENSTR, TM_UNIT_ID, STR_SAME, 
+     .		TM_DSG_DSET_FROM_GRID,
      .		ipl, nline_in_mem, slen, slen1, status, ptitl, style, 
      .		justify, iunits, istart, i, nfeatr(nfeatures), dtype, 
      .		fvar_varid, dset_dsg
@@ -101,7 +103,7 @@
 	CHARACTER*2040	FULL_VAR_TITLE, VAR_TITLE_ONLY, KEY_STRING, 
      .			plot_title, plot_title_1
 	CHARACTER	VAR_UNITS*64, SECS_TO_DATE*20, TM_FMT*20, 
-     .			SANITARY_VAR_CODE*128, 
+     .			SANITARY_VAR_CODE*128, VAR_TITLE_MOD*240, PAREN_SURROUND*240,
      .			year*4, buff1*16, ustring*64, dummy*1024
 	REAL		xkeypos, ykeypos, xkeysize, ykeysize, 
      .			lab_ht, labsize, value
@@ -335,7 +337,6 @@
      .			cmnd_buff(qual_start(ptitl):qual_end(ptitl)),
      .                  plot_title, status )
 
-
 		    slen = TM_LENSTR1( plot_title )
 		    plot_title_1 = plot_title(:slen)//
      .                     ' ('//ustring(:TM_LENSTR1(ustring))//')'
@@ -348,6 +349,11 @@
 		    ENDIF
 
 		    slen = TM_LENSTR1( plot_title_1 )
+
+		    plot_title = VAR_TITLE_MOD(cx_list(var1))
+		    plot_title_1(slen+2:) = PAREN_SURROUND(plot_title,slen1)
+		    slen = TM_LENSTR1( plot_title_1 )
+
 		    CALL BOX_LABEL( dep_lab,
      .			   plot_title_1(:slen),
      .			   0.0, 0.0, 0.8*dep_len, dflt_letsize_label,

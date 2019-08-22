@@ -216,7 +216,7 @@ echo "Beginning at $now" >>&$log_file
 cp $log_file $err_file
 echo "Beginning at $now"
 
-($fver -script genjnls/bn_all_shell.jnl >>$log_file) >>&$err_file
+($fver -nodisplay -script genjnls/bn_all_shell.jnl >>$log_file) >>&$err_file
 
 # check status before continuing *kob* 4/98
 if ($status) then
@@ -276,6 +276,7 @@ ls -l $log_file >>&  $bench_hist
 
 #let's check the plt and gif and ps files to make sure they look okay
 echo "Checking PNG and PDF files......."
+rm bat.png new.png
 ./check_runall_plots_ImageMagick
 
 # make a clean version of the log file that can easily be compared

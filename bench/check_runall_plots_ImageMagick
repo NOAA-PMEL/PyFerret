@@ -40,7 +40,7 @@ foreach plt_file ($png_files)
           echo "plt files differ $plt_file size $size runall_master_plots/ size $size2" 
 
           compare runall_master_plots/$plt_file $plt_file $plt_file.diff.png
-          display $plt_file & 
+#          display $plt_file & 
           display $plt_file.diff.png
 
           set err_png = 1

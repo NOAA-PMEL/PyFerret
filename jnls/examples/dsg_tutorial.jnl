@@ -1,0 +1,235 @@
+\CANCEL MODE VERIFY
+! Description: A brief tutorial introduction to DSG capabilities in PyFerret (and Ferret)
+SAY   ... setting up demo environment ...
+! dsg_tutorial.jnl - *ACM* 08/19
+
+! Clear any program state left by previous activities
+CANCEL REGION
+CANCEL VARIABLES/ALL
+CANCEL DATA/ALL
+CANCEL VIEWPORTS
+SET WINDOW/SIZE=0.7/ASPECT=.75:axis   ! default
+CANCEL MODE LOGO
+SET MODE VERIFY      ! show command file lines at the screen
+
+!
+! ****** An intro to Discrete Sampling Geometires capabilities in PyFerret/Ferret ******
+
+! ****** August 2019
+!
+! This session demonstrates:
+! * Open and examine the file
+! * Subset the feature collection
+! * Line plots of the subset
+! * Analysis operations on the Features
+! * Model/feature comparisons
+!
+!
+! netCDF-CF-DSG datasets
+!
+! Attributes in the file informs Ferret that this is a Feature Collection
+! time series collection organized as a Discrete Sampling Geometries dataset.
+! The data is an ERDDAP output, using "save as .ncCF"
+!
+! We start this exploration with a TimeSeries feature collection.
+! The instance dimension maps to the ensemble (E) axis (70 features)
+! The observations dimension maps to T, because these are time series.
+! The observation variables appear as 2D, with the T length equal to the
+! observations dimension of the netCDF file.  The actual array that gets
+! stored in memory will not match this -- it is the 1D contiguous ragged
+! array.
+
+! ********************************************************************
+pause
+
+USE pmelTao5daySst_timeseries_dsg.nc
+show data
+
+! ********************************************************************
+pause
+
+! The Feature-type is shown as part of the header.  
+! Internally Ferret creates a “translation” grid based upon the units and
+! coordinate range for each relevant axis of the dataset, which allows the
+! gridded coordinate formatting routines to be used for DSG variables.
+! The SHOW DATA/FULL command will show the extreme coordinate limits of the
+! data set
+!    longitude range: 0E to 10W
+!    latitude range: 19S to 21N
+!    depth range: 1 to 1.5
+!    time range: 15-JAN-2017 12:00 to 21-APR-2017 12:00
+! ********************************************************************
+pause
+
+! Graphics
+! Each feature type has a native plot type “PLOT VAR”
+! will plot the variable in the currently selected set of features.
+!
+! Make a map showing the locations and names of the stations.
+! Nothing new here.  The old fashioned way works fine.
+
+go basemap x=140:360 y=-40:40 20
+PLOT/VS/over/nolabel/color=blue/symbol=19/siz=0.2/thick longitude, latitude
+
+! ********************************************************************
+pause
+
+
+set window/clear/siz=0.4/asp=0.6
+
+! Now easily plot all of the time series in the collection at once.
+! Since the plot will have so many time series lines, we choose
+! not to make a key; just 70 blue lines.
+! Ferret knows these are time series, and it understands DSG coordinates
+! internally, much as it would understand gridded coordinates.  So the
+! plot is properly formatted and self-describing.
+
+plot/color=blue/line/nokey t_25
+
+! ********************************************************************
+pause
+
+
+! Constraints
+! Ferret’s standard world coordinate limits qualifiers, X, Y, Z, T and E
+! work much as they would with a gridded dataset -- i.e. they control the
+! region displayed by the graphics and the data that gets plotted or listed.
+! This plot has fewer lines, so automatically give each one a new color or
+! style. The legend labels are the profile station ID’s from the file.
+
+PLOT/thick t_25[x=130e:170e,y=8s:5n,T=1-FEB-2017:15-APR-2017]
+
+! ********************************************************************
+pause
+
+
+! Masking
+! To select features (individual time series, profiles or trajectories)
+! define a feature-mask. With this mask, only two timeseries are
+! included. SET DATA/FMASK= applies the mask to the dataset until it is
+! removed. A listing shows what mask is in place, and lists the data selected.
+! We have also constrained in time to make a shorter listing.
+
+let wmo_mask = IF wmo_platform_code EQ 51011 \
+     OR wmo_platform_code EQ 52313 then 1
+use/fmask=wmo_mask pmelTao5daySst_timeseries_dsg.nc
+list/t=1-jan-2017:25-jan-2017 t_25
+
+! ********************************************************************
+pause
+
+pause
+set window/clear/siz=0.4/asp=0.8
+
+cancel data/all
+cancel variable/all
+
+! Other Feature-types:
+
+! Profiles
+! Profile datasets, like timeseries, are drawn as lines of data at a
+! collection of stations. The legend labels are the profile station ID’s
+! from the file. Subsetting and masking is done in the same way.
+
+! ********************************************************************
+pause
+
+use WestCoastCarbon_profile_dsg
+plot pco2
+
+! ********************************************************************
+pause
+
+cancel data/all
+cancel variable/all
+set window/clear/siz=0.4/asp=0.7
+
+! Trajectories
+! Trajectory data has longitude, latitude, time and measurements along
+! the trajectory paths.  The native plot type is a ribbon plot, location
+! colored by measurement.  The PLOT command automatically draws a ribbon
+! plot.  The usual plot qualifiers apply, setting color levels, palette,
+! and so on.
+
+use socat_trajectory_dsg.nc
+plot/hlim=100:260/vlim=0:80/thick/palette=plasma sal
+go fland 5 black
+
+! ********************************************************************
+pause
+
+! Or, color by the trajectory ID, so that each one has a color. If there
+! are few enough trajectories, the ID's are labeled along the colorbar.
+
+go basemap x=100:260 y=0:80 5 black
+plot/over/nolabel/thick/palette=ten_by_levels/key=horiz expocode
+
+
+! ********************************************************************
+pause
+
+set window/clear/siz=0.4/asp=0.6
+
+! Working with trajectory data as time series
+! For each observation along a trajectory we have a time coordinate
+! as well as longitude and latitude. This means the data can be viewed
+! as a set of time series. Change to a timeseries view with USE/FEATURETYPE.
+! This can be applied when first opening the data or on an open dataset.
+
+use/featuretype=timeseries socat_trajectory_dsg.nc
+plot fco2_recommended
+
+! ********************************************************************
+pause
+
+cancel data/all
+cancel variable/all
+
+! User-defined variables
+! Standard LET syntax works on DSG variables with only subtle differences.
+! Returning to our timeseries dataset, compute the maximum temperature reached
+! and the number of valid data in each time series during Jan-March of 2017
+
+use pmelTao5daySst_timeseries_dsg
+LET t_max = t_25[T=1-JAN-2017:31-Mar-2017@MAX]
+LET t_ngood = t_25[T=1-JAN-2017:31-MAR-2017@NGD]
+list t_max, t_ngood
+
+! ********************************************************************
+pause
+
+! DSG data differencing with model or other gridded data
+! Sampling from the model grid is done as a regridding operation,
+! G= to regrid a variable on a rectangular grid onto the coordinate
+! collection implied by a Discrete Sampling Geometry.
+
+use pmelTao5daySst_timeseries_dsg
+use http://www.esrl.noaa.gov/psd/thredds/dodsC/Datasets/ncep.reanalysis/surface/pottmp.sig995.2017.nc
+show data 2
+
+! ********************************************************************
+pause
+set window/clear/siz=0.4/asp=0.6
+
+! Plot the gridded data sampled at the DSG space-time coordinates
+! Note that if the amount of model data that must be accessed
+! is large, Ferret dynamic memory management will apply scatter/
+! gather to perform the computation in chunks
+
+plot/x=165:170/y=0:10 pottmp[d=2,g=t_25[d=1]]
+
+! ********************************************************************
+pause
+
+! Compute the anomaly between observed and gridded values and plot
+! the difference for all of the timeseries in the Atlantic Ocean.
+
+let grid_t = pottmp[d=2,g=t_25[d=1]]
+let/title="Timeseries-Gridded"/units="Deg C" diff = t_25[d=1] - grid_t
+
+plot/x=300:360 diff
+
+! ********************************************************************
+pause
+
+! End of dsg_tutorial is now completed.

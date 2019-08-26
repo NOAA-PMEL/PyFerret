@@ -439,6 +439,7 @@
 	tstyle = ' '
 	the_taxis = no_dim
 	icode = 0
+	gap_var = 0
 	t1_date = ' '
 	tref = ' '
 	ribbon_var = 0

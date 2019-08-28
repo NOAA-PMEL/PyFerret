@@ -42,6 +42,7 @@
 * revision 0.00 - 03-Mar-2001
 
 * V570 *acm* 5/04  Add the calendar ALL_LEAP = 366_DAY.
+* V751 *acm* 8/19  Calendar PROLEPTIC_GREGORIAN has same year-length as GREGORIAN
 
         IMPLICIT NONE
 * calling argument declarations:
@@ -59,6 +60,7 @@
         sec_per_year(3) = 31557600.
         sec_per_year(4) = 31104000.
         sec_per_year(5) = 31622400.
+        sec_per_year(6) = 31556952.
 
 	cal_id_greg = 1		! Default gregorian calendar
 	CAL_FACTR = sec_per_year(cal_id_greg) / sec_per_year(cal_id)
@@ -70,6 +72,7 @@ c     2  'NOLEAP',
 c     3  'JULIAN',
 c     4  '360_DAY',
 c     5  'ALL_LEAP'
+c     6  'PROLEPTIC_GREGORIAN'
 
 c from xunits_data.F:
 c

@@ -79,6 +79,8 @@
 * V695  *acm* 2/15 cx_calendar stores info about calendar formatting of T and F axes
 * V720  *sh*  4/17 support for DSG ragged contiguous grids
 * V741 6/18 *acm* Handle modulo longitudes in DSG files
+* V751 8/19 *acm* Issue 1954: For DSG grids allow for modulo longitudes for station locations
+*                 of timeseries or profiles as well as trajectory data.
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -123,8 +125,6 @@
 	   dset = TM_DSG_DSET_FROM_GRID( grid )
 	   CALL TM_DSG_FACTS( grid, orientation, obs_dimlen, fline, its_dsg )
 	ENDIF
-
-
 
 * (11/95) expressions such as "2+2"
 	IF (cat .EQ. cat_user_var) THEN
@@ -214,7 +214,7 @@
 	   lo_ww = MAX( cx_lo_ww( idim, cx ), min_ww )
 	   hi_ww = MIN( cx_hi_ww( idim, cx ), max_ww )
 
-	   IF (its_dsg .AND. idim.EQ.x_dim .AND. orientation.EQ.x_dim) THEN
+	   IF (its_dsg .AND. idim.EQ.x_dim) THEN  ! Moduloing done elsewhere
 	      lo_ww = cx_lo_ww( idim, cx_cmnd ) 
 	      hi_ww = cx_hi_ww( idim, cx_cmnd )
 	   ENDIF

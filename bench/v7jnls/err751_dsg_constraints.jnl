@@ -14,7 +14,7 @@ show symbol yaxis*
 ! Ticket 1954. The second PLOT command with /X= giving degrees
 ! as Degrees-W returned an error. Should be identical.
 
-use data/profile_dsg2.nc
+use profile_dsg2.nc
 plot/x=-122:-119/thick sal
 show symbol *axis*
 

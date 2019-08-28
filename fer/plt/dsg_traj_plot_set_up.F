@@ -53,6 +53,7 @@
 * V7.5+ *acm*  6/19 Better handling of plotting longitudes without branch jumps.  
 *                   Do masking correctly.
 * V7.51 *acm*  8/19 getting min/max of longitudes and latitudes
+* V7.51 *acm*  8/19 Ticket 1953, masking and min/max of dependent axis data
 
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
@@ -282,7 +283,7 @@
 	CALL PLOT_DSG_APPLY_OBS_MASK (dset, cx_list(nmv), nfeatures, obsdimlen, 
      .		   indep_dat, nmasked)
      
-	mask_applied = nmasked .LT. npts2
+	mask_applied = nmasked .LT. npts
 
 	CALL MINMAX( indep_dat, nmasked, bad_val4, ind_min, ind_max, indep_nok )
 	
@@ -421,7 +422,7 @@
 * Set up the dependent axis.
 
 	all_1_dep = NO_LINE_RANGE( dep_dat, npts, bad_val4, val1 )
-	CALL MINMAX( dep_dat, npts, bad_val4, dep_lo, dep_hi, dep_nok )
+	CALL MINMAX( dep_dat, nmasked, bad_val4, dep_lo, dep_hi, dep_nok )
 	IF (dep_nok .EQ. 0) THEN ! all missing
 	   dep_min = -1
 	   dep_max =  1

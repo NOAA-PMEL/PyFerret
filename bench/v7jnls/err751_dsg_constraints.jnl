@@ -1,0 +1,23 @@
+! err751_dsg_constraints
+! Tickets 1953, 1954  Correctly applying constraints
+! on PLOT command to DSG dataset plots.
+
+! Ticket 1953. Y constraints on DSG trajectory ribbon-map plots.
+! The data was constrained by /Y= but vertical axis had the 
+! original full Y range.
+
+use simple_traj_dsg
+plot/y=20:25 sst
+! axis ends should be 20 and 25
+show symbol yaxis*
+
+! Ticket 1954. The second PLOT command with /X= giving degrees
+! as Degrees-W returned an error. Should be identical.
+
+use data/profile_dsg2.nc
+plot/x=-122:-119/thick sal
+show symbol *axis*
+
+plot/x=122w:119w/thick sal
+show symbol *axis*
+

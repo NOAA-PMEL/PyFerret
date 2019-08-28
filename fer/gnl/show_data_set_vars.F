@@ -92,6 +92,7 @@
 * V751 *acm* 6/19 Remove unused declarations
 * V751 6/19 *acm* TM_FMT rewrite: formatting of lon/lat coordinate strings
 * V751 7/18 *acm* Call single routine for DSG feature-type names
+* V751 8/18 *acm* List the coordinate ranges if DSG dataset
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -566,6 +567,8 @@
 
 * describe the time range (uses "grid" from last variable displayed)
 	taxis = ds_time_axis(dset)
+	IF ( full  .AND. grid_dsg) taxis = grid_line(t_dim, dsg_xlate_grid(dset))
+
 * ... check among the static grids
         DO 500 grid = 1, max_grids
  500    IF ( grid_line(t_dim,grid) .EQ. taxis ) GOTO 520
@@ -577,7 +580,7 @@
  515	grid = 1		!  internal error if we get here !!
  520    IF ( full .AND. taxis.NE.mnormal
      .		  .AND. taxis.NE.unspecified_int4) THEN    ! bug fix: 3/94
-	   len = line_dim( ds_time_axis(dset) )
+	   len = line_dim( taxis )
 	   lo = TM_WORLD( 1,   grid, t_dim, box_middle )
 	   hi = TM_WORLD( len, grid, t_dim, box_middle )
 	   line = LOHI_STRING( lo,hi,t_dim,grid,' to ',ax_dec_pt(t_dim),dlen )

@@ -2,12 +2,13 @@
 
 ! Create gridded data file: values are based on latitude/longitudes
 ! test regridding to a DSG trajectory grid
+! Change def of gridded data for more variation
 
 define axis/t=17-may-2019:20-may-2019:1/units=hours tfake
 define axis/x=-168:-165:0.2/units=degrees_east xfake
 define axis/y=54:57:0.2/units=degrees_north yfake
 define grid/x=xfake/y=yfake/t=tfake gfake
-let/title="Gridded Temperature"/Units="Degrees_C" temp = y[g=gfake] + 0.1*x[g=gfake] + 0*t[g=gfake]
+let/title="Gridded Temperature"/Units="Degrees_C" temp = 2*y[g=gfake] + 0.8*x[g=gfake] + 0*t[g=gfake]
 save/clobber/file=fake_model_temp.nc/outtype=float temp
 can var/all
 
@@ -26,7 +27,7 @@ define axis/t=17-may-2019:20-may-2019:1/units=hours tfake
 define axis/x=192:195:0.2/units=degrees_east xfake
 define axis/y=54:57:0.2/units=degrees_north yfake
 define grid/x=xfake/y=yfake/t=tfake gfake
-let/title="Gridded Temperature"/Units="Degrees_C" temp = y[g=gfake] + 0.1*x[g=gfake] + 0*t[g=gfake]
+let/title="Gridded Temperature"/Units="Degrees_C" temp = 2*y[g=gfake] + 0.8*x[g=gfake] + 0*t[g=gfake]
 save/clobber/file=fake_model_temp.nc/outtype=float temp
 can var/all
 
@@ -54,7 +55,7 @@ define axis/t=17-may-2019:20-may-2019:1/units=minutes tbig
 define axis/x=0:359:.5/unit=degrees/modulo xbig
 define axis/y=54:57:0.2/units=degrees_north ybig
 define grid/x=xbig/y=ybig/t=tbig gbig
-let big_temp = y[g=gbig] + 0*(x[g=gbig]+t[g=gbig])
+let big_temp = 2*y[g=gbig] + 0*(x[g=gbig]+t[g=gbig])
 
 say `big_temp,r=size`
 
@@ -88,7 +89,7 @@ define axis/y=54:57:0.2/units=degrees_north yfake
 define grid/x=xfake/y=yfake/t=tfake gfake
 define axis/z=1:5:.5/units=meters zfake
 define grid/x=xfake/y=yfake/t=tfake/z=zfake gfake
-let/title="Gridded Temperature"/Units="Degrees_C" temp = y[g=gfake] + 0.1*x[g=gfake] + 0.2*z[gz=zfake] + 0*t[g=gfake]
+let/title="Gridded Temperature"/Units="Degrees_C" temp = 2*y[g=gfake] + 0.8*x[g=gfake] + 0.2*z[gz=zfake] + 0*t[g=gfake]
 save/clobber/file=fake_model_temp.nc/outtype=float temp
 can var/all
 

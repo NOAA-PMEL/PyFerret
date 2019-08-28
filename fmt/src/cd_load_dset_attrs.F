@@ -55,6 +55,7 @@
 *                  for instance the whole discussion under https://cf-trac.llnl.gov/trac/ticket/113
 * V741  6/18 *acm* Apply USE/Feature= for dsg files, if different from native featuretype
 *       7/18 *acm* More on use/feature. Allow /FEATURE=none. Use parameters for directions
+* V751 8/18 *acm* don't issue a note if the file has featureType="grid"
 
 * argument definitions:
 *       dset    - pointer to TMAP data set
@@ -169,7 +170,8 @@
 	               CALL TM_NOTE("FEATURE NOT YET IMPLEMENTED: "//cbuff32 , lunit_errors)
 	            ELSE
 	               dsg_ragged(dset) = .FALSE.
-	               CALL TM_NOTE("Ignoring non-DSG FeatureType: "//cbuff32 , lunit_errors)
+		       IF (STR_CASE_BLIND_COMPARE(cbuff32,"grid") .NE. str_match .AND. do_warn)
+     .	                  CALL TM_NOTE("Ignoring non-DSG FeatureType: "//cbuff32 , lunit_errors)
 	            ENDIF
 
 * Apply a user-imposed direction SET DATA/FEATURE= if different from the file direction

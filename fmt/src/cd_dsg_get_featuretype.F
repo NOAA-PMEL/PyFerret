@@ -36,6 +36,8 @@
 *
 * Find the featureType attribute and return the feature-type information
 * for the dataset
+* V751 8/18 *acm* don't issue a note if the file has featureType="grid"
+
 
         include 'netcdf.inc'
         include 'tmap_errors.parm'
@@ -84,7 +86,8 @@ c	include 'tmap_dims.parm'
 
 	ELSE
 	   dsg_ragged = .FALSE.
-	   IF (do_warn) CALL TM_NOTE("Ignoring non-DSG FeatureType: "//buff , lunit_errors)
+	   IF (STR_CASE_BLIND_COMPARE(buff,"grid") .NE. str_match .AND. do_warn)
+     .     CALL TM_NOTE("Ignoring non-DSG FeatureType: "//buff , lunit_errors)
 
 	ENDIF
 

@@ -5985,6 +5985,9 @@ ooooooooooooooooooooooooooooooooooooooooooo
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
 *** Running ferret script: bn_cdf_strlen.jnl
  LISTing to file a.nc
  LISTing to file a.nc

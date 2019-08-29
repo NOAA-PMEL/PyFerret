@@ -4802,9 +4802,6 @@ Replacing definition of axis TAX
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
-           *** NOTE: Ignoring non-DSG FeatureType: GRID
-           *** NOTE: Ignoring non-DSG FeatureType: GRID
-           *** NOTE: Ignoring non-DSG FeatureType: GRID
  **TMAP ERR: attribute already defined
              coordinates for variable ZETA
              Data set: testdata
@@ -6071,6 +6068,9 @@ ooooooooooooooooooooooooooooooooooooooooooo
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
  LISTing to file a.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo

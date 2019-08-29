@@ -5960,6 +5960,9 @@ ooooooooooooooooooooooooooooooooooooooooooo
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
 *** Running ferret script: bn_cdf_strlen.jnl
  LISTing to file a.nc
  LISTing to file a.nc
@@ -6096,130 +6099,6 @@ Replacing definition of axis XFAKE
            *** NOTE: grid GIL1 used by data set fake_model_temp
            *** NOTE: Redefinition may alter apparent contents of data set
  LISTing to file fake_model_temp.nc
-           *** NOTE: Graphics limits settings to 250 line/thickness combinations plus existing spectrum colors
-           *** NOTE: Cannot draw /THICK=3 lines with current number of color levels = 48; THICK=1 or 2 will be ok
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
-           *** NOTE: Graphics limits settings to 250 line/thickness combinations plus existing spectrum colors
-           *** NOTE: Cannot draw /THICK=2 lines with current number of color levels = 48; THICK=1 will be ok
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
-gsetmarkerrep()   66 Polymarker index is invalid
-gsetlinerep()   60 Polyline index is invalid
  LISTing to file sail_copy.nc
 Replacing definition of axis XFAKE
 Replacing definition of grid GFAKE

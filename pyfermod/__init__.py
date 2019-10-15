@@ -86,6 +86,13 @@ from pyferret.fermethods import *
 
 # bindings for the PyQt-based graphics engines
 import pipedviewer.pyferretbindings
+try:
+    # the one-time setting of multiprocessing start method, 
+    # if supported, set to spawn to avoid Qt issues
+    import multiprocessing
+    multiprocessing.set_start_method('spawn')
+except:
+    pass
 
 from pyferret import graphbind
 from pyferret import regrid

@@ -70,6 +70,8 @@
 *                 1-D coordinate var, don't write the axis Ferret creates
 * V698 11/15 *sh* new args control whether sharing of T axis is allowed
 * V741  6/18 *acm* small cleanup: catch error on TM_ALLO_TMP_GRID
+* V751 10/19 *acm* Issue 1955: don't try to do the rename for the fix to ticket 2227
+*                  if the dimension name wasn't stored as a variable to begin with.
 
 * argument definitions:
 *       dset    - pointer to TMAP data set
@@ -221,6 +223,8 @@
           vname = line_name(iaxis)
           len = TM_LENSTR1(vname)
           CALL CD_GET_VAR_ID (dset, vname, varid, status)
+          IF (status .NE. merr_ok) GOTO 400  ! dimension wasn't stored as a name
+
           CALL CD_GET_VAR_INFO (dset, varid, vname, vartype, 
      .            nvdims, vdims, nvatts, coordvar, outflag, status)
 

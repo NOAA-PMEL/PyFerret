@@ -46,3 +46,6 @@ GO err751_dsg_fmask
 
 GO bn_reset
 GO err751_dsg_constraints
+
+GO bn_reset
+GO err751_set_global_atts

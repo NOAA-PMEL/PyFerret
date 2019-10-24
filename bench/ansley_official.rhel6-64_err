@@ -1,28 +1,25 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/users/ansley/build/working/FERRET/fer/ferret_c
--rwxr-xr-x. 1 ansley tmap 118410471 Aug 27 16:18 /home/users/ansley/build/working/FERRET/fer/ferret_c
+-rwxr-xr-x. 1 ansley tmap 118386989 Oct 23 12:13 /home/users/ansley/build/working/FERRET/fer/ferret_c
 Using external functions from /home/users/ansley/build/working/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: tweaks: no msg on featureType of grid,  list time range on show data full of traj, convert proleptic_gregorian calendar
+Note: testing Ned bug, global-att handling (fix in CD_CLEAN_GRIDS)
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DATA=. ./data
-FER_DATA_THREDDS= http://ferret.pmel.noaa.gov/geoide/geoIDECleanCatalog.xml /home/users/tmap/ferret/linux/fer_dsets
-FER_DAT=/home/users/tmap/ferret/rhel6-x86_64-linux
+FER_DAT=/home/users/tmap
 FER_DESCR=. ./data
 FER_DIR=.
 FER_DSETS=. ./data
 FER_EXTERNAL_FUNCTIONS=/home/users/ansley/build/working/FERRET/external_functions/ext_func
 FER_FONTS=/home/users/tmap/ferret/rhel6-x86_64-linux/ppl/fonts
-FER_GO=. ./v4jnls ./v5jnls ./v6jnls ./v7jnls ./genjnls . ./v4jnls ./v5jnls ./v6jnls ./v7jnls ./genjnls . /home/users/tmap/ferret/rhel6-x86_64-linux/go /home/users/tmap/ferret/rhel6-x86_64-linux/examples /home/users/tmap/ferret/rhel6-x86_64-linux/contrib
+FER_GO=. ./v4jnls ./v5jnls ./v6jnls ./v7jnls ./genjnls . /home/users/tmap/ferret/rhel6-x86_64-linux/go /home/users/tmap/ferret/rhel6-x86_64-linux/examples /home/users/tmap/ferret/rhel6-x86_64-linux/contrib
 FER_GRIDS=. ./data
-FER_LIBS=/home/users/tmap/ferret/rhel6-x86_64-linux/lib
 FER_PALETTE=. /home/users/tmap/ferret/rhel6-x86_64-linux/ppl
-FER_WEB_BROWSER=firefox
 PWD=/home/users/ansley/build/working/FERRET/bench
 PYFER_EXTERNAL_FUNCTIONS=/home/users/tmap/ferret/rhel6-x86_64-linux/ext_func/pylibs
-Beginning at Tue Aug 27 16:23:42 PDT 2019
+Beginning at Wed Oct 23 12:14:09 PDT 2019
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -2750,7 +2747,7 @@ ooooooooooooooooooooooooooooooooooooooooooo
 ooooooooooooooooooooooooooooooooooooooooooo
 Starting test: bn_set_strides.jnl
  **ERROR: invalid command: it is a child axis already
-set axis/stride=2/offset=1 (AX052)
+set axis/stride=2/offset=1 (AX053)
  **ERROR: invalid command: not a strided axis: COADSX
 cancel axis/stride COADSX
  **ERROR: invalid command: offset must be less than stride value
@@ -5994,21 +5991,6 @@ Replacing definition of axis TAX
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
- **TMAP ERR: attribute already defined
-             coordinates for variable ZETA
-             Data set: testdata
- **TMAP ERR: attribute already defined
-             coordinates for variable U
-             Data set: testdata
- **TMAP ERR: attribute already defined
-             coordinates for variable V
-             Data set: testdata
- **TMAP ERR: attribute already defined
-             coordinates for variable TEMP
-             Data set: testdata
- **TMAP ERR: attribute already defined
-             coordinates for variable SALT
-             Data set: testdata
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -7494,6 +7476,9 @@ ooooooooooooooooooooooooooooooooooooooooooo
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
 Starting test: bn_cdf_strlen
 Replacing definition of axis taxis
  LISTing to file a.nc
@@ -7845,4 +7830,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
            *** NOTE: Cannot create new windows when batch mode set
-Ended at Tue Aug 27 16:34:57 PDT 2019
+Ended at Wed Oct 23 12:26:00 PDT 2019

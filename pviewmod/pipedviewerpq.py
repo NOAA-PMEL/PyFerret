@@ -919,7 +919,10 @@ class PipedViewerPQ(QMainWindow):
         milliseconds have passed.
         '''
         try:
-            starttime = time.clock()
+            if (sys.version_info[0] >= 3) and (sys.version_info[1] >= 3):
+                starttime = time.process_time()
+            else:
+                starttime = time.clock()
             # Wait up to 2 milliseconds waiting for a command.
             # This prevents unchecked spinning when there is
             # nothing to do (Qt immediately calling this method
@@ -931,7 +934,11 @@ class PipedViewerPQ(QMainWindow):
                 # more than 50 milliseconds have passed.
                 # This reduces Qt overhead when there are lots
                 # of commands waiting in the queue.
-                if (time.clock() - starttime) > 0.050:
+                if (sys.version_info[0] >= 3) and (sys.version_info[1] >= 3):
+                    elapsed = time.process_time() - starttime
+                else:
+                    elapsed = time.clock() - starttime
+                if elapsed > 0.050:
                     break
         except EOFError:
             # Assume PyFerret has shut down

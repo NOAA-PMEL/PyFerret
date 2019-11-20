@@ -42,4 +42,7 @@ GO bn_reset
 GO err75_scale_missingval
 
 GO bn_reset
+GO err75_cancel_var
+
+GO bn_reset
 GO err751_set_global_atts

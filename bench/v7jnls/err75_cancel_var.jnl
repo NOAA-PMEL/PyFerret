@@ -1,0 +1,268 @@
+! err75_cancel_var.jnl
+! Ticket 1957: For some combination of definitions,
+! the wrong variable is saved to the file at the end of this.
+! It stems from the cancel of an existing variable listed
+! after a nonexistent variable with CANCEL VAR/NOERR
+
+can region
+
+let do_vars = {"t_surf_nino3","t_surf_nino4","t_surf_nino12","t_surf_nino34"}
+!let do_vars = {"t_surf_nino3","t_surf_nino4","t_surf_nino12"}
+let do_products = do_vars
+
+let/u="degC" v1_t_surf = f1_sst[t=1-jan-1958:1-jan-2018]
+let/u="degC" v1_t_surf_nino12 = v1_t_surf[x=90w:80w@ave,y=10s:0s@ave]
+let/u="degC" v1_t_surf_nino3 = v1_t_surf[x=150w:90w@ave,y=5s:5n@ave]
+let/u="degC" v1_t_surf_nino34 = v1_t_surf[x=170w:120w@ave,y=5s:5n@ave]
+let/u="degC" v1_t_surf_nino4 = v1_t_surf[x=160e:150w@ave,y=5s:5n@ave]
+
+use coads_climatology
+let/title="ERSST (degC)" f1_sst = 1
+
+let v2_do_vars = do_vars
+let us_file_prefix = "f2_"
+let us_chunkfile_template = " "
+
+let pid = `spawn("exec perl -e 'print getppid,0'")`
+
+let us_start_yr = 1851
+let us_end_yr = 2100
+let us_chunklen = 250
+
+let us_verbosity = 2
+
+let/u="degC"/title="SPEAR" v2_t_surf = f2_t_surf[t=1-jan-1851:1-jan-2101]-273.15
+let/u="hPa-1000"/title="SPEAR" v2_ps = f2_ps[t=1-jan-1851:1-jan-2101]/100-1000
+let/u="cPa"/title="SPEAR" v2_tau_x = 0-100*f2_tau_x[t=1-jan-1851:1-jan-2101]
+let/u="mm/day"/title="SPEAR" v2_precip = 86400*f2_precip[t=1-jan-1851:1-jan-2101]
+
+let/u="hPa-1000"/title="SPEAR" v2_ps_darwin = v2_ps[x=130.9e,y=12.4s]
+let/u="hPa-1000"/title="SPEAR" v2_ps_tahiti = v2_ps[x=149.6w,y=17.5s]
+let/u="degC"/title="SPEAR" v2_t_surf_nino12 = v2_t_surf[x=90w:80w@ave,y=10s:0s@ave]
+let/u="degC"/title="SPEAR" v2_t_surf_nino3 = v2_t_surf[x=150w:90w@ave,y=5s:5n@ave]
+let/u="degC"/title="SPEAR" v2_t_surf_nino34 = v2_t_surf[x=170w:120w@ave,y=5s:5n@ave]
+let/u="degC"/title="SPEAR" v2_t_surf_nino4 = v2_t_surf[x=160e:150w@ave,y=5s:5n@ave]
+let/u="degC"/title="SPEAR" v2_t_surf_eeqio = v2_t_surf[x=90e:110e@ave,y=10s:0@ave]
+let/u="degC"/title="SPEAR" v2_t_surf_weqio = v2_t_surf[x=50e:70e@ave,y=10s:10n@ave]
+let/u="degC"/title="SPEAR" v2_t_surf_eqatl = v2_t_surf[x=22.5w:12.5e@ave,y=7.5s:7.5n@ave]
+let/u="degC"/title="SPEAR" v2_t_surf_tnatl = v2_t_surf[x=52.5w:22.5w@ave,y=7.5n:22.5n@ave]
+let/u="degC"/title="SPEAR" v2_t_surf_tsatl = v2_t_surf[x=17.5w:7.5e@ave,y=22.5s:7.5s@ave]
+
+let/u="cPa"/title="SPEAR" v2_tau_x_nino3 = v2_tau_x[x=150w:90w@ave,y=5s:5n@ave]
+let/u="cPa"/title="SPEAR" v2_tau_x_nino4 = v2_tau_x[x=160e:150w@ave,y=5s:5n@ave]
+let/u="cPa"/title="SPEAR" v2_tau_x_weqpac = v2_tau_x[x=120e:160e@ave,y=5s:5n@ave]
+let/u="cPa"/title="SPEAR" v2_tau_x_eqio = v2_tau_x[x=60e:95e@ave,y=5s:5n@ave]
+let/u="cPa"/title="SPEAR" v2_tau_x_eqatl = v2_tau_x[x=40w:5e@ave,y=5s:5n@ave]
+
+let/u="mm/day"/title="SPEAR" v2_precip_nino12 = v2_precip[x=90w:80w@ave,y=10s:0s@ave]
+let/u="mm/day"/title="SPEAR" v2_precip_nino3 = v2_precip[x=150w:90w@ave,y=5s:5n@ave]
+let/u="mm/day"/title="SPEAR" v2_precip_nino34 = v2_precip[x=170w:120w@ave,y=5s:5n@ave]
+let/u="mm/day"/title="SPEAR" v2_precip_nino4 = v2_precip[x=160e:150w@ave,y=5s:5n@ave]
+let/u="mm/day"/title="SPEAR" v2_precip_weqpac = v2_precip[x=120e:160e@ave,y=5s:5n@ave]
+
+let us_f_vars = {"t_surf"}
+let us_vprefixes = {"us_fh","us_cfiles","us_vars"}
+
+
+let dvl_aux_prefixes = us_vprefixes
+let dvl_filename_suffixes = {".nc",".des"}
+
+let dvl_f_pre = dvl_aux_prefixes[i=1]
+let dvl_c_pre = dvl_aux_prefixes[i=2]
+let dvl_v_pre = dvl_aux_prefixes[i=3]
+
+let dvl_file_suf = dvl_filename_suffixes[i=1]
+let dvl_agg_suf = dvl_filename_suffixes[i=2]
+
+let dvl_nvar = 1
+
+let dvl_var = "t_surf"
+let us_vars1 = {"t_surf"}
+
+let us_cfiles1 = {"atmos.185101-210012.t_surf.nc"}
+let us_fh1 = {"f2_t_surf.des","us_cfiles1","us_vars1"}
+
+let us_fh_list = {"us_fh1"}
+
+can var dvl_aux_prefixes dvl_filename_suffixes
+can var dvl_f_pre dvl_c_pre dvl_v_pre dvl_file_suf dvl_agg_suf
+can var dvl_nvar dvl_var
+
+let us_needed_vars = "v2_"+v2_do_vars
+let swv_vpre = "v2_"
+let swv_targets = us_needed_vars
+let swv_altvars = {""}
+let swv_fhs = us_fh_list
+let swv_fpre = "f2_"
+let swv_clobber = 1
+let swv_verbosity = 2 
+
+let svt_vars = swv_targets
+let swv_needed =  {"v2_t_surf","v2_t_surf_nino12","v2_t_surf_nino3","v2_t_surf_nino34","v2_t_surf_nino4"}
+can var svt_vars
+
+let sint_v = {""}
+let swv_sel_altvars = {""}
+can var sint_v
+
+let esa_n = 1
+let swv_altvars_todo = 1
+can var esa_n
+
+let dummy = 1
+can var swv_altvars_todo
+
+
+! switching the order eliminates the bug!
+can var/noerr nonexist_var dummy
+!can var/noerr dummy nonexist_var
+
+can var v2_precip v2_precip_nino12 v2_precip_nino3 v2_precip_nino34 v2_precip_nino4 v2_precip_weqpac v2_ps v2_ps_darwin v2_ps_tahiti v2_tau_x v2_tau_x_eqatl v2_tau_x_eqio v2_tau_x_nino3 v2_tau_x_nino4 v2_tau_x_weqpac v2_t_surf_eeqio v2_t_surf_eqatl v2_t_surf_tnatl v2_t_surf_tsatl v2_t_surf_weqio
+
+let sfp_target_list ={"v2_t_surf","v2_t_surf_nino12","v2_t_surf_nino3","v2_t_surf_nino34","v2_t_surf_nino4"}
+
+
+let sfp_fh_list = swv_fhs
+let sfp_pre = "f2_"
+let sfp_clobber = `swv_clobber`
+let sfp_verbosity = 2
+
+let sfp_wants = {"f2_t_surf"}
+
+let sfp_file_status = 0
+
+let sfp_filename = sfp_fh[i=1]
+let sfp_cfiles = sfp_fh[i=2]
+let sfp_has = dncase(sfp_pre + sfp_requestvars)
+
+
+let sfp_fh0 = {"us_fh1"}
+let sfp_fh = us_fh1
+let sfp_num_elements = 3
+let sfp_requestvars = {"t_surf"}
+
+let sfp_prelen = strlen(sfp_pre)
+let sfp_len = strlen(sfp_str)
+let sfp_str_noprefix = substring(sfp_str,sfp_prelen+1,sfp_len-sfp_prelen)
+
+let sfp_intersect = {""}
+let sfp_str = sfp_intersect
+
+
+let sfp_fh0 = sfp_fh_list[i=1]
+let sfp_fh = us_fh1
+let sfp_requestvars = {"t_surf"}
+
+let sfp_intersect = {"f2_t_surf"}
+
+
+let sfp_file_status = "valid"
+
+let f2_t_surf = 1
+
+
+can var sfp_wants sfp_file_status sfp_num_elements
+can var sfp_fh0 sfp_fh sfp_filename sfp_cfiles sfp_requestvars sfp_has
+can var sfp_target_list sfp_fh_list sfp_pre sfp_clobber sfp_verbosity
+can var sfp_intersect sfp_prelen sfp_len sfp_str_noprefix
+
+let dvsa_ilist = swv_sel_altvars
+let dvsa_ilist_n = 1
+
+can var dvsa_ilist dvsa_ilist_n
+can var swv_needed swv_vpre swv_targets swv_altvars swv_fhs swv_fpre
+can var swv_clobber swv_sel_altvars swv_verbosity
+can var us_fh1 us_vars1
+can var us_cfiles1
+can var us_fh_list
+can var us_f_vars us_vprefixes
+can var us_file_prefix us_chunkfile_template us_start_yr us_end_yr us_chunklen us_verbosity
+can var us_needed_vars
+
+let prd_do_products = do_products
+let prd_print_path = "."
+let prd_do_ncfile = 0
+let prd_do_statfile = 0
+
+let prd_printfile = "`prd_print_path`/tave_spectrum/"+prd_subset+"/0/t_surf_nino3"
+let prd_statfile = " "
+let prd_ncfile = " "
+can var prd_print_path
+
+let prd_subset = "tropical_pacific"
+
+let/title="NINO3 SST"/u="degC" prd_vname = "t_surf_nino3"
+
+let prd_pow_hlim = "0:2.75:.5"
+
+
+def ax/t=1-jan-1958:1-jan-2017/np=720/cal=GREGORIAN/unit=yr/edge prd_tax1
+let prd_v1 = v1_t_surf_nino3[gt=prd_tax1]
+
+def ax/t=1-jan-1851:1-jan-2100/np=3000/cal=JULIAN/unit=yr/edge prd_tax2
+let prd_v2 = v2_t_surf_nino3[gt=prd_tax2]
+
+let c1ds_statnames = {'din_p2_p7','din_p7_1p4','din_1p4_9','int25_1p4_9','int50_1p4_9','int75_1p4_9'}
+let c1ds_statargs  = {'din " " .2:.7 2','din " " .7:1.4 2','din " " 1.4:9 2','intpt .25 1.4:9 2','intpt .5 1.4:9 2','intpt .75 1.4:9 2'}
+let c1ds_statmasks = {1,1,1,1,1,1}
+
+let gw_tval = t[gt=prd_v1]
+let gw_tval_start = gw_tval[l=1]
+let gw_tval_end = gw_tval[l=720]
+
+def axis/t="57.00312881928521":"115.923077742109"/np=720/unit="YR"/t0="15-JAN-1901"/calendar="GREGORIAN" t_gw_var_reg
+
+let app_use_memory = "memory" EQ "memory"
+let/title="NINO3 SST"/unit=" " append_var = prd_v1[gt=t_gw_var_reg]
+
+can var append_var
+can var gw_tval gw_tval_start gw_tval_end
+
+let gw_var = 1
+
+let gw_dt = 0.0819470777786151
+
+let gw_tmpdir = "get_wavelet.tmp"
+
+let gd_var = gw_var
+can var gd_var
+
+def region/default save
+can region
+let ws_nxd = 1
+let ws_nyd = 1
+let ws_nzd = 1
+let ws_ntd = 720
+set region save
+
+let/title="number of time points" ntimes =          720
+let/title="number of scales" nscales =          140
+let/title="starting scale"/unit="YR" s0 =   0.16389415555723019
+let/title="scale increment"/unit=octaves dj =    5.0000000000000003E-002
+let/title="time increment"/unit="YR" dt =    8.1947077778615096E-002
+let/title="delta reconstruction factor" cdelta =   0.77600000000000002
+let/title="wavelet energy scale" psi0 =   0.75112554446494251
+let/title="timeseries reconstruction factor" rfactor =    1.5113206192113904
+
+def axis/depth/z=0:`dj*(nscales-1)`/npoints=`nscales` z_scale_idx
+def grid/z=z_scale_idx gw_g_scale
+
+let app_use_memory = "memory" EQ "memory"
+let string_match = " " EQ "none"
+
+let app_max_is_missing = 0
+let app_verbose = 0
+let app_rigid = 0
+let app_ftitle_val = 0
+let app_v_in = 1
+let/title="scale"/unit=" " append_var = app_v_in
+
+! when bug is present, the following command saves the wrong (and nonexistent) variable to the file!
+! perhaps related to can var/noerr above?
+show var/tree dummy, append_var
+save/clobber/file=a.nc append_var
+
+! See what we wrote:
+! The file should contain APPEND_VAR, not DUMMY !!
+use a.nc
+list ..varnames

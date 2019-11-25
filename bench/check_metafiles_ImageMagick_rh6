@@ -36,8 +36,8 @@ foreach plt_file ($plt_files)
        Fprint -R -p portrait -o $plt_file.ps $plt_file
        Fprint -R -p portrait -o $plt_file.meta.ps metafile_masters_64bit_rh6/$plt_file
        compare $plt_file.ps $plt_file.meta.ps $plt_file.diff.ps
-       display -title new_$plt_file.ps $plt_file.ps &
-       display -title stored_$plt_file.meta.ps $plt_file.meta.ps & 
+#       display -title new_$plt_file.ps $plt_file.ps &
+#       display -title stored_$plt_file.meta.ps $plt_file.meta.ps & 
        display $plt_file.diff.ps
 
        set err_plt = 1
@@ -46,17 +46,18 @@ end
    
 set err_gif = 0
 foreach gif_file ($gif_files)
-    set size = `ls -l $gif_file | awk '{print $5}'`
-    set size2 = `ls -l metafile_masters_64bit_rh6/$gif_file | awk '{print $5}'`
-    if ("$size" != "$size2") then
-       echo "gif files differ $gif_file size $size metafile_masters_64bit_rh6/ size $size2" 
-       rm -f $gif_file.diff_gif.gif
-       compare $gif_file metafile_masters_64bit_rh6/$gif_file $gif_file.diff_gif.gif
-       display  -title new_$gif_file $gif_file &
-       display  -title stored_$gif_file metafile_masters_64bit_rh6/$gif_file &
-       display $gif_file.diff_gif.gif
-
-       set err_gif = 1
+    if  (-e metafile_masters_64bit_rh6/$gif_file) then
+       compare -quiet -metric AE $gif_file metafile_masters_64bit_rh6/$gif_file $gif_file.diff_gif.gif >& gif.out 
+       set val = `cat gif.out` 
+       if ( $val != "0" ) then 
+         display $gif_file.diff_gif.gif
+       else
+          rm -f $gif_file.diff_gif.gif
+       endif
+       rm -f gif.out
+    else 
+       echo metafile_masters_64bit_rh6/$gif_file Not Found
+       cp $gif_file $gif_file.diff_missing_gif.gif
     endif
 end
 
@@ -68,8 +69,8 @@ foreach ps_file ($ps_files)
        echo "plt files differ $ps_file size $size metafile_masters_64bit_rh6/ size $size2" 
        rm -f $ps_file.diff_ps.ps
        compare $ps_file metafile_masters_64bit_rh6/$ps_file $ps_file.diff_ps.ps
-       display -title new_$ps_file $ps_file &
-       display -title stored_$ps_file metafile_masters_64bit_rh6/$ps_file &
+#       display -title new_$ps_file $ps_file &
+#       display -title stored_$ps_file metafile_masters_64bit_rh6/$ps_file &
        display $ps_file.diff_ps.ps
 
        set err_ps = 1
@@ -89,8 +90,8 @@ foreach mb_file ($mb_files)
        Fprint -R -p portrait -o $mb_file.ps $mb_file
        Fprint -R -p portrait -o master_$mb_file.ps metafile_masters_64bit_rh6/$mb_file
        compare $mb_file.ps master_$mb_file.ps diff_$mb_file.ps
-       display $mb_file.ps &
-       display master_$mb_file.ps &
+#       display $mb_file.ps &
+#       display master_$mb_file.ps &
        display diff_$mb_file.ps
     endif
 end
@@ -115,10 +116,6 @@ endif
 # clean up
 rm -f *.plt.ps
 rm -f *.meta.ps
-rm -f *.diff.ps*
-rm -f *.diff_ps*
-rm -f *.diff_gif*
 rm -f *bat.ps
-rm -f diff*.ps
 rm -f master*.ps
 rm -f bat*.plt*.ps

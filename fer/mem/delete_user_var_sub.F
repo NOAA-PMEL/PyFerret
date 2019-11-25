@@ -79,6 +79,8 @@
 * V698  2/16 *acm* For ticket 2352: variables defined with LET/D are
 *                  added to that dataset in the attribute structure.
 * V699 6/16 *sh* treat EX# variables just like other variables
+* V751 *acm*11/19  Ticket 1957: Deleting variable from linked-list structure
+*                  don't try to look in a dataset 
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
@@ -178,9 +180,28 @@
 	   CALL CD_GET_VAR_ID (iset, uvar_name_code(uvar), varid, status)
 	   IF (status .NE. ferr_ok) THEN
 	      iset = uvar_dset(uvar)
+	      IF (iset .EQ. unspecified_int4) iset = pdset_uvars
+
 	      CALL CD_GET_VAR_ID (iset, uvar_name_code(uvar), varid, status)
 	   ENDIF
+
 ! ?? *sh* what is the state of things here if status .NE. ferr_ok ??
+
+! Case: two user-defined variables w/ same name and not associated with datsets, 
+! as in bn_letd.jnl
+!     LET   a = GLOBAL_PREEMPT ! global pre-empt
+!     LET/D a = GLOBAL_DEFAULT ! global default 
+!  yes? show var
+!   Created by DEFINE VARIABLE:
+!   >>> Definitions that replace any file variable of same name:
+!       A = GLOBAL_PREEMPT
+!   >>> Definitions used if no file variable of this name exists:
+!       A (/D default) = GLOBAL_DEFAULT
+!
+! This distinction is not in the linked-list structure. Only one is stored there. 
+! but both are listed in the ferret-side data structures.  In a CANCEL VAR/ALL, 
+! once one of these has been deleted the other no longer lives in the linked-list.
+ 
 	   IF (status .EQ. ferr_ok) THEN
               slen = TM_LENSTR1( uvar_name_code(uvar)  )
               CALL TM_FTOC_STRNG( uvar_name_code(uvar)(1:slen), fhol, flen )

@@ -42,6 +42,9 @@ GO bn_reset
 GO err75_scale_missingval
 
 GO bn_reset
+GO err75_cancel_var
+
+GO bn_reset
 GO err751_dsg_fmask
 
 GO bn_reset

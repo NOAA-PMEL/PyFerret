@@ -110,7 +110,7 @@ c        include 'calendar.cmn'
          CALL CD_GET_CALENDAR_NAME(buff, ok_cal)
          IF (ok_cal) THEN
             line_cal_name(axcalt) = buff
-         ELSe
+         ELSE
             slen = TM_LENSTR1(buff)
             CALL TM_NOTE('calendar attribute for 2D Time variable "'//
      .                   vname(:vlen)//'" is not recognized: '//

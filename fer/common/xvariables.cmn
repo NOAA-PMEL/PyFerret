@@ -220,7 +220,7 @@
      .			max_ws    = 8,
      .			plegacy_work_buffer = 1,
      .			max_mr_avail = max_mrs - 1,
-     .			pmax_mem_default = 31250000,  ! 250Mb
+     .			pmax_mem_default = 125000000,  ! 1Gb == 1E9 bytes
      .			pint_size_test = -999,   ! if needed use c __WORDSIZE
      .			pmv_npiles     = 299,	! prime # of hash piles
      .			pmv_nocache_pile = -pmv_npiles - 1,

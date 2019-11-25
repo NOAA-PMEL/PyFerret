@@ -2876,6 +2876,8 @@ ooooooooooooooooooooooooooooooooooooooooooo
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
+ **ERROR: variable unknown or not in data set: A
+CANCEL VAR a
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -3584,59 +3586,6 @@ set axis/name=45 x_in_meters
  **ERROR: invalid command: illegal new name given for axis .fr
 set axis/name=.fr x_in_meters
 *** Running ferret script: bn_let_remote.jnl
-           *** NOTE: netCDF bounds variable definition error
-           *** NOTE: Bounds definition "time_bnds" points to no existing axis
-           *** NOTE: Ignoring BOUNDS attribute
-           *** NOTE: netCDF bounds variable definition error
-           *** NOTE: Bounds definition "depth_bnds" points to no existing axis
-           *** NOTE: Ignoring BOUNDS attribute
-           *** NOTE: netCDF bounds variable definition error
-           *** NOTE: Bounds definition "lat_bnds" points to no existing axis
-           *** NOTE: Ignoring BOUNDS attribute
-           *** NOTE: netCDF bounds variable definition error
-           *** NOTE: Bounds definition "lon_bnds" points to no existing axis
-           *** NOTE: Ignoring BOUNDS attribute
-           *** NOTE: netCDF bounds variable definition error
-           *** NOTE: Bounds definition "time_bnds" points to no existing axis
-           *** NOTE: Ignoring BOUNDS attribute
-           *** NOTE: netCDF bounds variable definition error
-           *** NOTE: Bounds definition "depth_bnds" points to no existing axis
-           *** NOTE: Ignoring BOUNDS attribute
-           *** NOTE: netCDF bounds variable definition error
-           *** NOTE: Bounds definition "lat_bnds" points to no existing axis
-           *** NOTE: Ignoring BOUNDS attribute
-           *** NOTE: netCDF bounds variable definition error
-           *** NOTE: Bounds definition "lon_bnds" points to no existing axis
-           *** NOTE: Ignoring BOUNDS attribute
-           *** NOTE: netCDF bounds variable definition error
-           *** NOTE: Bounds definition "time_bnds" points to no existing axis
-           *** NOTE: Ignoring BOUNDS attribute
-           *** NOTE: netCDF bounds variable definition error
-           *** NOTE: Bounds definition "depth_bnds" points to no existing axis
-           *** NOTE: Ignoring BOUNDS attribute
-           *** NOTE: netCDF bounds variable definition error
-           *** NOTE: Bounds definition "lat_bnds" points to no existing axis
-           *** NOTE: Ignoring BOUNDS attribute
-           *** NOTE: netCDF bounds variable definition error
-           *** NOTE: Bounds definition "lon_bnds" points to no existing axis
-           *** NOTE: Ignoring BOUNDS attribute
- **ERROR: command syntax: /REMOTE variable expression may not contain [d=
-DEFINE VARIABLE/D=1/remote rvar = t00an1[d=1,z=1:100@ave]
- **ERROR: command syntax: /REMOTE variable definition must also specify /D=
-DEFINE VARIABLE/remote rvar = t00an1[d=1,z=1:100@ave]
- **netCDF error
-             Unable to open URL with REMOTE variable definitions:
-             Data set: http://ferret.pmel.noaa.gov/nvods/thredds/dodsC/las/woa05_annual/data_ferret.pmel.noaa.gov_pmel_thredds_dodsC_data_PMEL_WOA05nc_annual_t00an1.nc.jnl
- **TMAP ERR: attribute reading error
-             Unable to get varid for LET/REMOTE variable: NetCDF: Variable not found (OPeNDAP/netCDF Error code -49)
-             Data set: http://ferret.pmel.noaa.gov/nvods/thredds/dodsC/las/woa05_annual/data_ferret.pmel.noaa.gov_pmel_thredds_dodsC_data_PMEL_WOA05nc_annual_t00an1.nc.jnl
- **TMAP ERR: attribute reading error
-             Unable to get bad-value for LET/REMOTE variable: NetCDF: Attribute not found (OPeNDAP/netCDF Error code -43)
-             Data set: http://ferret.pmel.noaa.gov/nvods/thredds/dodsC/las/woa05_annual/data_ferret.pmel.noaa.gov_pmel_thredds_dodsC_data_PMEL_WOA05nc_annual_t00an1.nc.jnl
- **netCDF error
-             NetCDF: Variable not found (OPeNDAP/netCDF Error code -49)
-             Data set: http://ferret.pmel.noaa.gov/nvods/thredds/dodsC/las/woa05_annual/data_ferret.pmel.noaa.gov_pmel_thredds_dodsC_data_PMEL_WOA05nc_annual_t00an1.nc.jnl
-list/x=300/y=15 avar
 *** Running ferret script: bn691_bug_fixes.jnl
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -4775,21 +4724,6 @@ Replacing definition of axis TAX
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
- **TMAP ERR: attribute already defined
-             coordinates for variable ZETA
-             Data set: testdata
- **TMAP ERR: attribute already defined
-             coordinates for variable U
-             Data set: testdata
- **TMAP ERR: attribute already defined
-             coordinates for variable V
-             Data set: testdata
- **TMAP ERR: attribute already defined
-             coordinates for variable TEMP
-             Data set: testdata
- **TMAP ERR: attribute already defined
-             coordinates for variable SALT
-             Data set: testdata
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -6046,9 +5980,22 @@ ooooooooooooooooooooooooooooooooooooooooooo
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
+ LISTing to file a.nc
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
+ LISTing to file a.nc
+ LISTing to file a2.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
+ LISTing to file a1.nc
 *** Running ferret script: bn_cdf_strlen.jnl
  LISTing to file a.nc
  LISTing to file a.nc

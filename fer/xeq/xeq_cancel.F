@@ -676,8 +676,9 @@
 	ELSE
 	   IF (num_items .EQ. 0) GOTO 5010	
 
-* tkt 1957: Initialize iset for each item: if /noerror and a var is not defined,
-* calls may wind up resetting the iset
+* tkt 1957: If /noerror and a var is not defined, the second call to 
+* PARSE_NAM_DSET may wind up resetting the iset.  In that case just 
+* skip to the bottom of the loop so iset remains defined. 
 
 	   DO 1120 item = 1, num_items
 	      i1 = STR_UPCASE(buff,

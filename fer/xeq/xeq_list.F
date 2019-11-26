@@ -200,6 +200,7 @@
      .			my_mr(max_intrp), my_cx(max_intrp), frame_bottom,
      .			nvars2list, nctype, cdfid, strmlen, usr_maxstrlen
 	INTEGER*8	i8_size
+	REAL		big_val
 
 	CHARACTER	AUTO_FILENAME*2048, filename*2048, raw_name*2048, 
      .			buff*2048, fstatus*8, faccess*12, fformatted*12,

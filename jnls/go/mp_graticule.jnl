@@ -2,6 +2,10 @@
 !++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++!
 ! mp_graticule.jnl --  Overlay a graticule on a map projection.  For working
 !                  with map projection scripts in Ferret v4.50
+!
+! Note this version makes much smoother longitude lines. Because of this, you may
+! need to fiddle with the first 3 arguments, lon_mi lon_max lon_delta to avoid gaps
+! where the longitude and latitude lines meet.
 !                               
 ! Jonathan Callahan
 ! 5/97
@@ -21,6 +25,8 @@
 !                  desired.
 ! *acm*  9/30/04   replace REPEAT/K=2:5 with REPEAT/RANGE=2:5/NAME=m
 ! *acm*  3/15/12   replace /NAME=m with /NAME=q
+! *acm* 11/20/19   Make the longitude lines nice and round - get rid of spider webbing
+!                  The user can fiddle with the hi:lo:del to get rid of any little gaps.
 
 ! Description:  Overlay a graticule on a map.
 !
@@ -128,18 +134,13 @@ let/quiet mp_std_parallel_south = `mp_y[j=@min]`
 !  ACM  6/01
 ! Ned's  def uses mp_xdel.  This can be too coarse and results in a spider-web 
 ! effect on projection plots over large areas
-!define axis/x=`mp_xmin`:`mp_xmax + mp_xdel`:`mp_xdel` lon_field_i_axis
+! define axis/x=`mp_xmin`:`mp_xmax + mp_xdel`:`mp_xdel` lon_field_i_axis
+! Use delta of 1 as in Jon's original script, or smaller if mp_xdel is small
 
-! Use delta of 1 as in Jon's original script, or mp_xdel if its smaller
-! let/quiet mp_xaxdel = MIN(mp_xdel, 1)
+let/quiet mp_xaxdel = MIN(mp_xdel, 0.5)
+IF `mp_xdel LT 5` then let/quiet mp_xaxdel = MIN(mp_xdel, 0.1)
 
-! But, 9/03, This gives gaps when mp_xaxdel does not divide the region exactly
-! 
-let/quiet mp_xaxdel = mp_xdel
-repeat/range=2:5/NAME=q (if `mp_xaxdel gt 1` then let/quiet mp_xaxdel = mp_xdel/`q`)
-
-
-define axis/x=`mp_xmin`:`mp_xmax + mp_xaxdel`:`mp_xaxdel` lon_field_i_axis
+define axis/x=`mp_xmin-mp_xaxdel`:`mp_xmax + mp_xaxdel`:`mp_xaxdel` lon_field_i_axis
 define axis/y=`mp_ymin`:`mp_ymax`:`mp_ydel` lon_field_j_axis
 
 let i_index = i[gx=lon_field_i_axis]
@@ -148,7 +149,7 @@ let j_index = j[gy=lon_field_j_axis]
 let i_index_max = i_index[i=@max]
 let j_index_max = j_index[j=@max]
 
-set region/x=`mp_xmin`:`mp_xmax + mp_xaxdel`/y=`mp_ymin`:`mp_ymax`
+set region/x=`mp_xmin`:`mp_xmax`/y=`mp_ymin`:`mp_ymax`
 
 define grid/x=lon_field_i_axis/y=lon_field_j_axis lon_field_grid
 
@@ -194,6 +195,7 @@ let/quiet masked_x_page = mp_mask * x_page
 let/quiet masked_y_page = mp_mask * y_page
 
 plot/vs/over/nolab/line=$7"1" masked_x_page, masked_y_page
+
 !
 ! Restore all the previous settings and variables
 !

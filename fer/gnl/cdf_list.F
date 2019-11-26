@@ -315,6 +315,7 @@
         varid = 0      
 	cx  = cx_list(1)
         dset = cx_data_set( cx )
+	its_cdf = .FALSE.
 
         IF (dset .GT. pdset_irrelevant) THEN
            its_cdf = (ds_type(dset).EQ.'CDF' .OR. ds_type(dset).EQ.'ECDF' 

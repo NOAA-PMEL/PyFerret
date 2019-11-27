@@ -148,12 +148,13 @@
 * v7.43     9/14/2018 bug-fix release
 * v7.44    12/07/2018 minor release; back to using NetCDF 4.4.1.1 instead of 4.6.x
 * v7.5      4/22/2019 Release
+* v7.52    11/27/2019 updated pre-DSG version for GFDL
 
         IMPLICIT NONE
 	include	'xrevision.cmn'
 
 	DATA program_name	/ 'FERRET' /
 	DATA len_program_name	/  6       /
-	DATA revision_level	/  7.505   /
+	DATA revision_level	/  7.52    /
 
 	END

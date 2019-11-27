@@ -3113,6 +3113,7 @@ variables:
 *** Running ferret script: bn_samplexyzt.jnl
 *** Running ferret script: bn_sample_multi.jnl
 *** Running ferret script: bn751_bug_fixes.jnl
+*** Running ferret script: bn_cdf_strlen.jnl
 *** Running ferret script: bn_gif_noremote.jnl
 *** Running ferret script: bn_ps.jnl
 *** Running ferret script: bn_all_ef.jnl

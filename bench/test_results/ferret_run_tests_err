@@ -2878,6 +2878,8 @@ ooooooooooooooooooooooooooooooooooooooooooo
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
+ **ERROR: variable unknown or not in data set: A
+CANCEL VAR a
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -4726,21 +4728,6 @@ Replacing definition of axis TAX
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
- **TMAP ERR: attribute already defined
-             coordinates for variable ZETA
-             Data set: testdata
- **TMAP ERR: attribute already defined
-             coordinates for variable U
-             Data set: testdata
- **TMAP ERR: attribute already defined
-             coordinates for variable V
-             Data set: testdata
- **TMAP ERR: attribute already defined
-             coordinates for variable TEMP
-             Data set: testdata
- **TMAP ERR: attribute already defined
-             coordinates for variable SALT
-             Data set: testdata
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -5994,6 +5981,50 @@ ooooooooooooooooooooooooooooooooooooooooooo
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
+ LISTing to file a.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
+ LISTing to file a.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
+ LISTing to file a.nc
+ LISTing to file a2.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
+ LISTing to file a1.nc
+*** Running ferret script: bn_cdf_strlen.jnl
+ LISTing to file a.nc
+ LISTing to file a.nc
+ LISTing to file a.nc
+ LISTing to file a.nc
+ LISTing to file a.nc
+ LISTing to file a.nc
+ LISTing to file a.nc
+ LISTing to file a.nc
+ LISTing to file a.nc
+           *** NOTE: SAVE/STRLEN= is ignored when appending to the file
+ LISTing to file a.nc
+ LISTing to file a.nc
+ **TMAP ERR: attempt to redefine line
+             String length for variable TSTRINGS inconsistent w/ CDF file. On first write, use /STRLEN= at least 15
+LIST/FORMAT=CDF/append/file=a.nc/L=2:4 tstrings, tstrings_long
+ LISTing to file a.nc
+ LISTing to file a.nc
+           *** NOTE: SAVE/STRLEN= is ignored when appending to the file
+ **TMAP ERR: attempt to redefine line
+             String length for variable TSTRINGS inconsistent w/ CDF file. On first write, use /STRLEN= at least 15
+LIST/FORMAT=CDF/append/file=a.nc/L=2:4/strlen=10 tstrings
+ LISTing to file a.nc
+ **ERROR: invalid command: Strings are length 15: longer than /STRLEN setting of 7
+          Variable: TSTRINGS
+LIST/FORMAT=CDF/clobber/file=a.nc/STRLEN=7 tstrings, tstrings_long
+LIST/FORMAT=CDF/clobber/file=a.nc/STRLEN=7 tstrings, tstrings_long
 *** Running ferret script: bn_gif.jnl
  **ERROR: dimensions improperly specified: specified data is not a line
            - its a 2D region: "plot/i=1:10/j=1:20/nolabel i+j"

@@ -1305,8 +1305,8 @@ GO bn751_bug_fixes
 GO bn_reset bn_cdf_strlen
 GO bn_cdf_strlen
 
-GO bn_reset bn_lineplots_keys
-GO bn_lineplots_keys
+GO bn_reset bn_set_mem_max
+GO bn_set_mem_max
 
 
 ! *********** PyFerret-specific scripts ***********

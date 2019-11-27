@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
 Running FERRET version /home/users/ansley/build/trunk/FERRET/fer/ferret_c
--rwxr-xr-x. 1 ansley tmap 118386315 Nov 20 10:59 /home/users/ansley/build/trunk/FERRET/fer/ferret_c
+-rwxr-xr-x. 1 ansley tmap 118387275 Nov 27 11:28 /home/users/ansley/build/trunk/FERRET/fer/ferret_c
 Using external functions from /home/users/ansley/build/trunk/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: fix for issue 1957 
+Note: issue 1959: SET MEM/MAX= and SHOW MEM and errors use MAX not SIZE
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DATA=. ./data
@@ -19,7 +19,7 @@ FER_GRIDS=. ./data
 FER_PALETTE=. /home/users/tmap/ferret/rhel6-x86_64-linux/ppl
 PWD=/home/users/ansley/build/trunk/FERRET/bench
 PYFER_EXTERNAL_FUNCTIONS=/home/users/tmap/ferret/rhel6-x86_64-linux/ext_func/pylibs
-Beginning at Wed Nov 20 11:01:11 PST 2019
+Beginning at Wed Nov 27 11:55:00 PST 2019
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -7367,111 +7367,6 @@ list samplen_multi(a_2, b_1)
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
-Starting test: bn751_bug_fixes
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
-ooooooooooooooooooooooooooooooooooooooooooo
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
-ooooooooooooooooooooooooooooooooooooooooooo
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
-ooooooooooooooooooooooooooooooooooooooooooo
-Replacing definition of axis xaxis
-Replacing definition of axis yaxis
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
-ooooooooooooooooooooooooooooooooooooooooooo
- LISTing to file time_origin_1.nc
- LISTing to file time_origin_01.nc
- LISTing to file time_origin_01.nc
- LISTing to file time_origin_01.nc
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
-ooooooooooooooooooooooooooooooooooooooooooo
-           *** NOTE: Axis coordinates are decreasing-ordered. Reversing ordering for axis latitude
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
-ooooooooooooooooooooooooooooooooooooooooooo
- LISTing to file a.nc
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
-ooooooooooooooooooooooooooooooooooooooooooo
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
-ooooooooooooooooooooooooooooooooooooooooooo
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
-ooooooooooooooooooooooooooooooooooooooooooo
-           *** NOTE: Axis coordinates are decreasing-ordered. Reversing ordering for axis lev
-           *** NOTE: Axis coordinates are decreasing-ordered. Reversing ordering for axis lev
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
-ooooooooooooooooooooooooooooooooooooooooooo
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
-ooooooooooooooooooooooooooooooooooooooooooo
- LISTing to file a.nc
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
-ooooooooooooooooooooooooooooooooooooooooooo
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
-ooooooooooooooooooooooooooooooooooooooooooo
- LISTing to file a.nc
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
-ooooooooooooooooooooooooooooooooooooooooooo
- LISTing to file a.nc
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
-ooooooooooooooooooooooooooooooooooooooooooo
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
-ooooooooooooooooooooooooooooooooooooooooooo
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
-ooooooooooooooooooooooooooooooooooooooooooo
- LISTing to file a.nc
- LISTing to file a2.nc
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
-ooooooooooooooooooooooooooooooooooooooooooo
- LISTing to file a1.nc
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
-ooooooooooooooooooooooooooooooooooooooooooo
-Starting test: bn_cdf_strlen
-Replacing definition of axis taxis
- LISTing to file a.nc
- LISTing to file a.nc
- LISTing to file a.nc
- LISTing to file a.nc
- LISTing to file a.nc
- LISTing to file a.nc
- LISTing to file a.nc
- LISTing to file a.nc
- LISTing to file a.nc
-           *** NOTE: SAVE/STRLEN= is ignored when appending to the file
- LISTing to file a.nc
- LISTing to file a.nc
- **TMAP ERR: attempt to redefine line
-             String length for variable tstrings inconsistent w/ CDF file. On first write, use /STRLEN= at least 15
-LIST/FORMAT=CDF/append/file=a.nc/L=2:4 tstrings, tstrings_long
- LISTing to file a.nc
- LISTing to file a.nc
-           *** NOTE: SAVE/STRLEN= is ignored when appending to the file
- **TMAP ERR: attempt to redefine line
-             String length for variable tstrings inconsistent w/ CDF file. On first write, use /STRLEN= at least 15
-LIST/FORMAT=CDF/append/file=a.nc/L=2:4/strlen=10 tstrings
- LISTing to file a.nc
- **ERROR: invalid command: Strings are length 15: longer than /STRLEN setting of 7
-          Variable: TSTRINGS
-LIST/FORMAT=CDF/clobber/file=a.nc/STRLEN=7 tstrings, tstrings_long
-LIST/FORMAT=CDF/clobber/file=a.nc/STRLEN=7 tstrings, tstrings_long
- PERMANENT data cleared from memory
- TEMPORARY data cleared from memory
-ooooooooooooooooooooooooooooooooooooooooooo
 Starting test: bn_dsg_tseries
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -7671,6 +7566,115 @@ LIST/FORMAT=CDF/append/file=sail_copy.nc my_temp_data
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
+Starting test: bn751_bug_fixes
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
+Replacing definition of axis xaxis
+Replacing definition of axis yaxis
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
+ LISTing to file time_origin_1.nc
+ LISTing to file time_origin_01.nc
+ LISTing to file time_origin_01.nc
+ LISTing to file time_origin_01.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
+           *** NOTE: Axis coordinates are decreasing-ordered. Reversing ordering for axis latitude
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
+ LISTing to file a.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
+           *** NOTE: Axis coordinates are decreasing-ordered. Reversing ordering for axis lev
+           *** NOTE: Axis coordinates are decreasing-ordered. Reversing ordering for axis lev
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
+ LISTing to file a.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
+ LISTing to file a.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
+ LISTing to file a.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
+ LISTing to file a.nc
+ LISTing to file a2.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
+ LISTing to file a1.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
+Starting test: bn_cdf_strlen
+Replacing definition of axis taxis
+ LISTing to file a.nc
+ LISTing to file a.nc
+ LISTing to file a.nc
+ LISTing to file a.nc
+ LISTing to file a.nc
+ LISTing to file a.nc
+ LISTing to file a.nc
+ LISTing to file a.nc
+ LISTing to file a.nc
+           *** NOTE: SAVE/STRLEN= is ignored when appending to the file
+ LISTing to file a.nc
+ LISTing to file a.nc
+ **TMAP ERR: attempt to redefine line
+             String length for variable tstrings inconsistent w/ CDF file. On first write, use /STRLEN= at least 15
+LIST/FORMAT=CDF/append/file=a.nc/L=2:4 tstrings, tstrings_long
+ LISTing to file a.nc
+ LISTing to file a.nc
+           *** NOTE: SAVE/STRLEN= is ignored when appending to the file
+ **TMAP ERR: attempt to redefine line
+             String length for variable tstrings inconsistent w/ CDF file. On first write, use /STRLEN= at least 15
+LIST/FORMAT=CDF/append/file=a.nc/L=2:4/strlen=10 tstrings
+ LISTing to file a.nc
+ **ERROR: invalid command: Strings are length 15: longer than /STRLEN setting of 7
+          Variable: TSTRINGS
+LIST/FORMAT=CDF/clobber/file=a.nc/STRLEN=7 tstrings, tstrings_long
+LIST/FORMAT=CDF/clobber/file=a.nc/STRLEN=7 tstrings, tstrings_long
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
+Starting test: bn_set_mem_max
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -7792,4 +7796,4 @@ vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
 Re-defining viewport LM6
 Re-defining viewport UM6
            *** NOTE: Cannot create new windows when batch mode set
-Ended at Wed Nov 20 11:11:18 PST 2019
+Ended at Wed Nov 27 12:14:34 PST 2019

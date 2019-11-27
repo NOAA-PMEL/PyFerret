@@ -678,9 +678,12 @@
 
 * tkt 1957: If /noerror and a var is not defined, the second call to 
 * PARSE_NAM_DSET may wind up resetting the iset.  In that case just 
-* skip to the bottom of the loop so iset remains defined. 
+* skip to the bottom of the loop so iset remains defined. To be sure
+* iset is correct, reinitialize it before each variable. dset_iset is
+* either undefined-set, or the dataset number for a CANCEL VARIABLE/D=
 
 	   DO 1120 item = 1, num_items
+	      iset = dset_set
 	      i1 = STR_UPCASE(buff,
      .			cmnd_buff(item_start(item):item_end(item)))
 * ... decode specified variable name of form VNAME[D=iset] (9/95)

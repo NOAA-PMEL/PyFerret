@@ -307,11 +307,8 @@ bn_agg_given_taxis.jnl
 bn_tagg_overlaps.jnl
 bn_samplexyzt.jnl
 bn_sample_multi.jnl
-bn751_bug_fixes.jnl
-bn_cdf_strlen.jnl
-!
+
 ! dsg-specific tests
-!
 bn_dsg_tseries.jnl
 bn_regrid_to_dsg.jnl
 bn_dsg_feature_mask.jnl
@@ -329,6 +326,10 @@ bn_dsg_subset.jnl
 bn_regrid_to_dsg_prof.jnl
 bn_regrid_to_dsg_traj.jnl
 bn_dsg_save_uvars.jnl
+
+bn751_bug_fixes.jnl
+bn_cdf_strlen.jnl
+bn_lineplots_keys.jnl
 !
 ! bn_gif, bn_all_ef, and bn_startupfile at end
 !

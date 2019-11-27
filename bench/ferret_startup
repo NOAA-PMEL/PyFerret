@@ -3,7 +3,7 @@ CAN MODE VERIFY
 ! This file will be copied to .ferret as part
 ! of the benchmark testing
 
-SET MEMORY/SIZE=31
+SET MEMORY/MAX=31
 SET MODE journal startup_tests.jnl
 SET MODE meta startup_tests.plt
 

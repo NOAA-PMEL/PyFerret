@@ -4,6 +4,8 @@
 !  6/19, code changes for SET MEM in terms of Mbytes. But
 !  here, the SET MEMORY commands are done in terms of megawords,
 !  as we're thinking of grid sizes
+! 11/19 Remove commented-out references to obsolete mode desperate
+!       Change arguments to call for @STD, unintended huge max.
 
 ! initialize
 DEFINE SYMBOL saved_memory_size = ($FERRET_BYTES_MEM)
@@ -34,7 +36,6 @@ let xt = (x[gx=xax]-501) + 0*y[gy=yax] + T[gt=tax]
 ! a size of 12 for sure requires a gather operation
 ! confirm gathering is occuring by looking at the diagnostic output
 
-!set mode desperate: 400000
 SET MEMORY/SIZE=12
 
 stat xt[l=@din] 
@@ -79,7 +80,6 @@ let xyzt = 0*X[gx=xax] + 0*Y[gy=yax] + Z[gz=zax] + 0*T[gt=tax]
  
 ! confirm gathering is occuring by looking at the diagnostic output
 cancel memory/all
-!set mode desp: 2000000  
 set memory/size = 2  ! 2M v 8M: requires split/gather
 ! will split into 4 pieces (1/4 of 8,000,000 fits into 2,000,000)
 ! so z=1:50; then =51:100, Z=101:150, Z=151:200
@@ -109,7 +109,6 @@ show mem/diagnostic
 ! averaging operation
 CANCEL MEMORY/ALL
 LET xyzave = xyzt[x=@ave,y=@ave,z=@ave]
-!set mode desp: 2000000  
 set memory/size = 6  ! 2M v 8M: requires split/gather
 stat xyzave[t=@ave]
 SHOW MEMORY/DIAGNOSTIC   ! look at peak memory usage
@@ -132,7 +131,6 @@ let xt_zero_mean = 0*X[gx=xax] + (T[gt=tax]-501) + 1234
 * ==> look for this as the correct answer to variance
 
 ! confirm gathering is occuring by looking at the diagnostic output
-!set mode desperate: 400000
 set memory/size= 12
 stat constant[l=@var] 
 SHOW MEMORY/DIAGNOSTIC   ! look at peak memory usage
@@ -159,8 +157,7 @@ GO bn_compressed_gather.sub xt[l=@var] 40 12
 *  Mean    value: 288.9636655359976
 * *sh* @std differs from @var only by taking a SQRT() in the finalization step.
 *      I suspect this is an artifact of the compiler optimization level
-GO bn_compressed_gather.sub xt[l=@std] 4000000 400000
-
+GO bn_compressed_gather.sub xt[l=@std] 40 12
 
 ! *********************************************************
 ! ******* tests of "4D" @var and @std ******
@@ -185,8 +182,7 @@ let xyz_zero_mean = 0*X[gx=xax] + 0*Y[gy=yax] + (Z[gz=zax]-101)
 * 3D XYZ test
 * 2d slice size = 200*200 = 40,000
 * 3d full size is 8,000,000  - so 10,000,000 is bigger
-cancel memory/all
-!set mode desp: 2000000  
+cancel memory/all  
 set memory/size = 2  ! 2M v 8M: requires split/gather
 ! will split into 4 pieces (1/4 of 8,000,000 fits into 2,000,000)
 ! so z=1:50; then =51:100, Z=101:150, Z=151:200

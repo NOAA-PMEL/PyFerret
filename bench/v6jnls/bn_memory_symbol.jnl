@@ -2,8 +2,10 @@
 ! Ferret v6.06 15-Aug-07 
 ! Symbol FERRET_MEMORY shows current size of Ferret memory in MWords
 ! V751:*acm* 6/2019 - memory set and shown in bytes
+! V76 :*acm* 11/2019  return to previous setting not a fixed value
 
 sh sym ferret_memory, ferret_bytes_mem
+define symbol mem_save = ($ferret_memory)
 
 set mem/siz=90
 sh sym ferret_memory, ferret_bytes_mem
@@ -15,5 +17,5 @@ sh sym ferret_memory, ferret_bytes_mem
 set mem/siz=500000  ! too large to allow
 sh sym ferret_memory, ferret_bytes_mem
 
-set mem/siz=250M  ! return to the default setting
+set mem/siz=($mem_save)  ! return to the previous setting
 sh sym ferret_memory, ferret_bytes_mem

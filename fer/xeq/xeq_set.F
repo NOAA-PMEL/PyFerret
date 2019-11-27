@@ -211,6 +211,8 @@
 * v7441*acm* 12/18 Issue 1910: Allow dates in commands to be in ISO 8601 form, yyyy-mm-dd-
 * v751 *acm*  6/19 cleanup: remove code related to SET MOVIE 
 * V751 *acm* 6/19 Issue 1903: memory set and reported in terms of bytes
+* v76  *acm* 11/19  Issue 1959: Change SET MEMORY/SIZE= to SET MEMORY/MAX= 
+*                               (keep /SIZE for bkwds compatibility)
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -1390,8 +1392,8 @@ c *kob* 4/97
 
 	RETURN
 
-* SET MEMORY/SIZE=megawords 
-* Optional units given as /SIZE=xxKb /SIZE=xxMb /SIZE=xxGb, looking only at the first letter.
+* SET MEMORY/MAX=megawords (Or equivalently the older SET MEMORY/SIZE=megawords)
+* Optional units given as /MAX=xxKb /MAX=xxMb /MAX=xxGb, looking only at the first letter.
 
  1300	IF ( num_args .GT. 0 ) GOTO 5800
 	if (is_secure()) then
@@ -1400,18 +1402,19 @@ c *kob* 4/97
 	   RETURN
 	ENDIF
 
-        lp = qual_given( slash_set_memory_words )
+        lp = qual_given( slash_set_memory_max )
+        IF (lp.EQ.0) lp = qual_given( slash_set_memory_words )
 	IF ( lp .GT. 0 ) THEN
            CALL EQUAL_STRING( cmnd_buff(qual_start(lp):qual_end(lp)),
      .			      buff2, status )
 
            IF ( status .NE. ferr_ok ) RETURN
 	ELSE
-	   val_buf = max_mem_allowed / 1E6    ! retain current size
+	   val_buf = max_mem_allowed / 1E6    ! retain current max
 	   RETURN
 	ENDIF
 
-* Size may be given in Kb, Mb, Gb, or if no units, in double=words
+* Max size may be given in Kb, Mb, Gb, or if no units, in double=words
 
 	IF (TM_LENSTR(buff2) .EQ. 0) GOTO 5803
 	
@@ -1440,7 +1443,7 @@ c *kob* 4/97
 
 	IF ( val_buf .LE. 0.0 ) GOTO 5805
 
-* reset the memory size
+* reset the memory max
 
 	max_mem_allowed = i8_val 
 	peak_mem = 0
@@ -2058,13 +2061,13 @@ c           ENDIF
      .		     '/ORDER must be permutation of XYZTEF (with minus signs)'//
      .			pCR//cmnd_buff(:len_cmnd), *5000 )
  5800	CALL ERRMSG( ferr_syntax, status,
-     .	 'To reconfigure use SET MEMORY/SIZE=xxMb or /SIZE=xxGb. If no units, size is megawords'
+     .	 'To reconfigure use SET MEMORY/MAX=xxMb or /MAX=xxGb. If no units, Mb assumed'
      .		     //pCR//cmnd_buff(:len_cmnd), *5000 )
  5803	CALL ERRMSG( ferr_invalid_command, status,
-     .		     'Unspecified or invalid SET MEMORY/SIZE= value: '
+     .		     'Unspecified or invalid SET MEMORY/MAX= value: '
      .		     //pCR//cmnd_buff(:len_cmnd), *5000)
  5805	CALL ERRMSG( ferr_invalid_command, status,
-     .		     'Negative SET MEMORY/SIZE= value: '
+     .		     'Negative SET MEMORY/MAX= value: '
      .		     //pCR//cmnd_buff(:len_cmnd), *5000)
  5810	CALL ERRMSG( ferr_invalid_command, status,
      .		     'SET MODE REMOTE_X requires a node name argument',

@@ -152,12 +152,13 @@
 * v7.43     9/14/2018 bug-fix release
 * v7.44    12/07/2018 minor release; back to using NetCDF 4.4.1.1 instead of 4.6.x
 * v7.5      4/22/2019 Release
+* v7.6     11/27/2019 bump DSG version number to 7.6 to distinguish from updated pre-DSG version (7.52)
 
         IMPLICIT NONE
 	include	'xrevision.cmn'
 
 	DATA program_name	/ 'FERRET' /
 	DATA len_program_name	/  6       /
-	DATA revision_level	/  7.51   /
+	DATA revision_level	/  7.60   /
 
 	END

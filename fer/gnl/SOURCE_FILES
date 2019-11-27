@@ -9,7 +9,11 @@ auto_filename.F\
 cancel_data_set.F\
 cancel_one_data_set.F\
 cdf_list.F\
+cdf_list_default_atts.F\
+cdf_list_dsetvar_atts.F\
 cdf_list_global_atts.F\
+cdf_set_out_type.F\
+cdf_set_scale.F\
 check_format.F\
 check_memory.F\
 choose_line_name.F\

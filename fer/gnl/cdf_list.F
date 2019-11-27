@@ -2,7 +2,7 @@
      .			      mr_list, cx_list, title, enhead, mode,
      .			      clobber, edges_flag, do_bounds, 
      .			      keepax_flag, out_type, quiet, as_global,
-     .			      status )
+     .			      usr_maxstrlen, status )
 
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -141,6 +141,9 @@
 * V743 *acm* 7/18 Issue 1883: var with only a _FillValue which is NaN got no
 *                 _FillValue or missing_value attribute written
 * v745 *acm* 12/18  Issue 1909, option to write dates in ISO8601 format
+* V751 *acm* 6/19 Remove unused declarations
+* V751 *acm* 7/19 Ticket 1946: File with user-variable strings truncates strings appended later.
+*		  - Allow for the user to set a length for string-length dimension
 
         IMPLICIT NONE
         include 'netcdf.inc'
@@ -165,7 +168,8 @@
 * calling argument declarations:
         LOGICAL         append, enhead, clobber, quiet
 	INTEGER		nvars, mr_list(nvars), cx_list(nvars), mode,
-     .			edges_flag, keepax_flag, do_bounds, status
+     .			edges_flag, keepax_flag, do_bounds, usr_maxstrlen, 
+     .			status
         CHARACTER*(*)   fname, title, out_type
         CHARACTER*1     crecdim
 
@@ -244,9 +248,8 @@
      .                  attype, attlen, attoutflag, all_outflag,
      .                  outtype, no_missing_flag, no_fill_flag, 
      .                  varoutflag
-        LOGICAL         NC_GET_ATTRIB, NC_GET_ATTRIB_DP, 
-     .                  full_precision, DODS_cache, range_not_rqd,
-     .                  got_it, got_title, got_units, got_history, its_cdf,
+        LOGICAL         full_precision, DODS_cache, range_not_rqd,
+     .                  got_it, got_title, got_history, got_units, its_cdf,
      .                  got_missing, got_fill, do_warn, coordvar, user_var
 
         PARAMETER     ( buff_size = 2048,
@@ -257,7 +260,10 @@
 	CHARACTER	cal_name*32 , attname*128, buff1*128, buff2*128
 
 * initialize
-	 ivar = 1  ! just house-keeping -- make sure all is init'ed
+	ivar = 1  ! just house-keeping -- make sure all is init'ed
+	cx  = cx_list(1)
+	dset = cx_data_set( cx )
+
 	 flushed = .FALSE. ! on error, whether OK variables were written
 	 final_status = ferr_ok  ! innocent unless proven guilty
 	 DODS_cache = mode .EQ. pcdf_mode_cache
@@ -294,6 +300,7 @@
            IF ( status .NE. merr_ok ) GOTO 5800
 	ENDIF
 
+* Did they set a string-length?
 
 * DODS URL saved as a global attribute (11/96)
 	IF ( DODS_cache ) THEN
@@ -311,6 +318,7 @@
         varid = 0      
 	cx  = cx_list(1)
         dset = cx_data_set( cx )
+	its_cdf = .FALSE.
 
         IF (dset .GT. pdset_irrelevant) THEN
            its_cdf = (ds_type(dset).EQ.'CDF' .OR. ds_type(dset).EQ.'ECDF' 
@@ -347,8 +355,8 @@
            var = cx_variable(cx)
            varcode = SANITARY_VAR_CODE( cat, var )
            got_title = .FALSE.
-           got_units = .FALSE.
            got_history = .FALSE.
+           got_units = .FALSE.
            output_title = .FALSE.
            output_title = .TRUE.  ! output the var long_name by default
            output_units = .FALSE.
@@ -378,68 +386,13 @@
            vartype = 0
            outtype = 0
 
-           IF (status .EQ. ferr_ok) THEN
-              CALL CD_GET_VAR_INFO (dset, varid, varname, vartype, nvdims, 
+           IF (status .EQ. ferr_ok) 
+     .       CALL CD_GET_VAR_INFO (dset, varid, varname, vartype, nvdims, 
      .            vdims, nvatts, coordvar, all_outflag, status)
-              varcode = varname
-              IF (mode_upcase_output) CALL STR_UPCASE( varcode, varname)
-              IF (itsa_uvar) THEN  ! for user vars type not known in attrib structure
-                 vartype = 6       ! netcdf nf_double
-                 IF (itsa_string) vartype = 2
-              ENDIF
-              outtype = vartype
 
-* If there is an OUTTYPE attribute, that came from a SET VAR/OUTTYPE.
-* It will be superceded by a SET LIST/OUTTYPE or a SAVE/OUTTYPE setting,
-* applied just below.
-	      CALL CD_GET_VAR_OUTTYPE (dset, varid, outtype, status)
-
-* If its just an expression it doesnt have a varid in the attribute structure
-* for user-vars. Still set the output type.
-
-           ELSE
-              vartype = 6  ! netcdf nf_double
-              IF (itsa_string) vartype = 2
-           ENDIF
-   
-	   IF (outtype .EQ. 0) outtype = vartype
-
-* Setting made with SAVE/OUTTYPE or SET LIST/OUTTYPE
-* SAVE/OUTTYPE takes precedence over a SET LIST/OUTTYPE
-* out_type comes in from a SAVE/OUTTYPE  Use it if its not DFLT
-* list_outtype is from SET LIST/OUTTYPE  IF out_type is DFLT, use list_outtype
-
-	   IF ( out_type(1:3) .EQ. 'DFL') out_type = list_outtype
-
-	   IF (out_type(1:3) .EQ. 'DOU') outtype = nf_double
-	   IF (out_type(1:3) .EQ. 'FLO') outtype = nf_float
-	   IF (out_type(1:3) .EQ. 'INT') outtype = nf_int
-	   IF (out_type(1:3) .EQ. 'SHO') outtype = nf_short
-	   IF (out_type(1:3) .EQ. 'BYT') outtype = nf_byte
-
-* When the user requests higher precision output from a lower precision file 
-* variable, e.g. converting FLOAT to DOUBLE, write an attribute explaining 
-* that it contains data converted in this way.
-
-	   IF (dset .GT. 0 .AND. outtype.GT.vartype) THEN
-              CALL CD_GET_VAR_INFO (dset, varid, varname, vartype, 
-     .                  nvdims, vdims, nvatts, coordvar, varoutflag, 
-     .                  status) 
-
-              attname = 'Ferret_Precision_Note'
-              CALL CD_GET_VAR_ATT_ID (dset, varid, attname, attid, status)
-	      IF (status.EQ.ferr_ok) 
-     .             CALL CD_DELETE_ATTRIBUTE(dset, varid, attname, status)
-	      slen = TM_LENSTR1(typnam(vartype))
-              alen = TM_LENSTR1(typnam(outtype))
-              CALL CD_PUT_NEW_ATTR (dset, varid, 
-     .              attname, 2, 61, 1, 
-     .         'This variable written using Ferret was converted from '//
-     .              typnam(vartype)(4:slen)//' to '//
-     .              typnam(outtype)(4:alen), 1., status )
-              IF (status .NE. ferr_ok) GOTO 5990
-
-	   ENDIF
+           CALL CDF_SET_OUT_TYPE (dset, varid, itsa_uvar, 
+     .                itsa_string, out_type, outtype, status)
+           IF (status .NE. ferr_ok) GOTO 5500
 
            IF ( cat .EQ. cat_pseudo_var )THEN
 	      varcode = varcode(:TM_LENSTR1(varcode))//"_"
@@ -461,10 +414,30 @@
 * if a string variable, then find max len
 * If the len comes back as 0 the variable contains just null strings.
 * Set maxstrlen to 1, else we cant define the variable.
+* Ticket 1946
+* For file variables we use the string-length dimension from the input file.
+* For user-variables allow the user to set a length. A file created with 
+* initial strings of shorter length then truncated strings appended later.
+
 	   IF (itsa_string) THEN
 	      maxstrlen = GET_MAX_C_STRING_LEN(
      .				   mr_c_pointer(mr), MGRID_SIZE(mr))
 	      IF (maxstrlen .LE. 0) maxstrlen = 1
+
+	      IF (usr_maxstrlen.GT.0 .AND. append .AND. do_warn) THEN 
+	         CALL WARN ('SAVE/STRLEN= is ignored when appending to the file')
+		 usr_maxstrlen = 0
+	      ENDIF
+
+* Here, for user-variables, we COULD arbitrarily set maxstrlen to something larger than 
+* the maxstrlen computed for this write, when the user hasn't set a value with /STRLEN, 
+* maybe only when the grid has a time axis, e.g. IF(tax.NE.mnormal), so that appends 
+* with longer strings would work.  See ticket 1946.
+
+	      IF (itsa_uvar .AND. .NOT.append) THEN
+	         IF (usr_maxstrlen.GT.0 .AND. usr_maxstrlen.LT.maxstrlen) GOTO 5600
+		 IF (usr_maxstrlen.GT.0) maxstrlen = usr_maxstrlen
+	      ENDIF
 	   ELSE
 	      maxstrlen = 0
 	   ENDIF
@@ -548,6 +521,7 @@
  
 * If writing variable as a global variable, only write 1-D variables.
            IF (as_global .AND. ndims_size .GT. 1) GOTO 5320
+	   IF (as_global) CYCLE
 
 * determine the netCDF "record dimension" to use
            IF ( write_lo(t_dim) .EQ. unspecified_int4 ) THEN
@@ -602,519 +576,60 @@
              ENDIF
            ENDIF
 
-           IF (.NOT. as_global) THEN
-           CALL CD_MAKE_VAR( cdfid, dset_num, varcode, type, maxstrlen,
+	   IF (varid .GT. 0) THEN
+              CALL  CD_GET_VAR_VARNAME (dset, varid, varname, status)
+              varcode = varname
+              IF (mode_upcase_output) CALL STR_UPCASE( varcode, varname)
+	   ENDIF
+
+* If they set a larger string-len, use it
+           IF (usr_maxstrlen .GT. 0) THEN 
+	      IF (usr_maxstrlen .LT. maxstrlen .AND. do_warn) CALL WARN 
+     .        ('/STRLEN setting shorter than max string length. Strings will be truncated.'
+     .        //pCR//'Variable: '//varcode )
+	      maxstrlen = MAX(maxstrlen, usr_maxstrlen)  
+           ENDIF
+
+	   CALL CD_MAKE_VAR( cdfid, dset_num, varcode, type, maxstrlen,
      .               grid, make_lo, make_hi, recdim, enhead, new, 
      .               edges_flag, do_bounds, mode_upcase_output, 
-     .               keepax_flag, date_fmt_out,
+     .               keepax_flag, date_fmt_out, 
      .               netcdf4_type, xchunk_size, 
      .               ychunk_size, zchunk_size, tchunk_size, 
      .               deflate_lev, shuffle_flag, endian_code, buff2,
      .               status )
 
            IF ( status .NE. merr_ok ) GOTO 5800
-
 	   
+* if its a newly-created variable write attributes
+           IF ( new ) THEN
+
 * If the variable is to be written scaled, set the scale and offset
 *  values that will be written as attributes and sent to CD_WRITE_VAR. 
 
-
-           IF (varid .GT. 0) THEN
+	      IF (varid .GT. 0) CALL CDF_SET_SCALE (dset, varid, 
+     .        do_warn, scalefac, addoff, ferr_ok, status)
 	      
-              scalefac = 1.
-              attname = 'scale_factor'
-              CALL CD_GET_VAR_ATT_ID (dset, varid, attname, attid, 
-     .                  istat)
-              IF (attid .GT. 0) CALL CD_GET_VAR_ATT_INFO (dset, 
-     .                  varid, attid, aname, attype, attlen, attoutflag, 
-     .                  istat )
-
-              IF (istat .EQ. ferr_ok .AND. attoutflag.EQ.1) THEN
-                 IF (attype .EQ. nf_double) THEN
-                    got_it = NC_GET_ATTRIB_DP (dset, varid,
-     .                  aname, do_warn, varcode, attlen, 
-     .                  attoutflag, dvals)
-                    scalefac = dvals(1)
-
-                 ELSE
-                    got_it = NC_GET_ATTRIB (dset, varid, aname,
-     .                  do_warn, varcode, buff_size, attlen, 
-     .                  attoutflag, buff, vals)
-                    scalefac = vals(1)
-                 ENDIF
-              ENDIF
-
-              addoff = 0.
-              attname = 'add_offset'
-              CALL CD_GET_VAR_ATT_ID (dset, varid, attname, attid, 
-     .                  istat)
-              IF (attid .GT. 0) CALL CD_GET_VAR_ATT_INFO (dset, 
-     .                  varid, attid, aname, attype, attlen, attoutflag, 
-     .                  istat )
-
-              IF (istat .EQ. ferr_ok .AND. attoutflag.EQ.1) THEN
-                 IF (attype .EQ. nf_double) THEN
-                    got_it = NC_GET_ATTRIB_DP (dset, varid,
-     .                  aname, do_warn, varcode, attlen, 
-     .                  attoutflag, dvals)
-                    addoff = dvals(1)
-
-                 ELSE
-                    got_it = NC_GET_ATTRIB (dset, varid, aname,
-     .                  do_warn, varcode, buff_size, attlen, 
-     .                  attoutflag, buff, vals)
-                    addoff = vals(1)
-                 ENDIF
-              ENDIF
-
-           ENDIF  ! setting scalefac and addoff
-
-           ENDIF  ! as_global
-
-* if its a newly-created variable write attributes
-           IF (( new  .AND. all_outflag .GT. 0) .AND. .NOT. as_global) THEN
-
-* Write missing value and fill flag here
-
-              IF (varid .GT. 0) THEN
-
-* Output the bad flag used by Ferret (and _FillValue which has been made  
-* the same as missing_flag)
-
-                 bad = mr_bad_data(mr)
-                 dvals(1) = bad
-                 attlen = 1
-
-* Get attype for missing flag
-
-                 istat = ferr_ok
-                 attoutflag = 0
-                 no_missing_flag = 1
-                 no_fill_flag = 0  ! Write _fillValue unless specifically told not to
-                 attname = 'missing_value'
-                 CALL CD_GET_VAR_ATT_ID (dset, varid, attname, attid, 
-     .                  istat)
-                 IF (attid .GT. 0) THEN
-                    no_missing_flag = 0
-                    CALL CD_GET_VAR_ATT_INFO (dset, varid, 
-     .                attid, aname, attype, attlen, attoutflag, istat )
-                    IF (attoutflag .EQ. 0) no_missing_flag = 1
-		    IF (attoutflag .NE. 0) got_it = NC_GET_ATTRIB_DP 
-     .                (dset, varid, attname, do_warn, varcode, attlen, 
-     .                attoutflag, miss_in)
-
-                 ELSE
-                   attname = '_FillValue'
-                   CALL CD_GET_VAR_ATT_ID (dset, varid, attname, attid, 
-     .                  istat)
-                   IF (attid .GT. 0) THEN
-                      no_fill_flag = 0
-                      CALL CD_GET_VAR_ATT_INFO (dset, varid, 
-     .                attid, aname, attype, attlen, attoutflag, istat )
-                      IF (attoutflag .EQ. 0) no_fill_flag = 1
-                   ENDIF
-                 ENDIF
-                 IF (no_missing_flag .EQ. 1) THEN
-                   attname = '_FillValue'
-                   CALL CD_GET_VAR_ATT_ID (dset, varid, attname, attid, 
-     .                  istat)
-                   IF (attid .GT. 0) 
-     .                CALL CD_GET_VAR_ATT_INFO (dset, varid, 
-     .                attid, aname, attype, attlen, attoutflag, istat )
-                    IF (attoutflag .EQ. 0) no_fill_flag = 1
-                 ENDIF
-
-* If the data is numeric, check the missing flag, getting the original one, 
-* and write with the output type
-
-                 IF (istat .EQ. ferr_ok .AND. outtype .NE. nf_char) THEN
-
-* If un-scaling on output, write the original missing flag.
-                    IF (scalefac .NE. 1.D0  .OR. addoff .NE. 0.D0) THEN
-                       dvals(1) = miss_in
-                       vals(1) = dvals(1)
-
-* Otherwise convert missing flag to requested output type for the variable
-                    ELSE
-                       IF (attype .NE. outtype .AND. istat .EQ. ferr_ok)  THEN
-                          alen = TM_LENSTR1(typnam(attype))
-                          slen = TM_LENSTR1(typnam(outtype))
-                          IF ((.NOT.itsa_uvar) .AND. (dset .GT. 0 .AND. do_warn)) 
-     .                      CALL WARN (
-     .                      'Converting data type of missing_value '//
-     .                       typnam(attype)(1:alen)//
-     .                      ' to match output type of variable '//
-     .                      typnam(outtype)(1:slen) )
-                       ENDIF
-                    ENDIF
-                    attype = outtype
-   
-                    IF (attoutflag .EQ. 1) THEN
-                       IF (no_missing_flag.EQ.0) THEN
-		          CALL CD_WRITE_ATTVAL_DP(
-     .                    cdfid, varcode, 'missing_value', dvals, attlen, 
-     .                    attype, status )
-                          IF (status .NE. ferr_ok) GOTO 5400
-			  got_missing = .TRUE.
-
-			  IF (dset .EQ. pdset_uvars) THEN 
-		             CALL CD_WRITE_ATTVAL_DP(
-     .                       cdfid, varcode, '_FillValue', dvals, attlen, 
-     .                       attype, status )
-                             IF (status .NE. ferr_ok) GOTO 5400
-			     got_fill = .TRUE.
-			  ENDIF
-                       ENDIF
-
-* Ferret doesn't keep the values corresponding to two flags in the data that it stores.
-* If there was a _FillValue in the input file, and its the bad-flag, write it.
-* Issue #1883: If there is a _FillValue and it's NaN, it will be different from the
-* bad-flag. We do want to write it.
-
-		       IF (.NOT.got_fill ) THEN 
-		       attname = '_FillValue'
-		       CALL CD_GET_VAR_ATT_ID (dset, varid, attname, attid, 
-     .                     istat)
-                       IF (attid .GT. 0) 
-     .                    CALL CD_GET_VAR_ATT_INFO (dset, varid, 
-     .                   attid, aname, attype, attlen, attoutflag, istat )
-                          IF (attoutflag .EQ. 0) no_fill_flag = 1
-		       got_it = .FALSE.
-		       IF (attoutflag .NE. 0) got_it = NC_GET_ATTRIB_DP  !.AND. .NOT.got_missin
-     .                     (dset, varid, attname, do_warn, varcode, attlen, 
-     .                     attoutflag, fill_in)
-                          IF ( TM_CHECK_NAN(fill_in) .EQ. 1   ) fill_in = bad
-			  IF (got_it .AND. (fill_in.EQ.bad .OR. fill_in.EQ.miss_in) ) THEN
-			     dvals(1) = fill_in
-                             vals(1) = dvals(1)
-                             attype = outtype
-			  ELSE
-			     IF (its_cdf .AND. .NOT.itsa_uvar) no_fill_flag = 1
-			  ENDIF
-		       ENDIF
-                       IF (no_fill_flag .EQ. 0) THEN
-		          CALL CD_WRITE_ATTVAL_DP(
-     .                     cdfid, varcode, '_FillValue', dvals, attlen, 
-     .                     attype, status )
-		          got_fill = .TRUE.
-                       ENDIF
-
-                    ENDIF
-                 ENDIF ! istat 
-
-
-* Get varcode into original upper/lowercase form. If mode upcase_output is set, 
-* then upcase the variable name.
-
-                 CALL CD_GET_VAR_INFO (dset, varid, varname, vartype, 
-     .                   nvdims, vdims, nvatts, coordvar, all_outflag, 
-     .                   status) 
-                 varcode = varname
-                 IF (mode_upcase_output) CALL STR_UPCASE( varcode, 
-     .                 varname)
-
-                 DO 200 iatt = 1, nvatts
-                    CALL CD_GET_VAR_ATT_NAME( dset, varid, iatt, 
-     .                                        attname, status)
-                    CALL CD_GET_VAR_ATT_INFO (dset, varid, 
-     .                   iatt, attname, attype, attlen, attoutflag, istat )
-                         
-                    slen = TM_LENSTR1(attname)
-                    IF ( MATCH_NAME (attname,  slen,
-     .                               'MISSING_VALUE', 13 ) .OR. 
-     .                   MATCH_NAME (attname,  slen,
-     .                               '_FILLVALUE', 10 ) ) THEN
-                       slen = 0   ! done already
-
-                    ELSE IF ( MATCH_NAME (attname,  slen,
-     .                               'SCALE_FACTOR', 12 ) .OR. 
-     .                   MATCH_NAME (attname,  slen,
-     .                               'ADD_OFFSET', 10 ) ) THEN
-                       got_it = NC_GET_ATTRIB_DP (dset, varid, attname,
-     .                    do_warn, varcode, attlen, attoutflag, dvals)
-                       IF (attoutflag  .EQ. 1) 
-     .                    CALL CD_WRITE_ATTVAL_DP (cdfid, varcode,
-     .                          attname, dvals, attlen, attype, status )
-                          IF (status .NE. ferr_ok) GOTO 5400
-                    ELSE
-
-                       attype = 0
-                       attlen = 0
-                       CALL CD_GET_VAR_ATT_INFO (dset, varid, iatt,
-     .                    aname, attype, attlen, attoutflag, istat )
-     
-                       IF (attype .NE. nf_char .AND.
-     .                     attlen .GT. 100) THEN
-                          attlen = 100
-                          alen = TM_LENSTR1(aname)
-                          IF (do_warn) CALL WARN 
-     .                ('writing only first 100 elements of attribute'//
-     .                  aname(1:alen))
-                       ENDIF
-
-                       IF (attype .EQ. nf_char .AND. attoutflag.EQ.1) THEN
-                          got_it = NC_GET_ATTRIB ( dset, varid, aname, 
-     .                       do_warn, varcode, buff_size, attlen,
-     .                       attoutflag, buff, vals)
-                          lbuff = TM_LENSTR1(buff)
-                          CALL CD_WRITE_ATTRIB(cdfid, varcode,
-     .                         attname, buff(:lbuff), .FALSE., status )
-                       ELSE IF (attoutflag.EQ.1) THEN
-                          got_it = NC_GET_ATTRIB ( dset, varid, aname, 
-     .                       do_warn, varcode, buff_size, attlen,
-     .                       attoutflag, buff, vals)
-                          CALL CD_WRITE_ATTVAL_DP (cdfid, varcode,
-     .                          attname, vals, attlen, attype, status )
-                          IF (status .NE. ferr_ok) GOTO 5400
-
-                       ENDIF
-
-                       IF (MATCH_NAME (attname,  slen,
-     .                           'LONG_NAME', 9 )) THEN
-                          got_title = .TRUE.
-                          output_title = (attoutflag.EQ.1)
-                       ENDIF
-
-                       IF (MATCH_NAME (attname,  slen,
-     .                           'UNITS', 5 )) THEN
-                          got_units = .TRUE.
-                          output_units = (attoutflag.EQ.1)
-                       ENDIF
-
-                       IF (MATCH_NAME (attname,  slen,
-     .                           'HISTORY',  7 )) THEN
-                          got_history = .TRUE.
-                          output_history = (attoutflag.EQ.1)
-                       ENDIF
-
-                       IF (MATCH_NAME (attname,  slen,
-     .                           'SCALE_FACTOR', 12 )) THEN
-                          got_it = NC_GET_ATTRIB ( dset, varid, attname, 
-     .                       do_warn, varcode, buff_size, attlen,
-     .                       attoutflag, buff, vals)
-                       ENDIF
-
-                       IF (MATCH_NAME (attname,  slen,
-     .                           'ADD_OFFSET', 10 )) THEN
-                          got_it = NC_GET_ATTRIB ( dset, varid, attname, 
-     .                       do_warn, varcode, buff_size, attlen,
-     .                       attoutflag, buff, vals)
-                       ENDIF
-
-                    ENDIF
-
- 200             CONTINUE
-! done getting attributes from linked-list structure
-
-* If its just an expression, write missing_value and _FillValue
-* attributes with default Ferret values.
-
-              ELSE ! varid GT 0
-
-		 attname = 'missing_value'
-		 vals(1) = bad_val4
-		 attlen = 1
-		 attype = outtype
-		 CALL CD_WRITE_ATTVAL_DP(cdfid, varcode,
-     .                          attname, vals, attlen, attype, status )
-		 got_missing = .TRUE.
-		 attname = '_FillValue'
-		 vals(1) = bad_val4
-		 attlen = 1
-		 attype = outtype
-		 CALL CD_WRITE_ATTVAL_DP(cdfid, varcode,
-     .                          attname, vals, attlen, attype, status )
-		 got_fill = .TRUE.
-
-              ENDIF ! varid GT 0
-
-* variable title
-* May already have this from Ferret variables from attribute structure, or if there
-* is no long_name attribute, get it by means of VAR_TITLE.
-
-              IF (.NOT. got_title) THEN
-                 buff = VAR_TITLE( cx ) !!
-                 lbuff = TM_LENSTR1( buff )
-
-                 IF ( buff .NE. ' ' .AND. all_outflag .NE. 0 .AND.
-     .                output_title ) THEN
-                    CALL CD_WRITE_ATTRIB(cdfid, varcode, 'long_name',
-     .                              buff(:lbuff), .FALSE., status )
-                    IF ( status .NE. merr_ok ) GOTO 5800
-                    got_title = .TRUE.
-                 ENDIF
-
-              ENDIF
-
-* modifier to variable title
-* ..."compressing" transforms and limits not given in definitions
-	      buff = ' '
-	      lbuff = 1
-              DO 60 idim = 1, nferdims
-                 need_doc =  cx_trans(idim,cx) .GT. trans_compress_code
-                 IF ( itsa_uvar ) need_doc = need_doc
-     .                    .OR. uvar_given(idim,var) .GT. uvlim_needed
-                 IF ( need_doc ) THEN
-                    IF ( lbuff .GT. 1 ) THEN      ! append a comma ?
-                       buff = buff(:lbuff)//', '
-                       lbuff = MIN( 140, lbuff+2)
-                    ENDIF
-                    buff = buff(:lbuff)//
-     .                     CX_DIM_STR(idim, cx, ':',full_precision,i)
-                    lbuff = TM_LENSTR1( buff )
-                 ENDIF
- 60           CONTINUE
-* ...other variable modifiers
-              c1 = VAR_TITLE_MOD( cx )
-              IF ( c1 .NE. ' ' ) THEN
-                 IF ( lbuff .GT. 1 ) THEN
-                    buff = buff(:lbuff)//', '
-                    lbuff = MIN( 140, lbuff+2)
-                 ENDIF
-                 buff = buff(:lbuff)//VAR_TITLE_MOD( cx )
-                 lbuff = TM_LENSTR1( buff )
-              ENDIF
-
-* ... write it to the file
-              IF ( lbuff .GE. 2 .AND. all_outflag .NE. 0) THEN
-
-* ..... unless the user has created a long_name_mod attribute, or asked that writing
-*       it be turned off. See if long_name_mod attribute has been created.
-
-                 attoutflag = 1
-                 slen = TM_LENSTR1(varcode)
-                 buff2 = varcode(1:slen)//'.long_name_mod'
-                 IF (varid .GT. 0) THEN
-                    CALL BREAK_VARATTNAME (buff2, dset, 
-     .               buff1, attname, varid, .FALSE., status)
-
-                    IF (status .EQ. ferr_ok) THEN
-
-                       CALL CD_GET_VAR_ATT_ID (dset, varid,
-     .                     'long_name_mod', attid, istat)
-                       IF (attid .GT. 0) CALL CD_GET_VAR_ATT_INFO (dset, 
-     .                     varid, attid, aname, attype, attlen, 
-     .                     attoutflag, istat )
-
-                       IF (attoutflag .EQ. 1) got_it = NC_GET_ATTRIB 
-     .                     ( dset, varid, attname, .FALSE., varcode, 
-     .                      buff_size, attlen, attoutflag, 
-     .                      buff(2:), vals)
-                       lbuff = TM_LENSTR1( buff )
-                    ENDIF
-                 ENDIF
-                 status = ferr_ok
-
-                 IF (all_outflag .NE. 0 .AND. attoutflag .NE. 0)
-     .              CALL CD_WRITE_ATTRIB(cdfid, varcode, 'long_name_mod',  
-     .                buff(2:lbuff), .FALSE., status )
-
-                 IF ( status .NE. merr_ok ) GOTO 5800
-              ENDIF
-
-* data set of origin
-              IF ( dset .NE. pdset_irrelevant .AND. dset.NE.pdset_uvars) THEN
-       
-* ..... unless the user has created a history attribute, or asked that writing
-*       it be turned off. See if there is a history attribute.
-*       If the history attribute is just "from dsetname", or is not present,
-*       then write the dataset and its path or URL.
-
-                 attoutflag = 1
-                 IF (varid .GT. 0) THEN
-                    slen = TM_LENSTR1(varcode)
-                    buff2 = varcode(1:slen)//'.history'
-                    CALL BREAK_VARATTNAME (buff2, dset, buff1, attname,
-     .                   varid, .FALSE., status)
-
-                    IF (status .EQ. ferr_ok) THEN
-                       CALL CD_GET_VAR_ATT_ID (dset, varid, 'history', 
-     .                     attid, istat)
-                       IF (attid .GT. 0) CALL CD_GET_VAR_ATT_INFO (dset, 
-     .                     varid, attid, aname, attype, attlen, 
-     .                     attoutflag, istat )
-
-                       IF (attoutflag .EQ. 1) got_it = NC_GET_ATTRIB (
-     .		  	     dset, varid, attname, .FALSE., varcode,
-     .		  	     buff_size, attlen, attoutflag, 
-     .                       buff, vals)
-                       lbuff = TM_LENSTR1( buff )
-                       IF (buff .EQ. ' ') THEN
-                          buff = 'From '
-                          CALL GET_DSET_NAME( dset, buff(6:), lbuff )
-			  IF (buff(6:7) .EQ. './') 
-     .                      CALL GET_SHORT_DSET_NAME( dset, buff(6:), lbuff )
-                          lbuff = TM_LENSTR1( buff )
-                       ELSE
-		          get_ds = .FALSE.
-		          IF (STR_SAME(buff(1:5), 'From ') .EQ. 0) THEN
-			    CALL GET_SHORT_DSET_NAME( dset, short, lbuff )
-			    IF (STR_SAME(buff(6:attlen), short) .EQ. 0) 
-     .                        get_ds = .TRUE.
-                          ENDIF
-                       ENDIF
-                    ENDIF
-
-                    IF (status .NE. ferr_ok .OR. get_ds) THEN 
-                       buff = 'From '
-                       CALL GET_DSET_NAME( dset, buff(6:), lbuff )
-		       IF (buff(6:7) .EQ. './') 
-     .                     CALL GET_SHORT_DSET_NAME( dset, buff(6:), lbuff )
-                       lbuff = TM_LENSTR1( buff )
-                    ENDIF
-                 
-                 ELSE
-                    buff = 'From '
-                    CALL GET_DSET_NAME( cx_data_set(cx), buff(6:), lbuff)
-                    IF (buff(6:7) .EQ. './') CALL GET_SHORT_DSET_NAME
-     .                  ( cx_data_set(cx), buff(6:), lbuff )
-                    lbuff = TM_LENSTR1( buff )
-                 ENDIF ! varid .gt. 0
-
-
-                 status = ferr_ok
-
-                 IF (all_outflag .NE. 0 .AND. attoutflag .NE. 0) THEN
-                    lbuff = TM_LENSTR1( buff )
-                    CALL CD_WRITE_ATTRIB(cdfid, varcode, 'history', 
-     .                              buff(:lbuff), .FALSE., status )
-                 ENDIF
-                 IF ( status .NE. merr_ok ) GOTO 5800
-
-              ELSEIF ( cx_data_set(cx) .NE. pdset_irrelevant .AND.
-     .                 cx_data_set(cx) .NE. pdset_uvars) THEN
-
-* Write history attribute containing the data set of origin for user variable, 
-* if the user has not created a history attribute for the variable.
-
-                 IF (.NOT. got_history .AND. all_outflag .NE. 0 .AND. 
-     .             output_history ) THEN
-
-                    attoutflag = 1
-                    buff = 'From '
-                    CALL GET_DSET_NAME(cx_data_set(cx), buff(6:), lbuff)
-                    IF (buff(6:7) .EQ. './') CALL GET_SHORT_DSET_NAME
-     .                  ( cx_data_set(cx), buff(6:), lbuff )
-                    lbuff = TM_LENSTR1( buff )
-                    status = ferr_ok
-
-                    IF (all_outflag .NE. 0 .AND. attoutflag .NE. 0)
-     .                 CALL CD_WRITE_ATTRIB(cdfid, varcode, 'history', 
-     .                              buff(:lbuff), .FALSE., status )
-                    IF ( status .NE. merr_ok ) GOTO 5800
-                 ENDIF
-              ENDIF
-
-* units
-              buff = VAR_UNITS( cx )
-              lbuff = TM_LENSTR1( buff )
-
-              IF ( buff .NE. ' ' .AND. all_outflag .NE. 0 .AND. 
-     .             output_units ) THEN
-                 CALL CD_WRITE_ATTRIB(cdfid, varcode, 'units',
-     .                              buff(:lbuff), .FALSE., status )
-                 IF ( status .NE. merr_ok ) GOTO 5800
-              ENDIF
+* Write the attributes from a dataset variable as requested by the settings 
+* The title, units, and history may be updated later.
+
+	      bad = mr_bad_data(mr)
+
+	      IF (varid.GT.0 .AND. all_outflag.GT.0) THEN
+	         CALL CDF_LIST_DSETVAR_ATTS (dset, itsa_uvar, its_cdf, 
+     .             varid, varcode, bad, outtype, cdfid, do_warn,  
+     .             scalefac, addoff, got_title, output_title, got_history, 
+     .             output_history, got_units, output_units, status)
+
+	         IF (status .NE. ferr_ok) GOTO 5400
+	      ENDIF
+	      
+* Write variable title, units, title modifier, history if not already done
+
+              CALL CDF_LIST_DEFAULT_ATTS (dset, varid, varcode, cx, cdfid, 
+     .          outtype, all_outflag, itsa_uvar, got_title, output_title, 
+     .          got_history, output_history,  got_units, output_units, status )	
+	      IF (status .NE. ferr_ok) GOTO 5400   
 
 * NetCDF variable IDs - additional information needed for DODS caching (11/96)
 	      IF ( DODS_cache ) THEN
@@ -1131,7 +646,7 @@
            ENDIF  ! writing attributes of file or user variables
 
 * Write attributes for psuedo-variables
-           IF (cat .EQ. cat_pseudo_var .AND. .NOT.as_global) THEN  
+           IF (cat .EQ. cat_pseudo_var) THEN  
 
               IF (.NOT.got_missing) THEN
  	         CALL CD_WRITE_ATTVAL_DP(cdfid, varcode,
@@ -1328,6 +843,19 @@
      .			//pCR//'Variable: '//varcode, *5800 )
 
  5400    CALL ERRMSG ( ferr_TMAP_error, status, ' ', *5990 )
+
+ 5500    CALL ERRMSG ( ferr_TMAP_error, status,
+     .                 'unable to set variable type for output: '//varcode,
+     .                 *5800 )
+     
+* User-specified string-length is too short (aname used as dummy string here)
+
+ 5600	buff = TM_FMT(FLOAT(maxstrlen), 5, 12, slen)
+ 	aname = TM_FMT(FLOAT(usr_maxstrlen), 5, 12, alen)
+	CALL ERRMSG ( ferr_invalid_command, status,
+     .          'Strings are length '//buff(:slen)//
+     .		': longer than /STRLEN setting of '//aname(:alen) 
+     .		//pCR//'Variable: '//varcode, *5800 )
 
  5800   CALL ERRMSG ( ferr_TMAP_error, final_status, ' ', *5810 )
  5810	nready = ivar - 1

@@ -1,0 +1,40 @@
+! err751_set_global_atts.jnl
+!
+! Issue 1955: files with dimensions that are not coords
+! handling in grid creation step was incorrect.
+! 10/24/2019  ACM
+
+use dsg.nc
+set att/output=all .  
+use dsg_cross_dateline.nc 
+
+! previously issued an error
+set att/output=all .
+
+cancel data/all
+
+use WestCoastCarbon_9d9c_f562_77b5_5f8e_5d19_7b1d.nc
+set att/output=all .
+let var = pco2*2
+save/clobber/file=a.nc var
+can var var
+
+use a.nc
+
+! previously issued an error
+set att/output=all .
+sh dat
+save/clobber/file=a2.nc/z=0:30 var
+
+
+go bn_reset
+
+! Now work with a global attribute by name
+use a2.nc
+
+show att ..Westernmost_Easting
+set att/output ..Westernmost_Easting
+save/clobber/file=a1.nc var
+use a1.nc
+show att .
+

@@ -96,6 +96,7 @@
 * V702 *sh*   1/17 added support for FORTRAN90 dynamic memory management
 *                  removing "memory" pointer in favor of individual arg ptrs
 * V74  *acm*  2/18 New box_edges function
+* V751 *acm*  7/19 remove ancient scat2gridgauss_*_V0 functions
 */
 
 
@@ -386,42 +387,6 @@ void FORTRAN(scat2gridgauss_yt_compute)(int *, DFTYPE *, DFTYPE *, DFTYPE *,
 void FORTRAN(scat2gridgauss_zt_init)(int *);
 void FORTRAN(scat2gridgauss_zt_work_size)(int *);
 void FORTRAN(scat2gridgauss_zt_compute)(int *, DFTYPE *, DFTYPE *, DFTYPE *,
-                           DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *,
-                           DFTYPE *, DFTYPE *, DFTYPE *);
-
-void FORTRAN(scat2gridgauss_xy_v0_init)(int *);
-void FORTRAN(scat2gridgauss_xy_v0_work_size)(int *);
-void FORTRAN(scat2gridgauss_xy_v0_compute)(int *, DFTYPE *, DFTYPE *, DFTYPE *,
-                           DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *,
-                           DFTYPE *, DFTYPE *, DFTYPE *);
-
-void FORTRAN(scat2gridgauss_xz_v0_init)(int *);
-void FORTRAN(scat2gridgauss_xz_v0_work_size)(int *);
-void FORTRAN(scat2gridgauss_xz_v0_compute)(int *, DFTYPE *, DFTYPE *, DFTYPE *,
-                           DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *,
-                           DFTYPE *, DFTYPE *, DFTYPE *);
-
-void FORTRAN(scat2gridgauss_yz_v0_init)(int *);
-void FORTRAN(scat2gridgauss_yz_v0_work_size)(int *);
-void FORTRAN(scat2gridgauss_yz_v0_compute)(int *, DFTYPE *, DFTYPE *, DFTYPE *,
-                           DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *,
-                           DFTYPE *, DFTYPE *, DFTYPE *);
-
-void FORTRAN(scat2gridgauss_xt_v0_init)(int *);
-void FORTRAN(scat2gridgauss_xt_v0_work_size)(int *);
-void FORTRAN(scat2gridgauss_xt_v0_compute)(int *, DFTYPE *, DFTYPE *, DFTYPE *,
-                           DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *,
-                           DFTYPE *, DFTYPE *, DFTYPE *);
-
-void FORTRAN(scat2gridgauss_yt_v0_init)(int *);
-void FORTRAN(scat2gridgauss_yt_v0_work_size)(int *);
-void FORTRAN(scat2gridgauss_yt_v0_compute)(int *, DFTYPE *, DFTYPE *, DFTYPE *,
-                           DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *,
-                           DFTYPE *, DFTYPE *, DFTYPE *);
-
-void FORTRAN(scat2gridgauss_zt_v0_init)(int *);
-void FORTRAN(scat2gridgauss_zt_v0_work_size)(int *);
-void FORTRAN(scat2gridgauss_zt_v0_compute)(int *, DFTYPE *, DFTYPE *, DFTYPE *,
                            DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *,
                            DFTYPE *, DFTYPE *, DFTYPE *);
 
@@ -1378,17 +1343,11 @@ static int continue_efcn_scan(int gfcn_num_internal) {
      "scat2grid_minmax_xyt",
      "scat2grid_std_xyt",
      "scat2gridgauss_xt",
-     "scat2gridgauss_xt_v0",
      "scat2gridgauss_xy",
-     "scat2gridgauss_xy_v0",
      "scat2gridgauss_xz",
-     "scat2gridgauss_xz_v0",
      "scat2gridgauss_yt",
-     "scat2gridgauss_yt_v0",
      "scat2gridgauss_yz",
-     "scat2gridgauss_yz_v0",
      "scat2gridgauss_zt",
-     "scat2gridgauss_zt_v0",
      "scat2gridlaplace_xt",
      "scat2gridlaplace_xy",
      "scat2gridlaplace_xz",
@@ -3803,36 +3762,6 @@ else if ( !strcmp(name,"scat2gridgauss_yt_compute_") ) return (void *)FORTRAN(sc
 else if ( !strcmp(name,"scat2gridgauss_zt_init_") ) return (void *)FORTRAN(scat2gridgauss_zt_init);
 else if ( !strcmp(name,"scat2gridgauss_zt_work_size_") ) return (void *)FORTRAN(scat2gridgauss_zt_work_size);
 else if ( !strcmp(name,"scat2gridgauss_zt_compute_") ) return (void *)FORTRAN(scat2gridgauss_zt_compute);
-
-/* scat2gridgauss_xy_v0.F */
-else if ( !strcmp(name,"scat2gridgauss_xy_v0_init_") ) return (void *)FORTRAN(scat2gridgauss_xy_v0_init);
-else if ( !strcmp(name,"scat2gridgauss_xy_v0_work_size_") ) return (void *)FORTRAN(scat2gridgauss_xy_v0_work_size);
-else if ( !strcmp(name,"scat2gridgauss_xy_v0_compute_") ) return (void *)FORTRAN(scat2gridgauss_xy_v0_compute);
-
-/* scat2gridgauss_xz.F */
-else if ( !strcmp(name,"scat2gridgauss_xz_v0_init_") ) return (void *)FORTRAN(scat2gridgauss_xz_v0_init);
-else if ( !strcmp(name,"scat2gridgauss_xz_v0_work_size_") ) return (void *)FORTRAN(scat2gridgauss_xz_v0_work_size);
-else if ( !strcmp(name,"scat2gridgauss_xz_v0_compute_") ) return (void *)FORTRAN(scat2gridgauss_xz_v0_compute);
-
-/* scat2gridgauss_yz.F */
-else if ( !strcmp(name,"scat2gridgauss_yz_v0_init_") ) return (void *)FORTRAN(scat2gridgauss_yz_v0_init);
-else if ( !strcmp(name,"scat2gridgauss_yz_v0_work_size_") ) return (void *)FORTRAN(scat2gridgauss_yz_v0_work_size);
-else if ( !strcmp(name,"scat2gridgauss_yz_v0_compute_") ) return (void *)FORTRAN(scat2gridgauss_yz_v0_compute);
-
-/* scat2gridgauss_xt.F */
-else if ( !strcmp(name,"scat2gridgauss_xt_v0_init_") ) return (void *)FORTRAN(scat2gridgauss_xt_v0_init);
-else if ( !strcmp(name,"scat2gridgauss_xt_v0_work_size_") ) return (void *)FORTRAN(scat2gridgauss_xt_v0_work_size);
-else if ( !strcmp(name,"scat2gridgauss_xt_v0_compute_") ) return (void *)FORTRAN(scat2gridgauss_xt_v0_compute);
-
-/* scat2gridgauss_yt.F */
-else if ( !strcmp(name,"scat2gridgauss_yt_v0_init_") ) return (void *)FORTRAN(scat2gridgauss_yt_v0_init);
-else if ( !strcmp(name,"scat2gridgauss_yt_v0_work_size_") ) return (void *)FORTRAN(scat2gridgauss_yt_v0_work_size);
-else if ( !strcmp(name,"scat2gridgauss_yt_v0_compute_") ) return (void *)FORTRAN(scat2gridgauss_yt_v0_compute);
-
-/* scat2gridgauss_zt.F */
-else if ( !strcmp(name,"scat2gridgauss_zt_v0_init_") ) return (void *)FORTRAN(scat2gridgauss_zt_v0_init);
-else if ( !strcmp(name,"scat2gridgauss_zt_v0_work_size_") ) return (void *)FORTRAN(scat2gridgauss_zt_v0_work_size);
-else if ( !strcmp(name,"scat2gridgauss_zt_v0_compute_") ) return (void *)FORTRAN(scat2gridgauss_zt_v0_compute);
 
 /* scat2gridlaplace_xy.F */
 else if ( !strcmp(name,"scat2gridlaplace_xy_init_") ) return (void *)FORTRAN(scat2gridlaplace_xy_init);

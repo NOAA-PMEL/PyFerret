@@ -136,6 +136,8 @@
 * v745 *acm* 12/18 Issue 1909, option to write dates in ISO8601 format
 * v75 *acm*   5/19 Issue 1933, recompute T0 datestring length after it
 *                  possibly was reformatted
+* v751 *acm*  6/19 Allow for longer strings as attribute values
+* V751 *acm*  8/19 Issue 1947: If axis attr doesn't match grid direction, don't write it.
 
 * argument definitions:
 *     dset    - dset (if netcdf file, for getting name and attribute 
@@ -204,7 +206,7 @@
 * *acm* 6/06 - change axis name lengths to 128
       CHARACTER CD_CHILDAX_NAME*128, CD_AXIS_NAME*128, CD_AXIS_OUTNAME*128, 
      .       TM_FMT*48, name*128, name_in*128, units*48, datebuff*40, 
-     .       buff*140, buff2*140, attname*128, dimstr*12, varstr*12, 
+     .       buff*512, buff2*512, attname*128, dimstr*12, varstr*12, 
      .       name_bnds*140, axis_dir*1
 
 
@@ -510,7 +512,7 @@
             CALL CD_GET_VAR_ATT_INFO (dset_num, varid, 
      .               iatt, attname, attype, attlen, attoutflag, status )
 
-            maxlen = 140
+            maxlen = 512
             got_it = NC_GET_ATTRIB ( dset_num, varid, attname, 
      .               do_warn, name_in, maxlen, attlen, attoutflag, 
      .               buff, vals)
@@ -533,6 +535,16 @@
             IF (MATCH_NAME (attname,  TM_LENSTR1(attname), 
      .           '_FILLVALUE', 10) ) attoutflag = 0
 		
+* If there is an axis attribute check that it matches the direction in the grid
+* and skip writing it if not.
+
+            IF (attoutflag.EQ.1 .AND. MATCH_NAME (attname,  TM_LENSTR1(attname), 'axis', 4) ) THEN
+	       IF ( .NOT. MATCH_NAME (buff, 1, ww_dim_name(idim), 1) ) THEN
+	          attoutflag = 0
+		  got_axis = .TRUE.
+	       ENDIF
+            ENDIF
+ 
 * Write the attribute, but skip this for the point-spacing attr on record axis.
 
             IF ( MATCH_NAME (attname,  TM_LENSTR1(attname), 
@@ -702,7 +714,7 @@
      .        	       slen, datebuff(:slen) )
 	ENDIF
 
-!  Write the calendar name
+*  Write the calendar name
 
         IF (cal_id .NE. 1) THEN
           slen = TM_LENSTR1( line_cal_name(iaxis) )
@@ -760,7 +772,7 @@
             IF (attid .GT. 0) CALL CD_GET_VAR_ATT_INFO (dset_num, varid, 
      .              attid, attname, attype, attlen, attoutflag, istat )
 
-            maxlen = 140
+            maxlen = 512
             got_it = NC_GET_ATTRIB ( dset_num, varid, attname, 
      .               do_warn, name_in, maxlen, attlen, attoutflag, 
      .               buff, vals)

@@ -73,7 +73,7 @@
 	INTEGER     str_eq, max_names
 	PARAMETER (str_eq = 0)
 	PARAMETER (do_warn = .TRUE.)
-	PARAMETER (max_names = 30)   ! 30 allows very weird CF files
+	PARAMETER (max_names = 8)   ! max num of axis coordinates (variable) names for a variable
 
 
 * local variable declarations:
@@ -86,21 +86,6 @@
 	CHARACTER aux_coord_names*500, coord_name(max_names)*128,
      .		  vname*128, name*16
 	REAL vals  ! potential numerical attributes
-
-!* move do_warn assignment to paramater for linux *kob*
-!     .        got_it, do_warn
-!      PARAMETER (do_warn = .TRUE.)
-!      INTEGER STR_CASE_BLIND_COMPARE,
-!     .        igrid, iaxis, istat, tmvar, ivar, ndim, idim,
-!      REAL    tmp
-!      CHARACTER*16 gname
-!* variables for final (unnecessary?) check
-!      CHARACTER TM_STRING*13, vname*128, buff*128
-!      INTEGER TM_LENSTR1,
-!     .         nvdim, nvatts, dim, npts, vlen
-!
-!      CHARACTER*1     dimnam(nferdims)
-!      DATA dimnam/'I', 'J', 'K', 'L', 'M', 'N'/
 
 * loop through each variable in this TMAP data set
 * if it has a "coordinates" attribute then associate it with that variable

@@ -678,7 +678,6 @@ GO bn_grads_z.jnl
 GO bn_reset bn_clock_syms
 GO bn_clock_syms
 
-
 ! ******** V6.3 Additions below ***********
 ! Note that allowing mouse-click operations in the current
 ! window, not only in window 1, is implemented in v6.3. Not
@@ -695,7 +694,6 @@ GO bn_isdepth
 
 GO bn_reset bn_var_hist_levels.jnl
 GO bn_var_hist_levels.jnl
-
 
 ! ******** V6.4 Additions below ***********
 
@@ -1243,11 +1241,13 @@ GO bn_samplexyzt
 GO bn_reset bn_sample_multi
 GO bn_sample_multi
 
-
 ! *********** v7.51 Additions ***********
 
 GO bn_reset bn751_bug_fixes
 GO bn751_bug_fixes
+
+GO bn_reset bn_cdf_strlen
+GO bn_cdf_strlen
 
 ! *********** PyFerret-specific scripts ***********
 

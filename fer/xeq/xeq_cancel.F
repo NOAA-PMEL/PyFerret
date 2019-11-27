@@ -160,6 +160,8 @@
 * V745 *acm*  3/19 Issue 1916.  When doing a CANCEL MEMORY, the user-variable
 *                  information needs to be canceled particulary that saved in SAVE_UVAR_GRID
 * V751 *acm* 6/19  With dyn mem managemnent, change so that CAN MEM/PERM works correctly
+* V751 *acm*11/19  Ticket 1957: IF CANCEL VAR/NOEXIST reinitialize dset number before
+*                  going on to next variable
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -206,7 +208,7 @@
      .                  TM_LENSTR, len_test, len_mchars, varid,
      .                  dset, cat, var, mods_cx, iflag, loc, nvatts, 
      .                  slen, iatt, igrd, iline, new_att_modulo_len,
-     .			cache_size, cache_nelems, cache_preemption
+     .			cache_size, cache_nelems, cache_preemption, dset_set
 	LOGICAL		MATCH4, TM_DIGIT_TEST, IS_TEMPLATE, MATCH_TEMPLATE,
      .			report_error, slash_all, del_perm, del_temp,
      .                  perm_var, all_dims, coordvar, do_err, 
@@ -620,6 +622,7 @@
 	ELSE
 	   iset = unspecified_int4
 	ENDIF
+	dset_set = iset
 
 * /LAYERZ
 	IF (qual_given(slash_canc_var_layerz) .GT. 0) THEN 
@@ -656,7 +659,12 @@
  1110	   CONTINUE
 	   num_uvars_in_cmnd = cmnd_uvars_not_given  ! renders EX#n deleted 
 	ELSE
-	   IF (num_items .EQ. 0) GOTO 5010	   
+	   IF (num_items .EQ. 0) GOTO 5010	
+
+* tkt 1957: If /noerror and a var is not defined, the second call to 
+* PARSE_NAM_DSET may wind up resetting the iset.  In that case just 
+* skip to the bottom of the loop so iset remains defined. 
+
 	   DO 1120 item = 1, num_items
 	      i1 = STR_UPCASE(buff,
      .			cmnd_buff(item_start(item):item_end(item)))
@@ -688,10 +696,11 @@
      .			     category, variable, mod_cx, status )
 		    IF ( status.NE.ferr_ok .OR. variable.EQ.munknown_var_name) 
      .			     iset = unspecified_int4
+		 ELSE
+		    CALL PARSE_NAM_DSET( buff, cx_last, iset,
+     .			     category, variable, mod_cx, status )
 		 ENDIF
 
-	         CALL PARSE_NAM_DSET( buff, cx_last, iset,
-     .			     category, variable, mod_cx, status )
 	         IF ( status .NE. ferr_ok ) RETURN
 		 IF (report_error) THEN
 	            IF ( variable .EQ. munknown_var_name ) GOTO 5110

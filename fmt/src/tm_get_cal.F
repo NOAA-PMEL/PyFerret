@@ -36,6 +36,7 @@
 C     Return the calendar name associated with a grid
 C     Ansley Manke 3/01
 * V6.74 3/12 *acm* cleanup ifdefs and unnecessary include files, add disclaimer
+* V7.51 7/19 *acm* Don't return whatever might be in line_cal_name(0)
 
       INCLUDE 'tmap_dims.parm'
       INCLUDE 'xtm_grid.cmn_text'
@@ -48,10 +49,9 @@ C  Calling argument declarations:
 
 C  Internal argument declarations:
       INTEGER tax
-
+      
       tax = grid_line (t_dim, grid)
-
-      TM_GET_CAL = line_cal_name (tax)
+      IF (tax .NE. mnormal) TM_GET_CAL = line_cal_name (tax)
 
       RETURN
       END

@@ -54,6 +54,7 @@ depend_stat_var_sub.F\
 dir_line.F\
 display_dependency.F\
 display_dependency_sub.F\
+earth_del.F\
 ensemble_member_dset.F\
 extract_dp_line.F\
 extract_dp_line2.F\

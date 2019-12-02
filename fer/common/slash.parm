@@ -82,6 +82,8 @@
 * V740 *kms*  3/18 Add PyFerret PLOT/HIGHLIGHT=
 * V7.4+ *acm* 9/18 DSG-enabled Ferret: SET DATA/FMASK= specifies a feature mask
 * v751 *acm*  8/19 Issue 1946, allow for user-set string dimension length, SAVE/STRLEN
+* v76  *acm* 11/19  Issue 1959: Change SET MEMORY/SIZE= to SET MEMORY/MAX= 
+*                               (keep /SIZE for bkwds compatibility)
 
 * command qualifier states
 	INTEGER		qual_on,
@@ -242,6 +244,7 @@
      .                  slash_set_axis_outtype,
      .                  slash_set_axis_name,
      .
+     .			slash_set_memory_max,
      .			slash_set_memory_words,
      .			slash_set_nccache_size,
      .			slash_set_nccache_nelem,
@@ -525,7 +528,7 @@
      .			slash_list_curvi   = 1+54,
      .			slash_list_layerz  = 1+55,
      .			slash_list_asglobal = 1+56,
-     .			slash_list_strlen  = 1+57)
+     .			slash_list_strlen   = 1+57)
 
 	PARAMETER     (
      .			slash_set_data_ez	= 1,
@@ -571,7 +574,8 @@
      .			slash_set_axis_outtype  = 9,
      .			slash_set_axis_name     = 10,
      .
-     .			slash_set_memory_words	= 1,
+     .			slash_set_memory_max	= 1,
+     .			slash_set_memory_words	= 2,
      .			slash_set_nccache_size	= 1,
      .			slash_set_nccache_nelem	= 2,
      .			slash_set_nccache_preemp= 3,

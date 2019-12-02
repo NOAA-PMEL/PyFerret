@@ -41,6 +41,7 @@
 * programmer - steve hankin
 * V702 *sh*  1/17 trac enhancement ticket #2369 - dynamic memory
 * v74   *acm* 3/18 Introduce parameter abstractax_len replacing 99999999
+* v76  *acm* 11/19  Issue 1959: Change SET MEMORY/SIZE= to SET MEMORY/MAX= in messages
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
@@ -107,7 +108,7 @@
  5210	CALL MEM_TO_BYTES (max_mem_allowed, num_str, num_slen, mem_unit)
 	CALL SPLIT_LIST(pttmode_explct, show_lun,
      .		'    To fulfill this request would exceed the current '//
-     .		  'SET MEMORY/SIZE= limit of '//num_str(:num_slen)
+     .		  'SET MEMORY/MAX= limit of '//num_str(:num_slen)
      .	          //mem_unit,0 )
 	CALL SHOW_ABORTED_MEM_STATE(i8_rqst_size)
         GOTO 5000

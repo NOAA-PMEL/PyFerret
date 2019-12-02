@@ -212,6 +212,8 @@
 * v745 *acm* 12/18 Issue 1909, option to write dates in ISO8601 format
 *                  new mode datefmt for formatted date output
 * V751 *acm* 6/19 Issue 1903: memory set and reported in terms of bytes
+* v76  *acm* 11/19  Issue 1959: Change SET MEMORY/SIZE= to SET MEMORY/MAX= 
+*                               (keep /SIZE for bkwds compatibility)
 
         IMPLICIT NONE
 
@@ -1417,7 +1419,7 @@ c                    ENDIF ! status from GET_SAVED_UVAR_AUX_INFO
         ENDIF
  4201   FORMAT(8x,A15,A1,A8,I10,I12)
 
-        CALL SHOW_MEM_USAGE_LINE('SET MEMORY/SIZE', max_mem_allowed, .TRUE.)
+        CALL SHOW_MEM_USAGE_LINE('SET MEMORY/MAX', max_mem_allowed, .TRUE.)
         CALL SHOW_MEM_USAGE_LINE('Peak demand', peak_essential_mem, .FALSE.)
         CALL SHOW_MEM_USAGE_LINE('Current cache', total_mem, .FALSE.)
         IF (permanent_mem .NE. 0 ) THEN

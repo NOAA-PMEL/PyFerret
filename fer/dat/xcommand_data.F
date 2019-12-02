@@ -263,7 +263,8 @@
 * V7.4+ *acm* 9/18 DSG-enabled Ferret: SET DATA/FMASK= specifies a feature mask
 * V74+ *acm*  9/18 Add aliases FMASK for SET DATA/FMASK and CLEARMASK for CANCEL DATA/FMASK
 * v751 *acm*  8/19 Issue 1946, allow for user-set string dimension length, SAVE/STRLEN
-*
+* v76  *acm* 11/19  Issue 1959: Change SET MEMORY/SIZE= to SET MEMORY/MAX= 
+*                               (keep /SIZE for bkwds compatibility)
 *
 * !!!!!!!!!!
 * Use caution when defining new commands, qualifiers, or changing these data structures:
@@ -468,8 +469,8 @@
 	   DATA num_qualifs      (nsub_at1 +12)	/ nqual1m	/
 	   DATA qualifier_pointer(nsub_at1 +12)	/ nqual_at1m	/
 * SET MEMO / MWORDS
-		DATA qualifiers  (nqual_at1m+0)	/ 'SIZE'	/
-		DATA qualifiers  (nqual_at1m+1)	/ '****'	/
+		DATA qualifiers  (nqual_at1m+0)	/ 'MAX'	/
+		DATA qualifiers  (nqual_at1m+1)	/ 'SIZE'	/
 * SET ATTRIBUTE
 	   DATA subcommands      (nsub_at1 +13)	/ 'ATTRIBUT'	/
 	   DATA num_qualifs      (nsub_at1 +13)	/ nqual1n	/

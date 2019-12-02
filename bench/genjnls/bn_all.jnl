@@ -1249,6 +1249,9 @@ GO bn751_bug_fixes
 GO bn_reset bn_cdf_strlen
 GO bn_cdf_strlen
 
+GO bn_reset bn_set_mem_max
+GO bn_set_mem_max
+
 ! *********** PyFerret-specific scripts ***********
 
 IF ($program_name"0|PyFerret>1|*>0") THEN

@@ -114,6 +114,7 @@
 * v74   *acm* 3/18 Introduce parameter abstractax_len replacing 99999999
 * V741 *acm* 5/18 Promoting global attributes to a variable in ensembles
 * V745  3/19 *acm* ticket 1916, special handling getting context for RETURN= outputs
+* v76  *acm* 11/19  Issue 1959: Change SET MEMORY/SIZE= to SET MEMORY/MAX= in messages
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -368,7 +369,7 @@
 !		 num_str2 = TM_FMT( cxsize/1.D6,          3, 12, slen2)
 !	         CALL ERRMSG( ferr_insuff_memory,status,
 !     .		 "Size of request="//num_str2(:slen2)//
-!     .		 " but currently SET MEMORY/SIZE="//num_str(:slen), *5000)
+!     .		 " but currently SET MEMORY/MAX="//num_str(:slen), *5000)
 !	      ENDIF
 !	   ENDIF
 !	ENDIF

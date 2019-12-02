@@ -1,0 +1,21 @@
+! bn_set_mem_max.jnl
+! Ferret v7.6 27-Nov-2019
+! SET MEMORY/MAX= replaces /SIZE=  (/SIZE kept for bkwrds compatibility)
+! SHOW MEMORY outputs use MAX instead of SIZE
+! This is the same as bn_memory_symbol but with MAX in place of SIZE
+
+sh sym ferret_memory, ferret_bytes_mem
+define symbol mem_save = ($ferret_memory)
+
+set mem/max=90
+sh sym ferret_memory, ferret_bytes_mem
+show memory
+
+set mem/size=0.05
+sh sym ferret_memory, ferret_bytes_mem
+
+set mem/max=500000  ! too large to allow
+sh sym ferret_memory, ferret_bytes_mem
+
+set mem/max=($mem_save)  ! return to the previous setting
+sh sym ferret_memory, ferret_bytes_mem

@@ -79,6 +79,8 @@
 * V698  *sh*  3/16 pass native_tax to CD_SCAN_AUX_VARS as lag_T ax of the FMRC
 * V74+ 6/18 *acm*  On a dsg file, if the init failed, continue as a non-dsg file
 * V74+ 6/18 *acm*  On a dsg file, if errors found in the DSG it's an error
+* V76 12/19 *kms*  Temporarily disable this enhancement to recognize FMRC
+*                  datasets as such until revised FMRC handling is implemented.
 
 * include files
 #include "gt_lib.parm"
@@ -171,8 +173,12 @@
       IF ( status .NE. merr_ok ) GOTO 5900
 
 * identify and set up auxiliary coordinate linkages
-      CALL CD_SCAN_AUX_COORDS( dset, cdfid, native_tax, status )
-      IF ( status .NE. merr_ok ) GOTO 5900
+*
+*      *KMS* 12/2019 - Temporarily disable this enhancement to recognize 
+*      FMRC datasets as such until revised FMRC handling is implemented.
+*      
+*      CALL CD_SCAN_AUX_COORDS( dset, cdfid, native_tax, status )
+*      IF ( status .NE. merr_ok ) GOTO 5900
 
 * set use counts and clean up temporary grids and axes
       CALL TM_GARB_COL_GRIDS (dset)

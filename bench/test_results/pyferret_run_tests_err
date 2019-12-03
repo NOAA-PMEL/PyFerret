@@ -566,7 +566,7 @@ list v2-and-minus[i=5:15@ddc]
  LISTing to file junk.dat
  **ERROR: request exceeds memory setting
 load num
-    To fulfill this request would exceed the current SET MEMORY/SIZE= limit of 500Mb
+    To fulfill this request would exceed the current SET MEMORY/MAX= limit of 500Mb
     At the moment that the memory limit was reached
     memory was committed as follows:
         - to objects used in computation: 0 (0%)
@@ -576,7 +576,7 @@ Replacing definition of axis ZAX
 Replacing definition of axis TAX
  **ERROR: request exceeds memory setting
 load num
-    To fulfill this request would exceed the current SET MEMORY/SIZE= limit of 500Mb
+    To fulfill this request would exceed the current SET MEMORY/MAX= limit of 500Mb
     At the moment that the memory limit was reached
     memory was committed as follows:
         - to objects used in computation: 0 (0%)
@@ -6050,6 +6050,7 @@ LIST/FORMAT=CDF/append/file=a.nc/L=2:4/strlen=10 tstrings
           Variable: TSTRINGS
 LIST/FORMAT=CDF/clobber/file=a.nc/STRLEN=7 tstrings, tstrings_long
 LIST/FORMAT=CDF/clobber/file=a.nc/STRLEN=7 tstrings, tstrings_long
+*** Running ferret script: bn_set_mem_max.jnl
 *** Running ferret script: bn_gif.jnl
  **ERROR: dimensions improperly specified: specified data is not a line
            - its a 2D region: "plot/i=1:10/j=1:20/nolabel i+j"

@@ -104,6 +104,7 @@ C               GE 2  GIVES THE INVERSE SCALE OF IAXIS = 1
       TYLO=IFIX(1.0001*YLO)
       TYHI=IFIX(1.0001*YHI)
       TYUNIT=IFIX(1.0001*YUNIT)
+      YTEMP = 0.
       NDEC=TYHI-TYLO
 !      IF(NDEC.LT.1) STOP 'YLO,YHI'
       IF(NDEC.LT.1) THEN
@@ -153,7 +154,7 @@ C
 	      DO 100 J=2,9    ! small tics
 
                  IF ((solid2.OR.dashed2) .AND. hline) THEN ! make line across
-                   yt = Y+SGN*(I-1+ALOG10(FLOAT(J)))
+                   yt = Y+SGN*(I-1+ALOG10(FLOAT(J)))		   
                    CALL COLOR(hcolor(2))
                     IF (dashed2) THEN
                        CALL DASHSZ(dash2_1,dash2_2,dash2_3,dash2_4)
@@ -182,6 +183,7 @@ C
                  CALL COLOR(color0)
                  CALL VECTRS
               ENDIF
+              CALL PLOTT7(X,Y+SGN*I,XFACT,YFACT,1,-6) ! draw large tic
 
 110        CONTINUE
 
@@ -197,6 +199,7 @@ C  for DEPTH axes, Y plot coordinates are reversed on page.
 
                  IF ((solid2.OR.dashed2) .AND. hline) THEN ! make line across
                    yt = YTEMP+(I-1+ALOG10(FLOAT(J)))
+
                    CALL COLOR(hcolor(2))
                     IF (dashed2) THEN
                        CALL DASHSZ(dash2_1,dash2_2,dash2_3,dash2_4)
@@ -208,6 +211,7 @@ C  for DEPTH axes, Y plot coordinates are reversed on page.
                     CALL COLOR(color0)
                     CALL VECTRS
                  ENDIF
+                 CALL PLOTT7(X,YTEMP+(I-1+ALOG10(FLOAT(J))),XFACT,YFACT,1,-5)
 
 120           CONTINUE
               
@@ -224,9 +228,14 @@ C  for DEPTH axes, Y plot coordinates are reversed on page.
                  CALL COLOR(color0)
                  CALL VECTRS
               ENDIF
+              CALL PLOTT7(X,YTEMP+I,XFACT,YFACT,1,-6)  ! make large tic
 
 130        CONTINUE
         ENDIF
+
+		
+	call plot (x, ytemp, 1, 0)
+	call plot (x, ytemp, 0, 0)
 C
 C	DRAW LABELS
 C
@@ -268,6 +277,7 @@ C  for DEPTH axes, Y plot coordinates are reversed on page.
 
 	IF(WID.GT.YWIDT)YWIDT=WID
 200	CONTINUE
+
 	YWID=YWID+YWIDT
 	RETURN
 	END

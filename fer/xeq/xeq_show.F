@@ -212,6 +212,9 @@
 * V751 *acm* 6/19 Issue 1903: memory set and reported in terms of bytes
 * v76  *acm* 11/19  Issue 1959: Change SET MEMORY/SIZE= to SET MEMORY/MAX= 
 *                               (keep /SIZE for bkwds compatibility)
+* v76  *acm* 11/19  Issue 1961: Extend the fix for 1916 which focused on
+*                   getting uvar grid info for RETURN= Make the same changes 
+*                   using cx_only setting for SHOW GRID of user-variables
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -1424,6 +1427,8 @@ c                    ENDIF ! status from GET_SAVED_UVAR_AUX_INFO
 	   IF (status .NE. ferr_ok ) GOTO 5000
 	ENDIF
 
+
+
 	CALL INIT_CONTEXT_MODS( mods_cx )
 	CALL GET_CONTEXT_MODS (	cx_last,
      .				cmnd_buff,
@@ -1436,7 +1441,19 @@ c                    ENDIF ! status from GET_SAVED_UVAR_AUX_INFO
      .				status	)
 	IF ( status .NE. ferr_ok ) GOTO 5000
 
+
 	IF ( num_args .GE. 1 ) THEN
+
+* fix for 1961
+	   cx_only = .TRUE.
+
+*  Allocate dynamic line memory for a list of uvars where uvar-grid info gets
+*  set in this routine.
+		    
+	   CALL GET_LINE_DYNMEM(max_uvar, uvar_cx_only_lm, status)
+	   uvar_cxo_len = 0
+
+	   CALL DELETE_OLD_UGRIDS
 
 * loop through the variables named 
 ! bug fix: 11/91 *sh* : changed comma list to blank-separated argument list
@@ -1466,7 +1483,8 @@ c                    ENDIF ! status from GET_SAVED_UVAR_AUX_INFO
 	            GOTO 1344
  1346               CONTINUE
 	      ELSE
-	         grid = GRID_FROM_NAME
+
+		 grid = GRID_FROM_NAME
      .                    ( cmnd_buff(item_start(ivar):item_end(ivar)),
      .			  cx_last, status )
 	         IF ( status .NE. ferr_ok ) GOTO 1350
@@ -1496,7 +1514,18 @@ c                    ENDIF ! status from GET_SAVED_UVAR_AUX_INFO
 	            CALL SHOW_GRID( grid, mods_cx, uvgrid, status )
 		    IF (status .NE. ferr_ok) GOTO 5000
 	         ENDIF
+
 	      ENDIF
+
+c Free the temporary storage for uvar-grid information 
+	      IF (cx_only) THEN
+	         CALL RESET_UVAR_GRIDS
+	         CALL FREE_LINE_DYNMEM(uvar_cx_only_lm)
+
+	         cx_only = .FALSE.
+
+	      ENDIF
+
  1350	   CONTINUE
  4210	   FORMAT ( 4X,'GRID ',A)
  4211	   FORMAT ( 4X,'GRID ',A, '  Ensemble Aggregetion Grid')
@@ -2152,7 +2181,16 @@ c     .                               sbrief, sdetail, i2)
 
 * error exit
  5050   CALL RELEASE_DYN_WORK_SPACE
- 5000	RETURN
+ 5000	CONTINUE
+	
+c Free any temporary storage for uvar-grid information 
+	IF (cx_only) THEN
+	   CALL RESET_UVAR_GRIDS
+	   CALL FREE_LINE_DYNMEM(uvar_cx_only_lm)
+	   cx_only = .FALSE.
+	ENDIF
+
+	RETURN
  5071	name = cmnd_buff(arg_start(1):arg_end(1))
 	CALL ERRMSG( ferr_unknown_data_set, status,
      .			name(:TM_LENSTR1(name)), *5000 )

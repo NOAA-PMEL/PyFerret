@@ -47,6 +47,9 @@
 *                  title in the legend labels for both PLOT and PLOT/VS plots.
 * v7.2 *acm* 4/2017 ticket 2446 Drawing formatted time axes on a PLOT/VS, label
 *                  at the top with the year if needed.
+* V76  *acm* 11/19 Issue 1960: Place keys for overlay lines in multiple columns 
+*                  below plot before resorting to putting them inside the plot box.
+*                  If still too many legend lines, skip them rather than put up dialog box
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -99,6 +102,7 @@
 * if we are overlaying on an existing plot put the new variable name on as a
 * key at the lower left
 	nline_in_mem = 0
+	
 	IF ( overlay ) THEN
 	   DO 500 ipl = var1, nmv
 	      nline_in_mem = nline_in_mem + 1
@@ -120,9 +124,16 @@
               IF (.NOT. nokey) THEN
 	         CALL KEY_LOC( overlay, xkeypos, ykeypos, xkeysize, ykeysize,
      .			    lab_ht, style, justify, plot_title(:slen))
-	         CALL PUT_KEY( nline_in_mem, plot_title(:slen),
+* key_loc returns xkeypos=-999 if it has run out of space.  Skip this key entry.
+* Could notify the user ...
+		 IF (INT(xkeypos) .EQ. unspecified_int4) THEN
+c		    CALL WARN ('Too many lines for legend. Not labeling "'//
+c     .			plot_title(:slen)//'")
+		 ELSE
+		    CALL PUT_KEY( nline_in_mem, plot_title(:slen),
      .			    xkeypos, ykeypos, xkeysize, ykeysize,
      .			    lab_ht, style, lab_loc_absolute, lab_loc_absolute )
+		 ENDIF
               ENDIF
  500	   CONTINUE
 	ELSE

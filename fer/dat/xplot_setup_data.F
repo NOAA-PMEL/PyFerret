@@ -43,6 +43,7 @@
 * V63  *acm* 10/09 Changes for gfortran build
 *      *kms*  2/12 Include tmap_dims.parm for nferdims used by xplot_setup.cmn
 * V698 *sh* 3/16 - adjusted key_xorigin and key_ywhite_space
+* V76 *acm* 11/19 -  Issue 1960: Multi-column line keys for overlays: change ovkey_xorigin
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
@@ -54,19 +55,16 @@
      .		key_xspace0	/ 3.0 /,	! nominal X space for keys
      .		key_yspace0	/ 0.25 /,	! nominal Y space for keys
      .		key_labht0	/ 0.12 /,	! nominal label height for keys
-!     .		key_xorigin	/ 1.5  /,	! pre-3/16
      .		key_xorigin	/ 0.75  /,	! leftmost x loc. of keys
      .		key_yorigin	/ -0.85 /,	! y loc. of topmost keys
      .		key_xwhite_space/ 0.3  /,	! x space between keys
-!     .		key_ywhite_space/ 0.02 /,	! y space between keys
      .		key_ywhite_space/ 0.05 /,	! y space between keys
-!     .		key_line_frac   / 0.3 /,	! pre 3/16
      .		key_line_frac   / 0.25 /,	! line specimen width
 
      .		ovkey_xspace	/ 2.1 /,
      .		ovkey_yspace	/ 0.18 /,
      .		ovkey_labht	/ 0.08 /,
-     .		ovkey_xorigin	/-1.1 /,
+     .		ovkey_xorigin	/-1.1  /,
      .		ovkey_yorigin	/-0.6 /,
      .		ul_labht0	/0.12 /,
      .		ul_yspace0	/0.2  /,

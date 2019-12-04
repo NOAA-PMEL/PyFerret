@@ -23,6 +23,8 @@
 * V698 *sh* 3/16 added parameter max_line_on_plot, max_key_entries
 * V710  *acm* 11/16 Ticket 2483: Fix the axis-end symbols that are defined 
 *                   for time axis plots. New flag adjust_time
+* V76  *acm* 11/19 Issue 1960: Place keys for overlay lines in multiple columns 
+*                  below plot before resorting to putting them inside the plot box.
 
 	INTEGER max_line_on_plot, max_key_entries
 	PARAMETER (max_line_on_plot = 200)
@@ -48,6 +50,7 @@
      .		nkeys_on,
      .		novkeys_on,
      .		novkeys_ll,
+     .		novkeys_icol,
      .		key_ncolmn,
      .		ul_nlabs,
      .		plot_axis(nferdims), nplot_axis,
@@ -136,6 +139,7 @@
      .		nkeys_on,
      .		novkeys_on,
      .		novkeys_ll,
+     .		novkeys_icol,
      .		key_ncolmn,
      .		ul_nlabs,
      .		plot_axis, nplot_axis,

@@ -46,6 +46,8 @@
 * v552 *acm* 3/03 multi-line strings in key labels.
 * V68  *acm* 1/12  changes for double-precision ferret, single-precision pplus.
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
+* V76  *acm* 11/19 Issue 1960: Place keys for overlay lines in multiple columns 
+*                  below plot before resorting to putting them inside the plot box.
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -79,17 +81,33 @@
 
 * is there room for this overlay label at the lower left ?
 * test the location of the last line of this key label
+* Add more labels to column before going to next column. (This is
+* inconsistent with legend on a plot with multiple vars on the command
+* line, but more consistent with previous PLOT/OVER behavior.)
 
-	   ysize = ovkey_yspace
-c	   ypos  = ovkey_yorigin - novkeys_on*ovkey_yspace
-	   ypos  = ovkey_yorigin - (novkeys_on+numlines-1)*ovkey_yspace
-	   IF ( ABS(ypos).GT.yorg .AND. novkeys_ll.EQ.0 ) THEN
-	      ovkey_ll_full = .TRUE.
-	      novkeys_ll = novkeys_on
+	   key_ncolmn = 3
+	   IF (novkeys_on .EQ. 0) THEN
+	      key_xspace = (xlen+ xwhitelo + xwhitehi)/ FLOAT(key_ncolmn)
+	      novkeys_icol = 0
+	      colmn = 0
+	      ypos = ovkey_yorigin + ovkey_yspace
 	   ENDIF
 
-* actual y position
-	   ypos  = ovkey_yorigin - novkeys_on*ovkey_yspace
+	   ysize = ovkey_yspace
+
+	   xpos = ovkey_xorigin + colmn*key_xspace
+	   ypos = ypos - ovkey_yspace
+
+	   IF (ABS(ypos) .GT. yorg) THEN
+	      IF (colmn .EQ. 0) novkeys_ll = novkeys_on ! number of lines in one columnn
+	      colmn = colmn + 1
+	      ypos = ovkey_yorigin 
+	      xpos = ovkey_xorigin + colmn*key_xspace
+	      IF (colmn .GE. key_ncolmn) THEN
+	         ovkey_ll_full = .TRUE.
+		 novkeys_on = novkeys_ll
+	      ENDIF
+	   ENDIF
 
 	   IF ( ovkey_ll_full ) THEN
 * ... no - try to put the label within the plot rectangle at the left
@@ -101,9 +119,8 @@ c	   ypos  = ovkey_yorigin - novkeys_on*ovkey_yspace
      .            (numlines-1+novkeys_on-novkeys_ll)*ovkey_yspace*0.8
 	      IF (ABS(ypos+lab_ht) .GT. dylen ) xpos = -999.	! off screen
 	   ELSE
-* ... yes - it will fit at the lower left
+* ... yes - it will fit in first key_ncolmn columns.
 	      xsize  = ovkey_xspace
-	      xpos   = ovkey_xorigin
 	      lab_ht = ovkey_labht
 	   ENDIF
 	   novkeys_on = novkeys_on + numlines

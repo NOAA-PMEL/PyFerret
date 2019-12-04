@@ -52,3 +52,6 @@ GO err751_dsg_constraints
 
 GO bn_reset
 GO err751_set_global_atts
+
+GO bn_reset
+GO err751_show_grid_expr

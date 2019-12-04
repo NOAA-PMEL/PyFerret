@@ -49,6 +49,7 @@
 *		   zero as valid. 
 *		   (String expressions with IFV are identical to behavior with IF.)
 *       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
+* V751 11/19 *acm* fix copy-paste bug in ELSE
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -173,7 +174,7 @@
 	m1 = sm1
 	m2 = sm2
 	m3 = sm3
-	 DO 310 m = mr_lo_s4(mres), mr_hi_s4(mres)
+	 DO 310 m = mr_lo_s5(mres), mr_hi_s5(mres)
 	 m1 = m1 + dm1
 	 m2 = m2 + dm2
 	 m3 = m3 + dm3

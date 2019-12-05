@@ -91,6 +91,9 @@
 	      novkeys_icol = 0
 	      colmn = 0
 	      ypos = ovkey_yorigin + ovkey_yspace
+	      ovkey_ypos_nxt = ypos
+	   ELSE
+	      ypos= ovkey_ypos_nxt
 	   ENDIF
 
 	   ysize = ovkey_yspace
@@ -98,16 +101,20 @@
 	   xpos = ovkey_xorigin + colmn*key_xspace
 	   ypos = ypos - ovkey_yspace
 
-	   IF (ABS(ypos) .GT. yorg) THEN
+	   IF (ABS(ypos - ovkey_yspace* FLOAT(numlines-1)) .GT. yorg) THEN
 	      IF (colmn .EQ. 0) novkeys_ll = novkeys_on ! number of lines in one columnn
 	      colmn = colmn + 1
 	      ypos = ovkey_yorigin 
+	      ypos = ypos - ovkey_yspace  ! move down, make room for axis label
 	      xpos = ovkey_xorigin + colmn*key_xspace
 	      IF (colmn .GE. key_ncolmn) THEN
 	         ovkey_ll_full = .TRUE.
-		 novkeys_on = novkeys_ll
+	         novkeys_on = novkeys_ll
+	         ovkey_ypos_nxt = 0
 	      ENDIF
 	   ENDIF
+	   IF (ABS(ovkey_ypos_nxt).LT.yorg .AND. .NOT.ovkey_ll_full) 
+     .            ovkey_ypos_nxt = ypos - ovkey_yspace* FLOAT(numlines-1)
 
 	   IF ( ovkey_ll_full ) THEN
 * ... no - try to put the label within the plot rectangle at the left
@@ -115,8 +122,9 @@
 	      xpos   = 0.1
 	      lab_ht = ovkey_labht  * 0.8
 	      ysize = ovkey_yspace  * 0.8	      
-	      ypos = 0.1 + 
+	      ypos = 0.1 +
      .            (numlines-1+novkeys_on-novkeys_ll)*ovkey_yspace*0.8
+	      ovkey_ypos_nxt = ypos
 	      IF (ABS(ypos+lab_ht) .GT. dylen ) xpos = -999.	! off screen
 	   ELSE
 * ... yes - it will fit in first key_ncolmn columns.

@@ -31,6 +31,9 @@ let/title="Gridded Temperature"/Units="Degrees_C" temp = 2*y[g=gfake] + 0.8*x[g=
 save/clobber/file=fake_model_temp.nc/outtype=float temp
 can var/all
 
+cancel data/all
+! make sure to use the new one
+use sail_2019.nc
 use fake_model_temp.nc
 
 say `temp,r=size`

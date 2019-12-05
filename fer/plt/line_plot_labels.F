@@ -66,6 +66,9 @@
 *                  with multi-feature plots, even if there's just one feature.
 * V751 7/19 *acm*  DSG-enabled Ferret: labels when plotting user-defined variables
 * V751 8/19 *acm*  DSG-enabled Ferret: labels for modifications such as regridding operation
+* V76  *acm* 11/19 Issue 1960: Place keys for overlay lines in multiple columns 
+*                  below plot before resorting to putting them inside the plot box.
+*                  If still too many legend lines, skip them rather than put up dialog box
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -172,6 +175,7 @@
 * if we are overlaying on an existing plot put the new variable name on as a
 * key at the lower left
 	nline_in_mem = 0
+	
 	IF ( overlay ) THEN
 	   DO 500 ipl = var1, nmv
 	      nline_in_mem = nline_in_mem + 1
@@ -193,9 +197,16 @@
               IF (.NOT. nokey) THEN
 	         CALL KEY_LOC( overlay, xkeypos, ykeypos, xkeysize, ykeysize,
      .			    lab_ht, style, justify, plot_title(:slen))
-	         CALL PUT_KEY( nline_in_mem, plot_title(:slen),
+* key_loc returns xkeypos=-999 if it has run out of space.  Skip this key entry.
+* Could notify the user ...
+		 IF (INT(xkeypos) .EQ. unspecified_int4) THEN
+c		    CALL WARN ('Too many lines for legend. Not labeling "'//
+c     .			plot_title(:slen)//'")
+		 ELSE
+		    CALL PUT_KEY( nline_in_mem, plot_title(:slen),
      .			    xkeypos, ykeypos, xkeysize, ykeysize,
      .			    lab_ht, style, lab_loc_absolute, lab_loc_absolute )
+		 ENDIF
               ENDIF
  500	   CONTINUE
 	ELSE

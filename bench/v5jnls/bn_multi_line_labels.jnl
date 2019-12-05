@@ -6,7 +6,7 @@
 ! ACM 1/2007 Change from a bunch of plot items in a viewport, to separate
 !            plots; for better checking of batch mode
 !  2/18 *acm* keep mode logo turned off 
-
+! 11/19 *acm* Save plots as gifs/pngs to make comparisons with all these examples
 
 plot/i=1:100/title="multi line title<nl>with the second line pretty long: \
 so Ferret will resize the entire title. Titles are sized according to the\
@@ -14,7 +14,6 @@ so Ferret will resize the entire title. Titles are sized according to the\
 ppl plot
 plot/over/i=1:100 i*sin(i/8)
 
-set mode meta multi_line_labels.plt
 plot/i=1:100/title="@p2two-line<NL>RED title"/set i*cos(i/8)
 ppl ylab "A four-line y label.<nl>second line<nl>third line<NL>fourth line"
 ppl xlab "a two-line X label. <nl>Not good together with a multi-line title"
@@ -30,19 +29,22 @@ label 30,-70,-1,40,0.2,"first line, then blank<NL> <NL>third line, all rotated"
 
 label/nouser 6.5,6,1,90,0.2,"@p2Another @CImoveable label<nl>Set to @CRCR and @p4P4\
 <NL>at 90 degrees"
-set mode/last meta
-set mode/last logo
+frame/file=multi_line_labels1.gif
 
-plot/title="multi-line key labels"/i=1:100 i*sin(i/12)
-plot/over/i=1:100/title="Three-lines<nl>second line<nl>overlay 1" i*sin(i/6)
-plot/over/i=1:100/title="Two-lines<nl>overlay 2" i*cos(i/6)
-plot/over/i=1:100/title="Three-lines<nl>second line<nl>overlay 3" -1*cos(i/10)
-plot/over/i=1:100/title="One-line" i*cos(i/8)
-plot/over/i=1:100/title="Three-line<nl>second<nl>overlay5" i*cos(i/14)
-plot/over/i=1:100/title="Two-line<nl>overlay6" i*cos(i/20)
-plot/over/i=1:100/title="Three-line<nl>second<nl>overlay7" i*sin(i/12)
 
-   
+define axis/t=15-jun-2010:30-aug-2010:1/t0=1-jun-2010/units=days taxis
+let var = t[gt=taxis]
+
+plot/title=" " var*sin(var/12)
+annotate/norm/x=0.5/y=1.1/halign=0/siz=0.14 "multi-line key labels"
+plot/over/title="Three-lines<nl>second line<nl>overlay 1" var*sin(var/6)
+plot/over/title="Two-lines<nl>overlay 2" var*cos(var/6)
+plot/over/title="Three-lines<nl>second line<nl>overlay 3" -1*cos(var/10)
+plot/over/title="One-line" var*cos(var/8)
+plot/over/title="Three-line<nl>second<nl>overlay5" var*cos(var/14)
+plot/over/title="Two-line<nl>overlay6" var*cos(var/20)
+plot/over/title="Three-line<nl>second<nl>overlay7" var*sin(var/12)
+frame/file=multi_line_labels2.gif
 
 plot/i=1:100 i*cos(i/8)
 
@@ -78,9 +80,9 @@ among these packages are Mathematica-like flexibility,<NL>\
 geophysical formatting, intelligent connection to its data base,<NL>\
 memory management for very large calculations, and symmetrical<NL>\
 processing in 4 dimensions."
+frame/file=multi_line_labels3.gif
 
 
-set win/clear
 plot/sym/i=1:5/nolab/noaxes i
 ppl ylab "@CRlong y label<NL>@p2line 2 in red, longer than the other lines."
 ppl xlab "@p4Tests using the %xaxis and %yaxis commands<NL>@p5@CItwo lines<NL>center a@P1 long third line too"
@@ -92,6 +94,7 @@ ppl %xaxis/nouser,0,50,4,2.5, , , ,0
 
 ppl %yaxis/nouser,0,50,4,6, , , ,1
 ppl %xaxis/nouser,0,50,4,4, , , ,1
+frame/file=multi_line_labels4.gif
 
 
 can view; set view upper
@@ -109,6 +112,7 @@ ppl xlab "a multi line x label<NL>here is line two<NL>here is line three<NL>here
 ppl ylab "a multi line y label<NL>here is line two<NL>here is line three<NL>here is line four"
 ppl plot
 
+frame/file=multi_line_labels5.gif
 ! reset
 can view
 ppl axlen,8
@@ -123,4 +127,5 @@ ppl title "@P2@ACRED title in AC font<NL>put P2 first then AC otherwise \
 the at sign in front of P2 not recognized"
 ppl plot
 
+frame/file=multi_line_labels6.gif
 ppl rlabs,4,0

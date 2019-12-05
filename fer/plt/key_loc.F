@@ -54,6 +54,8 @@
 *                  since they are used as parameters, and prefixed with 
 *                  dflt_ those that need to be scaled by pplscale or textscale.
 * V695  *acm*  5/15 PyFerret, label for overlay was too close to the plot edge.
+* V76  *acm* 11/19 Issue 1960: Place keys for overlay lines in multiple columns 
+*                  below plot before resorting to putting them inside the plot box.
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -87,34 +89,54 @@
 
 * is there room for this overlay label at the lower left ?
 * test the location of the last line of this key label
+* Add more labels to column before going to next column. (This is
+* inconsistent with legend on a plot with multiple vars on the command
+* line, but more consistent with previous PLOT/OVER behavior.)
 
-	   ysize = dflt_ovkey_yspace*pplscale
-c	   ypos  = ovkey_yorigin - novkeys_on*ovkey_yspace
-	   ypos  = dflt_ovkey_yorigin*pplscale - 
-     .             (novkeys_on+numlines-1)*dflt_ovkey_yspace*pplscale
-	   IF ( ABS(ypos).GT.yorg .AND. novkeys_ll.EQ.0 ) THEN
-	      ovkey_ll_full = .TRUE.
-	      novkeys_ll = novkeys_on
+	   key_ncolmn = 3
+	   IF (novkeys_on .EQ. 0) THEN
+	      key_xspace = (xlen+ 0.95*dflt_ovkey_xorigin + 1*pplscale)/ FLOAT(key_ncolmn)
+	      novkeys_icol = 0
+	      colmn = 0
+	      ypos = dflt_ovkey_yorigin*pplscale + dflt_ovkey_yspace*pplscale
+	      ovkey_ypos_nxt = ypos
+	   ELSE
+	      ypos = ovkey_ypos_nxt
 	   ENDIF
 
-* actual y position
-	   ypos  = dflt_ovkey_yorigin*pplscale - 
-     .             novkeys_on*dflt_ovkey_yspace*pplscale
+	   ysize = dflt_ovkey_yspace*pplscale
+
+	   xpos = 0.95*dflt_ovkey_xorigin*pplscale + colmn*key_xspace
+	   ypos = ypos - dflt_ovkey_yspace*pplscale
+
+	   IF (ABS(ypos- dflt_ovkey_yspace*pplscale* FLOAT(numlines-1)) .GT. yorg) THEN
+	      IF (colmn .EQ. 0) novkeys_ll = novkeys_on ! number of lines in one columnn
+	      colmn = colmn + 1
+	      ypos = dflt_ovkey_yorigin*pplscale 
+	      ypos = ypos - dflt_ovkey_yspace*pplscale ! move down, make room for axis label
+	      xpos = 0.95*dflt_ovkey_xorigin*pplscale + colmn*key_xspace
+	      IF (colmn .GE. key_ncolmn) THEN
+	         ovkey_ll_full = .TRUE.
+	         novkeys_on = novkeys_ll
+	         ovkey_ypos_nxt = 0.
+	      ENDIF
+	   ENDIF
+	   IF (ABS(ovkey_ypos_nxt).LT.yorg .AND. .NOT.ovkey_ll_full) 
+     .            ovkey_ypos_nxt = ypos - dflt_ovkey_yspace*pplscale* FLOAT(numlines-1)
 
 	   IF ( ovkey_ll_full ) THEN
 * ... no - try to put the label within the plot rectangle at the left
 	      xsize  = dflt_ovkey_xspace*pplscale * 0.8
 	      xpos   = 0.1*pplscale
 	      lab_ht = dflt_ovkey_labht*textscale  * 0.8
-	      ysize  = dflt_ovkey_yspace*pplscale * 0.8
-	      ypos   = 0.1*pplscale + 
-     .               (numlines-1+novkeys_on-novkeys_ll) *
-     .                 dflt_ovkey_yspace*pplscale * 0.8
+	      ysize = dflt_ovkey_yspace*pplscale  * 0.8	      
+	      ypos = 0.1*pplscale + 
+     .            (numlines-1+novkeys_on-novkeys_ll)*dflt_ovkey_yspace*pplscale*0.8
+	      ovkey_ypos_nxt = ypos
 	      IF (ABS(ypos+lab_ht) .GT. dylen ) xpos = -999.	! off screen
 	   ELSE
-* ... yes - it will fit at the lower left
+* ... yes - it will fit in first key_ncolmn columns.
 	      xsize  = dflt_ovkey_xspace*pplscale
-	      xpos   = 0.95*dflt_ovkey_xorigin*pplscale
 	      lab_ht = dflt_ovkey_labht*textscale
 	   ENDIF
 	   novkeys_on = novkeys_on + numlines

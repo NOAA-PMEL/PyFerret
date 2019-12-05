@@ -1,0 +1,94 @@
+! bn_lineplots_keys.jnl
+! Nov 21, 2019 ACM
+! See issue 1960: Change auto-generated line keys for PLOT/OVER line plots
+! so they are similar to what's generated for a plot with multiple arguments.
+
+
+! Note the multi-var plot automatically shrinks the y axis to make more room 
+! below for legend lines (?without changing the value of auto-generated symbol 
+! ppl$ylen ??) btw, plot/color starts with a red line, to make the line colors 
+! the same in both panels.
+
+define axis/t=1-jan-2010:31-dec-2010:1/units=days/t0=1-jan-2010 taxis
+let tt= t[gt=taxis]
+
+set v upper
+plot/L=1:20/color sin(tt/30),sin(tt/40),sin(tt/50),sin(tt/60),sin(tt/70),cos(tt/30),cos(tt/40),cos(tt/50),cos(tt/60),cos(tt/70) 
+show sym ppl$yorg, ppl$ylen
+
+! Previously the legend lines were drawn inside the box after one
+! column of labels filled up the available margin space. Now
+! draw three columns of labels.
+
+set v lower
+plot/L=1:20/title=" "/vlim=-1:1 sin(tt/30)
+plot/L=1:20/over sin(tt/30)
+plot/L=1:20/over sin(tt/40)
+plot/L=1:20/over sin(tt/50)
+plot/L=1:20/over sin(tt/60)
+plot/L=1:20/over sin(tt/70)
+plot/L=1:20/over cos(tt/30)
+plot/L=1:20/over cos(tt/40)
+plot/L=1:20/over cos(tt/50)
+plot/L=1:20/over cos(tt/60)
+plot/L=1:20/over cos(tt/70) 
+show sym ppl$yorg, ppl$ylen
+frame/file=lineplot_key1.gif
+
+cancel view
+! Now a larger number of lines
+let/title="sine day/20" var01 = sin(tt/20)
+let/title="sine day/30" var02 = sin(tt/30)
+let/title="sine day/40" var03 = sin(tt/40)
+let/title="sine day/50" var04 = sin(tt/50)
+let/title="sine day/60" var05 = sin(tt/60)
+let/title="sine day/70" var06 = sin(tt/70)
+let/title="sine day/80" var07 = sin(tt/80)
+let/title="sine day/90" var08 = sin(tt/90)
+let/title="sine day/100" var09 = sin(tt/100)
+
+let/title="cosine day/10" var10 = cos(tt/10)
+let/title="cosine day/20" var11 = cos(tt/20)
+let/title="cosine day/30" var12 = cos(tt/30)
+let/title="cosine day/40" var13 = cos(tt/40)
+let/title="cosine day/50" var14 = cos(tt/50)
+let/title="cosine day/60" var15 = cos(tt/60)
+let/title="cosine day/70" var16 = cos(tt/70)
+let/title="cosine day/80" var17 = cos(tt/80)
+let/title="cosine day/90" var18 = cos(tt/90)
+let/title="cosine day/100" var19 = cos(tt/100)
+
+! plot/key=title says to use titles instead of the variable definitions.
+
+! Legend lines still eventually drawn inside the box when the lower 
+! margin has been filled with three columns of labels.
+! Could use "GO margins" to give more space.  Note that if there
+! are eventually too many to fit in the plot box, additional labels
+! are just skipped. Previously (in Ferret) a dialog box popped up 
+! for locating the label, not good behavior.
+
+set v lower
+plot/L=1:20/title=" "/vlim=-1:1 var01
+plot/L=1:20/key=title/over var01
+plot/L=1:20/key=title/over var02
+plot/L=1:20/key=title/over var03
+plot/L=1:20/key=title/over var04
+plot/L=1:20/key=title/over var05
+plot/L=1:20/key=title/over var06
+plot/L=1:20/key=title/over var07
+plot/L=1:20/key=title/over var08
+plot/L=1:20/key=title/over var09
+plot/L=1:20/key=title/over var10
+plot/L=1:20/key=title/over var11
+plot/L=1:20/key=title/over var12
+plot/L=1:20/key=title/over var13
+plot/L=1:20/key=title/over var14
+plot/L=1:20/key=title/over var15
+plot/L=1:20/key=title/over var16
+plot/L=1:20/key=title/over var17
+plot/L=1:20/key=title/over var18
+plot/L=1:20/key=title/over var19
+
+show sym ppl$yorg, ppl$ylen
+
+frame/file=lineplot_key2.gif

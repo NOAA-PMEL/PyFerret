@@ -50,6 +50,7 @@
 *                  ul_xorigin, and ul_yorigin to plot_setup.parm,
 *                  since they are used as parameters, and prefixed with 
 *                  dflt_ those that need to be scaled by pplscale or testscale.
+* V76 *acm* 11/19 -  Issue 1960: no changes to PyFerret version of this
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
@@ -60,5 +61,4 @@
      .     saved_ppl_yax / .FALSE. /,
      .     animate       / .FALSE. /,
      .     first_frame   / .TRUE. /
-
-        END
+	END

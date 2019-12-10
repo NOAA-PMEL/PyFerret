@@ -104,8 +104,8 @@ class PipedViewer(object):
         {"action":"show"} command is submitted to the viewer.
 
         Currently supported viewer types are:
-            "PipedViewerPQ": PipedViewerPQ using PyQt5 or PyQt4
-            "PipedImagerPQ": PipedImagerPQ using PyQt5 or PyQt4
+            "PipedViewerPQ": PipedViewerPQ using PySide2, PyQt5, or PyQt4
+            "PipedImagerPQ": PipedImagerPQ using PySide2, PyQt5, or PyQt4
         '''
         super(PipedViewer, self).__init__()
         (self.__cmndrecvpipe, self.__cmndsendpipe) = multiprocessing.Pipe(False)
@@ -114,14 +114,14 @@ class PipedViewer(object):
             try:
                 from pipedviewer.pipedviewerpq import PipedViewerPQProcess
             except ImportError:
-                raise TypeError("The PQ viewers requires PyQt5 or PyQt4")
+                raise TypeError("The PQ viewers requires PySide2, PyQt5, or PyQt4")
             self.__vprocess = PipedViewerPQProcess(self.__cmndrecvpipe,
                                                    self.__rspdsendpipe)
         elif viewertype == "PipedImagerPQ":
             try:
                 from pipedviewer.pipedimagerpq import PipedImagerPQProcess
             except ImportError:
-                raise TypeError("The PQ viewers requires PyQt5 or PyQt4")
+                raise TypeError("The PQ viewers requires PySide2, PyQt5, or PyQt4")
             self.__vprocess = PipedImagerPQProcess(self.__cmndrecvpipe,
                                                    self.__rspdsendpipe)
         else:

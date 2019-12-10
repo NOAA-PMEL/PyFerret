@@ -21,17 +21,30 @@ import signal
 import time
 import math
 
-# First try to import PyQt5, then try PyQt4 if that fails
+# First try to import PySide2, then try PyQt5 if that fails, and finally try PyQt4 if that fails
 try:
-    import PyQt5
-    QT_VERSION = 5
+    import PySide2
+    PYTHONQT_VERSION = 'PySide2'
 except ImportError:
-    import PyQt4
-    QT_VERSION = 4
+    try:
+        import PyQt5
+        PYTHONQT_VERSION = 'PyQt5'
+    except ImportError:
+        import PyQt4
+        PYTHONQT_VERSION = 'PyQt4'
 
-# Now that the PyQt version is determined, import the parts
+# Now that the Python Qt version is determined, import the parts
 # allowing any import errors to propagate out
-if QT_VERSION == 5:
+if PYTHONQT_VERSION == 'PySide2':
+    from PySide2.QtCore    import Qt, QPointF, QRect, QRectF, QSize, QSizeF, QTimer
+    from PySide2.QtGui     import QBrush, QColor, QFontMetricsF, QImage, QPainter, \
+                                  QPalette, QPen, QPicture, QPixmap, QPolygonF, \
+                                  QTextDocument
+    from PySide2.QtWidgets import QAction, QApplication, QDialog, QFileDialog, QLabel, \
+                                  QMainWindow, QMessageBox, QPushButton, QScrollArea
+    from PySide2.QtSvg     import QSvgGenerator
+    from PySide2.QtPrintSupport import QPrinter
+elif PYTHONQT_VERSION == 'PyQt5':
     from PyQt5.QtCore    import Qt, QPointF, QRect, QRectF, QSize, QSizeF, QTimer
     from PyQt5.QtGui     import QBrush, QColor, QFontMetricsF, QImage, QPainter, \
                                 QPalette, QPen, QPicture, QPixmap, QPolygonF, \
@@ -611,14 +624,14 @@ class PipedViewerPQ(QMainWindow):
                         ( "xbm",
                           "XBM - X11 Bitmap (*.xbm)" ), ]
         filters = ";;".join( [ t[1] for t in formattypes ] )
-        if QT_VERSION == 5:
-            # tr returns Python unicode strings in PyQt5/Python3
-            (fileName, fileFilter) = QFileDialog.getSaveFileName(self,
-                self.tr("Save the current image as "), self.tr(self.__lastfilename), self.tr(filters))
-        else:
-            # tr returns QStrings in PyQt4
+        if PYTHONQT_VERSION == 'PyQt4':
+            # tr returns QStrings in PyQt4 (Python2)
             (fileName, fileFilter) = QFileDialog.getSaveFileNameAndFilter(self,
                  self.tr("Save the current image as "), self.tr(self.__lastfilename), self.tr(filters))
+        else:
+            # tr returns Python unicode strings in PySide2 or PyQt5 (Python3)
+            (fileName, fileFilter) = QFileDialog.getSaveFileName(self,
+                self.tr("Save the current image as "), self.tr(self.__lastfilename), self.tr(filters))
         if fileName:
             for (fmt, fmtQName) in formattypes:
                 if self.tr(fmtQName) == fileFilter:
@@ -1451,7 +1464,7 @@ class PipedViewerPQ(QMainWindow):
             myfont = self.__activepainter.font()
         myfontmetrics = QFontMetricsF(myfont)
         mytext = cmnd["text"]
-        if QT_VERSION == 4:
+        if PYTHONQT_VERSION == 'PyQt4':
             mytext = QString.fromUtf8(mytext)
         width = myfontmetrics.width(mytext)
         height = myfontmetrics.height()
@@ -1503,7 +1516,7 @@ class PipedViewerPQ(QMainWindow):
             except KeyError:
                 pass
             
-            if QT_VERSION == 4:
+            if PYTHONQT_VERSION == 'PyQt4':
                 mytext = QString.fromUtf8(mytext)
             self.__activepainter.drawText(0, 0, mytext)
             self.__drawcount += 1

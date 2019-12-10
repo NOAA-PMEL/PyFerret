@@ -10,17 +10,26 @@ from __future__ import print_function
 
 import sys
 
-# First try to import PyQt5, then try PyQt4 if that fails
+# First try to import PySide2, then try PyQt5 if that fails, and finally try PyQt4 if that fails
 try:
-    import PyQt5
-    QT_VERSION = 5
+    import PySide2
+    PYTHONQT_VERSION = 'PySide2'
 except ImportError:
-    import PyQt4
-    QT_VERSION = 4
+    try:
+        import PyQt5
+        PYTHONQT_VERSION = 'PyQt5'
+    except ImportError:
+        import PyQt4
+        PYTHONQT_VERSION = 'PyQt4'
 
-# Now that the PyQt version is determined, import the parts
+# Now that the Python Qt version is determined, import the parts
 # allowing any import errors to propagate out
-if QT_VERSION == 5:
+if PYTHONQT_VERSION == 'PySide2':
+    from PySide2.QtCore    import Qt
+    from PySide2.QtWidgets import QApplication, QButtonGroup, QDialog, \
+                                  QDialogButtonBox, QGridLayout, QGroupBox, \
+                                  QLabel, QLineEdit, QMessageBox, QRadioButton
+elif PYTHONQT_VERSION == 'PyQt5':
     from PyQt5.QtCore    import Qt
     from PyQt5.QtWidgets import QApplication, QButtonGroup, QDialog, \
                                 QDialogButtonBox, QGridLayout, QGroupBox, \

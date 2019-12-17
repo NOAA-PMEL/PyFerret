@@ -3115,6 +3115,7 @@ variables:
 *** Running ferret script: bn751_bug_fixes.jnl
 *** Running ferret script: bn_cdf_strlen.jnl
 *** Running ferret script: bn_set_mem_max.jnl
+*** Running ferret script: bn_lineplots_keys.jnl
 *** Running ferret script: bn_gif_noremote.jnl
 *** Running ferret script: bn_ps.jnl
 *** Running ferret script: bn_all_ef.jnl

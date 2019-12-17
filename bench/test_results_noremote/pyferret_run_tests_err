@@ -1185,10 +1185,6 @@ ooooooooooooooooooooooooooooooooooooooooooo
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
 *** Running ferret script: bn_multi_line_labels.jnl
-           *** NOTE: the use of "SET MODE METAFILE" is deprecated;
-           *** NOTE: instead use "FRAME /FILE=... /FORMAT=..."
-           *** NOTE: the use of "SET MODE METAFILE" is deprecated;
-           *** NOTE: instead use "FRAME /FILE=... /FORMAT=..."
 *** Running ferret script: bn552_bug_fixes.jnl
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -6005,6 +6001,9 @@ ooooooooooooooooooooooooooooooooooooooooooo
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
  LISTing to file a1.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
 *** Running ferret script: bn_cdf_strlen.jnl
  LISTing to file a.nc
  LISTing to file a.nc
@@ -6033,6 +6032,7 @@ LIST/FORMAT=CDF/append/file=a.nc/L=2:4/strlen=10 tstrings
 LIST/FORMAT=CDF/clobber/file=a.nc/STRLEN=7 tstrings, tstrings_long
 LIST/FORMAT=CDF/clobber/file=a.nc/STRLEN=7 tstrings, tstrings_long
 *** Running ferret script: bn_set_mem_max.jnl
+*** Running ferret script: bn_lineplots_keys.jnl
 *** Running ferret script: bn_gif_noremote.jnl
  **ERROR: dimensions improperly specified: specified data is not a line
            - its a 2D region: "plot/i=1:10/j=1:20/nolabel i+j"

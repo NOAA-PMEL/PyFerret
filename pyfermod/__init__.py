@@ -276,7 +276,7 @@ pyferret_help_message = \
                       [-quiet]  [-linebuffer]  [-script <scriptname> [ <scriptarg> ... ]]
 
        -memsize:     maximum amount of memory that can be allocated for Ferret data 
-                     in mega (10^6) floats (where 1 float = 8 bytes); default is 25
+                     in mega (10^6) floats (where 1 float = 8 bytes); default is 125 == 1Gb
 
        -nodisplay    do not display to the console; a drawing can be saved using the 
                      FRAME command in any of the supported file formats.  The /QUALITY 
@@ -363,7 +363,7 @@ def init(arglist=None, enterferret=True):
     my_transparent = False
     my_unmapped = False
     my_pngonly = False
-    my_memsize = 25
+    my_memsize = 125
     my_journal = True
     my_verify = True
     my_restrict = False
@@ -493,7 +493,7 @@ def init(arglist=None, enterferret=True):
     return result
 
 
-def start(memsize=25, journal=True, verify=False, restrict=False,
+def start(memsize=125, journal=True, verify=False, restrict=False,
           server=False, unmapped=False, pngonly=False, quiet=False, 
           linebuffer=False, metaname=None, transparent=False):
     """

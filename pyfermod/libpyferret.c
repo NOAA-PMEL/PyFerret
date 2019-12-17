@@ -266,7 +266,7 @@ static char pyferretStartDocstring[] =
     "\n"
     "Optional arguments: \n"
     "    memsize = <float>: the size, in megadoubles (where a double is 8 bytes), \n"
-    "                       to allocate for Ferret's memory cache (default 25.6) \n"
+    "                       to allocate for Ferret's memory cache (default 125 == 1Gb) \n"
     "    journal = <bool>: journal Ferret commands? (default True) \n"
     "    verify = <bool>: echo Ferret commands? (default True) \n"
     "    restrict = <bool>: restrict Ferret's capabilities? (default False) \n"
@@ -294,7 +294,7 @@ static PyObject *pyferretStart(PyObject *self, PyObject *args, PyObject *kwds)
     static char *argNames[] = {"memsize", "journal", "verify", "restrict", "server",
                                "metaname", "transparent", "unmapped", "pngonly", 
                                "quiet", "linebuffer", NULL};
-    double mwMemSize = 25.6;
+    double mwMemSize = 125.0;
     PyObject *pyoJournal = NULL;
     PyObject *pyoVerify = NULL;
     PyObject *pyoRestrict = NULL;

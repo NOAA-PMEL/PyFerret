@@ -140,6 +140,13 @@
 * V73   7/17  *acm* ticket 2551 Report an error for unmatched parentheses in a REPEAT loop.
 * V75   4/19  *acm* Issue   660 Evaluate a grave-accent expression that appears right after
 *                               a slash in the position of a qualifier
+* V76  11/19  *acm* Issue  1963  Check for too-short abbreviations of qualifiers, e.g.
+*                  /T= for /TITLE is interpreted as a possible time qual in 
+*                  evaluating grave-accent expressions.
+*                  /TITLE= is the only known case of this potential conflict, could expand
+*                  the too-shortness from 1 to MIN(
+* V76  12/19 *acm* ticket 1963, Replace one-letter qualifiers with what is
+*                  being used (so /T for /TITLE isn't misinterpreted elsewhere).
 
 * command, subcommand and qualifiers will be identified by number in
 *	 COMMON/XCOMMAND.  Arguments will be returned as positions in
@@ -179,6 +186,7 @@
 	include 'xcommand.cmn'
 	include 'xcontrol.cmn'
 	include 'xvariables.cmn'	! for num_uvars_in_cmnd
+        include 'xrisc.cmn'
 
 * local variable declarations:
 *
@@ -193,8 +201,8 @@
      .          itsa_qualifier(local_max_arg_list), 
      .          MATCH4, escape, apply_cx, ptrslash, i3_ok,
      .		its_set_data, its_define_sym, its_go, its_say,
-     .		has_lead_white_space, found_white_space
-	INTEGER TM_LENSTR
+     .		has_lead_white_space, found_white_space, expnd_qual
+	INTEGER TM_LENSTR, STR_UPCASE
 	INTEGER	buff_len, bang_position, ptr, quote_end,
      .		word_num, look_ahead, look_back, isub_word, csgo,
      .		isubcmnd_ptr, iword, last_qual, iqual_word, iterm,
@@ -202,7 +210,7 @@
      .		grave_start, grave_end, in, out, nest,
      .		paren_level,len_test,len_mchars, current_words,
      .		last_recognized_word, white_aftr_cmnd, white_aftr_subcmnd,
-     .		ngone
+     .		ngone, ir, ic
 	CHARACTER c1*1
 	CHARACTER url_buff*2048
 
@@ -776,7 +784,13 @@ cc  Allow zero-length null string in quotes
 *	last_qual = word_num
 
 * finally ... loop through qualifiers to identify them
- 704	DO 740 iqual_word = 2, last_qual
+* Check for too-short abbreviations, /T= for /TITLE see ticket 1963.
+ 704	CONTINUE
+
+        expnd_qual = .FALSE.
+        ic = 1
+        ir = 1
+        DO 740 iqual_word = 2, last_qual
 	   IF ( .NOT.itsa_qualifier(iqual_word) )	  GOTO 740
 	   IF ( num_qualifs(isubcmnd_ptr) .EQ. 0 )        GOTO 5030	! error
 	   IF ( num_quals .EQ. max_quals )		  GOTO 5040	! error
@@ -801,6 +815,22 @@ cc  Allow zero-length null string in quotes
      .		MATCH4( cmnd_buff(arg_start(iqual_word):iterm - 1 ),
      .                  len_test,
      .			qualifiers(iqual_ptr),len_mchars )
+     
+* Did they abbreviate to one letter when we may need more?  Fill out the qualifier.
+* Could expand the too-shortness from (len_test.EQ.1) to (len_test.LT.len_mchars)
+
+           IF (known_qualifier .AND. len_test.EQ.1 .AND. len_mchars.GT.1) THEN
+c           IF (known_qualifier .AND. len_test.LT.len_mchars .AND. len_mchars.GT.1) THEN
+              expnd_qual = .TRUE.
+              risc_buff(ir:) = cmnd_buff(ic:arg_start(iqual_word))
+	      ir = TM_LENSTR(risc_buff)   ! ir + arg_start(iqual_word)-1
+              risc_buff(ir:) = qualifiers(iqual_ptr)(:len_mchars)
+              ir = ir + len_mchars 
+	      ir = TM_LENSTR(risc_buff)
+              ic = arg_start(iqual_word) + len_test 
+
+           ENDIF 
+
 * "@/anything" will be permitted to pass
 * (8/92 - this should be lifted outside of this loop for speed!!! *sh*)
 	   atsin_qualifier  = 
@@ -880,6 +910,16 @@ cc  Allow zero-length null string in quotes
 	   ENDIF
 
  740	CONTINUE
+
+* If we replaced abbreviated qualifiers with longer versions, go back and
+* and re-parse the whole thing as all the pointers now need to be revised.
+
+        IF (expnd_qual) THEN
+	   risc_buff(ir:) = cmnd_buff(ic:TM_LENSTR(cmnd_buff))
+	   cmnd_buff = risc_buff
+           expnd_qual = .FALSE.   
+           GOTO 5  
+        ENDIF
 
 * +++++++ ARGUMENTS +++++++
 * return buffer locations for all words not yet identified

@@ -82,6 +82,9 @@ say ($10)0
 message/continue "2+2=`2+2"
  **ERROR: variable unknown or not in data set: GARBAGE
 message/continue "2+2=`garbage`"
+ **ERROR: command syntax: unable to evaluate expression
+          garbage`"
+message/continue "2+2=`garbage`"
  **ERROR: invalid command: grave accent doesnt evaluate to scalar
           I[i=3:5]
 message/continue "3 numbers: `I[i=3:5]`"
@@ -98,10 +101,16 @@ MESSAGE/CONTINUE `2+2\`
  **ERROR: command syntax: 2+2\
           illegal character: \
 MESSAGE/CONTINUE `2+2\`+1`
+ **ERROR: command syntax: unable to evaluate expression
+          2+2\`+1`
+MESSAGE/CONTINUE `2+2\`+1`
  **ERROR: command syntax: unpaired quotation marks, grave accent or brackets
 MESSAGE/CONTINUE \`2+2`+1\`
  **ERROR: command syntax: 1*/3
           * before / is illegal
+MESSAGE/CONTINUE `1*/3`
+ **ERROR: command syntax: unable to evaluate expression
+          1*/3`
 MESSAGE/CONTINUE `1*/3`
  **ERROR: command syntax: sst*/3
           * before / is illegal
@@ -120,7 +129,7 @@ MESSAGE/CONTINUE `sst,return=Xsize`
 MESSAGE/CONTINUE `sst,return=trash`
 *** Running ferret script: bn_letd.jnl
  **ERROR: unknown data set: NOEXIST
-DEFINE VARIABLE/d=noexist a = b
+DEFINE VARIABLE/DAT=noexist a = b
  **ERROR: variable unknown or not in data set: AIRT[D=GT4D011]
 list/l=1/x=180/y=0 airt[d=gt4d011]
  **ERROR: invalid command: CANCEL what?
@@ -6004,6 +6013,34 @@ ooooooooooooooooooooooooooooooooooooooooooo
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
+ **ERROR: command syntax: unable to evaluate expression
+ 
+plot/t="My New Title" cos(y[y=1:15])* `a[i=@ave]`
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
+Replacing definition of axis XAXIS
+Replacing definition of axis YAXIS
+ LISTing to file xye.nc
+           *** NOTE: Saving E or F axis with time axis uses /RIGID in time
+ LISTing to file xye.nc
+ LISTing to file xye.nc
+ LISTing to file xye.nc
+ LISTing to file xye.nc
+ LISTing to file xye.nc
+ LISTing to file xye.nc
+ LISTing to file xye.nc
+ LISTing to file xye.nc
+ LISTing to file xye.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ LISTing to file tmp-ufvar.nc
+ LISTing to file tmp-fvar.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
 *** Running ferret script: bn_cdf_strlen.jnl
  LISTing to file a.nc
  LISTing to file a.nc

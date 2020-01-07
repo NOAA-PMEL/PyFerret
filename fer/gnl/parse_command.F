@@ -826,7 +826,6 @@ c           IF (known_qualifier .AND. len_test.LT.len_mchars .AND. len_mchars.GT
 	      ir = TM_LENSTR(risc_buff)   ! ir + arg_start(iqual_word)-1
               risc_buff(ir:) = qualifiers(iqual_ptr)(:len_mchars)
               ir = ir + len_mchars 
-	      ir = TM_LENSTR(risc_buff)
               ic = arg_start(iqual_word) + len_test 
 
            ENDIF 

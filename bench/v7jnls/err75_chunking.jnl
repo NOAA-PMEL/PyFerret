@@ -1,0 +1,52 @@
+! err75_chunking
+! ticket 1964: chunking that ends with a single step, here m=10:10
+! gave wrong result
+
+! Define a variable in x-y-e and save to a file
+use coads_climatology
+define axis/x=0:360/npoints=1081/units=degrees_east xaxis
+define axis/y=-90:90/npoints=540/units=degrees_north yaxis
+
+let ens = randu(_m[m=1:10])
+let fvar = sst[L=1,gx=xaxis,gy=yaxis] * ens
+save/clobber/file=xye.nc/m=1/mlimits=1:10 fvar
+set mem/siz=100
+repeat/m=2:10 ( save/append/file=xye.nc fvar)
+
+cancel data/all; cancel var/all; cancel memory/all
+
+! Now open this file and write out averages over E to files, first a 
+! user-variable and then the file variable.  The results should be the same.
+
+use xye.nc
+let ufvar = fvar[d=1]
+
+! This memory setting causes ufvar[M=1:10@AVE] to be computed in chunks.
+! m=1:3, m=4:6, m=7:9, and the last chunk m=10:10
+set mem/siz=15
+
+save/clobber/file=tmp-ufvar.nc ufvar[M=1:10@AVE]
+show memory/diagnostic
+
+save/clobber/file=tmp-fvar.nc  fvar[M=1:10@AVE]
+show memory/diagnostic
+
+cancel data/all; cancel var/all; cancel memory/all
+
+! Now look at the difference between these m-averages by plotting them
+! averaged over X, they should be identical lines.
+
+use tmp-ufvar.nc
+use tmp-fvar.nc
+
+let diff = fvar[d=2] - ufvar[d=1]
+
+
+! should be zero or very,very small
+! previously this gave min -.04, max 0.7
+
+stat diff
+
+cancel data/all
+
+sp rm xye.nc tmp-ufvar.nc tmp-fvar.nc

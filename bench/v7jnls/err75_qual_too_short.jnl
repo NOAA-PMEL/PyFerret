@@ -1,0 +1,26 @@
+! err75_qual_too_short.jnl
+! Ticket 1963: Qualifier too short so /T= for /TITLE
+! is interpreted as a time spec, but no error msg given
+
+! This was the original example. The command was accepted 
+! with no error but the variable was not defined.
+let/t="ttitle" a = sst[d=`1`]
+show var
+
+! Test in combination with some other qualifiers
+let/t="ttitle"/u="uunits" c= sst[d=`1`]
+show var
+
+! Replace multiple instances
+! If multiple instances, the last one is used.
+let/t="ttitle"/u="uunits"/t="final title" b = sst[d=`1`]
+show var
+
+! Other commands
+! This really is a bug, PLOT has PLOT/T so the qualifier SHOULD be t
+! This previously didn't return an error, did nothing.
+set mode ignore
+let a = x[x=1:10] 
+plot/t="My New Title" cos(y[y=1:15])* `a[i=@ave]`
+
+set mode/last ignore

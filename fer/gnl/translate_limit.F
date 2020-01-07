@@ -73,6 +73,11 @@
 * v7441*acm* 12/18 Issue 1910: Allow dates in commands to be in ISO 8601 form, yyyy-mm-dd
 * V751 *acm*  5/19 Minor cleanup.  No longer need TM_DATE.  Report time-string translation
 *                  errors for F or T axis
+* V76  *acm*  1/20 Ticket 1963: part of issue was non-reported parsing error evaluating 
+*                  the argument to /T= in LET/T="title"
+* v76  1/2020 *acm* Getting error-reporting correct, logical time_err is set when
+*                   an error was reported when translating iso-times and time doesn't 
+*                   exist on the given calendar: no need for more messages
 
 * possible formats:
 * for subscript values ( subscript .EQ. .TRUE. ) :
@@ -99,7 +104,7 @@
 	REAL*8		answer
 
 * internal variable declarations:
-	LOGICAL		TM_DIGIT, TM_DATE_OK, TM_DATE, is_t
+	LOGICAL		TM_DIGIT, TM_DATE_OK, TM_DATE, is_t, date_str
 	INTEGER		TM_LENSTR1, end_pos, start_pos, pbad, i, 
      .                  slen, j, cal_id, dot
 	REAL*8		SECS_FROM_BC, given_answer, frac
@@ -200,6 +205,7 @@
 	ELSE
 * /T or /F
 * date/time string ?
+	   time_err = .FALSE.
 	   IF ( TM_DATE_OK ( buff , cal_id)  ) THEN
 * ... time step cannot be evaluated until we know what axis this is on
 * ... save number of seconds from B.C. as a negative to flag later translation 
@@ -230,11 +236,12 @@
 	RETURN
 
 * error exit
- 5000	IF ( idim.EQ.t_dim .OR. idim.EQ.f_dim) THEN
+ 5000	IF ( (idim.EQ.t_dim .OR. idim.EQ.f_dim) .AND. time_err) THEN
 	   status = ferr_syntax
+	   time_err = .FALSE.
 	   RETURN  ! already reported any error
 	ELSE
-	   CALL ERRMSG( merr_badtimedef, status, string, *5900 )
+	   CALL ERRMSG( ferr_syntax, status, string, *5900 )
 	ENDIF
  5100	CALL ERRMSG( ferr_syntax, status,
      .		'"'//risc_buff(pbad:pbad)//'" is illegal in '//

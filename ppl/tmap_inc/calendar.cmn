@@ -9,8 +9,11 @@ C *acm* 12/00  Split into calendar.cmn and calendar.decl
 C *acm* 1/ 01  add cals_days_before_month and cals_month_by_day
 * v744 11/2011 *acm* Issue 1906: If PROLEPTIC_GREGORIAN is given then 
 *                  override mixed-gregorian calendar handling. 
+* v6   1/2020 *acm* Getting error-reporting correct, logical time_err
+*                   set when an error was reported when translating iso-times
 
 	common / all_calendar_specs /
+     .                  time_err,
      .                  max_calendars,
      .			max_months,
      .			max_days,

@@ -8,10 +8,13 @@ C  * acm * declarations for individual calendar attributes.
 * v744 11/2011 *acm* Issue 1906: If PROLEPTIC_GREGORIAN is given then 
 *                  override mixed-gregorian calendar handling. 
 *              *kms* allowed_calendars size a multiple of 4 to eliminate need for padding
+* v6   1/2020 *acm* Getting error-reporting correct, logical time_err
+*                   set when an error was reported when translating iso-times
 
 C	*******************************************************************
 C 	Parameters dimensioning calendar data structures
 C	*******************************************************************
+	logical		time_err
 	integer		max_calendars, mxcals,
      .			max_months, mxmnths,
      .			max_days, mxdays,

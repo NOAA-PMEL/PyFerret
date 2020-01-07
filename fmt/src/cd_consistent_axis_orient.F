@@ -51,6 +51,8 @@
 *                 is needed.  (in loop 230 ds_ordering(idim,tmvar) incorrectly set to 0)
 * V751 6/19 *acm* Also allocate all the working storage used by this routine dynamically,
 *                 cleaning up unnecessary space and processing time.
+* V751 12/19 *acm* Issue 1962: When can't get consistent grids, give some coaching and
+*                 declare it an error.
 
 * argument definitions:
 *      dset        - TMAP data set pointer
@@ -73,6 +75,7 @@
             include 'xunits.cmn_text'
       external xunits_data
       include 'xdset_info.cd_equiv'
+      include 'errmsg.parm'
 
 * argument declarations
       LOGICAL reversed(max_lines:line_ceiling)
@@ -199,9 +202,8 @@ C Axis marked with a direction but is in inconsistent position in grids?
             CALL TM_NOTE( 'Axis '//line_name(iaxis)(1:vlen)//' marked as '//
      .          line_direction(iaxis), lunit_errors )
             CALL TM_NOTE(
-     .          'but it has different directions in grids. '//
-     .          'Axes in grids may be inconsistent.', lunit_errors)
-            already_noted(iaxis) = .TRUE.
+     .          'but it has different directions in grids. ', lunit_errors)
+            GOTO 5100
          ELSE
 
 c Find the grid which contains this axis and has the most dimensions.
@@ -269,11 +271,10 @@ c Find the grid which contains this axis and has the most dimensions.
                   ELSE
                      vlen = TM_LENSTR1(line_name(iaxis)) 
 
-                     CALL TM_NOTE('Could not adjust grid containing axis '// 
+                     CALL TM_NOTE('Could not make grid containing axis '// 
      .                       line_name(iaxis)(1:vlen), lunit_errors)
 
-                     CALL TM_NOTE('Axes in grids may be inconsistent.',
-     .                         lunit_errors)
+                     GOTO 5100
                   ENDIF
                   
                ENDIF  ! igrid2 .ne. 0
@@ -320,15 +321,8 @@ c Find the grid which contains this axis and has the most dimensions.
             CALL TM_NOTE(' ', lunit_errors)
             CALL TM_NOTE('Could not adjust grid for variable '// 
      .                 vname(1:vlen), lunit_errors)
-            CALL TM_NOTE('Axes in grids may be inconsistent.',
-     .                 lunit_errors)
-* Restore grids as they were read. At least the data can be viewed
-* and perhaps used to fix the file.
+            GOTO 5100
 
-            DO 210 idim = 1, nferdims
-               grid_line(idim,igrid) = copy_of_grids(idim,igrid)
-  210       CONTINUE 
- 
          ENDIF
 
 	 ndim = 0
@@ -388,7 +382,7 @@ c Find the grid which contains this axis and has the most dimensions.
   250 CONTINUE
       ENDIF
 	  
-
+5000  CONTINUE
       DEALLOCATE ( grid_ndims )
       DEALLOCATE ( copy_of_grids )
 
@@ -397,4 +391,9 @@ c Find the grid which contains this axis and has the most dimensions.
       DEALLOCATE ( axes_out_of_order )
 
       RETURN
+ 5100 CONTINUE
+      CALL ERRMSG (ferr_inconsist_grid, status, 
+     .       'File needs axis attributes on coordinate variables '// 
+     .       'indicating correct directions', *5000)
+
       END

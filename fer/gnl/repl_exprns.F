@@ -132,6 +132,8 @@
 *                  correct info for `var,return=dset` and dsetnum and dsetpath.
 * V745  4/19 *acm* ticket 1916, special handling getting context for RETURN= outputs
 * V751  6/19 *acm* ticket 1929, don't chop off str_len when testing for reformatting at the end
+* V76  12/19 *acm* ticket 1963, Issue a a (posibly redundant) error if error
+*                  return from EVAL_EXPR
 
         IMPLICIT NONE
 #include "netcdf.inc"
@@ -1235,7 +1237,7 @@ c		    ENDIF
 	   cx_only = .FALSE.
 	   CALL EVAL_EXPR (  cx_last, cmnd(istart:iend), 
      .        .TRUE., status )
-	   IF ( status .NE. ferr_ok ) GOTO 5000
+	   IF ( status .NE. ferr_ok ) GOTO 5530
 	   cx = is_cx(1)	! always comes back as the first context
 	   mr = is_mr(1)
 
@@ -1372,4 +1374,8 @@ c		    ENDIF
  5520   risc_buff = cmnd(i:qual_end)
 	CALL ERRMSG( ferr_invalid_command, status,
      .     return_errmsg//pCR//risc_buff, *5000)
+
+ 5530   risc_buff = cmnd(i:qual_end)
+	CALL ERRMSG( ferr_syntax, status,
+     .     'unable to evaluate expression '//pCR//risc_buff, *5000)
 	END

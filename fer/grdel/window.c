@@ -720,7 +720,7 @@ grdelBool grdelWindowSetSize(grdelType window, float width, float height)
 }
 
 /*
- * Sets the current scalinf factor of a Window.
+ * Sets the current scaling factor of a Window.
  *
  * Arguments:
  *     window: Window to use

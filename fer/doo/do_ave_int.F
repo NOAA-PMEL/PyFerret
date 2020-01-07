@@ -56,6 +56,11 @@
 *                 and finalizing called separately from IS_TRANS
 * V72  *acm* 5/17 Fix ticket 2538: scatter/gather weights when average 
 *                 over a "point"
+* V7.6 *acm* 12/19 Issue 1964: Error when re-working this for memory in chunks.
+*                 When setting box sizes the case of "IF ( lo .EQ. hi )" was 
+*		  incorrect when a chunk is one box long. Gave too large a box 
+*		  size, the length of the entire result axis, instead of the length
+*                 for just this chunk.
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
@@ -101,22 +106,23 @@
         point = .FALSE.
 
 * get and save grid box sizes (weights) just once for efficiency
-        IF ( lo .EQ. hi ) THEN    ! 8/92
-           box(lo) = cx_hi_ww(idim,res_cx) - cx_lo_ww(idim,res_cx)
-           point = box(lo) .EQ. 0.0
-        ELSE
-	   DO 100 i = lo, hi
- 100	   box(i)  = BOX_SIZE( i, grid, idim )
+        
+	DO i = lo, hi
+	   box(i)  = BOX_SIZE( i, grid, idim )
+	ENDDO
+	IF ( lo .EQ. hi ) THEN
+	   point = box(lo) .EQ. 0.0
+	ELSE
 * 11/16 ... end boxes may be only partial cells
 	   IF (TM_WORLD(lo, grid, idim, box_lo_lim)
-     .    .LT. cx_lo_ww(idim,res_cx)                ) box(lo) = 
+     .       .LT. cx_lo_ww(idim,res_cx)                ) box(lo) = 
      .			TM_WORLD(lo, grid, idim, box_hi_lim)
      .		      - cx_lo_ww(idim,res_cx)
-	   IF (TM_WORLD(hi, grid, idim, box_hi_lim)
-     .    .GT. cx_hi_ww(idim,res_cx)                ) box(hi) =
+           IF (TM_WORLD(hi, grid, idim, box_hi_lim)
+     .       .GT. cx_hi_ww(idim,res_cx)                ) box(hi) =
      .			cx_hi_ww(idim,res_cx)
      .		      - TM_WORLD(hi, grid, idim, box_lo_lim)
-        ENDIF
+	ENDIF
 
 * perform integrations on standard units if possible
 	IF ( integrate ) THEN
@@ -136,21 +142,12 @@
 	   DO 210 j = cx_lo_s2(com_cx), cx_hi_s2(com_cx)
 	   cos_factor = 1.
 	   IF ( need_cos .AND. integrate ) THEN
-#ifdef double_p
 	      cos_factor = COS( deg2rad *       
      .             TM_WORLD(j, grid, y_dim, box_middle) ) 
               ybxlo = deg2rad* 
      .             TM_WORLD(j,grid,y_dim,box_lo_lim)
               ybxhi = deg2rad* 
      .             TM_WORLD(j,grid,y_dim,box_hi_lim)
-#else
-	      cos_factor = COS( deg2rad *       
-     .             SNGL( TM_WORLD(j, grid, y_dim, box_middle) ) ) 
-              ybxlo = deg2rad* 
-     .             SNGL( TM_WORLD(j,grid,y_dim,box_lo_lim) )
-              ybxhi = deg2rad* 
-     .             SNGL( TM_WORLD(j,grid,y_dim,box_hi_lim) )
-#endif
               bx = ABS(ybxhi - ybxlo)
 	      cos_factor = ABS( SIN(ybxhi) - SIN(ybxlo) )/ bx
 	   ENDIF
@@ -279,7 +276,7 @@
 	   DO 610 i = cx_lo_s1(com_cx), cx_hi_s1(com_cx)
               IF ( point ) THEN
                  IF ( com(i,j,k,l,lo,n) .EQ. bad_com ) THEN
-                    res(i,j,k,pt,m,n) = bad_res
+                    res(i,j,k,l,pt,n) = bad_res
                  ELSEIF ( integrate ) THEN
                     res(i,j,k,l,pt,n) = 0.0
                  ELSE

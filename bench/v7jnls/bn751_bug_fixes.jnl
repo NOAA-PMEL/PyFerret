@@ -49,3 +49,9 @@ GO err751_set_global_atts
 
 GO bn_reset
 GO err751_show_grid_expr
+
+GO bn_reset
+GO err75_qual_too_short
+
+GO bn_reset
+GO err75_chunking

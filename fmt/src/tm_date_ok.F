@@ -44,10 +44,14 @@
 * V530: *acm* 12/00 alternative calendar types; cal_id
 * v7441*acm* 12/18 Issue 1910: Allow dates in commands to be in ISO 8601 form, yyyy-mm-dd
 * v751 *acm*  6/19 Issue 1940: Require two dashes before trying to parse as an ISO 8601
-
+* v76  1/2020 *acm* Getting error-reporting correct, logical time_err set when an 
+*                  error was reported  translating iso-times and time invalid on 
+*                  the given calendar: no need for more messages, e.g. translate_limit
 
      include 'tmap_errors.parm'
 #include "gt_lib.parm"
+	include 'calendar.decl'
+	include 'calendar.cmn'
 
 * calling argument declarations:
       CHARACTER*(*) date
@@ -119,9 +123,12 @@ c 300  CONTINUE
 	 CALL TM_DATE_REFORMAT( buff, pdate_numslashnum, cal_id,
      .                          buff2, pdate_vax, .TRUE., status)
 	 IF ( status .EQ. merr_ok ) date = buff2
+         IF (status .NE. merr_ok) time_err = .TRUE.
+
       ENDIF
 
       TM_DATE_OK = status .EQ. merr_ok
+
 
  5000 RETURN
       END

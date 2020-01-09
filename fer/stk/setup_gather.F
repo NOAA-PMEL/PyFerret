@@ -62,7 +62,7 @@
 * V7.21 9/17 *acm Fix ticket 2561. Multiple transformations and multiple-axis 
 *                 transformations on the split axis.stk/setup_gath
 * V740  3/18 *acm* Introduce parameter abstractax_len for abstract axis length 99999999
-* V740  3/18 *acm* Fix issue 1864: unending loop on scatter/gather when grid length
+* V740  3/18 *acm* Fix issue 1964: unending loop on scatter/gather when grid length
 *                  returned as abstract-axis length
 
         IMPLICIT NONE

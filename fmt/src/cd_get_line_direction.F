@@ -1,6 +1,6 @@
       SUBROUTINE CD_GET_LINE_DIRECTION (dset, ivar,
-     .     vname, linunits, do_warn, full, dir_code)     
-     
+     .     vname, linunits, do_warn, full, dir_code)
+
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -44,8 +44,10 @@
 *                   and setting dir_code, set a 2-letter code
 *  V73+ ACM  1/2018 issue 1851: If direction is reduced down to using axis names, 
 *                   see if there were unrelated units that should trump the name
-*  V74+ ACM  2/2018 As in the DSG branch, work on DIR_CODE which is line_direction(iaxis)
-
+*  V76  ACM 12/2019 Issue 1962: We let axes named X, Y, Z, T determine direction,
+*                   if otherwise undetermined. Also allow single-letter names
+*                   I, J, K, L to indicate direction.
+* 
 * Arguments
 *  dset		Ferret dataset number
 *  ivar		varid
@@ -70,7 +72,6 @@
         include 'xunits.cmn_text'
         external xunits_data
         include 'errmsg.parm'
-
 
 * calling arguments
       LOGICAL do_warn, full
@@ -551,6 +552,7 @@ c     .   .OR. TM_HAS_STRING(linunits, 'degreesS') ! But this matches all degree
       ENDIF  ! end of std names
 
 * Still punting on axis names. If it's single-letter X, Y, Z, T,
+* or  single-letter I, J, K, L,
 * or starts with XAX, YAX, etc. then give it that direction.
 
       IF (dir_code .EQ. 'NA' .AND. vlen .EQ. 1) THEN
@@ -558,6 +560,11 @@ c     .   .OR. TM_HAS_STRING(linunits, 'degreesS') ! But this matches all degree
          IF ( vupcase(1:1) .EQ. 'Y') dir_code = 'YY'
          IF ( vupcase(1:1) .EQ. 'Z') dir_code = 'DU'
          IF ( vupcase(1:1) .EQ. 'T') dir_code = 'TI'
+
+         IF ( vupcase(1:1) .EQ. 'I') dir_code = 'XX'
+         IF ( vupcase(1:1) .EQ. 'J') dir_code = 'YY'
+         IF ( vupcase(1:1) .EQ. 'K') dir_code = 'DU'
+         IF ( vupcase(1:1) .EQ. 'L') dir_code = 'TI'
       ENDIF
       IF (dir_code.EQ.'NA') THEN
          IF (vupcase(1:3).EQ.'XAX') dir_code = 'XX'

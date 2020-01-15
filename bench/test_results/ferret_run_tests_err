@@ -6216,6 +6216,13 @@ Replacing definition of axis YAXIS
  LISTing to file tmp-fvar.nc
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
+           *** NOTE: Units on axis "i" are not recognized: 1
+           *** NOTE: They will not be convertible:
+           *** NOTE: Units on axis "j" are not recognized: 1
+           *** NOTE: They will not be convertible:
 *** Running ferret script: bn_cdf_strlen.jnl
  LISTing to file a.nc
  LISTing to file a.nc

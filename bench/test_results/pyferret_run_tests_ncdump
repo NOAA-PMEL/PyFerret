@@ -1756,26 +1756,26 @@ bn_attributes.jnl --- 21 set data type on output double
 bn_attributes.jnl --- 22 outtype=input
 netcdf a {
 dimensions:
-	J = 3 ;
 	I = 2 ;
+	J = 3 ;
 	l = 3 ;
 variables:
-	float J(J) ;
-		J:point_spacing = "even" ;
-		J:axis = "X" ;
 	int I(I) ;
 		I:point_spacing = "even" ;
-		I:axis = "Y" ;
-	char BROILED(I, J, l) ;
+		I:axis = "X" ;
+	float J(J) ;
+		J:point_spacing = "even" ;
+		J:axis = "Y" ;
+	char BROILED(J, I, l) ;
 		BROILED:long_name = "BROILED" ;
 		BROILED:history = "From test0" ;
-	byte THE_BULLET(I, J) ;
+	byte THE_BULLET(J, I) ;
 		THE_BULLET:long_name = "THE_BULLET" ;
 		THE_BULLET:history = "From test0" ;
-	short ORDER(I, J) ;
+	short ORDER(J, I) ;
 		ORDER:long_name = "ORDER" ;
 		ORDER:history = "From test0" ;
-	int RIGUE(I, J) ;
+	int RIGUE(J, I) ;
 		RIGUE:long_name = "RIGUE" ;
 		RIGUE:history = "From test0" ;
 
@@ -1784,29 +1784,32 @@ variables:
 		:Conventions = "CF-1.6" ;
 data:
 
- J = 2, 4, 6 ;
-
  I = 10, 20 ;
+
+ J = 2, 4, 6 ;
 
  BROILED =
   "ind",
-  "ist",
-  "ing",
   "uis",
+  "ist",
   "hab",
+  "ing",
   "le" ;
 
  THE_BULLET =
-  -127, 0, 127,
-  -128, -1, -127 ;
+  -127, -128,
+  0, -1,
+  127, -127 ;
 
  ORDER =
-  1, 2, 3,
-  4, 5, 6 ;
+  1, 4,
+  2, 5,
+  3, 6 ;
 
  RIGUE =
-  2, 3, 4,
-  5, 6, 7 ;
+  2, 5,
+  3, 6,
+  4, 7 ;
 }
 bn_attributes.jnl --- 23 more user-defined vars
 netcdf a {
@@ -2161,17 +2164,17 @@ bn_attributes.jnl --- 28 Define a new global attribute
 bn_attributes.jnl --- 29 SET ATT/OUTPUT=all for global attrs and a var
 netcdf a {
 dimensions:
-	J = 3 ;
 	I = 2 ;
+	J = 3 ;
 	l = 3 ;
 variables:
-	float J(J) ;
-		J:point_spacing = "even" ;
-		J:axis = "X" ;
 	int I(I) ;
 		I:point_spacing = "even" ;
-		I:axis = "Y" ;
-	char BROILED(I, J, l) ;
+		I:axis = "X" ;
+	float J(J) ;
+		J:point_spacing = "even" ;
+		J:axis = "Y" ;
+	char BROILED(J, I, l) ;
 		BROILED:act = "text string\n",
 			"\t123" ;
 		BROILED:acb = 10b ;
@@ -2189,16 +2192,16 @@ variables:
 		:FERRET_comment = "File written via LAS. Attributes are inherited from originating dataset" ;
 data:
 
- J = 2, 4, 6 ;
-
  I = 10, 20 ;
+
+ J = 2, 4, 6 ;
 
  BROILED =
   "ind",
-  "ist",
-  "ing",
   "uis",
+  "ist",
   "hab",
+  "ing",
   "le" ;
 }
 bn_attributes.jnl --- 29 SET VAR/OUTTYPE for user variable

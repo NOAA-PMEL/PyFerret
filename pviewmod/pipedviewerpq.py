@@ -885,6 +885,9 @@ class PipedViewerPQ(QMainWindow):
             # Create the image
             image = QImage( QSize(imagewidth, imageheight),
                             QImage.Format_ARGB32_Premultiplied )
+            # Indicate the recommended displayed size of PNG images
+            image.setDotsPerMeterX(self.physicalDpiX() / 0.0254)
+            image.setDotsPerMeterY(self.physicalDpiY() / 0.0254)
             # Initialize the image
             # Note that completely transparent gives black for formats not supporting 
             # the alpha channel (JPEG) whereas ARGB32 with 0x00FFFFFF gives white

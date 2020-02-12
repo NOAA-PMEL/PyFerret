@@ -13,136 +13,187 @@
         SET EXPRESSION has not been given or implied
  **ERROR: unknown command qualifier: notaqualifier
 MESSAGE/CONTINUE/notaqualifier
+Running script: bn_syntax.jnl
  **ERROR: unknown command: that
 that
+Running script: bn_syntax.jnl
  **ERROR: command syntax: \!
 \! ignore (err cuz bang gets escaped)
+Running script: bn_syntax.jnl
 *** Running ferret script: bn_dollar.jnl
  **ERROR: invalid command: Value needed for argument 3 in command
           GO bn_dollar.jnl hello
 message/cont $3
+Running script: bn_dollar.jnl hello
+Running script: bn_dollar.jnl hello
  **ERROR: my error message
 message/cont $3"<my error message"
+Running script: bn_dollar.jnl hello
+Running script: bn_dollar.jnl hello
  **ERROR: my error message
 message/cont $1"|xxxxx|goodbye<my error message"
+Running script: bn_dollar.jnl hello
  **ERROR: invalid command: Valid value needed for argument $1
 message/cont $1"greetings|xxxxx|goodbye"
+Running script: bn_dollar.jnl hello
            *** NOTE: Argument $1 received was: hello
            *** NOTE: Valid argument $1 choices are: xxxxx|goodbye
+Running script: bn_dollar.jnl hello
  **ERROR: my error message
 message/cont $3"|hello|goodbye<my error message"
+Running script: bn_dollar.jnl hello
  **ERROR: invalid command: Valid value needed for argument $3
 message/cont $3">greetings|hello|goodbye"
+Running script: bn_dollar.jnl hello
            *** NOTE: Argument $3 was missing or empty.
            *** NOTE: Valid argument $3 choices are: hello|goodbye
+Running script: bn_dollar.jnl hello
  **ERROR: my error message
 message/cont $3">greetings|hello|goodbye<my error message"
+Running script: bn_dollar.jnl hello
+Running script: bn_dollar.jnl hello
  **ERROR: my error message
 message/cont $3">greetings|hello>replacement text|goodbye<my error message"
+Running script: bn_dollar.jnl hello
  **ERROR: command syntax: empty argument replacement string: $3""
 message/cont $3""
+Running script: bn_dollar.jnl hello
  **ERROR: command syntax: empty text string provided with ">": <
 message/cont $3"<"
+Running script: bn_dollar.jnl hello
  **ERROR: invalid command: Valid value needed for argument $3
 message/cont $3"||"
+Running script: bn_dollar.jnl hello
            *** NOTE: Argument $3 was missing or empty.
            *** NOTE: Valid argument $3 choices are: |
  **ERROR: invalid command: Valid value needed for argument $3
 message/cont $3"|>|"
+Running script: bn_dollar.jnl hello
            *** NOTE: Argument $3 was missing or empty.
            *** NOTE: Valid argument $3 choices are: >|
  **ERROR: command syntax: empty text string provided with ">": >|
 message/cont $3">|"
+Running script: bn_dollar.jnl hello
  **ERROR: command syntax: empty text string provided with ">": |<
 message/cont $3"|<"
+Running script: bn_dollar.jnl hello
  **ERROR: invalid command: Valid value needed for argument $3
 message/cont $3"|>"
+Running script: bn_dollar.jnl hello
            *** NOTE: Argument $3 was missing or empty.
            *** NOTE: Valid argument $3 choices are: >
  **ERROR: command syntax: arg number not in 1-99 range: $100
 say $100
+Running script: bn_dollar.jnl hello
  **ERROR: command syntax: arg number not in 1-99 range: $100)
 say ($100)
+Running script: bn_dollar.jnl hello
  **ERROR: invalid command: Value needed for argument 10 in command
           GO bn_dollar.jnl hello
 say ($10)0
+Running script: bn_dollar.jnl hello
 *** Running ferret script: bn_grave.jnl
  **ERROR: command syntax: unpaired grave accents: message/continue "2+2=`2+2"
 message/continue "2+2=`2+2"
+Running script: bn_grave.jnl
  **ERROR: variable unknown or not in data set: GARBAGE
 message/continue "2+2=`garbage`"
+Running script: bn_grave.jnl
  **ERROR: invalid command: grave accent doesnt evaluate to scalar
           I[i=3:5]
 message/continue "3 numbers: `I[i=3:5]`"
+Running script: bn_grave.jnl
  **ERROR: command syntax: options: "P=prec","B=bad","W=width","ZW=zero-width" or "R=return-item"
           message/continue "1/3=`1/3BAD=-999`"
 message/continue "1/3=`1/3BAD=-999`"
+Running script: bn_grave.jnl
  **ERROR: command syntax: options: "P=prec","B=bad","W=width","ZW=zero-width" or "R=return-item"
           message/continue "1/3=`1/3,qBAD=-999`"
 message/continue "1/3=`1/3,qBAD=-999`"
+Running script: bn_grave.jnl
  **ERROR: command syntax: unpaired quotation marks, grave accent or brackets
 MESSAGE/CONTINUE \`2+2`
+Running script: bn_grave.jnl
  **ERROR: command syntax: unpaired quotation marks, grave accent or brackets
 MESSAGE/CONTINUE `2+2\`
+Running script: bn_grave.jnl
  **ERROR: command syntax: 2+2\
           illegal character: \
 MESSAGE/CONTINUE `2+2\`+1`
+Running script: bn_grave.jnl
  **ERROR: command syntax: unpaired quotation marks, grave accent or brackets
 MESSAGE/CONTINUE \`2+2`+1\`
+Running script: bn_grave.jnl
  **ERROR: command syntax: 1*/3
           * before / is illegal
 MESSAGE/CONTINUE `1*/3`
+Running script: bn_grave.jnl
  **ERROR: command syntax: sst*/3
           * before / is illegal
 MESSAGE/CONTINUE `sst*/3,return=lunits`
+Running script: bn_grave.jnl
  **ERROR: invalid command:  use RETURN= shape,size,grid,title,bad,t0,f0,units,dset,
             dsetnum,dsetpath,dsettitle,*size,*start,*end,
             *units,*axis,nc_scale,nc_offset,user_scale,user_offset,
             calendar,dtype,xmod,tmod,status,isDepth,isReady,defined
           sst,return=Xsize
 MESSAGE/CONTINUE `sst,return=Xsize`
+Running script: bn_grave.jnl
  **ERROR: invalid command:  use RETURN= shape,size,grid,title,bad,t0,f0,units,dset,
             dsetnum,dsetpath,dsettitle,*size,*start,*end,
             *units,*axis,nc_scale,nc_offset,user_scale,user_offset,
             calendar,dtype,xmod,tmod,status,isDepth,isReady,defined
           sst,return=trash
 MESSAGE/CONTINUE `sst,return=trash`
+Running script: bn_grave.jnl
 *** Running ferret script: bn_letd.jnl
  **ERROR: unknown data set: NOEXIST
 DEFINE VARIABLE/DATA=noexist a = b
+Running script: bn_letd.jnl
  **ERROR: variable unknown or not in data set: AIRT[D=GT4D011]
 list/l=1/x=180/y=0 airt[d=gt4d011]
+Running script: bn_letd.jnl
  **ERROR: invalid command: CANCEL what?
 can var
+Running script: bn_letd.jnl
  LISTing to file v12file.nc
  LISTing to file v1file.nc
 *** Running ferret script: bn_if.jnl
  **ERROR: invalid command: ENDIF can only be used in an IF clause
 ENDIF
+Running script: bn_if.sub
  **ERROR: command syntax: ELIF cannot be used in single line IF
           IF 0 THEN say ERROR ELIF 1 THEN say "CORRECT if you see this"
 IF 0 THEN say ERROR ELIF 1 THEN say "CORRECT if you see this"
+Running script: bn_if.sub
  **ERROR: command syntax: Trash after ENDIF
           IF 0 THEN say ERROR ELSE say "CORRECT if you see this" ENDIF say trash
 IF 0 THEN say ERROR ELSE say "CORRECT if you see this" ENDIF say trash
+Running script: bn_if.sub
            *** NOTE: Unclosed IF statement ... assuming ENDIF, in script ./v4jnls/bn_if.sub
  **ERROR: invalid command: ELSE can only be used between IF and ENDIF
 else
+Running script: bn_if.jnl
  **ERROR: invalid command: ENDIF can only be used in an IF clause
 endif
+Running script: bn_if.jnl
  **ERROR: invalid command: ELIF can only be used between IF and ENDIF
 elif
+Running script: bn_if.jnl
            *** NOTE: Unclosed IF statement ... assuming ENDIF, in script ./v4jnls/bn_if.jnl
 *** Running ferret script: bn_expressions.jnl
  **ERROR: command syntax: IF I GT 3 THEN ( IF I LT 5 THEN I ELSE -9 ) ELSE .333
           Cannot use multiple IFs in an expression
 LIST/ORDER=X  IF I GT 3 THEN ( IF I LT 5 THEN I ELSE -9 ) ELSE .333
+Running script: bn_expressions.jnl
  **ERROR: command syntax: IF I LT 5 THEN I ELSE -9
           ELSE before - is illegal
           negative constants need to be enclosed in parentheses
 DEFINE VARIABLE A = IF I LT 5 THEN I ELSE -9
+Running script: bn_expressions.jnl
  **ERROR: variable unknown or not in data set: A1
 load a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11,a12,a13,a14,a15,a16,a17,a18,a19,a20,a21
+Running script: bn_expressions.jnl
 *** Running ferret script: bn_geometry.jnl
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -153,6 +204,7 @@ load a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11,a12,a13,a14,a15,a16,a17,a18,a19,a20,a21
           X[I=6:9] has 4 points (I=6:9)
           expression has 5 points (I=1:5)
 LIST X[I=1:5] - X[I=6:9]
+Running script: bn_geometry.jnl
 *** Running ferret script: bn_output.jnl
  LISTing to file WV.J34K56L7
  LISTing to file test.dat
@@ -160,6 +212,7 @@ LIST X[I=1:5] - X[I=6:9]
  LISTing to file test.unf
  **ERROR: invalid subcommand: File type no longer supported TMA
 LIST/FILE=test.gt/FORMAT=TMAP/L=1:3 v,v^0.5
+Running script: bn_output.jnl
 *** Running ferret script: bn_in_plane.jnl
 *** Running ferret script: bn_compress.jnl
  PERMANENT data cleared from memory
@@ -179,31 +232,40 @@ Replacing definition of grid G24
  **ERROR: dimensions improperly specified: specified data is not a line
            - its a 2D region: "plot/i=1:10/j=1:20/nolabel i+j"
 plot/i=1:10/j=1:20/nolabel i+j
+Running script: bn_plot.jnl
  **ERROR: dimensions improperly specified: specified data is not a line
            - its a 2D region: "plot/i=1:10/j=1:20/nolabel i,i+j"
 plot/i=1:10/j=1:20/nolabel i,i+j
+Running script: bn_plot.jnl
  **ERROR: dimensions improperly specified: specified data is not a line
            - its a 2D region: "plot/i=1:10/j=1:20/nolabel i+j,i"
 plot/i=1:10/j=1:20/nolabel i+j,i
+Running script: bn_plot.jnl
  **ERROR: dimensions improperly specified: differing axes:
           first line is on Y axis
           line 2 is on X axis
 plot/i=1:10/j=1:20/nolabel j,i
+Running script: bn_plot.jnl
  **ERROR: dimensions improperly specified: unequal line lengths:
           First expression has 20 points.
           Expression 2 has 10 points:
           "plot/i=1:10/j=1:20/vs/line/nolabel j,i"
 plot/i=1:10/j=1:20/vs/line/nolabel j,i
+Running script: bn_plot.jnl
  **ERROR: dimensions improperly specified: must be a 2D region
           contour/i=1:10/j=1:20/nolabel i
 contour/i=1:10/j=1:20/nolabel i
+Running script: bn_plot.jnl
  **ERROR: invalid command: can only CONTOUR  single fields
           Use /OVERLAY for multiple variables
 contour/i=1:10/j=1:20/nolabel i/j,j/i
+Running script: bn_plot.jnl
  **ERROR: invalid command: VECTOR requires paired components
 vector/i=1:10/j=1:20/nolabel i/j
+Running script: bn_plot.jnl
  **ERROR: invalid command: VECTOR requires paired components
 vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
+Running script: bn_plot.jnl
 Re-defining viewport LM6
 Re-defining viewport UM6
  Using every   2th vector in the X direction
@@ -221,21 +283,27 @@ Re-defining viewport UM6
  **ERROR: invalid command: color=noexist
           Colors are Black,Red,Green,Blue,LightBlue,Purple, and White
 plot/over/i=1:10/color=noexist i
+Running script: bn_plot.jnl
  **ERROR: value out of legal range: thick=4
           Legal range is 1 to 3
 plot/over/i=1:10/thick=4 i
+Running script: bn_plot.jnl
  **ERROR: value out of legal range: size=-1
           Symbol size must be positive
 plot/over/i=1:10/size=-1 i
+Running script: bn_plot.jnl
  Using every   2th vector in the Y direction
  **ERROR: invalid command: color=noexist
           Colors are Black,Red,Green,Blue,LightBlue,Purple, and White
 cont/over/i=1:10/color=noexist i
+Running script: bn_plot.jnl
  **ERROR: unknown command qualifier: thick=4
 cont/over/i=1:10/thick=4 i
+Running script: bn_plot.jnl
  **ERROR: value out of legal range: sigdig=-1
           Value must be positive
 cont/over/i=1:10/sigdig=-1 i
+Running script: bn_plot.jnl
 *** Running ferret script: bn_curv.jnl
            *** NOTE: in GIF mode: ignoring SET MODE METAFILE
 Replacing definition of axis LON_FIELD_I_AXIS
@@ -245,91 +313,126 @@ Replacing definition of axis LAT_FIELD_J_AXIS
  **ERROR: inconsistent sizes of data regions: Y coord field lies
           in different plane from data to be plotted
 shade/nolabel sst, x_page, y_page
+Running script: bn_curv.jnl
  **ERROR: all data have same value: X coordinate field
 shade/nolabel sst, 0*x_page, y_page
+Running script: bn_curv.jnl
  **ERROR: all data have same value: Y coordinate field
 shade/nolabel sst, x_page, 0*y_page
+Running script: bn_curv.jnl
  **ERROR: inconsistent sizes of data regions: Y axis of X position array
 shade/nolabel sst, x_page[j=1:12], y_page
+Running script: bn_curv.jnl
            *** NOTE: Cannot cancel window when in batch mode
  **ERROR: inconsistent sizes of data regions: Y axis of X position array
 shade/nolabel sst, x_page[j=1:12], y_page
+Running script: bn_curv.jnl
            *** NOTE: in GIF mode: ignoring SET MODE METAFILE
 *** Running ferret script: bn_symbols.jnl
  **ERROR: command syntax: illegal name: TEST*
 define symbol test* = hello
+Running script: bn_symbols.jnl
  **ERROR: invalid command: Value needed for argument 5 in command
           GO bn_symbols.jnl
 define symbol t$5 = hi
+Running script: bn_symbols.jnl
+Running script: bn_symbols.jnl
  **ERROR: error message
 message/continue ($test2"<error message")
+Running script: bn_symbols.jnl
  **ERROR: invalid command: Valid value needed for symbol test2
 message/continue ($test2"|hello|bye|")
+Running script: bn_symbols.jnl
            *** NOTE: symbol test2 was missing or empty.
            *** NOTE: Valid symbol test2 choices are: hello|bye|
+Running script: bn_symbols.jnl
  **ERROR: error message
 message/continue ($test2"|hello|bye|<error message")
+Running script: bn_symbols.jnl
  **ERROR: invalid command: Valid value needed for symbol t2
 message/continue ($t2"|solong>really hello|bye|")
+Running script: bn_symbols.jnl
            *** NOTE: symbol t2 received was: hello
            *** NOTE: Valid symbol t2 choices are: solong>really hello|bye|
 *** Running ferret script: bn_comma_delimited.jnl
 *** Running ferret script: bn_dynamic_grids.jnl
  **ERROR: unknown defining grid: GX=NOEXIST
 list temp[gx=noexist]
+Running script: bn_dynamic_grids.jnl
  **ERROR: command syntax: P=NOEXIST
 list temp[gx=u,p=noexist]
+Running script: bn_dynamic_grids.jnl
  **ERROR: command syntax: multiple specifications on X axis
           X=160E:160W
 list temp[gx=130e:80w:10,x=160e:160w]
+Running script: bn_dynamic_grids.jnl
  **ERROR: command syntax: multiple specifications on X axis
           I=2:5
 list temp[gx=130e:80w:10,i=2:5]
+Running script: bn_dynamic_grids.jnl
  **ERROR: command syntax: used GX=lo:hi:delta with X=lo:hi (ditto for Y,Z, or T)
           GX=130E:80W:10
 list temp[i=2:5,gx=130e:80w:10]
+Running script: bn_dynamic_grids.jnl
  **ERROR: command syntax: GX=lo:hi:delta with no delta (or ditto for Y,Z, or T)
           GX=130E:80W
 list temp[gx=130e:80w]
+Running script: bn_dynamic_grids.jnl
  **ERROR: variable unknown or not in data set: NOEXIST
 list temp[gx=u]	+ noexist
+Running script: bn_dynamic_grids.jnl
  **ERROR: illegal limits: TEMP on grid (G###) does not exist at K=30
           Axis extremes are K=1:27
 list temp[gx=u,k=30]
+Running script: bn_dynamic_grids.jnl
  **ERROR: illegal limits: TEMP does not contain K=20
           Data are available in K =    1:2
 list temp[gx=u,k=20]
+Running script: bn_dynamic_grids.jnl
  **ERROR: regridding: Axis orientation not matching request:GX=PSYU
 list temp[gx=psyu]
+Running script: bn_dynamic_grids.jnl
  **ERROR: regridding: Axis orientation not matching request:GX=PSYT
 list/i=3:6 X[gx=PSYT]
+Running script: bn_dynamic_grids.jnl
  **ERROR: unknown defining grid: GX=NOEXIST
 list tu
+Running script: bn_dynamic_grids.jnl
  **ERROR: command syntax: P=NOEXIST
 list tu
+Running script: bn_dynamic_grids.jnl
  **ERROR: variable unknown or not in data set: NOEXIST
 list tu
+Running script: bn_dynamic_grids.jnl
  **ERROR: illegal limits: TEMP on grid (G###) does not exist at K=30
           Axis extremes are K=1:27
 list tu
+Running script: bn_dynamic_grids.jnl
  **ERROR: illegal limits: TEMP does not contain K=20
           Data are available in K =    1:2
 list tu
+Running script: bn_dynamic_grids.jnl
  **ERROR: regridding: Axis orientation not matching request:GX=PSYU
 list tu
+Running script: bn_dynamic_grids.jnl
  **ERROR: request exceeds memory setting
 list temp[gz=z999999,z=5:15]
+Running script: bn_dynamic_grids.jnl
            *** NOTE: Ambiguous coordinates on X axis: X[X=0.1:10:1.5] +  X[X=1.1:11:1.5]
            *** NOTE: Ambiguous coordinates on X axis: X[X=0.1:10:1.5] +  X[X=1.1:11:1.5]
            *** NOTE: Ambiguous coordinates on X axis: TEMP[I=101:120:4]+X[I=101:120:4]
  **ERROR: invalid command: non-positive delta value: X[I=1:5:-1]
 list x[i=1:5:-1]
+Running script: bn_dynamic_grids.jnl
  **ERROR: invalid command: non-positive delta value: X[I=1:5:0]
 list x[i=1:5:0]
+Running script: bn_dynamic_grids.jnl
  **ERROR: invalid command: non-positive delta value: X[X=1:5:-1]
 list x[x=1:5:-1]
+Running script: bn_dynamic_grids.jnl
  **ERROR: invalid command: non-positive delta value: X[X=1:5:0]
 list x[x=1:5:0]
+Running script: bn_dynamic_grids.jnl
 *** Running ferret script: bn_cdf.jnl
  LISTing to file test0a.cdf
  LISTing to file test0b.cdf
@@ -383,24 +486,30 @@ list x[x=1:5:0]
  LISTing to file FTLON.nc
  **ERROR: invalid command: /CLOBBER not specified and file exists: test_abs.cdf
 list/format=cdf/l=1:10/file=test_abs.cdf l
+Running script: bn_cdf.jnl
  LISTing to file test_abs.cdf
  **TMAP ERR: Requested data range is outside of data set limits
              inconsistent I axis length for IL
 list/format=cdf/i=5:15/l=5:10/append/file=test_abs.cdf il
+Running script: bn_cdf.jnl
  LISTing to file test_abs.cdf
  **TMAP ERR: Requested data range is outside of data set limits
              Expected: IJ[J=          20 :          25 ] Found: IJ[J=           1 :          20 ]
 list/format=cdf/i=1:10/j=20:25/append/file=test_abs.cdf ij
+Running script: bn_cdf.jnl
  LISTing to file test_abs.cdf
  **TMAP ERR: attempt to redefine line
              # of dims in variable IJL2 is inconsist. w/ CDF file
 list/format=cdf/append/file=test_abs.cdf ijl2
+Running script: bn_cdf.jnl
  **ERROR: variable unknown or not in data set: IJKL[K=@AVE]
 list/format=cdf/append/file=test_abs.cdf ijkl[k=@ave]
+Running script: bn_cdf.jnl
  LISTing to file test_abs.cdf
  **TMAP ERR: error in line definition
              disordered output coordinate value:         363  Axis: TCENTURY
 list/format=cdf/l=13/append/file=test_abs.cdf l1
+Running script: bn_cdf.jnl
  LISTing to file FI.nc
  LISTing to file test_fil0.cdf
  LISTing to file test_fil0.cdf
@@ -448,27 +557,37 @@ list/format=cdf/l=13/append/file=test_abs.cdf l1
 *** Running ferret script: bn_regrid_transforms.jnl
  **ERROR: regridding: G=W - more than 1 target grid
 load temp[g=u,g=w]
+Running script: bn_regrid_transforms.jnl
  **ERROR: unknown defining grid: G=X --> g=user-or-pseudo-var not allowed
 load temp[g=x]
+Running script: bn_regrid_transforms.jnl
 *** Running ferret script: bn_axis_limits.jnl
            *** NOTE: /XLIMITS and /YLIMITS are deprecated.
            *** NOTE: Use /HLIMITS and /VLIMITS instead.
  **ERROR: command syntax: xlimits
 plot/xlimits i
+Running script: bn_axis_limits.jnl
  **ERROR: command syntax: xlimits= i
 plot/xlimits= i
+Running script: bn_axis_limits.jnl
  **ERROR: command syntax: xlimits=text
 plot/xlimits=text i
+Running script: bn_axis_limits.jnl
  **ERROR: command syntax: xlimits=1
 plot/xlimits=1 i
+Running script: bn_axis_limits.jnl
  **ERROR: command syntax: i
 plot/xlimits=1: i
+Running script: bn_axis_limits.jnl
  **ERROR: command syntax: xlimits=1:: i
 plot/xlimits=1:: i
+Running script: bn_axis_limits.jnl
  **ERROR: command syntax: i
 plot/xlimits=1:2: i
+Running script: bn_axis_limits.jnl
  **ERROR: invalid command: Must give a range: xlimits=5:5
 plot/xlimits=5:5 i
+Running script: bn_axis_limits.jnl
 *** Running ferret script: bn_movie.jnl
 *** Running ferret script: bn_ez_order.jnl
  LISTing to file test_perm10.dat
@@ -486,16 +605,20 @@ plot/xlimits=5:5 i
              Descriptor requests delta of 0, please use 1
              Data set: ./data/coads_clim_bad_delta.des
 set data coads_clim_bad_delta.des
+Running script: bn_mc.jnl
  **TMAP ERR: error in line definition
              A gap or overlap exists in time axis
 set data coads_clim_step_order.des
+Running script: bn_mc.jnl
  **TMAP ERR: non-existent or not on line
              coads_clim.001b
 list sst
+Running script: bn_mc.jnl
 *** Running ferret script: bn_negative_t.jnl
  **ERROR: regridding: only @ASN regridding between calendar and
           non-calendar axes: A
 LIST a[gt=tcal]
+Running script: bn_negative_t.jnl
 *** Running ferret script: bn_xact_regrid.jnl
 *** Running ferret script: bn_gc_functions.jnl
            *** NOTE: /XLIMITS and /YLIMITS are deprecated.
@@ -533,18 +656,23 @@ ooooooooooooooooooooooooooooooooooooooooooo
  **ERROR: command syntax: v2-and-minus
           - before and is illegal
 list v2-and-minus
+Running script: bn_odd_variable_name.jnl
  **ERROR: illegal limits: Limits must be provided for pseudo-variable.
 list x
+Running script: bn_odd_variable_name.jnl
  **ERROR: illegal limits: Limits must be provided for pseudo-variable.
 list i
+Running script: bn_odd_variable_name.jnl
  **ERROR: command syntax: v2-and-minus[i=5:15@ddc]
           - before and is illegal
 list v2-and-minus[i=5:15@ddc]
+Running script: bn_odd_variable_name.jnl
 *** Running ferret script: bn_test_stream.jnl
  LISTing to file permutedBinaryTest.dat
  LISTing to file junk.dat
  **ERROR: request exceeds memory setting
 load num
+Running script: bn_test_stream.jnl
     To fulfill this request would exceed the current SET MEMORY/MAX= limit of 500Mb
     At the moment that the memory limit was reached
     memory was committed as follows:
@@ -555,6 +683,7 @@ Replacing definition of axis ZAX
 Replacing definition of axis TAX
  **ERROR: request exceeds memory setting
 load num
+Running script: bn_test_stream.jnl
     To fulfill this request would exceed the current SET MEMORY/MAX= limit of 500Mb
     At the moment that the memory limit was reached
     memory was committed as follows:
@@ -567,13 +696,17 @@ Replacing definition of axis TAX
  **TMAP ERR: non-existent or not on line
              NoSuchFile.dat
 SET DATA/EZ/format=stream/var=num/grid=mygrid NoSuchFile.dat
+Running script: bn_test_stream.jnl
  **ERROR: Size of file ./junk.dat doesn't match size specified by variables/grid
 load num
+Running script: bn_test_stream.jnl
            *** NOTE: Binary file reading: Insufficient memory reading variable    2
  **ERROR: invalid command: variable permutations only allowed for STREAM format
 SET DATA/EZ/var=num/order=vxyzt/grid=mygrid junk.dat
+Running script: bn_test_stream.jnl
  **ERROR: invalid command: invalid argument for /TYPE
 SET DATA/EZ/var=num/type=i3/grid=mygrid/form=stream junk.dat
+Running script: bn_test_stream.jnl
  LISTing to file permutedBinaryTest_r4.dat
  LISTing to file permutedBinaryTest_int.dat
  LISTing to file permutedBinaryTest_short.dat
@@ -584,18 +717,22 @@ Replacing definition of axis XAX
 Replacing definition of axis XAX
  **ERROR: improper grid or axis definition: NPOINTS=1 incompatible with limits given
 define axis/x=1:5/npoints=1 xax
+Running script: bn_define_axes.jnl
 Replacing definition of axis XAX
  **ERROR: improper grid or axis definition: error in start,end,delta
 define axis/x=5/npoints=1/edges xax
+Running script: bn_define_axes.jnl
 Replacing definition of axis XAX
 Replacing definition of axis TAX
 Replacing definition of axis TAX
 Replacing definition of axis TAX
  **ERROR: improper grid or axis definition: NPOINTS=1 incompatible with limits given
 define axis/t=15-jan-1980:25-jan-1980/npoints=1/unit=days tax
+Running script: bn_define_axes.jnl
 Replacing definition of axis TAX
  **ERROR: improper grid or axis definition: error in start,end,delta
 define axis/t=15-jan-1980/npoints=1/unit=days/edges tax
+Running script: bn_define_axes.jnl
 Replacing definition of axis TAX
 Replacing definition of axis XAX
 Replacing definition of axis XAX
@@ -621,10 +758,13 @@ Replacing definition of axis XAX
 Replacing definition of axis XAX
  **ERROR: improper grid or axis definition: unrepairable repeated axis coords
 define axis/from/x/name=xax {6,6}
+Running script: bn_define_axes.jnl
  **ERROR: improper grid or axis definition: unrepairable repeated axis coords
 define axis/from/x/name=xax/edges {6,6}
+Running script: bn_define_axes.jnl
  **ERROR: improper grid or axis definition: unrepairable repeated axis coords
 define axis/from/x/name=xax/edges {6,6,6}
+Running script: bn_define_axes.jnl
            *** NOTE: Axis has repeated values -- micro-adjusting ...
 Replacing definition of axis XAX
            *** NOTE: Axis has repeated values -- micro-adjusting ...
@@ -681,6 +821,7 @@ ooooooooooooooooooooooooooooooooooooooooooo
  **ERROR: command syntax: noname(i)
           unknown function "noname"
 stat i, noname(i)
+Running script: err491_unknown_function.jnl
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -732,6 +873,7 @@ ooooooooooooooooooooooooooooooooooooooooooo
            *** NOTE: Stride value not a factor of axis length
  **ERROR: invalid command: delta values may only modify variable names
 LIST/i=2:4:2 VAR
+Running script: bn_strides_revs_perms.jnl
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -751,8 +893,10 @@ LIST/i=2:4:2 VAR
 Replacing definition of grid GG2
  **ERROR: unknown defining grid: G=NO_EXIST
 load/x=160e/y=5s temp[d=2,k=1,g=no_exist]
+Running script: bn_regrid_to_user.jnl
  **ERROR: unknown defining grid: GX=A[D=1]
 load/x=160e/y=5s v2
+Running script: bn_regrid_to_user.jnl
 *** Running ferret script: bn_calendar.jnl
 Replacing definition of axis TDAYS
 Replacing definition of axis TDAYS
@@ -771,9 +915,11 @@ Replacing definition of grid TGRID
  **ERROR: command syntax: dash=(1., 2.)
           DASH[=(dn1,up1,dn2,up2)] takes 4 arguments or no argument
 plot/dash=(1., 2.)/color=red/thick/i=1:1000 sin(62.8*(i+10) )
+Running script: bn_dash_dot.jnl
  **ERROR: value out of legal range: dash=(-1., 2., 3., 4.)
           DASH arguments must be positive
 plot/dash=(-1., 2., 3., 4.)/i=1:1000 sin(62.8*(i+20) )
+Running script: bn_dash_dot.jnl
 *** Running ferret script: bn_flowlines.jnl
  Using every   2th vector in the Y direction
  Using every   2th vector in the Y direction
@@ -791,6 +937,7 @@ Replacing definition of axis DLOG
 Replacing definition of axis DLOG
  **ERROR: value out of legal range: Limits for log axis negative or too small: -9.00 : 0.00
 plot/hlog fcn
+Running script: bn_logaxes.jnl
 *** Running ferret script: bn_internal_external_functions.jnl
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -801,6 +948,7 @@ Bailing out of external function "ffta":
 	 Time axis must be a regular axis
  **ERROR: error in external function
 LIST vw_fft
+Running script: bench_fft
 Replacing definition of grid TGRID
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -849,6 +997,7 @@ ooooooooooooooooooooooooooooooooooooooooooo
  **ERROR: illegal limits: VWND does not contain L=102:150
           Data are available in L =    1:60
 list tsorted_indices, tsorted_wnd
+Running script: bench_sor
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -857,16 +1006,19 @@ Bailing out of external function "eof_space":
 	 Function EOF_SPACE not available in this version of Ferret. Use EOFSVD_SPACE
  **ERROR: error in external function
 list/l=1:2 eofxyfcn
+Running script: bench_eof
 
 Bailing out of external function "eof_stat":
 	 Function EOF_STAT not available in this version of Ferret. Use EOFSVD_STAT
  **ERROR: error in external function
 list/i=1:3/j=1:3 eofstat
+Running script: bench_eof
 
 Bailing out of external function "eof_tfunc":
 	 Function EOF_TFUNC not available in this version of Ferret. Use EOFSVD_TFUNC
  **ERROR: error in external function
 list/i=1:2 eoftime
+Running script: bench_eof
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -879,18 +1031,23 @@ ooooooooooooooooooooooooooooooooooooooooooo
  **ERROR: command syntax: strindex("Ferret is fun for the whole family - real family fun")
           The strindex function has an incorrect number of arguments
 list strindex("Ferret is fun for the whole family - real family fun")
+Running script: bench_int
  **ERROR: command syntax: strrindex("Ferret is fun for the whole family - real family fun")
           The strrindex function has an incorrect number of arguments
 list strrindex("Ferret is fun for the whole family - real family fun")
+Running script: bench_int
  **ERROR: command syntax: substring("Have you fed your ferret today", 19)
           The substring function has an incorrect number of arguments
 list substring("Have you fed your ferret today", 19)
+Running script: bench_int
  **ERROR: command syntax: substring("Have you fed your ferret today")
           The substring function has an incorrect number of arguments
 list substring("Have you fed your ferret today")
+Running script: bench_int
  **ERROR: command syntax: strcat ("All work and no play")
           The strcat function has an incorrect number of arguments
 list strcat ("All work and no play")
+Running script: bench_int
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -924,12 +1081,16 @@ Re-defining viewport URAX
 *** Running ferret script: bn_strings.jnl
  **ERROR: command syntax: "string2"}
 list e
+Running script: bn_strings.jnl
  **ERROR: command syntax: 5, "string2"}
 list e
+Running script: bn_strings.jnl
  **ERROR: illegal data type (float,string,...) for operation: D
 plot d
+Running script: bn_strings.jnl
  **ERROR: illegal data type (float,string,...) for operation: D
 define axis/x xax = d
+Running script: bn_strings.jnl
  LISTing to file test_string.cdf
  LISTing to file test_string.cdf
  LISTing to file test_string.cdf
@@ -938,31 +1099,44 @@ define axis/x xax = d
  LISTing to file test_string2.cdf
  **ERROR: invalid command: cant use this regrid transform on strings: @LIN
 list a[gx=xnrst]
+Running script: bn_strings.jnl
  **ERROR: invalid command: cant use this regrid transform on strings: @AVE
 list a[gx=xnrst@ave]
+Running script: bn_strings.jnl
  **ERROR: invalid command: cant use this regrid transform on strings: @VAR
 list a[gx=xnrst@var]
+Running script: bn_strings.jnl
  **ERROR: invalid command: cant use this regrid transform on strings: @NGD
 list a[gx=xnrst@ngd]
+Running script: bn_strings.jnl
  **ERROR: invalid command: cant use this regrid transform on strings: @MAX
 list a[gx=xnrst@max]
+Running script: bn_strings.jnl
  **ERROR: invalid command: cant use this regrid transform on strings: @SUM
 list a[gx=xnrst@sum]
+Running script: bn_strings.jnl
  **ERROR: invalid command: cant use this regrid transform on strings: @MOD
 list a[gx=xnrst@mod]
+Running script: bn_strings.jnl
  LISTing to file foo.cdf
  **ERROR: invalid command: cannot use strings in numerical expression
 list/nohead "b" - {"a","b"}
+Running script: bn_strings.jnl
  **ERROR: invalid command: cannot use strings in numerical expression
 list/nohead "b" * {"a","b"}
+Running script: bn_strings.jnl
  **ERROR: invalid command: cannot use strings in numerical expression
 list/nohead "b" / {"a","b"}
+Running script: bn_strings.jnl
  **ERROR: invalid command: cannot use strings in numerical expression
 list/nohead "b" ^ {"a","b"}
+Running script: bn_strings.jnl
  **ERROR: invalid command: cannot use strings in numerical expression
 list/nohead SIN({"a","b","c"})
+Running script: bn_strings.jnl
  **ERROR: invalid command: cannot use strings in numerical expression
 list/nohead MAX("a",{"a","b","c"})
+Running script: bn_strings.jnl
 *** Running ferret script: bn_axcontrol.jnl
 *** Running ferret script: bn_vec_curv.jnl
            *** NOTE: in GIF mode: ignoring SET MODE METAFILE
@@ -975,13 +1149,16 @@ Replacing definition of grid G1
              Data set: ./data/bn_delimited_read_date_time.dat
            *** NOTE: Valid types are: -,NUMERIC,TEXT,LATITUDE,LONGITUDE,DATE,EURODATE,TIME,DATIME,EDATIME
 SET DATA/FORM=delimited/type="d, da2,date2"  bn_delimited_read_date_time.dat
+Running script: bn_delimited_read.jnl
  **TMAP ERR: syntax error in string
              Unrecognized field type: DATE2
              Data set: ./data/bn_delimited_read_date_time.dat
            *** NOTE: Valid types are: -,NUMERIC,TEXT,LATITUDE,LONGITUDE,DATE,EURODATE,TIME,DATIME,EDATIME
 SET DATA/FORM=delimited/type="da,da, date2"  bn_delimited_read_date_time.dat
+Running script: bn_delimited_read.jnl
  **ERROR: command syntax: ,,:
 SET DATA/EZ/form=delim/delim="/,,,:" bn_delimited_read_date_time.dat
+Running script: bn_delimited_read.jnl
 *** Running ferret script: bn541_bug_fixes.jnl
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -1095,6 +1272,7 @@ ooooooooooooooooooooooooooooooooooooooooooo
  LISTing to file test_mod.cdf
  **ERROR: improper grid or axis definition: Axis length exceeds modulo length
 define axis/x=130e:500:10/modulo=360 xsub
+Running script: bn_subspan_modulo.jnl
  LISTing to file test_mod.cdf
  LISTing to file test_mod.cdf
  LISTing to file test_mod.cdf
@@ -1162,12 +1340,16 @@ ooooooooooooooooooooooooooooooooooooooooooo
 ooooooooooooooooooooooooooooooooooooooooooo
  **ERROR: value out of legal range: # of contour levels > 500  (3283)
 CONTOUR/L=1/LEV=0.01d sst
+Running script: err551_num_levels.jnl
  **ERROR: value out of legal range: # of contour levels > 500  (3283)
 CONTOUR/FILL/L=1/LEV=0.01d sst
+Running script: err551_num_levels.jnl
  **ERROR: value out of legal range: # of shade levels > 500  (3283)
 SHADE/L=1/LEV=0.01d sst
+Running script: err551_num_levels.jnl
  **ERROR: value out of legal range: # of levels > 500  (4094)
 POLYGON/KEY/LEV=0.01d/coord_ax=Z  PLMxpoly+PLMxpolymark, PLMypoly+PLMypolymark, PLMpolydata
+Running script: polymark POLYGON/KEY/
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -1192,6 +1374,7 @@ ooooooooooooooooooooooooooooooooooooooooooo
             calendar,dtype,xmod,tmod,status,isDepth,isReady,defined
           axy, return=xx
 MESSAGE/CONTINUE `axy, return=xx`
+Running script: err551_return_message
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -1223,11 +1406,14 @@ ooooooooooooooooooooooooooooooooooooooooooo
  **ERROR: illegal limits: "DUMMY" does not exist at T=01-JAN-1990 00:00
           Axis extremes are T=31-DEC-1997 12:00:30-JAN-1998 12:00
 list/t=1-jan-1990 dummy
+Running script: err551_no_taxis_errms
 *** Running ferret script: bn_set_var_scale_off.jnl
  **ERROR: invalid command: Can SET VARIABLE/OFFSET= only with NetCDF datasets
 SET VAR/OFFSET=1 x1
+Running script: bn_set_var_scale_off.jnl
  **ERROR: invalid command: Can SET VARIABLE/SCALEFAC= only with NetCDF datasets
 SET VAR/SCALE=10 x2
+Running script: bn_set_var_scale_off.jnl
 *** Running ferret script: bn_longvarnames.jnl
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -1267,13 +1453,21 @@ Replacing definition of axis YQ
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
 SHO VAR/XML
+Running script: bn_xml_output.jnl
 SHO VAR/XML
+Running script: bn_xml_output.jnl
 SHO VAR/XML
+Running script: bn_xml_output.jnl
 SHO VAR/XML
+Running script: bn_xml_output.jnl
 SHO VAR/XML
+Running script: bn_xml_output.jnl
 SHOW VAR/XML
+Running script: bn_xml_output.jnl
 SHOW VAR/XML
+Running script: bn_xml_output.jnl
 SHOW VAR/XML
+Running script: bn_xml_output.jnl
  LISTing to file a.nc
 *** Running ferret script: bn_test_nan.jnl
 *** Running ferret script: bn553_bug_fixes.jnl
@@ -1300,32 +1494,46 @@ Replacing definition of axis TAX
  TEMPORARY data cleared from memory
  **ERROR: invalid command: REPEAT/NAME requires /RANGE
 rep/name=a say `a`
+Running script: bn_repeat_range.jnl
  **ERROR: command syntax: L is a pseudo-variable; cannot use with REPEAT/RANGE/NAME. Instead use REPEAT/L=
 rep/range=1:3/name=L (use coads_climatology; list/nohead [sst=I=1,j=1])
+Running script: bn_repeat_range.jnl
  **ERROR: command syntax: I is a pseudo-variable; cannot use with REPEAT/RANGE/NAME. Instead use REPEAT/I=
 rep/range=1:3/name=I (use coads_climatology; list/nohead [sst])
+Running script: bn_repeat_range.jnl
  **ERROR: command syntax: j is a pseudo-variable; cannot use with REPEAT/RANGE/NAME. Instead use REPEAT/j=
 rep/range=1:3/name=j (use coads_climatology; list/nohead [sst])
+Running script: bn_repeat_range.jnl
  **ERROR: command syntax: k is a pseudo-variable; cannot use with REPEAT/RANGE/NAME. Instead use REPEAT/k=
 rep/range=1:3/name=k (use coads_climatology; list/nohead [sst])
+Running script: bn_repeat_range.jnl
  **ERROR: command syntax: X is a pseudo-variable; cannot use with REPEAT/RANGE/NAME. Instead use REPEAT/X=
 rep/range=1:3/name=X (use coads_climatology; list/nohead [sst])
+Running script: bn_repeat_range.jnl
  **ERROR: command syntax: y is a pseudo-variable; cannot use with REPEAT/RANGE/NAME. Instead use REPEAT/y=
 rep/range=1:3/name=y (use coads_climatology; list/nohead [sst])
+Running script: bn_repeat_range.jnl
  **ERROR: command syntax: z is a pseudo-variable; cannot use with REPEAT/RANGE/NAME. Instead use REPEAT/z=
 rep/range=1:3/name=z (use coads_climatology; list/nohead [sst])
+Running script: bn_repeat_range.jnl
  **ERROR: command syntax: tbox is a pseudo-variable; cannot use with REPEAT/RANGE/NAME=
 rep/range=1:3/name=tbox (use coads_climatology; list/nohead[sst,x=181,y=0,t=`tbox`])
+Running script: bn_repeat_range.jnl
  **ERROR: command syntax: xboxlo is a pseudo-variable; cannot use with REPEAT/RANGE/NAME=
 rep/range=1:3/name=xboxlo (list/nohead xboxlo)
+Running script: bn_repeat_range.jnl
  **ERROR: command syntax: nested REPEAT loops with the same counter name a
 repeat/range=3:1:-1/name=a list a
+Running script: bn_repeat_range.jnl
  **ERROR: command syntax: nested REPEAT loops with the same counter name a
 repeat/range=3:1:-1/name=a list a
+Running script: bn_repeat_range.jnl
  **ERROR: command syntax: nested REPEAT loops with the same counter name a
 repeat/range=3:1:-1/name=a list a
+Running script: bn_repeat_range.jnl
  **ERROR: command syntax: nested REPEAT loops with the same counter name a
 repeat/range=3:1:-1/name=a list a
+Running script: bn_repeat_range.jnl
 *** Running ferret script: bn554_bug_fixes.jnl
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -1336,6 +1544,7 @@ ooooooooooooooooooooooooooooooooooooooooooo
  **ERROR: illegal limits: "TEMP" does not exist at T=01-AUG-1980 00:00:01-JAN-1982 00:00
           Axis extremes are T=14-AUG-1982 11:00:13-JAN-1983 13:00
 list/t=1-aug-1980:1-jan-1982/i=92/j=35 temp
+Running script: err553_timeregion.jnl
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -1417,17 +1626,23 @@ Replacing definition of axis TAX
 Replacing definition of axis TAX
  **ERROR: improper grid or axis definition: BOUNDS specified do not correctly enclose coordinate points
 def axis/t/bounds tax={1.2,2,3.2,5,7,8.8,9}, {0.5,1.5,1.5,2.5,2.5,3.5,3.5,6.5,6.5,7.5,7.5,8.5,8.5,9.5}
+Running script: bn_bounds.jnl
  **ERROR: improper grid or axis definition: BOUNDS specified do not correctly enclose coordinate points
 def axis/t/bounds tax={0.1,2,3.2,5,7,8,9}, {0.5,1.5,1.5,2.5,2.5,3.5,3.5,6.5,6.5,7.5,7.5,8.5,8.5,9.5}
+Running script: bn_bounds.jnl
  **ERROR: improper grid or axis definition: BOUNDS specified do not correctly enclose coordinate points
 def axis/t/bounds tax={0,2,3.2,5,7,8,9.9}, {0.5,1.5,1.5,2.5,2.5,3.5,3.5,6.5,6.5,7.5,7.5,8.5,8.5,9.5}
+Running script: bn_bounds.jnl
  **ERROR: improper grid or axis definition: BOUNDS specified do not correctly enclose coordinate points
 def axis/t/bounds tax={0,2,3.2,5,7,8,9.9}, {0.5,1.5,2.5,3.5,6.5,7.5,8.5,9.5}
+Running script: bn_bounds.jnl
  **ERROR: improper grid or axis definition: dimension of bounds (15) must be 2*N or N+1, N=number of axis coordinates (7)
 def axis/t/bounds tax={1.2,2,3.2,5,7,8.4,9}, {0.5,1.5,1.5,2.5,2.5,3.5,3.5,6.5,6.5,7.5,7.5,8.5,8.5,9.5,10.5}
+Running script: bn_bounds.jnl
            *** NOTE: Axis definition error on axis: TAX. Bounds describe cells that overlap one another
  **ERROR: improper grid or axis definition: BOUNDS specified do not correctly enclose coordinate points
 def axis/t/bounds tax= {12, 12.2, 36, 36.2, 60, 60.2, 84, 84.2, 108} , {0,24, 0,24, 24,48, 24,48, 48,72, 48,72, 72,96, 72,96, 96,120}
+Running script: bn_bounds.jnl
  LISTing to file a.nc
  LISTing to file a.nc
  LISTing to file a.nc
@@ -1453,6 +1668,7 @@ def axis/t/bounds tax= {12, 12.2, 36, 36.2, 60, 60.2, 84, 84.2, 108} , {0,24, 0,
 *** Running ferret script: bn_all_leap.jnl
  **ERROR: command syntax: Invalid calendar name. Names are  GREGORIAN, NOLEAP, JULIAN, 360_DAY, ALL_LEAP, PROLEPTIC_GREGORIAN
 def axis/t/cal=nogood/t=1-jan-2000:1-jan-2010:1/units=months tax
+Running script: bn_all_leap.jnl
 *** Running ferret script: bn570_bug_fixes.jnl
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -1544,34 +1760,49 @@ ooooooooooooooooooooooooooooooooooooooooooo
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
+Running script: err570_coaching hello
  **ERROR: First argument is a letter of the alphabet
 query/ignore $1%q|a|b|c|d|<First argument is a letter of the alphabet%
+Running script: err570_coaching hello
  **ERROR: invalid command: Valid value needed for argument $2
 query/ignore $2%|a|b|c|d|%
+Running script: err570_coaching hello
            *** NOTE: Argument $2 was missing or empty.
            *** NOTE: Valid argument $2 choices are: a|b|c|d|
+Running script: err570_coaching hello
  **ERROR: my error message
 message/cont $1"|xxxxx|goodbye<my error message"
+Running script: err570_coaching hello
  **ERROR: invalid command: Valid value needed for argument $1
 message/cont $1"greetings|xxxxx|goodbye"
+Running script: err570_coaching hello
            *** NOTE: Argument $1 received was: hello
            *** NOTE: Valid argument $1 choices are: xxxxx|goodbye
+Running script: err570_coaching hello
  **ERROR: my error message
 message/cont $3"|hello|goodbye<my error message"
+Running script: err570_coaching hello
  **ERROR: invalid command: Valid value needed for argument $3
 message/cont $3">greetings|hello|goodbye"
+Running script: err570_coaching hello
            *** NOTE: Argument $3 was missing or empty.
            *** NOTE: Valid argument $3 choices are: hello|goodbye
+Running script: err570_coaching hello
  **ERROR: my error message
 message/continue ($test2"<my error message")
+Running script: err570_coaching hello
  **ERROR: invalid command: Valid value needed for symbol test2
 message/continue ($test2"|hello|bye|")
+Running script: err570_coaching hello
            *** NOTE: symbol test2 was missing or empty.
            *** NOTE: Valid symbol test2 choices are: hello|bye|
+Running script: err570_coaching hello
  **ERROR: my error message
 message/continue ($test2"|hello|bye|<my error message")
+Running script: err570_coaching hello
  **ERROR: invalid command: Valid value needed for symbol t2
 message/continue ($t2"|solong>really hello|bye|")
+Running script: err570_coaching hello
            *** NOTE: symbol t2 was missing or empty.
            *** NOTE: Valid symbol t2 choices are: solong>really hello|bye|
  PERMANENT data cleared from memory
@@ -1582,6 +1813,7 @@ ooooooooooooooooooooooooooooooooooooooooooo
 ooooooooooooooooooooooooooooooooooooooooooo
  **ERROR: invalid command: delta non-positive on X axis of EX#1
 list/l=1/j=40/i=0:300:0 sst
+Running script: err570_illegal_stride
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -1655,9 +1887,11 @@ ooooooooooooooooooooooooooooooooooooooooooo
            *** NOTE: /UNIT=MONTHS is ambiguous ... using 1/12 of 365.2425 days
  **ERROR: improper grid or axis definition: error in start,end,delta
 DEFINE AXIS/T0="1-JAN-1861"/UNITS=months/t myt
+Running script: err580_def_tax_norange.jnl
            *** NOTE: /UNIT=MONTHS  ... using 1/12 of 365.00 days
  **ERROR: improper grid or axis definition: error in start,end,delta
 DEFINE AXIS/T0="1-JAN-1861"/UNITS=months/T/CALENDAR=noleap myt
+Running script: err580_def_tax_norange.jnl
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -1702,24 +1936,31 @@ ooooooooooooooooooooooooooooooooooooooooooo
  **ERROR: command syntax: IF I GT 3 THEN ( IF I LT 5 THEN I ELSE -9 ) ELSE .333
           Cannot use multiple IFs in an expression
 LIST/ORDER=X  IF I GT 3 THEN ( IF I LT 5 THEN I ELSE -9 ) ELSE .333
+Running script: bn_last_error.jnl
  **ERROR: command syntax: IF I LT 5 THEN I ELSE -9
           ELSE before - is illegal
           negative constants need to be enclosed in parentheses
 DEFINE VARIABLE A = IF I LT 5 THEN I ELSE -9
+Running script: bn_last_error.jnl
  **ERROR: variable unknown or not in data set: A1
 load a1,a2,a3
+Running script: bn_last_error.jnl
  **TMAP ERR: non-existent or not on line
              nofile.nc
 set data nofile.nc
+Running script: bn_last_error.jnl
  **ERROR: invalid command: REPEAT/NAME requires /RANGE
 repeat/name=a (say `a`)
+Running script: bn_last_error.jnl
  **ERROR: command syntax: L is a pseudo-variable; cannot use with REPEAT/RANGE/NAME. Instead use REPEAT/L=
 repeat/range=1:3/name=L (use coads_climatology; list/nohead [sst=I=1,j=1])
+Running script: bn_last_error.jnl
 
 Bailing out of external function "ffta":
 	 Time axis must be a regular axis
  **ERROR: error in external function
 LOAD vw_fft
+Running script: bn_last_error.jnl
 *** Running ferret script: bn_deg_min.jnl
 *** Running ferret script: bn_dp_readscale.jnl
  TEMPORARY data cleared from memory
@@ -1731,13 +1972,17 @@ Replacing definition of axis ZAX2
 *** Running ferret script: bn_attributes.jnl
  **ERROR: invalid command: SHOW ATTRIBUTE given with no argument
 sho att/all
+Running script: bn_attributes.jnl
  **ERROR: unknown data set: d=2
 show att/all temp[d=2]
+Running script: bn_attributes.jnl
  **ERROR: attribute undefined or invalid attribute name: salt.nonsense
           attribute nonsense not found for variable SALT
 sho att salt.nonsense
+Running script: bn_attributes.jnl
  **ERROR: invalid command: dataset not found for varname.attname .
 sho att/all .
+Running script: bn_attributes.jnl
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -1783,10 +2028,13 @@ ooooooooooooooooooooooooooooooooooooooooooo
            *** NOTE: Changing the value of attribute (TIME1).time_origin
  **ERROR: command syntax: enclose coordinate variable name in parentheses
 list coadsx.units
+Running script: bn_attributes.jnl
  **ERROR: variable unknown or not in data set: COADSX.UNITS
 list coadsx.units
+Running script: bn_attributes.jnl
  **ERROR: invalid command: Cannot change attribute for direction of axis.
 set att (COADSX81_81).axis = "Z"
+Running script: bn_attributes.jnl
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -1863,11 +2111,14 @@ ooooooooooooooooooooooooooooooooooooooooooo
 NetCDF: Numeric conversion not representable (OPeNDAP/netCDF Error code -60)
  data in attribute missing_value not representable in output type NC_INT
 LIST/FORMAT=CDF/file=a.nc/clobber/x=132w/k=1 temp
+Running script: bn_attributes.jnl
            *** NOTE: Axis coordinates are decreasing-ordered. Reversing ordering for axis l
  **ERROR: unknown or invalid argument: Can SET VARIABLE/OUTTYPE=INPUT, DOUBLE, FLOAT, INT, SHORT, BYTE
 set var/outtype=char broiled
+Running script: bn_attributes.jnl
  **ERROR: unknown or invalid argument: Can SET VARIABLE/OUTTYPE=INPUT, DOUBLE, FLOAT, INT, SHORT, BYTE
 set var/outtype=garbage broiled
+Running script: bn_attributes.jnl
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -1923,11 +2174,13 @@ Replacing definition of axis TIME
  **TMAP ERR: non-existent or not on line
              this_is_not_a_file.nc
 SET DAT/FORM=CDF this_is_not_a_file.nc
+Running script: bn_cdf_errmsg_noremote.jnl
  LISTing to file asc.dat
  **netCDF error
              NetCDF: Unknown file format (OPeNDAP/netCDF Error code -51)
              Data set: ./asc.nc
 SET DAT/FORM=CDF asc.nc
+Running script: bn_cdf_errmsg_noremote.jnl
 *** Running ferret script: bn600_bug_fixes.jnl
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -1994,6 +2247,7 @@ ooooooooooooooooooooooooooooooooooooooooooo
  **ERROR: dimensions improperly specified: specified data is not a line
            - its a 2D region: "plot/i=100/k=1 temp[x=122.5W]"
 plot/i=100/k=1 temp[x=122.5W]
+Running script: err581_command_cx.jnl
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -2075,17 +2329,22 @@ ooooooooooooooooooooooooooooooooooooooooooo
 *** Running ferret script: bn_set_strides.jnl
  **ERROR: invalid command: it is a child axis already
 set axis/stride=2/offset=1 (AX###)
+Running script: bn_set_strides.jnl
  **ERROR: invalid command: not a strided axis: COADSX
 cancel axis/stride COADSX
+Running script: bn_set_strides.jnl
  **ERROR: invalid command: offset must be less than stride value
 set axis/stride=2/offset=4 COADSX
+Running script: bn_set_strides.jnl
  **ERROR: invalid command: not a strided axis: COADSX
 cancel axis/stride COADSX
+Running script: bn_set_strides.jnl
            *** NOTE: Stride value not an integer factor of axis length: Axis loses modulo property
  LISTing to file d2.nc
            *** NOTE: Stride value not an integer factor of axis length: Axis loses modulo property
  **ERROR: invalid command: unknown axis: NORMAL
 set axis/stride=2 NORMAL
+Running script: bn_set_strides.jnl
 *** Running ferret script: bn_lsl_lowpass.jnl
 *** Running ferret script: bn_return_xmod_tmod.jnl
 *** Running ferret script: bn602_bug_fixes.jnl
@@ -2178,6 +2437,7 @@ ooooooooooooooooooooooooooooooooooooooooooo
 ooooooooooooooooooooooooooooooooooooooooooo
  **ERROR: invalid command: "300": Number of contour levels must be between 1 and 250
 SHADE/LEV=300/I=1:100/J=1:100 i+j
+Running script: err607_lev_errmsg
 *** Running ferret script: bn_shade_trim.jnl
 *** Running ferret script: bn_mode_nlevels.jnl
 *** Running ferret script: bn61_bug_fixes.jnl
@@ -2249,6 +2509,7 @@ Replacing definition of axis TIME
 *** Running ferret script: bn_median.jnl
  **ERROR: value out of legal range: Median smoother length must be odd
 plot/trans var, var[z=@med:4]
+Running script: bn_median.jnl
 *** Running ferret script: bn614_bug_fixes.jnl
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -2292,6 +2553,7 @@ ooooooooooooooooooooooooooooooooooooooooooo
 ooooooooooooooooooooooooooooooooooooooooooo
  **ERROR: variable unknown or not in data set: A_REGRID[D=1,GT=B[D=2]@MOD]
 LIST a_regrid[D=1,GT=b[D=2]@MOD]
+Running script: err611_context_after_error
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -2419,24 +2681,30 @@ Replacing definition of axis TAX
  LISTing to file FTLON.nc
  **ERROR: invalid command: /CLOBBER not specified and file exists: test_abs.cdf
 list/format=cdf/keep_axnames/l=1:10/file=test_abs.cdf l
+Running script: bn_cdf_keepax.jnl
  LISTing to file test_abs.cdf
  **TMAP ERR: Requested data range is outside of data set limits
              inconsistent I axis length for IL
 list/format=cdf/keep_axnames/i=5:15/l=5:10/append/file=test_abs.cdf il
+Running script: bn_cdf_keepax.jnl
  LISTing to file test_abs.cdf
  **TMAP ERR: Requested data range is outside of data set limits
              Expected: IJ[J=          20 :          25 ] Found: IJ[J=           1 :          20 ]
 list/format=cdf/keep_axnames/i=1:10/j=20:25/append/file=test_abs.cdf ij
+Running script: bn_cdf_keepax.jnl
  LISTing to file test_abs.cdf
  **TMAP ERR: attempt to redefine line
              # of dims in variable IJL2 is inconsist. w/ CDF file
 list/format=cdf/keep_axnames/append/file=test_abs.cdf ijl2
+Running script: bn_cdf_keepax.jnl
  **ERROR: variable unknown or not in data set: IJKL[K=@AVE]
 list/format=cdf/keep_axnames/append/file=test_abs.cdf ijkl[k=@ave]
+Running script: bn_cdf_keepax.jnl
  LISTing to file test_abs.cdf
  **TMAP ERR: error in line definition
              disordered output coordinate value:         363  Axis: TCENTURY
 list/format=cdf/keep_axnames/l=13/append/file=test_abs.cdf l1
+Running script: bn_cdf_keepax.jnl
  LISTing to file FI.nc
            *** NOTE: /KEEP_AXISNAMES ignored. Inconsistent w/ enhanced heading.
  LISTing to file test_fil0.cdf
@@ -2495,74 +2763,87 @@ list/format=cdf/keep_axnames/l=13/append/file=test_abs.cdf l1
  **TMAP ERR: attempt to redefine line
              axis PSXT doesnt match CDF file
 list/format=cdf/keep_axnames/append/file=test_fil.cdf ijk
+Running script: bn_cdf_keepax.sub
  LISTing to file test_fil.cdf
            *** NOTE: Writing a subset of data with original axis names
            *** NOTE:   Axis was already written with a different set of coordinates
  **TMAP ERR: attempt to redefine line
              axis PSXT doesnt match CDF file
 list/format=cdf/keep_axnames/append/file=test_fil.cdf ikl
+Running script: bn_cdf_keepax.sub
  LISTing to file test_fil.cdf
            *** NOTE: Writing a subset of data with original axis names
            *** NOTE:   Axis was already written with a different set of coordinates
  **TMAP ERR: attempt to redefine line
              axis PSXT doesnt match CDF file
 list/format=cdf/keep_axnames/append/file=test_fil.cdf ijl
+Running script: bn_cdf_keepax.sub
  LISTing to file test_fil.cdf
            *** NOTE: Writing a subset of data with original axis names
            *** NOTE:   Axis was already written with a different set of coordinates
  **TMAP ERR: attempt to redefine line
              axis PSYT doesnt match CDF file
 list/format=cdf/keep_axnames/append/file=test_fil.cdf jkl
+Running script: bn_cdf_keepax.sub
  LISTing to file test_fil.cdf
            *** NOTE: Writing a subset of data with original axis names
            *** NOTE:   Axis was already written with a different set of coordinates
  **TMAP ERR: attempt to redefine line
              axis PSXU doesnt match CDF file
 list/format=cdf/keep_axnames/append/file=test_fil.cdf ijkl
+Running script: bn_cdf_keepax.sub
  LISTing to file test_fil.cdf
            *** NOTE: Writing a subset of data with original axis names
            *** NOTE:   Axis was already written with a different set of coordinates
  **TMAP ERR: attempt to redefine line
              axis PSXT doesnt match CDF file
 list/format=cdf/keep_axnames/append/file=test_fil.cdf/j=1:50/l=2:3 ijl
+Running script: bn_cdf_keepax.sub
  LISTing to file test_fil.cdf
            *** NOTE: Writing a subset of data with original axis names
            *** NOTE:   Axis was already written with a different set of coordinates
  **TMAP ERR: attempt to redefine line
              axis PSXT doesnt match CDF file
 list/format=cdf/keep_axnames/append/file=test_fil.cdf/j=51:100/l=2:3 ijl
+Running script: bn_cdf_keepax.sub
  LISTing to file test_fil.cdf
            *** NOTE: Writing a subset of data with original axis names
            *** NOTE:   Axis was already written with a different set of coordinates
  **TMAP ERR: attempt to redefine line
              axis PSXU doesnt match CDF file
 list/format=cdf/keep_axnames/append/file=test_fil.cdf/j=30:40/k=5/l=1:3 ijkl
+Running script: bn_cdf_keepax.sub
  LISTing to file test_fil.cdf
            *** NOTE: Writing a subset of data with original axis names
            *** NOTE:   Axis was already written with a different set of coordinates
  **TMAP ERR: attempt to redefine line
              axis PSZT doesnt match CDF file
 list/format=cdf/keep_axnames/append/file=test_fil.cdf iavejkl
+Running script: bn_cdf_keepax.sub
  LISTing to file test_fil.cdf
            *** NOTE: Writing a subset of data with original axis names
            *** NOTE:   Axis was already written with a different set of coordinates
  **TMAP ERR: attempt to redefine line
              axis PSXU doesnt match CDF file
 list/format=cdf/keep_axnames/append/file=test_fil.cdf ijavekl
+Running script: bn_cdf_keepax.sub
  LISTing to file test_fil.cdf
            *** NOTE: Writing a subset of data with original axis names
            *** NOTE:   Axis was already written with a different set of coordinates
  **TMAP ERR: attempt to redefine line
              axis PSXU doesnt match CDF file
 list/format=cdf/keep_axnames/append/file=test_fil.cdf ijkavel
+Running script: bn_cdf_keepax.sub
  LISTing to file test_fil.cdf
            *** NOTE: Writing a subset of data with original axis names
            *** NOTE:   Axis was already written with a different set of coordinates
  **TMAP ERR: attempt to redefine line
              axis PSXU doesnt match CDF file
 list/format=cdf/keep_axnames/append/file=test_fil.cdf ijklave
+Running script: bn_cdf_keepax.sub
  **ERROR: variable unknown or not in data set: IJKL
 show grid ijkl
+Running script: bn_cdf_keepax.sub
            *** NOTE: Axis coordinates are decreasing-ordered. Reversing ordering for axis Y1010_REV
 *** Running ferret script: bn_keep_axisnames.jnl
  LISTing to file a.nc
@@ -2652,8 +2933,10 @@ Replacing definition of axis T_AXIS
 ooooooooooooooooooooooooooooooooooooooooooo
  **ERROR: invalid command: offset must be greater than or equal to zero
 SET AXIS/STRIDE=12/OFFSET=-1 truemonth
+Running script: err62_axis_stride_off
  **ERROR: invalid command: stride must be greater than zero
 SET AXIS/STRIDE=-1/OFFSET=1 truemonth
+Running script: err62_axis_stride_off
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -2680,6 +2963,7 @@ ooooooooooooooooooooooooooooooooooooooooooo
 Replacing definition of grid GG123456789012345678902
  **ERROR: unknown defining grid: G=NO_EXIST12345678901234567890
 load/x=160e/y=5s temp[d=2,k=1,g=no_exist12345678901234567890]
+Running script: bn_long_grid_names.jnl
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -2769,10 +3053,12 @@ ooooooooooooooooooooooooooooooooooooooooooo
  **TMAP ERR: syntax error in string
              If ChunkSize is set for any dimension of var, must set for all its dimensions
 LIST/FORMAT=CDF/file=nc4_deflate4_t1.nc/clobber/ncformat=4/deflate/shuffle/tchunk=1  sst
+Running script: bn_netcdf4.jnl
  LISTing to file nc4_deflate4chunktoobig.nc
  **TMAP ERR: error specifying chunk sizes
              TChunkSize 0 is larger than dimension length 3
 LIST/FORMAT=CDF/file=nc4_deflate4chunktoobig.nc/clobber/ncformat=4/deflate=1/xchunk=6/ychunk=18/tchunk=15 sst
+Running script: bn_netcdf4.jnl
 *** Running ferret script: bn_scat2grid_bin.jnl
  LISTing to file a.nc
  LISTing to file a.nc
@@ -2830,6 +3116,7 @@ ooooooooooooooooooooooooooooooooooooooooooo
            *** NOTE: Axis is already regular: MYAXIS
  **ERROR: variable unknown or not in data set: GARBAGE
 show grid garbage
+Running script: bn_set_cancel_redirect.jnl
  Use the GO command to name a file of FERRET commands to be executed.
      e.g.   yes? GO filename
  
@@ -2862,6 +3149,7 @@ ooooooooooooooooooooooooooooooooooooooooooo
 ooooooooooooooooooooooooooooooooooooooooooo
  **ERROR: variable unknown or not in data set: A
 CANCEL VAR a
+Running script: err664_xml_one_point_axis
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -2932,6 +3220,7 @@ Bailing out of external function "tax_year":
 	 Function not valid for modulo time axis
  **ERROR: error in external function
 list/L=15:20 tax_year(t[gt=tvar],tvar)
+Running script: err67_tax_modtime
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -2993,24 +3282,34 @@ ooooooooooooooooooooooooooooooooooooooooooo
 ooooooooooooooooooooooooooooooooooooooooooo
  **ERROR: command syntax: illegal name, matches an operator: AND
 DEFINE VARIABLE AND = 5
+Running script: err672_varnames
  **ERROR: command syntax: illegal name, matches an operator: OR
 DEFINE VARIABLE OR = 5
+Running script: err672_varnames
  **ERROR: command syntax: illegal name, matches an operator: GT
 DEFINE VARIABLE GT = 5
+Running script: err672_varnames
  **ERROR: command syntax: illegal name, matches an operator: GE
 DEFINE VARIABLE GE = 5
+Running script: err672_varnames
  **ERROR: command syntax: illegal name, matches an operator: LT
 DEFINE VARIABLE LT = 5
+Running script: err672_varnames
  **ERROR: command syntax: illegal name, matches an operator: LE
 DEFINE VARIABLE LE = 5
+Running script: err672_varnames
  **ERROR: command syntax: illegal name, matches an operator: EQ
 DEFINE VARIABLE EQ = 5
+Running script: err672_varnames
  **ERROR: command syntax: illegal name, matches an operator: NE
 DEFINE VARIABLE NE = 5
+Running script: err672_varnames
  **ERROR: command syntax: illegal name, matches an operator: IF
 DEFINE VARIABLE IF  = 5
+Running script: err672_varnames
  **ERROR: command syntax: illegal name, matches an operator: ELSE
 DEFINE VARIABLE ELSE = 5
+Running script: err672_varnames
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -3020,10 +3319,12 @@ ooooooooooooooooooooooooooooooooooooooooooo
  **ERROR: command syntax: IFV I GT 3 THEN ( IFV I LT 5 THEN I ELSE -9 ) ELSE .333
           Cannot use multiple IFs in an expression
 LIST/ORDER=X  IFV I GT 3 THEN ( IFV I LT 5 THEN I ELSE -9 ) ELSE .333
+Running script: bn_ifv.jnl
  **ERROR: command syntax: ifv I LT 5 THEN I ELSE -9
           ELSE before - is illegal
           negative constants need to be enclosed in parentheses
 DEFINE VARIABLE A = ifv I LT 5 THEN I ELSE -9
+Running script: bn_ifv.jnl
 *** Running ferret script: bn_randu2_randn2.jnl
  TEMPORARY data cleared from memory
  TEMPORARY data cleared from memory
@@ -3053,128 +3354,153 @@ Bailing out of external function "eofsvd_stat":
 	There are no spatial locations having complete time series.
  **ERROR: error in external function
 list eofsvd_stat(spacegap)
+Running script: bn_eof_simple.jnl
 
 Bailing out of external function "eofsvd_space":
 	There are no spatial locations having complete time series.
  **ERROR: error in external function
 list eofsvd_space(spacegap)
+Running script: bn_eof_simple.jnl
 
 Bailing out of external function "eofsvd_tfunc":
 	There are no spatial locations having complete time series.
  **ERROR: error in external function
 list eofsvd_tfunc(spacegap)
+Running script: bn_eof_simple.jnl
 Replacing definition of axis XAXIS
 
 Bailing out of external function "eof_stat":
 	 Function EOF_STAT not available in this version of Ferret. Use EOFSVD_STAT
  **ERROR: error in external function
 list eof_stat(spacetime, 1.0)
+Running script: bn_eof_simple.jnl
 
 Bailing out of external function "eof_space":
 	 Function EOF_SPACE not available in this version of Ferret. Use EOFSVD_SPACE
  **ERROR: error in external function
 load eofs
+Running script: bn_eof_simple.jnl
 
 Bailing out of external function "eof_space":
 	 Function EOF_SPACE not available in this version of Ferret. Use EOFSVD_SPACE
  **ERROR: error in external function
 list dot_t(v1, v1)
+Running script: bn_eof_simple.jnl
 
 Bailing out of external function "eof_space":
 	 Function EOF_SPACE not available in this version of Ferret. Use EOFSVD_SPACE
  **ERROR: error in external function
 list dot_t(v1, v2)
+Running script: bn_eof_simple.jnl
 
 Bailing out of external function "eof_space":
 	 Function EOF_SPACE not available in this version of Ferret. Use EOFSVD_SPACE
  **ERROR: error in external function
 list dot_t(v2, v1)
+Running script: bn_eof_simple.jnl
 
 Bailing out of external function "eof_space":
 	 Function EOF_SPACE not available in this version of Ferret. Use EOFSVD_SPACE
  **ERROR: error in external function
 list dot_t(v2, v2)
+Running script: bn_eof_simple.jnl
 
 Bailing out of external function "eof_tfunc":
 	 Function EOF_TFUNC not available in this version of Ferret. Use EOFSVD_TFUNC
  **ERROR: error in external function
 load tafs
+Running script: bn_eof_simple.jnl
 
 Bailing out of external function "eof_tfunc":
 	 Function EOF_TFUNC not available in this version of Ferret. Use EOFSVD_TFUNC
  **ERROR: error in external function
 list dot_t(v1, v1)
+Running script: bn_eof_simple.jnl
 
 Bailing out of external function "eof_tfunc":
 	 Function EOF_TFUNC not available in this version of Ferret. Use EOFSVD_TFUNC
  **ERROR: error in external function
 list dot_t(v1, v2)
+Running script: bn_eof_simple.jnl
 
 Bailing out of external function "eof_tfunc":
 	 Function EOF_TFUNC not available in this version of Ferret. Use EOFSVD_TFUNC
  **ERROR: error in external function
 list dot_t(v2, v1)
+Running script: bn_eof_simple.jnl
 
 Bailing out of external function "eof_tfunc":
 	 Function EOF_TFUNC not available in this version of Ferret. Use EOFSVD_TFUNC
  **ERROR: error in external function
 list dot_t(v2, v2)
+Running script: bn_eof_simple.jnl
 *** Running ferret script: bn_eof_simple2.jnl
 
 Bailing out of external function "eof_stat":
 	 Function EOF_STAT not available in this version of Ferret. Use EOFSVD_STAT
  **ERROR: error in external function
 list eof_stat(spacetime, 1.0)
+Running script: bn_eof_simple2.jnl
 
 Bailing out of external function "eof_space":
 	 Function EOF_SPACE not available in this version of Ferret. Use EOFSVD_SPACE
  **ERROR: error in external function
 load eofs
+Running script: bn_eof_simple2.jnl
 
 Bailing out of external function "eof_space":
 	 Function EOF_SPACE not available in this version of Ferret. Use EOFSVD_SPACE
  **ERROR: error in external function
 list dot_t(v1, v1)
+Running script: bn_eof_simple2.jnl
 
 Bailing out of external function "eof_space":
 	 Function EOF_SPACE not available in this version of Ferret. Use EOFSVD_SPACE
  **ERROR: error in external function
 list dot_t(v1, v2)
+Running script: bn_eof_simple2.jnl
 
 Bailing out of external function "eof_space":
 	 Function EOF_SPACE not available in this version of Ferret. Use EOFSVD_SPACE
  **ERROR: error in external function
 list dot_t(v2, v1)
+Running script: bn_eof_simple2.jnl
 
 Bailing out of external function "eof_space":
 	 Function EOF_SPACE not available in this version of Ferret. Use EOFSVD_SPACE
  **ERROR: error in external function
 list dot_t(v2, v2)
+Running script: bn_eof_simple2.jnl
 
 Bailing out of external function "eof_tfunc":
 	 Function EOF_TFUNC not available in this version of Ferret. Use EOFSVD_TFUNC
  **ERROR: error in external function
 load tafs
+Running script: bn_eof_simple2.jnl
 
 Bailing out of external function "eof_tfunc":
 	 Function EOF_TFUNC not available in this version of Ferret. Use EOFSVD_TFUNC
  **ERROR: error in external function
 list dot_t(v1, v1)
+Running script: bn_eof_simple2.jnl
 
 Bailing out of external function "eof_tfunc":
 	 Function EOF_TFUNC not available in this version of Ferret. Use EOFSVD_TFUNC
  **ERROR: error in external function
 list dot_t(v1, v2)
+Running script: bn_eof_simple2.jnl
 
 Bailing out of external function "eof_tfunc":
 	 Function EOF_TFUNC not available in this version of Ferret. Use EOFSVD_TFUNC
  **ERROR: error in external function
 list dot_t(v2, v1)
+Running script: bn_eof_simple2.jnl
 
 Bailing out of external function "eof_tfunc":
 	 Function EOF_TFUNC not available in this version of Ferret. Use EOFSVD_TFUNC
  **ERROR: error in external function
 list dot_t(v2, v2)
+Running script: bn_eof_simple2.jnl
 *** Running ferret script: bn_interpolate_6d.jnl
 *** Running ferret script: bn_regrid_6d.jnl
  PERMANENT data cleared from memory
@@ -3189,12 +3515,15 @@ Replacing definition of grid G24
  **ERROR: command syntax: IF _m GT 3 THEN ( IF _m LT 5 THEN _m ELSE -9 ) ELSE .333
           Cannot use multiple IFs in an expression
 LIST/order=e  IF _m GT 3 THEN ( IF _m LT 5 THEN _m ELSE -9 ) ELSE .333
+Running script: bn_expressions_6d.jnl
  **ERROR: command syntax: IF _m LT 5 THEN _m ELSE -9
           ELSE before - is illegal
           negative constants need to be enclosed in parentheses
 DEFINE VARIABLE A = IF _m LT 5 THEN _m ELSE -9
+Running script: bn_expressions_6d.jnl
  **ERROR: variable unknown or not in data set: A1
 load a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11,a12,a13,a14,a15,a16,a17,a18,a19,a20,a21
+Running script: bn_expressions_6d.jnl
 *** Running ferret script: bn_direction_fcns_6d.jnl
 *** Running ferret script: bn_regrid_transforms_6d.jnl
 Replacing definition of axis FAX4DAY
@@ -3204,11 +3533,13 @@ Replacing definition of axis FAX4DAY
            *** NOTE: /FILES is deprecated.  Use /MEMBERS
  **ERROR: unknown data set: dset 3
 DEFINE DATA/AGGREGAT/E windy = 1,2,3
+Running script: bn_aggregate_e.jnl
            *** NOTE: Variable "UWND" excluded from aggregate: T axis differs among members
            *** NOTE: Variable "VWND" excluded from aggregate: T axis differs among members
            *** NOTE: Variable "SPEH" excluded from aggregate: Not found in all member datasets
  **ERROR: error defining aggregate dataset: No valid datasets or datasets share no variables that can be aggregated.
 DEFINE DATA/AGGREGAT/E windy = 1,2
+Running script: bn_aggregate_e.jnl
            *** NOTE: Variable "SPEH" excluded from aggregate: Not found in all member datasets
            *** NOTE: Variable "UIN" excluded from aggregate: Not found in all member datasets
            *** NOTE: Variable "VIN" excluded from aggregate: Not found in all member datasets
@@ -3289,14 +3620,17 @@ ooooooooooooooooooooooooooooooooooooooooooo
 NetCDF: Numeric conversion not representable (OPeNDAP/netCDF Error code -60)
  failure writing to CDF output file
 LIST/FORMAT=CDF/L=32875000:32875201/clobber/file=mytype.nc tt
+Running script: bn_axis_outtype.jnl
  LISTing to file mytype.nc
 NetCDF: Numeric conversion not representable (OPeNDAP/netCDF Error code -60)
  failure writing to CDF output file
 LIST/FORMAT=CDF/clobber/file=mytype.nc my_data
+Running script: bn_axis_outtype.jnl
  LISTing to file mytype.nc
 *** Running ferret script: bn_axis_nonmonotonic.jnl
  **ERROR: improper grid or axis definition: data for DEFINE AXIS/FROM_VARIABLE is not monotonically increasing at index 12
 define axis/t/units=days tax = tvar
+Running script: bn_axis_nonmonotonic.jnl
 *** Running ferret script: bn_vec_mod.jnl
  Using every   9th vector in the X direction
  Using every   9th vector in the X direction
@@ -3369,18 +3703,24 @@ ooooooooooooooooooooooooooooooooooooooooooo
 ooooooooooooooooooooooooooooooooooooooooooo
  **ERROR: command syntax: .HELLO
 list .hello
+Running script: err684_dotstart
  **ERROR: variable unknown or not in data set: A.UNITS
  
 list a.units
+Running script: err684_dotstart
  **ERROR: variable unknown or not in data set: A.UNITS
 list a.units
+Running script: err684_dotstart
  **ERROR: attribute undefined or invalid attribute name: ..HISTORY
           attribute HISTORY not found for dataset
 list ..history
+Running script: err684_dotstart
  **ERROR: variable unknown or not in data set: ..HISTORY
 list ..history
+Running script: err684_dotstart
  **ERROR: command syntax: .
 list .
+Running script: err684_dotstart
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -3431,24 +3771,31 @@ ooooooooooooooooooooooooooooooooooooooooooo
  **ERROR: command syntax: COLOR
           /COLOR must have an argument for PLOT/OVERLAY
 plot/i=1:100/over/COLOR 0.6*sin(i/7)
+Running script: bn_plot_color_only.jnl
  **ERROR: command syntax: COLOR
           /COLOR not valid for PLOT/LEVELS ribbon plot
 plot/i=1:100/ribbon/COLOR sin(i/6),0.6*sin(i/7)
+Running script: bn_plot_color_only.jnl
 *** Running ferret script: bn_vtree.jnl
            *** NOTE: Variable "FVX" excluded from aggregate: Not found in all member datasets
            *** NOTE: Variable "FVZ" excluded from aggregate: Not found in all member datasets
            *** NOTE: Variable "FVZ" excluded from aggregate: Not found in all member datasets
  **ERROR: unknown defining grid: G=NOEXIST
 list b
+Running script: bn_vtree.jnl
  **ERROR: command syntax: 45S
 list c
+Running script: bn_vtree.jnl
  **ERROR: command syntax: ,
 list d
+Running script: bn_vtree.jnl
  **ERROR: command syntax: P=1
 list e
+Running script: bn_vtree.jnl
  **ERROR: illegal limits: X axis limits don't match variable def'n: A
           Are you giving explicit limits when SET REGION would suffice ?
 list f
+Running script: bn_vtree.jnl
 Replacing definition of axis ZAX
 *** Running ferret script: bn686_bug_fixes.jnl
  PERMANENT data cleared from memory
@@ -3474,16 +3821,20 @@ ooooooooooooooooooooooooooooooooooooooooooo
  **TMAP ERR: non-existent or not on line
              nosuchfile.nc
 SET DAT/FORM=CDF nosuchfile.nc
+Running script: err685_use_no_extension
  **TMAP ERR: non-existent or not on line
              Searched $FER_DESCR and $FER_DATA for nosuchfile(.nc ,.cdf,.des,.agg)
 SET DAT/FORM=CDF nosuchfile
+Running script: err685_use_no_extension
  **TMAP ERR: non-existent or not on line
              Searched $FER_DESCR and $FER_DATA for snoopy(.nc ,.cdf,.des,.agg)
 SET DAT/FORM=CDF snoopy
+Running script: err685_use_no_extension
  **netCDF error
              NetCDF: Unknown file format (OPeNDAP/netCDF Error code -51)
              Data set: ./snoopy.dat
 SET DAT/FORM=CDF snoopy.dat
+Running script: err685_use_no_extension
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -3523,6 +3874,7 @@ Replacing definition of axis XAXIS_TEST
  **TMAP ERR: error in line definition
              file coords dont match variable coords on axis XAXIS_TEST
 LIST/FORMAT=CDF/clobber/keep/file=nc b,a[d=1]
+Running script: err686_dup_axnames
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -3537,19 +3889,25 @@ ooooooooooooooooooooooooooooooooooooooooooo
  **ERROR: attribute undefined or invalid attribute name: temp.noexist[d=levitus_climatology]
           attribute noexist not found for variable TEMP
 show att temp.noexist[d=levitus_climatology]
+Running script: err686_sho_nonexis
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
  **ERROR: invalid command: illegal new name.  Variable b already defined
 set var/name=b a
+Running script: err686_set_var_nam
  **ERROR: invalid command: illegal new name.  Variable b already defined
 set var/name=b a
+Running script: err686_set_var_nam
  **ERROR: invalid command: illegal new name.  Variable temp exists in dataset
 set var/name=temp salt
+Running script: err686_set_var_nam
  **ERROR: invalid command: illegal new name.  Variable psi exists in dataset
 set var/name=psi myvar
+Running script: err686_set_var_nam
  **ERROR: invalid command: illegal new name.  Variable diff already defined
 set var/name=diff w
+Running script: err686_set_var_nam
 *** Running ferret script: bn_bad_axis_bounds.jnl
            *** NOTE: Axis definition error on axis: MONTH_IRREG. Bounds describe cells that overlap one another
            *** NOTE: Error in bounds "MONTH_IRREG_bnds" or bounds do not enclose point on axis MONTH_IRREG
@@ -3563,20 +3921,26 @@ set var/name=diff w
  LISTing to file c.nc
  **ERROR: invalid command: illegal new name. Axis days2000 is already defined
 set axis/name=days2000 x_in_meters
+Running script: bn_set_axis_name.jnl
  **ERROR: invalid command: illegal new name given for axis
 set axis/name x_in_meters
+Running script: bn_set_axis_name.jnl
  **ERROR: invalid command: illegal new name given for axis 45
 set axis/name=45 x_in_meters
+Running script: bn_set_axis_name.jnl
  **ERROR: invalid command: illegal new name given for axis .fr
 set axis/name=.fr x_in_meters
+Running script: bn_set_axis_name.jnl
 *** Running ferret script: bn691_bug_fixes.jnl
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
  **ERROR: invalid command: string/numeric data type mix-up. Argument 3 : TAX_DATESTRING
 list tax_datestring (tt[L=3], tt, 5)
+Running script: err69_arg_type_error
  **ERROR: invalid command: string/numeric data type mix-up. Argument 2 : TAX_DATESTRING
 list tax_datestring (tt[L=3], "my_tax", "minutes")
+Running script: err69_arg_type_error
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -3591,12 +3955,16 @@ ooooooooooooooooooooooooooooooooooooooooooo
 ooooooooooooooooooooooooooooooooooooooooooo
  **ERROR: command syntax: must be a constant COS(1)
 list {cos(1), sin(0)}
+Running script: err69_const_array
  **ERROR: command syntax: must be a constant 0-180
 list {0-180, 180}
+Running script: err69_const_array
  **ERROR: command syntax: must be a constant  1./5.
 list {0.1, 0.2, 1./5.}
+Running script: err69_const_array
  **ERROR: command syntax: must be a constant 5*3+1
 list {5*3+1, 2+3}
+Running script: err69_const_array
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -3638,9 +4006,11 @@ ooooooooooooooooooooooooooooooooooooooooooo
 Replacing definition of axis XAXIS
  **ERROR: request exceeds memory setting
 load bigvar
+Running script: err69_load_big_grid
 Replacing definition of axis LONGTIME
  **ERROR: request exceeds memory setting
 load bigvar
+Running script: err69_load_big_grid
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -3656,23 +4026,31 @@ ooooooooooooooooooooooooooooooooooooooooooo
 ooooooooooooooooooooooooooooooooooooooooooo
  **ERROR: variable unknown or not in data set: A
 list a
+Running script: err69_isready_status
  **ERROR: variable unknown or not in data set: A
 list a
+Running script: err69_isready_status
  **ERROR: variable unknown or not in data set: B
 list b
+Running script: err69_isready_status
  **ERROR: variable unknown or not in data set: A
 shade a
+Running script: err69_isready_status
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
  **ERROR: variable unknown or not in data set: A
 list a
+Running script: err69_isready_status
  **ERROR: variable unknown or not in data set: A
 list a
+Running script: err69_isready_status
  **ERROR: variable unknown or not in data set: B
 list b
+Running script: err69_isready_status
  **ERROR: variable unknown or not in data set: A
 shade a
+Running script: err69_isready_status
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -3697,8 +4075,10 @@ ooooooooooooooooooooooooooooooooooooooooooo
 ooooooooooooooooooooooooooooooooooooooooooo
  **ERROR: value out of legal range: Negative argument to function. Argument 3 : SUBSTRING
 list substring("hello",1,-2)
+Running script: err691_substring_arg
  **ERROR: value out of legal range: Negative argument to function. Argument 3 : SUBSTRING
 list substring("hello",1,-3)
+Running script: err691_substring_arg
 *** Running ferret script: bn_append_dsg.jnl
 rm: cannot remove ‘test_save_dsg.nc’: No such file or directory
 *** Running ferret script: bn_global_atts.jnl
@@ -3713,15 +4093,20 @@ rm: cannot remove ‘test_save_dsg.nc’: No such file or directory
            *** NOTE: Variable "FVZ" excluded from aggregate: Not found in all member datasets
  **ERROR: unknown defining grid: G=NOEXIST
 list b
+Running script: bn_vtree_outfile
  **ERROR: command syntax: 45S
 list c
+Running script: bn_vtree_outfile
  **ERROR: command syntax: ,
 list d
+Running script: bn_vtree_outfile
  **ERROR: command syntax: P=1
 list e
+Running script: bn_vtree_outfile
  **ERROR: illegal limits: X axis limits don't match variable def'n: A
           Are you giving explicit limits when SET REGION would suffice ?
 list f
+Running script: bn_vtree_outfile
 *** Running ferret script: bn_date1900_array.jnl
 *** Running ferret script: bn_spawn_size.jnl
  LISTing to file bn_spawn_size1.cdf
@@ -3739,8 +4124,10 @@ list f
 *** Running ferret script: bn_polygon_log.jnl
  **ERROR: value out of legal range: coordinates on log axis negative or too small : -0.850
 poly/i=1:100/vlog xbad+xsqr,ybad+ysqr,x*x/10
+Running script: bn_polygon_log.jnl
  **ERROR: value out of legal range: coordinates on log axis negative or too small : -0.689E-02
 poly/i=1:100/hlog xbad+xsqr,ybad+ysqr,x*x/10
+Running script: bn_polygon_log.jnl
 *** Running ferret script: bn694_bug_fixes.jnl
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -3790,6 +4177,7 @@ ooooooooooooooooooooooooooooooooooooooooooo
 ooooooooooooooooooooooooooooooooooooooooooo
  **ERROR: unknown data set: BAD_D
 stat/l=1/x=180/y=0 a
+Running script: err693_undetected_regrid_dset
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -3806,8 +4194,10 @@ ooooooooooooooooooooooooooooooooooooooooooo
 ooooooooooooooooooooooooooooooooooooooooooo
  **ERROR: invalid command: REPEAT what ?
 repeat/range=1:2/name=row
+Running script: err693_repeat_err
  **ERROR: invalid command: REPEAT what ?
 repeat/range=1:2/name=row
+Running script: err693_repeat_err
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -3825,9 +4215,11 @@ ooooooooooooooooooooooooooooooooooooooooooo
  **ERROR: invalid command: illegal format type - must be "GIF"
           frame/format=hdf/file=a.hdf
 frame/format=hdf/file=a.hdf
+Running script: err693_frame_types
  **ERROR: invalid command: illegal format type - must be "GIF"
           frame/file=a.png
 frame/file=a.png
+Running script: err693_frame_types
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -3900,55 +4292,77 @@ Replacing definition of axis FSEC
 *** Running ferret script: bn_can_var_noerr.jnl
  **ERROR: variable unknown or not in data set: B
 cancel var b,a
+Running script: bn_can_var_noerr.jnl
 *** Running ferret script: bn_annotate.jnl
  **ERROR: command syntax: xpos=a2
 annotate/nouser/xpos=a2/ypos=0/halign=1/valign=0/angle=-45/siz=0.15 "My Lab"
+Running script: bn_annotate.jnl
  **ERROR: command syntax: ypos=b
 annotate/nouser/xpos=0/ypos=b/halign=1/valign=0/angle=-45/siz=0.15 "My Lab"
+Running script: bn_annotate.jnl
  **ERROR: command syntax: halign=c
 annotate/nouser/xpos=0/ypos=0/halign=c/valign=0/angle=-45/siz=0.15 "My Lab"
+Running script: bn_annotate.jnl
  **ERROR: command syntax: valign=d
 annotate/nouser/xpos=0/ypos=0/halign=1/valign=d/angle=ee/siz=0.15 "My Lab"
+Running script: bn_annotate.jnl
  **ERROR: command syntax: siz=f
 annotate/nouser/xpos=0/ypos=0/halign=1/valign=0/angle=-45/siz=f "My Lab"
+Running script: bn_annotate.jnl
  **ERROR: invalid command: /XPOS and /YPOS are required for ANNOTATE
 annotate/nouser/ypos=0 "My Lab"
+Running script: bn_annotate.jnl
  **ERROR: invalid command: /XPOS and /YPOS are required for ANNOTATE
 annotate/nouser/xpos=0/halign=1/valign=0/angle=-45/siz=0.15 "My Lab"
+Running script: bn_annotate.jnl
  **ERROR: invalid command: Specify only one of /USER /NOUSER /NORM
 annotate/nouser/user/ypos=0/halign=1/valign=0/angle=-45/siz=0.15 "My Lab"
+Running script: bn_annotate.jnl
  **ERROR: command syntax: xpos=a2
 def anno/nou/xpos=a2/ypos=0/hal=1/val=0/ang=-45/siz=0.15 "My Lab"
+Running script: bn_annotate.jnl
  **ERROR: command syntax: ypos=b
 def anno/nou/xpos=0,3/ypos=b/hal=1/val=0/ang=-45/siz=0.15 "My Lab"
+Running script: bn_annotate.jnl
  **ERROR: command syntax: hal=c
 def anno/nou/xpos=0/ypos=0/hal=c/val=0/ang=-45/siz=0.15 "My Lab"
+Running script: bn_annotate.jnl
  **ERROR: command syntax: val=d
 def anno/nou/xpos=0/ypos=0/hal=1/val=d/ang=ee/siz=0.15 "My Lab"
+Running script: bn_annotate.jnl
  **ERROR: command syntax: siz=f
 def anno/nou/xpos=0/ypos=0/hal=1/val=0/ang=-45/siz=f "My Lab"
+Running script: bn_annotate.jnl
  **ERROR: invalid command: /XPOS and /YPOS are required for ANNOTATE
 def anno/nou/ypos=0 "My Lab"
+Running script: bn_annotate.jnl
  **ERROR: invalid command: /XPOS and /YPOS are required for ANNOTATE
 def anno/nou/xpos=0/hal=1/val=0 "My Lab"
+Running script: bn_annotate.jnl
  **ERROR: invalid command: Specify only one of /USER /NOUSER /NORM
 def anno/nou/user/xpos=0/ypos=0 "My Lab"
+Running script: bn_annotate.jnl
 *** Running ferret script: bn_auxiliary.jnl
 rm: cannot remove ‘layerz_test_data.txt’: No such file or directory
  LISTing to file layerz_test_data.txt
  **ERROR: variable unknown or not in data set: (data set ok ?): noexist
 SET VAR/layerz=depth noexist
+Running script: bn_auxiliary.jnl
            *** NOTE: Ambiguous coordinates on Z axis: TEMP6D-TEMPZ6D
  **ERROR: invalid command: auxiliary variable DEPTH6D has a T axis not found on variable TEMP
 LIST/PREC=7 tempz6d_unmatch
+Running script: bn_auxiliary.jnl
 Replacing definition of axis ZAX
 *** Running ferret script: bn_plot_ribbon_gaploc.jnl
  **ERROR: command syntax: PLOT/VS/RIBBON/GAPLOC plot needs 4 arguments
 plot/vs/thick/line/sym=21/siz=.3/ribbon/gap xpts, 10*ypts, color
+Running script: bn_plot_ribbon_gaploc.jnl
  **ERROR: command syntax: PLOT/GAPLOC applies only to PLOT/VS/RIBBON
 plot/vs/thick/line/sym=21/siz=0.3/gap xpts, 10*ypts, 10.1*ypts, 9.93*ypts, gvar
+Running script: bn_plot_ribbon_gaploc.jnl
  **ERROR: command syntax: PLOT/GAPLOC applies only to PLOT/VS/RIBBON
 plot/ov/nolab/vs/thick/line/sym=21/siz=.3/gapl xpts, color, gvar
+Running script: bn_plot_ribbon_gaploc.jnl
 *** Running ferret script: bn_time_short_axes.jnl
 *** Running ferret script: bn_floatstr_extended.jnl
 *** Running ferret script: bn696_bug_fixes.jnl
@@ -3962,10 +4376,13 @@ ooooooooooooooooooooooooooooooooooooooooooo
 ooooooooooooooooooooooooooooooooooooooooooo
  **ERROR: unknown data set: noexist
 SHOW DATA noexist
+Running script: err695_show_dat_nodata
  **ERROR: unknown data set: 2
 SHOW DATA 2
+Running script: err695_show_dat_nodata
  **ERROR: unknown data set: noexist
 SHOW DATA/ATT noexist
+Running script: err695_show_dat_nodata
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -3994,6 +4411,7 @@ ooooooooooooooooooooooooooooooooooooooooooo
              Calendar definitions on T and F axes must match
              Data file: ./data/ft_cal_one.nc
 SET DAT/FORM=CDF ft_cal_mixed.nc
+Running script: err696_ft_calendars
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -4019,6 +4437,7 @@ ooooooooooooooooooooooooooooooooooooooooooo
 ooooooooooooooooooooooooooooooooooooooooooo
  **ERROR: request exceeds memory setting
 load/l=1:5 bigvar
+Running script: err696_mem_err_repo
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -4185,60 +4604,81 @@ Replacing definition of axis TDAY_TVAR
            *** NOTE: /FILES is deprecated.  Use /MEMBERS
  **ERROR: invalid command: given aggregation dataset name already in use: myagg2
 define data/agg/t myagg2 = tmp/tagg_reg_1.nc, tmp/tagg_reg_2.nc, tmp/tagg_reg_2.nc
+Running script: bn_aggregate_t_noremote.jnl
  **TMAP ERR: non-existent or not on line
              tmp/tagg_no_exist.nc
 define data/agg/t myaggbad = tmp/tagg_no_exist.nc, tmp/tagg_reg_2.nc
+Running script: bn_aggregate_t_noremote.jnl
  **TMAP ERR: non-existent or not on line
              tmp/tagg_no_exist.nc
 define data/agg/t myaggbad = tmp/tagg_reg_1.nc, tmp/tagg_no_exist.nc
+Running script: bn_aggregate_t_noremote.jnl
  **ERROR: improper grid or axis definition: first file of aggregation has no time axis tmp/tagg_reg_no_T.nc
 DEFINE DATA/AGGREGAT/T myTindepagg = tmp/tagg_reg_no_T.nc
+Running script: bn_aggregate_t_noremote.jnl
  **ERROR: improper grid or axis definition: time axis is not monotonic at L=1 of file tmp/tagg_reg_3.nc
 define data/agg/t myagg3 = tmp/tagg_reg_1.nc, tmp/tagg_reg_2_overlarge.nc,tmp/tagg_reg_3.nc
+Running script: bn_aggregate_t_noremote.jnl
  **TMAP ERR: non-existent or not on line
              Searched $FER_DESCR and $FER_DATA for 1(.nc ,.cdf,.des). For a Timeseries aggregation, specify the NetCDF file/path names or OPeNDAP dataset names.
 define data/agg/t myagg2num = 1,2
+Running script: bn_aggregate_t_noremote.jnl
            *** NOTE: /FILES is deprecated.  Use /MEMBERS
            *** NOTE: /FILES is deprecated.  Use /MEMBERS
            *** NOTE: /FILES is deprecated.  Use /MEMBERS
  **TMAP ERR: Unknown variable code
              in file tmp/tagg_disjoint_T0varying_4_wrong.nc time axis variable is missing: TDAY_TVAR
 define data/agg/t myagg5_bad = tmp/tagg_disjoint_T0varying_1.nc, tmp/tagg_disjoint_T0varying_2.nc,tmp/tagg_disjoint_T0varying_3.nc, tmp/tagg_disjoint_T0varying_4_wrong.nc,tmp/tagg_disjoint_T0varying_5.nc
+Running script: bn_aggregate_t_noremote.jnl
            *** NOTE: /FILES is deprecated.  Use /MEMBERS
  **ERROR: unknown command: garbage
 garbage command syntax
+Running script: tmp/bad_agg.agg
  **ERROR: improper grid or axis definition: time axis is not monotonic at L=1 of file tmp/tagg_single_1.nc
 define data/agg/t MYsing_irreg_agg4 = tmp/tagg_single_1.nc, tmp/tagg_single_1.nc, tmp/tagg_single_2.nc,tmp/tagg_single_4.nc, tmp/tagg_single_5.nc
+Running script: bn_aggregate_t_noremote.jnl
  **ERROR: improper grid or axis definition: time axis is not monotonic at L=1 of file tmp/tagg_single_5.nc
 define data/agg/t MYsing_irreg_agg4 = tmp/tagg_single_1.nc, tmp/tagg_single_2.nc,tmp/tagg_single_4.nc, tmp/tagg_single_5.nc, tmp/tagg_single_5.nc
+Running script: bn_aggregate_t_noremote.jnl
 *** Running ferret script: bn_unquoted_args_noremote.jnl
  LISTing to file tmp/test1.nc
  LISTing to file tmp/test2.nc
  LISTing to file tmp/test3.nc
  **ERROR: unknown command qualifier: erroneous
 set data/erroneous tmp/test1.nc
+Running script: bn_unquoted_args_noremote.jnl
  **ERROR: unknown command qualifier: erroneous
 set data /erroneous tmp/test1.nc
+Running script: bn_unquoted_args_noremote.jnl
  **TMAP ERR: non-existent or not on line
              /erroneous(.nc ,.cdf,.nc)
 set data /erroneous, tmp/test1.nc
+Running script: bn_unquoted_args_noremote.jnl
  **ERROR: unknown command qualifier: garbage
 go/garbage tmp/testMe
+Running script: bn_unquoted_args_noremote.jnl
  **ERROR: unknown command qualifier: garbage
 go/garbage "tmp/testMe"
+Running script: bn_unquoted_args_noremote.jnl
  **ERROR: unknown command qualifier: garbage
 go/garbage ....../bench/tmp/testMe.jnl
+Running script: bn_unquoted_args_noremote.jnl
  **ERROR: unknown command qualifier: garbage
 go/garbage "....../bench/tmp/testMe.jnl"
+Running script: bn_unquoted_args_noremote.jnl
 *** Running ferret script: bn_long_lists.jnl
  **ERROR: command syntax: command line too long -- exceeds 2048
 DEFINE VARIABLE a={1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5,6,7,8,9,0,1,2,3,4,5...
+Running script: bn_long_lists.jnl
  **ERROR: variable unknown or not in data set: A
 load a
+Running script: bn_long_lists.jnl
  **ERROR: command syntax: command line too long -- exceeds 2048
 "/arch
+Running script: bn_long_lists.jnl
  **ERROR: command syntax: "/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0020.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0021.t_surf...
 "/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0020.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0021.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0022.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0023.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0024.t_surf.nc","/archive/ccsp/ipcc_ar4/CM2.1U-D4_1860-2000-AllForc_H1/pp/atmos/ts/monthly/100yr/atmos.0025.t_surf.nc",\}
+Running script: bn_long_lists.jnl
 *** Running ferret script: bn_show_uvar_grid.jnl
 *** Running ferret script: bn_aggregate_f.jnl
  LISTing to file tmp/fcst_1.nc
@@ -4268,13 +4708,17 @@ Replacing definition of axis MONTHLY
            *** NOTE: Variable "FCST_2" excluded from aggregate: Not found in all member datasets
  **ERROR: error defining aggregate dataset: some files have duplicate forecast start times
 DEFINE DATA/AGGREGAT/F my_fmrc = tmp/fcst_1.nc, tmp/fcst_2.nc,tmp/fcst_2.nc,tmp/fcst_3.nc
+Running script: bn_aggregate_f.jnl
  **TMAP ERR: non-existent or not on line
              tmp/no_exist.nc
 DEFINE DATA/AGGREGAT/F my_fmrc = XCAT(files,"tmp/no_exist.nc")
+Running script: bn_aggregate_f.jnl
  **ERROR: error defining aggregate dataset: forecast start times are irregular or too gappy
 DEFINE DATA/AGGREGAT/F my_fmrc = XCAT(files,"tmp/consecutive_month_fcst.nc")
+Running script: bn_aggregate_f.jnl
  **ERROR: error defining aggregate dataset: forecast start times are irregular or too gappy
 DEFINE DATA/AGGREGAT/F my_fmrc = XCAT(files,"tmp/irregular_start_time_fcst.nc")
+Running script: bn_aggregate_f.jnl
 *** Running ferret script: bn_aggregate_tef.jnl
 ls: cannot access tmp/f04_e3_t3_1v.nc: No such file or directory
  LISTing to file tmp/f01_e1_t1.nc
@@ -4558,19 +5002,24 @@ ls: cannot access tmp/f04_e3_t3_1v.nc: No such file or directory
            *** NOTE: Variable "FCST_2" excluded from aggregate: Not found in all member datasets
  **ERROR: error defining aggregate dataset: grid definition of FCST_2 has changed on axis X of agg member 3
 list/x=150E/y=15n/L=10 fcst_2
+Running script: bn_aggregate_tef.jnl
  **ERROR: error defining aggregate dataset: grid definition of FCST_2 has changed on axis T of agg member 3
 list/x=150E/y=15n/L=10 fcst_2
+Running script: bn_aggregate_tef.jnl
  **ERROR: error defining aggregate dataset: grid definition of FCST_2 has changed on axis X of agg member 3
 list/x=150E/y=15n/L=10 fcst_2
+Running script: bn_aggregate_tef.jnl
            *** NOTE: Variable "FCST" excluded from aggregate: E axis differs among members
            *** NOTE: Variable "FCST_2" excluded from aggregate: E axis differs among members
  **ERROR: error defining aggregate dataset: No valid datasets or datasets share no variables that can be aggregated.
 DEFINE DATA/AGGREGAT/F tef_short = te_f01, te_f02_short, te_f03, te_f04, te_f05, te_f06, te_f07, te_f08, te_f09, te_f10, te_f11
+Running script: bn_aggregate_tef.jnl
            *** NOTE: Variable "FCST" excluded from aggregate: F axis differs among members
            *** NOTE: Variable "TF_TIMES" excluded from aggregate: F axis differs among members
            *** NOTE: Variable "FCST_2" excluded from aggregate: F axis differs among members
  **ERROR: error defining aggregate dataset: No valid datasets or datasets share no variables that can be aggregated.
 DEFINE DATA/AGGREGAT/E tfe_short = tf_e1, tf_e2_short, tf_e3, tf_e4, tf_e5
+Running script: bn_aggregate_tef.jnl
            *** NOTE: Variable "FCST" excluded from aggregate: Already has E axis
            *** NOTE: Variable "FCST_2" excluded from aggregate: Already has E axis
            *** NOTE: Variable "REALIZATION" excluded from aggregate: Already has E axis
@@ -4581,8 +5030,10 @@ DEFINE DATA/AGGREGAT/E tfe_short = tf_e1, tf_e2_short, tf_e3, tf_e4, tf_e5
            *** NOTE: Variable "DESCRIPTION" excluded from aggregate: Already has E axis
  **ERROR: error defining aggregate dataset: No valid datasets or datasets share no variables that can be aggregated.
 DEFINE DATA/AGGREGAT/E bad_ens = te_f01, te_f03, te_f04
+Running script: bn_aggregate_tef.jnl
  **ERROR: error defining aggregate dataset: some files have duplicate forecast start times
 DEFINE DATA/AGGREGAT/F bad_fmrc = tf_e1, tf_e3, tf_e4
+Running script: bn_aggregate_tef.jnl
 *** Running ferret script: bn_dataset_qualifier.jnl
  LISTing to file a.nc
  LISTing to file a.nc
@@ -4593,7 +5044,9 @@ DEFINE DATA/AGGREGAT/F bad_fmrc = tf_e1, tf_e3, tf_e4
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
 SHO VAR/XML
+Running script: bn_show_noupcase.jnl
 SHO VAR/XML
+Running script: bn_show_noupcase.jnl
 *** Running ferret script: bn_letd_attributes.jnl
  LISTing to file a.nc
  LISTing to file a.nc
@@ -4751,12 +5204,16 @@ Replacing definition of axis TIMAX
 Replacing definition of axis TIMAX
  **ERROR: Error reading file: Check Date or Time fields.
 list index,edtim,udtim,udate,edate
+Running script: bn_delim_datetime.jnl
  **ERROR: Error reading file: Check Date or Time fields.
 list index,edtim,udtim,udate,edate
+Running script: bn_delim_datetime.jnl
  **ERROR: Error reading file: Check Date or Time fields.
 list index,edtim,udtim,udate,edate
+Running script: bn_delim_datetime.jnl
  **ERROR: Error reading file: Check Date or Time fields.
 list index,edtim,udtim,udate,edate
+Running script: bn_delim_datetime.jnl
 *** Running ferret script: bn_aggregate_u.jnl
  LISTing to file tmp/uagg_1.nc
  LISTing to file tmp/uagg_2.nc
@@ -4801,16 +5258,21 @@ cp: cannot stat ‘nofile.dat’: No such file or directory
 *** Running ferret script: bn_agg_member_syntax.jnl
  **ERROR: unknown data set: D=5.3
 stat/br fcst[d=5.3]
+Running script: bn_agg_member_syntax.jnl
  **ERROR: unknown data set: D=12.30
 stat/br fcst[d=12.30]
+Running script: bn_agg_member_syntax.jnl
  **ERROR: unknown data set: D=12.300000
 stat/br fcst[d=12.300000]
+Running script: bn_agg_member_syntax.jnl
            *** NOTE: Variable "AIRT" excluded from aggregate: Not found in all member datasets
            *** NOTE: Variable "AIRT" excluded from aggregate: Not found in all member datasets
  **ERROR: unknown data set: D=4.1
 stat/br sst[d=4.1]
+Running script: bn_agg_member_syntax.jnl
  **ERROR: unknown data set: D=5.30
 stat/br sst[d=5.30]
+Running script: bn_agg_member_syntax.jnl
 *** Running ferret script: bn_true_monthly.jnl
            *** NOTE: /UNIT=MONTHS is ambiguous ... using 1/12 of 365.2425 days
            *** NOTE: True monthly axis has an implicit /EDGES qualifier
@@ -4861,21 +5323,29 @@ Replacing definition of axis TAXIS
 Replacing definition of axis TAXIS
  **ERROR: improper grid or axis definition: DEFINE AXIS/MONTHLY specify /UNITS=month or omit /UNITS (MONTH is default)
 define axis/t=1-jan-2010:31-jul-2011:30/t0=1-jan-2000/monthly/units=days taxis
+Running script: bn_true_monthly.jnl
  **ERROR: improper grid or axis definition: DEFINE AXIS/MONTHLY True-month axis: /NPOINTS not allowed. Use /T=lo:hi:del
 define axis/t=1-jan-2010:31-dec-2012:1/t0=1-jan-2000/monthly/npoints=13 taxis
+Running script: bn_true_monthly.jnl
  **ERROR: improper grid or axis definition: DEFINE AXIS/MONTHLY True-month axis delta-t must be 1
 define axis/t=1-jan-2010:31-dec-2012/t0=1-jan-2000/monthly taxis
+Running script: bn_true_monthly.jnl
            *** NOTE: True monthly axis has an implicit /EDGES qualifier
  **ERROR: improper grid or axis definition: DEFINE AXIS/MONTHLY True-month axis delta-t must be 1
 define axis/t=1-jan-2010:31-dec-2012:2/t0=1-jan-2000/monthly taxis
+Running script: bn_true_monthly.jnl
  **ERROR: improper grid or axis definition: DEFINE AXIS/MONTHLY True-month axis: Definition /FROMDATA not allowed. Use /T=LO:HI:DEL
 define axis/t/t0=1-jan-2000/monthly taxis = {123,124,126}
+Running script: bn_true_monthly.jnl
  **ERROR: improper grid or axis definition: DEFINE AXIS/MONTHLY True-month axis: Definition /FROMDATA not allowed. Use /T=LO:HI:DEL
 define axis/from/t/t0=1-jan-2001/monthly/edges taxis = {5,6,6,6,7}
+Running script: bn_true_monthly.jnl
  **ERROR: improper grid or axis definition: DEFINE AXIS/MONTHLY True-month axis: /BOUNDS not allowed. Use /T=lo:hi:del
 def axis/t/t0=1-jan-2000/monthly/bounds tax={1.2, 2, 3.2, 5, 7, 8.4, 9}, {0.5,1.5, 1.5,2.5, 2.5,3.5, 3.5,6.5, 6.5,7.5, 7.5,8.5, 8.5,9.5}
+Running script: bn_true_monthly.jnl
  **ERROR: improper grid or axis definition: DEFINE AXIS/MONTHLY True-month axis: needs /T=lo:hi:del
 define axis/x=1:5:1/monthly aaxis
+Running script: bn_true_monthly.jnl
 *** Running ferret script: bn720_bug_fixes.jnl
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -4926,10 +5396,13 @@ ooooooooooooooooooooooooooooooooooooooooooo
 ooooooooooooooooooooooooooooooooooooooooooo
  **ERROR: PPLUS command syntax error: Symbol not found PPLUS show nosymbol
 pplus show nosymbol
+Running script: err71_ppl_sho_empty
  **ERROR: PPLUS command syntax error: Symbol not found PPLUS show
 ppl show
+Running script: err71_ppl_sho_empty
  **ERROR: PPLUS command syntax error:  Command not recognized: PPLUS NONSENSE
 PPL nonsense
+Running script: err71_ppl_sho_empty
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -4946,6 +5419,7 @@ ooooooooooooooooooooooooooooooooooooooooooo
 ooooooooooooooooooooooooooooooooooooooooooo
  **ERROR: invalid command: Mismatched parentheses within REPEAT loop
 repeat/range=1:3:1/name=count (def sym count = `count`; say 3; message/continue))
+Running script: err71_repeat_paren
 *** Running ferret script: bn_compressed_gather.jnl
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -5009,6 +5483,7 @@ ls: cannot access tmp/test_dyn_mem.nc: No such file or directory
  TEMPORARY data cleared from memory
  **ERROR: request exceeds memory setting: Requested result is larger than the available memory
 stat/brief v[i=101:200,j=101:200,k=1,l=1:10@ave], v[i=101:200,j=101:200,k=2,l=1:10@ave], v[l=1:10@ave]
+Running script: bn_dynamic_gather.sub
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -5047,10 +5522,12 @@ stat/brief v[i=101:200,j=101:200,k=1,l=1:10@ave], v[i=101:200,j=101:200,k=2,l=1:
  TEMPORARY data cleared from memory
  **ERROR: request exceeds memory setting: Requested result is larger than the available memory
 stat/brief a[l=1:10@ave], b[l=1:10@ave], c[l=1:10@ave], d[l=1:10@ave]
+Running script: bn_dynamic_gather.sub
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  **ERROR: request exceeds memory setting: Requested result is larger than the available memory
 stat/brief v[i=101:200,j=101:200,k=1,l=1:10@ave], v[i=101:200,j=101:200,k=2,l=1:10@ave], v[l=1:10@ave]
+Running script: bn_dynamic_gather.sub
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -5089,10 +5566,12 @@ stat/brief v[i=101:200,j=101:200,k=1,l=1:10@ave], v[i=101:200,j=101:200,k=2,l=1:
  TEMPORARY data cleared from memory
  **ERROR: request exceeds memory setting: Requested result is larger than the available memory
 stat/brief a[l=1:10@ave], b[l=1:10@ave], c[l=1:10@ave], d[l=1:10@ave]
+Running script: bn_dynamic_gather.sub
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  **ERROR: request exceeds memory setting: Requested result is larger than the available memory
 stat/brief v[i=101:200,j=101:200,k=1,l=1:10@ave], v[i=101:200,j=101:200,k=2,l=1:10@ave], v[l=1:10@ave]
+Running script: bn_dynamic_gather.sub
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -5131,10 +5610,12 @@ stat/brief v[i=101:200,j=101:200,k=1,l=1:10@ave], v[i=101:200,j=101:200,k=2,l=1:
  TEMPORARY data cleared from memory
  **ERROR: request exceeds memory setting: Requested result is larger than the available memory
 stat/brief a[l=1:10@ave], b[l=1:10@ave], c[l=1:10@ave], d[l=1:10@ave]
+Running script: bn_dynamic_gather.sub
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  **ERROR: request exceeds memory setting: Requested result is larger than the available memory
 stat/brief v[i=101:200,j=101:200,k=1,l=1:10@ave], v[i=101:200,j=101:200,k=2,l=1:10@ave], v[l=1:10@ave]
+Running script: bn_dynamic_gather.sub
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  PERMANENT data cleared from memory
@@ -5173,10 +5654,12 @@ stat/brief v[i=101:200,j=101:200,k=1,l=1:10@ave], v[i=101:200,j=101:200,k=2,l=1:
  TEMPORARY data cleared from memory
  **ERROR: request exceeds memory setting: Requested result is larger than the available memory
 stat/brief a[l=1:10@ave], b[l=1:10@ave], c[l=1:10@ave], d[l=1:10@ave]
+Running script: bn_dynamic_gather.sub
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  **ERROR: value out of legal range: illegal mode argument. Must be 0 to 90 percent
 SET MODE FRUGAL:95
+Running script: bn_dynamic_gather.jnl
 *** Running ferret script: bn_stat_precision.jnl
 *** Running ferret script: bn_plot_vs_with_time.jnl
 Replacing definition of axis TIME
@@ -5238,18 +5721,22 @@ Replacing definition of axis ALINE
 Replacing definition of axis ALINE_EDGES
  **ERROR: invalid command: Units of source and destination axis must match: @IIN
 list c
+Running script: bn_iin_regrid.jnl
  **ERROR: regridding: only @ASN regridding between calendar and
           non-calendar axes: A
 list c
+Running script: bn_iin_regrid.jnl
 Replacing definition of axis ALINE
 Replacing definition of axis ALINE_EDGES
  **ERROR: invalid command: Units of source and destination axis must match: @IIN
 list c
+Running script: bn_iin_regrid.jnl
 Replacing definition of axis ALINE
            *** NOTE: (fyi) units are not subject to auto-conversion: NOTHING
 Replacing definition of axis ALINE_EDGES
  **ERROR: invalid command: Units of source and destination axis must match: @IIN
 list c
+Running script: bn_iin_regrid.jnl
  TEMPORARY data cleared from memory
 Replacing definition of axis ALINE
 Replacing definition of axis ALINE_EDGES
@@ -5326,18 +5813,25 @@ ooooooooooooooooooooooooooooooooooooooooooo
  **ERROR: invalid command: Multi-valued Global string attributes not implemented
           Variable: multistring
 LIST/FORMAT=CDF/asglobal/append/file=a.nc multistring
+Running script: bn_save_as_global.jnl
 LIST/FORMAT=CDF/asglobal/append/file=a.nc multistring
+Running script: bn_save_as_global.jnl
  LISTing to file a.nc
  **ERROR: invalid command: Global attribute must be a 1D variable length < 100
           Variable: SST
 LIST/FORMAT=CDF/append/asglobal/x=150/outtype=float/file=a.nc sst
+Running script: bn_save_as_global.jnl
 LIST/FORMAT=CDF/append/asglobal/x=150/outtype=float/file=a.nc sst
+Running script: bn_save_as_global.jnl
 LIST/FORMAT=CDF/append/asglobal/x=150/outtype=float/file=a.nc sst
+Running script: bn_save_as_global.jnl
  LISTing to file a.nc
  **ERROR: invalid command: Global attribute must be a 1D variable length < 100
           Variable: SST
 LIST/FORMAT=CDF/append/asglobal/y=10/L=2/outtype=float/file=a.nc sst
+Running script: bn_save_as_global.jnl
 LIST/FORMAT=CDF/append/asglobal/y=10/L=2/outtype=float/file=a.nc sst
+Running script: bn_save_as_global.jnl
 *** Running ferret script: bn74_bug_fixes.jnl
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -5345,6 +5839,7 @@ ooooooooooooooooooooooooooooooooooooooooooo
  LISTing to file a.nc
  **ERROR: command syntax: Defining scale_factor or add_offset attributes not allowed on file variables: sst.scale_factor
 define attribute/output sst.scale_factor = 0.001
+Running script: err73_packed_user_var
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -5386,8 +5881,10 @@ Replacing definition of axis XAX
  LISTing to file a.nc
  **ERROR: invalid command: /LIST/APPEND to netCDF file requires /FORMAT=cdf
 list/append/file=a.nc/l=3 xyvar
+Running script: err73_append_cdf
  **ERROR: invalid command: /LIST/APPEND to netCDF file requires /FORMAT=cdf
 list/append/file=a.nc/l=4 xyvar
+Running script: err73_append_cdf
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -5412,17 +5909,22 @@ ooooooooooooooooooooooooooooooooooooooooooo
  LISTing to file a.nc
  **ERROR: variable unknown or not in data set: VAR_UNDEFINED
 DEFINE VARIABLE/like=var_undefined myvar = 7
+Running script: bn_let_like.jnl
 *** Running ferret script: bn_def_axis_like.jnl
  **ERROR: improper grid or axis definition: DEFINE AXIS/LIKE= Axis not found AXIS_UNDEFINED
 define axis/like=axis_undefined/x=1:8:1 myx
+Running script: bn_def_axis_like.jnl
  **ERROR: improper grid or axis definition: DEFINE AXIS/LIKE= Direction must match original axis
 define axis/like=XAX_LEV9421_380/y=-10:10:10 myy
+Running script: bn_def_axis_like.jnl
            *** NOTE: Orientation not specified via /X,/Y,/Z,.... X assumed.
            *** NOTE: Units appear to conflict with orientation: no conversions possible
  **ERROR: improper grid or axis definition: error in start,end,delta
 define axis/like=timesec/units=minutes timemin
+Running script: bn_def_axis_like.jnl
  **ERROR: improper grid or axis definition: error in start,end,delta
 define axis/like=timesec/units=minutes/t timemin
+Running script: bn_def_axis_like.jnl
 Replacing definition of axis TAX
 Replacing definition of axis TAX
 Replacing definition of axis TAX
@@ -5430,6 +5932,7 @@ Replacing definition of axis TAX
 Replacing definition of axis TAX2
  **ERROR: variable unknown or not in data set: TAX
 define axis/t/like=tax tax3 = tax
+Running script: bn_def_axis_like.jnl
 *** Running ferret script: bn_box_edges_fcn.jnl
            *** NOTE: Ambiguous argument, grid has only 1-point axes. Returning edges from X axis
 
@@ -5437,16 +5940,19 @@ Bailing out of external function "box_edges":
 	Argument must be 1-dimensional
  **ERROR:
 list box_edges(temp[z=100])
+Running script: bn_box_edges_fcn.jnl
 
 Bailing out of external function "box_edges":
 	Argument has no axes
  **ERROR:
 list box_edges (12)
+Running script: bn_box_edges_fcn.jnl
 
 Bailing out of external function "box_edges":
 	Argument has no axes
  **ERROR:
 list box_edges (a)
+Running script: bn_box_edges_fcn.jnl
 *** Running ferret script: bn_hi_res_time.jnl
 *** Running ferret script: bn_A_I_format.jnl
 Replacing definition of axis TIME1
@@ -5455,16 +5961,20 @@ Replacing definition of axis TIME1
  **ERROR: invalid command: Fortran format for list as Integer or with strings
           must have one specifier per variable
 list/nohead/l=1:0/format=(a,2x,f6.2,a5) TAX_DATESTRING(t[g=airt],t[g=airt],"month"), airt[x=-135,y=0], TAX_DATESTRING(t[g=airt],t[g=airt],"year")
+Running script: bn_A_I_format.jnl
  **ERROR: command syntax: Unknown format or format need parentheses
           Valid formats are CDF, UNFORMATTED, STREAM, COMMA, TAB or limited Fortran formats
           xxx
 LIST/nohead/l=1:0/format=xxx airt[x=-135,y=0]
+Running script: bn_A_I_format.jnl
  **ERROR: command syntax: Unknown format or format need parentheses
           Valid formats are CDF, UNFORMATTED, STREAM, COMMA, TAB or limited Fortran formats
           a7
 list/nohead/format=a7 {"Abcde"}
+Running script: bn_A_I_format.jnl
 **ERROR: (4i6): Success
 list/nohead/l=1:10/j=20:23/format=(4i6) 10*airt[x=180]
+Running script: bn_A_I_format.jnl
 *** Running ferret script: bn_center_keylab.jnl
 *** Running ferret script: bn741_bug_fixes.jnl
  PERMANENT data cleared from memory
@@ -5473,9 +5983,11 @@ ooooooooooooooooooooooooooooooooooooooooooo
  **ERROR: invalid command: Fortran format for list as Integer or with strings
           must have one specifier per variable
 list/nohead/format=("This header ", I5, F8.2) size, var
+Running script: err74_I_format
  **ERROR: invalid command: Fortran format for list as Integer or with strings
           must have one specifier per variable
 list/nohead/format=("This header ", F8.2, A) avar, var
+Running script: err74_I_format
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -5489,6 +6001,7 @@ ooooooooooooooooooooooooooooooooooooooooooo
  **TMAP ERR: Requested data range is outside of data set limits
              Expected: ETEMP[M=           4 :           4 ] Found: ETEMP[M=           1 :           3 ]
 LIST/FORMAT=CDF/append/file=a.nc/m=4 etemp
+Running script: err74_append
  LISTing to file a.nc
  LISTing to file a.nc
  LISTing to file a.nc
@@ -5496,10 +6009,12 @@ LIST/FORMAT=CDF/append/file=a.nc/m=4 etemp
  **TMAP ERR: Requested data range is outside of data set limits
              Expected: AVAR[I=          41 :          46 ] Found: AVAR[I=          21 :          29 ]
 LIST/FORMAT=CDF/append/file=a.nc/i=41:46 avar
+Running script: err74_append
  LISTing to file a.nc
  **TMAP ERR: Requested data range is outside of data set limits
              inconsistent I axis length for AVAR
 LIST/FORMAT=CDF/append/file=a.nc/i=41:51 avar
+Running script: err74_append
            *** NOTE: Invalid I axis limits ignored: AVAR
  LISTing to file a.nc
  PERMANENT data cleared from memory
@@ -5517,40 +6032,58 @@ ooooooooooooooooooooooooooooooooooooooooooo
 ooooooooooooooooooooooooooooooooooooooooooo
  **ERROR: illegal use of transformation: A[X=???@VAR,D=0] applied to point
 list a[x=@var]
+Running script: err74_transfor
  **ERROR: illegal use of transformation: A[X=???@SHF:1,D=0] applied to point
 list a[x=@shf]
+Running script: err74_transfor
  **ERROR: illegal use of transformation: A[X=???@DDC,D=0] applied to point
 list a[x=@ddc]
+Running script: err74_transfor
  **ERROR: illegal use of transformation: A[X=???@DDF,D=0] applied to point
 list a[x=@ddf]
+Running script: err74_transfor
  **ERROR: illegal use of transformation: A[X=???@DDB,D=0] applied to point
 list a[x=@ddb]
+Running script: err74_transfor
  **ERROR: illegal use of transformation: A[X=???@DIN,D=0] applied to point
 list a[x=@din]
+Running script: err74_transfor
  **ERROR: illegal use of transformation: A[X=???@IIN,D=0] applied to point
 list a[x=@iin]
+Running script: err74_transfor
  **ERROR: illegal use of transformation: A[X=???@LOC:3,D=0] applied to point
 list a[x=@loc:3]
+Running script: err74_transfor
  **ERROR: illegal use of transformation: A[X=???@WEQ:0,D=0] applied to point
 list a[x=@weq]
+Running script: err74_transfor
  **ERROR: illegal use of transformation: A[X=???@CDA:1,D=0] applied to point
 list a[x=@cda]
+Running script: err74_transfor
  **ERROR: illegal use of transformation: A[X=???@CDB:1,D=0] applied to point
 list a[x=@cdb]
+Running script: err74_transfor
  **ERROR: illegal use of transformation: A[X=???@CIA:1,D=0] applied to point
 list a[x=@cia]
+Running script: err74_transfor
  **ERROR: illegal use of transformation: A[X=???@CIB:1,D=0] applied to point
 list a[x=@cib]
+Running script: err74_transfor
  **ERROR: illegal use of transformation: A[X=???@EVN:3,D=0] applied to point
 list a[x=@evn:3]
+Running script: err74_transfor
  **ERROR: illegal use of transformation: A[X=???@STD,D=0] applied to point
 list a[x=@std]
+Running script: err74_transfor
  **ERROR: illegal use of transformation: A[X=???@WGT,D=0] applied to point
 list a[x=@wgt]
+Running script: err74_transfor
  **ERROR: illegal use of transformation: A[X=???@SBX:3,D=0] applied to point
 list a[x=@sbx]
+Running script: err74_transfor
  **ERROR: illegal use of transformation: A[X=???@FAV:3,D=0] applied to point
 list a[x=@fav]
+Running script: err74_transfor
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -5583,6 +6116,7 @@ ooooooooooooooooooooooooooooooooooooooooooo
 NetCDF: Variable not found (OPeNDAP/netCDF Error code -49)
  MONTHAX_bnds not found. Attempt to append to NetCDF axis having no bounds attribute. Use /NOBOUNDS or rewrite original data with bounds.
 LIST/FORMAT=CDF/append/file=monthA.nc/t=1-dec-2018:31-dec-2018/bounds  tvar
+Running script: err74_save_bou
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -5630,6 +6164,7 @@ ooooooooooooooooooooooooooooooooooooooooooo
  LISTing to file 2001+07.nc
  **ERROR: unknown data set: 1990
 SET DAT/FORM=CDF 1990
+Running script: err742_use_numeric_name
  LISTing to file data/1990-2010.nc
  LISTing to file data/2001.07.nc
  LISTing to file data/2001+07.nc
@@ -5720,6 +6255,7 @@ ooooooooooooooooooooooooooooooooooooooooooo
 ooooooooooooooooooooooooooooooooooooooooooo
  **ERROR: unknown command qualifier: p=0:360
 set region/p=0:360
+Running script: err744_parsing_slashes
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -5734,28 +6270,39 @@ Replacing definition of axis TAX
  **ERROR: illegal limits: "TEMP" does not exist at T=06-SEP-0082 00:00
           Axis extremes are T=14-AUG-1982 11:00:13-JAN-1983 13:00
 list/t=82-9-6/k=6/x=-123/y=-3 temp
+Running script: bn_iso8601_time.jnl
  **ERROR: illegal limits: "SALT" does not exist at T=1982-01-01 00:00
           Axis extremes are T=1982-08-14 11:00:1983-01-13 13:00
 list/t=1982-01-01/k=1/x=-123/y=-3 salt
+Running script: bn_iso8601_time.jnl
  **ERROR: command syntax: 1982-15-09 invalid date or not valid in this calendar
 list/t=1982-15-09/k=1/x=-123/y=-3 salt
+Running script: bn_iso8601_time.jnl
  **ERROR: command syntax: 1982-11-31 invalid date or not valid in this calendar
 list/t=1982-11-31/k=1/x=-123/y=-3 salt
+Running script: bn_iso8601_time.jnl
  **ERROR: illegal limits: "SALT" does not exist at T=1980-01-15 05:00
           Axis extremes are T=1982-08-14 11:00:1983-01-13 13:00
 list/t=15/k=1/x=-123/y=-3 salt
+Running script: bn_iso8601_time.jnl
  **ERROR: command syntax: 15-09-1983 invalid date or not valid in this calendar
 list/t=15-09-1983/k=1/x=-123/y=-3 salt
+Running script: bn_iso8601_time.jnl
  **ERROR: command syntax: 01-15-2010 invalid date or not valid in this calendar
 define axis/t=01-15-2010:09-01-2010:1/units=days/t0=2010-01-01 taxis
+Running script: bn_iso8601_time.jnl
  **ERROR: command syntax: 2018-15-01 invalid date or not valid in this calendar
 define axis/t=2018-15-01:2019-01-01:1/units=days taxis
+Running script: bn_iso8601_time.jnl
  **ERROR: command syntax: 2018--5-01 invalid date or not valid in this calendar
 define axis/t=2018--5-01:2019-01-01:1/units=days taxis
+Running script: bn_iso8601_time.jnl
  **ERROR: command syntax: 2010-15-01 invalid date or not valid in this calendar
 set axis/t0=2010-15-01 TIME1
+Running script: bn_iso8601_time.jnl
  **ERROR: command syntax: invalid date string: 2010-15-01
 set axis/t0=2010-15-01 TIME1
+Running script: bn_iso8601_time.jnl
 *** Running ferret script: bn_agg_given_taxis.jnl
 /bin/ls: cannot access aggf/forecast_??.nc: No such file or directory
  LISTing to file aggf/forecast_01.nc
@@ -5813,16 +6360,21 @@ Replacing definition of axis TIME
            *** NOTE: Time axis coordinates matched using @XACT
  **ERROR: improper grid or axis definition: time axis is not monotonic at L=1 of file data2010.nc
 DEFINE DATA /AGG /T myagg = data2010.nc, data2009.nc, data2011.nc
+Running script: bn_tagg_overlaps.jnl
  **ERROR: error defining aggregate dataset: Time axes overlap for data2009.nc and data2010.nc
 DEFINE DATA /AGG /T /TAXIS=aggtime@XACT myagg = data2010.nc, data2009.nc, data2011.nc
+Running script: bn_tagg_overlaps.jnl
  **ERROR: error defining aggregate dataset: Time axes overlap for data2009.nc and data2010.nc
 DEFINE DATA /AGG /T /TAXIS=aggtime@BIN myagg = data2010.nc, data2009.nc, data2011.nc
+Running script: bn_tagg_overlaps.jnl
            *** NOTE: Ignored last 1 timesteps of data2009.nc due to overlap with data2010.nc
  **ERROR: error defining aggregate dataset: Excessive (3) overlaps in time axes for data2010.nc and data2011.nc
 DEFINE DATA /AGG /T /TOVERLAP=2 /TAXIS=aggtime@XACT myagg = data2010.nc, data2009.nc, data2011.nc
+Running script: bn_tagg_overlaps.jnl
            *** NOTE: Ignored last 1 timesteps of data2009.nc due to overlap with data2010.nc
  **ERROR: error defining aggregate dataset: Excessive (3) overlaps in time axes for data2010.nc and data2011.nc
 DEFINE DATA /AGG /T /TOVERLAP=2 /TAXIS=aggtime@BIN myagg = data2010.nc, data2009.nc, data2011.nc
+Running script: bn_tagg_overlaps.jnl
 *** Running ferret script: bn_samplexyzt.jnl
 *** Running ferret script: bn_sample_multi.jnl
 
@@ -5830,11 +6382,13 @@ Bailing out of external function "samplem_multi":
 	Both arguments must have an axis in E
  **ERROR: error in external function
 list samplem_multi(a_2d, b_t)
+Running script: bn_sample_multi.jnl
 
 Bailing out of external function "samplem_multi":
 	Both arguments must have an axis in E
  **ERROR: error in external function
 list samplem_multi(a_2, b_1)
+Running script: bn_sample_multi.jnl
            *** NOTE: Ambiguous coordinates on X axis: SAMPLEM_MULTI(A_2D, C_2D)
 Replacing definition of axis AAX_A
 Replacing definition of axis AAX_B
@@ -5844,11 +6398,13 @@ Bailing out of external function "samplei_multi":
 	Both arguments must have an axis in X
  **ERROR: error in external function
 list samplei_multi(a_2d, b_t)
+Running script: bn_sample_multi.jnl
 
 Bailing out of external function "samplei_multi":
 	Both arguments must have an axis in X
  **ERROR: error in external function
 list samplei_multi(a_2, b_1)
+Running script: bn_sample_multi.jnl
 Replacing definition of axis BIGAX
            *** NOTE: Ambiguous coordinates on Y axis: SAMPLEI_MULTI(A_2D, C_2D)
 Replacing definition of axis AAX_A
@@ -5859,11 +6415,13 @@ Bailing out of external function "samplej_multi":
 	Both arguments must have an axis in Y
  **ERROR: error in external function
 list samplej_multi(a_2d, b_t)
+Running script: bn_sample_multi.jnl
 
 Bailing out of external function "samplej_multi":
 	Both arguments must have an axis in Y
  **ERROR: error in external function
 list samplej_multi(a_2, b_1)
+Running script: bn_sample_multi.jnl
 Replacing definition of axis BIGAX
            *** NOTE: Ambiguous coordinates on X axis: SAMPLEJ_MULTI(A_2D, C_2D)
 Replacing definition of axis AAX_A
@@ -5873,11 +6431,13 @@ Bailing out of external function "samplek_multi":
 	Both arguments must have an axis in Z
  **ERROR: error in external function
 list samplek_multi(a_2d, b_t)
+Running script: bn_sample_multi.jnl
 
 Bailing out of external function "samplek_multi":
 	Both arguments must have an axis in Z
  **ERROR: error in external function
 list samplek_multi(a_2, b_1)
+Running script: bn_sample_multi.jnl
            *** NOTE: Ambiguous coordinates on X axis: SAMPLEK_MULTI(A_2D, C_2D)
 Replacing definition of axis AAX_A
 Replacing definition of axis AAX_B
@@ -5887,11 +6447,13 @@ Bailing out of external function "samplel_multi":
 	Both arguments must have an axis in T
  **ERROR: error in external function
 list samplel_multi(a_2d, b_f)
+Running script: bn_sample_multi.jnl
 
 Bailing out of external function "samplel_multi":
 	Both arguments must have an axis in T
  **ERROR: error in external function
 list samplel_multi(a_2, b_1)
+Running script: bn_sample_multi.jnl
            *** NOTE: Ambiguous coordinates on X axis: SAMPLEL_MULTI(A_2D, C_2D)
 Replacing definition of axis AAX_A
 Replacing definition of axis AAX_B
@@ -5901,30 +6463,38 @@ Bailing out of external function "samplen_multi":
 	Both arguments must have an axis in F
  **ERROR: error in external function
 list samplen_multi(a_2d, b_t)
+Running script: bn_sample_multi.jnl
 
 Bailing out of external function "samplen_multi":
 	Both arguments must have an axis in F
  **ERROR: error in external function
 list samplen_multi(a_2, b_1)
+Running script: bn_sample_multi.jnl
            *** NOTE: Ambiguous coordinates on X axis: SAMPLEN_MULTI(A_2D, C_2D)
 *** Running ferret script: bn_dsg_tseries.jnl
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  **ERROR: inconsistent sizes of data regions: feature constraints on X axis of LONGITUDE
 list t_25[x=95:180] + longitude
+Running script: bn_dsg_tseries.jnl
  **ERROR: command syntax: Limits by subscript /L= invalid for DSG data. Use /T= limits or select by feature
 list/l=1:5 t_25
+Running script: bn_dsg_tseries.jnl
  **ERROR: illegal limits: "T_25" is not in the range I=200:210
           Axis extremes are I=1:70
 list/i=200:210 t_25
+Running script: bn_dsg_tseries.jnl
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
  **ERROR: illegal use of transformation: Can only transform the E  axis of DSG variable ROWSIZE
 list rowsize[t=@max]
+Running script: bn_dsg_tseries.jnl
  **ERROR: illegal use of transformation: Can only transform the T axis of DSG variable T_25
 list t_25[e=@max]
+Running script: bn_dsg_tseries.jnl
  **ERROR: illegal use of transformation: Can only transform the T axis of DSG variable T_25
 list t_25[t=@max,e=@max]
+Running script: bn_dsg_tseries.jnl
 *** Running ferret script: bn_regrid_to_dsg.jnl
  LISTing to file fake_model_temp.nc
  PERMANENT data cleared from memory
@@ -5968,10 +6538,12 @@ Replacing definition of grid GFAKE
            *** NOTE: No missing_value or _FillValue attribute. Using NaN for variable: time
  **ERROR: invalid command: Regridding DSG Trajectory data to grids is not implemented
 load  TEMP_CTD_RBR_MEAN[d=1,g=reg_var]
+Running script: bn_regrid_from_dsg.jnl
 *** Running ferret script: bn_dsg_use_feature.jnl
  **TMAP ERR: Corrupted CF-DSG structure or attributes
              Required coordinate variables not found. Profile file is missing directions: vert
 SET DAT/FORM=CDF/feature=profile dsg_cross_dateline.nc
+Running script: bn_dsg_use_feature.jnl
            *** NOTE: Coordinates inconsistent with FeatureType. Trajectory data must have observations along XYT
  **TMAP ERR: Invalid command
              Error on SET DATA/FEATURE= applied to an open dataset.
@@ -5979,12 +6551,15 @@ SET DAT/FORM=CDF/feature=profile dsg_cross_dateline.nc
  **TMAP ERR: Corrupted CF-DSG structure or attributes
              Required coordinate variables not found. Trajectory file is missing directions: lat
 SET DAT/FORM=CDF dsg_bad_coord
+Running script: bn_dsg_use_feature.jnl
  **TMAP ERR: Corrupted CF-DSG structure or attributes
              Row Size variable w/ sample_dimension not found.
 SET DAT/FORM=CDF dsg_bad_atts1
+Running script: bn_dsg_use_feature.jnl
  **TMAP ERR: Corrupted CF-DSG structure or attributes
              Feature-ID variable not found or invalid value of cf_role attribute
 SET DAT/FORM=CDF dsg_bad_atts2
+Running script: bn_dsg_use_feature.jnl
            *** NOTE: Ambiguous DSG coordinate info. Multiple variables claiming to be E axis: lons, lon360. Check axis attributes.
            *** NOTE: Ambiguous DSG coordinate info. Multiple variables claiming to be N axis: yindex, lats. Check axis attributes.
            *** NOTE: SET DATA/FEATURE= applies only to Discrete Sampling Geometries datasets. Ignoring /FEATURE=
@@ -6032,17 +6607,21 @@ Replacing definition of grid GFAKE
  LISTing to file sail_copy.nc
  **ERROR: invalid command: Appending to DSG file: Size of trajectory dimension does not match dimension in file: TEMP_FROM_GRID
 LIST/FORMAT=CDF/append/file=sail_copy.nc temp_from_grid
+Running script: bn_dsg_save_uvars.jnl
  LISTing to file sail_copy.nc
  LISTing to file sail_copy.nc
  **ERROR: invalid command: Appending to DSG file: Size of obs dimension does not match dimension in file: TEMP_FROM_GRID
 LIST/FORMAT=CDF/append/file=sail_copy.nc temp_from_grid
+Running script: bn_dsg_save_uvars.jnl
  LISTing to file sail_copy.nc
  **ERROR: invalid command: Appending to DSG file: Size of trajectory dimension does not match dimension in file: TEMP_FROM_GRID
 LIST/FORMAT=CDF/append/e=2/file=sail_copy.nc temp_from_grid
+Running script: bn_dsg_save_uvars.jnl
  LISTing to file a.nc
  LISTing to file sail_copy.nc
  **ERROR: invalid command: Appending DSG variable to file that is not DSG or different featureType
 LIST/FORMAT=CDF/append/file=sail_copy.nc my_temp_data
+Running script: bn_dsg_save_uvars.jnl
 *** Running ferret script: bn751_bug_fixes.jnl
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -6120,6 +6699,7 @@ ooooooooooooooooooooooooooooooooooooooooooo
 ooooooooooooooooooooooooooooooooooooooooooo
  **ERROR: command syntax: My New Title
 plot/t="My New Title" cos(y[y=1:15])* `a[i=@ave]`
+Running script: err75_qual_too_short
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -6165,48 +6745,65 @@ ooooooooooooooooooooooooooooooooooooooooooo
  **TMAP ERR: attempt to redefine line
              String length for variable TSTRINGS inconsistent w/ CDF file. On first write, use /STRLEN= at least 15
 LIST/FORMAT=CDF/append/file=a.nc/L=2:4 tstrings, tstrings_long
+Running script: bn_cdf_strlen.jnl
  LISTing to file a.nc
  LISTing to file a.nc
            *** NOTE: SAVE/STRLEN= is ignored when appending to the file
  **TMAP ERR: attempt to redefine line
              String length for variable TSTRINGS inconsistent w/ CDF file. On first write, use /STRLEN= at least 15
 LIST/FORMAT=CDF/append/file=a.nc/L=2:4/strlen=10 tstrings
+Running script: bn_cdf_strlen.jnl
  LISTing to file a.nc
  **ERROR: invalid command: Strings are length 15: longer than /STRLEN setting of 7
           Variable: TSTRINGS
 LIST/FORMAT=CDF/clobber/file=a.nc/STRLEN=7 tstrings, tstrings_long
+Running script: bn_cdf_strlen.jnl
 LIST/FORMAT=CDF/clobber/file=a.nc/STRLEN=7 tstrings, tstrings_long
+Running script: bn_cdf_strlen.jnl
 *** Running ferret script: bn_set_mem_max.jnl
 *** Running ferret script: bn_lineplots_keys.jnl
+*** Running ferret script: bn76_bug_fixes.jnl
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
 *** Running ferret script: bn_gif_noremote.jnl
  **ERROR: dimensions improperly specified: specified data is not a line
            - its a 2D region: "plot/i=1:10/j=1:20/nolabel i+j"
 plot/i=1:10/j=1:20/nolabel i+j
+Running script: bn_gif_noremote.jnl
  **ERROR: dimensions improperly specified: specified data is not a line
            - its a 2D region: "plot/i=1:10/j=1:20/nolabel i,i+j"
 plot/i=1:10/j=1:20/nolabel i,i+j
+Running script: bn_gif_noremote.jnl
  **ERROR: dimensions improperly specified: specified data is not a line
            - its a 2D region: "plot/i=1:10/j=1:20/nolabel i+j,i"
 plot/i=1:10/j=1:20/nolabel i+j,i
+Running script: bn_gif_noremote.jnl
  **ERROR: dimensions improperly specified: differing axes:
           first line is on Y axis
           line 2 is on X axis
 plot/i=1:10/j=1:20/nolabel j,i
+Running script: bn_gif_noremote.jnl
  **ERROR: dimensions improperly specified: unequal line lengths:
           First expression has 20 points.
           Expression 2 has 10 points:
           "plot/i=1:10/j=1:20/vs/line/nolabel j,i"
 plot/i=1:10/j=1:20/vs/line/nolabel j,i
+Running script: bn_gif_noremote.jnl
  **ERROR: dimensions improperly specified: must be a 2D region
           contour/i=1:10/j=1:20/nolabel i
 contour/i=1:10/j=1:20/nolabel i
+Running script: bn_gif_noremote.jnl
  **ERROR: invalid command: can only CONTOUR  single fields
           Use /OVERLAY for multiple variables
 contour/i=1:10/j=1:20/nolabel i/j,j/i
+Running script: bn_gif_noremote.jnl
  **ERROR: invalid command: VECTOR requires paired components
 vector/i=1:10/j=1:20/nolabel i/j
+Running script: bn_gif_noremote.jnl
  **ERROR: invalid command: VECTOR requires paired components
 vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
+Running script: bn_gif_noremote.jnl
 Re-defining viewport LM6
 Re-defining viewport UM6
  Using every   2th vector in the X direction
@@ -6264,42 +6861,53 @@ ooooooooooooooooooooooooooooooooooooooooooo
  **ERROR: dimensions improperly specified: specified data is not a line
            - its a 2D region: "plot/i=1:10/j=1:20/nolabel i+j"
 plot/i=1:10/j=1:20/nolabel i+j
+Running script: bn_ps.jnl
  **ERROR: dimensions improperly specified: specified data is not a line
            - its a 2D region: "plot/i=1:10/j=1:20/nolabel i,i+j"
 plot/i=1:10/j=1:20/nolabel i,i+j
+Running script: bn_ps.jnl
  **ERROR: dimensions improperly specified: specified data is not a line
            - its a 2D region: "plot/i=1:10/j=1:20/nolabel i+j,i"
 plot/i=1:10/j=1:20/nolabel i+j,i
+Running script: bn_ps.jnl
  **ERROR: dimensions improperly specified: differing axes:
           first line is on Y axis
           line 2 is on X axis
 plot/i=1:10/j=1:20/nolabel j,i
+Running script: bn_ps.jnl
  **ERROR: dimensions improperly specified: unequal line lengths:
           First expression has 20 points.
           Expression 2 has 10 points:
           "plot/i=1:10/j=1:20/vs/line/nolabel j,i"
 plot/i=1:10/j=1:20/vs/line/nolabel j,i
+Running script: bn_ps.jnl
  **ERROR: dimensions improperly specified: must be a 2D region
           contour/i=1:10/j=1:20/nolabel i
 contour/i=1:10/j=1:20/nolabel i
+Running script: bn_ps.jnl
  **ERROR: invalid command: can only CONTOUR  single fields
           Use /OVERLAY for multiple variables
 contour/i=1:10/j=1:20/nolabel i/j,j/i
+Running script: bn_ps.jnl
  **ERROR: invalid command: VECTOR requires paired components
 vector/i=1:10/j=1:20/nolabel i/j
+Running script: bn_ps.jnl
  **ERROR: invalid command: VECTOR requires paired components
 vector/i=1:10/j=1:20/nolabel i/j,j/i,i+j
+Running script: bn_ps.jnl
 Re-defining viewport LM6
 Re-defining viewport UM6
  **ERROR: invalid command: illegal format type - must be "GIF"
           frame/file=bnplot.ps
 frame/file=bnplot.ps
+Running script: bn_ps.jnl
 *** Running ferret script: bn_all_ef.jnl
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
  **ERROR: command syntax: unknown region name: @w
 set region/@w
+Running script: bench_pass_thru
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo

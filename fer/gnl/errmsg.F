@@ -94,6 +94,8 @@
 *                  Handle longer error strings when defining the buffer symbuf
 * V697 2/16 *acm* DO NOT Increase length of cmnd buffer to 20480 but keep related
 *                   changes here
+* V7.6 1/20 *acm*  See issue 1966: Sketch out adding the script-name when error message written.
+
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -105,6 +107,7 @@
         include 'xrisc.cmn'
         include 'xgui.cmn'
 	include 'xplot_setup.cmn'
+	include 'command.parm'
 
 
 * ^C handling routine
@@ -117,11 +120,13 @@
 * internal variable declarations:
 	LOGICAL 	help_cue, multiline
 	INTEGER		TM_LENSTR1, len_text, len_string, status,
-     .			cr_pos, ier, ist, len_symbuf
+     .			cr_pos, ier, ist, len_symbuf, ics, indx, 
+     .			ib
         INTEGER		max_len_symbuf
 	PARAMETER	(max_len_symbuf=1028)
         CHARACTER*1028  symbuf  ! for symbol FER_LAST_ERROR
-
+        CHARACTER*30    ndnt
+	      
 * see if "HELP CUE" was requested
 	help_cue = status_in .GT. ghelp_cue
 	IF ( help_cue ) THEN
@@ -287,6 +292,37 @@
 	      IF (status.NE.ferr_silent) CALL TM_SPLIT_MESSAGE( err_lun,
      .					cmnd_buff(1:len_cmnd))
            ENDIF
+
+* Add the script name including any arguments
+	   ist = 0
+	   DO ics = csp, 1, -1
+	      IF (cs_cmnd_num(ics) .EQ. cmnd_go) THEN
+		 IF (indx .EQ. 0) indx = TM_LENSTR1(cs_text(ics))
+		 IF (ist .EQ. 0) CALL TM_SPLIT_MESSAGE( err_lun,
+     .			'Running script: '//cs_text(ics)(1:indx))
+		 ist = ist + 1
+	      ENDIF
+	   ENDDO
+
+c! If want tree of script calls   
+c!	   IF (ist .GT. 1) THEN
+c!	      CALL TM_SPLIT_MESSAGE( err_lun, 'Tree of script calls: ')
+c!
+c!	      ndnt = '                '
+c!	      ib = 1
+c!	      len_text = 1
+c!	      DO ics = 1, csp
+c!
+c!                 IF (cs_cmnd_num(ics) .EQ. cmnd_go) THEN
+c!                    indx = TM_LENSTR1(cs_text(ics))
+c!                    risc_buff = ndnt(:ib)// cs_text(ics)(:indx)//'.jnl'
+c!		      CALL TM_SPLIT_MESSAGE( err_lun,risc_buff(:indx+ib+4) )
+c!                    ib = ib + 3
+c!                 ENDIF
+c!              ENDDO
+c!
+c!           ENDIF
+
            IF ( status.EQ.ferr_interrupt
      .    .OR. .NOT.mode_ignore_err    ) THEN
 * ... collapse the control stack back to simple operator control

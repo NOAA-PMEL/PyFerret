@@ -39,6 +39,9 @@
 * 3/2017 Ansley Manke
 * for ticket 2517, correct labeling of lon/lat axes for PLOT/VS plots, and turn off
 * lon/lat axis formatting according to MODE long_label and MODE latit_label
+* for issue 1967, if the units are simply degrees or deg with no indication of 
+* longitude or latitude, do not make formatted axis.  units="degrees" may be
+* a compass direction.
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -61,16 +64,20 @@
 
 	IF (iunits .EQ. 4) THEN
 
-	   IF (TM_HAS_STRING(buff, '_e') .OR. TM_HAS_STRING(buff, 'lon')) THEN
+	   IF (TM_HAS_STRING(buff, '_e') .OR. TM_HAS_STRING(buff, ' e') 
+     .         .OR. TM_HAS_STRING(buff, 'lon')) THEN
 	     IF (ax_fmt(x_dim)) formatted_dim = x_dim
 	     IF (.NOT. ax_fmt(x_dim)) iunits = 0
-	   ELSEIF (TM_HAS_STRING(buff, '_n') .OR. TM_HAS_STRING(buff, 'lat') ) THEN
+	   ELSEIF (TM_HAS_STRING(buff, '_n') .OR. TM_HAS_STRING(buff, ' n') 
+     .         .OR. TM_HAS_STRING(buff, 'lat') ) THEN
 	     IF (ax_fmt(y_dim)) formatted_dim = y_dim
 	     IF (.NOT. ax_fmt(y_dim)) iunits = 0
 	   ELSE
 
 * If the lon or lat label mode has been turned off, unset the units 
 	      IF (.NOT. ax_fmt(dir_dim)) iunits = 0
+
+	      iunits = 0  ! require that for VS plots the units are explicitly east or north
 	   ENDIF
 
 	ENDIF

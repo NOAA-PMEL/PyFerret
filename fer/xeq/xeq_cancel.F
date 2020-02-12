@@ -162,6 +162,8 @@
 * V751 *acm* 6/19  When canceling a DSG fmask, clear variables from memory
 * V751 *acm*11/19  Ticket 1957: IF CANCEL VAR/NOEXIST reinitialize dset number before
 *                  going on to next variable
+* V76:  1/2020 -   Remove obsolete ferr_ODR_error 
+
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -1303,7 +1305,6 @@ c	ENDIF
  5040	CALL ERRMSG( ferr_invalid_command, status,
      .			'cannot cancel viewport:'//
      .			cmnd_buff( item_start(item):item_end(item) ), *5000 )
- 5090	CALL ERRMSG( ferr_ODR_error, status, buff, *5000 )
  5110	CALL ERRMSG( ferr_unknown_variable, status, buff(:8), *5000 )
  5120	CALL ERRMSG( ferr_invalid_command, status,
      .		'can only CANCEL variables you DEFINE '//buff, *5000 )

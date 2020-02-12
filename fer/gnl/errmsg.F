@@ -121,7 +121,7 @@
 	LOGICAL 	help_cue, multiline
 	INTEGER		TM_LENSTR1, len_text, len_string, status,
      .			cr_pos, ier, ist, len_symbuf, ics, indx, 
-     .			ib
+     .			ib, cs_lev
         INTEGER		max_len_symbuf
 	PARAMETER	(max_len_symbuf=1028)
         CHARACTER*1028  symbuf  ! for symbol FER_LAST_ERROR
@@ -293,35 +293,7 @@
      .					cmnd_buff(1:len_cmnd))
            ENDIF
 
-* Add the script name including any arguments
-	   ist = 0
-	   DO ics = csp, 1, -1
-	      IF (cs_cmnd_num(ics) .EQ. cmnd_go) THEN
-		 IF (indx .EQ. 0) indx = TM_LENSTR1(cs_text(ics))
-		 IF (ist .EQ. 0) CALL TM_SPLIT_MESSAGE( err_lun,
-     .			'Running script: '//cs_text(ics)(1:indx))
-		 ist = ist + 1
-	      ENDIF
-	   ENDDO
-
-c! If want tree of script calls   
-c!	   IF (ist .GT. 1) THEN
-c!	      CALL TM_SPLIT_MESSAGE( err_lun, 'Tree of script calls: ')
-c!
-c!	      ndnt = '                '
-c!	      ib = 1
-c!	      len_text = 1
-c!	      DO ics = 1, csp
-c!
-c!                 IF (cs_cmnd_num(ics) .EQ. cmnd_go) THEN
-c!                    indx = TM_LENSTR1(cs_text(ics))
-c!                    risc_buff = ndnt(:ib)// cs_text(ics)(:indx)//'.jnl'
-c!		      CALL TM_SPLIT_MESSAGE( err_lun,risc_buff(:indx+ib+4) )
-c!                    ib = ib + 3
-c!                 ENDIF
-c!              ENDDO
-c!
-c!           ENDIF
+	   cs_lev = csp
 
            IF ( status.EQ.ferr_interrupt
      .    .OR. .NOT.mode_ignore_err    ) THEN
@@ -339,6 +311,18 @@ c!           ENDIF
 		 CALL EXIT(status)
 	      ENDIF
 	   ENDIF
+
+* Add the script name including any arguments
+	   ist = 0
+	   DO ics = cs_lev, 1, -1
+	      IF (cs_cmnd_num(ics) .EQ. cmnd_go) THEN
+		 indx = TM_LENSTR1(cs_text(ics))
+		 IF (ist .EQ. 0) CALL TM_SPLIT_MESSAGE( err_lun,
+     .			'Running script: '//cs_text(ics)(1:indx))
+		 ist = ist + 1
+	      ENDIF
+	   ENDDO
+
 	ENDIF
 
 * prompt with Help cue ?
@@ -372,3 +356,25 @@ c!           ENDIF
   500	RETURN 1
 
 	END
+
+
+
+c! If want tree of script calls, along with the "Running script" message
+c!	   IF (ist .GT. 1) THEN
+c!	      CALL TM_SPLIT_MESSAGE( err_lun, 'Tree of script calls: ')
+c!
+c!	      ndnt = '                '
+c!	      ib = 1
+c!	      len_text = 1
+c!	      DO ics = 1, cs_lev
+c!
+c!                 IF (cs_cmnd_num(ics) .EQ. cmnd_go) THEN
+c!                    indx = TM_LENSTR1(cs_text(ics))
+c!                    risc_buff = ndnt(:ib)// cs_text(ics)(:indx)//'.jnl'
+c!		      CALL TM_SPLIT_MESSAGE( err_lun,risc_buff(:indx+ib+4) )
+c!                    ib = ib + 3
+c!                 ENDIF
+c!              ENDDO
+c!
+c!           ENDIF
+

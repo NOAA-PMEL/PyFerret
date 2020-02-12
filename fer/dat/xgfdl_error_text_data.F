@@ -70,7 +70,7 @@
 * V658+ *sh* 10/13 - added ferr_unknown_auxvar
 * V72  *acm*  6/17 - add ferr_ppl_error to call errmsg routine for syntax
 *                    errors calling PPLUS, see ticket 2543
-
+* V76:  1/2020 -     Remove obsolete ferr_ODR_error 
 
         IMPLICIT NONE
 	include 'errmsg.parm'	! parameter definitions
@@ -87,7 +87,6 @@
 
 * codes for errors that are not reported explicitly by GFDL
 	DATA noreport_err_code( ferr_TMAP_error - gnoreport ) / 'TMAP_error'/
-	DATA noreport_err_code( ferr_ODR_error  - gnoreport ) / 'ODR_error'/
 
 * codes and text for normal error messages
 	DATA err_text( ferr_insuff_memory - greport )

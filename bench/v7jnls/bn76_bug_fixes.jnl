@@ -1,0 +1,6 @@
+! bn76_bug_fixes.jnl
+! test various fixes that went into version 7.6
+! 2/20 *acm*
+
+GO bn_reset
+GO err751_vs_deg_axis

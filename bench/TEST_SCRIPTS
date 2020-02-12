@@ -331,6 +331,8 @@ bn_cdf_strlen.jnl
 bn_set_mem_max.jnl
 bn_lineplots_keys.jnl
 
+bn76_bug_fixes.jnl
+
 !
 ! bn_gif, bn_all_ef, and bn_startupfile at end
 !

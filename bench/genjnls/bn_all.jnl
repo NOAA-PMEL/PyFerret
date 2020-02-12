@@ -1309,6 +1309,11 @@ GO bn_set_mem_max
 GO bn_reset bn_lineplots_keys
 GO bn_lineplots_keys
 
+! *********** v7.6 Additions ***********
+
+GO bn_reset bn76_bug_fixes
+GO bn76_bug_fixes
+
 ! *********** PyFerret-specific scripts ***********
 
 IF ($program_name"0|PyFerret>1|*>0") THEN

@@ -144,6 +144,7 @@
 * V751 *acm* 6/19 Remove unused declarations
 * V751 *acm* 7/19 Ticket 1946: File with user-variable strings truncates strings appended later.
 *		  - Allow for the user to set a length for string-length dimension
+* V7.6 *acm* 2/20 When save/asglobal, do not update the conventions or history
 
         IMPLICIT NONE
         include 'netcdf.inc'
@@ -181,7 +182,8 @@
         LOGICAL         TM_LEGAL_NAME, MATCH_NAME, TM_HAS_STRING,
      .			itsa_uvar, need_doc, new, formatted, flushed,
      .			itsa_string, output_units, output_title,
-     .                  output_history, get_ds, its_nc, as_global
+     .                  output_history, get_ds, its_nc, as_global, 
+     .                  hist_and_conv
 	INTEGER		TM_LENSTR1, ISUBSCR_CX, GET_MAX_C_STRING_LEN,
      .			MGRID_SIZE, STR_SAME, 
      .			cx, mr, dset, grid, cdfid, ivar, nready,
@@ -280,26 +282,34 @@
      .                     netcdf4_type, status )
          IF ( status .NE. merr_ok ) GOTO 5400
 
+* History and conventions attributes updated, but not if we're just
+* writing a global attribute.
+
 * update history attribute in the file
         revnum = TM_FMT(revision_level, 5, 12, slen)
 
-        CALL CD_STAMP_OUT( append, cdfid,
+	hist_and_conv = .TRUE.
+	IF (.NOT.clobber .AND. as_global) hist_and_conv = .FALSE.
+	IF (hist_and_conv) THEN
+
+           CALL CD_STAMP_OUT( append, cdfid,
      .       program_name(:len_program_name)//' V'//revnum(:slen)//' '//
      .       progname_mod(:len_progname_mod)//' '//today_date, status )
-        IF ( status .NE. merr_ok ) GOTO 5800
+           IF ( status .NE. merr_ok ) GOTO 5800
 
 * update Conventions attribute in the file
-        buff1 = 'CF-1.6'
 
-        CALL CD_CONVENTIONS_OUT( append, cdfid, buff1, status )
-        IF ( status .NE. merr_ok ) GOTO 5800
+           buff1 = 'CF-1.6'
 
+           CALL CD_CONVENTIONS_OUT( append, cdfid, buff1, status )
+           IF ( status .NE. merr_ok ) GOTO 5800
+	ENDIF
 
 * optional title for data set
 	IF ( title .NE. ' ' ) THEN
 	   CALL CD_WRITE_ATTRIB(cdfid, pcdf_global, 'title',
      .			title(:TM_LENSTR1(title)), .FALSE., status )
-           IF ( status .NE. merr_ok ) GOTO 5800
+	   IF ( status .NE. merr_ok ) GOTO 5800
 	ENDIF
 
 * Did they set a string-length?

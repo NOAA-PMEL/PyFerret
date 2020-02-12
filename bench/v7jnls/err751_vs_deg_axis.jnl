@@ -25,3 +25,5 @@ let/units="degrees e"/title=dvar dvar = {1,2,3,4,6,4,2,0}
 set view lr; plot/vs/color=red/thick/siz=0.12 dvar, temp
 
 annotate/norm/xpos=0.2/ypos=1.25/halign=1/siz=0.2 "lon-formatted horiz ax on right"
+
+frame/file=err751_vs_deg_axis.gif

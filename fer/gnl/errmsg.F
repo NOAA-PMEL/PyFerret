@@ -318,7 +318,7 @@
 	      IF (cs_cmnd_num(ics) .EQ. cmnd_go) THEN
 		 indx = TM_LENSTR1(cs_text(ics))
 		 IF (ist .EQ. 0) CALL TM_SPLIT_MESSAGE( err_lun,
-     .			'Running script: '//cs_text(ics)(1:indx))
+     .		 'Executed by script: *** GO '//cs_text(ics)(1:indx)//' ***')
 		 ist = ist + 1
 	      ENDIF
 	   ENDDO

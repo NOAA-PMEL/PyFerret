@@ -1,4 +1,4 @@
-	SUBROUTINE SHOW_DATA_FILES( lun, dset )
+	SUBROUTINE SHOW_DATA_FILES( lun, dset, sbrief )
 
 *
 *
@@ -60,6 +60,8 @@
 * V71 12/16 *acm* For ticket 2158: working with true monthly time axes.
 * V73  4/17 *acm* Change the text when showing members of a union aggregation,
 *                 implement dataset.member notation for unions, (e.g.) "12.3"
+* V76  2/20 *acm* Cticket 1965: show data/members/brief just lists the members, not timesteps etc.
+
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -75,6 +77,7 @@
 	include	'xprog_state.cmn'
 
 * calling argument declarations:
+	LOGICAL	sbrief
 	INTEGER	lun, dset
 	
 * local variable declarations:
@@ -109,18 +112,23 @@
 * ... get number of aggregation members
 	   CALL CD_GET_AGG_DSET_INFO (dset, nmemb, status)
 	   IF (status .NE. ferr_ok) RETURN   ! should never happen
-	   CALL SPLIT_LIST(pttmode_explct, lun,
+	   IF (.NOT. sbrief) CALL SPLIT_LIST(pttmode_explct, lun,
      .		'          Member datasets:', 0 )
 
 * ... loop through the aggregation members.
 	   nfig = LOG10(REAL(nmemb)) + 1
 	   DO istep = 1, nmemb
-	      CALL CD_GET_AGG_DSET_MEMBER (dset, istep, memb_set, status)
-	      IF (status .NE. ferr_ok) RETURN   ! should never happen
-	      buff = LEFINT(istep, slen )
-	      CALL SPLIT_LIST(pttmode_explct, lun,
+	      IF (sbrief) THEN
+	         CALL SPLIT_LIST(pttmode_explct, lun,
+     .		   ds_des_name(memb_set), 0 )
+	      ELSE
+	         CALL CD_GET_AGG_DSET_MEMBER (dset, istep, memb_set, status)
+	         IF (status .NE. ferr_ok) RETURN   ! should never happen
+	         buff = LEFINT(istep, slen )
+	         CALL SPLIT_LIST(pttmode_explct, lun,
      .		'      '//abuff(:alen)//'.'//buff(:nfig)//': '
      .			       //ds_des_name(memb_set), 0 )
+	      ENDIF
 	   ENDDO
 	   RETURN
 
@@ -142,16 +150,22 @@
 * a time-independent data set
 * list files belonging to this data set (should be one, only) 
 	DO 110 istep = 1, maxstepfiles
-	    IF ( sf_setnum(istep) .EQ. dset ) CALL SPLIT_LIST
+	    IF (sbrief) THEN
+	       IF ( sf_setnum(istep) .EQ. dset ) CALL SPLIT_LIST
+     .		(pttmode_explct, lun, sf_name(istep), 0 )
+	    ELSE
+	       IF ( sf_setnum(istep) .EQ. dset ) CALL SPLIT_LIST
      .		(pttmode_explct, lun, ' time-independent data file: '
      .		//sf_name(istep), 0 )
+	    ENDIF
  110	CONTINUE
 ******* end of 4/94 addition ******
 	RETURN
 
 * a time-dependent data set:
 * write heading line for step file list
- 200	CALL SPLIT_LIST(pttmode_explct, lun,
+ 200	CONTINUE
+	IF (.NOT.sbrief) CALL SPLIT_LIST(pttmode_explct, lun,
      .		'          time-dependent data files:', 36)
 
 * output string precision (from SET MODE CALENDAR)
@@ -162,14 +176,22 @@
 * see which step files belong with this data set 
 	DO 300 istep = 1, maxstepfiles
 	    IF ( sf_setnum(istep) .EQ. dset ) THEN
-	      CALL TRANSLATE_TO_WORLD(	timefac* sf_1step(istep), t_dim, grid,
+	      
+	      IF (sbrief) THEN
+	      
+	         CALL SPLIT_LIST(pttmode_explct, lun,
+     .		   sf_name(istep), 0 )
+
+	      ELSE 
+	         CALL TRANSLATE_TO_WORLD(	timefac* sf_1step(istep), t_dim, grid,
      .					ndec, lo_date )
-	      CALL TRANSLATE_TO_WORLD(	timefac* sf_lastep(istep), t_dim, grid,
+	         CALL TRANSLATE_TO_WORLD(	timefac* sf_lastep(istep), t_dim, grid,
      .					ndec, hi_date )
-	      slen = TM_LENSTR1(hi_date)
-	      CALL SPLIT_LIST(pttmode_explct, lun,
-     .		lo_date(:slen)//' -> '//hi_date(:slen)//'    '
-     .		//sf_name(istep), 0 )
+	         slen = TM_LENSTR1(hi_date)
+	         CALL SPLIT_LIST(pttmode_explct, lun,
+     .		   lo_date(:slen)//' -> '//hi_date(:slen)//'    '
+     .		   //sf_name(istep), 0 )
+	      ENDIF
 	   ENDIF
  300	CONTINUE
 

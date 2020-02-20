@@ -1,0 +1,16 @@
+! err751_show_members_brief.jnl
+! 2/2020 
+! See ticket 1965
+! For aggregations and descriptor datasets,show data/members 
+! (or the deprecated show members/files) lists the member sets. 
+! with coordinates in the aggregation direction. If /brief is added, 
+! output just the filenames. Previously /brief had no effect.
+
+! aggregation listsings already tested in bn_aggregate*.jnl files
+
+! descriptor file
+use coads_clim.des
+sh dat
+sh dat/files/members
+sh dat/files/members/brief
+

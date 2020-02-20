@@ -56,6 +56,9 @@
 * 712 2/17 *sh* fix latent bug when shifting an array of attribute values
 * 73  7/17 *acm fix ticket 2555, memory allocated for strings determined by the 
 *               context, is not generally the full nvatts, ngatts etc
+* V76 2/20 *acm* fix issue 1968, correctly use the uvar buffer to point into
+*                the definition for possibility of multiple instances of var.attr 
+*                in the expression.
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
@@ -84,7 +87,7 @@
      .          vdims(8), dsdims(200), iatt, nvatts, idim, nd, vd, na,
      .          attoutflag, all_outflag, xdim, i1, i2, slen,
      .          i, indx, nv, dot, cat, attid, npts, dimid, nddims, 
-     .          iitem, start, end, wk_buff
+     .          iitem, start, end, wk_buff, item, itype, lo_isp
 
 	INTEGER*8 n8
 
@@ -100,15 +103,6 @@
         got_it = .FALSE.
 
         IF (i2 .LT. i1) GOTO 5100
-        
-        IF (dset .LT. pdset_uvars .OR. (.NOT.cx_dset_gvn(cx) )) 
-     .      dset = cx_data_set( is_cx(isp-1) )
-
-        CALL CD_GET_DS_INFO (dset, nddims, nvars, ngatts, 
-     .               recdim, status)
-        DO 100 idim = 1, nddims
-	   dsdims(idim) = idim
- 100	CONTINUE
 
 * reserve and catalog space for the result
 C       KMS - The ammount of memory allocated is from R_CGRID_SIZE_DELTA.
@@ -126,29 +120,35 @@ C       (using 1 if cx_delta not specified; yes, the index order change is corre
 
 	uvar = cx_variable(cx)
 
+	lo_isp = is_obj( isp )
+	item = is_phase(lo_isp)
+	itype = uvar_item_type ( item, uvar )
+	start = uvar_item_start( item, uvar )
+	end   = uvar_item_end  ( item, uvar )
+
 ! See if this is a user variable and set dataset number accordingly
 
-        dot = INDEX(uvar_text(uvar),'.')
-        IF (dot .GT. 0) varname = uvar_text(uvar)(1:dot-1)
+        dot = INDEX(uvar_text(uvar)(start:end),'.')
+        IF (itype.NE.alg_attrib_val) GOTO 5100
+
+	varname = uvar_text(uvar)(start:start+dot-2)
         CALL FIND_VAR_NAME(pdset_irrelevant, varname, cat, ivar)
         IF (  ivar .NE. munknown_var_name .AND.
      .         cat .EQ. cat_user_var) dset = pdset_uvars
+        
+        IF (dset .LT. pdset_uvars .OR. (.NOT.cx_dset_gvn(cx) )) 
+     .      dset = MAX(cx_data_set( is_cx(isp-1) ), pdset_uvars)
+
+        CALL CD_GET_DS_INFO (dset, nddims, nvars, ngatts, 
+     .               recdim, status)
+
+        DO 100 idim = 1, nddims
+	   dsdims(idim) = idim
+ 100	CONTINUE
 
 * do_err: issue error message if attrib does not exist on varname.attname
         do_err = .TRUE. 
-	
-	iitem = 0
-	DO i = 1, uvar_num_items(uvar)
- 	   IF (dot .GE. uvar_item_start(i,uvar) .AND. 
-     .         dot .LT. uvar_item_end(i,uvar)) iitem = i
-	ENDDO
-	
-	start = 1
-	end = TM_LENSTR1(uvar_text(uvar))
-	IF (iitem .GT. 0) THEN
-	   start = uvar_item_start(iitem,uvar)
-	   end = uvar_item_end(iitem,uvar)
-	ENDIF
+
         CALL BREAK_VARATTNAME ( uvar_text(uvar)(start:end), dset, varname, 
      .                          attname, varid, do_err, status )
  
@@ -182,7 +182,6 @@ C       (using 1 if cx_delta not specified; yes, the index order change is corre
                  ENDIF
  120          CONTINUE
               got_it = .TRUE.
-	      
 	     
 * dimension names that are also coordinate variables
            ELSE IF (STR_SAME(attname, 'coordnames') .EQ. 0 ) THEN

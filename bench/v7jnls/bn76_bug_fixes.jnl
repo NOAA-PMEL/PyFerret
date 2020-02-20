@@ -4,3 +4,6 @@
 
 GO bn_reset
 GO err751_vs_deg_axis
+
+GO bn_reset
+GO err751_multiple_attrs

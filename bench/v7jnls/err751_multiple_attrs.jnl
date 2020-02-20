@@ -1,0 +1,30 @@
+! err751_multiple_attrs.jnl
+! issue 1968: 
+! When using more than one  varname.attrname in one expression, the 
+! value of the first was returned for each instance to use in the result.
+
+let/units="m/s" v1 = 1.1
+let/units="mmol C m-3" v2 = 2.2
+
+! This was wrong: was "m/sm/s", but should be "m/smmol C m-3"
+list/nohead v1.units + v2.units
+
+! This is ok
+list/nohead "`v1.units` + `v2.units`"
+
+! Try with attributes from file variables
+use coads_vwnd
+use ocean_atlas_temp
+
+list vwnd[d=1].units + vwnd[d=1].long_name
+list temp[d=2].long_name + " " + temp[d=2].units + " " + temp[d=2].history
+
+
+! The bug was not particular to strings, but anything multiple attribute specs
+
+list/nohead ..ndims 
+list/nohead ..nvars
+
+! previously this resulted in 8, using ..ndims twice.
+list/nohead ..ndims + ..nvars
+

@@ -62,6 +62,7 @@
 *                  examples have a single time per profile, so obs varies in z not t
 * V75+  5/19 *acm* Test the value of cf_role attribute for validity before using it.
 * v751 *acm*  6/19 Allow for longer strings as attribute values
+* V76  1/20 *acm* working with Point-type dsg data 
 
 * argument definitions:
 *       dset    - pointer to TMAP data set
@@ -100,7 +101,7 @@
      .		i, maxlen, vlen, slen, eax_len, ax_len, ax2_len, is_dim,
      .		cdfstat, attlen, attoutflag, istat, las_pos, first_pos,
      .		dset_num, ndims, nvars, ngatts, recdim, idim,
-     .		ax_att_var(4), ax_att_provisional(4), isend
+     .		ax_att_var(4), ax_att_provisional(4), isend, ivtm1, orient
 	CHARACTER    vname*128, buff*1028, buff1*128, name*8, axdim*1, lunits*64, dir_code*2
 	REAL	vals(2), global_bad
 
@@ -140,6 +141,7 @@
 * get the vital statistics for the data set 
         dset_num = dset
         istat = NCF_INQ_DS (dset_num, ndims, nvars, ngatts, recdim )
+	orient = dsg_orientation(dset) 
 
 * First find probable coordinate variabes - if the axis attribute is
 * present these will be the coords even if other variables have units
@@ -158,7 +160,7 @@
 	   ax_att_var(idim) = int4_init
 	   ax_att_provisional(idim) = int4_init
 	   need_coord(idim) = .TRUE.
-	   IF (idim.EQ.z_dim .AND. dsg_orientation(dset).NE.z_dim) need_coord(z_dim) = .FALSE.
+	   IF (idim.EQ.z_dim .AND. orient.NE.z_dim) need_coord(z_dim) = .FALSE.
 	ENDDO
 
         DO ivcd = 1, nvars
@@ -260,7 +262,7 @@
 	   ENDIF
 	ENDDO
 	IF (slen .GT. 1) THEN
-	   buff1 = CD_DSG_FEATURENAME(dsg_orientation(dset))
+	   buff1 = CD_DSG_FEATURENAME(orient)
 	   vlen = TM_LENSTR1( buff1 ) 
 	   buff = 'Required coordinate variables not found. '//
      .	          buff1(:vlen)//
@@ -317,7 +319,7 @@
      .                 buff, vals )
 	   IF (got_it) THEN
 	      
-	      buff1 = CD_DSG_FEATURENAME ( dsg_orientation(dset) ) ! compare with buff...
+	      buff1 = CD_DSG_FEATURENAME ( orient ) ! compare with buff...
 	      buff1 = buff1(:TM_LENSTR1(buff1))//'_id'
 
 	      IF (STR_SAME (buff, buff1) .EQ. 0) THEN
@@ -413,7 +415,7 @@
 
 		 IF (status .NE. merr_ok) GOTO 5200
 		 dsg_coord_var(idim,dset) = ivtm
-		 IF (idim .EQ. dsg_orientation(dset))
+		 IF (idim .EQ. orient)
      .			has_DSG_coordinates = .TRUE.
 
 		 EXIT 
@@ -430,6 +432,37 @@
 
 	IF (.NOT.has_DSG_coordinates .AND. dsg_user_direction.NE.int4_init) GOTO 5100
 
+* Point type data does not have a RowSize variable and may not have a feature-id variable.
+* All the variables are on the instance axis, so find that axis in the first variable
+* and nominally set the feature-id variable to variable 1 and obs_dimlen to e-axis length
+
+	IF (dsg_feature_type(dset) .EQ. pfeatureType_Point) THEN
+	   IF (.NOT. has_DSG_feature_id ) THEN
+	      
+              ivcd = 1
+	      CALL CD_GET_VAR_INFO (dset, ivcd, vname, vartyp,
+     .                 nvdim, vdims, nvatts, coordvar, 
+     .                 all_outflag, status)
+              IF ( status .NE. merr_ok ) GOTO 5200
+
+              IF (vartyp .EQ. NF_CHAR) THEN
+                 nvdim = nvdim - 1
+	         vdims(1) = vdims(2)
+	         IF (nvdim .GT. 1)  vdims(2) = vdims(3)
+	      ENDIF
+	      cdfstat = NF_INQ_DIMLEN(cdfid, vdims(1), eax_len)
+
+	      has_DSG_feature_id = .TRUE.
+	      dsg_feature_var(dset) = ivtm 
+	      dsg_instance_dim = vdims(1)
+	      dsg_obs_dimlen(dset) = eax_len
+	      dsg_row_size_var(dset) = 1
+
+	   ENDIF
+	   
+	ENDIF
+
+
 * Single-feature files may not have the RowSize variable (NCEI standard unfortunately)
 * Use the length of the feature-id variable, and the length of the time axis
 * to set things up. Construct a dataset-variable ferRowSize.
@@ -444,7 +477,7 @@
 	          IF (eax_len .EQ. 1) dsg_instance_dim = vdims(1)
 	      ENDIF
 
-	      IF (eax_len .EQ. 1) THEN
+	      IF (eax_len.EQ.1 .OR. dsg_feature_type(dset).EQ.pfeatureType_Point) THEN
 	      
 * ... instance axis is the 'feature' axis - may already be set
 
@@ -464,7 +497,7 @@
 	         ds_var_type(ivtm)     = ptype_float
 
 	         ds_grid_start(e_dim,ivtm) = 1
-	         ds_grid_end(e_dim,ivtm)   = 1
+	         ds_grid_end(e_dim,ivtm)   = eax_len
 		 
 		 ivcd = nvars + 1
 		 cd_scale_factor(ivtm) = 1.
@@ -472,7 +505,7 @@
 		 cd_scaled(ivtm)       = .FALSE.
 		 cd_varid(ivtm)       = ivcd  
 
-* Add the aggregated variable to the linked list structure
+* Add the synthesized variable to the linked list structure
 		 nvdim = 1  ! and vdims is as for feature-id var, gotten above.
 		 
 		 vname = 'ferRowSize'
@@ -487,19 +520,45 @@
      .                 nvdim, vdims, nvatts, coordvar, 
      .                 all_outflag, status)
 
-		 isend = -1*ivcd
-		 CALL CD_GET_DSG_INSTANCE_VAR(dset, cdfid, isend, ivtm,
+* Point data has neither a Rowsize variable nor an OBS axis. Synthesize
+* rowsize as an axis that's 1:npoints, each value being 1, and an obs
+* axis of length npoints
+
+	         IF (dsg_feature_type(dset) .EQ. pfeatureType_Point) THEN
+
+
+* Don't need to allocate memory for the synthesized Obs axis
+* just use the basic-axis call in CD_DSG_SETUP_PTDATA (?)
+
+	            DO ivtm1 = ivtm, maxvars
+	               IF ( STR_SAME(ds_var_code(ivtm1),char_init) .EQ. 0 ) exit
+		    ENDDO
+
+		    CALL CD_DSG_SETUP_PTDATA (dset, eax_len, 
+     .                 dsg_loaded_lm(ivtm), dsg_loaded_lm(ivtm1), status)
+	         ELSE
+		    isend = -1*ivcd
+		    CALL CD_GET_DSG_INSTANCE_VAR(dset, cdfid, isend, ivtm,
      .                 vdims, nvdim, eax_len, pdsg_row_size,
      .                 dsg_loaded_lm(ivtm), status)
-	         IF (status .NE. merr_ok) GOTO 5200
+	         ENDIF
+
+		 IF (status .NE. merr_ok) GOTO 5200
 
 	         dsg_row_size_var(dset) = ivtm
 	         dsg_row_size_varid(dset) = unspecified_int4
 	         has_DSG_row_size = .TRUE.
 
 * ... Set dsg_obs_dim using dimension of the coordinate variable in the direction of the feature-type
+*     For point data just nominally use the first variable with a direction.
 
-	         CALL CD_GET_VAR_DIMS_INFO (dset, ax_att_var(dsg_orientation(dset)),  
+	         idim = orient
+		 IF (idim .EQ. e_dim) THEN
+		    DO idim = 1, 4
+		       IF (ax_att_var(idim) .NE. int4_init) EXIT  ! from loop
+		    ENDDO
+		 ENDIF
+		 CALL CD_GET_VAR_DIMS_INFO (dset, ax_att_var(idim),  
      .             vname, nvdim, vdims, status)
 	         IF (nvdim .EQ. 1) THEN
 		    dsg_obs_dim = vdims(1)
@@ -513,7 +572,8 @@
 
 	   ENDIF
 
-	   IF (.NOT.has_DSG_feature_id .OR. eax_len.GT.1) THEN
+	   IF ( .NOT.has_DSG_feature_id .OR. (eax_len.GT.1 .AND.  
+     .             dsg_feature_type(dset).NE.pfeatureType_Point) ) THEN
 	      buff = 'Row Size variable w/ sample_dimension not found. '
 	      GOTO 5300
 	   ENDIF
@@ -553,7 +613,7 @@
 *  coordinate variables for at least, X, Y, T. (checked above)
 *  feature-id variable
 *  row-size variable  (checked above)
-	
+
 	IF (.NOT. has_DSG_feature_id) THEN
 	   buff = 'Feature-ID variable not found or invalid value of cf_role attribute'
 	   GOTO 5300
@@ -568,7 +628,8 @@
 
 * The routine also checks that rowsize sums to the observation-axis length
 
-	CALL CD_DSG_CHECK_TIMECOORD ( eax_len,  dsg_obs_dimlen(dset),
+	IF ( dsg_feature_type(dset).NE.pfeatureType_Point) 
+     .     CALL CD_DSG_CHECK_TIMECOORD ( eax_len,  dsg_obs_dimlen(dset),
      .     dsg_loaded_lm(dsg_row_size_var(dset)), 
      .     dsg_loaded_lm(dsg_coord_var(t_dim,dset)), buff, status )
 

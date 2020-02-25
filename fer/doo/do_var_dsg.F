@@ -45,7 +45,7 @@
 * programmer - Ansley Manke
 * NOAA/PMEL, Seattle, WA - Science Data Integration Group
 * 2/2019
-
+* V76   1/20 *acm* Orientation of Point-type data set to e_dim
 
 ****
 * The algorithm:
@@ -116,7 +116,7 @@
 	
 
 * ****** PERFORM THE COMPUTATION *****
-	IF (idim .EQ. orientation) THEN 
+	IF (idim.EQ.orientation .AND. orientation.LE.t_dim) THEN 
 
 * *** true ragged array processing:
 * compress each feature into a single value 

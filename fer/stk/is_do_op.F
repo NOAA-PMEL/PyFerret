@@ -83,6 +83,7 @@
 *                  inappropriate use of string arguments in numeric expressions or mixed
 *                  string/numeric expressions with logic operators. See bn_strings.jnl
 * V720 5/17 *sh*  added support for operations on DSG ragged arrays 
+* V76  1/20 *acm* Implementing Point-type DSG datasets 
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -238,7 +239,9 @@
 * Fix up the DSG result context
 * A DSG ragged array may appear as a 2D obs X E grid at this point
 * If so, remove the E, as the orientation axis is the full ragged dim in length
-	IF (its_dsg) THEN
+* Doesn't apply to point data...
+
+	IF (its_dsg .AND. orientation.LT.e_dim) THEN
 	    IF (cx_hi_ss(res_cx,orientation) .NE. unspecified_int4) THEN
 	       IF (cx_hi_ss(res_cx, e_dim) .NE. unspecified_int4) THEN
 	    	  cx_lo_ss(res_cx, e_dim) = unspecified_int4 

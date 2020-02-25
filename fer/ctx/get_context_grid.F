@@ -154,6 +154,8 @@
 *                 more sophisticated logic to determine an implied "@FMRC"
 * V720  5/17 *sh* added support for DSG grids 
 * V74+  5/18 *acm* issue 1868: gridding transforms that will grid to same axis
+* V76  1/20 *acm* working with Point-type dsg data
+
 
         IMPLICIT NONE
 	include 'errmsg.parm'
@@ -181,7 +183,7 @@
         LOGICAL   GEOG_COS_FACTOR, GEOG_LABEL, ACTS_LIKE_FVAR,
      .		  ITS_FMRC_2DTIME, TM_ITSA_DSG, REGRID_TO_SELF,
      .		  its_dyn, has_impl_axis, explicit_unstd, use_std_grid,
-     .		  made_aux_line_dummy, at_fmrc
+     .		  made_aux_line_dummy, at_fmrc, dsg_pts
 	INTEGER	  KNOWN_GRID, TM_UNIT_ID,
      .		  DSG_WHATS_IT, TM_DSG_DSET_FROM_GRID, TM_DSG_INSTANCE_GRID,
      .		  TM_DSG_OBS_GRID,
@@ -263,7 +265,8 @@
 	      dset = TM_DSG_DSET_FROM_GRID(use_grid)
 	      orientation = dsg_orientation(dset)
 * ... error check: source data must exist along the orientation axis
-	      IF (grid_line(orientation,std_grid) .EQ. mnormal) GOTO 5430
+	      IF (orientation.NE.pfeatureType_Point .AND. 
+     .		  grid_line(orientation,std_grid) .EQ. mnormal) GOTO 5430
 * ... as a friendliness freature substitute the obs grid if they gave
 *     an instance variable as the target
 	      IF (grid_line(orientation,use_grid) .EQ. mnormal) THEN
@@ -292,6 +295,13 @@
 	   ENDIF
 	ENDIF
 * SEE REGRIDDING **FROM** DSG GRID AT END
+
+* Are we gridding from a points-type dsg dataset?
+	dsg_pts = .FALSE.
+	IF (TM_ITSA_DSG(std_grid)) THEN
+	    orientation = dsg_orientation(dset)
+	    dsg_pts = dsg_orientation(dset).EQ.5 .OR. dsg_orientation(dset).EQ.0
+	ENDIF
 * **** END OF DSG handling ****
 
 * regridding implied through delta values or special transformations?
@@ -460,14 +470,20 @@
 
 * 9/95 check for incompatibilities in grid geometry -- requiring implicit grid
 * (i.e. chk for a normal axis in one grid without same in other)
-	DO 70 idim = 1, nferdims
-	   IF (  (grid_line(idim,std_grid).EQ.mnormal)
-     .    .NEQV. (grid_line(idim,use_grid).EQ.mnormal) )   THEN
+
+
+
+* Are we gridding from a points-type dsg dataset?  Make a grid that's 
+* source-grid by E-dim of DSG using just the first non-normal axis encountered.
+	IF (dsg_pts) THEN
+	   DO idim = 1, t_dim
+	      IF (grid_line(idim,use_grid).EQ.mnormal) CYCLE
+
 * ... allocate and initialize some work space if we don't already have it
 	      IF (.NOT.cx_has_impl_grid(cx)) THEN 
 	         CALL ALLO_GRID( impl_grid,status )
 	         IF (status .NE. ferr_ok) GOTO 5000
-	         CALL TM_COPY_GRID_W_LINE_USE(use_grid, impl_grid)
+	         CALL TM_COPY_GRID_W_LINE_USE(std_grid, impl_grid)
 	         grid_name(impl_grid) = '(conformable)'
 	         cx_has_impl_grid(cx) = .TRUE.
 !	         cx_impl_grid(cx) = impl_grid
@@ -476,11 +492,36 @@
      .              ('allocate', isact_class_impl_grid, impl_grid, 0)
 #endif
 	      ENDIF
-	      CALL TM_DEALLO_DYN_LINE(grid_line(idim,impl_grid))
-	      grid_line(idim,impl_grid) = grid_line(idim,std_grid)
+	      grid_line(idim,impl_grid) = grid_line(x_dim,use_grid)
 	      CALL TM_USE_LINE(grid_line(idim,impl_grid))
-	   ENDIF
- 70	CONTINUE
+	      EXIT ! from loop
+	   ENDDO
+
+	ELSE
+
+	   DO 70 idim = 1, nferdims
+	      IF (  (grid_line(idim,std_grid).EQ.mnormal)
+     .       .NEQV. (grid_line(idim,use_grid).EQ.mnormal) )   THEN
+* ... allocate and initialize some work space if we don't already have it
+	         IF (.NOT.cx_has_impl_grid(cx)) THEN 
+	            CALL ALLO_GRID( impl_grid,status )
+	            IF (status .NE. ferr_ok) GOTO 5000
+	            CALL TM_COPY_GRID_W_LINE_USE(use_grid, impl_grid)
+	            grid_name(impl_grid) = '(conformable)'
+	            cx_has_impl_grid(cx) = .TRUE.
+!	            cx_impl_grid(cx) = impl_grid
+#ifdef debug_dyn_grids
+                    IF ( mode_diagnostic )  CALL DIAG_OP
+     .              ('allocate', isact_class_impl_grid, impl_grid, 0)
+#endif
+	         ENDIF
+	         CALL TM_DEALLO_DYN_LINE(grid_line(idim,impl_grid))
+	         grid_line(idim,impl_grid) = grid_line(idim,std_grid)
+	         CALL TM_USE_LINE(grid_line(idim,impl_grid))
+	      ENDIF
+ 70	   CONTINUE
+
+	ENDIF
 
 * catalog implicit definition (which is temporarily stored on the grid
 * stack) as a dynamic grid -- checking for existing matching grids
@@ -504,6 +545,7 @@
 
 	   cx_grid(cx) = use_grid
 	ENDIF
+cc what is dsg_xlate_grid(dset) 
 
 * flesh out regridding transformations
 	DO 100 idim = 1, nferdims

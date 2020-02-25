@@ -42,6 +42,7 @@
 * programmer - Ansley Manke
 * NOAA/PMEL, Seattle, WA - Science Data Integration Group
 * 3/2019
+* V76   1/20 *acm* Orientation of Point-type data set to e_dim
 
         IMPLICIT NONE
 	include	'ferret.parm'
@@ -70,7 +71,7 @@
 	hi = arbitrary_small_val4
 	nok = 0
 
-	IF (idim .EQ. orientation) THEN 
+	IF (idim.EQ.orientation .AND. orientation.LE.t_dim) THEN 
 
 * *** true ragged array processing:
 *     return the overall min and max of the data after feature-masking

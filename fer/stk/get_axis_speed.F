@@ -55,13 +55,14 @@
 * V685 *acm*  3/13 For Ensemble aggregations, call the ds_type 'ENS'
 * V695 *acm*  2/15 For Forecast aggregations, call the ds_type 'FCT'
 * V698 *acm* 1/16 Allow for Epic CDF files, ds_type = 'ECDF'
+* V7.6 *acm* 1/20 ds_time_axis initialized with int4_init
 
         IMPLICIT NONE
 * calling argument declarations:
 	INTEGER	dset
 
 * internal variable declarations:
-	INTEGER	idim, i, slowdim, igrid, ivar, nexdim
+	INTEGER	idim, i, slowdim, igrid, ivar, nexdim, int4_init
 
 	include 'tmap_dims.parm'
 	include 'xdset_info.cmn_text'
@@ -69,6 +70,8 @@
 	include 'xtm_grid.cmn_text'
 	include 'ferret.parm'
 	include 'xax_speed.cmn'
+	
+	int4_init = -7777
 
 * insert default assumptions
 	DO 100 idim = 1, nferdims
@@ -81,7 +84,7 @@
      .      ds_type(dset) .EQ. 'FCT') THEN
 * ... "record" axis is slowest (stored in ds_time_axis)
 * ... locate it in a grid to see what role it plays
-           IF (ds_time_axis(dset) .EQ. unspecified_int4) RETURN
+           IF (ds_time_axis(dset).EQ.unspecified_int4 .OR. ds_time_axis(dset).EQ.int4_init) RETURN
            DO 410 ivar = 1, maxvars
               IF ( ds_var_setnum(ivar) .NE. dset ) GOTO 410
               igrid = ds_grid_number(ivar)

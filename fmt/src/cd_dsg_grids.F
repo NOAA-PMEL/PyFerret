@@ -50,6 +50,11 @@
 * V74+ 7/18 *acm* Handle a rowsize variable that we have synthesized 
 *                 when there's not one in the file. 
 * V74+ 7/18 *acm* Better handling of grids of char variables
+* V76  1/20 *acm* Fix access to rowsize variable. 
+*                 Handle point datasets. 
+cc
+* V76  1/20 *acm* Orientation of Point-type data set to e_dim
+cc Does this need anything new if we change dsg_orientation to 5 for Point data?
 
 * argument definitions:
 *       dset        - TMAP data set pointer
@@ -103,8 +108,8 @@
 	
 	check_dir = x_dim
 	IF (obs_orient .EQ. pfeatureType_Trajectory) check_dir = x_dim
-	IF (obs_orient .EQ. pfeatureType_profile   ) check_dir = z_dim
-	IF (obs_orient .EQ. pfeatureType_timeSeries) check_dir = t_dim 
+	IF (obs_orient .EQ. pfeatureType_Profile   ) check_dir = z_dim
+	IF (obs_orient .EQ. pfeatureType_TimeSeries) check_dir = t_dim 
 
 * * * * loop through each variable in this TMAP data set * * *
 * if it doesn't have a grid pointer create a suitable one and point to it
@@ -123,14 +128,14 @@
 * The rowsize variable may have been constructed in cd_dsg_scan_vars. If so,
 * use the grid from the feature-id variable.
 
-	   IF (ivar .EQ.  dsg_row_size_var(dset)) THEN
+	   IF (tmvar .EQ.  dsg_row_size_var(dset)) THEN
 	      IF (vname .EQ. 'ferRowSize' .AND.
      .            ds_grid_number(dsg_feature_var(dset)) .NE. int4_init) THEN
 	         i = dsg_feature_var(dset)
-		 ds_grid_number(ivar) = ds_grid_number(i)
+		 ds_grid_number(tmvar) = ds_grid_number(i)
 	         DO idim = 1, nferdims
-                    ds_grid_start(idim,ivar) = ds_grid_start(idim,i)
-                    ds_grid_end  (idim,ivar) = ds_grid_end  (idim,i)
+                    ds_grid_start(idim,tmvar) = ds_grid_start(idim,i)
+                    ds_grid_end  (idim,tmvar) = ds_grid_end  (idim,i)
 	         ENDDO
 
 		 GOTO 5000
@@ -205,7 +210,8 @@
 * e.g. timeseries feature type must have time on the obs axis, trajectory data
 * must have data in X,Y
 
-	   IF (tmvar .EQ. dsg_coord_var(check_dir, dset)) THEN
+	   IF (tmvar .EQ. dsg_coord_var(check_dir, dset) .AND. 
+     .         dsg_feature_type(dset).NE.pfeatureType_Point) THEN
 	      IF ( ds_grid_end(obs_orient,tmvar) .NE. line_dim(dsg_obs_axis) ) 
      .              GOTO 4200
 	   ENDIF

@@ -95,6 +95,7 @@
 *                  Initialize ds_name and ds_des_name to char_init2048
 *                  sf_name initialized to char_init2048
 * V720 4/17 *sh*  Initialize DSG variables
+* V76  1/20 *acm* remove commented-out lines
 
 * arguments:
 *	ds_num	- (input) data set number (see COMMON /XSTEP_FILES/)
@@ -137,13 +138,6 @@
 	   CALL TM_DEALLO_DYN_GRID(grid)
 * re-init the special DSG variables
 	   dsg_ragged(ds_num) = .FALSE.
-! these could optionally be init'ed, but AFAIK there is no need
-!	   dsg_feature_type	/pdsetalloc*int4_init/
-!	   dsg_row_size_var	/pdsetalloc*int4_init/
-!	   dsg_orientation	/pdsetalloc*int4_init/
-!	   dsg_obs_dimlen	/pdsetalloc*int4_init/
-!	   dsg_xlate_grid	/pdsetalloc*int4_init/
-!	   line_dsg_dset from the E and orientation axes
 	ENDIF
 
 * Clear variables associated only with data set number
@@ -162,13 +156,6 @@
 	   CALL TM_DEALLO_DYN_GRID(grid)
 * re-init the special DSG variables
 	   dsg_ragged(ds_num) = .FALSE.
-! these could optionally be init'ed, but AFAIK there is no need
-!	   dsg_feature_type	/pdsetalloc*int4_init/
-!	   dsg_row_size_var	/pdsetalloc*int4_init/
-!	   dsg_orientation	/pdsetalloc*int4_init/
-!	   dsg_obs_dimlen	/pdsetalloc*int4_init/
-!	   dsg_xlate_grid	/pdsetalloc*int4_init/
-!	   line_dsg_dset from the E and orientation axes
 	ENDIF
 
 * Clear variables associated only with data set number

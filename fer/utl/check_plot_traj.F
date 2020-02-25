@@ -40,6 +40,7 @@
 
 
 * V751 7/19 *acm*  Changes for working with user-defined variables on DSG grid
+* V76  1/20 *acm*  Point data are also plotted as ribbon plots, with symbols.
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -59,8 +60,8 @@
 
 
 	dset = TM_DSG_DSET_FROM_GRID( grid )
-	
-	its_traj = dsg_feature_type(dset).EQ.pfeatureType_Trajectory
+       its_traj = dsg_feature_type(dset).EQ.pfeatureType_Trajectory .OR.  
+     .            dsg_feature_type(dset).EQ.pfeatureType_Point
 
 	IF (its_traj .AND. versus .AND. nvars.GT.1) THEN
 

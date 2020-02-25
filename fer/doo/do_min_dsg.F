@@ -44,6 +44,7 @@
 * programmer - Ansley Manke
 * NOAA/PMEL, Seattle, WA - SDIG
 * 2/2019 from DO_MAX_DSG
+* V76   1/20 *acm* Orientation of Point-type data set to e_dim
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
@@ -86,7 +87,7 @@
 
 
 * ****** PERFORM THE COMPUTATION *****
-	IF (idim .EQ. orientation) THEN 
+	IF (idim.EQ.orientation .AND. orientation.LE.t_dim) THEN 
 * *** true ragged array processing:
 * compress each feature into a single value 
            base = 0    ! obs index at end of preceding feature

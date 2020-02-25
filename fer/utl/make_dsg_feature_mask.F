@@ -47,6 +47,7 @@
 * V741 7/18 *acm* Fixes for modulo longitudes in computing whether context
 *                 and coordinate regions overlap
 * V74+ 8/18 *acm* More on modulo longitudes and the mask
+* V76  1/20 *acm* working with Point-type dsg data
 
 	include 'tmap_dims.parm'
 	include 'ferret.parm'
@@ -76,7 +77,8 @@
 
 	CALL TM_DSG_FACTS( cx_grid(cx), orientation, obsdimlen, feature_line, its_dsg )
 	ignore_depth = orientation.EQ.pfeatureType_Trajectory .OR. 
-     .                 orientation.EQ.pfeatureType_Timeseries
+     .                 orientation.EQ.pfeatureType_Point .OR. 
+     .                 orientation.EQ.pfeatureType_TimeSeries
 
 ! DSGTBD: presently the same constraints mask gets re-computed many times:
 ! ... during each IS_DO_OP, during regridding, and for final LIST, PLOT, etc.

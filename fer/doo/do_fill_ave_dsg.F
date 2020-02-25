@@ -41,7 +41,7 @@
 * programmer - Ansley Manke
 * NOAA/PMEL, Seattle, WA - Science Data Integration Group
 * 2/2019
-
+* V76   1/20 *acm* Orientation of Point-type data set to e_dim
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
@@ -65,7 +65,7 @@
 * internal variable declarations:
 	LOGICAL	fmask(nfeatures), omask(maxobs)
 	INTEGER	i, ii,ii_com, ifeature, iobs, flen, base, 
-     .		orientation, row_size_lm, dsg_fmt_grid, dsg_coord_lm
+     .		orientation, row_size_lm, dsg_fmt_grid, dsg_coord_lm, i1
 	REAL	bad_res, bad_com, sum, cnt, val
 
 * initialize
@@ -87,7 +87,7 @@
 	dsg_coord_lm = cxdsg_coord_lm(orientation)
 
 * ****** PERFORM THE COMPUTATION *****
-	IF (idim .EQ. orientation) THEN 
+	IF (idim.EQ.orientation .AND. orientation.LE.t_dim) THEN 
 
 * *** true ragged array processing:
 
@@ -180,6 +180,7 @@
 	         DO ii = -haf, haf
 	            ii_com = ifeature + ii
 	            IF ( ii_com.LT.1 .OR. ii_com.GT.nfeatures ) CYCLE
+	            IF ( .NOT.fmask(ii_com) ) CYCLE
 	            val = com(ii_com)
 	            IF ( val .NE. bad_res ) THEN
 	               cnt = cnt + 1

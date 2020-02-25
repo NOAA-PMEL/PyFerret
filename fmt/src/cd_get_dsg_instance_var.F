@@ -55,6 +55,7 @@
 * V74+ 8/18 *acm* For timeseries or trajectory plots, ignore an invalid Z-coordinate
 *                 variable as a coordinate
 * v751 *acm*  6/19 Allow for longer strings as attribute values - std names -->256
+* v751 *acm* 11/19 Don't warn of constant lon/lat e.g. for single-station timeseries or Profiles
 
 
 * argument definitions:
@@ -257,7 +258,8 @@
 *      we just ignore depth as a coordinate
 
 	   IF (coord_min.EQ.coord_max .AND. idim.EQ.t_dim ) THEN 
-	      IF (dsg_feature_type(dset) .EQ. pfeatureType_profile) THEN 
+	      IF (dsg_feature_type(dset) .EQ. pfeatureType_profile
+     .           .AND. lm_size(stored_lm) .GT. 1) THEN 
 	         CALL WARN ('Constant time step in '//ftrname(:flen)//'  file.')	     
 	      ELSE
 	         GOTO 5500
@@ -265,13 +267,14 @@
 	   ENDIF
 	   
 	   IF (coord_min.EQ.coord_max .AND. (idim.EQ.x_dim .OR. idim.EQ.y_dim)  
+     .        .AND. lm_size(stored_lm) .GT. 1
      .        .AND. (dsg_feature_type(dset) .EQ. pfeatureType_profile 
-     .         .OR.  dsg_feature_type(dset) .EQ. pfeatureType_Timeseries) ) THEN 
+     .         .OR.  dsg_feature_type(dset) .EQ. pfeatureType_TimeSeries) ) THEN 
 	         CALL WARN ('Constant lon/lat in '//ftrname(:flen)//' file.')	     
 	   ENDIF
 
 	   IF (coord_min.EQ.coord_max .AND. idim.EQ.z_dim) THEN 
-	      IF (dsg_feature_type(dset) .EQ. pfeatureType_Timeseries
+	      IF (dsg_feature_type(dset) .EQ. pfeatureType_TimeSeries
      .         .OR. dsg_feature_type(dset) .EQ. pfeatureType_Trajectory ) THEN
 	         GOTO 5700 
 	      ELSE IF (dsg_feature_type(dset).EQ.pfeatureType_profile) THEN

@@ -14,7 +14,7 @@
 *  6/2019 *acm* Write strings in id's, dates without quotes (as ERDDAP does)
 *  7/2019 *acm* Future: assign precision per variable, but for now use default or user-set prec.
 * V751 7/18 *acm* Call single routine for DSG feature-type names
-
+* V76  1/20 *acm* working with Point-type dsg data 
 
         include 'netcdf.inc'
 	include 'tmap_dims.parm'
@@ -102,7 +102,7 @@
 	row_size_lm = dsg_loaded_lm(dsg_row_size_var(dset))
 
 	feature_idname = 'feature-id'
-	IF (orientation.GE.pfeatureType_point .AND.  orientation.LE.pfeatureType_timeSeries) THEN
+	IF (orientation.GE.pfeatureType_Trajectory .AND. orientation.LE.pfeatureType_Point) THEN
 	   strbuff = CD_DSG_FEATURENAME(orientation)
 	   feature_idname = strbuff(:tm_lenstr1(strbuff)) // '-id'
 	ENDIF

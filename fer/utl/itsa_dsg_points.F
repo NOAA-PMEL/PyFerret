@@ -1,4 +1,4 @@
-	LOGICAL FUNCTION ITSA_REGRID_FROM_DSG ( cx )
+	LOGICAL FUNCTION ITSA_DSG_POINTS ( cx )
 
 *
 *
@@ -35,59 +35,30 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
-* determine if this context represents a regrid operation *from* a DSG variable
+* determine if the given context points to a Points DSG dataset.
 
-* V720 *sh* 5/17
-* V76  1/20 *acm* working with Point-type dsg data
-
+* V6  *acm* 1/20
       include 'tmap_dims.parm'
-      include 'implicit.parm'
       include 'ferret.parm'
       include 'xcontext.cmn'
       include 'xtm_grid.cmn_text'
       include 'xdset_info.cmn_text'
+      include 'xvariables.cmn'
+#include "tmap_dset.parm"
 
-* argument declarations
 	INTEGER cx
 
 * internal variable declarations
-	INTEGER grid, dset, line, orient
+	INTEGER TM_DSG_DSET_FROM_GRID, grid, dset
 
 * initialize
-	grid = cx_grid(cx)
 
-* is it a regrid at all?
-	IF (.NOT.cx_unstand_grid(cx)) THEN
-	   ITSA_REGRID_FROM_DSG = .FALSE.
-	   RETURN
-	ENDIF
+	ITSA_DSG_POINTS = .FALSE.
+	grid = cx_grid( cx )
+	dset = TM_DSG_DSET_FROM_GRID( grid )
 
-* the E axis tells us if the starting point is DSG
-	line = grid_line(e_dim,grid)
-	IF (line .EQ. mnormal) THEN
-	   ITSA_REGRID_FROM_DSG = .FALSE.
-	   RETURN
-	ENDIF
-	dset = line_dsg_dset(line)
-	IF ( dset .EQ. pline_not_dsg) THEN
-	   ITSA_REGRID_FROM_DSG = .FALSE.
-	   RETURN
-	ENDIF
-
-* Yes - E tells us that this started as a DSG
-* The existence of a feature-oriented axis that is non-DSG indicates a
-* regrid from a DSG
-	orient = dsg_orientation(dset)
-	line = grid_line(orient,grid)
-	IF (line.EQ.mnormal) THEN
-	   ITSA_REGRID_FROM_DSG = .FALSE.
-	ELSE
-	   ITSA_REGRID_FROM_DSG = line_dsg_dset(line) .EQ. pline_not_dsg
-	ENDIF
-
-* We know it's a regrid - the source is a dsg point-type dataset, so the
-* grid is fine. (once we implement these regrids!)
-	IF (orient .EQ. e_dim) ITSA_REGRID_FROM_DSG = .TRUE.  
+	IF (dset .LE. main_set) RETURN  ! < 0 means not dsg 
+	ITSA_DSG_POINTS = dsg_feature_type(dset) .EQ. pfeatureType_Point
 
         RETURN
         END

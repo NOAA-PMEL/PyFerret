@@ -73,6 +73,7 @@ cd_isit_coordvar.F\
 cd_isit_epic.F\
 cd_isit_recdim.F\
 cd_load_dset_attrs.F\
+cd_dsg_setup_ptdata.F\
 cd_make_fmrc_axes.F\
 cd_make_var.F\
 cd_ncclose.F\

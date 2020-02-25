@@ -42,3 +42,29 @@ cancel symbol lab*
 plot /thick sst
 show symbol lab*
 
+! regrid from/ to rectangular grid
+cancel data/fmask 1
+
+define axis/t=2-jan-1970:20-jan-1970:6/units=hours tfake
+define axis/x=-140:90:0.5/units=degrees_east xfake
+define axis/y=12:25:0.5/units=degrees_north yfake
+define grid/x=xfake/y=yfake/t=tfake gfake
+let/title="Gridded Variable"  vari = 2*y[g=gfake] + 0.8*abs(x[g=gfake]) + 0.1*l[g=gfake]
+save/clobber/file=fake_model_vari.nc/outtype=float vari
+can var/all
+
+use dsg_point_data
+use fake_model_vari.nc
+show dat
+
+! Regrid gridded data to grid of points (sample at points)
+list vari[d=2, g=sst[d=1]]
+
+! list the point data gridded to the grid of vari
+!  or now this is an error: could implement a gridding-by-binning
+
+set mode ignore
+load sst[d=1,g=vari[d=2]]
+
+cancel data/all
+sp rm fake_model_vari.nc

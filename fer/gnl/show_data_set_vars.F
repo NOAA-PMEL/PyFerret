@@ -93,6 +93,7 @@
 * V751 6/19 *acm* TM_FMT rewrite: formatting of lon/lat coordinate strings
 * V751 7/18 *acm* Call single routine for DSG feature-type names
 * V751 8/18 *acm* List the coordinate ranges if DSG dataset
+* V76  1/20 *acm* working with Point-type dsg data 
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -169,9 +170,8 @@
 	   tlen = TM_LENSTR1( risc_buff ) + 1
 	   risc_buff = risc_buff(:tlen)//  CD_DSG_FEATURENAME(dsg_orient)
 
-	   IF (dsg_orient.LT.pfeatureType_Point .OR. 
-     .         dsg_orient.GT.pfeatureType_timeSeries) risc_buff = ''
-
+	   IF (dsg_orient.LT.pfeatureType_Trajectory .OR. 
+     .         dsg_orient.GT.pfeatureType_Point) risc_buff = ''
 
 	   tlen = TM_LENSTR1( risc_buff )
 	   IF (tlen .GT. 0)  CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0) 

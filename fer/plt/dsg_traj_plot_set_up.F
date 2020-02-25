@@ -1,7 +1,7 @@
         SUBROUTINE DSG_TRAJ_PLOT_SET_UP( 
      .				overlay, no_labels, symbol, sym_size, color, 
-     .				color1, use_line,do_dash, dashstyle, nokey,
-     .				all_1_dep, only_val, skipsym, mv_list, 
+     .				color1, use_line, do_dash, dashstyle, nokey,
+     .				is_traj, only_val, skipsym, mv_list, 
      .				cx_list, nmv, indep_dat, dep_dat, status )
 
 *
@@ -54,6 +54,8 @@
 *                   Do masking correctly.
 * V7.51 *acm*  8/19 getting min/max of longitudes and latitudes
 * V7.51 *acm*  8/19 Ticket 1953, masking and min/max of dependent axis data
+* V7.6  *acm*  1/20 Set up for plotting Points-type datasets as ribbon plots
+*                   with symbols. Flag is_traj indicates trajectory data type
 
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
@@ -81,7 +83,7 @@
 
 * calling argument declarations:
 	LOGICAL		overlay, no_labels, use_line,
-     .			nokey, all_1_dep
+     .			nokey, is_traj
 	INTEGER		symbol, color, color1, do_dash, skipsym,
      .			nmv, mv_list( nmv ), cx_list( nmv ), status
 	REAL		sym_size, dashstyle(*), only_val
@@ -91,7 +93,7 @@
 * internal variable declarations:
 
 	LOGICAL		NO_LINE_RANGE, GEOG_LABEL, TM_ITSA_DSG_RAGGED,
-     .			versus, all_1_ind, formatted, use_nice, 
+     .			versus, all_1_ind, all_1_dep, formatted, use_nice, 
      .			this_no_range(max_line_on_plot), indep_is_log, set_lev, 
      .			its_dsg, mask_applied
 	CHARACTER*2040	plot_title
@@ -532,9 +534,12 @@
 * key and label the key with the feature variable. Do this even for numeric 
 * feature-id, label by feature variable, in order of feature number. These
 * aren't taken to be increasing numeric values that could be used to set 
-* numeric levels
+* numeric levels.
 
-	IF (npts2 .EQ. nfeatures) THEN
+* Only do this for Trajetory data - for a dataset of type Points, number of points 
+* is always number of features and features are length 1.
+
+	IF (npts2.EQ.nfeatures .AND. is_traj) THEN
 
 	   IF (qual_given(slash_plot_levels) .EQ. 0) CALL SET_DSG_ID_LEV 
      .           (dset, cx, nfeatures, dep_dat, mr_type(mv), changed_key)

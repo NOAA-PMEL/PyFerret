@@ -49,6 +49,7 @@
 * Ansley Manke
 * NOAA/PMEL, Seattle, WA - Science Data Integration Group
 *  3/2019
+* V76   1/20 *acm* Orientation of Point-type data set to e_dim
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
@@ -92,7 +93,7 @@
 
 * ****** PERFORM THE COMPUTATION *****
 
-	IF (idim .EQ. orientation) THEN 
+	IF (idim.EQ.orientation .AND. orientation.LE.t_dim) THEN 
 * *** true ragged array processing:
 * convolve independently along each feature
 *     Work with all data in the feature. WW coordinate masking etc  
@@ -173,7 +174,7 @@
                     comp = bad_res
                  ENDIF
 		 
-                 IF ( comp .NE. bad_com ) THEN
+                 IF ( comp.NE.bad_com .AND.comp.NE.dsg_masked_out_flag) THEN
 	            list(ndx) = comp
 		    ndx = ndx + 1
                  ENDIF

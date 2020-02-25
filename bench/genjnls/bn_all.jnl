@@ -1296,6 +1296,9 @@ GO bn_regrid_to_dsg_traj
 GO bn_reset bn_dsg_save_uvars
 GO bn_dsg_save_uvars
 
+GO bn_reset bn_dsg_point_data
+GO bn_dsg_point_data
+
 
 ! *********** v7.51 Additions ***********
 

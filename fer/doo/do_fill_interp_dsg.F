@@ -44,6 +44,7 @@
 * programmer - Ansley Manke
 * NOAA/PMEL, Seattle, WA - Science Data Integration Group
 * 2/2019
+* V76   1/20 *acm* Orientation of Point-type data set to e_dim
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -67,7 +68,7 @@
      .          res   (*)
 
 * internal variable declarations:
-	INTEGER i, ii, lo_index, hi_index, look
+	INTEGER i, ii, lo_index, hi_index, look, i1
 	REAL	bad_res, bad_com, lo_coord, hi_coord, coord, val, 
      .          lo_val, hi_val, boxdel, boxmean, boxstd
 
@@ -104,7 +105,7 @@
 	   
 
 * ****** PERFORM THE COMPUTATION *****
-	IF (idim .EQ. orientation) THEN 
+	IF (idim.EQ.orientation .AND. orientation.LE.t_dim) THEN 
 
 * *** true ragged array processing:
 
@@ -255,18 +256,23 @@
 
 	   DO ifeature = 1, nfeatures
 	      coords(ifeature) = ifeature
+	      res(ifeature) = bad_res
 	   ENDDO
 
 	   no_lo_val = .TRUE.
-	   val = com(1 )
-	   IF (val .NE. bad_com ) THEN
+	   DO i1 = 1, nfeatures
+	      IF (fmask(i1) ) EXIT
+	   ENDDO
+	   val = com(i1 )
+	   
+	   IF (val .NE. bad_com) THEN
 	      lo_val = val
-	      lo_index = 1
-	      lo_coord = coords(1)
+	      lo_index = i1
+	      lo_coord = coords(i1)
 	      no_lo_val = .FALSE.
 	   ENDIF
 
-	   DO ifeature = 1, nfeatures 
+	   DO ifeature = i1, nfeatures 
 
 * ... have the user's WW constraints removed this feature?
 	      IF (.NOT.fmask(ifeature)) CYCLE
@@ -276,6 +282,10 @@
 
 	      IF ( val .NE. bad_com ) THEN
 	         res(ifeature) = val
+		 lo_val = val
+		 lo_index = ifeature
+		 lo_coord = coords(ifeature)
+		 no_lo_val = .FALSE.
 
 	      ELSE
 
@@ -290,6 +300,7 @@
 		 hi_index = 0
 		 DO ii = ifeature+1, nfeatures
 		    look = ii
+		    IF (.NOT.fmask(ii)) CYCLE
 		    IF ( com(ii) .NE. bad_com ) THEN
                        hi_val = com(ii)
 	               hi_index = look

@@ -54,10 +54,12 @@
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 
 * V720 *sh* 5/2017 - based upon COPNVOLVE.F
+* V76   1/20 *acm* Orientation of Point-type data set to e_dim
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
 	include	'ferret.parm'
+	include 'errmsg.parm'
 	include	'xcontext.cmn'
 	include	'xvariables.cmn'
 	include	'xmem_subsc.cmn'
@@ -74,7 +76,7 @@
 * internal variable declarations:
 	LOGICAL valid
 	INTEGER	i, ii, lo_lim, hi_lim, hlen1, base, flen, ifeature, iobs,
-     .		orientation, row_size_lm
+     .		orientation, row_size_lm, fcount
 	REAL	bad_com, bad_res, comp, sum
 
 * initialize
@@ -91,7 +93,7 @@
 
 * ****** PERFORM THE COMPUTATION *****
 
-	IF (idim .EQ. orientation) THEN 
+	IF (idim.EQ.orientation .AND. orientation.LE.t_dim) THEN 
 * *** true ragged array processing:
 * convolve independently along each feature
            base = 0    ! obs index at end of preceding feature
@@ -150,28 +152,31 @@
 * IT IS NOT CLEAR THAT A USE CASE EXISTS for convolving along the instance
 * (feature) axis of a DSG.  But we allow it anyway.
 * Process all features -- ignoring mask -- for the reasons stated in the intro
-	   DO i = 1, nfeatures 
+
+	   ftrloop: DO i = 1, nfeatures 
 	      sum = 0.0
 	      DO ii = -hlen1, hlen1
 * ... test limits of component data before using
-                 IF ( i+ii .GE. lo_lim
-     .          .AND. i+ii .LE. hi_lim ) THEN
+                 IF ( i+ii .GE. 1
+     .          .AND. i+ii .LE. nfeatures ) THEN
                     comp = com(i+ii)
                  ELSE
                     res(i) = bad_res
-                    CYCLE
+                    CYCLE ftrloop
                  ENDIF
 
-	         IF ( comp .EQ. bad_com ) THEN
+	         IF (  comp.EQ.bad_com .OR.comp.EQ.dsg_masked_out_flag ) THEN
 	            res(i) = bad_res
-	            CYCLE
+	            CYCLE ftrloop
 	         ELSE
 	            sum = sum + comp*wt(ii)
 	         ENDIF
 	      ENDDO
 	      res(i) = sum
-	   ENDDO
-	ENDIF
+	   ENDDO ftrloop
 
-	RETURN
+	ENDIF  ! transformation in E
+
+ 5000	RETURN
+ 
 	END

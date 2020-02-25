@@ -209,7 +209,7 @@
 	      IF ( .NOT.sbrief ) CALL SHOW_DATA_SET_VARS
      .                             (show_lun, iset, svars, status)
 	      IF ( sfile       ) CALL SHOW_DATA_FILES      
-     .                             (show_lun, iset)
+     .                             (show_lun, iset, sbrief)
 	      IF ( sattr       ) CALL SHOW_DATA_SET_ATTRS      
      .                             (show_lun, iset)
            ENDIF

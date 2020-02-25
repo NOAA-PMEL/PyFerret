@@ -224,6 +224,10 @@
 * V751   7/19 *acm* For DSG data, set a flag controling a PLOT/VS plot with station locations as
 *                   opposed to exanding variables to the obs axis.
 * V751 7/19 *acm*  DSG-enabled Ferret: plotting user-defined variables
+* V7.6  *acm*  1/20 Set up for plotting Points-type datasets as ribbon plots
+*                   with symbols. 
+* V76   1/20 *acm* Orientation of Point-type data set to e_dim
+
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -338,8 +342,8 @@
 	numv = nmv  ! local copy
 	line_symbol = symbol
 
-* ragged DSG data?  Get number of features and obsdimlen.
-* If it's a Trajectory dataset and they did "PLOT var", set that up.
+* ragged DSG data?  Get number of features and obsdimlen. If it's a 
+* Trajectory or Point dataset and they did "PLOT var", set that up.
 
 	 nfeatures = 0
 	 its_dsg = .FALSE.
@@ -371,7 +375,9 @@
 	    CALL TM_DSG_FACTS( grid, orientation, obsdimlen, fline, its_dsg )
 	    IF (its_dsg) THEN
 
-	       its_traj = dsg_feature_type(dset).EQ.pfeatureType_Trajectory
+	       its_traj = dsg_feature_type(dset).EQ.pfeatureType_Trajectory .OR.  
+     .	                  dsg_feature_type(dset).EQ.pfeatureType_Point
+	       ribbon_plot = its_traj
 	    
 * Is this just a regular ribon plot with 3 variables (not a lon/lat traj plot)? 
 * OR a PLOT/VS var1,var2 from a DSG dataset for var1,var2 not lon/lat?
@@ -391,9 +397,15 @@
 	          ul_dolab(e_dim) = .TRUE.
 	          ul_nlabs = 2
 
-	          CALL DSG_TRAJ_PLOT_SET_UP ( 
+		  IF (dsg_feature_type(dset).EQ.pfeatureType_Point) THEN
+		     use_line = .FALSE. 
+		     IF (symbol .EQ. unspecified_int4) symbol = 20
+		  ENDIF
+
+	          its_traj = dsg_feature_type(dset) .EQ. pfeatureType_Trajectory
+		  CALL DSG_TRAJ_PLOT_SET_UP ( 
      .              overlay, no_labels, symbol, sym_size, color, color1, 
-     .              use_line, do_dash, dashstyle, nokey, all_1_dep, only_val, 
+     .              use_line, do_dash, dashstyle, nokey, its_traj, only_val, 
      .              skipsym, mv_list, cx_list, numv, indep_dat, dep_dat, status )
 	          GOTO 1000
 	       ENDIF
@@ -599,7 +611,7 @@
 	      expand_dsg_ok = (npts.NE.nfeatures .OR. npts2.NE.nfeatures)
 	      dsg_fmt_grid = 0
 
-	      IF ( orientation.EQ.pfeatureType_profile .AND. 
+	      IF ( orientation.EQ.pfeatureType_Profile .AND. 
      .	           versus .AND. expand_dsg_ok) THEN
 
 	         IF (npts .EQ. nfeatures) CALL DSG_OBS_BY_FEATURE_VAR 
@@ -1007,7 +1019,7 @@ c	      ul_dolab(t_dim) = .FALSE.
 *     first or second variable to the OBS axis.
 
 	   IF (its_dsg .AND. 
-     .	       orientation.EQ.pfeatureType_profile .AND. 
+     .	       orientation.EQ.pfeatureType_Profile .AND. 
      .	       versus .AND. npts2.EQ.nfeatures .AND. expand_dsg_ok) THEN
 	      IF (npts2 .EQ. nfeatures) CALL DSG_OBS_BY_FEATURE_VAR 
      .	           (dset, cx, nfeatures, obsdimlen, dep_dat)

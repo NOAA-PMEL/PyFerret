@@ -17,7 +17,7 @@ cd_conventions_out.F\
 cd_defer_coord_write.F\
 cd_delete_attribute.F\
 cd_dods_control.F\
-cd_dim_only.F\
+cd_dim_status.F\
 cd_dsg_check_timecoord.F\
 cd_dsg_feature_ok.F\
 cd_dsg_featurename.F\
@@ -73,6 +73,7 @@ cd_isit_coordvar.F\
 cd_isit_epic.F\
 cd_isit_recdim.F\
 cd_load_dset_attrs.F\
+cd_dsg_setup_ptdata.F\
 cd_make_fmrc_axes.F\
 cd_make_var.F\
 cd_ncclose.F\

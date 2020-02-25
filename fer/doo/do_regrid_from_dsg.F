@@ -46,6 +46,7 @@
 * V751: *acm* 8/19 Handle profile regrid to a single axis, checking for 
 *                  ascending or descending z-coordinate data in the DSG profiles
 * V751: *acm* 8/19 Initialize the result, needed when mask applied to DSG grid
+* V76  1/20 *acm* working with Point-type dsg data 
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -100,10 +101,14 @@
 
 * DSG-specific initialize
 	dset = TM_DSG_DSET_FROM_GRID(dsg_grid)
+	orient       = dsg_orientation(dset)
+
+* Refuse to regrid to point-data type, sample at x,y,z,t of xlate grid...
+        IF (orient .EQ. e_dim) GOTO 5100
+
         CALL MAKE_DSG_FEATURE_MASK(dset, dsg_cx, fmask, nfeatures)
 	row_size_lm  = dsg_loaded_lm(dsg_row_size_var(dset))
 	dsg_fmt_grid = dsg_xlate_grid(dset)
-	orient       = dsg_orientation(dset)
 	dsg_coord_lm = cxdsg_coord_lm(orient)
 
 * initialize for conversion of the gridded time axis onto DSG times
@@ -230,6 +235,9 @@
 	ENDDO    ! feature loop
 
  5000	RETURN
- 
+ 5100   CALL ERRMSG( ferr_invalid_command, status, 
+     .   'Regrid from point data not allowed. Instead try USE/FEATURE=NONE ', *5000)
+        END
+
 	END
 

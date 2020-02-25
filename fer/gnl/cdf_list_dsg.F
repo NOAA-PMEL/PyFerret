@@ -1,7 +1,7 @@
 	SUBROUTINE CDF_LIST_DSG ( dset, cdfid, fname, append, nvars,
      .			     nfeatures, nobs_in, longest_feature,
      .			     mr_list, cx_list, title,
-     .			     out_type, quiet, status )
+     .			     out_type, quiet, do_coords, status )
 
 
 *  This software was developed by the Thermal Modeling and Analysis
@@ -51,6 +51,7 @@
 *         get set up, but it doesn't make any sense to apply them.  
 *  6/2019 *acm* MASK_DSG_OBSVAR call has changed, for use by trajectory-plotting 
 *  8/2019 *acm* Allow writing user-defined varaibles to DSG datasets
+* V751 *acm* 11/19 *acm* new qualifier SAVE/NOCOORDS: subroutine calls change.
 
         include 'netcdf.inc'
 #include "netcdf_declareUnderscore.inc"
@@ -73,7 +74,7 @@
         include 'netcdf4_settings.cmn'
 
 * calling argument declarations:
-        LOGICAL         append, quiet
+        LOGICAL         append, quiet, do_coords
 	INTEGER		dset, cdfid, nvars, mr_list(nvars), cx_list(nvars),
      .			keepax_flag, nfeatures, nobs_in, longest_feature, status
         CHARACTER*(*)   fname, title, out_type
@@ -463,7 +464,7 @@ c	IF (.NOT. instance_vars_only) THEN
      .               netcdf4_type, xchunk_size, 
      .               ychunk_size, zchunk_size, tchunk_size, 
      .               deflate_lev, shuffle_flag, endian_code, buff2,
-     .               status )
+     .               do_coords, status )
 
 * ... Set attributes for feature-id variable
 
@@ -516,7 +517,7 @@ c	IF (.NOT. instance_vars_only) THEN
      .               netcdf4_type, xchunk_size, 
      .               ychunk_size, zchunk_size, tchunk_size, 
      .               deflate_lev, shuffle_flag, endian_code, buff2,
-     .               status )
+     .               do_coords, status )
 
 * ... Set attributes for rowSize variable
 
@@ -569,7 +570,7 @@ c	IF (.NOT. instance_vars_only) THEN
      .               netcdf4_type, xchunk_size, 
      .               ychunk_size, zchunk_size, tchunk_size, 
      .               deflate_lev, shuffle_flag, endian_code, buff2,
-     .               status )
+     .               do_coords, status )
 
 	      ELSE
 * ... obs coordinate
@@ -582,7 +583,7 @@ c	IF (.NOT. instance_vars_only) THEN
      .               netcdf4_type, xchunk_size, 
      .               ychunk_size, zchunk_size, tchunk_size, 
      .               deflate_lev, shuffle_flag, endian_code, buff2,
-     .               status )
+     .               do_coords, status )
 
 	      ENDIF
 
@@ -745,7 +746,7 @@ c	IF (.NOT. instance_vars_only) THEN
      .               netcdf4_type, xchunk_size, 
      .               ychunk_size, zchunk_size, tchunk_size, 
      .               deflate_lev, shuffle_flag, endian_code, buff2,
-     .               status )
+     .               do_coords, status )
 
 	   ELSE
 	      grid = ogrid
@@ -756,7 +757,7 @@ c	IF (.NOT. instance_vars_only) THEN
      .               netcdf4_type, xchunk_size, 
      .               ychunk_size, zchunk_size, tchunk_size, 
      .               deflate_lev, shuffle_flag, endian_code, buff2,
-     .               status )
+     .               do_coords, status )
 	   ENDIF
 
 	   IF ( status .NE. merr_ok ) GOTO 5800

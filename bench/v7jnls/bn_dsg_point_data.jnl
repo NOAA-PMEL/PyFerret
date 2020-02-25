@@ -1,0 +1,70 @@
+! bn_dsg_point_data.jnl
+!  Testing use of DSG Point-type dataset
+!  This data type does not have a Rowsize or a Feature-ID variable
+
+! 1/15/2020 ACM
+
+use dsg_point_data
+show data
+list sst
+
+! constrain by location
+list/y=20:25 sst
+
+! mask based on data
+let sstmask = if sst lt 20 then 1
+set data/fmask=sstmask 1
+list sst
+cancel data/fmask 1
+
+! Define another mask
+let mms = _m[ge=sst]
+let emask = if (mod(mms,3) eq 1 then 1)
+set data/fmask = emask 1
+list sst
+cancel data/fmask 1
+
+! The native plot for point data is ribbon plot as symbols
+! Test some plot qualifiers
+plot/thick/sym=26/palette=rnb2/key=horiz sst
+
+frame/file=dsg_points_plot.gif
+
+! Plot the masked data - auto label created
+
+
+! Define another mask
+let mms = _m[ge=sst]
+let emask = if (mod(mms,2) eq 1 then 1)
+set data/fmask = emask 1
+
+cancel symbol lab*
+plot /thick sst
+show symbol lab*
+
+! regrid from/ to rectangular grid
+cancel data/fmask 1
+
+define axis/t=2-jan-1970:20-jan-1970:6/units=hours tfake
+define axis/x=-140:90:0.5/units=degrees_east xfake
+define axis/y=12:25:0.5/units=degrees_north yfake
+define grid/x=xfake/y=yfake/t=tfake gfake
+let/title="Gridded Variable"  vari = 2*y[g=gfake] + 0.8*abs(x[g=gfake]) + 0.1*l[g=gfake]
+save/clobber/file=fake_model_vari.nc/outtype=float vari
+can var/all
+
+use dsg_point_data
+use fake_model_vari.nc
+show dat
+
+! Regrid gridded data to grid of points (sample at points)
+list vari[d=2, g=sst[d=1]]
+
+! list the point data gridded to the grid of vari
+!  or now this is an error: could implement a gridding-by-binning
+
+set mode ignore
+load sst[d=1,g=vari[d=2]]
+
+cancel data/all
+sp rm fake_model_vari.nc

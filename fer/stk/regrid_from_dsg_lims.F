@@ -42,6 +42,7 @@
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 
 * V720 *sh* 5/17
+* V76  1/20 *acm* working with Point-type dsg data 
 
 	include 'tmap_dims.parm'
 	include 'implicit.parm'
@@ -64,7 +65,7 @@
 
 * initialize
 
-* install the native grod for the source data
+* install the native grid for the source data
 	src_grid = KNOWN_GRID( cx_data_set(src_cx),
      .			       cx_category(src_cx),
      .			       cx_variable(src_cx))

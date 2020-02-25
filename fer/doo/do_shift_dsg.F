@@ -45,7 +45,7 @@
 * programmer - Ansley Manke
 * NOAA/PMEL, Seattle, WA - Science Data Integration Group
 * 2/2019
-
+* V76   1/20 *acm* Orientation of Point-type data set to e_dim
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
@@ -90,7 +90,7 @@
 
 * SUM
 
-	IF (idim .EQ. orientation) THEN 
+	IF (idim.EQ.orientation .AND. orientation.LE.t_dim) THEN 
 
 * *** true ragged array processing:
 * sum independently along each feature 
@@ -164,7 +164,8 @@
               
               val = com(ifeature+shf)
 	      res(ifeature) = val
-	      IF (val .EQ. bad_com) res(ifeature) = bad_res
+	      IF (val.EQ.bad_com .OR. val.EQ.dsg_masked_out_flag) 
+     .              res(ifeature) = bad_res
 		 
 
            ENDDO

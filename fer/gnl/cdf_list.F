@@ -2,7 +2,7 @@
      .			      mr_list, cx_list, title, enhead, mode,
      .			      clobber, edges_flag, do_bounds, 
      .			      keepax_flag, out_type, quiet, as_global,
-     .			      usr_maxstrlen, status )
+     .			      usr_maxstrlen, do_coords, status )
 
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -144,6 +144,7 @@
 * V751 *acm* 6/19 Remove unused declarations
 * V751 *acm* 7/19 Ticket 1946: File with user-variable strings truncates strings appended later.
 *		  - Allow for the user to set a length for string-length dimension
+* V751 *acm*11/19 new qualifier SAVE/NOCOORDS
 * V7.6 *acm* 2/20 When save/asglobal, do not update the conventions or history
 
         IMPLICIT NONE
@@ -167,7 +168,7 @@
         include 'netcdf4_settings.cmn'
 
 * calling argument declarations:
-        LOGICAL         append, enhead, clobber, quiet
+        LOGICAL         append, enhead, clobber, do_coords, quiet
 	INTEGER		nvars, mr_list(nvars), cx_list(nvars), mode,
      .			edges_flag, keepax_flag, do_bounds, usr_maxstrlen, 
      .			status
@@ -366,7 +367,7 @@
 	  CALL CDF_LIST_DSG ( dset, cdfid, fname, append, nvars,
      .			     nfeatures, nobs, longest_feature,
      .			     mr_list, cx_list, title,
-     .			     out_type, quiet, status )
+     .			     out_type, quiet, do_coords, status )
 	   GOTO 5990  ! any error messages have been issued 
 	ENDIF
 
@@ -640,7 +641,7 @@
      .               netcdf4_type, xchunk_size, 
      .               ychunk_size, zchunk_size, tchunk_size, 
      .               deflate_lev, shuffle_flag, endian_code, buff2,
-     .               status )
+     .               do_coords, status )
 
            IF ( status .NE. merr_ok ) GOTO 5800
 	   
@@ -739,7 +740,7 @@
 *
 * write the deferred coordinates
 *
-	IF (.NOT.as_global) CALL CD_WRITE_DEFER_COORD( cdfid, status )
+	IF (.NOT.as_global .AND. do_coords) CALL CD_WRITE_DEFER_COORD( cdfid, status )
 	IF ( status .NE. merr_OK ) GOTO 5800
 *
 * write the variables
@@ -832,7 +833,9 @@
 	      CALL CD_WRITE_VAR (cdfid, dset_num, varcode, grid, 
      .                        write_lo, write_hi, memry(mr)%ptr, 
      .                        edges_flag, do_bounds, mode_upcase_output, 
-     .                        keepax_flag, user_var, ds_missing_flag(ivar), status )
+     .                        keepax_flag, user_var, ds_missing_flag(ivar), 
+     .                        do_coords, status )
+
 	   ENDIF
 
            IF ( status .NE. merr_ok ) GOTO 5800

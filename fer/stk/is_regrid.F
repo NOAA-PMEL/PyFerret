@@ -93,7 +93,7 @@
 * V720: 6/17 *acm* Ticket 2346: new @IIN regridding transform
 * V741  5/18 *acm* issue 1868: gridding transforms that will grid to same axis
 * V751  8/19 *acm* DSG-enabled Ferret, return an error if it's trajectory-to-grid
-*                  -- not implemented for now.
+*                  -- or point-to-grid; not implemented for now.
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -113,6 +113,7 @@
 
 * internal variable declarations:
 	LOGICAL	TM_ITS_CDF, TM_ITSA_DSG, ITSA_REGRID_FROM_DSG, ITSA_DSG_TRAJ,
+     .		ITSA_DSG_POINTS, 
      .		xy_regrid, valid, valid_y, has_impl_save, done_by_strides,
      .		itsa_string, its_res_dsg, its_from_dsg
 	INTEGER TM_DSG_DSET_FROM_GRID, TM_DSG_NFEATURES,
@@ -146,7 +147,12 @@
 	itsa_string = cx_type(com_cx) .EQ. ptype_string
 	res_grid = cx_grid(res_cx)
 	its_res_dsg  = TM_ITSA_DSG(res_grid)
-	its_from_dsg = ITSA_REGRID_FROM_DSG(res_cx)
+	its_from_dsg = ITSA_REGRID_FROM_DSG(res_cx)  
+	
+* point-type dsg grid with just its one axis can confuse the above settings.
+	IF (its_from_dsg .AND. its_res_dsg) THEN
+	   IF (ITSA_DSG_POINTS (res_cx) ) its_from_dsg = ITSA_REGRID_FROM_DSG(com_cx)
+	ENDIF
 
 * initialize DSG info if it will be needed
 * Not implementing trajectory-to-grid at this time...
@@ -159,6 +165,7 @@
 	IF (its_res_dsg .OR. its_from_dsg) THEN
 	   dset = TM_DSG_DSET_FROM_GRID(res_grid)
 	   IF (its_from_dsg .AND. ITSA_DSG_TRAJ (res_cx) ) GOTO 5030
+	   IF (its_from_dsg .AND. ITSA_DSG_POINTS (res_cx) ) GOTO 5040
 	   nobs = dsg_obs_dimlen(dset)
 	   nfeatures = TM_DSG_NFEATURES(res_grid)
 	ENDIF
@@ -510,6 +517,8 @@ c     .    .AND. cx_has_impl_grid(res_cx)
      .   //alg_regrid_code(rgrd_trans), *5000)
  5030	CALL ERRMSG( ferr_invalid_command, status,
      .		'Regridding DSG Trajectory data to grids is not implemented', *5000)
+ 5040	CALL ERRMSG( ferr_invalid_command, status,
+     .		'Regridding DSG Point data to grids is not implemented', *5000)
  5100	CALL DELETE_MRS_IN_PROGRESS
 	GOTO 5000
 	END	

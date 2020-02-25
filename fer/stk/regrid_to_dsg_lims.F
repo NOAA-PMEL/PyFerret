@@ -40,6 +40,7 @@
 * programmer - steve hankin
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 * V720 *sh* 5/17
+* V76  1/20 *acm* working with Point-type dsg data 
 
 	include 'tmap_dims.parm'
 	include 'implicit.parm'
@@ -58,7 +59,7 @@
 
 * internal variable declarations:
 	INTEGER	KNOWN_GRID, CGRID_AXIS, TM_LENSTR1, TM_DSG_DSET_FROM_GRID,
-     .		idim, src_var, src_cat, slen,
+     .		idim, src_var, src_cat, slen, orient,
      .		src_grid, dsg_grid, dsg_dset, xlate_grid
 	REAL*8	TDEST_CONVERT
 	CHARACTER*32 VAR_CODE, vname
@@ -69,6 +70,8 @@
 	dsg_grid = cx_grid(dst_cx)
 	dsg_dset = TM_DSG_DSET_FROM_GRID(dsg_grid)
 	xlate_grid = dsg_xlate_grid(dsg_dset)
+	
+	orient = dsg_orientation(dsg_dset)
 
 * install the native grod for the source data
 	src_grid = KNOWN_GRID( cx_data_set(src_cx),
@@ -126,6 +129,13 @@
 	   CALL FLESH_OUT_AXIS( idim, src_cx, status )
 	   IF (status .NE. ferr_ok) GOTO 5000
 	ENDDO
+
+	IF (orient .EQ. e_dim) THEN
+	   cx_lo_ss(src_cx,orient) = unspecified_int4
+	   cx_hi_ss(src_cx,orient) = unspecified_int4
+	   cx_lo_ww(orient,src_cx) = unspecified_val8
+	   cx_hi_ww(orient,src_cx) = unspecified_val8
+	ENDIF
 
 * success
 	RETURN

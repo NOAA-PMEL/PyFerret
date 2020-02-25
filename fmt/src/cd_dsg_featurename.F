@@ -33,23 +33,25 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 * return a string with the feature-type name corresponding to the featuretype code
+* V76  1/20 *acm* Orientation of Point-type data set to e_dim
+
 
 #include "tmap_dset.parm"
 
 	INTEGER pfeatureType
       
-	CHARACTER*20 feattype(0:4)
+	CHARACTER*20 feattype(1:5)
 
-	DATA	feattype(0) / 'Point ' /,
-     .		feattype(1) / 'Trajectory ' /,
+	DATA	feattype(1) / 'Trajectory ' /,
      .		feattype(2) / 'Trajectoryprofile ' /,
      .		feattype(3) / 'Profile ' /,
-     .		feattype(4) / 'Timeseries' /
+     .		feattype(4) / 'Timeseries' /,
+     .		feattype(5) / 'Point ' /
 
 	CD_DSG_FEATURENAME = '***'
 
-	IF (pfeatureType.GE.pfeatureType_point .AND. 
-     .      pfeatureType.LE.pfeatureType_timeSeries) 
+	IF (pfeatureType.GE.pfeatureType_Trajectory .AND. 
+     .      pfeatureType.LE.pfeatureType_Point) 
      .     CD_DSG_FEATURENAME = feattype(pfeatureType)
 	
         RETURN

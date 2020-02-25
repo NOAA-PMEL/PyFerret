@@ -48,6 +48,7 @@
 *		   does not operate acros the subspan modulo void point
 *	   11/02 - change no_point to a very negative nalue (was -1)
 *        2/12 *kms* Add E and F dimensions (use nferdims in tmap_dims.parm)
+* V76   1/20 *acm* Orientation of Point-type data set to e_dim
 
 * Note:  this routine could be made simpler and faster by arranging single
 *        inner loops that looped "loop=1,edge" looking at index-loop and
@@ -103,7 +104,7 @@
 	dsg_coord_lm = cxdsg_coord_lm(orientation)
 
 * ****** PERFORM THE COMPUTATION *****
-	IF (idim .EQ. orientation) THEN 
+	IF (idim.EQ.orientation .AND. orientation.LE.t_dim) THEN 
 
 * *** true ragged array processing:
 
@@ -219,7 +220,8 @@
 * ... look forward for next valid point
 
 	         DO ii = i+1, flen
-                    IF ( com(ii+base) .NE. bad_com ) THEN
+                    IF ( com(ii+base).NE.bad_com .AND. 
+     .			 com(ii+base).NE.dsg_masked_out_flag) THEN
                        hi_pos = val
                        hi_pos = ii
                        EXIT  

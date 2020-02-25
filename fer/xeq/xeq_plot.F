@@ -133,6 +133,7 @@
 *                  /X= /Y= /Z= /T=  or with /E= or /M=
 * V751 7/19 *acm*  DSG-enabled Ferret: More control of line legends with PLOT/KEY and PLOT/NOKEY
 * V751 8/19 *acm*  DSG-enabled Ferret: argumemnt to ITSA_DSG_TRAJ is no longer a dummy
+* V76  1/20 *acm*  working with Point-type dsg data
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -164,7 +165,7 @@
 * calling argument declarations:
 
 * internal variable declarations:
-	LOGICAL		TM_HAS_STRING, ITSA_DSG_TRAJ,
+	LOGICAL		TM_HAS_STRING, ITSA_DSG_TRAJ, ITSA_DSG_POINTS, 
      .			overlay, transpz, versus,
      .			no_labels, set_up, noaxes, axes, use_line,
      .			is_logh, is_logv, nokey, no_data, no_range,
@@ -444,7 +445,7 @@ CC       => Set values here instead.
 * scatter plot; use PLOT/VS or PLOT/VS/RIBBON)
  
 	IF (grid_is_dsg) THEN
-	   IF (ITSA_DSG_TRAJ (is_cx(1)) ) THEN
+	   IF (ITSA_DSG_TRAJ (is_cx(1)) .OR. ITSA_DSG_POINTS (is_cx(1)) ) THEN
 	      IF (num_uvars_in_cmnd .EQ. 1) THEN  
 	         versus = .TRUE.
 	         ribbon_plot = .TRUE.

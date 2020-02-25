@@ -39,6 +39,7 @@
 
 * V720 *sh* 4/17
 * V745 *acm* 2/19 check that there's a grid defined before using it
+* V76  1/20 *acm* working with Point-type dsg data 
 
       include 'netcdf.inc'
       include 'tmap_errors.parm'
@@ -52,7 +53,7 @@
 	INTEGER grid
 
 * internal variable declarations
-	INTEGER line, dset, orientation
+	INTEGER line, dset, orientation, idim
 
 	TM_ITSA_DSG = .FALSE.
 	IF (grid .EQ. unspecified_int4) RETURN
@@ -81,6 +82,13 @@
 	ELSE
 	   TM_ITSA_DSG = .TRUE.    ! it's an observations grid
 	ENDIF
+
+	IF (orientation .EQ. e_dim) THEN
+	   DO idim = 1, t_dim 
+	      IF (grid_line(idim,grid) .NE. mpsnorm) TM_ITSA_DSG = .FALSE.
+	   ENDDO
+	ENDIF
+
 
 	RETURN
 

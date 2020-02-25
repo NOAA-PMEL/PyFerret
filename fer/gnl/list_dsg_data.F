@@ -50,6 +50,7 @@
 * V75+ 4/19 *acm* Changes to SUBSET listing in header
 * V751 7/19 *acm* Changes to units and transforms listed in the header for all vars.
 * V751 7/18 *acm* Call single routine for DSG feature-type names
+* V76  1/20 *acm* Point-type DSG datasets do not have a feature-id variable
 
         include 'netcdf.inc'
 	include 'tmap_dims.parm'
@@ -75,8 +76,9 @@
              
 
 * internal variable declarations:
-	LOGICAL process_feature(nfeatures), process_obs(nobs), its_dsg, 
-     .		has_mask, norow
+	LOGICAL  ITSA_DSG_POINTS, 
+     .		process_feature(nfeatures), process_obs(nobs), its_dsg, 
+     .		has_mask, norow, its_point_data, do_blank
 	LOGICAL instance_coord(4), relevant_coord(4),
      .		instance_var(nvar), point_var(nvar), 
      .		instance_vars_only, point_vars_only, 
@@ -135,9 +137,12 @@
 	IF (.NOT. its_dsg) GOTO 5200
 	row_size_lm = dsg_loaded_lm(dsg_row_size_var(dset))
 
+	its_point_data = ITSA_DSG_POINTS(cx)
+	IF (its_point_data) orientation = pfeatureType_Point
+
 	feature_idname = 'feature'
 
-	IF (orientation.GE.pfeatureType_point .AND.  orientation.LE.pfeatureType_timeSeries) THEN
+	IF (orientation.GE.pfeatureType_Trajectory .AND. orientation.LE.pfeatureType_Point) THEN
 	   strbuff = CD_DSG_FEATURENAME(orientation)
 	   feature_idname = strbuff(:tm_lenstr1(strbuff)) // '-id'
 	ENDIF
@@ -164,14 +169,28 @@
 	instance_vars_only = .TRUE.   ! a hack to list instance vars only
 	ftr_label = .TRUE.
 
-	DO ivar = 1, nvar
-	   cx = cx_list(ivar)
-	   grid = cx_grid(cx)
-	   instance_var(ivar) = DSG_WHATS_IT(grid) .EQ. pdsg_instance
-	   point_var(ivar) = CGRID_SIZE(cx) .EQ. 1
-	   IF (.NOT.point_var(ivar)   ) point_vars_only    = .FALSE.
-	   IF (.NOT.instance_var(ivar)) instance_vars_only = .FALSE.
-	ENDDO
+
+* Point-type data has its length along the E axis
+	IF (orientation .EQ. pfeatureType_Point) THEN
+	   point_vars_only = .FALSE.
+	   instance_vars_only = .FALSE.
+	   ftr_label = .FALSE.
+	   DO ivar = 1, nvar
+	      point_var(ivar) = CGRID_SIZE(cx) .EQ. 1
+	   ENDDO
+
+	ELSE
+
+	   DO ivar = 1, nvar
+	      cx = cx_list(ivar)
+	      grid = cx_grid(cx)
+	      instance_var(ivar) = DSG_WHATS_IT(grid) .EQ. pdsg_instance
+	      point_var(ivar) = CGRID_SIZE(cx) .EQ. 1
+	      IF (.NOT.point_var(ivar)   ) point_vars_only    = .FALSE.
+	      IF (.NOT.instance_var(ivar)) instance_vars_only = .FALSE.
+	   ENDDO
+
+	ENDIF
 
 ********** as in list_multi ***
 
@@ -246,8 +265,10 @@
 
 * The varid of the feature-id variable
  
-	line_buff = SANITARY_VAR_CODE(cat_file_var, dsg_feature_var(dset) )
-	CALL CD_GET_VAR_ID  (dset, line_buff, fvar_varid, status)
+	IF (orientation .NE. pfeatureType_Point) THEN
+	   line_buff = SANITARY_VAR_CODE(cat_file_var, dsg_feature_var(dset) )
+	   CALL CD_GET_VAR_ID  (dset, line_buff, fvar_varid, status)
+	ENDIF
 
 * which dimensions are relevant to show
 
@@ -276,6 +297,7 @@
 	   CALL MAKE_DSG_FEATURE_MASK(dset, cx, process_feature, nfeatures)
 	ENDIF
 	IF (norow) ftr_label = .FALSE.
+	IF (orientation .EQ. pfeatureType_Point) ftr_label = .FALSE.
 
 * Header
 
@@ -369,9 +391,12 @@
 	   vname_buff = VAR_CODE( cat_file_var, dsg_feature_var(dset))
 	   risc_buff = ' '
 
-	   WRITE ( risc_buff, FMT ) 
+
+	   IF (orientation .NE. pfeatureType_Point) THEN
+	      WRITE ( risc_buff, FMT ) 
      .           vname_buff(:vname_len), feature_idname(:TM_LENSTR1(feature_idname))//'-id'
-	   IF (.NOT.norow) CALL SPLIT_LIST(pttmode_explct, list_lun, risc_buff, 0)
+	      IF (.NOT.norow) CALL SPLIT_LIST(pttmode_explct, list_lun, risc_buff, 0)
+	   ENDIF
 
 	   DO ivar = 1, nvar
 	      cx = cx_list(ivar)
@@ -444,6 +469,7 @@
 	IF (.NOT.norow) THEN
 	   
 	   strbuff =  VAR_CODE( cat_file_var, dsg_feature_var(dset))
+	   IF (orientation .EQ. pfeatureType_Point) strbuff = ' '
 	   clen = TM_LENSTR1(strbuff)
 
 	   line_buff = '    FEATURE  '//strbuff(:clen)
@@ -495,13 +521,15 @@
 * ... loop over the features
 	DO ifeature = 1, nfeatures 
 	   nobs = dsg_linemem(row_size_lm)%ptr(ifeature)  ! feature length
+	   IF (orientation .EQ. pfeatureType_Point) nobs = 1
 
 * ... have the user's constraints removed this feature?
 	   IF (.NOT.process_feature(ifeature)) GOTO 500
 
 	   IF ((heading .OR. base.GT.0) .AND. .NOT.norow) THEN
-	   IF (.NOT.point_vars_only .AND. .NOT.instance_vars_only)
-     .        CALL SPLIT_LIST(pttmode_explct, list_lun, ' ', 1)
+	      do_blank = (.NOT.point_vars_only .AND. .NOT.instance_vars_only)
+	      IF (orientation .EQ. pfeatureType_Point) do_blank = .FALSE.
+	      IF (do_blank) CALL SPLIT_LIST(pttmode_explct, list_lun, ' ', 1)
 	   ENDIF
 
 * ... each line starts with the feature number and Feature ID

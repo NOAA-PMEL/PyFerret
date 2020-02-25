@@ -37,6 +37,7 @@
 * Find the featureType attribute and return the feature-type information
 * for the dataset
 * V751 8/18 *acm* don't issue a note if the file has featureType="grid"
+* v76  2/20 *acm* add handling of Point feature-type
 
 
         include 'netcdf.inc'
@@ -54,7 +55,7 @@ c	include 'tmap_dims.parm'
 	INTEGER STR_CASE_BLIND_COMPARE, varid, attlen, maxlen
 	CHARACTER buff*32
 
-	ftype = pfeatureType_point
+	ftype = pfeatureType_Point
 	orientation = no_dim
 	dsg_ragged = .FALSE.
 	maxlen = 32
@@ -65,17 +66,23 @@ c	include 'tmap_dims.parm'
 	IF (.NOT. got_it) RETURN
 
 	IF (STR_CASE_BLIND_COMPARE(buff,"timeseries") .EQ. str_match) THEN
-	   ftype = pfeatureType_timeSeries
+	   ftype = pfeatureType_TimeSeries
 	   orientation = t_dim		! T axis
 	   dsg_ragged = .TRUE.
 
 	ELSEIF (STR_CASE_BLIND_COMPARE(buff,"profile") .EQ. str_match) THEN
-	   ftype = pfeatureType_profile
+	   ftype = pfeatureType_Profile
 	   orientation = z_dim		! Z axis
 	   dsg_ragged = .TRUE.
 
 	ELSEIF (STR_CASE_BLIND_COMPARE(buff,"trajectory") .EQ. str_match) THEN
 	   ftype = pfeatureType_Trajectory
+	   orientation = x_dim		! X axis (arbitrarily)
+	   dsg_ragged = .TRUE.
+
+
+	ELSEIF (STR_CASE_BLIND_COMPARE(buff,"point") .EQ. str_match) THEN
+	   ftype = pfeatureType_Point
 	   orientation = x_dim		! X axis (arbitrarily)
 	   dsg_ragged = .TRUE.
 

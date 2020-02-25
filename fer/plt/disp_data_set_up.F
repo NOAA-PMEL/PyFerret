@@ -65,6 +65,7 @@
 *                  "PLOT var" if it's a DSG trajectory set. Allow color-by-Feature-id.
 * V74+ 7/18 *acm*  DSG trajectory plots colored by ID even if its a string 
 * V75+ 5/19 *acm*  DSG lon/lat plots of profile or timeseries datasets
+* V76  1/20 *acm* working with Point-type dsg data
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -130,7 +131,7 @@
 	    nfeatures = TM_DSG_NFEATURES( grid )	    
 	    CALL TM_DSG_FACTS( grid, idim, obsdimlen, fline )
 
-	    IF (idim .EQ. pfeatureType_Trajectory) THEN
+	    IF (idim.EQ.pfeatureType_Trajectory .OR. idim.EQ.pfeatureType_Point) THEN
 	       plot_vs = .TRUE.
 	    ELSE IF (.NOT. plot_vs) THEN
 	       typerr = (cx_type(cx) .EQ. ptype_string) 

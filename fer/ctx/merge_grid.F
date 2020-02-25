@@ -124,6 +124,7 @@
 *                 all-abstract (and the variable is a constant), do not add abstract 
 *                 axes to the merged grid.
 * v745 *acm* 3/19 Changes to the fix for ticket 2051 (issue 1323). It causes bug 1916.
+* V76  1/20 *acm* working with Point-type dsg data
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -149,7 +150,7 @@
 
 * local variable declarations
 	LOGICAL		INHERITED_LIMITS, ITSA_PURE_SUM_VAR, TM_ITSA_DSG,
-     .			ITSA_COMPATIBLE_DSG_GRID,
+     .			ITSA_COMPATIBLE_DSG_GRID, ITSA_DSG_POINTS,
      .			same, nest, expl_com_lim, abstgrid, normabst,
      .			var_is_const, its_dsg
 	INTEGER		CX_DIM_LEN, TM_LENSTR1, REGION_CLASS,
@@ -291,10 +292,11 @@
 ! storing that in mgrid_buff, a scratch grid used just locally in this routine.
 ! dsg_xlate_grid(dsg_dset) used to translate to world coords, but only for X,Y,Z,T
 
-	its_dsg = TM_ITSA_DSG(com_grd)
+	its_dsg = TM_ITSA_DSG(com_grd) !!.AND. .NOT.ITSA_DSG_POINTS(com_cx)
 	IF (its_dsg) THEN
-	   IF (.NOT.ITSA_COMPATIBLE_DSG_GRID(mrg_grd, com_grd)) GOTO 5100
 	   dsg_dset = TM_DSG_DSET_FROM_GRID(com_grd)
+	   IF (ITSA_DSG_POINTS(com_cx)) com_grd = dsg_xlate_grid(dsg_dset)
+	   IF (.NOT.ITSA_COMPATIBLE_DSG_GRID(mrg_grd, com_grd)) GOTO 5100
 
 * Grid has XYZT directions - not just an instance grid?
 	   normabst = .TRUE.
@@ -317,8 +319,11 @@
 
 	      com_grd = mgrid_buff  ! dummy grid used just locally
 	   ENDIF
+	ELSE
+	   dsg_dset = cx_data_set(com_cx)
+	   IF (ITSA_DSG_POINTS(com_cx)) com_grd = dsg_xlate_grid(dsg_dset)
 	ENDIF
-
+	   
 * do we have nested user-defined variables ?
 	nest = cx_category( com_cx ) .EQ. cat_user_var
 	IF ( nest ) THEN

@@ -42,6 +42,8 @@
 * programmer - Ansley Manke
 *
 * V7.3+ *acm* 12/2017
+* V7.6  *acm* 11/2019  Allow for the possibility of 0 obs in a feature.
+*                      If this is the case, skip it.
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -166,6 +168,7 @@ c A message is written in PLOT_SET_UP
 
 	DO ifeature = 1, nfeatures 
 	   nobs = dsg_linemem(row_size_lm)%ptr(ifeature)  ! feature length
+	   IF (nobs .EQ. 0)  GOTO 222
 	   irow_l = irow_f + nobs - 1
 	   IF (.NOT.process_feature(ifeature)) GOTO 222
 	   iline = iline + 1

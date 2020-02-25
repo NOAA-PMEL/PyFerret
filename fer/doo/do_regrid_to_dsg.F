@@ -47,6 +47,7 @@
 * V751: *acm* 8/19 Handle regrids to timeseries or trajectory
 *                  where the grid doesn't have z but the DSG data does
 *                  and vice versa (untested). 
+* V76  1/20 *acm* working with Point-type dsg data 
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -82,7 +83,7 @@
 
 ! DSGTBD need to offer linear interpolation option
 !      as well as current point-in-box
-! DSGTBD need to handle modulo X and T input grids
+! DSGTBD need to check T input grids.  X modulo does work
 
 * initialize
 	src_grid = cx_grid(src_cx)
@@ -91,7 +92,7 @@
 	dst_grid = dsg_xlate_grid(dset)
 
 !	bad_src = cx_bad_data( src_cx )   ! not needed here but
-!	bad_dst = cx_bad_data( dst_cx )   ! will be needed for interpolation
+!	bad_dst = cx_bad_data( dst_cx )   ! would be needed for interpolation
 
 ! set up conversions between DSG times and the time axis of the source grid
 	CALL TDEST_WORLD_INIT(dst_grid, src_grid, t_dim, status)
@@ -101,18 +102,18 @@
 	row_size_lm = dsg_loaded_lm(dsg_row_size_var(dset))
 
 
-* if the orientation is trajectory or timeseries, and if only one of the source 
+* if the orientation is trajectory, timeseries, or point, and if only one of the source 
 * and destination grids has z coordinates then ignore it in the other. 
 
 	skipz = .FALSE.
 	orient = dsg_orientation(dset)
-	IF (orient .NE. z_dim) THEN 
+
+	IF (orient.NE.z_dim) THEN 
 	   IF ( (grid_line(z_dim,src_grid).NE.mnormal .AND. grid_line(z_dim,dst_grid).EQ.mnormal) .OR.
      .          (grid_line(z_dim,src_grid).EQ.mnormal .AND. grid_line(z_dim,dst_grid).NE.mnormal) ) THEN
-              skipz = .TRUE.
+	      skipz = .TRUE.
 	      buff = CD_DSG_FEATURENAME(orient)
-	      IF (grid_line(z_dim,src_grid).EQ.mnormal) CALL WARN ('Gridded data has no Z axis, but '//
-     .          buff(:TM_LENSTR1(buff))//' data does.  Ignoring the z coordinate')
+
 	      IF (grid_line(z_dim,dst_grid).EQ.mnormal) CALL WARN ('Gridded data has a Z axis, but '//
      .         buff(:TM_LENSTR1(buff))//' data does not. Use surface data from gridded dataset')
 	   ENDIF 
@@ -145,6 +146,7 @@
 * ... loop over the features
 	DO ifeature = 1, nfeatures 
 	   obs_in_feature = dsg_linemem(row_size_lm)%ptr(ifeature)
+	   IF (orient .EQ. e_dim) obs_in_feature = 1
 
 * ... have the user's constraints removed this feature?
 	   IF (.NOT.fmask(ifeature)) GOTO 500
@@ -168,8 +170,12 @@
 	   IF (skipz) ss(3) = m1loz
 
 * ... get observation-level mask for this feature
-	   CALL MAKE_DSG_OBS_MASK(dset, dst_cx, ifeature, base,
+	   IF (orient .EQ. e_dim) THEN
+	      process_obs(1) = .TRUE.
+	   ELSE
+	      CALL MAKE_DSG_OBS_MASK(dset, dst_cx, ifeature, base,
      .				  process_obs, obs_in_feature)
+	   ENDIF
 
 ! DSGTBD Performance optimization possible using a variation on ISUBSCRIPT
 ! ISUBSCRIPT is where the compute-intensive parts of this procedure occur. 
@@ -184,7 +190,8 @@
 	      IF (.NOT.process_obs(iobs)) CYCLE
 
 * ... get the obs-level subscripts in the source data
-	      DO idim = 1, 4
+	      IF (orient .NE. e_dim) THEN
+	        DO idim = 1, 4
 	         IF (idim.EQ.z_dim .AND. skipz) CYCLE
 	         IF ( sampled_ax(idim) ) THEN
 	            IF (cxdsg_is_obs_coord(idim)) THEN
@@ -197,7 +204,8 @@
 	               ENDIF
 	            ENDIF
 	         ENDIF
-	      ENDDO
+	        ENDDO
+	      ENDIF
 
 * ... pluck out the gridded source value and insert into the DSG output
 	      dst(ptr) = src(ss(1),ss(2),ss(3),ss(4),ss(5),ss(6))  
@@ -216,6 +224,5 @@
 * to the user than a STOP
  5000	RETURN
  5100	CALL ERRMSG( ferr_internal, status, 'DO_REGRID_TO_DSG', *5000)
-
 	END
 

@@ -52,7 +52,7 @@ union temp_time_agg, tmp/uagg_2.nc,tmp/uagg_3.nc,tmp/uagg_4.nc
 shade/l=2 sst - temp
 
 
-can dat/all; can var/all; can sym/all
+can dat/all; can var/all
 
 ! exercise 6D aggregations: UNION with T, E, and F simultaneously
 

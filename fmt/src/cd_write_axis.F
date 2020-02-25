@@ -138,6 +138,7 @@
 *                  possibly was reformatted
 * v751 *acm*  6/19 Allow for longer strings as attribute values
 * V751 *acm*  8/19 Issue 1947: If axis attr doesn't match grid direction, don't write it.
+* V751 *acm* 11/19 *acm* new qualifier SAVE/NOCOORDS
 
 * argument definitions:
 *     dset    - dset (if netcdf file, for getting name and attribute 
@@ -175,7 +176,7 @@
 #include "netcdf_declareUnderscore.inc"
 
 * argument declarations
-      LOGICAL recdim, mode_upcase_output, name_from_grid
+      LOGICAL recdim, mode_upcase_output, name_from_grid, dim_only
       INTEGER cdfid, dset, grid, idim, loss, hiss, ax_type, 
      .        edges_flag, keepax_flag, do_bounds, date_fmt_out, status
 
@@ -186,8 +187,8 @@
      .       ITSA_TRUEMONTH_AXIS,
      .       abstract, do_warn, got_modulo, got_calendar, got_units, 
      .       got_positive, got_spacing, got_axis, got_cartesian, got_it,
-     .       coordvar, do_off, do_scale, dim_only, true_month, is_regular,
-     .       write_mod
+     .       coordvar, do_off, do_scale, true_month, is_regular,
+     .       write_mod, dim_only_request
       PARAMETER (do_warn = .TRUE. )
       INTEGER TM_LENSTR1, CD_AXLEN, STR_SAME, STR_DNCASE, TM_LENSTR,
      .        dimid, iaxis, axid, cdfstat, lo, hi,
@@ -196,7 +197,7 @@
      .        cal_id, varid, llen, vartype, nvdims, nvatts, iatt, 
      .        attype, attlen,attoutflag, istat, maxlen, vdims(8), 
      .        newid, all_outflag, attid, dset_num, outtype, axis_packed, 
-     .        dlen, vlen, iset
+     .        dlen, vlen, iset, dim_status
       REAL vals(100)
 
 !      LOGICAL condensed
@@ -217,10 +218,11 @@
 * initialize
       iaxis = grid_line(idim, grid)
       dset_num = dset
-      dim_only = .FALSE.
       true_month = ITSA_TRUEMONTH_AXIS(iaxis)
       is_regular = line_regular(iaxis) .AND. .NOT.true_month 
       cal_id = 1
+
+      dim_only_request = dim_only
 
       IF (true_month) THEN
          cal_id = TM_GET_CALENDAR_ID ( line_cal_name(iaxis) )
@@ -304,14 +306,20 @@
 * Is it just a dimension, not a coordinate variable
 
       buff = CD_AXIS_OUTNAME( dset_num, grid, idim, llen )
-      CALL CD_DIM_ONLY (cdfid, buff, llen, dim_only)
-      IF (dim_only) THEN
-         name = buff
-         GOTO 1000  
-      ENDIF
-      CALL CD_DIM_ONLY (cdfid, name, llen, dim_only)
-      IF (dim_only .AND. ax_type.EQ.pcdf_full_span) GOTO 1000
 
+* Is it already in the file we're writing to?
+* If it's there as a coordinate variable then dim_only is false.
+* dim_status = 0 if dimension does not yet written
+*            = 1 if dimension exists but there is not a coordinate variable
+*            = 2 if dimension and coordinate variable are already in the file
+      
+      CALL CD_DIM_STATUS (cdfid, buff, llen, dim_status)
+      IF (dim_only_request .AND. dim_status.LT.2) THEN
+         dim_only = dim_only_request
+      ELSE
+         IF (dim_status .EQ. 2) dim_only = .FALSE.
+      ENDIF
+      
       cdfstat = NF_INQ_DIMID( cdfid, name(:nlen), dimid)
 
 * ... check the axis attribute for direction. If the name has already
@@ -323,9 +331,6 @@
 * already defined ? (limited consistency checking)
       IF ( cdfstat .EQ. NF_NOERR ) THEN
 
-* ... is there a coordinate variable by the same name ?
-         cdfstat = NF_INQ_VARID( cdfid, name(:nlen), axid )
-         IF ( cdfstat .NE. NF_NOERR ) GOTO 5300
 	 IF (.NOT. recdim) THEN 
             slen = CD_AXLEN( cdfid, dimid, status )
             IF ( status .NE. merr_ok ) GOTO 5900
@@ -436,11 +441,14 @@
       IF ( status .NE. merr_ok ) RETURN
 
 * define the dimension (if its just a dimension, will not write as a record axis)
-      IF ( recdim .AND. .NOT.line_dim_only(iaxis)) THEN
+      IF ( recdim .AND. .NOT.line_dim_only(iaxis) .AND. .NOT.dim_only) THEN
          cdfstat = NF_DEF_DIM( cdfid, name(:nlen), NF_UNLIMITED, dimid )
       ELSE
          cdfstat = NF_DEF_DIM( cdfid, name(:nlen), axlen, dimid )
       ENDIF
+      
+* checking. debugging.  npts should be 0, no records written yet.
+         cdfstat = NF_INQ_DIM ( cdfid, dimid, buff, npts )
 
       IF ( cdfstat .NE. NF_NOERR ) GOTO 5200
 
@@ -453,6 +461,8 @@
 
       IF (line_dim_only(iaxis) .AND. dset.GT.0 .AND.
      .    ax_type.EQ.pcdf_full_span) GOTO 1000
+
+      IF (dim_only) GOTO 1000
 
 * create the coordinate variable (12/92 -> double precision)
       cdfstat = NF_DEF_VAR(cdfid, name(:nlen), outtype, 1, dimid, axid)

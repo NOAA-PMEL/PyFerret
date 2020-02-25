@@ -49,6 +49,7 @@
 * V71 *acm* 12/16 this routine now performs accumulation, possibly continuing
 *                 over several chunks, so keep adding to the count in res(). 
 *                 Initialization and finalizing called separately from IS_TRANS
+* V76   1/20 *acm* Orientation of Point-type data set to e_dim
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
@@ -95,7 +96,7 @@
 
 
 * ****** PERFORM THE COMPUTATION *****
-	IF (idim .EQ. orientation) THEN
+	IF (idim.EQ.orientation .AND. orientation.LE.t_dim) THEN
 
 
 * *** true ragged array processing:

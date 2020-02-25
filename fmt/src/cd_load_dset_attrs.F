@@ -56,6 +56,7 @@
 * V741  6/18 *acm* Apply USE/Feature= for dsg files, if different from native featuretype
 *       7/18 *acm* More on use/feature. Allow /FEATURE=none. Use parameters for directions
 * V751 8/18 *acm* don't issue a note if the file has featureType="grid"
+* V76  1/20 *acm* Orientation of Point-type data set to e_dim
 
 * argument definitions:
 *       dset    - pointer to TMAP data set
@@ -154,14 +155,17 @@
      .                                   '.', maxlen, attlen, attoutflag, 
      .                                   cbuff32, val)
 	            IF     (STR_CASE_BLIND_COMPARE(cbuff32,"timeseries") .EQ. str_match) THEN
-	              dsg_feature_type(dset) = pfeatureType_timeSeries
+	              dsg_feature_type(dset) = pfeatureType_TimeSeries
 		       dsg_orientation(dset) = t_dim		! T axis
 	            ELSEIF (STR_CASE_BLIND_COMPARE(cbuff32,"profile") .EQ. str_match) THEN
-	              dsg_feature_type(dset) = pfeatureType_profile
+	              dsg_feature_type(dset) = pfeatureType_Profile
 		       dsg_orientation(dset) = z_dim		! Z axis
 	            ELSEIF (STR_CASE_BLIND_COMPARE(cbuff32,"trajectory") .EQ. str_match) THEN
 	               dsg_feature_type(dset) = pfeatureType_Trajectory
 		       dsg_orientation(dset) = x_dim		! X axis (arbitrarily)
+	            ELSEIF (STR_CASE_BLIND_COMPARE(cbuff32,"point") .EQ. str_match) THEN
+	               dsg_feature_type(dset) = pfeatureType_Point
+		       dsg_orientation(dset) = e_dim		! E axis 
 	            ELSEIF ( (STR_CASE_BLIND_COMPARE(cbuff32,"timeseriesprofile")
      .		           .EQ. str_match)
      .		    .OR.  (STR_CASE_BLIND_COMPARE(cbuff32,"trajectoryprofile")
@@ -182,7 +186,7 @@
 		       ELSE
 		          dsg_orientation(dset) = dsg_user_direction
 		          IF (dsg_orientation(dset) .GE. pfeatureType_Trajectory .AND.
-     .		              dsg_orientation(dset) .LE. pfeatureType_timeSeries)
+     .		              dsg_orientation(dset) .LE. pfeatureType_Point)
      .		           dsg_feature_type(dset) = dsg_orientation(dset)
 		       ENDIF
 		    ENDIF

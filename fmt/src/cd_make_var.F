@@ -5,7 +5,7 @@
      .                           netcdf4_type, xchunk_size, 
      .                           ychunk_size, zchunk_size, tchunk_size, 
      .                           deflate_lev, shuffle_flag, endian_code,
-     .                           stringdimname, status )
+     .                           stringdimname, do_coords, status )
 
 *
 *
@@ -98,6 +98,7 @@
 *                  direction write axis with a unique name for this direction.
 * v745 *acm* 12/18 Issue 1909, option to write dates in ISO8601 format
 * v751 *acm*  8/19 Issue 1946, allow for user-set string dimension length, SAVE/STRLEN
+* V751 *acm* 11/19 *acm* new qualifier SAVE/NOCOORDS
 
 * argument definitions:
 *     cdfid   - netCDF id number for already opened CDF file
@@ -138,7 +139,7 @@
 #include "netcdf_declareUnderscore.inc"
 
 * argument declarations
-      LOGICAL enhead, new, edges_flag, mode_upcase_output
+      LOGICAL enhead, new, edges_flag, mode_upcase_output, do_coords
       INTEGER cdfid, dset, type, maxstrlen, grid, lo(nferdims), hi(nferdims),
      .        recdim, keepax_flag, do_bounds, netcdf4_type, xchunk_size, 
      .        ychunk_size, zchunk_size, tchunk_size, 
@@ -180,6 +181,11 @@
       itsa_strvar = type .EQ. NF_CHAR
 
       new = cdfstat .NE. NF_NOERR
+      
+      DO idim = 1, nferdims
+         dim_only(idim) = .FALSE.
+         IF (.NOT.do_coords) dim_only(idim) = .TRUE.
+      ENDDO
 
 * already exists: limited consistency check - size of each axis, only
       IF ( .NOT.new ) THEN
@@ -257,6 +263,7 @@
      .                       gname,  edges_flag, do_bounds, 
      .                       mode_upcase_output, keepax_flag, 
      .                       date_fmt_out, status )
+
          IF ( status .NE. merr_ok ) RETURN
 
 * create child axes where this variable doesn't run full-span on an axis
@@ -276,6 +283,7 @@
 * 1/95 - create the full-span or sub-span axes as appropriate
          DO 260 idim = 1, nferdims
 	    dim_only(idim) = .FALSE.
+	    IF (.NOT.do_coords) dim_only(idim) = .TRUE. 
 	    IF ( grid_line(idim, grid) .NE. mpsnorm
      .      .AND. lo(idim) .NE. unspecified_int4     ) THEN
 	      IF (need_child(idim)) THEN
@@ -295,8 +303,6 @@
 	 IF (itsa_strvar) strdim = CD_WRITE_STRDIM(cdfid, maxstrlen, stringdimname, status)
          IF ( status .NE. merr_ok ) GOTO 5900
       ENDIF
-
-	
 
       do idim = 1, nferdims+1
 	 dimid(idim) = 0

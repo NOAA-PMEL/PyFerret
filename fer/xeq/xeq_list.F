@@ -167,6 +167,7 @@
 *                  /X= /Y= /Z= /T=  or with /E= or /M=
 * v751 *acm*  8/19 Issue 1946, allow for user-set string dimension length, SAVE/STRLEN
 * v751 *acm*  8/19 SAVE/APPEND to dsg datasets
+* v76  *acm* 11/19 New LIST/NOCOORDS to write dimensions only not coord vars. 
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -187,7 +188,7 @@
 * calling argument declarations:
 
 * local variable declarations
-	LOGICAL		is_secure, has_dsg
+	LOGICAL		is_secure, has_dsg, do_coords
 	LOGICAL		ITS_AUTO_CURVI, TM_ITSA_DSG_RAGGED,
      .			normal_file, fexist, heading, list_to_tty, do_multi,
      .			do_epic, do_cdf, do_unform, do_stream,
@@ -250,6 +251,7 @@
 	   IF ( status .NE. ferr_ok ) RETURN
            edges_flag = 0
            do_bounds = 0
+	   do_coords = .TRUE.
 	   keepax_flag = 0
 	   out_type = "DFLT"
 	   CALL CDF_LIST(  filename( 1:TM_LENSTR1(filename)), 
@@ -357,6 +359,14 @@
               edges_flag = 0
            ENDIF
         ENDIF
+
+* By default write coordinate variables, unless the user asks for /NOCOORDS
+
+* /NOCOORDS for netCDF ?
+        do_coords = .TRUE.
+        IF (qual_given( slash_list_nocoords ) .GT. 0) do_coords = .FALSE.
+        IF ((.NOT.do_coords) .AND. (.NOT. do_cdf)) CALL WARN(
+     .         '/NOCOORDS is valid only for NetCDF output. Ignored')	
 
 * get the requested data somehow
 * (leave the variables flagged as "in-use" 7/92)
@@ -486,6 +496,12 @@ c     .		 .AND. .NOT.do_comma_del
 	      CALL WARN
      .     ('/KEEP_AXISNAMES ignored. Inconsistent w/ enhanced heading.')
               keepax_flag = 0
+	   ENDIF
+* Enhanced heading is not consistent with /NOCOORDS flag
+	   IF (.NOT. do_coords) THEN
+	      CALL WARN
+     .     ('/NOCOORDS ignored. Inconsistent w/ enhanced heading.')
+              do_coords = .TRUE.
 	   ENDIF
 	      
 	ELSE
@@ -823,7 +839,8 @@ c     .		 .AND. .NOT.do_comma_del
      .                    list_at_eof, cdf_recax, nvars2list,
      .			  mr_perm, my_cx, buff, head_enh,
      .			  pcdf_mode_normal, clobber, edges_flag, do_bounds,
-     .                    keepax_flag, out_type, quiet, as_global, usr_maxstrlen, status )
+     .                    keepax_flag, out_type, quiet, as_global, 
+     .                    usr_maxstrlen, do_coords, status )
 
 * ASCII custom output for dsg-file data
 	ELSEIF ( has_dsg ) THEN

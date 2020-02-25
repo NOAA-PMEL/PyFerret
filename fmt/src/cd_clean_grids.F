@@ -72,6 +72,7 @@
 * V741  6/18 *acm* small cleanup: catch error on TM_ALLO_TMP_GRID
 * V751 10/19 *acm* Issue 1955: don't try to do the rename for the fix to ticket 2227
 *                  if the dimension name wasn't stored as a variable to begin with.
+* v7.6 2/2020 *acm* handling  files with dimensions that are not coordinate variables
 
 * argument definitions:
 *       dset    - pointer to TMAP data set
@@ -223,22 +224,23 @@
           vname = line_name(iaxis)
           len = TM_LENSTR1(vname)
           CALL CD_GET_VAR_ID (dset, vname, varid, status)
-          IF (status .NE. merr_ok) GOTO 400  ! dimension wasn't stored as a name
 
-          CALL CD_GET_VAR_INFO (dset, varid, vname, vartype, 
-     .            nvdims, vdims, nvatts, coordvar, outflag, status)
+          IF (status .EQ. merr_ok) CALL CD_GET_VAR_INFO (dset, varid, 
+     .           vname, vartype, nvdims, vdims, nvatts, coordvar, 
+     .            outflag, status)
 
 	  IF ( reused(iaxis) .NE. unspecified_int4 ) THEN
-	    line_name(iaxis) = char_init16   ! destroy new duplicate defn
-	    line_fixname(iaxis) = .FALSE.  
+            line_name(iaxis) = char_init16   ! destroy new duplicate defn
+            line_fixname(iaxis) = .FALSE.  
             
             buff = line_name(reused(iaxis))
 
-            IF (status .EQ. merr_ok .AND. 
-     .          STR_SAME(vname, buff) .NE. 0) THEN
+            IF (status .NE. merr_ok) THEN   ! If it's a Dimension, rename it
 
                CALL CD_GET_DIM_ID (dset, vname, dimid)
                CALL CD_RENAME_DIM (dset, dimid, buff, status)
+
+	    ELSE
                IF (nvdims.EQ.1) CALL CD_RENAME_VAR (dset, varid, buff, status)
                
 * Replace or add the orig_file_axname attribute
@@ -257,7 +259,9 @@
             ENDIF
 
           ELSEIF ( line_fixname(iaxis) ) THEN
+
             CALL TM_NEW_LINE_NAME( line_name(iaxis), buff )
+
             line_name(iaxis) = buff
 
             IF (status .EQ. merr_ok .AND. 
@@ -265,6 +269,7 @@
 
                CALL CD_GET_DIM_ID (dset, vname, dimid)
                CALL CD_RENAME_DIM (dset, dimid, buff, status)
+	       
                IF (nvdims.EQ.1) CALL CD_RENAME_VAR (dset, varid, buff, status)
 
 * Replace or add the orig_file_axname attribute
@@ -292,6 +297,7 @@
            CALL CD_GET_DS_DIMS( dset, ds_time_axis(dset), vname, 
      .                          npts, istat )
            ds_time_axis(dset) = TM_GET_LINENUM( vname )
+
         ENDIF
 
 * For DSG dataset, create a coordinate translation grid

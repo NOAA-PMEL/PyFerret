@@ -37,6 +37,7 @@
 * NOAA/PMEL, Seattle, WA - SDIG group
 * revision 0.0 - 9/16
 * For Ticket 2459
+* v7.6 2/2020 *acm* write files with dimensions that are not coordinate variables
 
 * Given cdfid for an open netCDF file we are writing, the dimension direction,
 * and an axis name, return the name for writing, perhaps with a direction 
@@ -55,7 +56,7 @@
 	INTEGER cdfstat, cdfid, idim, nlen
 	CHARACTER*(*) name
 
-	INTEGER   cvarid, local_status
+	INTEGER   cvarid, local_status, dimid
 	CHARACTER buff*5, axis_dir*1
 
 
@@ -82,7 +83,15 @@
 
 	local_status = NF_INQ_VARID( cdfid, name(:nlen), cvarid)
 
-	IF (local_status .EQ. NF_NOERR) cdfstat = NF_NOERR
+	IF (local_status .EQ. NF_NOERR) THEN
+	   cdfstat = NF_NOERR
 
+* or, is it a dimension but not a coordinate variable?
+
+	ELSE
+	   local_status = NF_INQ_DIMID( cdfid, name(:nlen), dimid)
+	   IF (local_status .EQ. NF_NOERR) cdfstat = NF_NOERR
+	ENDIF
+	   
 	RETURN
 	END

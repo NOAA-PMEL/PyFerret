@@ -1,7 +1,8 @@
 	SUBROUTINE CD_WRITE_VAR ( cdfid, dset, vname, grid, lo,
      .                            hi, dat, edges_flag, do_bounds, 
      .                            mode_upcase_output, 
-     .                            keepax_flag, user_var, fer_bad, status )
+     .                            keepax_flag, user_var, fer_bad, 
+     .                            do_coords, status )
 
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -88,6 +89,7 @@
 * v73+ *acm* 12/2017 Issue # 1846, writing user-variables with scale_factor, add_offset
 * V74  *acm*  2/2018 Issue # 1861, handling missing- and _FillValue with scale and offset
 * V74  *acm*  7/2018 Issue # 1882, save/append with bounds and irreg data
+* V751 *acm* 11/19 *acm* new qualifier SAVE/NOCOORDS
 
 * argument definitions:
 *     cdfid   - netCDF id number for already opened CDF file
@@ -119,7 +121,7 @@
 #include "netcdf_declareUnderscore.inc"
 
 * argument declarations
-      LOGICAL mode_upcase_output
+      LOGICAL mode_upcase_output, do_coords
       INTEGER cdfid, dset, grid, lo(nferdims), hi(nferdims), 
      .        edges_flag, do_bounds, keepax_flag, status
       CHARACTER*(*) vname
@@ -138,7 +140,8 @@
       INTEGER*8 rqst_size
       LOGICAL CD_GET_BOUNDS, TM_ABSTRACT_AXIS, TM_DFPEQ, CD_GET_ATTVAL, 
      .        MATCH_NAME, ITSA_TRUEMONTH_AXIS,
-     .        got_it, scaled, writebounds, do_warn, true_month, user_var
+     .        got_it, scaled, writebounds, do_warn, true_month,user_var,  
+     .        ldo(nferdims)
       CHARACTER*13 TM_STRING
       CHARACTER*1  dimnam(nferdims)
       DATA  	   dimnam/'I','J','K','L','M','N'/
@@ -164,6 +167,8 @@ c      EQUIVALENCE (r100_8, r100_4)
 * initialize
       vlen = TM_LENSTR1( vname )
       writebounds = do_bounds .GT. 0
+      IF (.NOT.do_coords) writebounds = .FALSE.
+
       DO idim = 1, nferdims
          count(idim) = 0
       ENDDO
@@ -205,11 +210,30 @@ c      EQUIVALENCE (r100_8, r100_4)
       got_it = CD_GET_BOUNDS( cdfid, varid, slab_min, slab_max,
      .                        tmrecax, status )
       IF ( status .NE. merr_ok ) GOTO 5900
-    
+
+
+* Generic bounds -- if not writing coordinates at all this will be just 1 thru npts
+
+      IF (.NOT. do_coords) THEN
+         DO idim = 1, nferdims
+	    ldo(nferdims) = line_dim_only(grid_line(idim,grid))
+	    line_dim_only(grid_line(idim,grid)) = .TRUE.
+	 ENDDO
+      ENDIF
+
+
       IF (.NOT.got_it) CALL CD_GET_GENERIC_BOUNDS
      . ( cdfid, varid, grid, lo, slab_min, slab_max, tmrecax, status )
 
       IF ( status .NE. merr_ok ) GOTO 5900
+      
+* restore line_dim_only
+
+      IF (.NOT. do_coords) THEN
+         DO idim = 1, nferdims
+	    line_dim_only(grid_line(idim,grid)) = ldo(nferdims) 
+	 ENDDO
+      ENDIF
 
 * special check for abstract axes (kludge!) - length, only
 * if i=5:15 overwrites i=1:10 it will be detected but
@@ -288,6 +312,11 @@ c               slab_max(idim) = hi(idim)
      .               status )
 
          IF ( status .NE. merr_ok ) GOTO 5900
+	 IF (.NOT. do_coords) GOTO 400
+
+	 
+         iaxis = grid_line(tmrecax, grid)
+	 IF (line_dim_only(iaxis)) GOTO 400
 
 * RESET flag: need to adjust box limits and possibly add a void point between the 
 * last cell of the existing axis and the lower bound of the axis being appended
@@ -492,7 +521,7 @@ c               slab_max(idim) = hi(idim)
 *xxxx   Never scale the missing flag: instead we read data, insert the default missing-flag
 *xxxx   for internal use in computing etc, and then on output restore the
 *xxxx   packing, and the incoming missing-data flag.
-*XXXXXXXXXXXXXXXX OLD BEHAVIOR*XXXXXXXXXXXXXXXX
+*XXXXXXXXXXXXXXXX OLD BEHAVIOR was XXXXXXXXXXXXXXXX
 * Scale the bad data too... on input to netCDF we scale all the data,
 * compute the missing flag for internal use as indat*inscale + inoff
 * and insert that internal missing flag.
@@ -500,7 +529,9 @@ c               slab_max(idim) = hi(idim)
 * To write scaled data, scale all of it by ferretdat(1./inscale) - (inoff/inscale)
 * the scaling to be used is sent into this routine.
 
-*XXXXXXXXXXXXXXXX OLD BEHAVIOR*XXXXXXXXXXXXXXXX
+*XXXXXXXXXXXXXXXX OLD BEHAVIOR above XXXXXXXXXXXXXXXX
+
+ 400  CONTINUE
 
       scaled = .FALSE.
       r_offset = 0.

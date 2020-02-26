@@ -239,5 +239,3 @@
      .   'Regrid from point data not allowed. Instead try USE/FEATURE=NONE ', *5000)
         END
 
-	END
-

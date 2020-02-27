@@ -119,6 +119,8 @@
 * v742 7/18 *acm* add .agg to the error message when file not found.
 * v741 6/18 *acm*  Initializing data, apply /FEATURE= for dsg datsets here
 *      7/18 *acm*  If datset is already open then USE/FEATURE= is invalid.
+* v76  2/20 *acm*  If the specified /FEATURETYPE doesn't change the current setting 
+*                  then do not reinitialize the dataset
 
 * arguments:
 *	dset_name	- filename of DESCRIPTOR file (input)
@@ -173,7 +175,7 @@
 	INTEGER 	TM_LENSTR, TM_LENSTR1, STR_SAME, STR_UPCASE, ic, du
 	LOGICAL		TM_HAS_STRING, CD_DSG_FEATURE_OK, match, ok_share_taxis,
      .			opened, got_lun, dods_url, nocache,
-     .                  explicit_ext, cdfid
+     .                  explicit_ext, cdfid, same_feat
 	DATA		known_type/'  GT','  TS','  MC','  MG','  MT'/
 	DATA		format_rev/'  1C',
      .				   '  1A',
@@ -371,7 +373,20 @@
 * If so, re-initialize the dataset with that type (First should check to see
 * that this is going to be a legal reset.)
 
-	         IF (dsg_user_direction .NE. int4_init) THEN
+* For DSG datasets, did they set a /FEATURETYPE?
+
+* If the specified /FEATURETYPE doesn't change the current setting we are done
+
+		 IF (dsg_user_direction .NE. int4_init) THEN
+		    same_feat = dsg_user_direction .EQ. dsg_orientation(dset_num)
+		    IF (dsg_user_direction.EQ.no_dim .AND. 
+     .	              dsg_orientation(dset_num).EQ.int4_init) same_feat = .TRUE.
+		    IF (same_feat) GOTO 9999
+		 ENDIF
+
+* If feature type has changed reinitialize the dataset using the new feature type. 
+
+		 IF (dsg_user_direction .NE. int4_init) THEN
 		    IF ( CD_DSG_FEATURE_OK (dset_num, dsg_user_direction) ) THEN
 		       du = dsg_user_direction
 	               CALL CANCEL_DATA_SET( dset_num, status )  

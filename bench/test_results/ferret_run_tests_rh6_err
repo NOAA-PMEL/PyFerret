@@ -3958,13 +3958,47 @@ Executed by script: *** GO bn_set_axis_name.jnl ***
            *** NOTE: Bounds definition "lon_bnds" points to no existing axis
            *** NOTE: Ignoring BOUNDS attribute
            *** NOTE: dataset does not accept REMOTE variable definitions
- **netCDF error
-             NetCDF: file not found (OPeNDAP/netCDF Error code -90)
-             Data set: http://ferret.pmel.noaa.gov/nvods/thredds/dodsC/las/woa05_annual/data_ferret.pmel.noaa.gov_pmel_thredds_dodsC_data_PMEL_WOA05nc_annual_t00an1.nc.jnl
-shade/l=7/x=180:200/y=20:30 myvar
-Command file, command group, or REPEAT execution aborted
-ERROR RUNNING SCRIPT
-****** FERRET error: bn_let_remote.jnl failed ******
+           *** NOTE: dataset does not accept REMOTE variable definitions
+           *** NOTE: dataset does not accept REMOTE variable definitions
+           *** NOTE: dataset does not accept REMOTE variable definitions
+           *** NOTE: netCDF bounds variable definition error
+           *** NOTE: Bounds definition "time_bnds" points to no existing axis
+           *** NOTE: Ignoring BOUNDS attribute
+           *** NOTE: netCDF bounds variable definition error
+           *** NOTE: Bounds definition "depth_bnds" points to no existing axis
+           *** NOTE: Ignoring BOUNDS attribute
+           *** NOTE: netCDF bounds variable definition error
+           *** NOTE: Bounds definition "lat_bnds" points to no existing axis
+           *** NOTE: Ignoring BOUNDS attribute
+           *** NOTE: netCDF bounds variable definition error
+           *** NOTE: Bounds definition "lon_bnds" points to no existing axis
+           *** NOTE: Ignoring BOUNDS attribute
+           *** NOTE: dataset does not accept REMOTE variable definitions
+           *** NOTE: dataset does not accept REMOTE variable definitions
+           *** NOTE: dataset does not accept REMOTE variable definitions
+           *** NOTE: dataset does not accept REMOTE variable definitions
+           *** NOTE: dataset does not accept REMOTE variable definitions
+           *** NOTE: dataset does not accept REMOTE variable definitions
+           *** NOTE: netCDF bounds variable definition error
+           *** NOTE: Bounds definition "time_bnds" points to no existing axis
+           *** NOTE: Ignoring BOUNDS attribute
+           *** NOTE: netCDF bounds variable definition error
+           *** NOTE: Bounds definition "depth_bnds" points to no existing axis
+           *** NOTE: Ignoring BOUNDS attribute
+           *** NOTE: netCDF bounds variable definition error
+           *** NOTE: Bounds definition "lat_bnds" points to no existing axis
+           *** NOTE: Ignoring BOUNDS attribute
+           *** NOTE: netCDF bounds variable definition error
+           *** NOTE: Bounds definition "lon_bnds" points to no existing axis
+           *** NOTE: Ignoring BOUNDS attribute
+ **ERROR: command syntax: /REMOTE variable expression may not contain [d=
+DEFINE VARIABLE/DATA=1/remote rvar = t00an1[d=1,z=1:100@ave]
+Executed by script: *** GO bn_let_remote.jnl ***
+ **ERROR: command syntax: /REMOTE variable definition must also specify /D=
+DEFINE VARIABLE/remote rvar = t00an1[d=1,z=1:100@ave]
+Executed by script: *** GO bn_let_remote.jnl ***
+           *** NOTE: dataset does not accept REMOTE variable definitions
+           *** NOTE: dataset does not accept REMOTE variable definitions
 *** Running ferret script: bn691_bug_fixes.jnl
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -6622,6 +6656,11 @@ Executed by script: *** GO bn_dsg_save_uvars.jnl ***
  **ERROR: invalid command: Appending DSG variable to file that is not DSG or different featureType
 LIST/FORMAT=CDF/append/file=sail_copy.nc my_temp_data
 Executed by script: *** GO bn_dsg_save_uvars.jnl ***
+*** Running ferret script: bn_dsg_point_data.jnl
+ LISTing to file fake_model_vari.nc
+ **ERROR: invalid command: Regridding DSG Point data to grids is not implemented
+load sst[d=1,g=vari[d=2]]
+Executed by script: *** GO bn_dsg_point_data.jnl ***
 *** Running ferret script: bn751_bug_fixes.jnl
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory

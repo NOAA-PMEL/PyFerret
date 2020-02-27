@@ -10,3 +10,6 @@ GO err751_multiple_attrs
 
 GO bn_reset
 GO err751_show_members_brief
+
+GO bn_reset
+GO err751_use_feature

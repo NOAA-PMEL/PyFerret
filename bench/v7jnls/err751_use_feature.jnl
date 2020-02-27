@@ -1,0 +1,28 @@
+! err751_use_feature.jnl
+! 2/2020 ACM
+!  If we do a USE/FEATURE= but the feature-type setting
+!  is to be unchanged, do not reinitialize the file!
+
+use profile_dsg.nc
+sh data
+set var/name=sal_in sal
+sh data
+
+! no change to the file, the rename should still be in place.
+use/feature=profile profile_dsg.nc
+sh data
+stat sal_in
+
+
+cancel data/ all
+
+use/feature=none dsg_cross_prime
+set var/name=sst_in sst
+let/like=sst_in/d=1 sst = sst_in*3
+show data
+
+! After the same use/feature=none settin the
+! dataset-specific settings should be unchanged.
+use/feature=none dsg_cross_prime
+show data
+list sst_in, sst

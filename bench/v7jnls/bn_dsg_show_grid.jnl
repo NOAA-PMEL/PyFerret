@@ -1,0 +1,41 @@
+! bn_dsg_show_grid.jnl
+! 3/10/2020 SHOW GRID for dsg data summarizes the coordinate ranges 
+!           along with showing the simple grid obs-vs-E
+
+! Profile data
+use profile_dsg
+show data
+show grid sal
+can dat/all
+
+! Trajectory data
+use sail_2019
+show data
+show grid temp_ctd_rbr_mean
+can dat/all
+
+! Trajectory data as timeseries
+use /feature=time simple_traj_dsg
+show data
+show grid sst
+
+! Timeseries data
+use DSG_ERDDAP_pmelTao5daySst
+show data
+show grid t_25
+can dat/all
+
+! Point data
+use dsg_point_data
+show data
+show grid sst
+can dat/all
+
+! /FEATURE=none, grids are just the 1-D axes
+
+use/feature=none DSG_ERDDAP_pmelTao5daySst
+show data
+show grid t_25
+show grid array
+can dat/all
+

@@ -226,7 +226,7 @@ endif
 
 # 5/05 *acm* run tests of externally-linked external functions
 if ( $do_shared_obj == "y" ) then
-  ($fver < genjnls/bn_all_ef_shell.jnl >>$log_file) >>&$err_file
+  ($fver -gif < genjnls/bn_all_ef_shell.jnl >>$log_file) >>&$err_file
 endif
 
 # Append the ncdump output file to the log file
@@ -246,7 +246,7 @@ if (-e $HOME/.ferret) then
 endif
 
 cp -f ferret_startup $HOME/.ferret
-($fver  < genjnls/bn_startupfile_shell.jnl >> $log_file) >>& $err_file
+($fver -gif < genjnls/bn_startupfile_shell.jnl >> $log_file) >>& $err_file
 rm -f $HOME/.ferret
 
 if (-e keep.ferret) then 

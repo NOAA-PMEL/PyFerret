@@ -95,6 +95,8 @@
 * V751 7/18 *acm* Call single routine for DSG feature-type names
 * V751 8/18 *acm* List the coordinate ranges if DSG dataset
 * V76  1/20 *acm* working with Point-type dsg data 
+* V76  2/20 *acm* move the code for listin the DSG coordinate ranges
+*                 to its own routine, also called by SHOW GRID.
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -535,40 +537,14 @@
 
  400	CONTINUE
 
-* If the dataset is a DSG dataset, show the x, y , z range from the 
-* observarion variables.
+* If the dataset is a DSG dataset, show the x, y, z, t range for the 
+* observation variables.
 
-
-	IF ( full  .AND. grid_dsg) THEN
-	   CALL SPLIT_LIST(pttmode_explct, lun, ' ', 1)
-
-	   igrid =  dsg_xlate_grid(dset)
-	   ndec = 5
-	   
-	   DO idim = 1, z_dim
-	   	
-	      lo = TM_WORLD( 1, igrid, idim, box_middle )
-	      hi = TM_WORLD( line_dim(grid_line(idim, igrid)), igrid, idim, box_middle )
-	      IF (lo .EQ. unspecified_val8) CYCLE
-	   
-	      CALL TRANSLATE_TO_WORLD( lo, idim, igrid, ndec, line )
-	      dlen = TM_LENSTR1(line)
-	      line(dlen+1:) = ' to ' 
-	      
-	      CALL TRANSLATE_TO_WORLD( hi, idim, igrid, ndec, line(dlen+5:) )
-	      dlen = TM_LENSTR1(line)
-
-	      status = STR_DNCASE(long, axis_title(idim))
-
-	      CALL SPLIT_LIST(pttmode_explct, lun,
-     .			'  '//long(:TM_LENSTR1(long))//' range: '//line(:dlen), 0) 
-
-	   ENDDO
-	ENDIF
+	IF ( full  .AND. grid_dsg) CALL SHOW_DSG_RANGES ( dset, .FALSE., lun )
 
 * describe the time range (uses "grid" from last variable displayed)
 	taxis = ds_time_axis(dset)
-	IF ( full  .AND. grid_dsg) taxis = grid_line(t_dim, dsg_xlate_grid(dset))
+c	IF ( full  .AND. grid_dsg) taxis = grid_line(t_dim, dsg_xlate_grid(dset))
 
 * ... check among the static grids
         DO 500 grid = 1, max_grids
@@ -579,7 +555,7 @@
 	  IF ( grid_line(t_dim,grid) .EQ. taxis ) GOTO 520
 	GOTO 510
  515	grid = 1		!  internal error if we get here !!
- 520    IF ( full .AND. taxis.NE.mnormal
+ 520    IF ((.NOT.grid_dsg) .AND. full .AND. taxis.NE.mnormal
      .		  .AND. taxis.NE.unspecified_int4) THEN    ! bug fix: 3/94
 	   len = line_dim( taxis )
 	   lo = TM_WORLD( 1,   grid, t_dim, box_middle )

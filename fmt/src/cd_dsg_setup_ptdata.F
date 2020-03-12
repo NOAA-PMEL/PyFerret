@@ -39,6 +39,7 @@
 
 * Programmer Ansley Manke
 * NOAA/PMEL, Seattle, WA - SDIG
+* V76  *acm* 3/20 obs-axis for DSG point data does not need memory allocation
 
 * argument definitions:
 *       npts      - number of values to put into variable
@@ -92,12 +93,6 @@
 
 * flag that this is a DSG axis
 	line_dsg_dset(iaxis) = dset
-
-* Don't need to allocate memory for the synthesized Obs axis
-* just use the basic-axis (?)
-c        rqst_n = 1
-c        CALL TM_GET_LM_DYNMEM(rqst_n, stored_lm1, status)
-c        IF (status .NE. merr_ok) GOTO 5000
 
 * *** create the nominal obs (X) axis for the dataset
         axname = "ferObs"

@@ -125,6 +125,7 @@
 *                 axes to the merged grid.
 * v745 *acm* 3/19 Changes to the fix for ticket 2051 (issue 1323). It causes bug 1916.
 * V76  1/20 *acm* working with Point-type dsg data
+* V76  2/20 *acm* Regridding Point-type dsg data, restore value of com_grd before deallocating
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -678,6 +679,7 @@ c	   IF (.NOT. (normabst) .AND. var_is_const) GOTO 400
 	   IF ( mode_diagnostic )  CALL DIAG_OP
      .		('dealloc ', isact_class_impl_grid, com_grd, 0)
 	   cx_has_impl_grid(com_cx) = .FALSE.
+	   com_grd = cx_grid( com_cx )  ! if DSG, may have changed this
 	   CALL TM_DEALLO_DYN_GRID( com_grd )
 	ENDIF
 

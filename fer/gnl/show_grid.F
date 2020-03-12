@@ -73,7 +73,8 @@
 * V697  12/15 *acm* Changes to formatting the output that shows subsets
 * V7    acm  6/16 Ticket 2437: Deprecating mode_6d_lab. 
 *		  Adjust output to 6-D or 4-D grids
-* V751 6/19 *acm* For DSG data add  a header explaining the output
+* V751 6/19 *acm* For DSG data add a header explaining the output
+* V76  2/20 *acm* For DSG data add summary of the DSG coordinate ranges
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -92,9 +93,10 @@
 	INTEGER grid, cx, status
 
 * local variable declarations:
-	LOGICAL FOUR_D_GRID, TM_ITSA_DSG, its_dsg
-	INTEGER TM_LENSTR1, DSG_WHATS_IT, 
-     .		i, idim, listdims, uvar, dsg_orient, obsdimlen, feature_line, slen
+	LOGICAL FOUR_D_GRID, TM_ITSA_DSG, its_dsg, showing_grid
+	INTEGER TM_LENSTR1, DSG_WHATS_IT, TM_DSG_DSET_FROM_GRID,
+     .		i, idim, listdims, uvar, dsg_orient, obsdimlen, 
+     .		feature_line, slen, dset
 	CHARACTER TM_FMT*48, CD_DSG_FEATURENAME*20, buff*20
 
 	listdims = nferdims
@@ -104,7 +106,6 @@
 * Getting details about the grid of a user-variable
         uvar = -1
 	IF (uvgrid) uvar = is_uvar(isp)
-
 
 * For DSG grids, add DSG data type
 
@@ -119,6 +120,7 @@
 	      risc_buff = ' DSG Feature type '//  buff(:slen) 
 	      CALL SPLIT_LIST(pttmode_explct, show_lun, risc_buff, 0)
 	   ENDIF
+	   dset = TM_DSG_DSET_FROM_GRID( grid )
 
 	ENDIF
 
@@ -130,11 +132,18 @@
 	   WRITE ( risc_buff, 3000 )
 	ENDIF
 
+
 	CALL SPLIT_LIST(pttmode_explct, show_lun, risc_buff, 0)
 	DO 110 idim = 1, listdims
 	   CALL LINE_FACTS( show_lun, idim, grid, idim, uvar )
  110	CONTINUE
 
+
+* If the dataset is a DSG dataset, show the x, y, z, t range for the 
+* observation variables.
+
+	showing_grid = .TRUE.
+	IF (its_dsg) CALL SHOW_DSG_RANGES ( dset, showing_grid, show_lun )
 
 * list the data on any axis that has been especially requested
 *		via (eg.) /X=lo:hi or /X alone

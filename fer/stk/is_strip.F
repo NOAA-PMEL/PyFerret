@@ -83,9 +83,11 @@
 * V741 *acm* 6/18  Last bit of 1868: multi-D trans, if requested w/ some 
 *                  directions orthogonal to grid, those should be ignored
 * V751 *acm* 6/19 Remove unused declarations
+* V76  *acm* 3/20 Implementing regridding to point-type DSG data
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
+#   include "tmap_dset.parm"
 	include	'ferret.parm'
 	include	'errmsg.parm'
 	include	'interp_stack.parm'
@@ -462,6 +464,7 @@ c	   CALL TRANSFER_CONTEXT( hi_cx, lo_cx )
 	      CALL REGRID_TO_DSG_LIMS( lo_cx, hi_cx, status )
 	      IF ( status .NE. ferr_ok ) GOTO 5000
 	      axis = TM_DSG_ORIENTATION(grid)   ! really any old value ...
+	      IF (axis.EQ.pfeatureType_Point) axis = pfeatureType_Trajectory
 	      is_act ( lo_isp ) = isact_regrid
 	   ELSEIF (ITSA_REGRID_FROM_DSG(lo_cx)) THEN
 	      CALL REGRID_FROM_DSG_LIMS( lo_cx, hi_cx, status )

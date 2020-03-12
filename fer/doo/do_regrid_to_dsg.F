@@ -190,8 +190,7 @@
 	      IF (.NOT.process_obs(iobs)) CYCLE
 
 * ... get the obs-level subscripts in the source data
-	      IF (orient .NE. e_dim) THEN
-	        DO idim = 1, 4
+	      DO idim = 1, 4
 	         IF (idim.EQ.z_dim .AND. skipz) CYCLE
 	         IF ( sampled_ax(idim) ) THEN
 	            IF (cxdsg_is_obs_coord(idim)) THEN
@@ -204,8 +203,7 @@
 	               ENDIF
 	            ENDIF
 	         ENDIF
-	        ENDDO
-	      ENDIF
+	      ENDDO
 
 * ... pluck out the gridded source value and insert into the DSG output
 	      dst(ptr) = src(ss(1),ss(2),ss(3),ss(4),ss(5),ss(6))  

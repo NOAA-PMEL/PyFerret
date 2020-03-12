@@ -219,7 +219,7 @@ echo "Beginning at $now" >>&$log_file
 cp $log_file $err_file
 echo "Beginning at $now"
 
-($fver -gif -script genjnls/bn_all_shell.jnl >>$log_file) >>&$err_file
+($fver -script genjnls/bn_all_shell.jnl >>$log_file) >>&$err_file
 
 # check status before continuing *kob* 4/98
 if ($status) then

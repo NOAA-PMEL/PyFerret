@@ -52,9 +52,7 @@
 * V74+ 7/18 *acm* Better handling of grids of char variables
 * V76  1/20 *acm* Fix access to rowsize variable. 
 *                 Handle point datasets. 
-cc
 * V76  1/20 *acm* Orientation of Point-type data set to e_dim
-cc Does this need anything new if we change dsg_orientation to 5 for Point data?
 
 * argument definitions:
 *       dset        - TMAP data set pointer

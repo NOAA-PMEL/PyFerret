@@ -6729,6 +6729,7 @@ Executed by script: *** GO bn_dsg_save_uvars.jnl ***
  **ERROR: invalid command: Regridding DSG Point data to grids is not implemented
 load sst[d=1,g=vari[d=2]]
 Executed by script: *** GO bn_dsg_point_data.jnl ***
+*** Running ferret script: bn_dsg_show_grid.jnl
 *** Running ferret script: bn751_bug_fixes.jnl
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory

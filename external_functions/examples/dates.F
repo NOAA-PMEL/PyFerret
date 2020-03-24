@@ -188,9 +188,9 @@
 
       INTEGER i,  j,  k,  l,  m,  n
       INTEGER i1, j1, k1, l1, m1, n1
-      INTEGER taxnum, slen, idx, dim
+      INTEGER taxnum, slen, idx, dim, prec
       REAL*8 newtime
-      CHARACTER*20 datebuf
+      CHARACTER*32 datebuf
       CHARACTER*255 errtxt
 
       CALL ef_get_res_subscripts_6d(id, res_lo_ss, res_hi_ss, res_incr)
@@ -204,6 +204,17 @@
          GOTO 999
       ENDIF
       dim = T_AXIS
+
+* Include fractional seconds if they exist.
+* This could be made an argument if desired:
+*  1: year  (not working correctly at the time this was written)
+*  2: month-year  (not working correctly at the time this was written)
+*  3: day-month-year
+*  4: day-month-year hour
+*  5: day-month-year hour:minute
+*  6: day-month-year hour:minute:second
+*  7: day-month-year hour:minute:second.frac
+      prec = 7
 
 * Get the time axis coordinates
       CALL ef_get_coordinates(id, ARG1, T_AXIS, arg_lo_ss(T_AXIS, ARG1),
@@ -237,20 +248,7 @@
 *              Convert newtime into a date string.
 *              ef_get_axis_dates can work with an array of times,
 *              returning an array of date strings; here we just do one
-               CALL ef_get_axis_dates(id, ARG1, newtime, dim, 1, datebuf)
-
-*              Get the actual length of the string
-               DO 15 idx = 20, 1, -1
-                  IF ( datebuf(idx:idx) .NE. ' ' ) THEN
-                     slen = idx
-                     GOTO 25
-                  ENDIF
-  15           CONTINUE
-
-*              Empty string if we get here
-               slen = 0
-
-  25           CONTINUE
+               CALL ef_get_axis_dates(id, ARG1, newtime, dim, 1, prec, slen, datebuf)
 
             ELSE
 

@@ -55,6 +55,8 @@
 *                  a user may mis-type a coordinate variable name
 *                  The result is that child variables did not get deleted.
 * V7   *acm* 6/16 -The above fix needs to first check for string length.
+* V7   *acm* 3/20 -Issue 1969: the case-sensitive match for names in quotes
+*                  needs to be done on the incoming name not its upcased version.
 
 * include files
 #include "gt_lib.parm"
@@ -160,12 +162,12 @@
 	 slen = TM_LENSTR1(buff)
       ENDIF
 
-* If the name is in quotes, remove them and do a case-sensitive search
-* for the name.
+* If the name is in quotes, remove them, from the un-upcased version, and do a 
+* case-sensitive search for the name.
 
  500  slen = TM_LENSTR1( buff )
       IF (buff(1:1) .EQ. "'" .AND. buff(slen:slen) .EQ. "'" ) THEN
-         CALL TM_FTOC_STRNG( buff(2:slen-1), fhol, flen )
+         CALL TM_FTOC_STRNG( vname(2:slen-1), fhol, flen )
          status = NCF_GET_VAR_ID_CASE(dset_num, varid, fhol)
       ELSE
          CALL TM_FTOC_STRNG( buff(1:slen), fhol, flen )

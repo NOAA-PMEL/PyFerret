@@ -1,8 +1,6 @@
 *
 * tax_dayfrac.F
 *
-* Jing Y. Li 
-* May 4th 2006
 *
 * This function returns day fraction ([0,1]) specified by the first argument 
 * (variable containing time values) from the second argument (variable from 
@@ -118,8 +116,8 @@
 *                                            USER CONFIGURABLE PORTION |
 *                                                                      |
 *                                                                      V
-      CHARACTER*20 datebuf
-      INTEGER iyear, day_of_mon
+      CHARACTER*32 datebuf
+      INTEGER iyear, day_of_mon, prec, dlen
       INTEGER ihour, iminute, isec
       CHARACTER*3 cmon
       CHARACTER*80 err_msg
@@ -128,6 +126,9 @@
 
       INTEGER i,j,k,l
       INTEGER i1, j1, k1, l1
+
+*     'dd-MMM-yyyy HH:mm:ss' or 'yyyy-MM-dd HH:mm:ss' date format - this will fail if the latter
+      prec = 6
 
       CALL ef_get_res_subscripts(id, res_lo_ss, res_hi_ss, res_incr)
       CALL ef_get_arg_subscripts(id, arg_lo_ss, arg_hi_ss, arg_incr)
@@ -148,12 +149,8 @@
                 ddate = arg_1(i1,j1,k1,l1)
 
 *     Get the string-date for each time
-                CALL ef_get_axis_dates(id,ARG2,ddate,1,datebuf)
-*                print *, datebuf
-
-*     If datebuf is in form "DD-MON-YEAR HH:MM:SS". Read time.
+                CALL ef_get_axis_dates(id,ARG2,ddate,1,prec,dlen,datebuf)
                 READ (datebuf,120,err=900) ihour, iminute, isec
-
                 result(i,j,k,l)=(isec/3600.0+iminute/60.0+ihour)/24.0  
 
                 l1 = l1 + arg_incr(T_AXIS,ARG1)

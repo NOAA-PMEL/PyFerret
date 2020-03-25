@@ -1,9 +1,6 @@
 *
 * tax_datestring.F
 *
-* Jing Y. Li 
-* May 2006
-* 18-may-2006 ACM change to compare only the first 3 characters of the precision string.
 *
 * Returns string of dates 
 *
@@ -118,8 +115,8 @@
       INTEGER i, j, k, l
       INTEGER i1, j1, k1, l1
       INTEGER i3, j3, k3, l3
-      INTEGER rtype, slen
-      CHARACTER*20 datestring
+      INTEGER rtype, prec, dlen
+      CHARACTER*32 datestring
       CHARACTER*3 precistring
       REAL*8 ddate
 
@@ -137,9 +134,31 @@
 
 *     Get the output presicion (string)
       CALL ef_get_string_arg_element(id, ARG3, arg_3,
-     .     i3,j3,k3,l3,slen,precistring)
+     .     i3,j3,k3,l3,dlen,precistring)
 
       CALL LOWER(precistring)
+      IF (precistring .EQ. 'sec') THEN
+*         'dd-MMM-yyyy HH:mm:ss' or 'yyyy-MM-dd HH:mm:ss' date format
+          prec = 6
+      ELSE IF (precistring .EQ. 'min') THEN
+*         'dd-MMM-yyyy HH:mm' or 'yyyy-MM-dd HH:mm' date format
+          prec = 5
+      ELSE IF (precistring .EQ. 'hou') THEN
+*         'dd-MMM-yyyy HH' or 'yyyy-MM-dd HH' date format
+          prec = 4
+      ELSE IF (precistring .EQ. 'day') THEN
+*         'dd-MMM-yyyy' or 'yyyy-MM-dd' date format
+          prec = 3
+      ELSE IF (precistring .EQ. 'mon') THEN
+*         'MMM-yyyy' or 'yyyy-MM' date format
+          prec = 2
+      ELSE IF (precistring .EQ. 'yea') THEN
+*         'yyyy' date format
+          prec = 1
+      ELSE
+*         'dd-MMM-yyyy HH:mm:ss' or 'yyyy-MM-dd HH:mm:ss' date format
+          prec = 6
+      ENDIF
 
       i1 = arg_lo_ss(X_AXIS,ARG1)
       DO 400 i=res_lo_ss(X_AXIS), res_hi_ss(X_AXIS)
@@ -157,46 +176,9 @@
                  ddate =  arg_1(i1,j1,k1,l1)
 
 C     Get the string value of dates and put them in the result.
-                 CALL EF_GET_AXIS_DATES 
-     .                (id, ARG2, ddate, 1, datestring)
+                 CALL EF_GET_AXIS_DATES (id, ARG2, ddate, 1, prec, dlen, datestring)
+                 CALL EF_PUT_STRING (datestring, dlen, result(1,i,j,k,l))
 
-                 If(precistring .EQ. 'sec') THEN
-                     slen = 20
-                     CALL EF_PUT_STRING (datestring, slen,
-     .                    result(1,i,j,k,l))
-                 
-                 ELSE If(precistring .EQ. 'min') THEN
-                     slen = 17
-                     CALL EF_PUT_STRING (datestring(1:17), slen,
-     .                    result(1,i,j,k,l))
-
-                 ELSE If(precistring .EQ. 'hou') THEN
-                     slen = 14
-                     CALL EF_PUT_STRING (datestring(1:14), slen,
-     .                    result(1,i,j,k,l))
-
-                 ELSE If(precistring .EQ. 'day') THEN
-                     slen = 11
-                     CALL EF_PUT_STRING (datestring(1:11), slen, 
-     .                    result(1,i,j,k,l))
-
-                 ELSE IF(precistring .EQ. 'mon') THEN
-                     slen = 8
-                     CALL EF_PUT_STRING (datestring(4:11), slen,
-     .                    result(1,i,j,k,l))
-
-                 ELSE IF(precistring .EQ. 'yea') THEN
-                     slen = 4
-                     CALL EF_PUT_STRING (datestring(8:11), slen,
-     .                    result(1,i,j,k,l))
-
-                 ELSE
-                     slen = 20
-                     CALL EF_PUT_STRING (datestring, slen,
-     .                    result(1,i,j,k,l))
-
-                 ENDIF
-                 
                   l1 = l1 + arg_incr(T_AXIS,ARG1)
  100           CONTINUE
 

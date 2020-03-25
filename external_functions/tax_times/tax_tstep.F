@@ -1,8 +1,6 @@
 *
 * tax_year.F
 *
-* Jing Y. Li 
-* May 31 2006
 *
 * This function returns time step values
 *
@@ -117,8 +115,8 @@
 *                                            USER CONFIGURABLE PORTION |
 *                                                                      |
 *                                                                      V
-      CHARACTER*20 datebuf
-      INTEGER iyear, dayofmon, hour, minute, second
+      CHARACTER*32 datebuf
+      INTEGER iyear, dayofmon, hour, minute, second, prec, dlen
       CHARACTER*3 cmon
       CHARACTER*80 err_msg
       
@@ -138,6 +136,9 @@
       INTEGER i1, j1, k1, l1
       INTEGER i2, j2, k2, l2
 
+*     'dd-MMM-yyyy HH:mm:ss' or 'yyyy-MM-dd HH:mm:ss' date format
+      prec = 6
+
       CALL ef_get_res_subscripts(id, res_lo_ss, res_hi_ss, res_incr)
       CALL ef_get_arg_subscripts(id, arg_lo_ss, arg_hi_ss, arg_incr)
       CALL ef_get_bad_flags(id, bad_flag, bad_flag_result)
@@ -150,7 +151,7 @@
  
 *     Get the desired time origin
       CALL ef_get_string_arg_element(id, ARG2, arg_2,
-     .     i2, j2, k2, l2, slen, t0string)
+     .     i2, j2, k2, l2, dlen, t0string)
 
 *     Get time axis unit
       CALL ef_get_axis_info(id, ARG1, axname, axunits, bkw1, mod1, reg1)
@@ -170,17 +171,9 @@
                 ddate = arg_1(i1,j1,k1,l1)
 
 *     Get the string-date for each time
-                CALL ef_get_axis_dates(id,ARG1,ddate,1,datebuf)
-
-                print *, datebuf
-*     If datebuf is in form "DD-MON-YEAR HH:MM:SS". Read date.
-*                READ (datebuf,110,err=900) dayofmon, cmon, iyear
-*                READ (datebuf,120,err=900) hour, minute, second
-
+                CALL ef_get_axis_dates(id,ARG1,ddate,1,prec,dlen,datebuf)
                 tunit = axunits(4)
-
                 CALL time_since_t0(t0string,datebuf,tunit,timesincet0)
- 
                 result(i,j,k,l) = timesincet0
 
                 l1 = l1 + arg_incr(T_AXIS,ARG1)

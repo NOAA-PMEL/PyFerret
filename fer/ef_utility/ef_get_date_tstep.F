@@ -71,7 +71,7 @@
 *
 * Local definitions
         LOGICAL         ITSA_TRUEMONTH_AXIS, modulo
-	CHARACTER*30	SECS_TO_DATE, SECS_TO_DATE_OUT, buff
+	CHARACTER*30	SECS_TO_DATE_OUT, buff
 	CHARACTER*48	TM_FMT, buff2
 	CHARACTER*2     linedir
 	INTEGER		TM_GET_CALENDAR_ID, TM_LENSTR1,  
@@ -130,28 +130,22 @@
 * Convert to date
 
 	buff = SECS_TO_DATE_OUT(this_secs, cal_id, modulo, prec)
+*       SECS_TO_DATE_OUT has already dealt with only printing 
+*       the appropriate values for precision 1 to 6
+	date = buff
 
-* Select the requested precision
-	IF ( prec .GE. 6 ) THEN		! full precision
-	   date = buff
+* If fractional seconds are requested....
+	IF ( prec .GT. 6 ) THEN	
 	   IF (line_tunit(axis) .EQ. 1) THEN  ! Deal with fractional seconds
 	      val = AINT(tstep)
 	      IF (val .NE. tstep) THEN
 	         val = tstep - val
 	         buff2 = TM_FMT(val, 4, 16, nfrac)
 		 date = buff(:TM_LENSTR1(buff))//buff2(2:nfrac)
-		 precision = 7
 	      ELSE 
-	         IF ( prec .EQ. 7) date = buff(:TM_LENSTR1(buff))//'.0'
+	         date = buff(:TM_LENSTR1(buff))//'.0'
 	      ENDIF
 	   ENDIF
-
-	ELSEIF ( prec .GE. 3 ) THEN	! dd-mmm-$_...
-	   date = buff( :date_str_len(prec) )
-	ELSEIF ( prec .EQ. 2 ) THEN	! mmm-$_
-	   date = buff( 4:11 )	
-	ELSE				! $_
-	   date = buff( 8:11 )	
 	ENDIF
 
 	slen = TM_LENSTR1(date)
@@ -160,4 +154,4 @@
 * Finished
 	RETURN
 	END
-                      
+

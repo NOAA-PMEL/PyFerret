@@ -141,15 +141,14 @@
       INTEGER TM_LENSTR
       INTEGER i,  j,  k,  l
       INTEGER i1, j1, k1, l1
-      INTEGER slen,len1,len2,outlen,llen
+      INTEGER slen,len1,len2,outlen,llen,prec,dlen
 
       CHARACTER*48  TM_FMT, datestring, lonstr, latstr, ilab
       CHARACTER*256 lab, outstring
       REAL ddate
 
- 1100  FORMAT(i1)
- 1200  FORMAT(i2.2)
- 1300  FORMAT(i3.3)
+*     'dd-MMM-yyyy' or 'yyyy-MM-dd' date format
+      prec = 3
 
       CALL ef_get_res_subscripts(id, res_lo_ss, res_hi_ss, res_incr)
       CALL ef_get_arg_subscripts(id, arg_lo_ss, arg_hi_ss, arg_incr)
@@ -188,24 +187,10 @@ C     Get the string value of dates and put them in the result.
 	       latstr = TM_FMT(arg_2(i1,j1,k1,l1), 4, 5, len2)
 	          
                ddate = arg_3(i1,j1,k1,l1)
-               CALL EF_GET_AXIS_DATES (id, ARG4, ddate, 1, datestring)
+               CALL EF_GET_AXIS_DATES (id, ARG4, ddate, 1, prec, dlen, datestring)
                outstring = lab(:slen)//'_'//lonstr(:len1)//
-     .           'E_'//latstr(:len2) //'N_'//datestring(1:11)
+     .           'E_'//latstr(:len2) //'N_'//datestring(:dlen)
 
-cc Just use a sequence number...
-cc
-cc	       IF (arg_hi_ss(X_AXIS,ARG1) .LT. 10) THEN
-cc	          WRITE (ilab, 1100) i1
-cc		  llen = 1
-cc	       ELSEIF (arg_hi_ss(X_AXIS,ARG1) .LT. 100) THEN
-cc	          WRITE (ilab, 1200) i1
-cc		  llen = 2
-cc	       ELSEIF (arg_hi_ss(X_AXIS,ARG1) .LT. 1000) THEN
-cc	          WRITE (ilab, 1300) i1
-cc		  llen = 3
-cc	       ENDIF
-cc               outstring = lab(:slen)//'_'//ilab(:llen)
-     
 	       outlen = TM_LENSTR(outstring)
 	       CALL EF_PUT_STRING (outstring, outlen, result(1,i,j,k,l))
 

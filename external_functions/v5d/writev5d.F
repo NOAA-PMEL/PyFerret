@@ -902,13 +902,16 @@ C  Check number of columns and rows against Vis5D maxima.
       REAL*8 tax(MAXTIMES), ax_vals(*)
       INTEGER lasttime, thistime, lastdate, thisdate
 
-      INTEGER iyear, ihour, iminute, isec
+      INTEGER iyear, ihour, iminute, isec, prec, dlen
       CHARACTER*3 cmon
       INTEGER day_of_mon, day_of_year
-      CHARACTER*20 datebuf(MAXTIMES)
+      CHARACTER*32 datebuf(MAXTIMES)
       CHARACTER*(*) err_msg
 
       INTEGER timestamp(*), datestamp(*)
+
+*     'dd-MMM-yyyy HH:mm:ss' or 'yyyy-MM-dd HH:mm:ss' date format - this will fail if the latter
+      prec = 6
 
       ier = 1
 
@@ -991,7 +994,7 @@ C  Check number of columns and rows against Vis5D maxima.
 101      CONTINUE
 
          iarg = 1
-         CALL ef_get_axis_dates (id, iarg, tax, numtimes, datebuf)
+         CALL ef_get_axis_dates (id, iarg, tax, numtimes, prec, dlen, datebuf)
 
 *  Set up the datestamp and timestamp
 

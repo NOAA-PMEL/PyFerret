@@ -1,8 +1,6 @@
 *
 * tax_day.F
 *
-* Jing Y. Li 
-* May 4th 2006
 *
 * This function returns day specified by the first argument (variable 
 * containing time values) from the second argument (variable from which time 
@@ -120,14 +118,17 @@
 *                                            USER CONFIGURABLE PORTION |
 *                                                                      |
 *                                                                      V
-      CHARACTER*20 datebuf
-      INTEGER iyear, day_of_mon
+      CHARACTER*32 datebuf
+      INTEGER iyear, day_of_mon, prec, dlen
       CHARACTER*3 cmon
       CHARACTER*80 err_msg
       REAL*8 ddate
 
       INTEGER i,j,k,l
       INTEGER i1, j1, k1, l1
+
+*     'dd-MMM-yyyy' or 'yyyy-MM-dd' date format - this will fail if the latter
+      prec = 3
 
       CALL ef_get_res_subscripts(id, res_lo_ss, res_hi_ss, res_incr)
       CALL ef_get_arg_subscripts(id, arg_lo_ss, arg_hi_ss, arg_incr)
@@ -148,12 +149,8 @@
                   ddate = arg_1(i1,j1,k1,l1)
 
 *     Get the datebuf corresponding to time ddate for the variable ARG2
-                  CALL ef_get_axis_dates(id,ARG2,ddate,1,datebuf)
-*                  print *, datebuf
-                  
-*     If datebuf is in form "DD-MON-YEAR HH:MM:SS". Read date and time.
+                  CALL ef_get_axis_dates(id,ARG2,ddate,1,prec,dlen,datebuf)
                   READ (datebuf,110,err=900) day_of_mon, cmon, iyear
-     
                   result(i,j,k,l) = day_of_mon 
 
                   l1 = l1 + arg_incr(T_AXIS,ARG1)

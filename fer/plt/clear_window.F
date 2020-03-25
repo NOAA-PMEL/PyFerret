@@ -49,6 +49,7 @@
 * PyFr *kms*  1/12 "metafile" no longer closed since it is not a separate entity
 * PyFr *kms*  7/13 No need to delete segments when clearing the whole window
 *                  in PyFerret; FGD_GCLRWK deletes them all in PyFerret
+* V76  *acm* 3/20  issue 1970: Check the window is open before trying to CLEAR it
 
         IMPLICIT NONE
 	include 'plot_setup.parm'
@@ -61,8 +62,10 @@
 
 * internal variable declarations:
 
+	IF ( .NOT. wn_open(wid) ) RETURN
+
         CALL FGD_GQOPS (istate)
-*  mark segment as deleted
+
 	DO 200 ivp =  mvp_dflt, max_viewport
 	   vp_seg0(ivp) = 0
 	   vp_segn(ivp) = 0

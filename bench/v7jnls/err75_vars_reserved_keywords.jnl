@@ -1,0 +1,44 @@
+! err75_vars_reserved_keywords
+! Bug in attribute handling with renamed variable
+! Issue 1969 3/24/2020
+
+! The dataset has variables Z and t
+use reserved.nc
+show data/att
+
+can mode upcase
+
+! access attributes without renaming the variables.
+show attributes 't'
+show att 't'.att2
+show att 't'.units
+let myvar = 't'.att2
+list myvar/3
+
+show attributes 'Z'
+
+! Intentional error: The names in quotes are case-sensitive. 
+set mode ignore
+show attributes 'z'
+set mode/last ignore
+
+! saving all attributes to a filew
+set att/output=all 'Z'
+set att/output=all 't'
+
+save/clobber/i=1:2/file=a.nc 'Z' , 't'
+sp ncdump -h a.nc
+
+! The recommended way to deal with such variables is to rename
+! them making them easier to work with.
+set var/name=zee 'Z'
+show att zee
+
+set var/name=tee 't'
+sh att tee
+
+set attribute/output=all tee
+save/clobber/file=a.nc tee
+sp ncdump a.nc
+
+set mode/last upcase

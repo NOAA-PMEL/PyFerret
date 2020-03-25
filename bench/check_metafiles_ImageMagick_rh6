@@ -16,7 +16,7 @@ rm -f master*.ps
 rm -f bat*.plt*.ps
 
 set plt_files = ( bn*.plt dots.plt flowlines.plt graticules.plt \
-linecolors.plt multi_line_labels.plt pattern*.plt polygon*.plt \
+linecolors.plt pattern*.plt polygon*.plt \
 vec_curv*.plt timetics*.plt degC_axlab.plt axticlabel.plt)
 
 set gif_files = ( *.gif )

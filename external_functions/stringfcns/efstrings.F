@@ -1,8 +1,6 @@
 *
 * efstrings.F
 *
-* Ansley Manke
-* May 2002
 *
 * Returns A testing additional string capabilities
 *
@@ -145,8 +143,8 @@
 
       INTEGER i, j, k, l
       INTEGER i1, j1, k1, l1
-      INTEGER rtype, iarg, slen
-      CHARACTER*20 textstring, datestring
+      INTEGER rtype, iarg, slen, prec
+      CHARACTER*32 textstring, datestring
       CHARACTER*3 short
 
       CALL ef_get_res_subscripts(id, res_lo_ss, res_hi_ss, res_incr)
@@ -157,6 +155,9 @@
 
       CALL ef_get_coordinates (id, ARG1, T_AXIS, 
      .       arg_lo_ss(T_AXIS, ARG1), arg_hi_ss(T_AXIS, ARG1), tax)
+
+*     'dd-mon-yyyy hh:mm:ss' date format
+      prec = 6
 
       i1 = arg_lo_ss(X_AXIS,ARG1)
       DO 400 i=res_lo_ss(X_AXIS), res_hi_ss(X_AXIS)
@@ -196,9 +197,7 @@ C Copy a new string to the result
                   ELSE
 
 C Compute other string values and put them in the result.
-                     CALL EF_GET_AXIS_DATES 
-     .                  (id, ARG1, tax(1,1,1,L1), 1, datestring)
-                     slen = 20
+                     CALL EF_GET_AXIS_DATES (id, ARG1, tax(1,1,1,L1), 1, prec, slen, datestring)
                      CALL EF_PUT_STRING (datestring, slen, result(1,i,j,k,l))
                   ENDIF
 

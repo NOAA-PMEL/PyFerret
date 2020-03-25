@@ -188,7 +188,7 @@
 
       INTEGER i,  j,  k,  l,  m,  n
       INTEGER i1, j1, k1, l1, m1, n1
-      INTEGER taxnum, slen, idx, dim, prec
+      INTEGER taxnum, dlen, idx, dim, prec
       REAL*8 newtime
       CHARACTER*32 datebuf
       CHARACTER*255 errtxt
@@ -206,15 +206,15 @@
       dim = T_AXIS
 
 * Include fractional seconds if they exist.
-* This could be made an argument if desired:
-*  1: year  (not working correctly at the time this was written)
-*  2: month-year  (not working correctly at the time this was written)
-*  3: day-month-year
-*  4: day-month-year hour
-*  5: day-month-year hour:minute
-*  6: day-month-year hour:minute:second
-*  7: day-month-year hour:minute:second.frac
       prec = 7
+* This value could be made an argument if desired.
+*  1: 'yyyy' date format
+*  2: 'MMM-yyyy' or 'yyyy-MM' date format
+*  3: 'dd-MMM-yyyy' or 'yyyy-MM-dd' date format
+*  4: 'dd-MMM-yyyy HH' or 'yyyy-MM-dd HH' date format
+*  5: 'dd-MMM-yyyy HH:mm' or 'yyyy-MM-dd HH:mm' date format
+*  6: 'dd-MMM-yyyy HH:mm:ss' or 'yyyy-MM-dd HH:mm:ss' date format
+*  7: 'dd-MMM-yyyy HH:mm:ss.SSS' or 'yyyy-MM-dd HH:mm:ss.SSS' date format
 
 * Get the time axis coordinates
       CALL ef_get_coordinates(id, ARG1, T_AXIS, arg_lo_ss(T_AXIS, ARG1),
@@ -248,18 +248,18 @@
 *              Convert newtime into a date string.
 *              ef_get_axis_dates can work with an array of times,
 *              returning an array of date strings; here we just do one
-               CALL ef_get_axis_dates(id, ARG1, newtime, dim, 1, prec, slen, datebuf)
+               CALL ef_get_axis_dates(id, ARG1, newtime, dim, 1, prec, dlen, datebuf)
 
             ELSE
 
 *              Use an empty string as the undefined value
                datebuf = ' '
-               slen = 0
+               dlen = 0
 
             ENDIF
 
 *           Put the date string (or empty string) into the string array
-            CALL ef_put_string(datebuf, slen, result(1,i,j,k,l,m,n))
+            CALL ef_put_string(datebuf, dlen, result(1,i,j,k,l,m,n))
 
             i1 = i1 + arg_incr(X_AXIS,ARG1)
  100       CONTINUE

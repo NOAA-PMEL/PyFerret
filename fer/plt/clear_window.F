@@ -46,6 +46,7 @@
 * V411:  9/5/95 - explicitly delete each segment before calling GCLRWK
 *	to avoid XGKS memory leak in that routine
 * V602: *acm* 1/07 Changes for metafile-batch mode
+* V76  *acm* 3/20  issue 1970: Check the window is open before trying to CLEAR it
 
         IMPLICIT NONE
 	include 'plot_setup.parm'
@@ -57,6 +58,8 @@
 	INTEGER	wid, ivp, iseg, istate
 
 * internal variable declarations:
+
+	IF ( .NOT. wn_open(wid) ) RETURN
 
         CALL GQOPS (istate)
 

@@ -7029,6 +7029,7 @@ Re-defining viewport UM6
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
+Replacing definition of axis DATES_TAXIS
  **ERROR: command syntax: unknown region name: @w
 set region/@w
 Executed by script: *** GO bench_pass_thru ***

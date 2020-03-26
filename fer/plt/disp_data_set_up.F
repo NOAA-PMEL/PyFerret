@@ -66,6 +66,7 @@
 * V74+ 7/18 *acm*  DSG trajectory plots colored by ID even if its a string 
 * V75+ 5/19 *acm*  DSG lon/lat plots of profile or timeseries datasets
 * V76  1/20 *acm* working with Point-type dsg data
+* V760 *acm* 3/20 Flag for case when constraints result in no features
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -75,6 +76,7 @@
 	include 'command.parm'
 	include 'xvariables.cmn'
 	include 'xcontext.cmn'
+	include 'xdsg_context.cmn'
 	include 'xprog_state.cmn'
 #include "tmap_dset.parm"
 	include 'xdset_info.cmn_text'
@@ -98,6 +100,9 @@
 * check for PLOT/VS -- significant in axis buffer sizes
 	plot_vs = cmnd_num .EQ. cmnd_plot
      .	          .AND. qual_given(slash_plot_vs) .GT. 0
+
+* initialize
+	cxdsg_empty_set = .FALSE.
 
 * get the requested data somehow  (and leave it protected 1/94)
 

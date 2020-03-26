@@ -4,18 +4,21 @@
 * of the current context as they apply to the current DSG dataset
 
 * V720 *sh* 5/17
+* V760 *acm* 3/20 Flag for case when constraints result in no features
 
 	LOGICAL cxdsg_has_coord(4),    ! do coordinates exist on this axis?
      .		cxdsg_constrain(4),    ! does the context constrain this axis?
      .		cxdsg_is_obs_coord(4), ! is this an obs (vs instance) coord?
      .		cxdsg_constrain_e,     ! are there E axis constraints
-     .		cxdsg_no_coord_constraints  ! what it sounds like
+     .		cxdsg_no_coord_constraints,  ! what it sounds like
+     .		cxdsg_empty_set ! the constraints result in no-data
 	INTEGER	cxdsg_coord_lm(4),     ! linemem pointer to coordinates
      .		cxdsg_lo_e,	       ! low  E constraint as integer
-     .		cxdsg_hi_e	       ! high E constraint as integer
+     .		cxdsg_hi_e,	       ! high E constraint as integer
+     .		cxdsg_orient	       ! orientation of the dataset
 	REAL	cxdsg_constrain_lo(4), ! context ww lo constraint
      .		cxdsg_constrain_hi(4), ! context ww hi constraint
-     .		cxdsg_bad_val(4)       ! location data may be missing
+     .		cxdsg_bad_val(4)      ! location data may be missing
 
 	COMMON / XDSG_CONTEXT /
      .		cxdsg_constrain_lo,
@@ -27,5 +30,7 @@
      .		cxdsg_coord_lm,
      .		cxdsg_lo_e,
      .		cxdsg_hi_e,
+     .		cxdsg_orient,
      .		cxdsg_constrain_e,
-     .		cxdsg_no_coord_constraints
+     .		cxdsg_no_coord_constraints,
+     .		cxdsg_empty_set

@@ -69,6 +69,7 @@
 * V76  *acm* 11/19 Issue 1960: Place keys for overlay lines in multiple columns 
 *                  below plot before resorting to putting them inside the plot box.
 *                  If still too many legend lines, skip them rather than put up dialog box
+* V760 *acm* 3/20 Customizations for case when constraints result in no features
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -84,6 +85,7 @@
 	include 'xcontext.cmn'
 	include 'xvariables.cmn'
 	include 'xdset_info.cmn_text'
+	include 'xdsg_context.cmn'
         include 'netcdf.inc'
 
 * calling argument declarations:
@@ -101,13 +103,14 @@
      .		TM_DSG_DSET_FROM_GRID,
      .		ipl, nline_in_mem, slen, slen1, status, ptitl, style, 
      .		justify, iunits, istart, i, nfeatr(nfeatures), dtype, 
-     .		fvar_varid, dset_dsg
+     .		fvar_varid, dset_dsg, nlab
 	
 	CHARACTER*2040	FULL_VAR_TITLE, VAR_TITLE_ONLY, KEY_STRING, 
      .			plot_title, plot_title_1
 	CHARACTER	VAR_UNITS*64, SECS_TO_DATE*20, TM_FMT*20, 
-     .			SANITARY_VAR_CODE*128, VAR_TITLE_MOD*240, PAREN_SURROUND*240,
-     .			year*4, buff1*16, ustring*64, dummy*1024
+     .			SANITARY_VAR_CODE*128, VAR_TITLE_MOD*240, 
+     .			PAREN_SURROUND*240,CD_DSG_FEATURENAME*16,
+     .			year*4, buff1*16, ustring*64, dummy*1024, buff2*40
 	REAL		xkeypos, ykeypos, xkeysize, ykeysize, 
      .			lab_ht, labsize, value
 	REAL*4		SYMWID, rht
@@ -117,6 +120,12 @@
 
 	its_dsg = .FALSE.
 	reset_dsg = .FALSE.
+	
+	IF (cxdsg_empty_set) THEN
+	   buff1 = CD_DSG_FEATURENAME ( cxdsg_orient )
+	   buff2 = 'No '//buff1(:TM_LENSTR1(buff1))//
+     .		       ' Data in Selection'
+	ENDIF
 
 * * * * * * *    - - - TITLES - - -   * * * * * * * * *
 * if we are starting from a blank screen titling information is centered
@@ -386,7 +395,12 @@ c     .			plot_title(:slen)//'")
 	     
            ENDIF
 	ENDIF  ! overlay
-	
+
+	IF (cxdsg_empty_set) THEN
+	   CALL DSG_LABEL_NOFEATURE ( buff2, dflt_letsize_title, status)
+	   IF (status .NE. ferr_ok) GOTO 5000 
+	ENDIF
+
 	GOTO 5000  ! done
 
 
@@ -504,11 +518,16 @@ c     .			plot_title(:slen)//'")
 	   ENDIF
 
 
+	   IF (cxdsg_empty_set) THEN
+              CALL DSG_LABEL_NOFEATURE ( buff2, dflt_letsize_title, status)
+	      IF (status .NE. ferr_ok) GOTO 5000 
+	   ENDIF
+
 * ... keys for the dependent vars, or if one, only then title or axis label
 ! ribbon_plot
 
 	   IF (nmv.EQ.1 .AND. (versus.AND.ribbon_plot)) THEN
-	   
+	      IF (cxdsg_empty_set) do_units = .FALSE.
 	      plot_title = FULL_VAR_TITLE( cx_list(nmv), do_units, slen )
               IF (this_no_range(nmv) .AND. mode_nodata_lab) THEN
                  plot_title(slen+1:slen+14) = ' No Valid Data'
@@ -516,7 +535,8 @@ c     .			plot_title(:slen)//'")
               ENDIF
 	      
               labsize = dflt_letsize_title
-              plot_title = 'Colored by '//plot_title(1:slen)
+              IF (.NOT.cxdsg_empty_set) plot_title = 
+     .                'Colored by '//plot_title(1:slen)
 
               IF ( user_title ) THEN     ! user over-ride of title
                  CALL EQUAL_STR_LC
@@ -595,3 +615,4 @@ c     .			plot_title(:slen)//'")
 
 	RETURN
 	END
+

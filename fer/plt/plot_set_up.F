@@ -227,6 +227,7 @@
 * V7.6  *acm*  1/20 Set up for plotting Points-type datasets as ribbon plots
 *                   with symbols. 
 * V76   1/20 *acm* Orientation of Point-type data set to e_dim
+* V760 *acm* 3/20 Customize plot for case when constraints result in no features
 
 
         IMPLICIT NONE
@@ -253,6 +254,7 @@
         include 'SWITCH.INC'
         include 'pyfonts.cmn'
 	include 'xdset_info.cmn_text'
+	include 'xdsg_context.cmn'
 
 #include "tmap_dset.parm"
 
@@ -277,13 +279,13 @@
      .                  timeax_both, do_units, doing_ribbon_color,
      .                  x_is_time, y_is_time, its_traj, its_dsg, 
      .                  expand_dsg_ok, color_dsg_id
-	CHARACTER*2040	FULL_VAR_TITLE,  KEY_STRING, plot_title
+	CHARACTER*2040	FULL_VAR_TITLE, KEY_STRING, plot_title
 	CHARACTER	INTERNAL_WHOI_DATE*14, VAR_UNITS*64,
      .			SECS_TO_DATE*20, LEFINT*8, MERGED_WHOI_DATE*14, 
      .			LEFT_REAL*16, TM_GET_CALENDAR_NAME*32, 
      .			indep_ax*1, dep_ax*1, tstyle*3, xtra_lab*24,
      .			buff1*40, buff2*16, buff3*8, t1_date*14, tref*14,
-     .                  cal_name*32, cal_name_new*32, val_buff*32, fmt*4,
+     .                  cal_name*32, cal_name_new*32, val_buff*45, fmt*4,
      .			whoimin*14, whoimax*14, 
      .			whoimin_axlo*14, whoimax_axhi*14
 	INTEGER		TM_LENSTR1, CX_DIM_LEN, CGRID_SIZE, CGRID_AXIS, 
@@ -341,6 +343,12 @@
 
 	numv = nmv  ! local copy
 	line_symbol = symbol
+	IF (cxdsg_empty_set) THEN
+	   sym_size = 0.001
+	   line_symbol = 1        ! doesn't matter what
+	   use_line = .FALSE.
+	ENDIF
+
 
 * ragged DSG data?  Get number of features and obsdimlen. If it's a 
 * Trajectory or Point dataset and they did "PLOT var", set that up.
@@ -407,7 +415,7 @@
      .              overlay, no_labels, symbol, sym_size, color, color1, 
      .              use_line, do_dash, dashstyle, nokey, its_traj, only_val, 
      .              skipsym, mv_list, cx_list, numv, indep_dat, dep_dat, status )
-	          GOTO 1000
+		  GOTO 1000
 	       ENDIF
 
 	    ENDIF ! its_dsg
@@ -458,7 +466,7 @@
 
 * set limit on the number of plot keys
         IF (.NOT.nokey  .AND.  numv.GT.max_key_entries) THEN
-           buff1 = LEFINT( max_key_entries,  slen  )
+           buff1 = LEFINT( max_key_entries, slen  )
            CALL WARN('Too many lines to label. Labeling initial '
      .                          //buff1(:slen) )
            nkey_entries = max_key_entries
@@ -707,6 +715,7 @@ c	   IF ( .NOT.no_labels) THEN
 *  Check for lon-360 issues?  Crossing the dateline
 
               CALL GEOG_LABEL_VS (buff1, iunits, x_dim, axis_x_dir)
+
               IF (iunits .EQ. 4) THEN
                  delta = MAX(1., (ind_max-ind_min)/10.)  ! just a rough guess, will be set later
                  CALL GET_AXIS_FORMAT( ind_min, ind_max, delta, fmt, use_nice )
@@ -1011,6 +1020,12 @@ c	      ul_dolab(t_dim) = .FALSE.
  
 	   IF ( status .NE. ferr_ok ) GOTO 5000
 
+	   IF (cxdsg_empty_set) THEN
+	      dep_dat(1) = -1.
+	      dep_dat(2) =  1.
+	   ENDIF
+	      
+
 * ... If this is a profile or timeseries collection maybe we are just makinga map with 
 *     the stations so dep_dat and indep dat are the longitudes and latitudes. The flag
 *     expand_dsg_ok false, says just plot the instance variables
@@ -1055,9 +1070,10 @@ c	      ul_dolab(t_dim) = .FALSE.
 
 * ... Is this a dsg dataset?  if so apply an obs mask. Resets npts2
 
-	   IF (grid_is_dsg .AND. .NOT.its_traj .AND. versus .AND. expand_dsg_ok) 
+	   IF (grid_is_dsg .AND. .NOT.its_traj .AND. versus .AND. 
+     .		expand_dsg_ok .AND. .NOT.cxdsg_empty_set) 
      .       CALL PLOT_DSG_APPLY_OBS_MASK (dset, cx, nfeatures, 
-     .       obsdimlen,  dep_dat, npts2)
+     .       obsdimlen, dep_dat, npts2)
 
 * ... replicate points to create a "step" plot if requested  (1/01)
 	   nload = npts2 * step_inc
@@ -1603,6 +1619,7 @@ c		       ind_max = indep_dat(1) + 240*3600
                     last  = dep_max
                     GOTO 5170
                  ENDIF
+		    
 	      ENDIF
 
 * Do the dependent variable(s) have units of time? If not then don't send 
@@ -1676,6 +1693,17 @@ c		       ind_max = indep_dat(1) + 240*3600
               CALL PPLCMD ( from, line, 0, val_buff, 1, 1)
 	   ENDIF
 
+	   IF (cxdsg_empty_set) THEN
+	      WRITE ( val_buff, '(3(E14.7,1X))' ) dep_dat(1), dep_dat(2), dep_dat(2)
+	      CALL PPLCMD ( from, line, 0, 
+     .				dep_ax//'AXIS '//val_buff , 1, 1 )
+              IF (flip) THEN
+	         CALL PPLCMD (from, line, 0,'AXLABP,0,-1',1,1)
+              ELSE
+	         CALL PPLCMD (from, line, 0,'AXLABP,-1,0',1,1)
+	      ENDIF
+	   ENDIF
+
            ax1 = axdir(indep_dim)
   	   IF (flip) THEN
               CALL PPLCMD ( from, line, 0, 'SET AX_VERT '//ax1, 1, 1 )
@@ -1705,7 +1733,7 @@ c		       ind_max = indep_dat(1) + 240*3600
      .          CALL LINE_PLOT_LABELS (var1, nkey_entries, ndv, cx_list, 
      .		this_no_range, overlay, versus, nokey, time_axis, 
      .		tstyle, cal_id_1, ribbon_var, indep_lab, dep_lab, 
-     .		ind_min, dep_len, hlen, nfeatures, dset, fvar )
+     .		ind_min, dep_len, hlen, nfeatures, dset, fvar)
 
 * successful completion
  1000	CONTINUE
@@ -1717,7 +1745,7 @@ c		       ind_max = indep_dat(1) + 240*3600
  5000	CALL PPLCMD ( from, line, 0, 'NLINES', 1, 1 )	! wipe buffers clean
  	IF (itmp .NE. mnormal) CALL TM_DEALLO_DYN_LINE( itmp )
 	RETURN
- 5050	buff1 = LEFINT( max_line_on_plot,  slen  )
+ 5050	buff1 = LEFINT( max_line_on_plot, slen  )
 	CALL ERRMSG( ferr_invalid_command, status, 'cannot plot more than '
      .                  //buff1(:slen)//' lines with a single PLOT', *5000)
  5100	CALL ERRMSG( ferr_invalid_command, status, 
@@ -1730,7 +1758,7 @@ c		       ind_max = indep_dat(1) + 240*3600
  5120	CALL ERRMSG( ferr_dim_underspec, status, 
      .			'overlay is on a different axis'//pCR//
      .			'"'//cmnd_buff(:len_cmnd)//'"', *5000 )
- 5130	buff1 = LEFINT( npts,  slen  )
+ 5130	buff1 = LEFINT( npts, slen  )
 	buff2 = LEFINT( npts2, slen2 )
 	buff3 = LEFINT( ipl, slen3 )
 	CALL ERRMSG( ferr_dim_underspec, status,
@@ -1765,7 +1793,7 @@ c		       ind_max = indep_dat(1) + 240*3600
      .		' axis', *5000 )
 
  5170	buff1 = LEFT_REAL (first, '(G15.3)', slen)
-	buff2 = LEFT_REAL (last,  '(G15.3)', slen2)
+	buff2 = LEFT_REAL (last, '(G15.3)', slen2)
 	CALL ERRMSG( ferr_out_of_range, status,
      . 'Limits for log axis negative or too small: '//
      .  buff1(:slen)// ' : '//  buff2(:slen2), *5000 )

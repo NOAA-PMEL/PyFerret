@@ -62,11 +62,13 @@
 * V580: 11/04  - new cx_cal_id 
 *        2/12 *kms* Add the E and F dimensions (set to nferdims in tmap_dims.parm)
 * V685 3/13 *sh* - support for auxiliary regridding variables
+* V7.6 3/20 *acm - initialize the flag cxdsg_empty_set
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
 	include 'ferret.parm'
 	include 'xcontext.cmn'
+	include 'xdsg_context.cmn'
 
 	INTEGER	    ndcx, ndneg, num_cx_undefined, num_cx_predefined, 
      .              all_undefined, ndm2t3, ndt3
@@ -205,6 +207,7 @@
      .		cx_given( e_dim,-2 )	/ .FALSE. /,
      .		cx_given( f_dim,-2 )	/ .FALSE. /
 
+	DATA  cxdsg_empty_set /.FALSE./
 
 	END
 

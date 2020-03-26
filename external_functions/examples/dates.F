@@ -54,8 +54,8 @@
 *                                                                     V
 
       CALL ef_set_desc(id,
-     .        'Demo function: Returns a string array of dates derived ' //
-     .        'from the time axis and the given offsets')
+     .        'Demo function: Returns a string array of dates corresponding ' //
+     .        'to timesteps')
       CALL ef_set_num_args(id, 2)
       CALL ef_set_axis_inheritance_6d(id,
      .                                IMPLIED_BY_ARGS, IMPLIED_BY_ARGS,
@@ -66,7 +66,7 @@
       CALL ef_set_num_work_arrays(id, 1)
 
       arg = 1
-      CALL ef_set_arg_name(id, arg, 'Offsets')
+      CALL ef_set_arg_name(id, arg, 'Timesteps')
       CALL ef_set_arg_desc(id, arg,
      .        'Variable on a time axis, containing offsets from the ' //
      .        'coordinates of the axis, in the units of the axis')

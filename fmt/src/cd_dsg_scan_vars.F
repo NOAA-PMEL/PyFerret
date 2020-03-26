@@ -63,6 +63,7 @@
 * V75+  5/19 *acm* Test the value of cf_role attribute for validity before using it.
 * v751 *acm*  6/19 Allow for longer strings as attribute values
 * V76  1/20 *acm* working with Point-type dsg data 
+* V76  3/20 *acm* Improve notes about ambiguous coord info.
 
 * argument definitions:
 *       dset    - pointer to TMAP data set
@@ -225,8 +226,9 @@
 		       IF (axdim .EQ. 'U' .OR. axdim .EQ. 'D') axdim = 'Z'
 		       CALL WARN('Ambiguous DSG coordinate info. '//
      .                        'Multiple variables claiming to be '//
-     .                         axdim//' axis: '// buff(:TM_LENSTR1(buff) )//
-     .                         ', '// vname(:vlen) //'. Check axis attributes.'   )
+     .                         ww_dim_name(idim)//' axis: '// buff(:TM_LENSTR1(buff) )//
+     .                         ', '// vname(:vlen) //'. Using '//
+     .                         buff(:TM_LENSTR1(buff))//'.'   )
                     ELSE
 		       IF (got_axis .AND. is_dim.EQ.2) ax_att_var(idim) = ivcd
 		       IF (got_stdname .AND. .NOT.got_axis) ax_att_provisional(idim) = ivcd

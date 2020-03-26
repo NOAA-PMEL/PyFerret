@@ -1,0 +1,32 @@
+! bench_dates.jnl
+!
+! time axis units of seconds allows fractional seconds
+!
+def axis /t="1-JAN-2020":"1-JAN-2021":`86400.0 * 366.0 / 12.0` /t0="1-JAN-2020" /edges /unit=seconds dates_taxis
+let offset = _T[gt=dates_taxis] / 12345.0
+list /prec=12 _T[gt=dates_taxis] + offset, dates(offset, "full")
+list /prec=12 _T[gt=dates_taxis] + offset, dates(offset, "second")
+list /prec=12 _T[gt=dates_taxis] + offset, dates(offset, "minute")
+list /prec=12 _T[gt=dates_taxis] + offset, dates(offset, "hour")
+list /prec=12 _T[gt=dates_taxis] + offset, dates(offset, "day")
+list /prec=12 _T[gt=dates_taxis] + offset, dates(offset, "month")
+list /prec=12 _T[gt=dates_taxis] + offset, dates(offset, "year")
+list /prec=12 _T[gt=dates_taxis] + offset, dates(offset, "")
+!
+! no fractional seconds if time axis units are not seconds
+!
+def axis /t="1-JAN-2020":"1-JAN-2021":`1440.0 * 366.0 / 12.0` /t0="1-JAN-2020" /edges /unit=minutes dates_taxis
+let offset = _T[gt=dates_taxis] / 12345.0
+list /prec=12 _T[gt=dates_taxis] + offset, dates(offset, "full")
+list /prec=12 _T[gt=dates_taxis] + offset, dates(offset, "second")
+list /prec=12 _T[gt=dates_taxis] + offset, dates(offset, "minute")
+list /prec=12 _T[gt=dates_taxis] + offset, dates(offset, "hour")
+list /prec=12 _T[gt=dates_taxis] + offset, dates(offset, "day")
+list /prec=12 _T[gt=dates_taxis] + offset, dates(offset, "month")
+list /prec=12 _T[gt=dates_taxis] + offset, dates(offset, "year")
+list /prec=12 _T[gt=dates_taxis] + offset, dates(offset, "")
+!
+! clean up
+!
+cancel var offset
+cancel axis dates_taxis

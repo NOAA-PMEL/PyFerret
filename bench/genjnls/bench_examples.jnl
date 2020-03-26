@@ -1,11 +1,13 @@
 set mode ignore_error
 show func/ext add_9
 show func/ext ave*
+show func dates
 show func pass_thru
 show func sto*
 
 go bench_add_9
 go bench_avet
+go bench_dates
 go bench_pass_thru
 go bench_storage
 go bench_subtract

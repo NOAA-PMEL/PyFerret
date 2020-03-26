@@ -56,7 +56,7 @@
       CALL ef_set_desc(id,
      .        'Demo function: Returns a string array of dates derived ' //
      .        'from the time axis and the given offsets')
-      CALL ef_set_num_args(id, 1)
+      CALL ef_set_num_args(id, 2)
       CALL ef_set_axis_inheritance_6d(id,
      .                                IMPLIED_BY_ARGS, IMPLIED_BY_ARGS,
      .                                IMPLIED_BY_ARGS, IMPLIED_BY_ARGS,
@@ -73,6 +73,17 @@
       CALL ef_set_axis_influence_6d(id, arg,
      .                              YES, YES, YES, YES, YES, YES)
 
+*     Set data type as string
+      arg = 2
+      CALL ef_set_arg_type (id, arg, STRING_ARG)
+
+      CALL ef_set_arg_name(id, arg, 'Precision')
+      CALL ef_set_arg_unit(id, arg, ' ')
+
+      CALL ef_set_arg_desc(id, arg, 'Output precision: full, sec, ' //
+     .     'min, hour, day, month, year')
+      CALL ef_set_axis_influence_6d(id, arg, NO, NO, NO, NO, NO, NO)
+
 *                                                                     ^
 *                                                                     |
 *                                           USER CONFIGURABLE PORTION |
@@ -88,6 +99,7 @@
 *
       SUBROUTINE dates_work_size(id)
 
+      IMPLICIT NONE
       INCLUDE 'ferret_cmn/EF_Util.cmn'
       INCLUDE 'ferret_cmn/EF_mem_subsc.cmn'
 
@@ -140,7 +152,7 @@
 *
 * In this subroutine we compute the result
 *
-      SUBROUTINE dates_compute(id, arg_1, result, taxdat)
+      SUBROUTINE dates_compute(id, arg_1, arg_2, result, taxdat)
 
       IMPLICIT NONE
       INCLUDE 'ferret_cmn/EF_Util.cmn'
@@ -160,12 +172,14 @@
 
       REAL arg_1(mem1lox:mem1hix, mem1loy:mem1hiy, mem1loz:mem1hiz,
      .           mem1lot:mem1hit, mem1loe:mem1hie, mem1lof:mem1hif)
+      REAL arg_2(mem2lox:mem2hix, mem2loy:mem2hiy, mem2loz:mem2hiz,
+     .           mem2lot:mem2hit, mem2loe:mem2hie, mem2lof:mem2hif)
 
       REAL result(strdf, memreslox:memreshix, memresloy:memreshiy,
      .                   memresloz:memreshiz, memreslot:memreshit,
      .                   memresloe:memreshie, memreslof:memreshif)
 
-* Ignore the unused singleton final dimensions in the work arrays
+* Ignore the unused singleton Y, Z, T, E, and F dimensions in the work arrays
       REAL*8 taxdat(wrk1lox:wrk1hix/2)
 
 * After initialization, the 'res_' arrays contain indexing information
@@ -186,10 +200,15 @@
 *                                                                     |
 *                                                                     V
 
+      CHARACTER*3 LOWER3
+
       INTEGER i,  j,  k,  l,  m,  n
       INTEGER i1, j1, k1, l1, m1, n1
+      INTEGER i2, j2, k2, l2, m2, n2
       INTEGER taxnum, dlen, idx, dim, prec
       REAL*8 newtime
+      CHARACTER*32 precstr
+      CHARACTER*3 low3str
       CHARACTER*32 datebuf
       CHARACTER*255 errtxt
 
@@ -205,16 +224,44 @@
       ENDIF
       dim = T_AXIS
 
-* Include fractional seconds if they exist.
-      prec = 7
-* This value could be made an argument if desired.
-*  1: 'yyyy' date format
-*  2: 'MMM-yyyy' or 'yyyy-MM' date format
-*  3: 'dd-MMM-yyyy' or 'yyyy-MM-dd' date format
-*  4: 'dd-MMM-yyyy HH' or 'yyyy-MM-dd HH' date format
-*  5: 'dd-MMM-yyyy HH:mm' or 'yyyy-MM-dd HH:mm' date format
-*  6: 'dd-MMM-yyyy HH:mm:ss' or 'yyyy-MM-dd HH:mm:ss' date format
-*  7: 'dd-MMM-yyyy HH:mm:ss.SSS' or 'yyyy-MM-dd HH:mm:ss.SSS' date format
+*     Get the precision for output
+      i2=arg_lo_ss(X_AXIS, ARG2)
+      j2=arg_lo_ss(Y_AXIS, ARG2)
+      k2=arg_lo_ss(Z_AXIS, ARG2)
+      l2=arg_lo_ss(T_AXIS, ARG2)
+      m2=arg_lo_ss(E_AXIS, ARG2)
+      n2=arg_lo_ss(F_AXIS, ARG2)
+
+*     Get the output presicion (string)
+      CALL ef_get_string_arg_element_6d(id, ARG2, arg_2,
+     .     i2,j2,k2,l2,m2,n2,dlen,precstr)
+      low3str = LOWER3(precstr)
+
+      IF (low3str .EQ. 'ful') THEN
+*         'dd-MMM-yyyy HH:mm:ss.SSS' or 'yyyy-MM-dd HH:mm:ss.SSS' date format
+          prec = 7
+      ELSE IF (low3str .EQ. 'sec') THEN
+*         'dd-MMM-yyyy HH:mm:ss' or 'yyyy-MM-dd HH:mm:ss' date format
+          prec = 6
+      ELSE IF (low3str .EQ. 'min') THEN
+*         'dd-MMM-yyyy HH:mm' or 'yyyy-MM-dd HH:mm' date format
+          prec = 5
+      ELSE IF (low3str .EQ. 'hou') THEN
+*         'dd-MMM-yyyy HH' or 'yyyy-MM-dd HH' date format
+          prec = 4
+      ELSE IF (low3str .EQ. 'day') THEN
+*         'dd-MMM-yyyy' or 'yyyy-MM-dd' date format
+          prec = 3
+      ELSE IF (low3str .EQ. 'mon') THEN
+*         'MMM-yyyy' or 'yyyy-MM' date format
+          prec = 2
+      ELSE IF (low3str .EQ. 'yea') THEN
+*         'yyyy' date format
+          prec = 1
+      ELSE
+*         'dd-MMM-yyyy HH:mm:ss.SSS' or 'yyyy-MM-dd HH:mm:ss.SSS' date format
+          prec = 7
+      ENDIF
 
 * Get the time axis coordinates
       CALL ef_get_coordinates(id, ARG1, T_AXIS, arg_lo_ss(T_AXIS, ARG1),
@@ -248,7 +295,8 @@
 *              Convert newtime into a date string.
 *              ef_get_axis_dates can work with an array of times,
 *              returning an array of date strings; here we just do one
-               CALL ef_get_axis_dates(id, ARG1, newtime, dim, 1, prec, dlen, datebuf)
+               CALL ef_get_axis_dates(id, ARG1, newtime, dim, 1, 
+     .                                prec, dlen, datebuf)
 
             ELSE
 
@@ -291,3 +339,24 @@
 
       RETURN
       END
+
+****************************************************************
+*
+      CHARACTER*3 FUNCTION LOWER3(TEXT)
+      CHARACTER*(*) TEXT
+*
+*     Returns the first three characters of a string in lowercase.
+*
+      CHARACTER*1 LETTER
+      INTEGER ISHIFT,I
+      ISHIFT=ICHAR('a')-ICHAR('A')
+      DO 10 I=1,3
+        LETTER=TEXT(I:I)
+        IF('A'.LE.LETTER.AND.LETTER.LE.'Z') THEN
+          LETTER=CHAR(ICHAR(LETTER)+ISHIFT)
+        END IF
+        LOWER3(I:I) = LETTER
+   10 CONTINUE
+      RETURN
+      END
+

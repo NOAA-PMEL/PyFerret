@@ -20,7 +20,7 @@
       CALL EF_SET_AXIS_INHERITANCE_6D(id, 
      .     IMPLIED_BY_ARGS, IMPLIED_BY_ARGS, IMPLIED_BY_ARGS, 
      .     IMPLIED_BY_ARGS, IMPLIED_BY_ARGS, IMPLIED_BY_ARGS)
-      CALL EF_SET_PIECEMEAL_OK(id, NO, NO, NO, NO, NO, NO)
+      CALL EF_SET_PIECEMEAL_OK_6D(id, NO, NO, NO, NO, NO, NO)
 
       arg = 1
       CALL ef_set_arg_name(id, arg, 'longitude')

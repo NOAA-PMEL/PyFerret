@@ -44,6 +44,7 @@
 * V7.3+ *acm* 12/2017
 * V7.6  *acm* 11/2019  Allow for the possibility of 0 obs in a feature.
 *                      If this is the case, skip it.
+* V760 *acm* 3/20 Set up for case when constraints result in no features
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -58,6 +59,7 @@
 	include 'xtext_info.cmn'
 	include 'xdset_info.cmn_text'
 	include 'xdyn_linemem.cmn_text'
+	include 'xdsg_context.cmn'
 	
 * calling argument declarations:
 	INTEGER	nfeatures, nobs_total, status
@@ -136,6 +138,72 @@
 	   multi_var = .TRUE.
 	ENDIF
 
+
+* ... If the mask or constraints results in no data selected, load nominal 
+*     data so a blank plot can be drawn.
+
+	IF (nlines .EQ. 0) THEN
+	
+           nobs = 2
+           nlines = 1
+           iline = 1
+           the_cx = is_cx(1)
+
+           is_mr(iline) = is_mr(1)  ! a single mr shared by all
+
+* Define a new set of coordinates, the lo and hi in the current context
+
+           igrid = unspecified_int4
+           CALL TM_ALLO_TMP_GRID (igrid, status)
+           IF (status .NE. ferr_ok) GOTO 5000
+
+           CALL TM_COPY_GRID_W_LINE_USE (grid, igrid)
+           CALL TM_DEALLO_DYN_LINE( grid_line(orientation, grid) )
+
+           CALL TM_ALLO_TMP_LINE(iaxis, status)
+           CALL GET_LINE_DYNMEM (nobs, iaxis, status)
+	   IF (status .NE. ferr_ok) GOTO 5000
+	   
+           grid_line(orientation, igrid) = iaxis
+           cx_grid(the_cx) = igrid
+           CALL TM_USE_LINE(iaxis)
+
+* Inherit axis properties
+           CALL TM_COPY_LINE (grid_line(orientation,grid), iaxis)
+           line_regular(iaxis) = .FALSE.
+
+* rename the axis. 
+           CALL TM_NEW_LINE_NAME ( line_name(iaxis), buff )
+           line_name(iaxis) = buff
+
+           irow_start = 1
+           irow_end   = 2
+
+           ic = irow_start
+           CALL PUT_LINE_COORD(linemem(iaxis)%ptr, ic, cxdsg_constrain_lo(orientation))
+
+           ic = irow_end
+           CALL PUT_LINE_COORD(linemem(iaxis)%ptr, ic, cxdsg_constrain_hi(orientation))
+
+           cx_feature(the_cx) = 1
+
+           DO idim = 1, t_dim
+              cx_lo_ss(the_cx,idim) = unspecified_int4
+              cx_hi_ss(the_cx,idim) = unspecified_int4
+           ENDDO
+
+* ... set up the feature-axis positions 
+           cx_by_ss(orientation, the_cx) = .TRUE.
+           cx_lo_ss(the_cx,orientation) = irow_start
+           cx_hi_ss(the_cx,orientation) = irow_end
+
+           cxdsg_empty_set = .TRUE.
+           cxdsg_orient = dsg_orientation(dset)  ! for making label
+	   
+	ENDIF  ! nlines .EQ. 0
+
+        IF (cxdsg_empty_set) GOTO 333
+
 * have plot keys been requested?
 	has_keys = qual_given(slash_plot_nokey) .EQ. 0
      .       .AND. qual_given(slash_plot_title) .EQ. 0
@@ -159,7 +227,7 @@ c A message is written in PLOT_SET_UP
 
 * populate the contexts
 
-        CALL TRANSFER_CONTEXT( is_cx(1), cx_buff )
+	CALL TRANSFER_CONTEXT( is_cx(1), cx_buff )
 
 	cx0 = is_cx(1) - 1
         iline = 0
@@ -271,6 +339,9 @@ c A message is written in PLOT_SET_UP
  222	   irow_f = irow_l + 1
 
 	ENDDO
+
+
+  333	CONTINUE
 
 * make the rest of Ferret believe that all these lines were asked for
 	IF (.NOT. multi_var) THEN

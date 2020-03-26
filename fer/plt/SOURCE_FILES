@@ -24,6 +24,7 @@ disp_prep.F\
 disp_reset.F\
 disp_set_up.F\
 dsg_feature_key.F\
+dsg_label_nofeature.F\
 dsg_traj_plot_set_up.F\
 echof_off.F\
 equal_color.F\
@@ -84,6 +85,7 @@ set_plot_size.F\
 set_viewport.F\
 set_vp_symbols.F\
 set_window.F\
+setup_annotation.F\
 setup_keys.F\
 start_pplus.F\
 taxis_style.F\

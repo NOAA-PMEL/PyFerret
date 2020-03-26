@@ -1299,6 +1299,8 @@ GO bn_dsg_save_uvars
 GO bn_reset bn_dsg_point_data
 GO bn_dsg_point_data
 
+GO bn_reset bn_dsg_no_data
+GO bn_dsg_no_data
 
 ! *********** v7.51 Additions ***********
 

@@ -37,6 +37,7 @@
 * V7.4+ ACM 9/18  Key label intermediate variable does not need plot settings
 * V7.51 6/2019 ACM Use Ampersand to separate strings. Only do up to 20 strings
 * V7.51 7/2019 ACM Handle cases when the number of values is really large.
+* V7.6  3/2020 ACM Need longer strings to store individual levels
 *
 * for a DSG plot colored by a variable in the feature direction, set the levels 
 * and key to plot with levels of 1 to nfeature, and center-labeled color bar. 
@@ -68,8 +69,8 @@
      .		tot_len, ilev, count, status
 
 	PARAMETER (tot_len=1500)
-	CHARACTER TM_FMT*30, GET_STRING_ELEMENT*30,
-     .		str_buff*30, all_keylab*(tot_len), labsym_buff*30, c*1, num_buff*12
+	CHARACTER TM_FMT*128, GET_STRING_ELEMENT*30,
+     .		str_buff*128, all_keylab*(tot_len), labsym_buff*30, c*1, num_buff*12
 
 
 * If the user has set /LEVELS, keep the setting

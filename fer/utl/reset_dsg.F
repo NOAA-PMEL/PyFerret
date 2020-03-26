@@ -37,6 +37,7 @@
 * Reset cx_feature, the number of variables plotted, cx_grid
 * If a mask variable was used the number of variables and variable-
 * memory pointer needs restoring
+* V760 *acm* 3/20 Flag for case when constraints result in no features
 
 	include	'tmap_dims.parm'
 	include 'ferret.parm'
@@ -44,12 +45,14 @@
 	include 'xcontext.cmn'
 	include 'xtm_grid.cmn_text'
 	include 'xprog_state.cmn'
+	include 'xdsg_context.cmn'
 
 	INTEGER nvars, cx_list(*)
 
 	LOGICAL its_dsg
 	INTEGER TM_DSG_DSET_FROM_GRID, cx, grid, dset, i, 
      .		the_cx, iaxis, orientation, obsdimlen, fline, nv
+	CHARACTER buff*32, TM_FMT*6, fmt*6
 
 * Get the DSG dataset, grid, and the orientation of the feature
 * so we can get the axes that were allocated.
@@ -94,6 +97,10 @@
 
 	grid_is_dsg = .FALSE.
 	cx_grid(cx) = cx_grid(cx_buff)
+
+* Flag for dsg context that resulted in no data.
+
+	cxdsg_empty_set = .FALSE.
 
 	RETURN
 	END

@@ -56,6 +56,9 @@
 * V7.51 *acm*  8/19 Ticket 1953, masking and min/max of dependent axis data
 * V7.6  *acm*  1/20 Set up for plotting Points-type datasets as ribbon plots
 *                   with symbols. Flag is_traj indicates trajectory data type
+* V7.6  *acm*  3/20 Ignore PLOT/LEVELS=v when color=by the id_variable. This 
+*                   doesn't make sense and makes a screwy plot.
+* V760 *acm* 3/20 Customize plot for case when constraints result in no features
 
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
@@ -67,6 +70,7 @@
 	include 'slash.parm'
 	include 'xplot_setup.cmn'
 	include 'xcontext.cmn'
+	include 'xdsg_context.cmn'
 	include 'xvariables.cmn'
 	include 'xdset_info.cmn_text'
 	include 'xdyn_linemem.cmn_text'
@@ -114,7 +118,7 @@
      .			idim, coord_lm, ivar, ptitl, dim(nferdims), numcx,
      .			dep_nok, indep_nok, line_symbol, nmasked
 
-        INTEGER         iunits, junits, axis_x_dir, axis_y_dir
+        INTEGER         iunits, junits
 	CHARACTER*1     axdir(nferdims), ax1
 
 	REAL		val1, dt_min, lo, hi, dep_len, 
@@ -151,8 +155,6 @@
 	indep_is_log = .FALSE.
 	mod_vs_x = .FALSE.
 	mod_vs_y = .FALSE.
-	axis_x_dir = no_dim
-	axis_y_dir = no_dim
         nkey_entries = nmv
 	itmp = mnormal
 	icode = 0
@@ -282,52 +284,78 @@
 * ... Apply an obs mask if any - this will cause the right range to be set on the
 *     lon/ lat axes
 
+	cxdsg_empty_set = .FALSE.
+
 	CALL PLOT_DSG_APPLY_OBS_MASK (dset, cx_list(nmv), nfeatures, obsdimlen, 
      .		   indep_dat, nmasked)
      
-	mask_applied = nmasked .LT. npts
 
-	CALL MINMAX( indep_dat, nmasked, bad_val4, ind_min, ind_max, indep_nok )
-	
+! Or set npts = 2, and use cx_lo_ww and cx_hi_ww if they are the requested constraints...
+
+	IF (nmasked .EQ. 0) THEN
+	   cxdsg_empty_set = .TRUE.
+	   cxdsg_orient = dsg_orientation(dset)
+
+	   indep_nok = 0
+	   nmasked = 2
+	   sym_size = 0.001
+	   nokey = .TRUE.
+	   qual_given(slash_plot_nokey) = 1
+	   nokey = .TRUE.
+
+	   delta = unspecified_val8
+	   ind_min = cx_lo_ww(x_dim, cx)
+	   ind_max = cx_hi_ww(x_dim, cx)
+
+	   ! Check against dsg lon coord range usin MODSCAT as in MAKE_DSG_OBS_MASK
+
+	   indep_dat(1) = bad_val4 
+	   indep_dat(2) = bad_val4
+	ELSE
+	   mask_applied = nmasked .LT. npts
+	   CALL MINMAX( indep_dat, nmasked, bad_val4, ind_min, ind_max, indep_nok )
 
 * ... force axis scaling if the data has no range
-	all_1_ind = NO_LINE_RANGE( indep_dat, nmasked, mr_bad_data(mv), val1 )
-	delta = unspecified_val8
+	   all_1_ind = NO_LINE_RANGE( indep_dat, nmasked, mr_bad_data(mv), val1 )
+	   delta = unspecified_val8
 
-	IF ( pindeplim .GT. 0 ) THEN
-	   IF ( pxlim.GT.0 .AND. .NOT.denig_xylim_msg_done ) THEN
-	      CALL WARN( '/XLIMITS and /YLIMITS are deprecated.')
-	      CALL WARN( 'Use /HLIMITS and /VLIMITS instead.')
-	      denig_xylim_msg_done = .TRUE.
-	   ENDIF
+	   IF ( pindeplim .GT. 0 ) THEN
+	      IF ( pxlim.GT.0 .AND. .NOT.denig_xylim_msg_done ) THEN
+	         CALL WARN( '/XLIMITS and /YLIMITS are deprecated.')
+	         CALL WARN( 'Use /HLIMITS and /VLIMITS instead.')
+	         denig_xylim_msg_done = .TRUE.
+	      ENDIF
 
-           CALL EQUAL_RANGE(
+              CALL EQUAL_RANGE(
      .			cmnd_buff(qual_start(pindeplim):qual_end(pindeplim)),
      .			indep_dim, ind_min, ind_max, delta,
      .			formatted, range_rqd, cal_id_1, status )
 
-           IF ( status .NE. ferr_OK ) GOTO 5000
+              IF ( status .NE. ferr_OK ) GOTO 5000
 
-	ELSEIF ( all_1_ind .AND. .NOT.overlay ) THEN
-	   IF ( val1 .EQ. mr_bad_data(mv) ) THEN
-	      delta = 1.
-	      ind_min = 0.D0
-	      ind_max = 1.D0
+	   ELSEIF ( all_1_ind .AND. .NOT.overlay ) THEN
+	      IF ( val1 .EQ. mr_bad_data(mv) ) THEN
+	         delta = 1.
+	         ind_min = 0.D0
+	         ind_max = 1.D0
+	      ELSE
+	         delta = 1.
+	         ind_min = val1 - delta
+	         ind_max = val1 + delta
+	      ENDIF
 	   ELSE
-	      delta = 1.
-	      ind_min = val1 - delta
-	      ind_max = val1 + delta
+	      CALL MINMAX( indep_dat, nmasked, bad_val4, lo, hi, indep_nok )
+	      IF (indep_nok .EQ. 0) THEN ! all missing
+	         ind_min = -1.
+	         ind_max =  1.
+	      ELSE
+	         ind_min = lo
+	         ind_max = hi
+	      ENDIF
 	   ENDIF
-	ELSE
-	   CALL MINMAX( indep_dat, nmasked, bad_val4, lo, hi, indep_nok )
-	   IF (indep_nok .EQ. 0) THEN ! all missing
-	      ind_min = -1.
-	      ind_max =  1.
-	   ELSE
-	      ind_min = lo
-	      ind_max = hi
-	   ENDIF
-	ENDIF
+
+	ENDIF   ! cxdsg_empty_set 
+
 
 * Set up modulo longitude handling for plotting
 
@@ -344,9 +372,8 @@
 * This routine checks the units and the setting for formatted lon/lat axes
 * If the formatting has been turned off, resets iunits and flag mod_vs_x.
 
-	   axis_x_dir = x_dim
-
-	   CALL GET_AXIS_FORMAT( ind_min, ind_max, delta,  fmt, use_nice )
+	   CALL GET_AXIS_FORMAT( ind_min, ind_max, delta, fmt, use_nice )
+	   IF (cxdsg_empty_set) use_nice = .FALSE.
 	   IF (use_nice) THEN
 	      ppl_buff = 'XFOR,('//fmt(:TM_LENSTR1(fmt))//
      .                   ',''''LONE'''')'
@@ -376,24 +403,34 @@
 
 * * * * * * *    - - - LATITUDE DATA - - - * * * * * * * * *
 
-	idim = 2
-	iaxis = grid_line(idim, dsg_xlate_grid(dset))
-	iunits = line_unit_code ( iaxis )
-	IF (iunits .NE. 4) GOTO 5130  ! must be latitude coordinates
+	IF (cxdsg_empty_set) THEN
+	   npts2 = 2
+	   dep_nok = 0
+	   dep_min = cx_lo_ww(y_dim, cx)
+	   dep_max = cx_hi_ww(y_dim, cx)
+	   dep_dat(1) = bad_val4
+	   dep_dat(2) = bad_val4
 
-	IF ( line_dim (iaxis) .NE. obsdimlen) GOTO 5140 
+	ELSE
 
-	ivar = dsg_coord_var(idim,dset)
-	coord_lm = dsg_loaded_lm(ivar)  ! line memory table indices
+	   idim = 2
+	   iaxis = grid_line(idim, dsg_xlate_grid(dset))
+	   iunits = line_unit_code ( iaxis )
+	   IF (iunits .NE. 4) GOTO 5130  ! must be latitude coordinates
 
-	DO i = 1, obsdimlen
-	   dep_dat(i) = dsg_linemem(coord_lm)%ptr(i)
-	ENDDO
+	   IF ( line_dim (iaxis) .NE. obsdimlen) GOTO 5140 
 
-	all_1_dep = .TRUE.
-	only_val  = bad_val4
+	   ivar = dsg_coord_var(idim,dset)
+	   coord_lm = dsg_loaded_lm(ivar)  ! line memory table indices
 
-	IF (nmv .GT. 1) THEN
+	   DO i = 1, obsdimlen
+	      dep_dat(i) = dsg_linemem(coord_lm)%ptr(i)
+	   ENDDO
+
+	   all_1_dep = .TRUE.
+	   only_val  = bad_val4
+
+	   IF (nmv .GT. 1) THEN
             mv   = mv_list( 2 )
             cx   = cx_list( 2 )
             CALL EXTRACT_LINE (  cx,
@@ -404,39 +441,37 @@
      .                          ndim,
      .                          npts2,
      .                          status  )
-	   IF (npts .NE. obsdimlen) THEN
-	      status = 0
-	      GOTO 5140
+	      IF (npts .NE. obsdimlen) THEN
+	         status = 0
+	         GOTO 5140
+	      ENDIF
 	   ENDIF
-	ENDIF
 
 * ... Apply an obs mask if any - this will cause the right range to be set on the
 *     lon/ lat axes
 
-	IF (mask_applied) CALL PLOT_DSG_APPLY_OBS_MASK (dset, cx_list(nmv), 
+	   IF (mask_applied) CALL PLOT_DSG_APPLY_OBS_MASK (dset, cx_list(nmv), 
      .		   nfeatures, obsdimlen, dep_dat, nmasked)
 
-
 * Set up the dependent axis.
 
-	axis_y_dir = y_dim
-
-* Set up the dependent axis.
-
-	all_1_dep = NO_LINE_RANGE( dep_dat, npts, bad_val4, val1 )
-	CALL MINMAX( dep_dat, nmasked, bad_val4, dep_lo, dep_hi, dep_nok )
-	IF (dep_nok .EQ. 0) THEN ! all missing
-	   dep_min = -1
-	   dep_max =  1
-	ELSE
-	   dep_min = dep_lo
-	   dep_max = dep_hi
-	   IF (all_1_dep) THEN
-	      delta = 1.
-	      dep_min = dep_lo - delta
-	      dep_max = dep_hi + delta
+	   all_1_dep = NO_LINE_RANGE( dep_dat, nmasked, bad_val4, val1 )
+	   CALL MINMAX( dep_dat, nmasked, bad_val4, dep_lo, dep_hi, dep_nok )
+	   IF (dep_nok .EQ. 0) THEN ! all missing
+	      dep_min = -1
+	      dep_max =  1
+	   ELSE
+	      dep_min = dep_lo
+	      dep_max = dep_hi
+	      IF (all_1_dep) THEN
+	         delta = 1.
+	         dep_min = dep_lo - delta
+	         dep_max = dep_hi + delta
+	      ENDIF
 	   ENDIF
-	ENDIF
+
+	ENDIF ! cxdsg_empty_set
+
 
 	IF (.NOT.overlay) THEN
 
@@ -446,7 +481,7 @@
 
 	   CALL GET_AXIS_FORMAT( dep_min, dep_max, delta, 
      .                 fmt, use_nice )
-
+	   IF (cxdsg_empty_set) use_nice = .FALSE.
 	   IF (use_nice) THEN
 	      ppl_buff = 'YFOR,('//fmt(:TM_LENSTR1(fmt))//
      .                       ',''''LAT'''')'
@@ -499,6 +534,17 @@
 
 * set up a color-by variable
 
+	IF (cxdsg_empty_set) THEN
+*          ... The dep_dat setup from above remains in place.
+	   need_histo = .FALSE.
+	   dep_min = -1.
+	   dep_max =  1.
+	   dep_dat(1) = 1.
+	   dep_dat(2) = 1.
+	   
+	   CALL RIBBON_PLOTKEY_SETUP (overlay, status)
+	ELSE
+
 
 * ... For a dsg dataset, they can ask to color by a feature-level variable
 *     such as an ID. That variable can be a string. Either way use it to 
@@ -506,11 +552,11 @@
 *     number for drawing the trajectories.
 
 * determine 6D shape of context, get size of color var
-	CALL GET_CX_DIMS_ZERO( cx, ndim, dim )
-	dep_dim = dim(1)
-	npts2 = CGRID_SIZE(cx)
+	   CALL GET_CX_DIMS_ZERO( cx, ndim, dim )
+	   dep_dim = dim(1)
+	   npts2 = CGRID_SIZE(cx)
 
-	CALL EXTRACT_LINE (	cx,
+	   CALL EXTRACT_LINE (	cx,
      .				memry(mv)%ptr,
      .				mv,
      .				dep_dat,
@@ -518,16 +564,14 @@
      .				ndim,
      .				npts2,
      .				status	)
-
-	iaxis = CGRID_AXIS(dep_dim,cx)
  
-	IF ( status .NE. ferr_ok ) GOTO 5000
+	   IF ( status .NE. ferr_ok ) GOTO 5000
 
 * default color key
-	CALL RIBBON_PLOTKEY_SETUP (overlay,  status)
-	IF (status .NE. ferr_ok) GOTO 5000
+	   CALL RIBBON_PLOTKEY_SETUP (overlay, status)
+	   IF (status .NE. ferr_ok) GOTO 5000
 
-	set_lev = .FALSE.  ! will auto-set levels
+	   set_lev = .FALSE.  ! will auto-set levels
 
 * If color by a nfeatures variable, expand to the length of the obs axis.
 * If they didn't specify /LEVELS, set levels, use a centered-label color 
@@ -539,33 +583,43 @@
 * Only do this for Trajetory data - for a dataset of type Points, number of points 
 * is always number of features and features are length 1.
 
-	IF (npts2.EQ.nfeatures .AND. is_traj) THEN
+	   IF (npts2.EQ.nfeatures .AND. is_traj) THEN
 
-	   IF (qual_given(slash_plot_levels) .EQ. 0) CALL SET_DSG_ID_LEV 
-     .           (dset, cx, nfeatures, dep_dat, mr_type(mv), changed_key)
+	      IF (qual_given(slash_plot_levels) .EQ. 0) THEN
+	         CALL SET_DSG_ID_LEV 
+     .              (dset, cx, nfeatures, dep_dat, mr_type(mv), changed_key)
+ 
+	        set_lev = .TRUE.
+	      ELSE
 
-	   set_lev = .TRUE.
-         
-	   IF (npts2 .EQ. nfeatures) THEN
-	      DO i = 1, npts2
-	         dep_dat(i) = i
-	      ENDDO
-	   ENDIF
+* If they said /levels=v this doesnt make sense.  Just use linear levs.
+	         IF (need_std) THEN
+	            need_std = .FALSE.
+	            CALL USE_LINEAR_LEVELS
+	         ENDIF
+	         set_lev = .TRUE.
+	      ENDIF
+
+	      IF (npts2 .EQ. nfeatures) THEN
+	         DO i = 1, npts2
+	            dep_dat(i) = i
+	         ENDDO
+	      ENDIF
 
 * Expand feature number to fill the obs direction using the mask
-	   CALL DSG_OBS_BY_FEATURE_VAR (dset, cx, nfeatures, obsdimlen, dep_dat)
-	   npts2 = npts
+	      CALL DSG_OBS_BY_FEATURE_VAR (dset, cx, nfeatures, obsdimlen, dep_dat)
+	      npts2 = npts
 
 * Set the cx_plot  limits from the command context so the plot labels will be correct
-	   CALL DSG_ID_CX (cx, nfeatures)
+	      CALL DSG_ID_CX (cx, nfeatures)
 
-	ENDIF
+	   ENDIF
 	
-	IF (mask_applied) CALL PLOT_DSG_APPLY_OBS_MASK (dset, cx_list(nmv), 
+	   IF (mask_applied) CALL PLOT_DSG_APPLY_OBS_MASK (dset, cx_list(nmv), 
      .		   nfeatures, obsdimlen, dep_dat, nmasked)
 	
 * Compute the mean and standard dev for ribbon-color variable, 
-	CALL MINMAX( dep_dat, nmasked, bad_val4, dep_min, dep_max, dep_nok )
+	   CALL MINMAX( dep_dat, nmasked, bad_val4, dep_min, dep_max, dep_nok )
 
 * Compute the mean and standard dev for ribbon-color variable, 
 * needed for computing color levels. Results stored in PPLUS common.
@@ -573,6 +627,10 @@
 * histogram bins.
 * send REAL*4 rbad to compare with lev_max, lev_min inside compute_mnstd
 * If the user set some /LEVELS then compute_mnstd just returns 
+
+
+	ENDIF ! cxdsg_empty_set
+
 
 	IF (need_histo) THEN
 * create temporary buffer to contain workspace
@@ -631,7 +689,7 @@
 	   dep_dat(1) = 1.
 	   npts = 1
 	ELSE
-	   CALL DSG_OBS_MARK_GAPS (dset, cx, nfeatures, obsdimlen, dep_dat)
+	   IF (.NOT.cxdsg_empty_set) CALL DSG_OBS_MARK_GAPS (dset, cx, nfeatures, obsdimlen, dep_dat)
 	ENDIF
 	
 	CALL PPLLDX_envelope(icode, indep_dat, dep_dat, nmasked,
@@ -720,7 +778,6 @@
 
 * successful completion
 
-
 	status = ferr_ok
 	IF (overlay) iautot = iautot_save
 	RETURN
@@ -756,7 +813,7 @@
         
 
  5170	buff1 = LEFT_REAL (first, '(G15.3)', slen)
-	buff2 = LEFT_REAL (last,  '(G15.3)', slen2)
+	buff2 = LEFT_REAL (last, '(G15.3)', slen2)
 	CALL ERRMSG( ferr_out_of_range, status,
      . 'Limits for log axis negative or too small: '//
      .  buff1(:slen)// ' : '//  buff2(:slen2), *5000 )

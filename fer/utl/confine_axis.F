@@ -81,6 +81,7 @@
 * V741 6/18 *acm* Handle modulo longitudes in DSG files
 * V751 8/19 *acm* Issue 1954: For DSG grids allow for modulo longitudes for station locations
 *                 of timeseries or profiles as well as trajectory data.
+* V76  1/20 *acm* working with Point-type dsg data 
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -99,7 +100,7 @@
 
 * internal variable declarations:
 !	LOGICAL lim_redundant
-	LOGICAL TM_ITSA_DSG, its_irrelevant, its_dsg
+	LOGICAL TM_ITSA_DSG, ITSA_DSG_POINTS, its_irrelevant, its_dsg
 	INTEGER	ISUBSCRIPT, TM_LENSTR1, TM_DSG_DSET_FROM_GRID,
      .		dset, ss, min_ss, max_ss, lo_ss, hi_ss,
      .		axis, grid, lenstr, slen, cat, var, istat,
@@ -120,7 +121,7 @@
 	grid = cx_grid( cx )
 	cat  = cx_category(cx)
 	var  = cx_variable(cx)
-	its_dsg = TM_ITSA_DSG(grid)
+	its_dsg = TM_ITSA_DSG(grid) .OR. ITSA_DSG_POINTS(cx)
 	IF (its_dsg) THEN
 	   dset = TM_DSG_DSET_FROM_GRID( grid )
 	   CALL TM_DSG_FACTS( grid, orientation, obs_dimlen, fline, its_dsg )

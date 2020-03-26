@@ -1,0 +1,41 @@
+! bn_dsg_no_data.jnl
+! Test plots when the constraints result in no features
+! lying within the locations/times selected.
+! A blank plot is drawn; for map plots the axes are the
+! requested XY region; for time and profile plots the 
+! independent axis range is what's in the dataset.
+! 3/25/20 ACM
+
+! profile data
+set view ul
+use profile_dsg.nc
+list/x=-122:-121.5 sal
+plot/x=-122:-121.5 sal
+
+cancel data/all
+! timeseries data
+
+set view ur
+use DSG_ERDDAP_pmelTao5daySst.nc
+list/x=0:40/y=10:20 t_25
+plot/x=0:40/y=10:20 t_25
+
+cancel data/all
+! trajectory data
+
+set view ll
+! moduloing
+use dsg_cross_prime  
+list/x=290:330/y=-50:-30 sst
+plot/x=-70:-30/y=-50:-30 sst
+
+
+cancel data/all
+! point data
+
+set view lr
+use dsg_point_data.nc
+list/x=-125:-115/y=21:25 sst
+plot/x=-125:-115/y=21:25 sst
+
+frame/file=dsg_no_feature_found.gif

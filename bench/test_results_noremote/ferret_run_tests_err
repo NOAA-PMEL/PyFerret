@@ -6560,8 +6560,8 @@ Executed by script: *** GO bn_dsg_use_feature.jnl ***
              Feature-ID variable not found or invalid value of cf_role attribute
 SET DAT/FORM=CDF dsg_bad_atts2
 Executed by script: *** GO bn_dsg_use_feature.jnl ***
-           *** NOTE: Ambiguous DSG coordinate info. Multiple variables claiming to be E axis: lons, lon360. Check axis attributes.
-           *** NOTE: Ambiguous DSG coordinate info. Multiple variables claiming to be N axis: yindex, lats. Check axis attributes.
+           *** NOTE: Ambiguous DSG coordinate info. Multiple variables claiming to be X axis: lons, lon360. Using lons.
+           *** NOTE: Ambiguous DSG coordinate info. Multiple variables claiming to be Y axis: yindex, lats. Using yindex.
            *** NOTE: SET DATA/FEATURE= applies only to Discrete Sampling Geometries datasets. Ignoring /FEATURE=
 *** Running ferret script: bn_dsg_plot_timeseries.jnl
 *** Running ferret script: bn_dsg_save.jnl
@@ -6628,6 +6628,7 @@ Executed by script: *** GO bn_dsg_save_uvars.jnl ***
 load sst[d=1,g=vari[d=2]]
 Executed by script: *** GO bn_dsg_point_data.jnl ***
 *** Running ferret script: bn_dsg_show_grid.jnl
+*** Running ferret script: bn_dsg_no_data.jnl
 *** Running ferret script: bn751_bug_fixes.jnl
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory

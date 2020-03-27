@@ -316,6 +316,7 @@ echo 's/DEFINE VARIABLE dt = 0\.[0-9]+/DEFINE VARIABLE dt = 0.######/' >> $clean
 echo 's/DEFINE VARIABLE dt = [01]$/DEFINE VARIABLE dt = 0.######/' >> $cleanups
 echo 's/DEFINE VARIABLE sumcpu =[ ]?0\.[0-9]+/DEFINE VARIABLE sumcpu = 0.######/' >> $cleanups
 echo 's/DEFINE VARIABLE sumcpu =[ ]?[01]$/DEFINE VARIABLE sumcpu = 0.######/' >> $cleanups
+echo 's/!-> DEFINE VARIABLE pid = [0-9][0-9]+$/!-> DEFINE VARIABLE pid = #####/' >> $cleanups
 echo '/say `sumcpu`/,/sh sym CLOCK_SECS/ s/0\.[0-9]+/0.######/' >> $cleanups
 echo '/say `sumcpu`/,/sh sym CLOCK_SECS/ s/[01] /0.###### /' >> $cleanups
 

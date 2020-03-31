@@ -257,7 +257,7 @@
 	LOGICAL		overlay, transpz, versus, no_labels, use_line,
      .			is_logx, is_logy, nokey, all_1_dep, addgaps
 	INTEGER		symbol, color, color1, step_inc, do_dash, skipsym,
-     .			nmv, mv_list( nmv ), cx_list( nmv ), status
+     .			nmv, mv_list( * ), cx_list( * ), status
 	REAL		 sym_size,
      .                  dashstyle(*), only_val
 	REAL		indep_dat(*), dep_dat(*)     ! dynamic space allocation
@@ -380,7 +380,7 @@
 
 	       its_traj = dsg_feature_type(dset).EQ.pfeatureType_Trajectory .OR.  
      .	                  dsg_feature_type(dset).EQ.pfeatureType_Point
-	       ribbon_plot = its_traj
+	       IF (its_traj) ribbon_plot = .TRUE.
 	    
 * Is this just a regular ribon plot with 3 variables (not a lon/lat traj plot)? 
 * OR a PLOT/VS var1,var2 from a DSG dataset for var1,var2 not lon/lat?

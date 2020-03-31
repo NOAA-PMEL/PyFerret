@@ -147,7 +147,7 @@ plot/title="Modulo Longitudes" temp[d=2,g=temp_ctd_rbr_mean[d=1]]
 set v lr
 LET/title="grid2DSG w/ mod" temp_from_grid = temp[d=2,g=temp_ctd_rbr_mean[d=1]]
 plot temp_from_grid
-frame/file=regrid_to_dsg_traj.gif
+frame/file=regrid_to_dsg_trajec.gif
 cancel view
 
 ! constrain in T and E

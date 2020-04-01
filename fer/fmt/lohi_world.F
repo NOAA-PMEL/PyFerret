@@ -83,6 +83,7 @@
 
 * internal variable declarations:
 	LOGICAL	SCALAR_GRID_LINE, TM_ITSA_DSG_RAGGED, TM_ITSA_DSG, 
+     .          ITSA_DSG_POINTS, 
      .          aux_span_compress, its_float, its_dsg
 	INTEGER	DATE_PREC, TM_DSG_DSET_FROM_GRID, 
      .          dset, sub_len, ndec, grid, line, status, 
@@ -124,7 +125,7 @@
 
 * variable/grid from a dsg dataset?  Use the DSG xlate grid.
 
-	its_dsg = TM_ITSA_DSG(grid)
+	its_dsg = TM_ITSA_DSG(grid) .OR. ITSA_DSG_POINTS(cx)
 
         dset = pdset_irrelevant
 	IF (cx .GT. cx_none) dset = cx_data_set(cx)
@@ -155,6 +156,14 @@
      .	    cx_lo_ww( idim,cx ).NE.unspecified_val8) THEN
 	   lo = cx_lo_ww( idim, cx )
 	   hi = cx_hi_ww( idim, cx )
+	ENDIF
+
+* If there are constraints on a DSG dataset, that affects the region in all
+* directions, e.g. list/x= /y= affects the time range of data as well.
+
+	IF (its_dsg) THEN
+	   dset = TM_DSG_DSET_FROM_GRID(grid)
+	   CALL MASKED_DSG_RANGE (dset, is_cx(1), idim, lo, hi)
 	ENDIF
 
 * hack for E axis positions, so @AVE gets labeled with integer index nos

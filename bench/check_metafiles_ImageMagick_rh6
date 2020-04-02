@@ -14,6 +14,7 @@ rm -f *bat.ps
 rm -f diff*.ps
 rm -f master*.ps
 rm -f bat*.plt*.ps
+rm -f gif.out
 
 set plt_files = ( bn*.plt dots.plt flowlines.plt graticules.plt \
 linecolors.plt pattern*.plt polygon*.plt \

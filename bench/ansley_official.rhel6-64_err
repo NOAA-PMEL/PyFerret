@@ -1,10 +1,10 @@
 Procedure run_all to run all FERRET benchmarks
-Running FERRET version /home/users/ansley/build/trunk/FERRET/fer/ferret_c
--rwxr-xr-x. 1 ansley tmap 85327785 Mar 24 15:55 /home/users/ansley/build/trunk/FERRET/fer/ferret_c
-Using external functions from /home/users/ansley/build/trunk/FERRET/external_functions/ext_func
+Running FERRET version /home/users/ansley/build/working/FERRET/fer/ferret_c
+-rwxr-xr-x. 1 ansley tmap 118514644 Apr  2 09:44 /home/users/ansley/build/working/FERRET/fer/ferret_c
+Using external functions from /home/users/ansley/build/working/FERRET/external_functions/ext_func
 Running the tests of external functions y
 Benchmark run by ansley
-Note: trunk Ferret after fix for 1969
+Note: reset axlabp setting after a dsg-no-data condition may have set it to remove some axis labels.
 ncdump output will be in all_ncdump.out, and appended to this log file 
 ***** Restricting Ferret paths to bench directory *****
 FER_DATA=. ./data
@@ -12,14 +12,14 @@ FER_DAT=/home/users/tmap
 FER_DESCR=. ./data
 FER_DIR=.
 FER_DSETS=. ./data
-FER_EXTERNAL_FUNCTIONS=/home/users/ansley/build/trunk/FERRET/external_functions/ext_func
-FER_FONTS=/home/users/ansley/ferret_distributions/rhel6_64/ppl/fonts
-FER_GO=. ./v4jnls ./v5jnls ./v6jnls ./v7jnls ./genjnls . /home/users/ansley/ferret_distributions/rhel6_64/go /home/users/ansley/ferret_distributions/rhel6_64/examples /home/users/ansley/ferret_distributions/rhel6_64/contrib
+FER_EXTERNAL_FUNCTIONS=/home/users/ansley/build/working/FERRET/external_functions/ext_func
+FER_FONTS=/home/users/tmap/ferret/rhel6-x86_64-linux/ppl/fonts
+FER_GO=. ./v4jnls ./v5jnls ./v6jnls ./v7jnls ./genjnls . ./v4jnls ./v5jnls ./v6jnls ./v7jnls ./genjnls . /home/users/tmap/ferret/rhel6-x86_64-linux/go /home/users/tmap/ferret/rhel6-x86_64-linux/examples /home/users/tmap/ferret/rhel6-x86_64-linux/contrib
 FER_GRIDS=. ./data
-FER_PALETTE=. /home/users/ansley/ferret_distributions/rhel6_64/ppl
-PWD=/home/users/ansley/build/trunk/FERRET/bench
+FER_PALETTE=. /home/users/tmap/ferret/rhel6-x86_64-linux/ppl
+PWD=/home/users/ansley/build/working/FERRET/bench
 PYFER_EXTERNAL_FUNCTIONS=/home/users/tmap/ferret/rhel6-x86_64-linux/ext_func/pylibs
-Beginning at Tue Mar 24 15:55:55 PDT 2020
+Beginning at Thu Apr 2 09:48:04 PDT 2020
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -5882,10 +5882,10 @@ Executed by script: *** GO bn_unquoted_args ***
 go/garbage "tmp/testMe"
 Executed by script: *** GO bn_unquoted_args ***
  **ERROR: unknown command qualifier: garbage
-go/garbage /home/users/ansley/build/trunk/FERRET/bench/tmp/testMe.jnl
+go/garbage /home/users/ansley/build/working/FERRET/bench/tmp/testMe.jnl
 Executed by script: *** GO bn_unquoted_args ***
  **ERROR: unknown command qualifier: garbage
-go/garbage "/home/users/ansley/build/trunk/FERRET/bench/tmp/testMe.jnl"
+go/garbage "/home/users/ansley/build/working/FERRET/bench/tmp/testMe.jnl"
 Executed by script: *** GO bn_unquoted_args ***
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -8099,8 +8099,8 @@ Executed by script: *** GO bn_dsg_use_feature ***
              Feature-ID variable not found or invalid value of cf_role attribute
 SET DAT/FORM=CDF dsg_bad_atts2
 Executed by script: *** GO bn_dsg_use_feature ***
-           *** NOTE: Ambiguous DSG coordinate info. Multiple variables claiming to be E axis: lons, lon360. Check axis attributes.
-           *** NOTE: Ambiguous DSG coordinate info. Multiple variables claiming to be N axis: yindex, lats. Check axis attributes.
+           *** NOTE: Ambiguous DSG coordinate info. Multiple variables claiming to be X axis: lons, lon360. Using lons.
+           *** NOTE: Ambiguous DSG coordinate info. Multiple variables claiming to be Y axis: yindex, lats. Using yindex.
            *** NOTE: SET DATA/FEATURE= applies only to Discrete Sampling Geometries datasets. Ignoring /FEATURE=
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -8210,6 +8210,14 @@ Replacing definition of axis yfake
  **ERROR: invalid command: Regridding DSG Point data to grids is not implemented
 load sst[d=1,g=vari[d=2]]
 Executed by script: *** GO bn_dsg_point_data ***
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
+Starting test: bn_dsg_no_data
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
+Starting test: bn_dsg_orth_labels
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -8394,9 +8402,14 @@ Executed by script: *** GO err75_vars_reserved_keywords ***
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
+Starting test: bn_dsg_orth_labels
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
+Replacing definition of axis DATES_TAXIS
  **ERROR: command syntax: unknown region name: @w
 set region/@w
 Executed by script: *** GO bench_pass_thru ***
@@ -8536,4 +8549,4 @@ Executed by script: *** GO bn_ps ***
 Re-defining viewport LM6
 Re-defining viewport UM6
            *** NOTE: Cannot create new windows when batch mode set
-Ended at Tue Mar 24 16:17:53 PDT 2020
+Ended at Thu Apr 2 10:13:00 PDT 2020

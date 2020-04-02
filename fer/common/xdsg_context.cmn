@@ -5,6 +5,7 @@
 
 * V720 *sh* 5/17
 * V760 *acm* 3/20 Flag for case when constraints result in no features
+*                 Store axlabp setting when it's changed for a no-feature plot.
 
 	LOGICAL cxdsg_has_coord(4),    ! do coordinates exist on this axis?
      .		cxdsg_constrain(4),    ! does the context constrain this axis?
@@ -18,9 +19,11 @@
      .		cxdsg_orient	       ! orientation of the dataset
 	REAL	cxdsg_constrain_lo(4), ! context ww lo constraint
      .		cxdsg_constrain_hi(4), ! context ww hi constraint
-     .		cxdsg_bad_val(4)      ! location data may be missing
+     .		cxdsg_bad_val(4)       ! location data may be missing
+	CHARACTER*8 cxdsg_axlabp_save  ! to restore AXLABP setting
 
 	COMMON / XDSG_CONTEXT /
+     .		cxdsg_axlabp_save,
      .		cxdsg_constrain_lo,
      .		cxdsg_constrain_hi,
      .		cxdsg_bad_val,

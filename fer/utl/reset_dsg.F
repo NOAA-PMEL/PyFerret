@@ -38,6 +38,8 @@
 * If a mask variable was used the number of variables and variable-
 * memory pointer needs restoring
 * V760 *acm* 3/20 Flag for case when constraints result in no features
+*                 Store plot state for axlab position.
+
 
 	include	'tmap_dims.parm'
 	include 'ferret.parm'
@@ -99,6 +101,12 @@
 	cx_grid(cx) = cx_grid(cx_buff)
 
 * Flag for dsg context that resulted in no data.
+* Restore plot state for axlab position to previous setting.
+
+	IF (cxdsg_empty_set) THEN
+	   CALL PPLCMD ( ' ', ' ', 0, 'YAXIS', 1, 1 )
+	   CALL PPLCMD ( ' ', ' ', 0, 'AXLABP,'//cxdsg_axlabp_save, 1, 1) 
+	ENDIF
 
 	cxdsg_empty_set = .FALSE.
 

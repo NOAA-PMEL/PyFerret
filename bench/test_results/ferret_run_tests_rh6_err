@@ -6664,6 +6664,7 @@ Executed by script: *** GO bn_dsg_point_data.jnl ***
 *** Running ferret script: bn_dsg_show_grid.jnl
 *** Running ferret script: bn_dsg_no_data.jnl
 *** Running ferret script: bn_dsg_orth_labels.jnl
+*** Running ferret script: bn_dsg_fcn_of_instance.jnl
 *** Running ferret script: bn751_bug_fixes.jnl
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory

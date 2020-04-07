@@ -1305,6 +1305,9 @@ GO bn_dsg_no_data
 GO bn_reset bn_dsg_orth_labels
 GO bn_dsg_orth_labels
 
+GO bn_reset bn_dsg_fcn_of_instance
+GO bn_dsg_fcn_of_instance
+
 ! *********** v7.51 Additions ***********
 
 GO bn_reset bn751_bug_fixes

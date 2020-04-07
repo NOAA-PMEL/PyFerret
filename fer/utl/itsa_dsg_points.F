@@ -38,6 +38,8 @@
 * determine if the given context points to a Points DSG dataset.
 
 * V6  *acm* 1/20
+* V6  *acm* 4/20  exit in cases where grid or cx not pointing to dsg data
+
       include 'tmap_dims.parm'
       include 'ferret.parm'
       include 'xcontext.cmn'
@@ -54,7 +56,12 @@
 * initialize
 
 	ITSA_DSG_POINTS = .FALSE.
+
+	IF (cx .LE. cx_none) RETURN
+
 	grid = cx_grid( cx )
+	IF (grid .EQ. unspecified_int4) RETURN
+
 	dset = TM_DSG_DSET_FROM_GRID( grid )
 
 	IF (dset .LE. main_set) RETURN  ! < 0 means not dsg 

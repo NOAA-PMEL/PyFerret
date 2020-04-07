@@ -262,7 +262,7 @@
 	LOGICAL		overlay, transpz, versus, no_labels, use_line,
      .			is_logx, is_logy, nokey, all_1_dep, addgaps
 	INTEGER		symbol, color, color1, step_inc, do_dash, skipsym,
-     .			nmv, mv_list( nmv ), cx_list( nmv ), status
+     .			nmv, mv_list( * ), cx_list( * ), status
 	REAL		 sym_size,
      .                  dashstyle(*), only_val
 	REAL		indep_dat(*), dep_dat(*)     ! dynamic space allocation
@@ -385,7 +385,7 @@
 
 	       its_traj = dsg_feature_type(dset).EQ.pfeatureType_Trajectory .OR.  
      .	                  dsg_feature_type(dset).EQ.pfeatureType_Point
-	       ribbon_plot = its_traj
+	       IF (its_traj) ribbon_plot = .TRUE.
 	    
 * Is this just a regular ribon plot with 3 variables (not a lon/lat traj plot)? 
 * OR a PLOT/VS var1,var2 from a DSG dataset for var1,var2 not lon/lat?
@@ -1697,7 +1697,8 @@ c		       ind_max = indep_dat(1) + 240*3600
 	      WRITE ( val_buff, '(3(E14.7,1X))' ) dep_dat(1), dep_dat(2), dep_dat(2)
 	      CALL PPLCMD ( from, line, 0, 
      .				dep_ax//'AXIS '//val_buff , 1, 1 )
-              IF (flip) THEN
+              WRITE (cxdsg_axlabp_save, "(I2, ',', I2)") LABELX, LABELY
+	      IF (flip) THEN
 	         CALL PPLCMD (from, line, 0,'AXLABP,0,-1',1,1)
               ELSE
 	         CALL PPLCMD (from, line, 0,'AXLABP,-1,0',1,1)

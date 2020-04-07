@@ -6659,8 +6659,8 @@ Executed by script: *** GO bn_dsg_use_feature.jnl ***
              Feature-ID variable not found or invalid value of cf_role attribute
 SET DAT/FORM=CDF dsg_bad_atts2
 Executed by script: *** GO bn_dsg_use_feature.jnl ***
-           *** NOTE: Ambiguous DSG coordinate info. Multiple variables claiming to be E axis: lons, lon360. Check axis attributes.
-           *** NOTE: Ambiguous DSG coordinate info. Multiple variables claiming to be N axis: yindex, lats. Check axis attributes.
+           *** NOTE: Ambiguous DSG coordinate info. Multiple variables claiming to be X axis: lons, lon360. Using lons.
+           *** NOTE: Ambiguous DSG coordinate info. Multiple variables claiming to be Y axis: yindex, lats. Using yindex.
            *** NOTE: SET DATA/FEATURE= applies only to Discrete Sampling Geometries datasets. Ignoring /FEATURE=
 *** Running ferret script: bn_dsg_plot_timeseries.jnl
 *** Running ferret script: bn_dsg_save.jnl
@@ -6727,6 +6727,9 @@ Executed by script: *** GO bn_dsg_save_uvars.jnl ***
 load sst[d=1,g=vari[d=2]]
 Executed by script: *** GO bn_dsg_point_data.jnl ***
 *** Running ferret script: bn_dsg_show_grid.jnl
+*** Running ferret script: bn_dsg_no_data.jnl
+*** Running ferret script: bn_dsg_orth_labels.jnl
+*** Running ferret script: bn_dsg_fcn_of_instance.jnl
 *** Running ferret script: bn751_bug_fixes.jnl
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -6882,6 +6885,14 @@ ooooooooooooooooooooooooooooooooooooooooooo
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
+ **ERROR: variable unknown or not in data set: 'z'
+show attributes 'z'
+Executed by script: *** GO err75_vars_reserved_keywords ***
+ LISTing to file a.nc
+ LISTing to file a.nc
 *** Running ferret script: bn_gif.jnl
  **ERROR: dimensions improperly specified: specified data is not a line
            - its a 2D region: "plot/i=1:10/j=1:20/nolabel i+j"
@@ -7018,6 +7029,7 @@ Re-defining viewport UM6
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
+Replacing definition of axis DATES_TAXIS
  **ERROR: command syntax: unknown region name: @w
 set region/@w
 Executed by script: *** GO bench_pass_thru ***

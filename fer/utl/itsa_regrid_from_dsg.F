@@ -46,6 +46,7 @@
       include 'xcontext.cmn'
       include 'xtm_grid.cmn_text'
       include 'xdset_info.cmn_text'
+      include 'xfr_grid.cmn'
 
 * argument declarations
 	INTEGER cx
@@ -77,9 +78,12 @@
 * Yes - E tells us that this started as a DSG
 * The existence of a feature-oriented axis that is non-DSG indicates a
 * regrid from a DSG
+* (see comments in dsg_whats_it.F for reasoning behind test for abstract axis)
+
 	orient = dsg_orientation(dset)
 	line = grid_line(orient,grid)
-	IF (line.EQ.mnormal) THEN
+	IF (line .EQ. mnormal  .OR. 
+     .      line .EQ. grid_line(1,mgrid_xabstract)) THEN
 	   ITSA_REGRID_FROM_DSG = .FALSE.
 	ELSE
 	   ITSA_REGRID_FROM_DSG = line_dsg_dset(line) .EQ. pline_not_dsg

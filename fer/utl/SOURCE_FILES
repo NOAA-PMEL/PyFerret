@@ -158,6 +158,8 @@ make_dsg_obs_mask.F\
 make_step_axis.F\
 mask_dsg_fvar.F\
 mask_dsg_obsvar.F\
+masked_dsg_range.F\
+masked_dsg_range_sub.F\
 match4.F\
 match_name.F\
 match_quoted_name.F\

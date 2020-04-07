@@ -51,6 +51,7 @@
 * V751 7/19 *acm* Changes to units and transforms listed in the header for all vars.
 * V751 7/18 *acm* Call single routine for DSG feature-type names
 * V76  1/20 *acm* Point-type DSG datasets do not have a feature-id variable
+* V76  3/20 *acm* Tweak to column-header line so names don't run together
 
         include 'netcdf.inc'
 	include 'tmap_dims.parm'
@@ -477,7 +478,7 @@
 
 	   DO idim = 1, 4
 	      IF (relevant_coord(idim)) THEN
-	         line_buff(slen+1:) = coord_head(idim)
+		 line_buff(slen+1:) = coord_head(idim)
 	         slen = slen + coord_width(idim)
 	      ENDIF
 	   ENDDO
@@ -489,6 +490,7 @@
 	   strbuff = VAR_CODE( cx_category(cx),cx_variable(cx))
 	   clen = TM_LENSTR1(strbuff)
 	   nblank = MAX(col_width(ivar)-clen, 1)
+	   line_buff(slen+nblank:slen+nblank) = ' '
 	   line_buff(slen+nblank+1:) = strbuff  
 	   slen = slen + col_width(ivar)
 	ENDDO

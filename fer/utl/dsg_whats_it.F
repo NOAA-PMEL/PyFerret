@@ -47,6 +47,7 @@
       include 'ferret.parm'
       include 'xtm_grid.cmn_text'
       include 'xdset_info.cmn_text'
+      include 'xfr_grid.cmn'
 
 * argument declarations
 	INTEGER grid
@@ -69,9 +70,15 @@
 * we are looking at a DSG grid
 * the test for contiguous ragged is the existence of a feature axis
 * with line_dsg_dset == the dset
+* For user-variables that use some grid-changin functions, the
+* result is defined as having abstract axes (e.g. STRINDEX(expocode, "PAN")
+* has an abstract axis in axes other than the E axis that it gets from expocode.
+
+
 	orient = dsg_orientation(dset)
 	line = grid_line(orient,grid)
-	IF (grid_line(orient,grid) .EQ. mnormal) THEN
+	IF (grid_line(orient,grid) .EQ. mnormal  .OR. 
+     .      grid_line(orient,grid) .EQ. grid_line(1,mgrid_xabstract)) THEN
 	   DSG_WHATS_IT = pdsg_instance
 	ELSEIF (line_dsg_dset(line) .EQ. pline_not_dsg) THEN
 	   DSG_WHATS_IT = pdsg_not_dsg

@@ -1,0 +1,31 @@
+! bn_dsg_fcn_of_instance.jnl
+!  Test STRINDEX function applied to a 
+!  variable on a DSG instance variable.
+!  4/2/2020  ACM
+
+use sail_2019.nc
+list strindex(trajectory, "4"), trajectory
+
+can data/all
+use DSG_ERDDAP_pmelTao5daySst.nc
+sh dat
+let test = if strindex(station, "140w") GT 0 then 1
+list station, test
+
+! Define a mask on these stations and list their locations
+
+let mask = if strindex(station, "140w") GT 0 then 1
+set data/fmask=mask 1
+list longitude, latitude
+
+can data/all
+use profile_dsg_names.nc
+list strindex(profile, "location"), profile
+
+can data/all
+use dsg_points_w_strings
+let mask = if strindex(pointstr, "d") gt 0 then 1
+list mask, pointstr
+
+set data/fmask=mask 1
+list pointstr, sst

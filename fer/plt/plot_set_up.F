@@ -224,7 +224,8 @@
 *                   with symbols. 
 * V76   1/20 *acm* Orientation of Point-type data set to e_dim
 * V760 *acm* 3/20 Customize plot for case when constraints result in no features
-
+* V760 *acm* 4/20 PLOT_DSG_CHECK_LON360 now applies a lon-360 conversion of the 
+*                 longitudes if it'll be better and /HLIM not given
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -273,7 +274,7 @@
      .                  this_no_range(max_line_on_plot), set_axis,
      .                  timeax_both, do_units, doing_ribbon_color,
      .                  x_is_time, y_is_time, its_traj, its_dsg, 
-     .                  expand_dsg_ok, color_dsg_id
+     .                  expand_dsg_ok, color_dsg_id, user_hlim
 	CHARACTER*2040	FULL_VAR_TITLE, KEY_STRING, plot_title
 	CHARACTER	INTERNAL_WHOI_DATE*14, VAR_UNITS*64,
      .			SECS_TO_DATE*20, LEFINT*8, MERGED_WHOI_DATE*14, 
@@ -295,7 +296,7 @@
      .			nkey_entries, t_axtyp, since_T0, itmp, igrd_save, 
      .			icode, dset, nfeatures, obsdimlen, fline, orientation, 
      .			dtype, fvar, nload_all, numv, nok, line_symbol, 
-     .			dsg_fmt_grid, dep_dir, nmasked, dset_dsg
+     .			dsg_fmt_grid, dep_dir, nmasked, dset_dsg, dum1, dum2
 
 	INTEGER         TM_GET_CALENDAR_ID, cal_id_1, cal_id_2,
      .			cal_id_old, cal_id_new
@@ -707,8 +708,10 @@ c	   IF ( .NOT.no_labels) THEN
 
 		 IF (grid_is_dsg .AND. versus .AND. use_nice .AND.
      .               axis_x_dir .EQ. x_dim) THEN
+		    
+		    user_hlim = pindeplim .GT. 0
 		    CALL PLOT_DSG_CHECK_LON360 (dset, cx, indep_dat, mr_bad_data(mv), 
-     .                    npts, nfeatures, ind_min, ind_max)
+     .                    npts, nfeatures, dum1, dum2, .TRUE.)
 
                  ENDIF
               ENDIF

@@ -59,6 +59,8 @@
 * V7.6  *acm*  3/20 Ignore PLOT/LEVELS=v when color=by the id_variable. This 
 *                   doesn't make sense and makes a screwy plot.
 * V760 *acm* 3/20 Customize plot for case when constraints result in no features
+* V760 *acm* 4/20 PLOT_DSG_CHECK_LON360 now applies a lon-360 conversion of the 
+*                 longitudes if it'll be better and /HLIM not given
 
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
@@ -99,7 +101,7 @@
 	LOGICAL		NO_LINE_RANGE, GEOG_LABEL, TM_ITSA_DSG_RAGGED,
      .			versus, all_1_ind, all_1_dep, formatted, use_nice, 
      .			this_no_range(max_line_on_plot), indep_is_log, set_lev, 
-     .			its_dsg, mask_applied
+     .			its_dsg, mask_applied, user_hlim
 	CHARACTER*2040	plot_title
 	CHARACTER	LEFINT*8, LEFT_REAL*16, FULL_VAR_TITLE*2040,
      .			indep_ax*1, dep_ax*1, tstyle*3, 
@@ -116,7 +118,7 @@
      .			nkey_entries, itmp, igrd_save, cal_id_1,
      .			icode, dset, nfeatures, obsdimlen, fline,
      .			idim, coord_lm, ivar, ptitl, dim(nferdims), numcx,
-     .			dep_nok, indep_nok, line_symbol, nmasked
+     .			dep_nok, indep_nok, line_symbol, nmasked 
 
         INTEGER         iunits, junits
 	CHARACTER*1     axdir(nferdims), ax1
@@ -274,12 +276,12 @@
 	   CALL GRP_CX_DOC( cx_list(nmv), numcx, cx_plot, key_doc )
 	ENDIF	
 
-	
-*  Check for lon-360 issues, crossing the dateline. Works only on data in features
+*  Check for longitudes crossing the dateline. Looks only at location data in features
 *  included in any feature-level mask, which is applied in PLOT_DSG_APPLY_OBS_MASK
 
+	user_hlim = pindeplim .GT. 0
 	CALL PLOT_DSG_CHECK_LON360 (dset, cx_list(nmv), indep_dat, bad_val4, 
-     .                    npts, nfeatures, ind_min, ind_max)
+     .                    npts, nfeatures, ind_min, ind_max, user_hlim)
 
 * ... Apply an obs mask if any - this will cause the right range to be set on the
 *     lon/ lat axes
@@ -356,10 +358,10 @@
 
 	ENDIF   ! cxdsg_empty_set 
 
-
-* Set up modulo longitude handling for plotting
+* Set up independent axis for plotting
 
 	IF (.NOT.overlay) THEN
+
 	   CALL AXIS_ENDS(indep_ax,indep_dim,grid1,ind_min,ind_max,
      .                       delta, indep_is_log, indep_axtyp, versus, status)
 

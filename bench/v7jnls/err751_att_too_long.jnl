@@ -1,0 +1,16 @@
+! err751_att_too_long.jnl
+! 4/7/2020 ACM
+! The file has a global attribute "keywords", which is
+! super long - more than 2048 chars.
+! This causes runtime errors when running build w/ debug flags
+
+use long_global_att.nc
+
+! The entire attr is written out. Previously eithergot the 
+! error, or with non-debug build, attr listing was truncated
+
+show att .
+
+! This also uses the same show_attribute routine
+show dat/att
+

@@ -64,3 +64,6 @@ GO err75_chunking
 
 GO bn_reset
 GO err75_interpret_grid
+
+GO bn_reset
+GO err751_overlay_after_vs

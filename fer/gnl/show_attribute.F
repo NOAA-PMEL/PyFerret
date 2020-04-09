@@ -43,6 +43,8 @@
 * V600 6/05 *acm* Attribute control.
 * V650  Write to show_lun which may be set to a file unit number rather than std out
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
+* V760  Handle extra-long attributes. The prev code failed only when compiled 
+*       with debug flags, but this is better, ensures no loss of info
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -64,7 +66,7 @@
 	PARAMETER ( full_precision = .TRUE. )
 
 * local variable declarations:
-	INTEGER  TM_LENSTR1, slen, llen, vlen, i, status
+	INTEGER  TM_LENSTR1, slen, llen, vlen, i, att_len, status
         CHARACTER TM_FMT*48, vbuff*14, buff*2048, punc*2
 
 * local parameter declarations:
@@ -85,8 +87,14 @@
 
         IF (attype .EQ. NCCHAR) THEN
 
-           buff = buff(:slen)//'= '//attstr(:attlen)
-           slen = slen + 3 + attlen
+           att_len = attlen
+
+	   IF (2048 - 3 - (attlen+slen) .LT. 0) THEN
+	      att_len = 2048 - 3 - slen
+	      IF (sho_out) att_len = att_len - 5
+	   ENDIF
+	   buff = buff(:slen)//'= '//attstr(:att_len)
+           slen = slen + 3 + att_len
 
            IF (sho_out) THEN
               IF (attoutflag .EQ. 0) buff = buff(:slen)//'    0'
@@ -96,6 +104,13 @@
         
            CALL SPLIT_LIST(pttmode_explct, show_lun,
      .		           buff, slen)
+
+           IF (att_len .LT. attlen) THEN
+	      buff = attstr(att_len+1:attlen)
+	      slen = TM_LENSTR1(buff)
+              CALL SPLIT_LIST(pttmode_explct, show_lun,
+     .		           buff, slen)
+           ENDIF
 
 * If numeric, write the value(s)
 

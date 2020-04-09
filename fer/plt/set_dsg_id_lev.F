@@ -37,7 +37,8 @@
 * V7.4+ ACM 9/18  Key label intermediate variable does not need plot settings
 * V7.51 6/2019 ACM Use Ampersand to separate strings. Only do up to 20 strings
 * V7.51 7/2019 ACM Handle cases when the number of values is really large.
-* V7.6  3/2020 ACM Need longer strings to store individual levels
+* V7.6  3/2020 ACM Need longer strings to store individual levels.
+* V7.6  4/2020 ACM but there can't be arbitrarily many individual levels.
 *
 * for a DSG plot colored by a variable in the feature direction, set the levels 
 * and key to plot with levels of 1 to nfeature, and center-labeled color bar. 
@@ -172,9 +173,15 @@ c		 ENDDO
 	         num_buff = TM_FMT(FLOAT(i), 10, 12, ist)
 		 str_buff = str_buff(:slen)//'('//num_buff(:ist)//')'
 		 slen = TM_LENSTR1(str_buff)
+		 IF (slen .GT. 126) EXIT
 	      ENDIF
 	   ENDDO
-	         
+
+	   IF (slen .GT. 126) THEN  ! too many levels to do e.g. as LEV(1)(4)(19)(...
+	      str_buff = ' '
+	      str_buff = TM_FMT(FLOAT(count), 10, 12, ist)
+	      slen = TM_LENSTR1(str_buff)
+	   ENDIF
 	ENDIF
 
 	labsym_buff = "LEV_TEXT "//str_buff(:slen)

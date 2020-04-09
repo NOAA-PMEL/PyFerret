@@ -1,0 +1,23 @@
+! err751_overlay_after_vs.jnl
+! issue 1973
+! 4/9/2020
+
+! PLOT/VS with variables representin lon,lat
+
+let/units=degrees_east xlon = {250,300,320,330,340,350,360}
+let/units=degrees_north ylat = {0,10,20,30,40,50,60}
+
+! This draws nice lon/lat labeled axes
+plot/vs/thick/color=blue/siz=0.2 xlon, ylat
+
+! Check the axis ranges
+show symbol xax*, yax*
+
+! This is like a "go fland" to overlay a map
+use coads_climatology
+shade/over if missing(sst[L=1],100) eq 100 then 1
+
+! Check the axis ranges. For an overlay they should be the 
+! same as after the PLOT/VS
+show symbol xax*, yax*
+

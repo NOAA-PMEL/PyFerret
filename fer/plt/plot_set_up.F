@@ -226,6 +226,10 @@
 * V760 *acm* 3/20 Customize plot for case when constraints result in no features
 * V760 *acm* 4/20 PLOT_DSG_CHECK_LON360 now applies a lon-360 conversion of the 
 *                 longitudes if it'll be better and /HLIM not given
+* V760 *acm* 4/20 Issue 1973: For PLOT/VS when the units are degrees lon or lat, 
+*		  mark the axis direction info in plot_axes( ) so that overlays 
+*                 such as"go fland" will work. (DSG and non-DSG data.)
+
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -336,6 +340,7 @@
 	grid = cx_grid(is_cx(1))
 	dset = cx_data_set(cx)
 	indep_dim = plot_axis(1)
+	IF (versus) twodee_on = .TRUE.
 
 	numv = nmv  ! local copy
 	line_symbol = symbol
@@ -698,7 +703,8 @@ c	   IF ( .NOT.no_labels) THEN
 
 	      slen = TM_LENSTR1(plot_title)
 
-*  Check for lon-360 issues?  Crossing the dateline
+*  Check for lon-360 issues? Crossing the dateline within features, 
+*  when longitude is in the obs direction.
 
               CALL GEOG_LABEL_VS (buff1, iunits, x_dim, axis_x_dir)
 
@@ -707,7 +713,7 @@ c	   IF ( .NOT.no_labels) THEN
 		 CALL GET_AXIS_FORMAT( ind_min, ind_max, delta, fmt, use_nice )
 
 		 IF (grid_is_dsg .AND. versus .AND. use_nice .AND.
-     .               axis_x_dir .EQ. x_dim) THEN
+     .               axis_x_dir.EQ.x_dim .AND. npts.NE.nfeatures) THEN
 		    
 		    user_hlim = pindeplim .GT. 0
 		    CALL PLOT_DSG_CHECK_LON360 (dset, cx, indep_dat, mr_bad_data(mv), 
@@ -816,7 +822,8 @@ c	   ENDIF
                  CALL GET_AXIS_FORMAT( ind_min, ind_max, delta, 
      .                  fmt, use_nice )
                  IF (use_nice) THEN
-                    IF (axis_x_dir .EQ. x_dim) THEN
+                    plot_axis(1) = 1
+		    IF (axis_x_dir .EQ. x_dim) THEN
                        ppl_buff = 'XFOR,('//fmt(:TM_LENSTR1(fmt))//
      .                  ',''''LONE'''')'
                        CALL PPLCMD ( from, line, 0, ppl_buff, 1, 1 )
@@ -830,6 +837,7 @@ c	   ENDIF
                        CALL PPLCMD ( from, line, 0, ppl_buff, 1, 1 )
                        CALL LON_LAT_FMT (y_dim, 'Y')
                        ul_dolab(y_dim) = .FALSE.
+		       plot_axis(1) = 2
                     ELSE
                        ppl_buff = 'XFOR,('//fmt(:TM_LENSTR1(fmt))//
      .                  ',''''LONE'''')' 
@@ -845,6 +853,7 @@ c	   ENDIF
                  WRITE ( ppl_buff, 3004 ) 'GREGORIAN'
                  CALL PPLCMD (from, line, 0, ppl_buff, 1, 1)
                  ul_dolab(t_dim) = .FALSE.
+		 plot_axis(1) = 4
 	      ELSE
                  CALL PPLCMD ( from, line, 0, 'XFOR 0', 1, 1 )	 
               ENDIF	 
@@ -1177,6 +1186,7 @@ c	      ul_dolab(t_dim) = .FALSE.  ! why was this added?
 		             ppl_buff = 'YFOR,('//fmt(:TM_LENSTR1(fmt))//
      .                       ',''''LONE'''')' 
 		             ul_dolab(x_dim) = .FALSE.
+		             plot_axis(1) = 1
 		          ENDIF
 
                        ELSEIF (axis_y_dir .EQ. x_dim) THEN
@@ -1184,6 +1194,7 @@ c	      ul_dolab(t_dim) = .FALSE.  ! why was this added?
      .                       ',''''LONE'''')' 
 		          mod_vs_y = .TRUE.
 		          ul_dolab(x_dim) = .FALSE.
+		          plot_axis(1) = 1
 
 		          IF (axis_x_dir .EQ. no_dim) THEN
 		             buff1 = VAR_UNITS(cx_x)
@@ -1193,16 +1204,19 @@ c	      ul_dolab(t_dim) = .FALSE.  ! why was this added?
 		                ppl_buff = 'XFOR,('//fmt(:TM_LENSTR1(fmt))//
      .                           ',''''LAT'''')'
 		                ul_dolab(y_dim) = .FALSE.
+		                plot_axis(1) = 2
 		             ENDIF
 		          ENDIF
                        ELSEIF (axis_y_dir .EQ. y_dim) THEN
                            ppl_buff = 'YFOR,('//fmt(:TM_LENSTR1(fmt))//
      .                       ',''''LAT'''')'
                            ul_dolab(y_dim) = .FALSE.
+		           plot_axis(2) = 2
                        ELSE
                            ppl_buff = 'YFOR,('//fmt(:TM_LENSTR1(fmt))//
      .                       ',''''LAT'''')' 
                            ul_dolab(y_dim) = .FALSE.
+		           plot_axis(2) = 2
                        ENDIF
 
                        CALL PPLCMD ( from, line, 0, ppl_buff, 1, 1 )
@@ -1215,6 +1229,7 @@ c	      ul_dolab(t_dim) = .FALSE.  ! why was this added?
                     WRITE ( ppl_buff, 3004 ) 'GREGORIAN'
                     CALL PPLCMD (from, line, 0, ppl_buff, 1, 1)
                     ul_dolab(t_dim) = .FALSE.
+		    plot_axis(2) = 4
 
 	         ELSE
                    CALL PPLCMD ( from, line, 0, 'YFOR 0', 1, 1 )	 

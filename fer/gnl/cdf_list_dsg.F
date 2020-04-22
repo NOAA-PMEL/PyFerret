@@ -51,7 +51,9 @@
 *         get set up, but it doesn't make any sense to apply them.  
 *  6/2019 *acm* MASK_DSG_OBSVAR call has changed, for use by trajectory-plotting 
 *  8/2019 *acm* Allow writing user-defined varaibles to DSG datasets
-* V751 *acm* 11/19 *acm* new qualifier SAVE/NOCOORDS: subroutine calls change.
+* V751 *acm* 11/19 new qualifier SAVE/NOCOORDS: subroutine calls change.
+* V76  *acm*  4/20 Fix when setting instance_var flag. 
+* V76  *acm*  4/20 Fix for data type, writing string data
 
         include 'netcdf.inc'
 #include "netcdf_declareUnderscore.inc"
@@ -100,7 +102,7 @@
      .			CGRID_SIZE, DSG_WHATS_IT, STR_DNCASE, TM_DSG_DSET_FROM_GRID,
      .			cx, mr, grid,  ivar, nready, lbuff, cdfstat, 
      .                  idim, i, recdim, do_bounds, cat, var, cat1, var1, 
-     .			iaxis, final_status, type, maxstrlen, 
+     .			iaxis, final_status, maxstrlen, 
      .			write_lo(nferdims), write_hi(nferdims), 
      .			lo_e(nferdims), hi_e(nferdims), 
      .			lo_o(nferdims), hi_o(nferdims), stride(nferdims),
@@ -177,6 +179,7 @@
 	   cx  = cx_list(ivar)
            IF (cx_data_set( cx ).GT.pdset_irrelevant .AND. cx_data_set(cx).NE.dset) GOTO 4200  ! error message for inconsistent datasets
 
+	   grid	= cx_grid( cx )
 	   instance_var(ivar) = DSG_WHATS_IT(grid) .EQ. pdsg_instance
 	   point_var(ivar) = CGRID_SIZE(cx) .EQ. 1
 	   IF (.NOT.point_var(ivar)   ) point_vars_only    = .FALSE.
@@ -185,6 +188,9 @@
 	   orientation = dsg_orientation(dset_num)
 	ENDDO
 
+	ivar = 1
+	cx  = cx_list(ivar)
+	grid	= cx_grid( cx )
 
 * The varid of the feature-id variable
  
@@ -729,7 +735,7 @@ c	IF (.NOT. instance_vars_only) THEN
 * Use the max string length from the originating dataset.
 * buff2 is dimension name for string-length.
 	   buff2 = " "
-	   IF (type .EQ. NF_CHAR .AND. dset .GE. 1) THEN
+	   IF (vartype .EQ. NF_CHAR .AND. dset .GE. 1) THEN
 	     buff2 = ""
 	     IF (dset_num.GE.1 .AND.(.NOT.itsa_uvar)) THEN
 	        CALL CD_GET_DS_DIMS (dset_num, vdims(1), buff2, len, status)
@@ -955,6 +961,7 @@ c	IF (.NOT. instance_vars_only) THEN
 	   dset_num = cx_data_set( cx )
 	   cat = cx_category(cx)
 	   var = cx_variable(cx)
+	   bad = mr_bad_data(mr)
 	   varcode = SANITARY_VAR_CODE( cat, var )
 	   itsa_uvar = cat .EQ. cat_user_var
 

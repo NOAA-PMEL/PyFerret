@@ -7,7 +7,8 @@ c set data/fmask=
 * feature-masks when computing feature-level masking which also may include 
 * context limits in the E direftion. Will deallocate line mem dsg_msk_lm on 
 * defining a new mask, closing the dataset, opr CANCEL DATA/FMASK
-
+* 
+* 4/20/2020 *acm* update to error message
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -31,7 +32,8 @@ c set data/fmask=
      .		i, ivar, grid, loc,  ndim, idir, npts, cx, mr1, 
      .		nfeatures, idim, dim(nferdims), attlen, varid, 
      .		attid, attype, attoutflag
-	CHARACTER FULL_VAR_TITLE*128, buff*128, mask_title*128
+	CHARACTER FULL_VAR_TITLE*128, TM_FMT*12,  
+     .		buff*128, mask_title*128
 	REAL	dummy
 
 c Make sure the name is ok
@@ -151,7 +153,8 @@ c find a variable in this dataset and test whether it's a dsg dataset
  5300	CALL ERRMSG (ferr_invalid_command, status,
      .'/FMASK is set only for Dicrete Sampling Geometries datasets',
      .               						*5000 )
- 5400	CALL ERRMSG (ferr_invalid_command, status,
-     .'Mask variable must be 1-dimensional, with length num-features',
-     .               						*5000 )
+ 5400	buff = TM_FMT(DBLE(nfeatures), 0, 12, i) 
+	CALL ERRMSG (ferr_invalid_command, status,
+     .'Mask variable must be 1-dimensional, with length num-features = '//
+     .   buff(:i),						*5000 )
 	END

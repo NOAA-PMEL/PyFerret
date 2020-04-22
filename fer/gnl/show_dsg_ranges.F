@@ -6,6 +6,8 @@
 * programmer - Ansley
 * NOAA/PMEL, Seattle, WA - Science Data Integration Group
 *  3/3/2020
+* 4/20/2020  *acm* Use MASKED_DSG_RANGE to get the range in each direction
+*            including nice longitudes corrected for modulo lon
 *
 	include 'tmap_dims.parm'
 #	include "tmap_dset.parm"
@@ -16,11 +18,11 @@
 	include	'ferret.parm'
 	include	'xtext_info.cmn'
 
-	INTEGER		dset, lun
+	INTEGER		dset, grid, lun
 	LOGICAL		showing_grid
 
 	INTEGER		STR_DNCASE,TM_LENSTR1, 
-     .			igrid, ndec, idim, dlen, status
+     .			igrid, ndec, cx, idim, dlen, status
 	REAL		TM_WORLD, lo, hi
 	CHARACTER	buff*16, line*255
 	
@@ -30,13 +32,15 @@
 	   CALL SPLIT_LIST(pttmode_explct, lun, line, 20)
 	ENDIF
 
-	igrid =  dsg_xlate_grid(dset)
 	ndec = 5
-	
+	igrid =  dsg_xlate_grid(dset)
+	cx = cx_none
+
 	DO idim = 1, t_dim
-		
-	   lo = TM_WORLD( 1, igrid, idim, box_middle )
-	   hi = TM_WORLD( line_dim(grid_line(idim, igrid)), igrid, idim, box_middle )
+
+	   lo = unspecified_val8
+	   hi = unspecified_val8
+	   CALL MASKED_DSG_RANGE (dset, cx, idim, lo, hi)
 	   IF (lo .EQ. unspecified_val8) CYCLE
 	
 	   CALL TRANSLATE_TO_WORLD( lo, idim, igrid, ndec, line )

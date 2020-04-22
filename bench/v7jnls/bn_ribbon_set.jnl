@@ -1,0 +1,33 @@
+! bn_ribbon_set.jnl
+! 4/20/20
+! Update in v7.6 allows PPL PLOT to work with any RIBBON plot 
+! both for DSG datasets and othehr RIBBON plots.
+! Previously needed to do RIBBON/SET []; ppl PLOT/RIBBON.
+
+use coads_climatology
+
+let/title=longitude/units longitude = x[gx=sst]
+ribbon/thick=3/y=0/l=1/set sst, longitude
+ppl shakey,1,0
+ppl ylab
+ppl plot
+
+! or a PLOT command for a DSG trajectory dataset which internally becomes a RIBBON
+! plot, but the user wouldn't be expected to know that.  So PLOT/SET must be
+! finished with PPL PLOT.
+
+use dsg_cross_dateline.nc
+plot/set/nolab temp
+  ppl shakey 1, 0, 0.1, 2, , , 2.5, 8.5, 8.1, 8.3
+  ppl plot
+
+!  Test with /OVER
+
+fill/l=1/pal=grayscale/title="COADS SST and Temperature from `temp,return=dset` (Deg C) "/x=145:195/y=15s:45  sst[d=1]
+
+! Ribbon plot of trajectory data
+plot/over/thick=3/nolab/key/set temp
+  ppl shakey 1, 0
+  ppl plot/over
+
+frame/file=ribbon_set_ppl_plot.gif

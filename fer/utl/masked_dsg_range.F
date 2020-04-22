@@ -5,6 +5,7 @@
 * directions, e.g. list/x= /y= affects the time range of data as well.
 * Return the data range after applying the current context with any constraints
 * This routine defines mask-array sizes and calls a subroutine to do the work.
+* V76  4/20 *acm*  use the dsg_xlate_grid virtual grid with DSG coordinate variables
 
         IMPLICIT NONE
 
@@ -21,7 +22,7 @@
 	INTEGER TM_DSG_NFEATURES, grid, nfeatures, nobs
 	REAL	min_obs, max_obs, low, hig
 
-	grid = cx_grid(cx)
+	grid = dsg_xlate_grid(dset)
 	nfeatures = TM_DSG_NFEATURES(grid)
 
 * max_obs, length of longest feature 

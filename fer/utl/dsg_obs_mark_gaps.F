@@ -116,7 +116,7 @@
 	ENDDO
 
 * End of last feature isn't a gap.
-	vals(nmasked) = 0.  
+	IF (nmasked.GT.0) vals(nmasked) = 0.  
 
 	RETURN
 	END

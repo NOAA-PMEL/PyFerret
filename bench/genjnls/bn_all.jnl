@@ -1330,6 +1330,9 @@ GO bn76_bug_fixes
 GO bn_reset bn_dsg_orth_labels
 GO bn_dsg_orth_labels
 
+GO bn_reset bn_ribbon_set
+GO bn_ribbon_set
+
 
 ! *********** PyFerret-specific scripts ***********
 

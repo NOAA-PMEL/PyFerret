@@ -154,8 +154,7 @@ C       (using 1 if cx_delta not specified; yes, the index order change is corre
  
         IF (STR_SAME (varname, '.') .EQ. 0) THEN
 
-           CALL CD_GET_DS_INFO (dset, ndims, nvars, ngatts, 
-     .               recdim, status)
+           ndims = nddims
 
            IF (STR_SAME(attname, 'varnames') .EQ. 0 ) THEN
 
@@ -172,7 +171,7 @@ C       (using 1 if cx_delta not specified; yes, the index order change is corre
                  CALL CD_GET_VAR_INFO (dset, i, name, vartype,
      .                nvdims, vdims, nvatts, coordvar, all_outflag, 
      .                status)
-                 IF (.NOT. coordvar) THEN
+                 IF (.NOT. coordvar .AND. name.NE.'ferRowSize') THEN
                     nv = nv + 1
                     IF (nv .GE. i1 .AND. nv .LE. i2) THEN
                        slen = TM_LENSTR1(name)

@@ -1,5 +1,7 @@
 	SUBROUTINE ATTR_CONTEXT (lo_cx, hi_cx, start, end, uvar, status)
 
+* Setup for returning attribute information as variables
+* 4/22/2020 Don't include "ferRowSize" virtual variable in ..varnames
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -182,11 +184,13 @@
            CALL CD_GET_DS_INFO (dset, ndims, nvars, ngatts, recdim, status)
      
 * Count number of non-coordinate variables.
+* Don't inclde a variable we created ferRowSize for some DSG files.
+
            nv = 0
            DO ivar = 1, nvars
               CALL CD_GET_VAR_INFO (dset, ivar, name, vartype, nvdims, 
      .                  vdims, nvatts, coordvar, all_outflag, status)
-              IF (.NOT. coordvar) nv = nv + 1
+              IF (.NOT. coordvar .AND. name.NE.'ferRowSize') nv = nv + 1
            ENDDO
 
            IF (STR_SAME(attname, 'varnames') .EQ. 0 ) THEN

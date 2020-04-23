@@ -67,7 +67,7 @@
 
 * internal variable declarations:
         LOGICAL one_or_other, ismod, its_dsg, ignore_depth
-	INTEGER i, idim, lm, orientation, obsdimlen, feature_line
+	INTEGER grid, i, idim, lm, orientation, obsdimlen, feature_line
 	REAL    GET_LINE_COORD, coord, ftr_lo(4,nfeatures), ftr_hi(4,nfeatures), 
      .		flo, fhi, axmod, bad, val
 
@@ -75,7 +75,8 @@
 
 * Will allow depth coordinates to be missing for timeseries or trajectory data
 
-	CALL TM_DSG_FACTS( cx_grid(cx), orientation, obsdimlen, feature_line, its_dsg )
+	grid = dsg_xlate_grid(dset)
+	CALL TM_DSG_FACTS( grid, orientation, obsdimlen, feature_line, its_dsg )
 	ignore_depth = orientation.EQ.pfeatureType_Trajectory .OR. 
      .                 orientation.EQ.pfeatureType_Point .OR. 
      .                 orientation.EQ.pfeatureType_TimeSeries
@@ -89,7 +90,8 @@
 !  4. clean out the stored masks (say?) when the dataset gets closed
 
 * initialize
-	CALL INIT_CXDSG(dset, cx, nfeatures)  ! summarize context ww limits
+	cxdsg_constrain_e = .FALSE.
+	IF (cx .GT. cx_none) CALL INIT_CXDSG(dset, cx, nfeatures)  ! summarize context ww limits
 
 * preset the features and obs masks based upon E constraints
 	IF (cxdsg_constrain_e) THEN
@@ -112,7 +114,7 @@
 	ENDIF
 
 * quick exit?
-	IF (cxdsg_no_coord_constraints) RETURN
+	IF (cxdsg_no_coord_constraints .OR. cx .EQ. cx_none) RETURN
 
 * get the coordinate extremes feature by feature
 	CALL DSG_FEATURE_LIMS(dset, nfeatures, ftr_lo, ftr_hi)

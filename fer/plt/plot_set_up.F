@@ -233,6 +233,8 @@
 * V760 *acm* 4/20 Issue 1973: For PLOT/VS when the units are degrees lon or lat, 
 *		  mark the axis direction info in plot_axes( ) so that overlays 
 *                 such as"go fland" will work. (DSG and non-DSG data.)
+* V760 *acm* 4/20 Similarly, if PLOT/VS and a depth coord var is on the vertical
+*                 axis, reverse the axis to run DEEP:SHALLOW
 
 
         IMPLICIT NONE
@@ -633,7 +635,9 @@
 	         npts = obsdimlen
 	         dsg_fmt_grid = dsg_xlate_grid(dset)
 	      ENDIF
+	      IF (dsg_feature_type(dset).EQ.pfeatureType_Point) expand_dsg_ok = .TRUE.
 	   ENDIF
+
 
 * ... Is this a dsg dataset and we're doing a DSG plot (not a native trajectory plot)  then 
 *     apply an obs mask. Resets npts.
@@ -1004,6 +1008,7 @@ c	      ul_dolab(t_dim) = .FALSE.
 *  create the gaps-var.  IF npts2 = nfeatures (e.g. a plot of lon vs lat for timeseries stations)
 *  then the gap-var will be all 0's, e.g. no gaps.
 	      cx = cx_list( 1 )
+	      IF (npts2 .NE. nfeatures) npts2 = obsdimlen
 	      CALL DSG_OBS_MARK_GAPS (dset, cx, nfeatures, npts2, dep_dat)
 	      status = ferr_ok
 	   
@@ -1632,12 +1637,7 @@ c		       ind_max = indep_dat(1) + 240*3600
 	         
 	         CALL AXIS_ENDS( dep_ax, the_taxis, grid, dep_min, dep_max, 
      .                        delta, dep_is_log, dep_axtyp, versus, status )
-	         IF ( status .NE. ferr_OK ) THEN
-                    first = dep_min
-                    last  = dep_max
-                    GOTO 5170
-                 ENDIF
-		    
+
 	      ENDIF
 
 * Do the dependent variable(s) have units of time? If not then don't send 
@@ -1664,11 +1664,6 @@ c		       ind_max = indep_dat(1) + 240*3600
 
 	      CALL AXIS_ENDS( dep_ax, the_taxis, grid, dep_min, dep_max, 
      .                        delta, dep_is_log, dep_axtyp, versus, status )
-	      IF ( status .NE. ferr_OK ) THEN
-                 first = dep_min
-                 last  = dep_max
-                 GOTO 5170
-              ENDIF
 
 	   ELSEIF ( all_1_dep ) THEN
 	      IF (only_val .EQ. bad_val4) val1 = 0.0	! 10/99
@@ -1677,11 +1672,7 @@ c		       ind_max = indep_dat(1) + 240*3600
 	      
 	      CALL AXIS_ENDS( dep_ax, the_taxis, grid,val1-delta,val1+delta,delta,
      .                        dep_is_log, dep_axtyp, versus, status )   
-	      IF ( status .NE. ferr_OK ) THEN
-                  first = val1-delta
-		  last  = val1+delta
-		  GOTO 5170
-	      ENDIF   
+
 	   ELSEIF (dep_is_log) THEN	! get dependent var scaling and set up log axis
 	      CALL MINMAX( dep_dat, npts, mr_bad_data(mv), lo, hi, nok )
 	      IF (nok .EQ. 0) GOTO 5171  ! all missing
@@ -1690,12 +1681,31 @@ c		       ind_max = indep_dat(1) + 240*3600
 	      
 	      CALL AXIS_ENDS( dep_ax, the_taxis, grid, dep_min, dep_max, 
      .                        delta, dep_is_log, dep_axtyp, versus, status )
-	      IF ( status .NE. ferr_OK ) THEN
-                 first = dep_min
-                 last  = dep_max
-                 GOTO 5170
-              ENDIF
 
+	   ELSE 
+       
+	      IF (its_dsg .AND. versus) THEN  ! /vs plot with depth as an axis?
+	         dsg_fmt_grid = dsg_xlate_grid(dset)
+	         cx = cx_list( 2 )
+	         iaxis = grid_line(z_dim,dsg_fmt_grid)
+	         IF (cx_variable(cx) .EQ. dsg_coord_var(z_dim,dset) .AND. 
+     .       	     line_direction(iaxis) .EQ. "UD") THEN
+	            tmp = dep_min
+	            dep_min = dep_max
+	            dep_max = tmp
+	         ENDIF
+
+	         delta = unspecified_val8
+	         CALL AXIS_ENDS( dep_ax, the_taxis, grid, dep_min, dep_max, 
+     .                        delta, dep_is_log, dep_axtyp, versus, status )
+	      ENDIF
+
+     
+	   ENDIF
+	   IF ( status .NE. ferr_OK ) THEN
+	      first = dep_min
+	      last  = dep_max
+	      GOTO 5170
 	   ENDIF
 
 *   When not an overlay, set the axis type to log or reverse log
@@ -1738,7 +1748,7 @@ c		       ind_max = indep_dat(1) + 240*3600
 	hlen = xlen ! single-precision xlen from PPLUS common -> double prec. var
 
         IF (x_is_time .OR. y_is_time) THEN
-           ul_dolab(the_taxis) = .FALSE.
+           ul_dolab(t_dim) = .FALSE.
            READ (t1_date(13:14), *) cen
            READ (t1_date(1:2), *) yr
            ind_min = 100*cen + yr 

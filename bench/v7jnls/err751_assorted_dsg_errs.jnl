@@ -1,0 +1,79 @@
+
+! err751_assorted_dsg_errors
+! A collection of errors when working with DSG datasets
+!   - PLOT/VS plots that are not the native dsg-plot style
+!   - A few details in workin with Point data.
+
+! PLOT/VS plot (not native profile plot) where the region given doesn't
+! correspond to any data in the dataset.
+
+! previously resulted in a runtime error
+use profile_dsg2.nc 
+ribbon/vs/thick/x=-118:-112 pot_temp_degc, latitude, sal
+
+
+! Now check that a PLOT/VS plot with depth on the vertical axis is 
+! drawn with depth positive down.  should run min=33, max=2
+
+plot/ribbon/vs/sym/thick sal, depth, pot_temp_degc
+show sym yax*
+
+can data/all
+
+! error saving string data on an instance axis.
+
+use DSG_ERDDAP_pmelTao5daySst.nc
+
+! This had  a data-type warning
+save/clobber/file=a.nc t_25, wmo_platform_code
+
+! This crashed Ferret
+save/clobber/file=a.nc t_25, qt_5025, array, wmo_platform_code
+
+can data/all; use a
+list/e=10:15  wmo_platform_code, array 
+
+
+can data/all
+
+! Constrain point data in x-y, the plot should subset in T
+
+use dsg_point_data.nc
+set view upper; ribbon/vs/thick/sym=19/siz=0.2 time, sst, sst
+show sym xax*
+set view lower; ribbon/vs/thick/sym=19/siz=0.2/x=-115:-100/y=16:18 time, sst, sst
+show sym xax*
+
+
+
+can data/all
+
+! Trajectory data. 
+
+use sail_2019.nc
+
+! this plot was missing the longitude label in the upper left
+
+set view upper
+ribbon/vs/thick  time, TEMP_CTD_RBR_MEAN, longitude
+show sym lab($labnum_x), lab($labnum_y)
+
+! This ribbon command caused a crash
+set v lower
+ribbon/vs/thick/y=54.9:55.2   time, TEMP_CTD_RBR_MEAN, longitude
+
+
+can data/all
+
+! PLOT/SET didn't work when plotting dsg data types when the PLOT is
+! internally defining a RIBBON plot.  Would have needed PPL RIBBON,
+! but that's inconvenient to expect the user to know. Change so that 
+! RIBBON/SET can be finished with PPL PLOT.  
+
+
+use dsg_cross_dateline.nc
+plot/set/nolab temp
+  ppl shakey 1, 0, 0.1, 2, , , 2.5, 8.5, 8.1, 8.3
+  ppl plot
+
+

@@ -134,6 +134,7 @@
 * V751 7/19 *acm*  DSG-enabled Ferret: More control of line legends with PLOT/KEY and PLOT/NOKEY
 * V751 8/19 *acm*  DSG-enabled Ferret: argumemnt to ITSA_DSG_TRAJ is no longer a dummy
 * V76  1/20 *acm*  working with Point-type dsg data
+* V76  4/20 *acm*  New flag ribbon_on so that RIBBON/SET; PPL PLOT works correctly
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -461,6 +462,8 @@ CC       => Set values here instead.
 	   ENDDO
 
 	ENDIF
+
+	ribbon_on = ribbon_plot  !  Flag to PPLUS in LINES.INC
 
 * A "gaps" variable specifies the end of line segments to draw.
 * Implemented only for PLOT/VS/RIBBON

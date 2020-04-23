@@ -26,5 +26,5 @@
 	INTEGER gap_var
 	INTEGER nskpsym
 * For ribbon-plots: line plots colored-by a variable
-	LOGICAL RIBBON_FAST
+	LOGICAL RIBBON_FAST, ribbon_on
 * requires: INCLUDE 'PPLV11INC:LINES.INC'                                   

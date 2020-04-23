@@ -97,6 +97,8 @@
 * V76  1/20 *acm* working with Point-type dsg data 
 * V76  2/20 *acm* move the code for listin the DSG coordinate ranges
 *                 to its own routine, also called by SHOW GRID.
+* V76  2/20 *acm* Clean up the SHOW DATA/FULL output for DSG grids -
+*                 coordinate info is only at the end of the listing
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -506,9 +508,10 @@
 	      line = ' '
 	      len = 1
 	      DO 300 i = 1, listdims
+	         IF (its_dsg) CYCLE  ! DSG coords summarized later.
 	         IF ( grid_line(i,grid) .NE. mnormal ) THEN
 
-	            IF (i .NE. t_dim) THEN  ! Skip time dim
+		    IF (i .NE. t_dim) THEN  ! Skip time dim
 
 	               lo = TM_WORLD( ds_grid_start(i,ivar), grid, i, box_lo_lim )
 	               hi = TM_WORLD( ds_grid_end  (i,ivar), grid, i, box_hi_lim )

@@ -111,28 +111,3 @@
 
 	RETURN
 	END
-
-c	SUBROUTINE DSG_BAD_VAL (var, badval)
-c
-c        include 'tmap_dims.parm'
-c#       include "tmap_dset.parm"
-c        include 'tmap_errors.parm'
-c        include 'xdset_info.cmn_text'
-c
-c
-c	INTEGER dset, var
-c	REAL badval
-c
-c	INTEGER ivar
-c
-c	
-c	DO ivar = 1, maxvars
-c	   IF ( ds_var_setnum(ivar) .NE. dset ) CYCLE
-c           IF ( var .EQ. cd_varid(ivar) ) THEN
-c	      badval = ds_bad_flag(ivar)
-c	      EXIT
-c	   ENDIF
-c	ENDDO
-c
-c	RETURN
-c	END

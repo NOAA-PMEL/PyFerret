@@ -113,7 +113,7 @@
 * V73+ 1/18 *acm*  Changes for Issue 1009; precsision in time info sent to pplus for 2D plots
 * V74  *acm* -11/18 Issue #1900 Fixes for tic marks and PLOT/OVERLAY with short-interval time
 * v744 *acm* 11/18 Issue 1786: graticule lines & axes drawn if PLOT/OVER/AXES given
-
+* v76  *acm*  4/20 New flag ribbon_on so that RIBBON/SET; PPL PLOT works correctly
 
 *****************************************************
 
@@ -222,6 +222,7 @@ C	SETUP AXIS FOR ALL PLOT TYPES.
 	IF ( PPL_in_FERRET ) CALL SEG_ON( )                              
 ***********************************************
 	CALL COLOR(IPEN(0))
+	IF (MAKEP .EQ. 'PLOT'. AND.ribbon_on) MAKEP = 'RIBPLOT'
 	IF(.NOT.SOVER)THEN
 	    is_ribbon = MAKEP.EQ.'RIBPLOT'
 	    CALL SETAX(X,NXS,XF,YF,XL,YL,XH,YH,NMX,NMY,XTI,XTL,is_ribbon)

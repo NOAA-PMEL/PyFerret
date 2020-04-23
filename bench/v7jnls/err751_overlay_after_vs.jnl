@@ -2,7 +2,7 @@
 ! issue 1973
 ! 4/9/2020
 
-! PLOT/VS with variables representin lon,lat
+! PLOT/VS with variables representing lon,lat
 
 let/units=degrees_east xlon = {250,300,320,330,340,350,360}
 let/units=degrees_north ylat = {0,10,20,30,40,50,60}

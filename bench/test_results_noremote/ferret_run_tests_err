@@ -6629,6 +6629,8 @@ load sst[d=1,g=vari[d=2]]
 Executed by script: *** GO bn_dsg_point_data.jnl ***
 *** Running ferret script: bn_dsg_show_grid.jnl
 *** Running ferret script: bn_dsg_no_data.jnl
+*** Running ferret script: bn_dsg_orth_labels.jnl
+*** Running ferret script: bn_dsg_fcn_of_instance.jnl
 *** Running ferret script: bn751_bug_fixes.jnl
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -6736,6 +6738,9 @@ ooooooooooooooooooooooooooooooooooooooooooo
            *** NOTE: They will not be convertible:
            *** NOTE: Units on axis "j" are not recognized: 1
            *** NOTE: They will not be convertible:
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
 *** Running ferret script: bn_cdf_strlen.jnl
  LISTing to file a.nc
  LISTing to file a.nc
@@ -6792,6 +6797,15 @@ show attributes 'z'
 Executed by script: *** GO err75_vars_reserved_keywords ***
  LISTing to file a.nc
  LISTing to file a.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
+ LISTing to file a.nc
+ LISTing to file a.nc
+*** Running ferret script: bn_ribbon_set.jnl
 *** Running ferret script: bn_gif_noremote.jnl
  **ERROR: dimensions improperly specified: specified data is not a line
            - its a 2D region: "plot/i=1:10/j=1:20/nolabel i+j"

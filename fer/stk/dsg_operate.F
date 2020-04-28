@@ -50,6 +50,7 @@
 * V7.2 *sh* 5/17 - patterned on OPERATE.F
 * V7.5 *acm* 7/19 -fixes to indexing for some operations
 * V7.51 *acm* 8/19 - more fixes to indexing for some operations
+* V7.5  *acm* 4/20 - more fixes to indexing for some operations, atan2,...
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -1736,8 +1737,7 @@
 	      ELSE
 	         res(iobs) = ATAN2 (arg1, arg2)
 	      ENDIF
-	   RETURN
-           ENDDO
+	   ENDDO
 
            base = base + flen
         ENDDO
@@ -2211,9 +2211,8 @@
 	      ELSE
 	         CALL RANDOM_NUMBER( res(iobs) )
 	      ENDIF
-	   RETURN
+	   
            ENDDO
-
            base = base + flen
         ENDDO
 	base = 0
@@ -2276,8 +2275,6 @@
               ELSE
                  res(iobs) = RANDN2(0)
               ENDIF
-
-	   RETURN
            ENDDO
 
            base = base + flen

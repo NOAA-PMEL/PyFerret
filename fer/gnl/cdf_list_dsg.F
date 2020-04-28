@@ -54,6 +54,7 @@
 * V751 *acm* 11/19 new qualifier SAVE/NOCOORDS: subroutine calls change.
 * V76  *acm*  4/20 Fix when setting instance_var flag. 
 * V76  *acm*  4/20 Fix for data type, writing string data
+* V76  *acm*  4/20 Additions for writing subsets of point datasets
 
         include 'netcdf.inc'
 #include "netcdf_declareUnderscore.inc"
@@ -96,7 +97,8 @@
      .                  its_dsg, has_mask, have_dimname,
      .                  instance_coord(4), relevant_coord(4),
      .                  instance_var(nvars), point_var(nvars),
-     .                  instance_vars_only, point_vars_only, synthetic_rowsiz, ragged
+     .                  instance_vars_only, point_vars_only, synthetic_rowsiz, 
+     .                  ragged, no_id
 
 	INTEGER		TM_LENSTR1, GET_MAX_C_STRING_LEN, STR_SAME,MGRID_SIZE, 
      .			CGRID_SIZE, DSG_WHATS_IT, STR_DNCASE, TM_DSG_DSET_FROM_GRID,
@@ -259,30 +261,54 @@
 * Find the number of features to list after masking, and the count
 * of obs to write after masking.
 
-	row_size_lm = dsg_loaded_lm(dsg_row_size_var(dset))
+* If the incoming file has no rowsize and if there is just one feature, we treat 
+* the dataset as a 1-D DSG file and we have synthezised a RowSize for internal use.
+* In this case skip writing a RowSize.
+* also skip RowSize if it's a point-type dataset
+ 
+	varid = dsg_row_size_varid(dset)
+	synthetic_rowsiz = (varid .EQ. unspecified_int4) 
 
-	n_feat = 0
-	base = 0     ! obs index at end of preceding feature
-	n_obs = 0     
-	DO ifeature = 1, nfeatures
-	  nobsf = dsg_linemem(row_size_lm)%ptr(ifeature)  ! feature length
-	  IF (process_feature(ifeature)) THEN
+	IF (synthetic_rowsiz) THEN
+
+	   n_feat = 1
+	   n_obs = nobs_in
+	   IF (orientation .EQ. e_dim) THEN
+	      
+	      n_feat = 0
+	      DO ifeature = 1, nfeatures
+	        IF (process_feature(ifeature)) n_feat = n_feat + 1
+	      ENDDO
+	      n_obs = n_feat
+	   ENDIF
+
+	ELSE
+	   row_size_lm = dsg_loaded_lm(dsg_row_size_var(dset))
+
+	   n_feat = 0
+	   base = 0     ! obs index at end of preceding feature
+	   n_obs = 0     
+	   DO ifeature = 1, nfeatures
+	     nobsf = dsg_linemem(row_size_lm)%ptr(ifeature)  ! feature length
+	     IF (process_feature(ifeature)) THEN
 
 * ... get observation-level mask for this feature
-	     CALL MAKE_DSG_OBS_MASK(dset, cx, ifeature, base, process_obs, nobsf)
-	     fobs = 0
-	     DO iobs = 1, nobsf
-	        IF (process_obs(iobs)) fobs = fobs + 1
-	     ENDDO
-	     IF (fobs .GT. 0) THEN
-	        n_obs = n_obs + fobs
-		n_feat = n_feat + 1
-	     ELSE
-	        process_feature(ifeature) = .FALSE.
-	     ENDIF
-	  ENDIF
-	  base = base + nobsf
-	ENDDO
+	        CALL MAKE_DSG_OBS_MASK(dset, cx, ifeature, base, process_obs, nobsf)
+	        fobs = 0
+	        DO iobs = 1, nobsf
+	           IF (process_obs(iobs)) fobs = fobs + 1
+	        ENDDO
+	        IF (fobs .GT. 0) THEN
+	           n_obs = n_obs + fobs
+		   n_feat = n_feat + 1
+	        ELSE
+	           process_feature(ifeature) = .FALSE.
+	        ENDIF
+	    ENDIF
+	     base = base + nobsf
+	   ENDDO
+
+	ENDIF
 
 * Empty request is an error
 	IF (n_feat .EQ. 0) GOTO 4300  ! 
@@ -410,7 +436,12 @@ c	IF (.NOT. instance_vars_only) THEN
 	count = 0
 	base = 0     ! obs index at end of preceding feature
 	DO ifeature = 1, nfeatures
-	  nobsf = dsg_linemem(row_size_lm)%ptr(ifeature)  ! feature length
+	  IF (synthetic_rowsiz) THEN
+	     nobsf = n_obs
+	     IF (orientation .EQ. e_dim) nobsf = 1
+	  ELSE
+	     nobsf = dsg_linemem(row_size_lm)%ptr(ifeature)  ! feature length
+	  ENDIF
 	  IF (process_feature(ifeature)) THEN
 
 * ... get observation-level mask for this feature
@@ -451,7 +482,7 @@ c	IF (.NOT. instance_vars_only) THEN
 	ENDIF
 	outtype = vartype
 	
-	CALL CDF_SET_OUT_TYPE (dset, varid, itsa_uvar, 
+	CALL CDF_SET_OUT_TYPE (dset, fvar_varid, itsa_uvar, 
      .                itsa_string, out_type, outtype, status)
 
 	grid = egrid
@@ -463,7 +494,15 @@ c	IF (.NOT. instance_vars_only) THEN
 	lo_e(e_dim) = 1
 	hi_e(e_dim) = n_feat
 
-	CALL CD_MAKE_VAR( cdfid, dset, varcode, outtype, maxstrlen,
+	attname = 'cf_role'
+	got_it = NC_GET_ATTRIB (
+     .		  	     dset, fvar_varid, attname, .FALSE., ftrname,
+     .		  	     maxlen, attlen, attoutflag, buff1, vals)
+
+	no_id = (orientation.EQ.e_dim .AND. .NOT.got_it)   ! ?? or just .NOT.got_it ??
+	
+	IF (.NOT. no_id) THEN
+	   CALL CD_MAKE_VAR( cdfid, dset, varcode, outtype, maxstrlen,
      .               grid, lo_e, hi_e, recdim, enhead, new, 
      .               edges_flag, do_bounds, mode_upcase_output, 
      .               keepax_flag, date_fmt_out,
@@ -474,31 +513,33 @@ c	IF (.NOT. instance_vars_only) THEN
 
 * ... Set attributes for feature-id variable
 
-	attname = 'long_name'
-	got_it = NC_GET_ATTRIB (
+	   attname = 'long_name'
+	   got_it = NC_GET_ATTRIB (
      .		  	     dset, fvar_varid, attname, .FALSE., ftrname,
      .		  	     maxlen, attlen, attoutflag, buff1, vals)
 
-	IF (status .NE. ferr_ok) buff1 = ftrname(:slen)//' ID'
-	lbuff = TM_LENSTR1(buff1)
+	   IF (status .NE. ferr_ok) buff1 = ftrname(:slen)//' ID'
+	   lbuff = TM_LENSTR1(buff1)
 	
-	CALL CD_WRITE_ATTRIB(cdfid, varcode, attname,
+	   CALL CD_WRITE_ATTRIB(cdfid, varcode, attname,
      .                              buff1(:lbuff), .FALSE., status )
      
-	attname = 'cf_role'
-	got_it = NC_GET_ATTRIB (
+	   attname = 'cf_role'
+	   got_it = NC_GET_ATTRIB (
      .		  	     dset, fvar_varid, attname, .FALSE., ftrname,
      .		  	     maxlen, attlen, attoutflag, buff1, vals)
 
-	IF (status .NE. ferr_ok) THEN
-	   status = STR_DNCASE(buff1, ftrname)
-	   slen = TM_LENSTR1(buff1)
- 	   buff1 = ftrname(:slen)//'_id'
-	ENDIF
+	   IF (status .NE. ferr_ok) THEN
+	      status = STR_DNCASE(buff1, ftrname)
+	      slen = TM_LENSTR1(buff1)
+ 	      buff1 = ftrname(:slen)//'_id'
+	   ENDIF
 
-	lbuff = TM_LENSTR1(buff1)
-	CALL CD_WRITE_ATTRIB(cdfid, varcode, attname,
+	   lbuff = TM_LENSTR1(buff1)
+	   CALL CD_WRITE_ATTRIB(cdfid, varcode, attname,
      .                              buff1(:lbuff), .FALSE., status )
+
+	ENDIF  ! no_od
 
 
 * ... Now define the rowSize var. It has the same output grid.
@@ -507,11 +548,6 @@ c	IF (.NOT. instance_vars_only) THEN
 	
 	varid = dsg_row_size_varid(dset)
 
-* If the incoming file has no rowsize and if there is just one feature, we treat 
-* the dataset as a 1-D DSG file and we have synthezised a RowSize for internal use.
-* In this case skip writing a RowSize
-
-	synthetic_rowsiz = (varid .EQ. unspecified_int4) 
 	IF (.NOT. synthetic_rowsiz) THEN
 	   CALL CD_GET_VAR_VARNAME (dset, varid, varcode, status)
 
@@ -644,14 +680,16 @@ c	IF (.NOT. instance_vars_only) THEN
 	   bad = mr_bad_data(mr)
 
 
-* Check that they haven't asked to write the feature-variable, rowsize, 
+* Check that they haven't asked to write the feature-id variable, rowsize, 
 * or a coordinate. Those are already done.
 
 	   CALL CD_GET_VAR_VARNAME (dset, fvar_varid, varname, status)
 	   IF (STR_SAME(varcode, varname) .EQ. 0) CYCLE
 
-	   CALL CD_GET_VAR_VARNAME (dset, dsg_row_size_varid(dset), varname, status)
-	   IF (STR_SAME(varcode, varname) .EQ. 0) CYCLE
+	   IF (.NOT.synthetic_rowsiz) THEN
+	      CALL CD_GET_VAR_VARNAME (dset, dsg_row_size_varid(dset), varname, status)
+	      IF (STR_SAME(varcode, varname) .EQ. 0) CYCLE
+	   ENDIF
 	   
 	   DO idim = 1, 4
 	      IF ( relevant_coord(idim) ) THEN
@@ -834,23 +872,26 @@ c	IF (.NOT. instance_vars_only) THEN
 * ... Mask the feature-id variable for writing
 	
 *	which mr goes with feature-var
-	CALL MASK_DSG_FVAR ( nfeatures, process_feature, dset, 
+	
+	IF (.NOT. no_id) THEn
+	   CALL MASK_DSG_FVAR ( nfeatures, process_feature, dset, 
      .              memry(featr_mr)%ptr, lineedg(line_fcoord)%ptr )
 
-	DO idim = 1, nferdims
-	    write_lo(idim) = unspecified_int4
-	    write_hi(idim) = unspecified_int4
-	ENDDO
-	write_lo(e_dim) = 1
-	write_hi(e_dim) = n_feat
+	   DO idim = 1, nferdims
+	       write_lo(idim) = unspecified_int4
+	       write_hi(idim) = unspecified_int4
+	   ENDDO
+	   write_lo(e_dim) = 1
+	   write_hi(e_dim) = n_feat
 
-	CALL CD_GET_VAR_VARNAME (dset, fvar_varid, varcode, status)
+	   CALL CD_GET_VAR_VARNAME (dset, fvar_varid, varcode, status)
 
-        grid = egrid
-	CALL CD_WRITE_DSG_DATA (cdfid, varcode, grid, 
+           grid = egrid
+	   CALL CD_WRITE_DSG_DATA (cdfid, varcode, grid, 
      .                 write_lo, write_hi, lineedg(line_fcoord)%ptr, 
      .                 mode_upcase_output, bad, status )
 
+	ENDIF  ! no_id
 
 * ... Compute the output obs len to write using RowSizes of masked data 
 *     values; mask may select only part of a given feature
@@ -973,7 +1014,7 @@ c	IF (.NOT. instance_vars_only) THEN
            CALL CD_GET_VAR_VARNAME (dset, fvar_varid, varname, status)
 	   IF (STR_SAME(varcode, varname) .EQ. 0) CYCLE
 
-	   IF (dset .GT. pdset_irrelevant) THEN
+	   IF (dset .GT. pdset_irrelevant .AND. .NOT.synthetic_rowsiz) THEN
 	      CALL CD_GET_VAR_VARNAME (dset, dsg_row_size_varid(dset), varname, status)
 	      IF (STR_SAME(varcode, varname) .EQ. 0) CYCLE
 	   ENDIF
@@ -1048,9 +1089,16 @@ c	IF (.NOT. instance_vars_only) THEN
 	      write_lo(orientation) = 1
 	      write_hi(orientation) = n_obs
 
-	      CALL MASK_DSG_OBSVAR ( nfeatures, process_feature, process_obs,
-     .            dsg_linemem(row_size_lm)%ptr, dset_dsg, cx, 
-     .            memry(mr)%ptr, lineedg(line_obscoord)%ptr, nmasked )
+	      IF (synthetic_rowsiz) THEN
+		 val = n_obs  ! stand-in for rowsize
+		 CALL MASK_DSG_OBSVAR ( nfeatures, process_feature, process_obs,
+     .               val, dset_dsg, cx, 
+     .               memry(mr)%ptr, lineedg(line_obscoord)%ptr, nmasked )
+	      ELSE
+	        CALL MASK_DSG_OBSVAR ( nfeatures, process_feature, process_obs,
+     .               dsg_linemem(row_size_lm)%ptr, dset_dsg, cx, 
+     .               memry(mr)%ptr, lineedg(line_obscoord)%ptr, nmasked )
+	      ENDIF
 
 	      CALL CD_WRITE_DSG_DATA (cdfid, varcode, grid, 
      .                 write_lo, write_hi, lineedg(line_obscoord)%ptr, 

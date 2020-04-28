@@ -1,0 +1,10 @@
+! err751_dsg_atan2_randu2
+! Test fixes for ATAN2 function and RANDU2 function for DSG data.     
+
+! previously these both failed to do the computation, returned a flag of -12345
+! Do not list randu2 results; they change with each run.
+
+use ../bench/data/dsg_cross_prime.nc
+list atan2(lons, lats),  randu(lons) ! , randu2(lons,-1)
+
+

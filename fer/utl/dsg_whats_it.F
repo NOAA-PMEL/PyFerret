@@ -86,5 +86,7 @@
 	   DSG_WHATS_IT = pdsg_observation
 	ENDIF
 
+	IF (orient .EQ. e_dim) DSG_WHATS_IT = pdsg_instance
+
         RETURN
         END

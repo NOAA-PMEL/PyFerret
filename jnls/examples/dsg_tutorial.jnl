@@ -42,7 +42,7 @@ SET MODE VERIFY      ! show command file lines at the screen
 ! ********************************************************************
 pause
 
-USE DSG_pmelTao5daySst_timeseries.nc
+USE dsg_pmelTao5daySst_timeseries.nc
 show data
 
 ! ********************************************************************
@@ -115,7 +115,7 @@ pause
 let wmo_mask = IF wmo_platform_code EQ 51011 \
      OR wmo_platform_code EQ 52313 then 1
 
-use/fmask=wmo_mask DSG_pmelTao5daySst_timeseries.nc
+use/fmask=wmo_mask dsg_pmelTao5daySst_timeseries.nc
 
 list/t=1-jan-2017:25-feb-2017 t_25
 
@@ -138,7 +138,7 @@ cancel variable/all
 ! ********************************************************************
 pause
 
-use DSG_pmelChukchi_subset
+use dsg_pmelChukchi_profiles_subset
 show data
 
 plot den
@@ -165,7 +165,7 @@ set window/clear/siz=0.4/asp=0.7
 ! plot.  The usual plot qualifiers apply, setting color levels, palette,
 ! and so on.
 
-use DSG_socat_trajectory_subset.nc
+use dsg_socat_trajectory_subset.nc
 plot/thick/palette=plasma fco2_recommended
 go fland 5 black
 
@@ -190,7 +190,7 @@ set window/clear/siz=0.4/asp=0.6
 ! as a set of time series. Change to a timeseries view with USE/FEATURETYPE.
 ! This can be applied when first opening the data or on an open dataset.
 
-use/featuretype=timeseries DSG_socat_trajectory_subset.nc
+use/featuretype=timeseries dsg_socat_trajectory_subset.nc
 plot fco2_recommended
 
 ! ********************************************************************
@@ -210,7 +210,7 @@ cancel variable/all
 ! Returning to our timeseries dataset, compute the maximum temperature reached
 ! and the number of valid data in each time series during Jan-March of 2017
 
-use DSG_pmelTao5daySst_timeseries
+use dsg_pmelTao5daySst_timeseries
 
 LET t_max = t_25[T=1-JAN-2017:31-Mar-2017@MAX]
 LET t_ngood = t_25[T=1-JAN-2017:31-MAR-2017@NGD]
@@ -230,7 +230,7 @@ pause
 ! Open an NCEP reanalysis dataset and compare the potential temperature
 ! data with the TAO buoy Timeseries data.
 
-use DSG_pmelTao5daySst_timeseries
+use dsg_pmelTao5daySst_timeseries
 use http://www.esrl.noaa.gov/psd/thredds/dodsC/Datasets/ncep.reanalysis/surface/pottmp.sig995.2017.nc
 
 show data 2

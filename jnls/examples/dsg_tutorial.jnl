@@ -99,7 +99,7 @@ pause
 
 PLOT/thick t_25[x=130e:170e,y=8s:5n,T=1-FEB-2017:15-APR-2017]
 
-! or equivalently, PLOT/THICK/x=130e:170e/y=8s:5n/T=1-FEB-2017:15-APR-2017
+! or equivalently, PLOT/THICK/x=130e:170e/y=8s:5n/T=1-FEB-2017:15-APR-2017 T_25
 
 ! ********************************************************************
 pause
@@ -141,7 +141,8 @@ pause
 use dsg_pmelChukchi_profiles_subset
 show data
 
-plot den
+plot sigma_t
+pause
 
 ! Another plot style uses the RIBBON/VS plot command, with 3 arguments: the 
 ! locations in two directions, and the variable to use for color. Time on the 

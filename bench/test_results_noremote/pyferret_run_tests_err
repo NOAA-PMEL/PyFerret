@@ -6831,6 +6831,9 @@ ooooooooooooooooooooooooooooooooooooooooooo
 ooooooooooooooooooooooooooooooooooooooooooo
  LISTing to file a.nc
  LISTing to file a.nc
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
 *** Running ferret script: bn_ribbon_set.jnl
 *** Running ferret script: bn_gif_noremote.jnl
  **ERROR: dimensions improperly specified: specified data is not a line

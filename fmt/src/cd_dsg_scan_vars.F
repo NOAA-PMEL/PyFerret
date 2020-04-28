@@ -436,7 +436,7 @@
 
 * Point type data does not have a RowSize variable and may not have a feature-id variable.
 * All the variables are on the instance axis, so find that axis in the first variable
-* and nominally set the feature-id variable to variable 1 and obs_dimlen to e-axis length
+* and nominally set the feature-id variable to the time variable and obs_dimlen to e-axis length
 
 	IF (dsg_feature_type(dset) .EQ. pfeatureType_Point) THEN
 	   IF (.NOT. has_DSG_feature_id ) THEN
@@ -455,7 +455,7 @@
 	      cdfstat = NF_INQ_DIMLEN(cdfid, vdims(1), eax_len)
 
 	      has_DSG_feature_id = .TRUE.
-	      dsg_feature_var(dset) = ivtm 
+	      dsg_feature_var(dset) = dsg_coord_var(t_dim,dset) 
 	      dsg_instance_dim = vdims(1)
 	      dsg_obs_dimlen(dset) = eax_len
 	      dsg_row_size_var(dset) = 1

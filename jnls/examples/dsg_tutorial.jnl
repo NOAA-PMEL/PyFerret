@@ -14,7 +14,7 @@ set mode ignore
 set redirect/journal stderr
 
 use dsg_Tao5daySst_timeseries.nc
-let ok = `T_25,return=isready 
+let ok = `T_25,return=isready`
 if `ok eq 0` THEN
    SAY The DSG example datasets are not installed. Update the datasets at \
 https://github.com/NOAA-PMEL/FerretDatasets
@@ -31,7 +31,6 @@ CANCEL REGION
 CANCEL VARIABLES/ALL
 CANCEL DATA/ALL
 CANCEL VIEWPORTS
-SET WINDOW/SIZE=0.7/ASPECT=.75:axis   ! default
 CANCEL MODE LOGO
 
 
@@ -86,6 +85,8 @@ pause
 !    time range: 15-JAN-2017 12:00 to 21-APR-2017 12:00
 ! ********************************************************************
 pause
+
+SET WINDOW/SIZE=0.7/ASPECT=.75:axis   ! default
 
 ! Graphics
 ! Each feature type has a native plot type "PLOT VAR"
@@ -174,7 +175,7 @@ pause
 ! horizontal axis will result in a formatted time axis. Or specify Longitude 
 ! or latitude on the horizontal axis.
 
-ribbon/vs/vlim=160:0 time, depth, sal
+ribbon/vs/thick time, depth, sal
 
 
 ! ********************************************************************
@@ -192,7 +193,7 @@ set window/clear/siz=0.4/asp=0.7
 ! and so on.
 
 use dsg_socat_trajectory_subset.nc
-plot/thick/palette=plasma fco2
+plot/thick/palette=plasma fco2_recommended
 go fland 5 black
 
 ! ********************************************************************
@@ -217,7 +218,7 @@ set window/clear/siz=0.4/asp=0.6
 ! This can be applied when first opening the data or on an open dataset.
 
 use/featuretype=timeseries dsg_socat_trajectory_subset.nc
-plot fco2
+plot fco2_recommended
 
 pause
 ! And to ignore the DSG-specific elements of the file but use it as if
@@ -225,7 +226,7 @@ pause
 ! dataset as a non-DSG file.
 
 use/featuretype=none dsg_socat_trajectory_subset.nc
-plot fco2
+plot fco2_recommended
 
 ! ********************************************************************
 pause
@@ -264,10 +265,10 @@ cancel data/all
 use my_southern_stations.nc
 show data
 
-pause
 
 ! ********************************************************************
 pause
+cancel data/all
 
 ! DSG data differencing with model or other gridded data
 !

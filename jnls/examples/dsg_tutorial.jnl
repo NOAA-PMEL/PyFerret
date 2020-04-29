@@ -1,17 +1,43 @@
 \CANCEL MODE VERIFY
 ! Description: A brief tutorial introduction to DSG capabilities in PyFerret (and Ferret)
 SAY   ... setting up demo environment ...
-! dsg_tutorial.jnl - *ACM* 08/19
+! dsg_tutorial.jnl - *ACM* 04/20
+
+! This is only for V7.6 and up
+IF `($ferret_version) LT 7.6` THEN
+   SAY The DSG capabilities are available only in Version 7.6 and higher
+   exit/script
+endif
+
+! Check that they have the datasets.
+set mode ignore
+set redirect/journal stderr
+
+use dsg_Tao5daySst_timeseries.nc
+let ok = `T_25,return=isready 
+if `ok eq 0` THEN
+   SAY The DSG example datasets are not installed. Update the datasets at \
+https://github.com/NOAA-PMEL/FerretDatasets
+   exit/script
+endif
+cancel variable ok
+cancel data/all
+cancel redirect
+cancel mode ignore
 
 ! Clear any program state left by previous activities
+! and set the plot window.
 CANCEL REGION
 CANCEL VARIABLES/ALL
 CANCEL DATA/ALL
 CANCEL VIEWPORTS
 SET WINDOW/SIZE=0.7/ASPECT=.75:axis   ! default
 CANCEL MODE LOGO
-SET MODE VERIFY      ! show command file lines at the screen
 
+
+!  Now start...
+
+SET MODE VERIFY      ! show command file lines at the screen
 !
 ! ****** An intro to Discrete Sampling Geometries capabilities in PyFerret/Ferret ******
 
@@ -42,14 +68,14 @@ SET MODE VERIFY      ! show command file lines at the screen
 ! ********************************************************************
 pause
 
-USE dsg_pmelTao5daySst_timeseries.nc
+USE dsg_Tao5daySst_timeseries.nc
 show data
 
 ! ********************************************************************
 pause
 
 ! The Feature-type is shown as part of the header.  
-! Internally Ferret creates a “translation” grid based upon the units and
+! Internally Ferret creates a "translation" grid based upon the units and
 ! coordinate range for each relevant axis of the dataset, which allows the
 ! gridded coordinate formatting routines to be used for DSG variables.
 ! The SHOW DATA/FULL command will show the extreme coordinate limits of the
@@ -62,7 +88,7 @@ pause
 pause
 
 ! Graphics
-! Each feature type has a native plot type “PLOT VAR”
+! Each feature type has a native plot type "PLOT VAR"
 ! will plot the variable in the currently selected set of features.
 !
 ! First lets make a map showing the locations and names of the stations.
@@ -104,7 +130,6 @@ PLOT/thick t_25[x=130e:170e,y=8s:5n,T=1-FEB-2017:15-APR-2017]
 ! ********************************************************************
 pause
 
-
 ! Masking
 ! To select features (individual time series, profiles or trajectories)
 ! define a feature-mask. 
@@ -113,9 +138,9 @@ pause
 ! We have also constrained in time to make a shorter listing.
 
 let wmo_mask = IF wmo_platform_code EQ 51011 \
-     OR wmo_platform_code EQ 52313 then 1
+               OR wmo_platform_code EQ 52313 then 1
 
-use/fmask=wmo_mask dsg_pmelTao5daySst_timeseries.nc
+use/fmask=wmo_mask dsg_Tao5daySst_timeseries.nc
 
 list/t=1-jan-2017:25-feb-2017 t_25
 
@@ -167,7 +192,7 @@ set window/clear/siz=0.4/asp=0.7
 ! and so on.
 
 use dsg_socat_trajectory_subset.nc
-plot/thick/palette=plasma fco2_recommended
+plot/thick/palette=plasma fco2
 go fland 5 black
 
 ! ********************************************************************
@@ -185,14 +210,22 @@ pause
 
 set window/clear/siz=0.4/asp=0.6
 
-! Working with trajectory data as time series
+! Working with trajectory data as a time series
 ! For each observation along a trajectory we have a time coordinate
 ! as well as longitude and latitude. This means the data can be viewed
 ! as a set of time series. Change to a timeseries view with USE/FEATURETYPE.
 ! This can be applied when first opening the data or on an open dataset.
 
 use/featuretype=timeseries dsg_socat_trajectory_subset.nc
-plot fco2_recommended
+plot fco2
+
+pause
+! And to ignore the DSG-specific elements of the file but use it as if
+! we were running pre-V7.6 Ferret,  /FEATURETYPE=none initializes the
+! dataset as a non-DSG file.
+
+use/featuretype=none dsg_socat_trajectory_subset.nc
+plot fco2
 
 ! ********************************************************************
 pause
@@ -211,12 +244,27 @@ cancel variable/all
 ! Returning to our timeseries dataset, compute the maximum temperature reached
 ! and the number of valid data in each time series during Jan-March of 2017
 
-use dsg_pmelTao5daySst_timeseries
+use dsg_Tao5daySst_timeseries
 
 LET t_max = t_25[T=1-JAN-2017:31-Mar-2017@MAX]
 LET t_ngood = t_25[T=1-JAN-2017:31-MAR-2017@NGD]
 
 list/M=1:15 t_max, t_ngood
+pause
+
+! The SAVE command will write new DSG datasets containing subsets or computed
+! variables.  Do not write the ID, Rowsize, or coordinate variables. They will
+! automatically be added to the file.
+
+
+use dsg_Tao5daySst_timeseries
+save/clobber/file=my_southern_stations.nc/x=0:180/y=-20:0 t_25
+
+cancel data/all
+use my_southern_stations.nc
+show data
+
+pause
 
 ! ********************************************************************
 pause
@@ -231,7 +279,7 @@ pause
 ! Open an NCEP reanalysis dataset and compare the potential temperature
 ! data with the TAO buoy Timeseries data.
 
-use dsg_pmelTao5daySst_timeseries
+use dsg_Tao5daySst_timeseries
 use http://www.esrl.noaa.gov/psd/thredds/dodsC/Datasets/ncep.reanalysis/surface/pottmp.sig995.2017.nc
 
 show data 2
@@ -259,6 +307,13 @@ let/title="Timeseries - Gridded"/units="Deg C" diff = t_25[d=1] - grid_t
 plot/x=300:360 diff
 
 ! ********************************************************************
+use pmelTao5daySst_timeseries_dsg
+define axis/t="15-jan-2017:12:00":21-apr-2017:10/unit=days tuniform
+let T_gridded= t_25[gt=tuniform]
+plot T_gridded[E=@ave]   ! ensemble average of all time series
+
+
+
 
 
 ! dsg_tutorial is now completed.

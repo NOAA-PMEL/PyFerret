@@ -120,7 +120,7 @@ escalation program.)
 Required packages that may not already be installed:
 - `numpy` or `python-numpy` (NumPy)
 - `libgfortran` (Fortran library; if you install SciPy, it will be installed)
-- `pyqt`, `python-qt5`, `python-qt4`, `PyQt5`, or `PyQt4` (Python bindings for Qt5 or Qt4; may already be installed)
+- `pyside2`, `pyside`, `pyqt`, `python-qt5`, `python-qt4`, `PyQt5`, or `PyQt4` (Python bindings for Qt; may already be installed)
 
 Highly recommended but optional packages:
 - `scipy` or `python-scipy` (SciPy)

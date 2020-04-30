@@ -13,7 +13,7 @@ endif
 set mode ignore
 set redirect/journal stderr
 
-use dsg_Tao5daySst_timeseries.nc
+use dsg_tao5daysst_timeseries.nc
 let ok = `T_25,return=isready`
 if `ok eq 0` THEN
    SAY The DSG example datasets are not installed. Update the datasets at \
@@ -67,7 +67,7 @@ SET MODE VERIFY      ! show command file lines at the screen
 ! ********************************************************************
 pause
 
-USE dsg_Tao5daySst_timeseries.nc
+use dsg_tao5daysst_timeseries.nc
 show data
 
 ! ********************************************************************
@@ -77,12 +77,11 @@ pause
 ! Internally Ferret creates a "translation" grid based upon the units and
 ! coordinate range for each relevant axis of the dataset, which allows the
 ! gridded coordinate formatting routines to be used for DSG variables.
-! The SHOW DATA/FULL command will show the extreme coordinate limits of the
-! data set
-!    longitude range: 0E to 10W
-!    latitude range: 19S to 21N
-!    depth range: 1 to 1.5
-!    time range: 15-JAN-2017 12:00 to 21-APR-2017 12:00
+! The output of SHOW DATA/FULL command includes extreme coordinate limits of 
+! the coordinates in the data set, as does SHOW GRID
+
+show grid t_25
+
 ! ********************************************************************
 pause
 
@@ -96,13 +95,13 @@ SET WINDOW/SIZE=0.7/ASPECT=.75:axis   ! default
 ! This is nothin nothing new, draw a map and overlay the locations with PLOT/VS
 
 go basemap x=140:360 y=-40:40 20
-PLOT/VS/over/nolabel/color=blue/symbol=19/siz=0.2/thick longitude, latitude
+plot/vs/over/nolabel/color=blue/symbol=19/siz=0.2/thick longitude, latitude
 
 ! ********************************************************************
 pause
 
 
-set window/clear/siz=0.4/asp=0.6
+set window/clear/siz=0.5/asp=0.6
 
 ! Now plot all of the time series in the collection at once.
 ! Since the plot will have so many time series lines, we choose
@@ -124,9 +123,10 @@ pause
 ! This plot has fewer lines, so automatically give each one a new color or
 ! style. The legend labels are the profile station IDs from the file.
 
-PLOT/thick t_25[x=130e:170e,y=8s:5n,T=1-FEB-2017:15-APR-2017]
+plot/thick/x=130e:170e/y=8s:5n/T=1-FEB-2017:15-APR-2017 T_25
 
-! or equivalently, PLOT/THICK/x=130e:170e/y=8s:5n/T=1-FEB-2017:15-APR-2017 T_25
+! or equivalently, 
+! plot/thick t_25[x=130e:170e,y=8s:5n,T=1-FEB-2017:15-APR-2017] T_25
 
 ! ********************************************************************
 pause
@@ -134,21 +134,23 @@ pause
 ! Masking
 ! To select features (individual time series, profiles or trajectories)
 ! define a feature-mask. 
-! SET DATA/FMASK= applies the mask to the dataset until it is cancelled. 
-! A listing shows what mask is in place, and lists the data selected.
-! We have also constrained in time to make a shorter listing.
+! SET DATA/FMASK=   (or USE/FMASK=) applies the mask to the dataset 
+! until it is cancelled. A listing shows what mask is in place, and 
+! lists the data selected. We have also constrained the listing in time.
 
 let wmo_mask = IF wmo_platform_code EQ 51011 \
                OR wmo_platform_code EQ 52313 then 1
 
-use/fmask=wmo_mask dsg_Tao5daySst_timeseries.nc
+use/fmask=wmo_mask dsg_tao5daysst_timeseries.nc
 
 list/t=1-jan-2017:25-feb-2017 t_25
+
+plot/thick t_25
 
 ! ********************************************************************
 
 pause
-set window/clear/siz=0.4/asp=0.8
+set window/clear/siz=0.5/asp=0.8
 
 cancel data/all
 cancel variable/all
@@ -164,10 +166,10 @@ cancel variable/all
 ! ********************************************************************
 pause
 
-use dsg_pmelChukchi_profiles_subset
+use dsg_pmelchukchi_profiles_subset
 show data
 
-plot sigma_t
+plot/thick sigma_t
 pause
 
 ! Another plot style uses the RIBBON/VS plot command, with 3 arguments: the 
@@ -183,7 +185,7 @@ pause
 
 cancel data/all
 cancel variable/all
-set window/clear/siz=0.4/asp=0.7
+set window/clear/siz=0.5/asp=0.7
 
 ! Trajectories
 ! Trajectory data has longitude, latitude, time and measurements along
@@ -209,7 +211,7 @@ plot/over/nolabel/thick/palette=ten_by_levels/key=horiz expocode
 ! ********************************************************************
 pause
 
-set window/clear/siz=0.4/asp=0.6
+set window/clear/siz=0.5/asp=0.6
 
 ! Working with trajectory data as a time series
 ! For each observation along a trajectory we have a time coordinate
@@ -225,6 +227,9 @@ pause
 ! we were running pre-V7.6 Ferret,  /FEATURETYPE=none initializes the
 ! dataset as a non-DSG file.
 
+! Note how coordinate information is not automatically applied when
+! working with the data in this mode
+
 use/featuretype=none dsg_socat_trajectory_subset.nc
 plot fco2_recommended
 
@@ -235,22 +240,38 @@ cancel data/all
 cancel variable/all
 
 
+! ********************************************************************
+
+
+! Let's take a quick look at Point data.  The data is very simple,
+! with all information on the E axis. Each point is a feature.
+
+use dsg_point_example
+show data
+
+plot/thick/lev=v larvae_size
+
+
+
+! ********************************************************************
+pause
+
 ! Changing gears now, from graphics to some of the analysis we might
 ! do with any dataset.
 
 ! User-defined variables
-! Standard LET syntax works on DSG variables with only subtle differences.  
+! Standard LET syntax works as always on DSG variables with only subtle differences.
 ! For instance, transformations apply within each feature, not over the whole region.
 !
 ! Returning to our timeseries dataset, compute the maximum temperature reached
 ! and the number of valid data in each time series during Jan-March of 2017
 
-use dsg_Tao5daySst_timeseries
+use dsg_tao5daysst_timeseries
 
 LET t_max = t_25[T=1-JAN-2017:31-Mar-2017@MAX]
 LET t_ngood = t_25[T=1-JAN-2017:31-MAR-2017@NGD]
 
-list/M=1:15 t_max, t_ngood
+list/E=1:15 t_max, t_ngood
 pause
 
 ! The SAVE command will write new DSG datasets containing subsets or computed
@@ -258,7 +279,7 @@ pause
 ! automatically be added to the file.
 
 
-use dsg_Tao5daySst_timeseries
+use dsg_tao5daysst_timeseries
 save/clobber/file=my_southern_stations.nc/x=0:180/y=-20:0 t_25
 
 cancel data/all
@@ -269,6 +290,7 @@ show data
 ! ********************************************************************
 pause
 cancel data/all
+sp rm my_southern_stations.nc
 
 ! DSG data differencing with model or other gridded data
 !
@@ -280,14 +302,14 @@ cancel data/all
 ! Open an NCEP reanalysis dataset and compare the potential temperature
 ! data with the TAO buoy Timeseries data.
 
-use dsg_Tao5daySst_timeseries
+use dsg_tao5daysst_timeseries
 use http://www.esrl.noaa.gov/psd/thredds/dodsC/Datasets/ncep.reanalysis/surface/pottmp.sig995.2017.nc
 
 show data 2
 
 ! ********************************************************************
 pause
-set window/clear/siz=0.4/asp=0.6
+set window/clear/siz=0.5/asp=0.6
 
 ! Plot the gridded data sampled at the DSG space-time coordinates
 ! Note that if the amount of model data that must be accessed
@@ -308,11 +330,28 @@ let/title="Timeseries - Gridded"/units="Deg C" diff = t_25[d=1] - grid_t
 plot/x=300:360 diff
 
 ! ********************************************************************
-use pmelTao5daySst_timeseries_dsg
+
+pause
+! Regridding DSG collections to a fixed grid allows for comparison 
+! between features, treating the collection as an ensemble.
+
+! For Timeseries datasets, define a fixed time axis and regrid a set 
+! of DSG timeseries to that axis.  The result is a Time by E grid where 
+! E is station number. 
+
+! Likewise for Profile collections, define a fixed depth axis and 
+! regrid the DSG profiles to that axis. The result is a grid in Depth 
+! E where E is station number.
+
+use Tao5daySst_timeseries_dsg
 define axis/t="15-jan-2017:12:00":21-apr-2017:10/unit=days tuniform
 let T_gridded= t_25[gt=tuniform]
-plot T_gridded[E=@ave]   ! ensemble average of all time series
 
+show grid t_gridded
+
+plot T_gridded[m=3] - T_gridded[m=2]
+
+plot T_gridded[E=@ave]   ! ensemble average of all time series
 
 
 

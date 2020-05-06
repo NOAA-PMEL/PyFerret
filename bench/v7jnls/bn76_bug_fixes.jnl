@@ -25,3 +25,6 @@ GO err751_assorted_dsg_errs
 
 GO bn_reset
 GO err751_dsg_atan2_randu2
+
+GO bn_reset
+GO err751_symbol_parsing

@@ -1,0 +1,10 @@
+! err751_symbol_parsing.jnl
+! ticket 756
+! The parsing previously evaluated ($a) at the time that ($loop) 
+! was parsed, so that the "say ($a)" always used the original value of "old".
+! 4/6/2020 ACM
+
+def sym a old
+define sym loop rep/j=1:3 (def sym a \`j\`; show sym a; say (\$a))
+($loop)
+

@@ -6581,7 +6581,7 @@ Executed by script: *** GO bn_dsg_use_feature.jnl ***
            *** NOTE: Coordinates inconsistent with FeatureType. Trajectory data must have observations along XYT
  **TMAP ERR: Invalid command
              Error on SET DATA/FEATURE= applied to an open dataset.
-             Data set: ./data/DSG_ERDDAP_pmelTao5daySst.nc
+             Data set: ./data/DSG_ERDDAP_Tao5daySst.nc
  **TMAP ERR: Corrupted CF-DSG structure or attributes
              Required coordinate variables not found. Trajectory file is missing directions: lat
 SET DAT/FORM=CDF dsg_bad_coord
@@ -6843,6 +6843,15 @@ ooooooooooooooooooooooooooooooooooooooooooo
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
 *** Running ferret script: bn_ribbon_set.jnl
+*** Running ferret script: bn_mode_dsg.jnl
+ **ERROR: invalid command: CANCEL MODE DSG when DSG datasets are open. Must first close all DSG datasets.
+cancel mode dsg
+Executed by script: *** GO bn_mode_dsg.jnl ***
+ **ERROR: invalid command: SET MODE DSG when datasets are open. Must first CANCEL DATA/ALL.
+set mode dsg
+Executed by script: *** GO bn_mode_dsg.jnl ***
+           *** NOTE: MODE DSG is turned off. Ingoring SET DATA/FEATURE=
+           *** NOTE: SET DATA/FEATURE= applies only to Discrete Sampling Geometries datasets. Ignoring /FEATURE=
 *** Running ferret script: bn_gif.jnl
  **ERROR: dimensions improperly specified: specified data is not a line
            - its a 2D region: "plot/i=1:10/j=1:20/nolabel i+j"

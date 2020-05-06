@@ -10,7 +10,7 @@
 !   Trajectory-to-grid requests (not implemented, return an error message)
 !   Profile dsg regrid to common z axis.               
 
-use DSG_ERDDAP_pmelTao5daySst.nc
+use DSG_ERDDAP_Tao5daySst.nc
 
 define axis/t="15-jan-2017:12:00":21-apr-2017:10/unit=days tuniform ! hit L=1
 

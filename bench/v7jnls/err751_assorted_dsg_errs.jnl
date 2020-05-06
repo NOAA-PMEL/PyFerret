@@ -22,7 +22,7 @@ can data/all
 
 ! error saving string data on an instance axis.
 
-use DSG_ERDDAP_pmelTao5daySst.nc
+use DSG_ERDDAP_Tao5daySst.nc
 
 ! This had  a data-type warning
 save/clobber/file=a.nc t_25, wmo_platform_code

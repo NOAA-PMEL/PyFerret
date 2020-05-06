@@ -16,7 +16,7 @@ cancel data/all
 ! timeseries data
 
 set view ur
-use DSG_ERDDAP_pmelTao5daySst.nc
+use DSG_ERDDAP_Tao5daySst.nc
 list/x=0:40/y=10:20 t_25
 plot/x=0:40/y=10:20 t_25
 

@@ -10,7 +10,7 @@ plot temp
 repeat/m=1:3 (plot/over/nolab/thick/sym=18/siz=`_m*0.1` temp)
 
 ! A time-series with one point previously was an error now plots a point
-use DSG_ERDDAP_pmelTao5daySst.nc
+use DSG_ERDDAP_Tao5daySst.nc
 repeat/m=30:32 (plot/color=blue/thick t_25)
 
 use WestCoastCarbon_9d9c_f562_77b5_5f8e_5d19_7b1d

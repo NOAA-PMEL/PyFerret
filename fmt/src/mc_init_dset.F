@@ -1,4 +1,4 @@
-	SUBROUTINE MC_INIT_DSET(dset_num,lunit,perm,tregular,use_strict,status)
+	SUBROUTINE MC_INIT_DSET(dset_num,lunit,perm,tregular,use_strict,do_dsg,status)
 *
 *
 *  This software was developed by the Thermal Modeling and Analysis
@@ -74,6 +74,7 @@
 * V698+ *sh* 11/15 new arg in call to CD_INIT_DSET ... not relevant here
 * V698  3/16 *acm* Removed Philander-Seigel code including diagnostic variables, 
 * pre-defined axes and grids.
+* V745 *acm*  5/20  added mode_dsg to control turning off all DSG ops
 
 * arguments:
 *	dset_num	- number assigned to this data set (output)
@@ -84,7 +85,7 @@
 *
 * 
 * Argument definitions
-			LOGICAL tregular, use_strict
+	LOGICAL tregular, use_strict,do_dsg
 	INTEGER		dset_num, lunit, perm(*), status
 
 * Parameter and common files
@@ -360,7 +361,7 @@ c	     sf_ndxe(stp_cnt) = steps_in_file + sf_ndxs(stp_cnt) - 1
 	
 
 	CALL CD_INIT_DSET( dset_num, perm, tregular, use_strict,
-     .			   ok_share_taxis, status)
+     .			   ok_share_taxis,do_dsg,status)
 
 	GOTO 9990
 

@@ -1,0 +1,71 @@
+! bn_mode_dsg
+! Turn off all enhancements for DSG datasets at the session level
+! Default state is SET.
+! 5/5/2020  ACM
+
+show mode dsg
+cancel mode dsg
+show mode dsg
+
+! Canceled: open datasets as non-dsg
+
+use dsg_point_data
+use simple_traj_dsg
+show data
+cancel data/all
+
+! open datasets as DSG
+set mode dsg
+show mode dsg
+
+use dsg_point_data
+use simple_traj_dsg
+show data
+
+! Intentional error: CANCEL MODE DSG with dsg datasets open.
+show mode dsg
+
+set mode ignore
+cancel mode dsg  
+
+! That was an error, so mode setting unchanged.
+show mode dsg
+
+cancel data/all
+
+! CANCEL MODE DSG, open datasets
+
+cancel mode dsg
+
+use dsg_point_data
+use simple_traj_dsg
+show data
+
+! Intentional error: SET MODE DSG is an error if any datasets open.
+
+set mode dsg
+set mode/last ignore
+
+show data/all
+cancel data/all
+
+set mode dsg
+
+! Interplay with use/feature=none
+
+! This should not cause any error, a non-dsg file is open, we
+! ask to cancel mode dsg
+
+use/feature=none simple_traj_dsg
+show data
+cancel mode dsg
+show data
+
+cancel data/all
+! 
+use/feature=none simple_traj_dsg
+show data
+cancel data/all
+
+! clean up
+set mode dsg

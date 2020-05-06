@@ -75,6 +75,7 @@
         include 'tmap_errors.parm'              ! error codes
 #include "tmap_dset.parm"
         include 'tmap_dims.parm'                ! data set dimensions
+        include 'xprog_state.cmn'
 	include 'xtm_grid.cmn_text'
 	include 'xio.cmn_text'
         external xio_data
@@ -116,7 +117,7 @@
         tregular = .FALSE.
         use_strict = .FALSE.
         CALL TM_INIT_DSET(memb_filename(1), ok_re_use_existing, perm,
-     .                    dset_num, tregular, use_strict, tmap_status)
+     .                    dset_num, tregular, use_strict, mode_dsg, tmap_status)
 
 	IF (tmap_status.NE.merr_ok) GOTO 5010
 	CALL CD_NCCLOSE ( dset_num, status)

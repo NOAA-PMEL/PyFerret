@@ -1,5 +1,5 @@
 	SUBROUTINE CD_INIT_DSET ( dset, perm, tregular, use_strict,
-     .				  ok_share_taxis, status )
+     .				  ok_share_taxis, do_dsg, status )
 
 *
 *
@@ -81,6 +81,7 @@
 * V74+ 6/18 *acm*  On a dsg file, if errors found in the DSG it's an error
 * V76 12/19 *kms*  Temporarily disable this enhancement to recognize FMRC
 *                  datasets as such until revised FMRC handling is implemented.
+* V745 *acm*  5/20  added mode_dsg to control turning off all DSG ops
 
 * include files
 #include "gt_lib.parm"
@@ -95,7 +96,9 @@
         include 'xdset_info.cd_equiv'
 
 * argument declarations:
-	LOGICAL tregular, use_strict, ok_share_taxis
+* do_dsg is the value of mode_dsg
+
+	LOGICAL tregular, use_strict, ok_share_taxis, do_dsg
 	INTEGER	dset, perm(*), status
 
 ! Declare netcdf function names. 
@@ -122,7 +125,7 @@
 * Use the dataset/variable/attribute data structure to load what was
 * previously done in cd_open_dset.
 
-      CALL CD_LOAD_DSET_ATTRS (dset, cdfid, status)
+      CALL CD_LOAD_DSET_ATTRS (dset, cdfid, do_dsg, status)
 
 * get "TMAP" special parameters
       CALL CD_GET_TMAP_PARMS ( dset, cdfid, status )

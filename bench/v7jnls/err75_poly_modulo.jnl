@@ -1,4 +1,5 @@
-    
+! err75_poly_modulo.jnl
+! issue 1937 overlays of polygon plots with modulo
 
 use coads_climatology
 let var =  sst - 16

@@ -6842,6 +6842,9 @@ ooooooooooooooooooooooooooooooooooooooooooo
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
 *** Running ferret script: bn_ribbon_set.jnl
 *** Running ferret script: bn_mode_dsg.jnl
  **ERROR: invalid command: CANCEL MODE DSG when DSG datasets are open. Must first close all DSG datasets.

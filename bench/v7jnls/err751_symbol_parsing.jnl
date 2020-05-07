@@ -1,10 +1,12 @@
 ! err751_symbol_parsing.jnl
-! ticket 756
+! ticket 756 4/6/2020 ACM
 ! The parsing previously evaluated ($a) at the time that ($loop) 
-! was parsed, so that the "say ($a)" always used the original value of "old".
-! 4/6/2020 ACM
+! was parsed, and substituted the value "old" then, so that as the 
+! loop executed the "say ($a)" always used the original value of "old". 
 
 def sym a old
 define sym loop rep/j=1:3 (def sym a \`j\`; show sym a; say (\$a))
 ($loop)
 
+! How about in a compound command?
+def sym a old; let b = 8; show sym a; ($loop)

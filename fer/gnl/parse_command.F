@@ -147,6 +147,8 @@
 *                  the too-shortness from 1 to MIN(
 * V76  12/19 *acm* ticket 1963, Replace one-letter qualifiers with what is
 *                  being used (so /T for /TITLE isn't misinterpreted elsewhere).
+* V76   4/20 *acm* ticket 756. If the whole command is a symbol, evaluate it and
+*                  start the parsing over.
 
 * command, subcommand and qualifiers will be identified by number in
 *	 COMMON/XCOMMAND.  Arguments will be returned as positions in
@@ -201,7 +203,7 @@
      .          itsa_qualifier(local_max_arg_list), 
      .          MATCH4, escape, apply_cx, ptrslash, i3_ok,
      .		its_set_data, its_define_sym, its_go, its_say,
-     .		has_lead_white_space, found_white_space, expnd_qual
+     .		has_lead_white_space, found_white_space, expnd_qual, restart
 	INTEGER TM_LENSTR, STR_UPCASE
 	INTEGER	buff_len, bang_position, ptr, quote_end,
      .		word_num, look_ahead, look_back, isub_word, csgo,
@@ -372,11 +374,18 @@
 * * * * * * * * *
 * substitute symbols (PLOT+ symbols expressed as "($symname)" ), if any (6/95)
 * and return to re-process command if substitution occurs
-        CALL SYMBOL_COMMAND( cmnd_buff, cmnd_len, subst, status )
+        
+* If the whole command was a symbol, evaluate that and then start all over.
+	restart = cmnd_buff(1:1) .EQ. '(' 
+     .	    .AND. cmnd_buff(2:2) .EQ. '$'
+     .	    .AND. cmnd_buff(cmnd_len:cmnd_len) .EQ. ')'
+
+	CALL SYMBOL_COMMAND( cmnd_buff, cmnd_len, subst, status )
 	IF (cmnd_len .GT. cmnd_copy_len) GOTO 5005
 	IF ( status .NE. ferr_ok ) GOTO 5000
 	IF ( subst ) THEN
-	   reverify = .TRUE.      ! informational echo needed
+	   reverify = .TRUE.       ! informational echo needed
+	   IF (restart .AND. cmnd_len.GT.1) GOTO 5 
 	   GOTO 20   ! back for more substitutions
 	ENDIF
 

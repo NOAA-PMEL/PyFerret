@@ -90,6 +90,7 @@
 *                  Also simplified I formats in the same way.
 * V741 *acm*  4/18 Issue 1870: Check Format more closely when finding an I Format
 * V751 6/19 *acm* TM_FMT rewrite: formatting of lon/lat coordinate strings
+* V76  *acm*  5/20  More on Issue 1870
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -221,9 +222,10 @@
 	   CALL PARSE_COMMA_LIST (list_format, 2, slen1-1, max_item_list,
      .	          num_it, item_start, item_end, status)
 
-	   IF (num_it.NE.num_uvars_in_cmnd .AND. has_string) GOTO 5050
-
+	   IF (num_it.NE.num_uvars_in_cmnd .AND. has_string) GOTO 5050	
+	   
 	   has_int = TM_HAS_STRING (list_format, 'I')
+	   IF (num_it.LT.num_uvars_in_cmnd .AND. has_int)  GOTO 5050	
 
 * Make sure the I is a format spec, not within a string in the format  
 
@@ -540,7 +542,8 @@
      .				   risc_buff(:slen1),
      .				   slen1     )
 
-		 fmtstring = 
+		 fmtstring = '(A)'
+		 IF (num_it.EQ.num_uvars_in_cmnd ) fmtstring = 
      .            '( ' // list_format(item_start(ivar):item_end(ivar)) //  ')'
 
 * The format may cut the string off shorter than its full length. Use the format length.
@@ -567,7 +570,7 @@
 	           out(ivar) = memry(mr_list(ivar))%ptr(iwd+1)
 	        ENDIF
 		
-		fmtstring = 
+		IF (num_it.EQ.num_uvars_in_cmnd ) fmtstring = 
      .               '( ' // list_format(item_start(ivar):item_end(ivar)) //  ')'
 
 		IF (has_string .OR. has_int) THEN
@@ -922,7 +925,7 @@
      .		'unformatted output is for numeric data only',
      .		*5000 )
  5050	CALL ERRMSG( ferr_invalid_command, status,
-     . 'Fortran format for list as Integer or with strings'//pCR//
+     . 'Fortran format for list using Integer type'//pCR//
      .		'must have one specifier per variable',
      . *5000 )
 

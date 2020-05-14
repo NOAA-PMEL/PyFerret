@@ -278,7 +278,7 @@
 *                                                                     |
 *                                                                     V
 
-      LOGICAL TM_FPEQ
+      LOGICAL TM_FPEQ, its_dsg
 
       INTEGER i,  j,  k,  l,  m,  n
       INTEGER i1, j1, k1, l1, m1, n1
@@ -287,6 +287,15 @@
       INTEGER imatch, jmatch
       REAL xgrid, ygrid, a
       CHARACTER*255 err_msg
+
+* Does the variable come from a Discrete Sampling Geometries dataset?  
+
+      CALL EF_GET_ITS_DSG(id, ARG1, its_dsg )
+      IF (its_dsg) THEN
+         err_msg = 
+     . 'Data is from a Discrete Sampling Geometries (DSG) dataset. Function does not apply.'
+       GOTO 999
+      ENDIF
 
       CALL ef_get_res_subscripts_6d(id, res_lo_ss, res_hi_ss, res_incr)
       CALL ef_get_arg_subscripts_6d(id, arg_lo_ss, arg_hi_ss, arg_incr)
@@ -441,5 +450,6 @@
       RETURN
 
  999  CALL ef_bail_out (id, err_msg)
+      RETURN
 
       END

@@ -329,7 +329,19 @@
      .         nlon_src, nlat_src, nlon_dst, nlat_dst
       REAL missing_permit, pi, pi180
       CHARACTER*16 axname(6), ax_units(6) 
-      LOGICAL back(6), modulo(6), reg(6)
+      LOGICAL back(6), modulo(6), reg(6), its_dsg
+
+      CHARACTER*128 err_msg
+
+* Does the variable come from a Discrete Sampling Geometries dataset?  
+* If so the function doesn't apply.
+
+      CALL EF_GET_ITS_DSG(id, ARG1, its_dsg )
+      IF (its_dsg) THEN
+         err_msg = 
+     . 'Data is from a Discrete Sampling Geometries (DSG) dataset. Function does not apply.'
+	GOTO 999
+      ENDIF
 
       CALL ef_get_res_subscripts_6d(id, res_lo_ss, res_hi_ss, res_incr)
       CALL ef_get_arg_subscripts_6d(id, arg_lo_ss, arg_hi_ss, arg_incr)
@@ -466,8 +478,15 @@ c     .     in_lon_lat(1,2,1,1) )
 !                                           USER CONFIGURABLE PORTION |
 !**********************************************************************
 
+
       RETURN 
+      
+ 999  CALL ef_bail_out (id, err_msg)
+
+      RETURN 
+
       END  ! subroutine rect_to_curv_compute
+
 * %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 *    horiz_interp_init_bili
 

@@ -124,6 +124,19 @@
       INTEGER i, i1, i2,  j, k, l, m, n
       INTEGER idir, np
       REAL    box_hi
+      
+      LOGICAL its_dsg
+      CHARACTER*128 err_msg
+   
+* Does the variable come from a Discrete Sampling Geometries dataset?  
+* IF so we aren't (yet) handling its time coordinates correctly.
+
+      CALL EF_GET_ITS_DSG(id, ARG1, its_dsg )
+      IF (its_dsg) THEN
+         err_msg = 
+     . 'Data is from a Discrete Sampling Geometries (DSG) dataset. Function not yet implemented for DSG data.'
+       GOTO 999
+      ENDIF
 
       CALL ef_get_res_subscripts_6d(id, res_lo_ss, res_hi_ss, res_incr)
       CALL ef_get_arg_subscripts_6d(id, arg_lo_ss, arg_hi_ss, arg_incr)
@@ -161,5 +174,9 @@
 
       result(res_hi_ss(X_AXIS),j,k,l,m,n) = box_hi
 
-      RETURN 
+      RETURN
+
+ 999  CALL ef_bail_out (id, err_msg)
+      RETURN
+
       END

@@ -367,7 +367,7 @@ C  The FFT code returns frequencies W(k) for k=1 to N/2, with N/2 rounded down
 *                                                                      V
 
       CHARACTER ax_name(6)*16, ax_units(6)*16
-      LOGICAL backward(6), modulo(6), regular(6)
+      LOGICAL backward(6), modulo(6), regular(6), its_dsg
       INTEGER arg, nd, nf
       INTEGER i, j, k, l, m, n
       INTEGER i1, j1, k1, l1, m1, n1
@@ -375,6 +375,16 @@ C  The FFT code returns frequencies W(k) for k=1 to N/2, with N/2 rounded down
 
    40 FORMAT ('FFT_RE encountered missing data at (i,j,k,l,m,n)', 6I5)
    50 FORMAT ('FFT_RE encountered missing data at L=', I5)
+
+* Does the variable come from a Discrete Sampling Geometries dataset?  
+* IF so we aren't (yet) handling its time coordinates correctly.
+
+      CALL EF_GET_ITS_DSG(id, ARG1, its_dsg )
+      IF (its_dsg) THEN
+         err_msg = 
+     . 'Data is from a Discrete Sampling Geometries (DSG) dataset. Function not yet implemented for DSG data.'
+	GOTO 999
+      ENDIF
 
       CALL ef_get_res_subscripts_6d(id, res_lo_ss, res_hi_ss, res_incr)
       CALL ef_get_arg_subscripts_6d(id, arg_lo_ss, arg_hi_ss, arg_incr)

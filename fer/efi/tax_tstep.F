@@ -220,17 +220,27 @@
       INTEGER slen, dir, get_prec, dlen
       INTEGER i, j, k, l, m, n
       INTEGER l1, n1, cal, status, len
+      LOGICAL its_dsg
       REAL*8 ddate, timesincet0
       CHARACTER*16 axname(6), axunits(6)
       CHARACTER*16 tunit
       CHARACTER*30 datebuf, instring, t0string
-      CHARACTER*100 err_msg
+      CHARACTER*128 err_msg
 
+
+* Does the variable come from a Discrete Sampling Geometries dataset?  
+
+      CALL EF_GET_ITS_DSG(id, ARG1, its_dsg )
+      IF (its_dsg) THEN
+         err_msg = 
+     . 'Data is from a Discrete Sampling Geometries (DSG) dataset. Function does not apply.'
+       GOTO 999
+      ENDIF
 
       CALL ef_get_res_subscripts_6d(id, res_lo_ss, res_hi_ss, res_incr)
       CALL ef_get_arg_subscripts_6d(id, arg_lo_ss, arg_hi_ss, arg_incr)
       CALL ef_get_bad_flags(id, bad_flag, bad_flag_result)
-      
+
 * return date string to precision of seconds
       get_prec = 6
 

@@ -326,7 +326,7 @@
 *                                                                     |
 *                                                                     V
 
-      LOGICAL TM_FPEQ, full_span, ok
+      LOGICAL TM_FPEQ, full_span, ok, its_dsg
       INTEGER STR_UPCASE
 
       INTEGER nx, nxx, nxy, nxz, nxt, nxe, nxf
@@ -348,6 +348,17 @@ C  variables for checking axis characteristics (modulo axes)
       CHARACTER ax_name(6)*16, ax_units(6)*16
       LOGICAL backward(6), modulo(6), regular(6)
       INTEGER xlo, xhi, ylo, yhi
+      
+
+* Does the variable come from a Discrete Sampling Geometries dataset?  
+
+      CALL EF_GET_ITS_DSG(id, ARG1, its_dsg )
+      IF (its_dsg) THEN
+         err_msg = 
+     . 'Data is from a Discrete Sampling Geometries (DSG) dataset. Function does not apply.'
+       GOTO 999
+      ENDIF
+
 
       CALL ef_get_res_subscripts_6d(id, res_lo_ss, res_hi_ss, res_incr)
       CALL ef_get_arg_subscripts_6d(id, arg_lo_ss, arg_hi_ss, arg_incr)

@@ -64,7 +64,7 @@
 
 	dset = TM_DSG_DSET_FROM_GRID( grid )
 
-	IF (dset .LE. main_set) RETURN  ! < 0 means not dsg 
+	IF (dset .LE. pdset_irrelevant) RETURN  ! < 0 means not dsg 
 	ITSA_DSG_POINTS = dsg_feature_type(dset) .EQ. pfeatureType_Point
 
         RETURN

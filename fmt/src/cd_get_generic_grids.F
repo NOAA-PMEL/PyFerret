@@ -78,7 +78,8 @@
 *  V75  ACM  2/2018 As in the DSG branch, pass line_direction(iaxis) to 
 *                 cd_get_line_direction as an argument
 *  v744 11/2011   *acm* Issue 1906: Get info for second calendar in T-F grid
-*                 
+*  v76   5/2020   *acm* USE/ORDER= when grids in files have different dimensions
+*                       Analyze largest grid first
 
 * argument definitions:
 *       dset        - TMAP data set pointer
@@ -102,7 +103,7 @@
 	include 'xio.cmn_text'
 	external xio_data
 	include 'xtm_grid.cmn_text'
-	        include 'xdset_info.cd_equiv'
+	include 'xdset_info.cd_equiv'
 
 * argument declarations
 	LOGICAL  reversed(max_lines:line_ceiling)
@@ -117,7 +118,8 @@
 * *kob* explicit definitions not allowed on decl line in linux...
 *       moved them to parameter line 10/96
       LOGICAL NC_GET_ATTRIB, CD_GET_ATTRIB,
-     .        got_it, do_warn, centers, coordvar, ok_cal
+     .        got_it, do_warn, centers, coordvar, ok_cal, big_done,
+     .        has_perm
       PARAMETER (do_warn = .TRUE. )
       PARAMETER (centers = .TRUE. )
       INTEGER TM_LENSTR1, TM_FIND_GRID_SLOT, STR_CASE_BLIND_COMPARE,
@@ -126,9 +128,11 @@
      .        tmvar, tmpgrid, npts, dim, tmplines(nferdims), ndim,
      .	      grid_dims(nferdims), trans(nferdims), indices(nferdims),
      .        i, maxlen, attlen,attoutflag, all_outflag, axid, iaxis6,
-     .        attid, eax, cfrole_dim, blen
+     .        attid, eax, cfrole_dim, blen, max_dims, big_var
+	
       REAL    tmp
-      CHARACTER name*128, vname*128, linunits*24, cal_str*24, cal_t*24, cal_f*24
+      CHARACTER name*128, vname*128, linunits*24, 
+     .        cal_str*24, cal_t*24, cal_f*24, dsave*2
 
       INTEGER tt  ! nice short name
       EQUIVALENCE (tt,lunit_errors)
@@ -145,11 +149,31 @@
 * Check for cf_role attribute. If present, its grid is in the E direction.
 
 	cfrole_dim = 0 
+
+* How many dimensions do the varibles have? Make a grid for the first one
+* encountered that has the highest number of dimensions first.
+
+	max_dims = 0
+	big_var = 0
 	
+	DO tmvar = 1,maxvars
+           IF ( ds_var_setnum(tmvar) .NE. dset ) CYCLE
+           ivar = cd_varid(tmvar)
+           CALL CD_GET_VAR_INFO(dset, ivar, vname, vartyp, nvdims,
+     .                 vdims, nvatts, coordvar, all_outflag, istat)
+	   IF (nvdims .GT. max_dims) big_var = ivar
+	   max_dims = MAX(max_dims, nvdims)
+	ENDDO 
+	
+	big_done = .FALSE.
+
         DO 25 tmvar = 1,maxvars
            IF ( ds_var_setnum(tmvar) .NE. dset ) GOTO 25
 	   eax = 0
            ivar = cd_varid(tmvar)
+
+	   IF (.NOT.big_done .AND. ivar.NE.big_var) CYCLE
+	   IF (ivar .EQ. big_var) big_done = .TRUE.
 
 * get the vital statistics for this variable
            CALL CD_GET_VAR_INFO(dset, ivar, vname, vartyp, nvdims,
@@ -174,8 +198,13 @@
 * to be put in the E direction. If there is a sample_dimension attribute on some variable, its value is the obs 
 * dimension, to be put in the X direction.) 
 
+	   has_perm = .FALSE.
+	   DO idim=1, nferdims
+	      IF (perm(idim) .NE. unspecified_int4) has_perm = .TRUE.
+	   ENDDO
+
 	   CALL  CD_GET_VAR_ATT_ID (dset, ivar, "cf_role", attid, status)
-	   IF (status .EQ. merr_ok) THEN
+	   IF (status .EQ. merr_ok .AND. .NOT.has_perm) THEN
 	      eax = vdims(1) 
 	      dsg_feature_var(dset) = ivar
 
@@ -268,8 +297,11 @@
 		 cfrole_dim = 0  ! reset. Just one axis will have this role.
 		 eax = 0
 	      ELSE
-	         CALL CD_GET_LINE_DIRECTION (dset, axid, name, linunits, 
+	         dsave = line_direction(iaxis)
+		 CALL CD_GET_LINE_DIRECTION (dset, axid, name, linunits, 
      .                do_warn, .TRUE., line_direction(iaxis))
+		 IF (has_perm .AND. line_direction(iaxis) .EQ. 'EE') 
+     .                line_direction(iaxis) = dsave
 	      ENDIF
 
 * save a pointer to the axis just found

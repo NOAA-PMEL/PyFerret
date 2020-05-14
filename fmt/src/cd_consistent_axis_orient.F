@@ -53,6 +53,7 @@
 *                 cleaning up unnecessary space and processing time.
 * V751 12/19 *acm* Issue 1962: When can't get consistent grids, give some coaching and
 *                 declare it an error.
+*  v76   5/2020   *acm* USE/ORDER= when grids in files have different dimensions               
 
 * argument definitions:
 *      dset        - TMAP data set pointer
@@ -354,19 +355,8 @@ c Find the grid which contains this axis and has the most dimensions.
 
   230    CONTINUE 
 
-* Now apply user-supplied ordering and reversals
-	 permuted  = .FALSE.
+* User-supplied ordering and reversals were applied in get_generic_grids
 
-        lastdim = 0
-        DO 240 idim = 1, nferdims
-           tmplines(idim) = ds_ordering(idim,tmvar)
-
-           IF (perm(idim).EQ.0 .OR. perm(idim).EQ.unspecified_int4) GOTO 240
-           IF ( ABS(perm(idim)) .LE. lastdim ) permuted = .TRUE.
-           IF ( perm(idim).NE.unspecified_int4 .AND. perm(idim).LT.0 )
-     .		   permuted = .TRUE.
-           lastdim = ABS(perm(idim))
- 240     CONTINUE
 
 * get the variable name
          IF (permuted) THEN

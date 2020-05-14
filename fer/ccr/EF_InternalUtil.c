@@ -95,6 +95,7 @@
 *                  removing "memory" pointer in favor of individual arg ptrs
 * V74  *acm*  2/18 New box_edges function
 * V751 *acm*  7/19 remove ancient scat2gridgauss_*_V0 functions
+* V751 *acm*  5/20 remove samplexy_closest function, renamed samplexy_nrst
 */
 
 
@@ -808,8 +809,6 @@ void FORTRAN(samplexy_curv_nrst_compute)(int *, DFTYPE *, DFTYPE *,
       DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *);
 
 void FORTRAN(samplexy_closest_init)(int *);
-void FORTRAN(samplexy_closest_result_limits)(int *);
-void FORTRAN(samplexy_closest_work_size)(int *);
 void FORTRAN(samplexy_closest_compute)(int *, DFTYPE *, DFTYPE *,
       DFTYPE *, DFTYPE *, DFTYPE *, DFTYPE *);
 
@@ -3817,8 +3816,6 @@ else if ( !strcmp(name,"samplexy_curv_nrst_compute_") ) return (void *)FORTRAN(s
 
 /* samplexy_closest.F */
 else if ( !strcmp(name,"samplexy_closest_init_") ) return (void *)FORTRAN(samplexy_closest_init);
-else if ( !strcmp(name,"samplexy_closest_result_limits_") ) return (void *)FORTRAN(samplexy_closest_result_limits);
-else if ( !strcmp(name,"samplexy_closest_work_size_") ) return (void *)FORTRAN(samplexy_closest_work_size);
 else if ( !strcmp(name,"samplexy_closest_compute_") ) return (void *)FORTRAN(samplexy_closest_compute);
 
 /* samplexy_nrst.F */

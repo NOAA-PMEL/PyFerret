@@ -364,11 +364,11 @@
      .               memb_nsteps(memb_order(ifile-1)) -
      .               memb_nstep_start(memb_order(ifile))
            IF ( numover .GT. 0 ) THEN
+              plen = TM_LENSTR1(memb_filename(memb_order(ifile-1)))
+              flen = TM_LENSTR1(memb_filename(memb_order(ifile)))
               IF ( toverlap .EQ. 0 ) THEN
 *                The standard/default of no overlaps allowed
                  IF ( tmatch .EQ. ' ' ) GOTO 1000
-                 plen = TM_LENSTR1(memb_filename(memb_order(ifile-1)))
-                 flen = TM_LENSTR1(memb_filename(memb_order(ifile)))
                  CALL ERRMSG(ferr_aggregate_error, status,
      .                'Time axes overlap for '//
      .                memb_filename(memb_order(ifile-1))(1:plen)//
@@ -378,8 +378,6 @@
 *                Too problematic if the prior dataset time axis completely 
 *                covers this dataset time axis; only @ASN can be used.
                  IF ( tmatch .EQ. ' ' ) GOTO 1000
-                 plen = TM_LENSTR1(memb_filename(memb_order(ifile-1)))
-                 flen = TM_LENSTR1(memb_filename(memb_order(ifile)))
                  CALL ERRMSG(ferr_aggregate_error, status, 
      .                'Time axis for '//
      .                memb_filename(memb_order(ifile-1))(1:plen)//
@@ -389,8 +387,6 @@
 *                Too problematic if this dataset time axis completely 
 *                covers the prior dataset time axis; only @ASN can be used.
                  IF ( tmatch .EQ. ' ' ) GOTO 1000
-                 plen = TM_LENSTR1(memb_filename(memb_order(ifile-1)))
-                 flen = TM_LENSTR1(memb_filename(memb_order(ifile)))
                  CALL ERRMSG(ferr_aggregate_error, status, 
      .                'Time axis for '//
      .                memb_filename(memb_order(ifile))(1:flen)//
@@ -400,8 +396,6 @@
 *                Partial overlap is not acceptable; only @ASN can be used
                  IF ( tmatch .EQ. ' ' ) GOTO 1000
                  numbuff = LEFINT(numover, idx)
-                 plen = TM_LENSTR1(memb_filename(memb_order(ifile-1)))
-                 flen = TM_LENSTR1(memb_filename(memb_order(ifile)))
                  CALL ERRMSG(ferr_aggregate_error, status,
      .                'Excessive ('//numbuff(1:idx)//') overlaps '//
      .                'in time axes for '//

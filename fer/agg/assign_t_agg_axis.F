@@ -359,7 +359,7 @@
 
 *       Check time overlaps between datasets
         DO ifile = 2, nagfiles
-           IF ( memb_tstep_start(memb_order(ifile)) .LE.
+           IF ( memb_tstep_start(memb_order(ifile)) .LT.
      .          memb_tstep_end(memb_order(ifile-1)) ) THEN
               plen = TM_LENSTR1(memb_filename(memb_order(ifile-1)))
               flen = TM_LENSTR1(memb_filename(memb_order(ifile)))
@@ -383,7 +383,7 @@
                  ELSE
                     tstep = GET_LINE_COORD(linemem(given_taxis)%ptr, nsteps)
                  ENDIF
-                 IF ( tstep .GT. memb_tstep_end(memb_order(ifile-1)) )
+                 IF ( tstep .GE. memb_tstep_end(memb_order(ifile-1)) )
      .              GOTO 600
                  numover = numover + 1
               ENDDO

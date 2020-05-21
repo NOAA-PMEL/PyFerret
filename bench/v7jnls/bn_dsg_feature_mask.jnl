@@ -47,7 +47,7 @@ let/title="Where Longitude < 121W" mask =  if longitude lt -121 then 1
 set v ur
 plot pco2 
 
-use DSG_ERDDAP_pmelTao5daySst.nc
+use DSG_ERDDAP_Tao5daySst.nc
 
 let/title="Where station is 8s125w, 8s170w, 5n155w, 2s165e"  mask = element_index_str (station, {"8s125w", "8s170w", "5n155w", "2s165e"})
 

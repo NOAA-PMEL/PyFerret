@@ -265,6 +265,17 @@ C  Autocorrelation returns correlations for lags of 0 to N-1.
       INTEGER nd, arg
       INTEGER i, j, k, l, m, n
       INTEGER i1, j1, k1, l1, m1, n1
+      LOGICAL its_dsg
+      CHARACTER*128 err_msg
+
+* Does the variable come from a Discrete Sampling Geometries dataset?  
+
+      CALL EF_GET_ITS_DSG(id, ARG1, its_dsg )
+      IF (its_dsg) THEN
+         err_msg = 
+     . 'Data is from a Discrete Sampling Geometries (DSG) dataset. Function not implemented .'
+       GOTO 999
+      ENDIF
 
       CALL ef_get_res_subscripts_6d(id, res_lo_ss, res_hi_ss, res_incr)
       CALL ef_get_arg_subscripts_6d(id, arg_lo_ss, arg_hi_ss, arg_incr)
@@ -389,10 +400,9 @@ C  Autocorrelation returns correlations for lags of 0 to N-1.
          n1 = n1 + arg_incr(F_AXIS,ARG1)
  600  CONTINUE
 
-*                                                                      ^
-*                                                                      |
-*                                            USER CONFIGURABLE PORTION |
-* **********************************************************************
+      RETURN
 
-      RETURN 
+ 999  CALL ef_bail_out (id, err_msg)
+      RETURN
+
       END

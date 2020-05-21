@@ -223,6 +223,7 @@
 * V751 *acm* 6/19  When setting a new DSG fmask, clear variables from memory
 * v76  *acm* 11/19  Issue 1959: Change SET MEMORY/SIZE= to SET MEMORY/MAX= 
 *                               (keep /SIZE for bkwds compatibility)
+* V745 *acm*  5/20  added mode_dsg to control turning off all DSG ops
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -268,7 +269,7 @@
 !	INTEGER	reconfig   ! removed for dynamic memory management 2/2017
 
 * local variable declarations:
-	LOGICAL		TM_DATE_OK, is_ok
+	LOGICAL		TM_DATE_OK, is_ok, set_dsg
 	INTEGER		REGION_NUMBER, VIEWPORT_NUMBER, GRID_FROM_NAME,
      .                  TM_GET_LINENUM, TM_LENSTR, TM_LENSTR1, 
      .                  TM_UNIT_ID, TM_UNITS_CAL, TM_GET_CALENDAR_ID,
@@ -283,7 +284,7 @@
      .                  offset, attid, attype, attoutflag, attlen, i1, 
      .                  dset, istat, cache_size, cache_nelems, 
      .                  cache_preemption, numpts, redir_file_lun, 
-     .                  iline, iset, n, igrp
+     .                  iline, iset, n, igrp, nopen
 	INTEGER*8	i8_val
         REAL*8          TM_WW_AXLEN, GET_LINE_COORD, axwwlen, new_att_modulo_len
         REAL*8          delta, dlo, dhi, firstval, lastval
@@ -547,17 +548,28 @@ c *kob* 4/97
 
 	dsg_user_direction = int4_init
 
-	IF (qual_given(slash_set_data_feature) .GT. 0) THEN
+	set_dsg = qual_given(slash_set_data_feature) .GT. 0
+	IF (set_dsg) THEN
 	   loc = qual_given(slash_set_data_feature)
 	   CALL EQUAL_STRING(
      .          cmnd_buff(qual_start(loc):qual_end(loc)),
      .                    ustring, status )
-	   IF (STR_SAME(ustring(1:3), 'tra') .EQ. 0) dsg_user_direction = x_dim ! arbitrarily
-	   IF (STR_SAME(ustring(1:3), 'pro') .EQ. 0) dsg_user_direction = z_dim
-	   IF (STR_SAME(ustring(1:3), 'tim') .EQ. 0) dsg_user_direction = t_dim
-	   IF (STR_SAME(ustring(1:3), 'non') .EQ. 0) dsg_user_direction = no_dim
+	   IF (STR_SAME(ustring(1:3), 'tra') .EQ. 0) THEN
+	      dsg_user_direction = x_dim ! arbitrarily
+	   ELSE IF (STR_SAME(ustring(1:3), 'pro') .EQ. 0) THEN
+	      dsg_user_direction = z_dim
+	   ELSE IF (STR_SAME(ustring(1:3), 'tim') .EQ. 0) THEN
+	      dsg_user_direction = t_dim
+	   ELSE IF  (STR_SAME(ustring(1:3), 'non') .EQ. 0) THEN
+	      dsg_user_direction = no_dim
+	   ELSE
+	      GOTO 6910
+	   ENDIF
 	ENDIF
 
+	IF (set_dsg .AND. .NOT.mode_dsg) THEN
+	   CALL WARN ('MODE DSG is turned off. Ingoring SET DATA/FEATURE=') 
+	ENDIF
 
 * interpret the /ORDER permutation qualifier for a non-EZ data set
 	DO 720 idim = 1, nferdims
@@ -636,10 +648,10 @@ c *kob* 4/97
            ENDIF
 
 * initialize a TMAP-supported data set
-c           CALL TM_INIT_DSET( cmnd_buff( item_start(item):item_end(item) ),
            CALL TM_INIT_DSET( buff1,
      .			      ok_re_use_existing,
-     .			      perm, dset_num, tregular, use_strict, tmap_status )
+     .			      perm, dset_num, tregular, use_strict, 
+     .			      mode_dsg, tmap_status )
 
 * (hack, continued) If the argument is a file which has a ".agg" extension,
 * merr_use_agg indicates we have found it even though they gave the 
@@ -867,6 +879,21 @@ c           CALL TM_INIT_DSET( cmnd_buff( item_start(item):item_end(item) ),
 * ... mode mode_datefmt sets the default output format for dates
               ELSEIF ( mode .EQ. pmode_datefmt ) THEN
                  date_fmt_out = mode_arg(pmode_datefmt, 1)
+
+* ... mode dsg toggles use of DSG-specific enhancements
+*     If mode_dsg was false, and datasets are open, all datasets must be
+*     reinitialized.
+
+              ELSEIF ( mode.EQ.pmode_dsg .AND. .NOT.mode_state(mode,2) ) THEN
+
+* ... are any datasets open? They'll need to close them and reinitialize.
+		 nopen = 0
+		 DO iset = 1, maxdsets
+		    IF ( ds_name(iset) .NE. char_init2048) nopen = nopen+1
+		 ENDDO
+		 IF (nopen.GT.0) GOTO 6920
+
+		 mode_dsg = .TRUE.
 
 	      ENDIF
 	      GOTO 820
@@ -2280,4 +2307,13 @@ c           ENDIF
  6900	CALL ERRMSG( ferr_unknown_arg, status,
      .'Can SET AXIS/OUTTYPE=INPUT, DOUBLE, FLOAT, INT, SHORT, BYTE, or NONE',
      .               						*5000 )
+     
+ 6910	CALL ERRMSG( ferr_unknown_arg, status,
+     . 'Can SET DATA/FEATIRE=trajectory, profile, timeseries, or none',
+     .               						*5000 )
+     
+ 6920	CALL ERRMSG( ferr_invalid_command, status,
+     .  'SET MODE DSG when datasets are open. '//
+     .  'Must first CANCEL DATA/ALL.', *5000 )
+
 	END

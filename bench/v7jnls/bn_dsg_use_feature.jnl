@@ -48,11 +48,11 @@ use/feature=profile dsg_cross_dateline.nc
 ! A timeseries dataset can't be used as a trajectory (unless
 ! there were lon/lat along the obs axis)
 
-use DSG_ERDDAP_pmelTao5daySst
+use DSG_ERDDAP_Tao5daySst
 show data
 
 ! This is an error
-use/feature=trajectory DSG_ERDDAP_pmelTao5daySst
+use/feature=trajectory DSG_ERDDAP_Tao5daySst
 
 ! but the dataset is still open from the earlier initializatin
 show data

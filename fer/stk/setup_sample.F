@@ -65,6 +65,7 @@
 *	 isp	<--	current stack level (for sampling )
 
 * internal variable declarations:
+	LOGICAL TM_ITSA_DSG
 	INTEGER CGRID_SIZE
 	INTEGER n, dims(nferdims), ndim, hold_isp, cx_holder,
      .		min_ss, max_ss, res_grid,
@@ -77,6 +78,8 @@
 	hold_isp  = isp
 	cx_holder = is_cx( hold_isp )
 	res_grid  = cx_grid( cx_holder )
+
+	IF (TM_ITSA_DSG( cx_grid(cx_holder) )) GOTO 5020
 
 * Check that index list is 1D.
 	CALL GET_CX_DIMS(cx_indices, ndim, dims)
@@ -173,5 +176,9 @@
  5010	CALL ERRMSG( ferr_invalid_command, status,
      .          'list of indices supplied to SAMPLE* must be 1D ',
      .          *5000)
+ 5020	CALL ERRMSG(ferr_invalid_command, status,
+     .   'SAMPLE functions do not apply to data from '//
+     .   'Discrete Sampling Geometries (DSG) dataset. '//
+     .   'Use constraints or masks.', *5000 )
 	END
 

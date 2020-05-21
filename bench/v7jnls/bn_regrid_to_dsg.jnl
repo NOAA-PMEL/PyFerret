@@ -18,7 +18,7 @@
 !   grid-to-profile                
 
 
-use DSG_ERDDAP_pmelTao5daySst.nc
+use DSG_ERDDAP_Tao5daySst.nc
 
 ! create a test dataset
 ! fake "temp" values are actually the latitude values
@@ -37,12 +37,12 @@ cancel variables/all
 USE fake_model_temp.nc
 
 ! regrid of time series
-list/x=160e:170e temp[d=fake_model_temp,g=t_25[d=DSG_ERDDAP_pmelTao5daySst]]
+list/x=160e:170e temp[d=fake_model_temp,g=t_25[d=DSG_ERDDAP_Tao5daySst]]
 cancel mem/all
 SET MODE DIAG
 ! notice that the X-restricted LOAD requests a smaller X subscript range 
-load/x=160e:170e temp[d=fake_model_temp,g=t_25[d=DSG_ERDDAP_pmelTao5daySst]]
-load temp[d=fake_model_temp,g=t_25[d=DSG_ERDDAP_pmelTao5daySst]]
+load/x=160e:170e temp[d=fake_model_temp,g=t_25[d=DSG_ERDDAP_Tao5daySst]]
+load temp[d=fake_model_temp,g=t_25[d=DSG_ERDDAP_Tao5daySst]]
 SET MODE/LAST DIAG
 
 ! now the same thing, but sampling from a uvar instead of an fvar
@@ -52,7 +52,7 @@ define axis/x=0:359:1/unit=degrees/modulo xlittle
 define axis/z=0:2:.5/unit=meters zlittle
 define grid/x=xlittle/y=ylittle/z=zlittle/t=tlittle glittle
 let/title=Temperature little_temp = y[g=glittle] + 0*(x[g=glittle]+z[g=glittle]+t[g=glittle])
-list/x=160e:170e little_temp[g=t_25[d=DSG_ERDDAP_pmelTao5daySst]]
+list/x=160e:170e little_temp[g=t_25[d=DSG_ERDDAP_Tao5daySst]]
 
 ! Test some plots: the legend line samples should be labeled with the station IDs
 let regridded_var = temp[d=2,g=t_25[d=1]]
@@ -75,9 +75,9 @@ define axis/z=0:2:.1/unit=meters zbig
 define grid/x=xbig/y=ybig/z=zbig/t=tbig gbig
 let/title=Temperature big_temp = y[g=gbig] + 0*(x[g=gbig]+z[g=gbig]+t[g=gbig])
 say `big_temp,r=size`
-load big_temp[g=t_25[d=DSG_ERDDAP_pmelTao5daySst]]
+load big_temp[g=t_25[d=DSG_ERDDAP_Tao5daySst]]
 SHOW MEMORY/DIAGNOSTIC
-!stat big_temp[g=t_25[d=DSG_ERDDAP_pmelTao5daySst]] ! not yet DSG-enabled
+!stat big_temp[g=t_25[d=DSG_ERDDAP_Tao5daySst]] ! not yet DSG-enabled
 
 ! Again, this time with T axis size inadequate, so split occurs on Z
 ! (same size source data but 1/100 as many time points)
@@ -89,20 +89,20 @@ define axis/z=0:2:`.1/100`/unit=meters zbigz
 define grid/x=xbigz/y=ybigz/z=zbigz/t=tbigz gbigz
 let/title=Temperature bigz_temp = y[g=gbigz] + 0*(x[g=gbigz]+z[g=gbigz]+t[g=gbigz])
 say `bigz_temp,r=size`
-load bigz_temp[g=t_25[d=DSG_ERDDAP_pmelTao5daySst]]
+load bigz_temp[g=t_25[d=DSG_ERDDAP_Tao5daySst]]
 SHOW MEMORY/DIAGNOSTIC
-!stat bigz_temp[g=t_25[d=DSG_ERDDAP_pmelTao5daySst]] ! not yet DSG-enabled
+!stat bigz_temp[g=t_25[d=DSG_ERDDAP_Tao5daySst]] ! not yet DSG-enabled
 
 ! by constraining the request (in X) the needed source data is reduced
 ! (I:81     86  J:    3   81  K:   11   16  L:     49    301)
 cancel memory/all
 SET MODE DIAG
-load/x=160e:170e big_temp[g=t_25[d=DSG_ERDDAP_pmelTao5daySst]]
+load/x=160e:170e big_temp[g=t_25[d=DSG_ERDDAP_Tao5daySst]]
 
 ! constraining on E implicitly constrains XYZT, too
 !(I:    118    118  J:   31   31  K:   11   11  L:     49    301)
 cancel memory/all
-load/e=50 big_temp[g=t_25[d=DSG_ERDDAP_pmelTao5daySst]]
+load/e=50 big_temp[g=t_25[d=DSG_ERDDAP_Tao5daySst]]
 SET MODE/LAST DIAG
 
 ! Gridded-to-Trajectory

@@ -259,7 +259,19 @@ C
       INTEGER i1, j1, ii, jj, iarg, inout, nv
       REAL xvmin, xvmax, yvmin, yvmax, px, py, xmin, xmax
       INTEGER STR_UPCASE
-      LOGICAL TM_HAS_STRING, mod_lo, mod_hi
+      LOGICAL TM_HAS_STRING, mod_lo, mod_hi, its_dsg
+      
+      CHARACTER*128 err_msg
+      
+* Does the variable come from a Discrete Sampling Geometries dataset?  
+* If so the function doesn't apply.
+
+      CALL EF_GET_ITS_DSG(id, ARG1, its_dsg )
+      IF (its_dsg) THEN
+         err_msg = 
+     . 'Data is from a Discrete Sampling Geometries (DSG) dataset. Function requires an XY grid.'
+	GOTO 999
+      ENDIF
 
       CALL ef_get_res_subscripts_6d(id, res_lo_ss, res_hi_ss, res_incr)
       CALL ef_get_arg_subscripts_6d(id, arg_lo_ss, arg_hi_ss, arg_incr)
@@ -380,6 +392,10 @@ C
  200  CONTINUE
 
       RETURN 
+
+ 999  CALL ef_bail_out (id, err_msg)
+
+      RETURN 
       END
 
 
@@ -404,6 +420,7 @@ C ..................................................................
   50  CONTINUE
 
       RETURN
+      
       END
 
 

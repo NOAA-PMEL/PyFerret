@@ -4,7 +4,7 @@
 ! earlier versions listed the value at m=1
 ! in the grave-accent returns.
 
-use DSG_ERDDAP_pmelTao5daySst
+use DSG_ERDDAP_Tao5daySst
 
 list/m=1:6 station, rowsize
 list/m=6 station

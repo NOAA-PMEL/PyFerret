@@ -1,5 +1,6 @@
 	SUBROUTINE TM_INIT_DSET(dset_name,ok_re_use_existing,
-     .				perm,dset_num,tregular, use_strict,status)
+     .				perm,dset_num,tregular,use_strict, 
+     .				do_dsg,status)
 
 *
 *  This software was developed by the Thermal Modeling and Analysis
@@ -121,6 +122,7 @@
 *      7/18 *acm*  If datset is already open then USE/FEATURE= is invalid.
 * v76  2/20 *acm*  If the specified /FEATURETYPE doesn't change the current setting 
 *                  then do not reinitialize the dataset
+* V745 *acm*  5/20  added mode_dsg to control turning off all DSG ops
 
 * arguments:
 *	dset_name	- filename of DESCRIPTOR file (input)
@@ -129,11 +131,12 @@
 *			  ( 1 <= dset_num <= maxdsets - see COMMON XDSET_INFO)
 *	dset_type	- coaching for data set type (GT,TS, or CDF)
 *                       - blank to determine based on filename extension
+*	do_dsg		- the setting mode_dsg, if false turn off all DSG enhancements
 *	status		- return status
 *
 
 * Argument definitions
-	LOGICAL		ok_re_use_existing, tregular, use_strict
+	LOGICAL		ok_re_use_existing, tregular, use_strict, do_dsg
 	INTEGER		perm(*), dset_num, status
 	CHARACTER*(*)	dset_name
 
@@ -377,7 +380,7 @@
 
 * If the specified /FEATURETYPE doesn't change the current setting we are done
 
-		 IF (dsg_user_direction .NE. int4_init) THEN
+		 IF (do_dsg.AND. dsg_user_direction .NE. int4_init) THEN
 		    same_feat = dsg_user_direction .EQ. dsg_orientation(dset_num)
 		    IF (dsg_user_direction.EQ.no_dim .AND. 
      .	              dsg_orientation(dset_num).EQ.int4_init) same_feat = .TRUE.
@@ -386,7 +389,7 @@
 
 * If feature type has changed reinitialize the dataset using the new feature type. 
 
-		 IF (dsg_user_direction .NE. int4_init) THEN
+		 IF (do_dsg.AND.dsg_user_direction .NE. int4_init) THEN
 		    IF ( CD_DSG_FEATURE_OK (dset_num, dsg_user_direction) ) THEN
 		       du = dsg_user_direction
 	               CALL CANCEL_DATA_SET( dset_num, status )  
@@ -422,7 +425,7 @@
            ds_dset_type = ' '     ! reset the coaching shared by outside world
 
            CALL CD_INIT_DSET( dset_num, perm, tregular, use_strict,
-     .				ok_share_taxis, status )
+     .				ok_share_taxis, do_dsg, status )
            IF ( status .NE. merr_ok )GOTO 9900
            RETURN
         ENDIF
@@ -589,14 +592,12 @@
 !*kob*
 	ELSE IF (d_type .EQ. '  MC') THEN
 	  CALL MC_INIT_DSET(dset_num, lunit, perm, tregular, 
-     .      use_strict, status)
+     .      use_strict, do_dsg, status)
 	  IF (status .NE. merr_ok) GOTO 9900
 	  CALL TM_MAKE_4D_GRIDS(dset_num,status)
 * 1/00 - need to do this for remote mc aggregations
 	  CALL TM_DSET_USE_GRIDS( dset_num )
 	ENDIF
-!	IF (d_type .EQ. '  MG') CALL MG_INIT_DSET(dset_num, lunit, status)
-!	IF (d_type .EQ. '  MT') CALL MT_INIT_DSET(dset_num, lunit, status)
 	IF (status .NE. merr_ok) GOTO 9900
 
 * success

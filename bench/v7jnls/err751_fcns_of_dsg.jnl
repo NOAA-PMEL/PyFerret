@@ -1,0 +1,13 @@
+! err751_fcns_of_dsg.jnl
+! 5/2020
+! intentional errors: grid-changing fcns and others that
+! use coordinates are not yet customized for DSG datasets
+
+use DSG_ERDDAP_Tao5daySst.nc
+
+set mode ignore
+plot/m=1:5 ffta(t_25)
+
+list box_edges (t_25)
+
+set mode/last ignore

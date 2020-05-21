@@ -144,7 +144,7 @@
 * internal variable declarations:
 
 	LOGICAL IS_SECURE, TM_ITSA_DSG
-	INTEGER CX_DIM_LEN,  CGRID_SIZE, TM_DSG_NFEATURES,
+	INTEGER CX_DIM_LEN,  CGRID_SIZE, TM_DSG_NFEATURES, TM_LENSTR1,
      .		count, size, icom, idim, ii,
      .		cx1, cx2, cx3,
      .           i,   j,   k,   l,   m,   n,
@@ -167,7 +167,7 @@
         INTEGER max_cmnd_len
         PARAMETER ( max_cmnd_len = 2048 )
         CHARACTER GET_STRING_ELEMENT*(max_cmnd_len), buff*(max_cmnd_len)
-	CHARACTER*48 TM_FMT, argval
+	CHARACTER*48 TM_FMT, argval, fcn_name
         INTEGER nnew, slen, narg
 
 * equivalence conveniences
@@ -402,6 +402,13 @@
      .		(ferr_limits, status,
      .		 'Z limits of data and depth fields must match', *5000)
 
+	IF (TM_ITSA_DSG( cx_grid(cx1) )) THEN
+	   fcn_name = 'ZAXREPLACE'
+	   buff = ' does not apply to Data from  '//
+     .   'a DiscreteSampling Geometries (DSG) dataset.'
+	   GOTO 5300
+	ENDIF
+ 
 * ... allocate a work array for a single profile of Z depths
         i8_size = m2hiz-m2loz+1
 	CALL GET_DYN_WORK_SPACE( i8_size, status )
@@ -714,6 +721,22 @@
  2300   CONTINUE        ! SAMPLEL
  2400   CONTINUE        ! SAMPLEN
  2500   CONTINUE        ! SAMPLEN
+	
+	IF (TM_ITSA_DSG( cx_grid(cx1) )) THEN
+	   fcn_name = 'SAMPLEI'
+	   IF (fcn .EQ. 2100) fcn_name = 'SAMPLEJ'
+	   IF (fcn .EQ. 2100) fcn_name = 'SAMPLEJ'
+	   IF (fcn .EQ. 2200) fcn_name = 'SAMPLEK'
+	   IF (fcn .EQ. 2300) fcn_name = 'SAMPLEL'
+	   IF (fcn .EQ. 2400) fcn_name = 'SAMPLEM'
+	   IF (fcn .EQ. 2500) fcn_name = 'SAMPLEN'
+	   
+	   buff = ' does not apply to Data from a '//
+     .   'Discrete Sampling Geometries (DSG) dataset. Use masking'
+	   GOTO 5300
+
+	ENDIF
+
 	IF (typr .EQ. pfcn_rtn_float) THEN
 **** WARNING: This assumes com2 and res dimensions start and end at the same values ****
 	  DO 2510 n = cx_lo_s6(cx2), cx_hi_s6(cx2)
@@ -1100,5 +1123,9 @@
 
  5200	CALL ERRMSG(ferr_invalid_command, status,
      .   'SPAWN not allowed in secure mode', *5000 )
+
+ 5300	CALL ERRMSG(ferr_invalid_command, status,
+     .   fcn_name(:TM_LENSTR1(fcn_name)) //' '//
+     .   buff(:TM_LENSTR1(buff)), *5000 )
 
 	END

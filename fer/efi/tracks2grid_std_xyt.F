@@ -42,6 +42,8 @@
 * 1/14/2016 Fix LAS/SOCAT ticket 1721, missing/zero where there should be data in cell
 * 1/27/2016 Apply modulo operation to scattered longitudes or time if the output
 *           axis is a modulo axis.
+* 
+* DSGTODO  Make use of dsg-handling upgrade
 *
 * This is the description of the averaging function.
 * The input data points are not a simple scatter.  They are cruise tracks 

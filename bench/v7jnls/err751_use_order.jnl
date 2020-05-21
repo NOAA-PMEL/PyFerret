@@ -1,0 +1,22 @@
+! err751_use_order.jnl
+! use/order= failed when some variables are 1-D and others are 2-D
+! This change applies the permutation first to the grid of the
+! variable with most dimensions (1st variable found w/ ndim) and then
+! uses the resulting axis directions for other grids.
+
+can data/all
+use/feature=none/order=zt alamo_float_CFMA_profiles.nc
+show dat
+show grid longitude
+list longitude
+list pres
+
+can data/all
+use/feature=none/order=-zt alamo_float_CFMA_profiles.nc
+show dat
+show grid longitude
+list longitude
+
+! reversed in the z direction, right to left
+list pres
+

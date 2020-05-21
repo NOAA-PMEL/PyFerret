@@ -42,6 +42,8 @@
 * 1/27/2016 Apply modulo operation to scattered longitudes or time if the output
 *           axis is a modulo axis.
 *
+* DSGTODO  Make use of dsg-handling upgrade
+*
 * The input data points are not a simple scatter.  They are cruise tracks 
 * strung one after another .  (Each track will be a contiguous block of points 
 * in the input data arrays. )  And the subtlety is that each cruise needs to 

@@ -1,5 +1,5 @@
 ! Transforms:
-!  DSG_ERDDAP_pmelTao5daySst.nc  timeseries example
+!  DSG_ERDDAP_Tao5daySst.nc  timeseries example
 !  simple_traj_dsg.nc trajectories with a varialbe having gaps (can test timeseries ops too)
 !  profile_dsg.nc has gaps in the variable pot_temp_degc
 
@@ -7,7 +7,7 @@
 !!!!!!!!!!!!
 ! NGD, NBD  MIN, MAX
 
-use DSG_ERDDAP_pmelTao5daySst  
+use DSG_ERDDAP_Tao5daySst  
 list/m=1:5 rowsize, T_25[t=@ngd], T_25[t=@nbd], T_25[t=@min], T_25[t=@max]
 
 let tmin = T_25[t=@min]
@@ -19,7 +19,7 @@ list tmin[e=@min], tmax[e=@max]
 ! Which tseries have some bad data?
 
 LET mask = if T_25[t=@nbd] GT 0 then 1
-set data/fmask=mask DSG_ERDDAP_pmelTao5daySst
+set data/fmask=mask DSG_ERDDAP_Tao5daySst
 
 list station, rowsize, T_25[t=@ngd], T_25[t=@nbd]
 
@@ -53,7 +53,7 @@ list sstgap, sstgap[x=@fln], sstgap[x=@fav], sstgap[x=@fnr]
 
 ! In T
 
-use DSG_ERDDAP_pmelTao5daySst 
+use DSG_ERDDAP_Tao5daySst 
 
 let miss = if t_25 gt 28.4 then t_25
 list/m=2/t=15-jan-2017:15-mar-2017  t_25, miss, miss[t=@fln], miss[t=@fav], miss[t=@fnr]
@@ -83,11 +83,11 @@ list/m=20:21 pco2, pco2[z=@fav], pco2[z=@fln], pco2[z=@fnr]
 use simple_traj_dsg
 list sst, sst[x=@sbx], sst[x=@swl], sst[x=@shn], sst[x=@spz] 
 
-use DSG_ERDDAP_pmelTao5daySst 
+use DSG_ERDDAP_Tao5daySst 
 list/m=62  t_25, t_25[t=@sbx], t_25[t=@swl], t_25[t=@shn], t_25[t=@spz]
 
 
-use DSG_ERDDAP_pmelTao5daySst
+use DSG_ERDDAP_Tao5daySst
 plot/m=2/thick t_25
 plot/over/color=red/thick/m=2/nolab t_25[t=@sbx]
 plot/over/color=blue/thick/m=2/nolab t_25[t=@swl]
@@ -104,7 +104,7 @@ list/m=1 pco2, pco2[z=@sbx], pco2[z=@swl], pco2[z=@shn]
 use simple_traj_dsg
 list sst, sst[x=@ddc], sst[x=@ddb], sst[x=@ddf]
 
-use DSG_ERDDAP_pmelTao5daySst 
+use DSG_ERDDAP_Tao5daySst 
 list/m=62  t_25, t_25[t=@ddc], t_25[t=@ddb], t_25[t=@ddf]
 
 
@@ -139,7 +139,7 @@ list sal, sal[z=@iin], sal[z=@rsum]
 let s_ave = sal[z=@ave]
 list s_ave[e=@sum]
 
-use DSG_ERDDAP_pmelTao5daySst
+use DSG_ERDDAP_Tao5daySst
 sh dat
 list/m=1:5 t_25[T=@ave]
 list/m=1:5 t_25[T=@sum], t_25[T=@sum]/rowsize
@@ -162,7 +162,7 @@ list sst[x=@ave]
 cancel data/all
 ! note variable "time" doesn't have a missing-data flag so the last column
 ! for some reason shows NaN at the end of this listing.
-use DSG_ERDDAP_pmelTao5daySst 
+use DSG_ERDDAP_Tao5daySst 
 list/m=62  t_25, t_25[t=@wgt], time[t=@ddf]
 
 use WestCoastCarbon_9d9c_f562_77b5_5f8e_5d19_7b1d
@@ -176,9 +176,9 @@ cancel data/all
 use simple_traj_dsg
 list sst, sst[x=@evn:20], sst[x=@evn:24]
 
-use DSG_ERDDAP_pmelTao5daySst.nc
+use DSG_ERDDAP_Tao5daySst.nc
 let/title="Where station is 5n155w, 8n95w"  mask = element_index_str (station, {"5n155w", "8n95w"})
-set data/fmask=mask DSG_ERDDAP_pmelTao5daySst
+set data/fmask=mask DSG_ERDDAP_Tao5daySst
 list t_25, t_25[t=@evn:27.4]
 
 

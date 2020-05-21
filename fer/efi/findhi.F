@@ -285,6 +285,8 @@
      .        neigh_x, neigh_y
       REAL    dx, dy, xrange, yrange
 
+      CHARACTER*255 err_msg
+
       CALL ef_get_res_subscripts_6d(id, res_lo_ss, res_hi_ss, res_incr)
       CALL ef_get_arg_subscripts_6d(id, arg_lo_ss, arg_hi_ss, arg_incr)
       CALL ef_get_bad_flags(id, bad_flag, bad_flag_result)
@@ -375,10 +377,9 @@ C  Fill end of result with missing-data flags
          n1 = n1 + arg_incr(F_AXIS,ARG1)
  600  CONTINUE
 
-*                                                                      ^
-*                                                                      |
-*                                            USER CONFIGURABLE PORTION |
-* **********************************************************************
+      RETURN
 
-      RETURN 
+ 999  CALL ef_bail_out (id, err_msg)
+      RETURN
+
       END

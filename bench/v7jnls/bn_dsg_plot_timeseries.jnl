@@ -2,7 +2,7 @@
 ! Line plots of tseries data
 
 
-use DSG_ERDDAP_pmelTao5daySst.nc
+use DSG_ERDDAP_Tao5daySst.nc
 
 ! A subset using x/y/t  Label the key with IDs
 ! Upper left labels reflect the subset
@@ -42,7 +42,7 @@ frame/file=dsg_tseries_plot_2.gif
 cancel view
 ! Plot an instance variable as a line in e direction
 
-use DSG_ERDDAP_pmelTao5daySst.nc
+use DSG_ERDDAP_Tao5daySst.nc
 set view upper
 plot/NOKEY t_25[t=@max]
 frame/file=dsg_tseries_plot_3.gif

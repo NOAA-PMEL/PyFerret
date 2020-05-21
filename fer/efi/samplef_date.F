@@ -347,6 +347,7 @@
       INTEGER i7, j7, k7, l7, m7, n7
       INTEGER mnth, numtimes, get_prec, dlen
       INTEGER nbot, ntop, status
+      LOGICAL its_dsg
       REAL ayr, amo, ada, ahr, amn, asc
       REAL byr, bmo, bda, bhr, bmn, bsc
       REAL fbot, ftop, timepoint, frac
@@ -359,9 +360,29 @@
 
   20  FORMAT (f2.0, 1x, a3, 1x, f4.0, 3(1x,f2.0))
 
+* Does the variable come from a Discrete Sampling Geometries dataset?  
+
+      CALL EF_GET_ITS_DSG(id, ARG1, its_dsg )
+      IF (its_dsg) THEN
+         errtxt = 
+     . 'Data is from a Discrete Sampling Geometries (DSG) dataset. Function does not apply.'
+        GOTO 1000
+      ENDIF
+
+
       CALL ef_get_res_subscripts_6d(id, res_lo_ss, res_hi_ss, res_incr)
       CALL ef_get_arg_subscripts_6d(id, arg_lo_ss, arg_hi_ss, arg_incr)
       CALL ef_get_bad_flags(id, bad_flag, bad_flag_result)
+
+
+* sanity check
+
+      IF (arg_lo_ss(F_AXIS, ARG1) .EQ. ef_unspecified_int4 ) THEN
+         errtxt = 'Argument 1 must have an F axis.'
+
+        GOTO 1000
+      ENDIF
+
 
 * return date string to precision of seconds
       get_prec = 6

@@ -165,6 +165,7 @@
 * V751 *acm*11/19  Ticket 1957: IF CANCEL VAR/NOEXIST reinitialize dset number before
 *                  going on to next variable
 * V76:  1/2020 -   Remove obsolete ferr_ODR_error 
+* V745 *acm*  5/20  added mode_dsg to control turning off all DSG ops
 
 
         IMPLICIT NONE
@@ -212,7 +213,8 @@
      .                  TM_LENSTR, len_test, len_mchars, varid,
      .                  dset, cat, var, mods_cx, iflag, loc, nvatts, 
      .                  slen, iatt, igrd, iline, new_att_modulo_len,
-     .			cache_size, cache_nelems, cache_preemption, dset_set
+     .			cache_size, cache_nelems, cache_preemption, dset_set,
+     .			ndsg
 	LOGICAL		MATCH4, TM_DIGIT_TEST, IS_TEMPLATE, MATCH_TEMPLATE,
      .			report_error, slash_all, del_perm, del_temp,
      .                  perm_var, all_dims, coordvar, do_err, 
@@ -604,6 +606,22 @@
                  ELSEIF ( mode .EQ. pmode_desperate ) THEN
 	            CALL WARN("MODE DESPERATE is deprecated. Use MODE FRUGAL")
 
+* ... mode mode_dsg sets to use DSG-specific enhancements
+                 ELSEIF ( mode .EQ. pmode_dsg ) THEN
+
+* ... are any DSG datasets open? They'll need to close them and reinitialize.
+                    ndsg = 0
+                    DO iset = 1, maxdsets
+		       IF ( ds_name(iset) .NE. char_init2048 .AND. 
+     .                      dsg_ragged(iset) ) ndsg = ndsg+1
+                    ENDDO
+                    IF (ndsg.GT.0) THEN
+		        mode_state( mode,1 ) = mode_state( mode,2 )
+			GOTO 6330
+                    ENDIF
+
+                    mode_dsg = .FALSE.
+		    
 	         ENDIF
 		 GOTO 820
 	      ENDIF
@@ -1424,5 +1442,8 @@ c	ENDIF
  6320   CALL ERRMSG( ferr_invalid_command, status, 'not a strided axis: '//
      .               cmnd_buff(item_start(item):item_end(item)), *5000 )
  
+ 6330	CALL ERRMSG( ferr_invalid_command, status,
+     .  'CANCEL MODE DSG when DSG datasets are open. '//
+     .  'Must first close all DSG datasets.', *5000 )
 	END
 

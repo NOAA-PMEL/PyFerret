@@ -1,7 +1,7 @@
 ! bn_dsg_tseries.jnl
 ! 5/2017 -- exercise native DSG support
 
-use DSG_ERDDAP_pmelTao5daySst.nc
+use DSG_ERDDAP_Tao5daySst.nc
 
 SHOW grid t_25
 

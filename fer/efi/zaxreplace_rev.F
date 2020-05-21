@@ -288,10 +288,21 @@
       INTEGER i3, j3, l3, m3, n3
       INTEGER nbox, nsrc
       INTEGER nsrc_lo, nsrc_hi
+      LOGICAL its_dsg
       REAL frac, xsrc_min, xsrc_max, xsrc_lo, xsrc_hi, xsrcdiff
       REAL wtd, arg2_val, arg2_val_last, wtd_last
       REAL*8 sum, wtdsum
-      REAL dbox_lo, dbox_hi
+      REAL dbox_lo, dbox_hi 
+      CHARACTER*128 err_msg
+
+* Does the variable come from a Discrete Sampling Geometries dataset?  
+
+      CALL EF_GET_ITS_DSG(id, ARG1, its_dsg )
+      IF (its_dsg) THEN
+         err_msg = 
+     . 'Data is from a Discrete Sampling Geometries (DSG) dataset. Function does not apply.'
+       GOTO 999
+      ENDIF
 
       CALL ef_get_res_subscripts_6d(id, res_lo_ss, res_hi_ss, res_incr)
       CALL ef_get_arg_subscripts_6d(id, arg_lo_ss, arg_hi_ss, arg_incr)
@@ -483,10 +494,9 @@
          n3 = n3 + arg_incr(F_AXIS,ARG3)
  600  CONTINUE
 
-*                                                                     ^
-*                                                                     |
-*                                           USER CONFIGURABLE PORTION |
-***********************************************************************
-
       RETURN
+
+ 999  CALL ef_bail_out (id, err_msg)
+      RETURN
+
       END

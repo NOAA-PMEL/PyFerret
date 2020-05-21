@@ -41,8 +41,8 @@
 * V68  *acm* 1/12  ifdef double_p for double-precision ferret.
 * V69+ *acm* 9/14 Make DATE1900 accept an array of date strings, 
 *                 returning an array of coordinates
-
-
+* V76  *acm* 5/20 Let it work on an array in any grid direction
+*
 * In this subroutine we provide information about
 * the function.  The user configurable information 
 * consists of the following:
@@ -99,9 +99,9 @@
       CALL ef_set_num_args(id, 1)
 
       CALL ef_set_axis_inheritance_6d(id,
-     .                                IMPLIED_BY_ARGS, NORMAL,
-     .                                NORMAL, NORMAL,
-     .                                NORMAL, NORMAL)
+     .                                IMPLIED_BY_ARGS, IMPLIED_BY_ARGS,
+     .                                IMPLIED_BY_ARGS, IMPLIED_BY_ARGS,
+     .                                IMPLIED_BY_ARGS, IMPLIED_BY_ARGS)
       CALL ef_set_piecemeal_ok_6d(id, YES, NO, NO, NO, NO, NO)
 
       CALL ef_set_num_work_arrays(id, 0)
@@ -113,7 +113,7 @@
       CALL ef_set_arg_desc(id, arg,
      .         'dd-MMM-yy or dd-MMM-yyyy  (e.g. "20-Dec-00")')
       CALL ef_set_axis_influence_6d(id, arg,
-     .                              YES, NO, NO, NO, NO, NO)
+     .                               YES, YES, YES, YES, YES, YES)
 
 *                                                                      ^
 *                                                                      |

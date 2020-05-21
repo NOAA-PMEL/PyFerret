@@ -64,6 +64,7 @@
 * v745 *acm* 12/18  Issue 1909, option to write dates in ISO8601 format
 *                  new mode datefmt for formatted date output, setting stored in date_fmt_out
 * V745 *acm* 12/18  added plist_dsg for CF-DSG format
+* V745 *acm*  5/20  added mode_dsg to control turning off all DSG ops
 
 	INTEGER		cmnd_buff_len, max_qual_list, max_arg_list,
      .			max_item_list, max_modes, mode_stack_size,
@@ -93,7 +94,7 @@
      .                  pmode_grat, pmode_linecolors, pmode_upcase_output,
      .                  pmode_nlevels, pmode_nodata_lab, pmode_shrink_ylab,
      .                  pmode_curvilinear, pmode_layerz, pmode_6d_lab,
-     .			pmode_frugal, pmode_datefmt
+     .			pmode_frugal, pmode_datefmt, pmode_dsg
 
 	PARAMETER     ( pmode_diagnostic	= 1,
      .			pmode_verify		= 2,
@@ -131,7 +132,8 @@
      .			pmode_layerz		= 33,
      .			pmode_6d_lab		= 34,
      .			pmode_frugal		= 35,
-     .			pmode_datefmt		= 36 )
+     .			pmode_datefmt		= 36,
+     .			pmode_dsg		= 37 )
 
 	CHARACTER	pmode_unused*10
 	PARAMETER     ( pmode_unused = '%% unused %%' )
@@ -288,7 +290,7 @@
      .			mode_ppllist, mode_gui, mode_logo, mode_labels,
      .                  mode_grat, mode_linecolors, mode_upcase_output, 
      .                  mode_nlevels, mode_nodata_lab, mode_shrink_ylab, 
-     .                  mode_6d_lab
+     .                  mode_6d_lab, mode_dsg
 	EQUIVALENCE
      .		( mode_state( pmode_diagnostic  ,1), mode_diagnostic  ),
      .		( mode_state( pmode_verify      ,1), mode_verify      ),
@@ -321,7 +323,8 @@
      .		( mode_state( pmode_nlevels     ,1), mode_nlevels     ),
      .		( mode_state( pmode_nodata_lab  ,1), mode_nodata_lab  ),
      .		( mode_state( pmode_shrink_ylab ,1), mode_shrink_ylab  ),
-     .		( mode_state( pmode_6d_lab      ,1), mode_6d_lab  )
+     .		( mode_state( pmode_6d_lab      ,1), mode_6d_lab  ),
+     .		( mode_state( pmode_dsg         ,1), mode_dsg  )
 
 * axis label modes
 *     assumes sequential long, lat, depth, time, ensemble, forecast pmode values

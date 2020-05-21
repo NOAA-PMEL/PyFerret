@@ -297,7 +297,7 @@
       INTEGER ic, imatch, jmatch, kmatch, lmatch, xflag
       INTEGER ibot, itop, jbot, jtop, kbot, ktop, lbot, ltop
       INTEGER xlo, xhi, ylo, yhi, zlo, zhi, tlo, thi
-      LOGICAL ok
+      LOGICAL ok, its_dsg
       REAL fxbot, fxtop, fzbot, fztop, fbb, ftb, fbt, ftt, aa, bb
       REAL xbot, xtop, ybot, ytop, zbot, ztop, tbot, ttop
       REAL xfrac, yfrac, zfrac, tfrac_lo, tfrac_hi
@@ -309,6 +309,15 @@ C  variables for checking axis characteristics (modulo axes)
 
       CHARACTER ax_name(6)*16, ax_units(6)*16
       LOGICAL backward(6), modulo(6), regular(6)
+
+* Does the variable come from a Discrete Sampling Geometries dataset?  
+
+      CALL EF_GET_ITS_DSG(id, ARG1, its_dsg )
+      IF (its_dsg) THEN
+         err_msg = 
+     . 'Data is from a Discrete Sampling Geometries (DSG) dataset. Function does not apply.'
+        GOTO 999
+      ENDIF
 
       CALL ef_get_res_subscripts_6d(id, res_lo_ss, res_hi_ss, res_incr)
       CALL ef_get_arg_subscripts_6d(id, arg_lo_ss, arg_hi_ss, arg_incr)

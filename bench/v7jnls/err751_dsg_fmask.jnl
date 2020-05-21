@@ -5,7 +5,7 @@
 !  Canceling a mask, make sure data in memory not reused.
 
 
-use DSG_ERDDAP_pmelTao5daySst.nc
+use DSG_ERDDAP_Tao5daySst.nc
 
 let mask_by_code = if wmo_platform_code EQ 51011 or wmo_platform_code EQ 23003 then 1
 list/m=1:20 wmo_platform_code, mask_by_code

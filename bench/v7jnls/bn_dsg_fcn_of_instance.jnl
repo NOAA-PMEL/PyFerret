@@ -7,7 +7,7 @@ use sail_2019.nc
 list strindex(trajectory, "4"), trajectory
 
 can data/all
-use DSG_ERDDAP_pmelTao5daySst.nc
+use DSG_ERDDAP_Tao5daySst.nc
 sh dat
 let test = if strindex(station, "140w") GT 0 then 1
 list station, test

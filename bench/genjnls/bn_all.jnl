@@ -1331,6 +1331,9 @@ GO bn_dsg_orth_labels
 GO bn_reset bn_ribbon_set
 GO bn_ribbon_set
 
+GO bn_reset bn_mode_dsg
+GO bn_mode_dsg
+
 
 ! *********** PyFerret-specific scripts ***********
 

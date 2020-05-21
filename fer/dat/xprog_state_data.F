@@ -130,6 +130,7 @@
 * v745 *acm* 12/18  Issue 1909, option to write dates in ISO8601 format
 *                  new mode datefmt for formatted date output, setting stored in date_fmt_out
 * V751 6/19 *acm* TM_FMT rewrite: formatting of lon/lat coordinate strings set to match previous
+* V745 *acm*  5/20  added mode_dsg to control turning off all DSG ops
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
@@ -240,6 +241,8 @@
      .					/ mode_stack_size*.TRUE.   /
      .		(mode_state( pmode_datefmt,i), i=1,mode_stack_size)
      .					/ mode_stack_size*.TRUE.   /
+     .		(mode_state( pmode_dsg     ,i), i=1,mode_stack_size)
+     .					/ mode_stack_size*.TRUE.    /
 
 	DATA	mode_name ( pmode_diagnostic  )	/ 'DIAGNOSTIC  ' /,
      .		mode_name ( pmode_verify      )	/ 'VERIFY      ' /,
@@ -277,7 +280,7 @@
      .		mode_name ( pmode_6d_lab      ) / '6D_LAB'       /,
      .		mode_name ( pmode_frugal      ) / 'FRUGAL'	 /,
      .		mode_name ( pmode_datefmt     ) / 'DATE_FORMAT'	 /,
-     .		mode_name ( 37     ) / pmode_unused /,
+     .		mode_name ( pmode_dsg         ) / 'DSG'	 /,
      .		mode_name ( 38     ) / pmode_unused /,
      .		mode_name ( 39     ) / pmode_unused /,
      .		mode_name ( 40     ) / pmode_unused /
@@ -354,6 +357,8 @@
      .				/ mode_stack_size*30 /
      .		(mode_arg  ( pmode_datefmt,i), i=1,mode_stack_size)
      .				/ mode_stack_size*pdate_vax /
+     .		(mode_arg  ( pmode_dsg     ,i), i=1,mode_stack_size)
+     .				/ mode_stack_size*unspecified_int4 /
 
 * If the value of nlevels is changed, also change NLEV in plot/ppldata.F
 

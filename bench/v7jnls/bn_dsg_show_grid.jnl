@@ -20,7 +20,7 @@ show data
 show grid sst
 
 ! Timeseries data
-use DSG_ERDDAP_pmelTao5daySst
+use DSG_ERDDAP_Tao5daySst
 show data
 show grid t_25
 can dat/all
@@ -33,7 +33,7 @@ can dat/all
 
 ! /FEATURE=none, grids are just the 1-D axes
 
-use/feature=none DSG_ERDDAP_pmelTao5daySst
+use/feature=none DSG_ERDDAP_Tao5daySst
 show data
 show grid t_25
 show grid array

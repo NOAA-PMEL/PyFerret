@@ -1,4 +1,4 @@
-	SUBROUTINE CD_LOAD_DSET_ATTRS ( dset, cdfid, status)
+	SUBROUTINE CD_LOAD_DSET_ATTRS ( dset, cdfid, do_dsg, status)
 
 *
 *
@@ -57,13 +57,16 @@
 *       7/18 *acm* More on use/feature. Allow /FEATURE=none. Use parameters for directions
 * V751 8/18 *acm* don't issue a note if the file has featureType="grid"
 * V76  1/20 *acm* Orientation of Point-type data set to e_dim
+* V745 *acm*  5/20  added mode_dsg to control turning off all DSG ops
 
 * argument definitions:
 *       dset    - pointer to TMAP data set
 *	status	- return status
 
 * argument declarations:
-	INTEGER	      dset, cdfid, status
+
+	LOGICAL	do_dsg
+	INTEGER dset, cdfid, status
 
 * include files
         include 'netcdf.inc'
@@ -86,7 +89,7 @@
       INTEGER TM_HASH_NAME, TM_LENSTR1, STR_SAME, STR_CASE_BLIND_COMPARE,
      .        ndims, nvars, ngatts, recdim, cdfstat, 
      .        i, istep, varid, iatt, attlen, attoutflag, maxlen
-      CHARACTER    TM_STRING*13, name*128, cbuff32*32
+      CHARACTER    TM_STRING*13, CD_DSG_FEATURENAME*20, name*128, cbuff32*32
       REAL val
       LOGICAL CD_ISIT_EPIC, NC_GET_ATTRIB, got_it, do_warn
       PARAMETER (do_warn = .TRUE. )
@@ -139,11 +142,13 @@
               name = ' '
               CALL CD_GET_VAR_ATT_NAME( dset, varid, iatt, name, status)
 
+* IF mode DSG is turned off, just don't mark the Dataset as a DSG file.
+*
 * identify a DSG dataset from its featureType attribute
 * ... set dsg_ragged, dsg_feature_type and 
 *     Note that dsg_ragged is only provisionally TRUE
 *     In cd_dsg_init we check if truly a contiguous ragged dset
-              IF (name .EQ. 'featureType') THEN
+              IF (do_dsg .AND. name.EQ.'featureType') THEN
 
 	         IF (dsg_user_direction .EQ. no_dim) THEN 
 		    ! they said USE/FEATURE='none'
@@ -177,6 +182,15 @@
 		       IF (STR_CASE_BLIND_COMPARE(cbuff32,"grid") .NE. str_match .AND. do_warn)
      .	                  CALL TM_NOTE("Ignoring non-DSG FeatureType: "//cbuff32 , lunit_errors)
 	            ENDIF
+
+c * ?? issue a note?  Could also call WARN_OCCASIONALLY...
+c		    IF ( dsg_ragged(dset) ) THEN
+c		       cbuff32 = CD_DSG_FEATURENAME(dsg_feature_type(dset))
+c		       CALL WARN( 
+c     .	                 'Dataset '//ds_name(dset)(:TM_LENSTR1( ds_name(dset) ))//
+c     .	                 '  is a Discrete Sampling Geometries (DSG) dataset '//
+c     .		                  'of type '//cbuff32(:TM_LENSTR1(cbuff32)) )
+c		    ENDIF
 
 * Apply a user-imposed direction SET DATA/FEATURE= if different from the file direction
 

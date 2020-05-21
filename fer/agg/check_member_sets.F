@@ -148,7 +148,7 @@
 
 * initialize a TMAP-supported data set
  	   CALL TM_INIT_DSET( buff1(:buff_len), ok_re_use_existing,
-     .			      perm, dset, tregular, use_strict, status )
+     .			      perm, dset, tregular, use_strict, mode_dsg, status )
 	   
            IF ( status .NE. merr_no_action ) THEN  ! merr_no_action = already init'ed
 	      IF ( status .NE. ferr_ok ) GOTO 5300 ! error in file or url

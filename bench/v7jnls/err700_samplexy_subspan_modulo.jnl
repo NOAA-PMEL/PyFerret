@@ -2,6 +2,7 @@
 ! 7/29/2016 ACM
 ! Ticket 2458. The result of SAMPLEXY wrong when it needs
 ! to do a modulo operation on a subspan modulo axis
+! 5/2020 ACM Cleanup: replace SAMPLEXY_CLOSEST with SAMPLEXY_NRST
 
 ! Define a grid with a subspan longitude axis
 
@@ -17,13 +18,13 @@ list samplexy(var, {-80,80}, {22,22})
 
 list samplexy(var, -80, 22)       ! this is ok, in the native range of the axis
 list samplexy(var, `360-80`, 22)  ! this was wrong
-list samplexy_closest(var, `360-80`, 22)  ! is ok
+list samplexy_nrst(var, `360-80`, 22)  ! is ok
 
 ! Looking for a point that is not, even in a modulo sense, in the subpsan axis
 
 list samplexy(var, {-80,80}, {22,22})
 list samplexy(var, {`360-80`,80}, {22,22})
-list samplexy_closest(var, {`360-80`,80}, {22,22})
+list samplexy_nrst(var, {`360-80`,80}, {22,22})
 
 ! interpolation between grid points
 
@@ -37,7 +38,7 @@ list samplexy(var, {-82.3,82.3}, {21.2,21.2})
 list samplexy(var, {`360-82.3`,82.3}, {21.2,21.2})
 
 ! this should match the non-MODE INTERPOLATE result
-list samplexy_closest(var, {`360-82.3`,82.3}, {21.2,21.2})
+list samplexy_nrst(var, {`360-82.3`,82.3}, {21.2,21.2})
 
 can dat/all
 
@@ -59,6 +60,6 @@ use coads_climatology
 list/l=1/x=-80/y=22 sst
 list samplexy(sst[l=1], -80, 22)
 list samplexy(sst[l=1], `360-80`, 22)
-list samplexy_closest(sst[l=1], `360-80`, 22)
+list samplexy_nrst(sst[l=1], `360-80`, 22)
 
 list samplexyt(sst, -80, 22, `t[gt=sst,l=1]`)

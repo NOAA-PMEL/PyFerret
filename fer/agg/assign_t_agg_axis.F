@@ -357,49 +357,51 @@
         ENDDO
         CALL SORT_TSERIES_DSETS(nagfiles, memb_order, memb_sort)
 
-*       Check time overlaps between datasets
+*       Check for time overlaps between datasets.  Just use the time coordinate
+*       indices for the given T axis instead of actual time coordinates
         DO ifile = 2, nagfiles
-           IF ( memb_tstep_start(memb_order(ifile)) .LT.
-     .          memb_tstep_end(memb_order(ifile-1)) ) THEN
-              plen = TM_LENSTR1(memb_filename(memb_order(ifile-1)))
-              flen = TM_LENSTR1(memb_filename(memb_order(ifile)))
-*             Deal with the standard/default of no overlaps allowed
+           numover = memb_nstep_start(memb_order(ifile-1)) + 
+     .               memb_nsteps(memb_order(ifile-1)) -
+     .               memb_nstep_start(memb_order(ifile))
+           IF ( numover .GT. 0 ) THEN
               IF ( toverlap .EQ. 0 ) THEN
+*                The standard/default of no overlaps allowed
                  IF ( tmatch .EQ. ' ' ) GOTO 1000
+                 plen = TM_LENSTR1(memb_filename(memb_order(ifile-1)))
+                 flen = TM_LENSTR1(memb_filename(memb_order(ifile)))
                  CALL ERRMSG(ferr_aggregate_error, status,
      .                'Time axes overlap for '//
      .                memb_filename(memb_order(ifile-1))(1:plen)//
      .                ' and '//
      .                memb_filename(memb_order(ifile))(1:flen), *5000)
-              ENDIF
-
-*             Count the number of overlapping time steps
-              numover = 1
-              nsteps = memb_nstep_start(memb_order(ifile))
-              DO idx = 2, memb_nsteps(memb_order(ifile))
-                 nsteps = nsteps + 1
-                 IF ( line_regular(given_taxis) ) THEN
-                    tstep = line_start(given_taxis) + line_delta(given_taxis) * nsteps
-                 ELSE
-                    tstep = GET_LINE_COORD(linemem(given_taxis)%ptr, nsteps)
-                 ENDIF
-                 IF ( tstep .GE. memb_tstep_end(memb_order(ifile-1)) )
-     .              GOTO 600
-                 numover = numover + 1
-              ENDDO
-*             If we got here, the prior dataset time axis completely covers 
-*             this dataset time axis.  Too problematic; only @ASN can be used.
-              IF ( tmatch .EQ. ' ' ) GOTO 1000
-              CALL ERRMSG(ferr_aggregate_error, status, 
-     .             'Time axis for '//
-     .             memb_filename(memb_order(ifile-1))(1:plen)//
-     .             'completely covers the time axis for '//
-     .             memb_filename(memb_order(ifile))(1:flen), *5000)
-
-  600         IF ( (toverlap .GE. 0) .AND. (toverlap .LT. numover) ) THEN
+              ELSEIF ( numover .GE. memb_nsteps(memb_order(ifile)) ) THEN
+*                Too problematic if the prior dataset time axis completely 
+*                covers this dataset time axis; only @ASN can be used.
+                 IF ( tmatch .EQ. ' ' ) GOTO 1000
+                 plen = TM_LENSTR1(memb_filename(memb_order(ifile-1)))
+                 flen = TM_LENSTR1(memb_filename(memb_order(ifile)))
+                 CALL ERRMSG(ferr_aggregate_error, status, 
+     .                'Time axis for '//
+     .                memb_filename(memb_order(ifile-1))(1:plen)//
+     .                'completely covers the time axis for '//
+     .                memb_filename(memb_order(ifile))(1:flen), *5000)
+              ELSEIF ( numover .GE. memb_nsteps(memb_order(ifile-1)) ) THEN
+*                Too problematic if this dataset time axis completely 
+*                covers the prior dataset time axis; only @ASN can be used.
+                 IF ( tmatch .EQ. ' ' ) GOTO 1000
+                 plen = TM_LENSTR1(memb_filename(memb_order(ifile-1)))
+                 flen = TM_LENSTR1(memb_filename(memb_order(ifile)))
+                 CALL ERRMSG(ferr_aggregate_error, status, 
+     .                'Time axis for '//
+     .                memb_filename(memb_order(ifile))(1:flen)//
+     .                'completely covers the time axis for '//
+     .                memb_filename(memb_order(ifile-1))(1:plen), *5000)
+              ELSEIF ( (toverlap .GE. 0) .AND. (toverlap .LT. numover) ) THEN
 *                Partial overlap is not acceptable; only @ASN can be used
                  IF ( tmatch .EQ. ' ' ) GOTO 1000
                  numbuff = LEFINT(numover, idx)
+                 plen = TM_LENSTR1(memb_filename(memb_order(ifile-1)))
+                 flen = TM_LENSTR1(memb_filename(memb_order(ifile)))
                  CALL ERRMSG(ferr_aggregate_error, status,
      .                'Excessive ('//numbuff(1:idx)//') overlaps '//
      .                'in time axes for '//
@@ -408,16 +410,6 @@
      .                memb_filename(memb_order(ifile))(1:flen), *5000)
               ENDIF
 
-*             Check that this truncation does not eliminate the prior dataset (that the
-*             prior dataset is not a single time at the start time of this dataset).
-              IF ( numover .GE. memb_nsteps(memb_order(ifile-1)) ) THEN
-                 IF ( tmatch .EQ. ' ' ) GOTO 1000
-                 CALL ERRMSG(ferr_aggregate_error, status, 
-     .                'Time axis for '//
-     .                memb_filename(memb_order(ifile))(1:flen)//
-     .                'completely covers the time axis for '//
-     .                memb_filename(memb_order(ifile-1))(1:plen), *5000)
-             ENDIF
 
 *             Partial overlap acceptable; truncate the time range of the prior dataset
               idx = memb_nstep_start(memb_order(ifile-1))

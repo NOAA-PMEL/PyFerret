@@ -61,7 +61,14 @@
 *  The variable name as it appears in the input file or variable definition,
 *  including the original upper- or lower-case spelling
 *      SUBROUTINE CD_GET_VAR_VARNAME (dset, varid, vname, status)
-
+*
+*
+* NOTE
+* 5/21/2020 
+* Note that data types greater than NF_DOUBLE have been added.
+* The numeric ones of these seem to work fine for us, but NF_STRING
+* does not. CD_SCAN_VARS and CD_DSG_SCAN_VARS have traps to issue
+* an error if datasets have variables with type.
 
 * Programmer Ansley Manke
 * NOAA/PMEL, Seattle, WA - TMAP
@@ -113,6 +120,7 @@
      .            nvdims, nvatts, coordvar, outflag, rev)
       IF (cdfstat .NE. pcd_ferr_ok) GOTO 5000  ! not found
       slen = MIN(slen, flen)
+
 
 * Return vname in original upper/lower case
       CALL TM_CTOF_STRNG ( fhol, vname, slen )

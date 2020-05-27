@@ -40,6 +40,7 @@
 * From tm_secs_to_date.F
 *
 * Written 12/2016 By Ansley Manke PMEL/ SDIG
+* 5/2020 Issue 1906: treat Proleptic-Gregorian identically to Gregorian
 *
 * Argument definitions
 	REAL*8	num_secs
@@ -95,7 +96,7 @@ C  Get calendar attributes
 *******************************************************************************
 * HANDLE GREGORIAN CALENDAR FIRST  
 *******************************************************************************
-	if (cal_id .eq. gregorian) then
+	if (cal_id.eq.gregorian .or. cal_id.eq.proleptic) then
 
 *          INITIALIZE
 	   leap_yr_days = num_days + 1.0

@@ -44,6 +44,7 @@ C     calendar without losing knowledge of the calendar in use.
 C
 C  12/14/00  ACM  (from Jerry's tm_load_calendar)
 * V6.74 3/12 *acm* cleanup ifdefs and unnecessary include files, add disclaimer
+* 5/2020 Issue 1906: treat Proleptic-Gregorian identically to Gregorian
 
 C     0.00000000000000000000000000000000000000000000000000000000000000001
 

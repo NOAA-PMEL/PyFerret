@@ -6288,6 +6288,8 @@ Replacing definition of axis TDATA
  LISTing to file mixed_or_proleptic.nc
  LISTing to file mixed_or_proleptic.nc
 *** Running ferret script: bn_int64.jnl
+           *** NOTE: Coordinate variable TIME is of non-numeric type.
+           *** NOTE: A dummy axis of subscripts will be used. Variable TIME contains the strings
  LISTing to file a.nc
 *** Running ferret script: bn_samplexyz.jnl
 *** Running ferret script: bn745_bug_fixes.jnl
@@ -6863,6 +6865,17 @@ Executed by script: *** GO err751_fcns_of_dsg ***
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
+ **TMAP ERR: Attempt to access unsupported feature
+             String Data Type not implemented: variable str_temp
+             Data set: ./data/string_type_var.nc
+SET DAT/FORM=CDF string_type_var
+Executed by script: *** GO err751_string_type ***
 *** Running ferret script: bn_ribbon_set.jnl
 *** Running ferret script: bn_mode_dsg.jnl
  **ERROR: invalid command: CANCEL MODE DSG when DSG datasets are open. Must first close all DSG datasets.

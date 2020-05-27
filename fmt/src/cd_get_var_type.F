@@ -36,6 +36,14 @@
 * Read the linked list structure for netcdf variable information: 
 * given dset and variable name OR variable ID return variable type.
 * If varid is 0 or -999, use vname
+*
+*
+* NOTE
+* 5/21/2020 
+* Note that data types greater than NF_DOUBLE have been added.
+* The numeric ones of these seem to work fine for us, but NF_STRING
+* does not. CD_SCAN_VARS and CD_DSG_SCAN_VARS have traps to issue
+* an error if datasets have variables with type.
 
 * Programmer Ansley Manke
 * NOAA/PMEL, Seattle, WA - 

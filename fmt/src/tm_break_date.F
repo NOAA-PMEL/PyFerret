@@ -52,6 +52,7 @@
 * V530: *acm* 12/00 alternative calendar types; cal_id
 * V63  *acm* 10/09 Changes for gfortran build
 * V6.74 3/12 *acm* cleanup ifdefs and unnecessary include files
+* 5/2020 Issue 1906: treat Proleptic-Gregorian identically to Gregorian
 
 * ARGUMENT DEFINITIONS
 *  date  - date to process
@@ -173,7 +174,7 @@ C       ***************************************
 ******************************************************************************
 * HANDLE GREGORIAN CALENDAR FIRST
 ******************************************************************************
-        IF (cal_id .EQ. gregorian) THEN
+        IF (cal_id.eq.gregorian .or. cal_id.eq.proleptic) THEN
 
 *          DAYS IN MONTH
 	   IF (month .EQ. 2) THEN

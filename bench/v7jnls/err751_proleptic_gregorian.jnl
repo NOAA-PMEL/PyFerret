@@ -1,0 +1,38 @@
+! err751_proleptic_gregorian
+! 5/26/20  ACM see tiket 1906
+
+
+! These axes should act identically, as Proleptic Gregorian with a leap day in 1804.
+
+define axis/t/t0="1-jan-1804"/units=days/cal="gregorian" tax_gr = L[L=1:3660]-0.5
+define axis/t/t0="1-jan-1804"/units=days/cal="proleptic_gregorian" tax_pgr = L[L=1:3660]-0.5
+show axis tax_gr
+show axis tax_pgr
+
+let varg = L[gt=tax_gr]
+
+list varg[l=58:60]
+list/t=26-feb-1812:3-mar-1812 varg
+
+! These were incorrect, did not include the leap day
+let varp=L[gt=tax_pgr]
+list varp[l=58:60]
+list/t=26-feb-1812:3-mar-1812 varp
+
+
+! Labels on plots (these were prev. ok, but check...)
+define axis/x=1:10:1 xax
+let var2d = x[gx=xax] + L[gt=tax_gr]
+plot/l=60 var2d
+
+! Should be Feb 29
+sh sym lab($labnum_t)
+
+
+define axis/t/t0="1-jan-1804"/units=days/cal="noleap" tax_nol = L[L=1:366]-0.5
+let var2d = x[gx=xax] + L[gt=tax_nol]
+plot/l=60 var2d
+! Should be March 1
+sh sym lab($labnum_t)
+
+

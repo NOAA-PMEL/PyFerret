@@ -61,6 +61,7 @@
 * V760 *acm* 3/20 Customize plot for case when constraints result in no features
 * V760 *acm* 4/20 PLOT_DSG_CHECK_LON360 now applies a lon-360 conversion of the 
 *                 longitudes if it'll be better and /HLIM not given
+* V760 *acm* 5/20 initialize dep_dim. Was unset when we get latitude from the DSG dataset
 
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
@@ -147,6 +148,7 @@
 	cx   = cx_list( nmv )
 	mv   = mv_list( nmv )
 	indep_dim = plot_axis(1)
+	dep_dim = plot_axis(2)
 	nline_in_mem = 0
 	phlim = qual_given( slash_hlimits )
 	pvlim = qual_given( slash_vlimits )

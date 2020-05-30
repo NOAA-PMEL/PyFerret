@@ -52,6 +52,7 @@
 * V751 7/18 *acm* Call single routine for DSG feature-type names
 * V76  1/20 *acm* Point-type DSG datasets do not have a feature-id variable
 * V76  3/20 *acm* Tweak to column-header line so names don't run together
+* v7.6 *acm* 5/20 Issue 1876: can read string-typed data.
 
         include 'netcdf.inc'
 	include 'tmap_dims.parm'
@@ -546,15 +547,16 @@
 	      idwid = 15
 	      CALL CD_READ_ONE ( dset, fvar_varid, ifeature, dtype, value, 
      .                                 strbuff, bufflen, status )
-	      IF (dtype .NE. NF_CHAR) THEN
-	         strbuff = '  '//TM_FMT(value, 8, 12, bufflen)
-	         bufflen = MAX(12,bufflen)
-	         ipad = 3
-	      ELSE
+
+	      IF (dtype .EQ. NF_CHAR .OR. dtype.EQ.NF_STRING) THEN
 	         bufflen = MIN(idlen, bufflen)
 	         IF (bufflen .LT. idwid) THEN
 	            ipad = INT(idwid-bufflen)
 	         ENDIF
+	      ELSE
+	         strbuff = '  '//TM_FMT(value, 8, 12, bufflen)
+	         bufflen = MAX(12,bufflen)
+	         ipad = 3
 	      ENDIF
 
 * if compressed along the e dimension don't include the feature-id value.

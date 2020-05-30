@@ -39,7 +39,7 @@
 * Reads a single value or string from a netCDF variable, must be a 1-D var.
 
 * written 8/18 (e.g. getting one value at a time from a DSG feature-id variable)
-*
+* v7.6 *acm* 5/20 Issue 1876: read string-typed data.
 
 * include files
         include 'netcdf.inc'
@@ -70,7 +70,10 @@
 
 * local definitions
 
-        INTEGER	cdfid, varid, nvdims, vdims(nferdims)
+        INTEGER	TM_LENSTR1, 
+     .		cdfid, varid, nvdims, vdims(nferdims), 
+     .		start(nferdims), imap(nferdims), count(nferdims),
+     .		stride(nferdims), permuted, strided
         CHARACTER*128 vname
 
 * initialize
@@ -96,13 +99,10 @@
 	IF (dtype .EQ. NF_CHAR) nvdims = nvdims-1
 	IF (nvdims .NE. 1) GOTO 5100
 
-
-	IF (dtype .EQ. NF_CHAR) THEN
+	IF (dtype.EQ.NF_CHAR .OR. dtype.EQ.NF_STRING) THEN 
 	   CALL CD_RD_STR_1(cdfid, varid, index, vname, buff, slen, status)
-
 	ELSE
 	   CALL CD_RD_R8_1(cdfid, varid, index, dtype, vname, val, status)
-
 	ENDIF
 	IF (status .NE. merr_ok) GOTO 5200
 

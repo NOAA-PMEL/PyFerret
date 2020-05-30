@@ -97,6 +97,7 @@
 * V6.74 3/12 *acm* cleanup ifdefs and unnecessary include files
 * V6.87 4/14 *acm* ticket 2146: if invalid bounds, make bounds a depend. var
 * V695+ 4/15 *sh* support for auxiliary vars (coordinates attributes)
+* v7.6 *acm* 5/20 Issue 1876: can read string-typed data, write as char.
 
 
 * argument definitions:
@@ -278,7 +279,7 @@
      .           'Variable '//buff(:vlen)//' contains the strings', 
      .           lunit_errors )
               GOTO 400
-	   ELSE IF (vartyp.LT.nf_byte .OR. vartyp.GE.nf_string) THEN
+	   ELSE IF (vartyp.LT.nf_byte .OR. vartyp.GT.nf_string) THEN
 	      GOTO 5300
 	   ENDIF
 	    

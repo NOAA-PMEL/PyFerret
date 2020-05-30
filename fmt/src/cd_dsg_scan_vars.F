@@ -64,6 +64,7 @@
 * v751 *acm*  6/19 Allow for longer strings as attribute values
 * V76  1/20 *acm* working with Point-type dsg data 
 * V76  3/20 *acm* Improve notes about ambiguous coord info.
+* v7.6 *acm* 5/20 Issue 1876: can read string-typed data, write as char.
 
 * argument definitions:
 *       dset    - pointer to TMAP data set
@@ -241,9 +242,7 @@
      
            ENDIF  ! got axis or std name
 	   
-	   IF (vartyp.LT.nf_byte .OR. vartyp.GE.nf_string) THEN
-	      GOTO 5700
-	   ENDIF
+	   IF (vartyp.LT.nf_byte .OR. vartyp.GT.nf_string) GOTO 5700
 
         ENDDO ! ivcd
 

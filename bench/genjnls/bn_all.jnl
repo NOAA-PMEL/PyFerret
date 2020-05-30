@@ -1336,6 +1336,8 @@ GO bn_ribbon_set
 GO bn_reset bn_mode_dsg
 GO bn_mode_dsg
 
+GO bn_reset bn_string_type
+GO bn_string_type
 
 ! *********** PyFerret-specific scripts ***********
 

@@ -37,6 +37,3 @@ GO err751_use_order
 
 GO bn_reset
 GO err751_proleptic_gregorian
-
-GO bn_reset
-GO err751_string_type

@@ -24,6 +24,8 @@
 * Apply a command-line output type if given, e.g. SAVE/OUTTYPE=INT
 * Otherwise use an OUTTYPE atribute if it's been set, or use the data type
 * from the source dataset.
+* v7.6 *acm* 5/20 Issue 1876: can read string-typed data, write as char.
+*                 Write a note but only if they've asked for /OUTTYPE=STR
 
 * dset         source dataset
 * varid        variable id if source is a netCDF file 
@@ -79,12 +81,22 @@
 	IF (out_type(1:3) .EQ. 'INT') outtype = nf_int
 	IF (out_type(1:3) .EQ. 'SHO') outtype = nf_short
 	IF (out_type(1:3) .EQ. 'BYT') outtype = nf_byte
+	IF (out_type(1:3) .EQ. 'STR') THEN
+	   outtype = nf_char
+	   CALL WARN ('Writing with type STRING not implemented. Using type CHAR.')
+	ENDIF
+	IF (outtype .EQ. nf_string) outtype = nf_char
+
+	IF (dset .GT. pdset_irrelevant .AND.
+     .      outtype.NE.nf_char .AND. outtype.NE.nf_string .AND.
+     .      outtype.GT.nf_double) outtype = nf_double
 
 * When the user requests higher precision output from a lower precision file 
 * variable, e.g. converting FLOAT to DOUBLE, write an attribute explaining 
 * that it contains data converted in this way.
 
-	IF (dset .GT. pdset_irrelevant .AND. outtype.GT.vartype) THEN
+	IF (dset .GT. pdset_irrelevant .AND. outtype.GT.vartype .AND.
+     .      outtype.NE.nf_char .AND. outtype.NE.nf_string) THEN
 
            attname = 'Ferret_Precision_Note'
            CALL CD_GET_VAR_ATT_ID (dset, varid, attname, attid, status)

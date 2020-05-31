@@ -146,6 +146,7 @@
 *		  - Allow for the user to set a length for string-length dimension
 * V751 *acm*11/19 new qualifier SAVE/NOCOORDS
 * V7.6 *acm* 2/20 When save/asglobal, do not update the conventions or history
+* v7.6 *acm* 5/20 Issue 1876: can read string-typed data, write as char.
 
         IMPLICIT NONE
         include 'netcdf.inc'
@@ -610,6 +611,7 @@
      .        dset_num = cx_data_set( cx )  
 
 * When its a netCDF/OPeNDAP file variable use the max string length from the originating dataset.
+* If the variable in the dataset is type string, synthesize a name for the string-length dimension.
            buff2 = " "
            IF (type .EQ. NF_CHAR .AND. dset .GE. 1) THEN
 	     buff2 = ""
@@ -617,6 +619,12 @@
              IF (dset_num.GE.1 .AND.(.NOT.itsa_uvar) .AND.its_nc) THEN
                 CALL CD_GET_DS_DIMS (dset_num, vdims(1), buff2, len, status)
                 IF (maxstrlen .LE. len) maxstrlen = len
+             ENDIF
+	     CALL CD_GET_VAR_TYPE (dset, varid, varname, vartype, status)
+	     IF (vartype .EQ. nf_string) THEN
+                CALL CD_GET_DS_DIMS (dset_num, vdims(1), buff2, len, status)
+	        buff2 = TM_FMT(FLOAT(maxstrlen), 5, 12, slen)
+		buff2 = 'STRING1_'//buff2(:slen)
              ENDIF
            ENDIF
 

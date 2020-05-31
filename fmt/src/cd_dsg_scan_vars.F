@@ -64,6 +64,7 @@
 * v751 *acm*  6/19 Allow for longer strings as attribute values
 * V76  1/20 *acm* working with Point-type dsg data 
 * V76  3/20 *acm* Improve notes about ambiguous coord info.
+* v7.6 *acm* 5/20 Issue 1876: can read string-typed data, write as char.
 
 * argument definitions:
 *       dset    - pointer to TMAP data set
@@ -240,6 +241,9 @@
               ENDDO  IDIMLOOP
      
            ENDIF  ! got axis or std name
+	   
+	   IF (vartyp.LT.nf_byte .OR. vartyp.GT.nf_string) GOTO 5700
+
         ENDDO ! ivcd
 
 * Are there required directions not yet found?  Try any found from std name, otherwise
@@ -291,6 +295,7 @@
 	      vdims(1) = vdims(2)
 	      IF (nvdim .GT. 1)  vdims(2) = vdims(3)
 	   ENDIF
+
 
 ****
 * register the variable as a dependent variable in the dataset
@@ -676,6 +681,13 @@
  5600   CALL TM_ERRMSG (merr_dsg_struc, status, 'CD_DSG_SCAN_VARS',
      .     no_descfile, no_stepfile,
      .     buff, no_errstring, *5500)
+
+
+ 5700   CALL TM_ERRMSG
+     .     ( merr_notsupport, status, 'CD_SCAN_VARS', dset_num,
+     .         no_stepfile, 
+     .         'String Data Type not implemented: variable '//vname(:vlen),
+     .         no_errstring,*5500)
 
 	RETURN
 	END

@@ -97,6 +97,7 @@
 * V6.74 3/12 *acm* cleanup ifdefs and unnecessary include files
 * V6.87 4/14 *acm* ticket 2146: if invalid bounds, make bounds a depend. var
 * V695+ 4/15 *sh* support for auxiliary vars (coordinates attributes)
+* v7.6 *acm* 5/20 Issue 1876: can read string-typed data, write as char.
 
 
 * argument definitions:
@@ -267,17 +268,20 @@
 * If it is marked as a coordinate variable but is of string type, then
 * issue a message. The variable of the same name will contain the strings.
 
-	   IF (coordvar .AND. vartyp.EQ.NF_CHAR) THEN 
+	   IF (coordvar .AND. (vartyp.EQ.NF_CHAR .OR. 
+     .         vartyp.LT.NF_BYTE .OR. vartyp.GT.NF_DOUBLE) ) THEN 
 	      CALL TM_NOTE(
      .           'Coordinate variable '//
-     .           vname(:vlen)//' is of type STRING.', lunit_errors )
+     .           vname(:vlen)//' is of non-numeric type.', lunit_errors )
               status = STR_UPCASE( buff, vname )
               CALL TM_NOTE(
      .           'A dummy axis of subscripts will be used. '// 
      .           'Variable '//buff(:vlen)//' contains the strings', 
      .           lunit_errors )
               GOTO 400
-	   ENDIF   
+	   ELSE IF (vartyp.LT.nf_byte .OR. vartyp.GT.nf_string) THEN
+	      GOTO 5300
+	   ENDIF
 	    
 *** DECIDE IF IT IS AN AXIS OR A DEPENDENT VARIABLE
 * if it is not 1D it must be a dependent variable (3/99)
@@ -494,6 +498,11 @@
  5200   CALL TM_ERRMSG
      .     ( cdfstat+pcdferr, status, 'CD_SCAN_VARS', cdfid,
      .        no_varid, no_errstring, no_errstring, *5900 )
+ 5300   CALL TM_ERRMSG
+     .     ( merr_notsupport, status, 'CD_SCAN_VARS', dset_num,
+     .         no_stepfile, 
+     .         'String Data Type not implemented: variable '//vname(:vlen),
+     .         no_errstring,*5900)
 
 * error exit
  5900   RETURN

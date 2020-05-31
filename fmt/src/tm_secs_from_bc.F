@@ -50,6 +50,7 @@
 *                   added twice for case where we are at the first year of a
 *                   century.
 * V63  *acm* 10/09 Changes for gfortran build
+* 5/2020 Issue 1906: treat Proleptic-Gregorian identically to Gregorian
 
 * Include files
         include 'calendar.decl'
@@ -79,7 +80,7 @@
 *****************************************************************************
 * HANDLE GREGORIAN CALENDAR FIRST
 *****************************************************************************
-	if (cal_id .eq. gregorian) then
+	if (cal_id.eq.gregorian .or. cal_id.eq.proleptic) then
 
 *	   INITIALIZE
 	   leap_yr_days = cals_num_days(cal_id) + 1.0

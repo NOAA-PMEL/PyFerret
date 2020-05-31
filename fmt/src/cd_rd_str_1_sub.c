@@ -37,6 +37,8 @@
 /*   
     cd_rd_str_1_sub.c from cd_read_sub, just read one string from a 1-D var
 	The calling routine has checked the grid to make sure it's 1-D.
+	 v7.6 *acm* 5/20 Issue 1876: read string-typed data.
+
 */
 
 #include <Python.h> /* make sure Python.h is first */
@@ -59,6 +61,7 @@ void FORTRAN(cd_rd_str_1_sub)(int *cdfid, int *varid, int *tmp_start,
   int i, ndimsp, *dimids;
   size_t bufsiz, tmp, maxstrlen;
   char *pbuff;
+  char **strarray;
   int ndim = 0;
   int vid = *varid;
   nc_type vtyp;
@@ -103,10 +106,30 @@ void FORTRAN(cd_rd_str_1_sub)(int *cdfid, int *varid, int *tmp_start,
       count[ndimsp]  = maxstrlen;
 
       *cdfstat = nc_get_vara_text (*cdfid, vid, start, count, pbuff);
+
       strcpy ( buff, pbuff );
 	  *slen= strlen(buff);
 	  if (*slen > bufsiz) *slen = bufsiz;
 	  }
+  else if (vtyp == NC_STRING) {
+
+
+      strarray = (char **) FerMem_Malloc(sizeof(char *), __FILE__, __LINE__);
+
+      /* read the strings; NetCDF internally allocated memory for all the strings returned */
+      *cdfstat = nc_get_vara_string(*cdfid, vid, start, count, strarray);
+      
+      /* copy the string to our string variable */
+      strcpy(buff, *strarray);
+
+      /* free the NetCDF memory for the strings, then the memory for the string array */
+      nc_free_string(1, strarray);
+      FerMem_Free(strarray, __FILE__, __LINE__);
+
+	  *slen= strlen(buff);
+	  if (*slen > bufsiz) *slen = bufsiz;
+  } 
+
 
   /* Numeric data. return some error */
    else

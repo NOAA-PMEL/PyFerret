@@ -1,0 +1,17 @@
+! bn_string_type.jnl
+! Data in netCDF files may be stored as type string
+! Read and list such data, but write it as type char
+
+use string_type_var
+list str_temp
+
+save/clobber/file=a.nc/L=6:10 str_temp
+sp ncdump a.nc
+
+! But asking for output of type string not yet implemented.
+! Intentional error: 
+
+set mode ignore
+save/clobber/file=a.nc/outtype='string' str_temp
+set mode/last ignore
+

@@ -44,6 +44,7 @@
 * V6.74  3/12 *acm* cleanup ifdefs and unnecessary include files
 * V7.44 11/18 *acm* Issue 1905: add int64 as a netcdf data type, recognize 
 *                   other newer types 
+* v7.6 *acm* 5/20 Issue 1876: can read string-typed data, write as char.
 
 	include 'tmap_dtypes.parm'
         include 'netcdf.inc'
@@ -89,7 +90,8 @@
 * full data type support not implemented as-of 10/01. 
 * cd_read will convert all numeric data to float
 
-       IF ( ncvtype .NE. NF_CHAR) TM_FERRET_VARTYPE =  ptype_float
+       IF ( ncvtype.NE.NF_CHAR .AND. ncvtype.NE.NF_STRING) 
+     .       TM_FERRET_VARTYPE =  ptype_float
 
 	RETURN
 	END

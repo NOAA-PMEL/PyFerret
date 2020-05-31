@@ -76,6 +76,7 @@
 * V696 *acm* 11/15 Added @BIN and @NBIN regridding transforms
 * V720: 6/17 *acm* Ticket 2346: new @IIN regridding transform
 * V741: 8/18 *acm* More on index limits for @IIN regridding transform
+* 5/2020 Issue 1906: treat Proleptic-Gregorian identically to Gregorian
 
 
         IMPLICIT NONE
@@ -88,6 +89,8 @@
 	include 'xrisc.cmn'
 	include	'xalgebra.cmn'
 	include	'xtext_info.cmn'
+        include 'calendar.decl'
+        include 'calendar.cmn'
 
 * calling argument declarations:
 	LOGICAL strides
@@ -145,7 +148,10 @@
 
 	   dst_cal_id = TM_GET_CALENDAR_ID (line_cal_name(dst_taxis))
 	   src_cal_id = TM_GET_CALENDAR_ID (line_cal_name(src_taxis))
-           IF (dst_cal_id .NE. src_cal_id) THEN
+	
+	   IF (src_cal_id.EQ.GREGORIAN .AND. dst_cal_id.EQ.PROLEPTIC) src_cal_id = dst_cal_id
+	   IF (src_cal_id.EQ.PROLEPTIC .AND. dst_cal_id.EQ.GREGORIAN) src_cal_id = dst_cal_id
+	   IF (dst_cal_id .NE. src_cal_id) THEN
                IF (rgrd_trans .NE. prgrd_linear_interp .AND. 
      .		   rgrd_trans .NE. prgrd_xy_lin        .AND. 
      .		   rgrd_trans .NE. prgrd_associate     .AND. 

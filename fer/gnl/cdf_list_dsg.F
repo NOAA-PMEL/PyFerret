@@ -55,6 +55,7 @@
 * V76  *acm*  4/20 Fix when setting instance_var flag. 
 * V76  *acm*  4/20 Fix for data type, writing string data
 * V76  *acm*  4/20 Additions for writing subsets of point datasets
+* v7.6 *acm* 5/20 Issue 1876: can read string-typed data, write as char.
 
         include 'netcdf.inc'
 #include "netcdf_declareUnderscore.inc"
@@ -480,6 +481,16 @@ c	IF (.NOT. instance_vars_only) THEN
 	   itsa_string = .TRUE.
 	   
 	ENDIF
+
+* If the variable in the dataset is type string, synthesize a name for the string-length dimension.
+
+	IF (vartype .EQ. nf_string) THEN
+	
+	   CALL CD_GET_DS_DIMS (dset, vdims(1), buff2, maxstrlen, status)
+	   buff2 = TM_FMT(FLOAT(maxstrlen), 5, 12, slen)
+	   buff2 = 'STRING1_'//buff2(:slen)
+	ENDIF
+
 	outtype = vartype
 	
 	CALL CDF_SET_OUT_TYPE (dset, fvar_varid, itsa_uvar, 
@@ -970,14 +981,20 @@ c	IF (.NOT. instance_vars_only) THEN
 		 write_lo(orientation) = 1
 		 write_hi(orientation) = n_obs 
 		 
-		 CALL MASK_DSG_OBSVAR (nfeatures, process_feature, process_obs,
-     .            dsg_linemem(row_size_lm)%ptr, dset, cx,
-     .            dsg_linemem(coord_lm(idim))%ptr, lineedg(line_obscoord)%ptr, 
-     .            nmasked)
+		 IF (synthetic_rowsiz) THEN
+		    CALL CD_WRITE_DSG_DATA (cdfid, varcode, grid, 
+     .                 write_lo, write_hi, dsg_linemem(coord_lm(idim))%ptr, 
+     .                 mode_upcase_output, bad, status )
+		 ELSE
+                   CALL MASK_DSG_OBSVAR (nfeatures, process_feature, process_obs,
+     .               dsg_linemem(row_size_lm)%ptr, dset, cx,
+     .               dsg_linemem(coord_lm(idim))%ptr, lineedg(line_obscoord)%ptr, 
+     .               nmasked)
 
-		 CALL CD_WRITE_DSG_DATA (cdfid, varcode, grid, 
+                   CALL CD_WRITE_DSG_DATA (cdfid, varcode, grid, 
      .                 write_lo, write_hi, lineedg(line_obscoord)%ptr, 
      .                 mode_upcase_output, bad, status )
+		 ENDIF
 
 	      ENDIF
 

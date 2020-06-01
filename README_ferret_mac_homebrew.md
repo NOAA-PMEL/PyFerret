@@ -60,16 +60,21 @@ file appropriately for your system; for example:
     DIR_PREFIX = $(HOME)/git/Ferret (wherever you cloned or copied the Ferret source)
     BUILDTYPE = intel-mac
     INSTALL_FER_DIR = /usr/local/Ferret-7.4 (wherever you want Ferret installed)
+    CC = $(shell which clang)
+    FC = $(shell which gfortran)
     HDF5_LIBDIR =
     SZ_LIBDIR =
     NETCDF_LIBDIR = /usr/local/lib (wherever Homebrew put its netcdf library)
-    READLINE_LIBDIR = /usr/local/Cellar/readline/7.0.3_1/lib (wherever Homebrew put its hidden readline library)
+    READLINE_LIBDIR = /usr/local/Cellar/readline/8.0.4/lib (wherever Homebrew put its hidden readline library)
 
 Similarly, copy `external_functions/ef_utility/site_specific.mk.in` to
 `external_functions/ef_utility/site_specific.mk` and edit
 `external_functions/ef_utility/site_specific.mk`:
 
     BUILDTYPE = intel-mac
+    CC = $(shell which clang)
+    FC = $(shell which gfortran)
+    LD = $(shell which gfortran)
 
 Build Ferret and install it in the location given by `INSTALL_FER_DIR`:
 
@@ -96,7 +101,7 @@ using the appropriate ferret_paths script, and that the command `which ferret`
 returns the path to the version of Ferret that you wish to test.
 
 Change to the `bench` subdirectory of the Ferret source directory, and run 
-`make check`.
+`make check` or `make check_noremote` (to skip tests using data from remote sites).
 These tests will generate image files as well as `all_..._log` (normal output), 
 `all_..._err` (error output), and `all_..._ncdump` (human-readable versions of 
 the created NetCDF files) output files.

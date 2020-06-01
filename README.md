@@ -31,16 +31,32 @@ from the group (which should be searched prior to sending a question to the emai
 users group) can be found at
 [https://ferret.pmel.noaa.gov/Ferret/email-users-group](https://ferret.pmel.noaa.gov/Ferret/email-users-group)
 
-## If you build Ferret from these source files, please note:
+## If you build Ferret from these source files:
 
-The `site_specific.mk.in` and `external_functions/ef_utilites/site_specific.mk.in`
+1. We highly recommend you build and use PyFerret (see:
+[https://github.com/NOAA-PMEL/PyFerret](https://github.com/NOAA-PMEL/PyFerret))
+instead of Ferret.
+PyFerret provides publication-quality graphics and much more funtionality while still maintaining
+the Ferret command prompt and compatibility with existing Ferret scripts.
+PyFerret uses Qt for displayed graphics, removing the need for X-Windows software libraries and 
+header files for Ferret builds.  PyFerret maintains this Ferret repository as an upstream
+source, so updates to Ferret will also be found in the "Ferret engine" within PyFerret.
+
+2. If you still wish to build Ferret, more information on building Ferret can be found in the 
+[README_build_ferret](https://github.com/NOAA-PMEL/Ferret/blob/master/README_build_ferret) 
+and the 
+[README_ferret_mac_homebrew.md](https://github.com/NOAA-PMEL/Ferret/blob/master/README_ferret_mac_homebrew.md)
+files in this repository.
+This second file can also provide some useful information about building Ferret on Linux and Unix-type systems. 
+
+3. The `site_specific.mk.in` and `external_functions/ef_utilites/site_specific.mk.in`
 files in the repository must be copied to files without the `.in` extensions, and
 the contents of these `site_specific.mk` files edited for your system configuration.
 The `site_specific.mk` files will be ignored by git (the name was added to
 `.gitignore`) so your customized configuration files will not be added to your
 repository if you have cloned this repository.
 
-The definitions of CC, FC, and LD (the last only for building external
+4. The definitions of CC, FC, and LD (the last only for building external
 functions written in Fortran) were moved to the `site_specific.mk.in` files.
 (These were previously defined in the `platform_specific.mk.*` files.)
 If you already have customized `site_specific.mk` files, please appropriately

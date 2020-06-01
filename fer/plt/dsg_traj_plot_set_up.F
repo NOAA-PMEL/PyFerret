@@ -147,6 +147,7 @@
 	cx   = cx_list( nmv )
 	mv   = mv_list( nmv )
 	indep_dim = plot_axis(1)
+	dep_dim = plot_axis(2)
 	nline_in_mem = 0
 	phlim = qual_given( slash_hlimits )
 	pvlim = qual_given( slash_vlimits )

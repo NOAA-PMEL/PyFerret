@@ -55,6 +55,11 @@
 
 * internal variable declarations:
 
+* first check for calls using an invalid variable (see NOTE and call in is_strip.F around line 666)
+        IF ( (idim .LT. 1) .OR. (idim .GT. nferdims) ) THEN
+           ITSA_MODULO_REGRID = .FALSE.
+           RETURN
+        ENDIF
 	ITSA_MODULO_REGRID = cx_regrid_trans(idim,cx) .GE. prgrd_modulo
      .		       .AND. cx_regrid_trans(idim,cx) .LE. prgrd_modmax
 

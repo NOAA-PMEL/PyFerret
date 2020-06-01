@@ -659,6 +659,9 @@ c	   CALL TRANSFER_CONTEXT( hi_cx, lo_cx )
 * Similarly, modulo regrids may involve source data greatly in excess
 * of the result
 ! DSGTBD need to support split/gather on DSG regrids - temporarily bypassed
+* NOTE: because Fortran does not short-circuit IF statements, the ITSA_MODULO_REGRID
+*       will always be called regardless of other values.  A check was added to
+*       ITSA_MODULO_REGRID to weed out invalid calls.
 	IF ( (aclass.EQ.isact_class_trans
      .		.AND. trans.GT.trans_compress_code
      .		.AND. trans.NE.trans_interpolate

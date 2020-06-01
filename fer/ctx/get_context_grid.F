@@ -570,12 +570,11 @@ c
 	         cx_regrid_trans( idim, cx ) = pauxrgrd_fmrc ! T-F plane 
 	      ELSE
 ! 3/2016 - "@FMRC" is implied whenever aux T or F regrid with 2dtime as aux var
-	         IF (at_fmrc) THEN
-	            at_fmrc = (cx_aux_cat(idim,cx) .EQ. cat_file_var
-     .                    .OR. cx_aux_cat(idim,cx) .EQ. cat_agg_f_var)
-     .             .AND.      ITS_FMRC_2DTIME(dset, cx_aux_var(idim,cx))
-	         ENDIF
-	         IF (at_fmrc) THEN
+	         IF (at_fmrc)
+     .              at_fmrc = (cx_aux_cat(idim,cx) .EQ. cat_file_var)
+     .                   .OR. (cx_aux_cat(idim,cx) .EQ. cat_agg_f_var)
+* short-circuit: only call the function if it is one of this above two types
+	         IF ( ITS_FMRC_2DTIME(dset, cx_aux_var(idim,cx)) ) THEN
 	            cx_regrid_trans( idim, cx ) = pauxrgrd_fmrc
 	         ELSE
 	            cx_regrid_trans( idim, cx ) = pauxrgrd_linear

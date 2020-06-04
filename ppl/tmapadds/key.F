@@ -137,6 +137,8 @@ c	        IF (NL.EQ.1 .AND. J.LE.2) ZLEV(2) = zlev(1)
 *                    and getting pyferret changes into it.
 * V7.51 *acm*  7/19 Simplify the center-labeled key logic; put values to use in labels
 *                   into the array val_lab.
+*  V7.6 *acm*  6/20 PyFerret issue 63: when using the system fonts, move the text away 
+*                   from vertical colorbar.
 
         IMPLICIT NONE
 
@@ -904,6 +906,8 @@ c              IF (center_key_labels .AND. ndx.GE.shd_levels) EXIT ! from loop
         ENDDO
 
         wid = SYMWID(karht,ndx,buff(:ndx))
+	IF (pyfont) wid = wid + 0.8*karht
+
         xpos = xpos + wid
 
 * If klab_size negative put the key labels on the left rather than 
@@ -995,15 +999,17 @@ c	ENDIF
 	   ENDIF
 	   str_len = TM_LENSTR(text)
 
-* Right-justify them.
+* Right-justify them. If using the system fonts, move the text away from
+* the colorbar; it tends to be too close (PyFerret issue 63)
 
 	   txt_out = text
 	   wid = SYMWID(karht,str_len,txt_out)
+	   IF (pyfont) wid = wid-0.5*karht
 	   IF (string_labs) wid = 0.
 	   xx = xpos - WID
 
 	   yy = ( ky_lo + y_inc* (center_add+ real(ndx-1)) )/1000.0 - 
-     .        yorg - 0.5*karht
+     .        yorg - 0.8*karht
 
 *	   FILL AND SHADE USE DIFFERENT COORD SYSTEMS -- *jd* 6.4.93
 

@@ -38,6 +38,7 @@
     cd_rd_str_1_sub.c from cd_read_sub, just read one string from a 1-D var
 	The calling routine has checked the grid to make sure it's 1-D.
 	 v7.6 *acm* 5/20 Issue 1876: read string-typed data.
+	 v7.6 *acm* 6/20 free the memory!
 
 */
 
@@ -110,6 +111,7 @@ void FORTRAN(cd_rd_str_1_sub)(int *cdfid, int *varid, int *tmp_start,
       strcpy ( buff, pbuff );
 	  *slen= strlen(buff);
 	  if (*slen > bufsiz) *slen = bufsiz;
+	  FerMem_Free(pbuff, __FILE__, __LINE__);
 	  }
   else if (vtyp == NC_STRING) {
 

@@ -906,7 +906,7 @@ c              IF (center_key_labels .AND. ndx.GE.shd_levels) EXIT ! from loop
         ENDDO
 
         wid = SYMWID(karht,ndx,buff(:ndx))
-	IF (pyfont) wid = wid + 0.8*karht
+	IF (pyfont) wid = wid + 0.5*karht
 
         xpos = xpos + wid
 

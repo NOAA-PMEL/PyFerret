@@ -1,4 +1,4 @@
-	SUBROUTINE LOAD_DSG_MASKVAR (dset, fmask_var, status)
+	SUBROUTINE LOAD_DSG_MASKVAR (dset, fmask_var, reload, status)
 
 c set data/fmask=
 
@@ -8,7 +8,13 @@ c set data/fmask=
 * context limits in the E direftion. Will deallocate line mem dsg_msk_lm on 
 * defining a new mask, closing the dataset, opr CANCEL DATA/FMASK
 * 
+* On a "LET mask= " find dataset(s) where the mask being defined has 
+* the same name as the dataset's current mask. Here also test the 
+* length of the new mask. If it's the right length for this dataset, 
+* will replace its FMASK, otherwise the FMASK is canceled. 
+*
 * 4/20/2020 *acm* update to error message
+* 6/ 3/2020 *acm* Allowing for LET command redefining an existing feature-mask variable.
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -23,6 +29,7 @@ c set data/fmask=
 	include 'xtm_grid.cmn_text'
 	include 'netcdf.inc'
 
+	LOGICAL reload
 	INTEGER dset, status
 	CHARACTER*(*) fmask_var
 	
@@ -31,7 +38,7 @@ c set data/fmask=
      .		TM_LENSTR1, CX_DIM_LEN,
      .		i, ivar, grid, loc,  ndim, idir, npts, cx, mr1, 
      .		nfeatures, idim, dim(nferdims), attlen, varid, 
-     .		attid, attype, attoutflag
+     .		attid, attype, attoutflag, slen
 	CHARACTER FULL_VAR_TITLE*128, TM_FMT*12,  
      .		buff*128, mask_title*128
 	REAL	dummy
@@ -74,12 +81,20 @@ c find a variable in this dataset and test whether it's a dsg dataset
 
 	ENDIF
 
-* Load the variable. Reset the arg pointers to get the mask-var           
-	
+* Load the variable. Reset the arg pointers to get the mask-var
+* Use arg_start, arg_end to point to the name of the variable.
+* We may be coming from a SET DATA/FMASK command or a LET command
+* redefining a variable whose name is already associated with a 
+* feature-mask for this dataset.
+
 	loc = qual_given(slash_set_data_fmask)
-	num_args = 1	 
-	arg_end(1) = qual_end(loc)
-	arg_start(1) = qual_end(loc) - TM_LENSTR1(fmask_var) + 1
+	IF (loc.GT.0) THEN
+	   num_args = 1	 
+	   arg_end(1) = qual_end(loc)
+	   arg_start(1) = qual_end(loc) - TM_LENSTR1(fmask_var) + 1
+	ELSE
+	   arg_end(1) = arg_start(1) + TM_LENSTR1(fmask_var) - 1
+	ENDIF
 
 	CALL GET_CMND_DATA ( cx_last, ptype_float, status )
 	IF (status .NE. ferr_ok .OR. num_uvars_in_cmnd .GT. 1) GOTO 5400
@@ -91,8 +106,11 @@ c find a variable in this dataset and test whether it's a dsg dataset
 	CALL GET_CX_DIMS( cx, ndim, dim )
 	IF ( ndim .GT. 1 ) GOTO 5400
 	idim = dim(1)
-	IF (nfeatures .NE. CX_DIM_LEN( idim, cx ) ) GOTO 5400
-
+	IF (nfeatures .NE. CX_DIM_LEN( idim, cx ) ) THEN
+*  the mask doesn't match mask on this dset. Issue a note
+	   IF (reload) GOTO 5500  
+	   GOTO 5400
+	ENDIF
 
 * store it here,
 
@@ -143,6 +161,27 @@ c find a variable in this dataset and test whether it's a dsg dataset
 	ENDIF
 	IF (status .NE. ferr_ok) GOTO 5000
 
+* And another with the feature-mask name	
+
+	buff = '__feature_mask_var'
+	attlen = TM_LENSTR1(buff)
+
+	varid = 0
+	CALL CD_GET_VAR_ATT_ID (dset, varid, buff, attid, status) 
+	IF (attid .GT. 0) THEN
+	   CALL CD_GET_VAR_ATT_INFO (dset, varid, attid, 
+     .                buff, attype, attlen, attoutflag, status )
+	   attoutflag = 0
+	   CALL CD_REPLACE_ATTR (dset, varid, buff, attype, attlen, 
+     .              fmask_var, dummy, status)
+	ELSE
+	   attype = NCCHAR
+	   attoutflag = 0
+	   CALL CD_PUT_NEW_ATTR (dset, varid, buff, attype, 
+     .                 attlen, attoutflag, fmask_var, dummy, status )
+	ENDIF
+	IF (status .NE. ferr_ok) GOTO 5000
+
 	status = ferr_ok
 
  5000	RETURN
@@ -157,4 +196,12 @@ c find a variable in this dataset and test whether it's a dsg dataset
 	CALL ERRMSG (ferr_invalid_command, status,
      .'Mask variable must be 1-dimensional, with length num-features = '//
      .   buff(:i),						*5000 )
+     
+ 5500	buff = TM_FMT(DBLE(dset), 0, 12, i)
+	slen = TM_LENSTR1(fmask_var)
+	CALL WARN ('Feature-mask on dataset '//buff(:i)//
+     .   ' canceled. New definition of '//fmask_var(:slen)//
+     .   ' does not match nfeatures of set '//buff(:i) )
+	GOTO 5000
+
 	END

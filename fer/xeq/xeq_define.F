@@ -269,6 +269,8 @@
 * v744 11/2018 *acm* Issue 1906: If PROLEPTIC_GREGORIAN is given then 
 *                  override mixed-gregorian calendar handling.
 * v7441*acm* 12/18 Issue 1910: Allow dates in commands to be in ISO 8601 form, yyyy-mm-dd
+* V7.6 *acm*  6/20 For DSG data if there's a feature-mask applied to the dataset and the
+*                  uer redefines the mask variable, verify and set the new mask.
 
         IMPLICIT NONE
 	include	'tmap_errors.parm'
@@ -415,7 +417,7 @@
      .            letdset, its_remote, agg_hide, def_att_quiet, purge_all,
      .            user, norm, nouser, use_strict, have_expr, 
      .            original, true_month, line_alloc, truemonth_noted,
-     .            is_double, misordered, bnds_or_edges, okmod, is_like
+     .            is_double, misordered, bnds_or_edges, okmod, is_like, is_fmask
 	INTEGER   REGION_NUMBER, GRID_FROM_NAME, VIEWPORT_NUMBER, STR_UPCASE,
      .		  CX_DIM_LEN, ALIAS_ID, EFCN_SCAN,
      .		  TM_GET_LINENUM, TM_LENSTR1, 
@@ -795,6 +797,11 @@
            IF (IS_AGG_MEMBER(dset, 1, i, got_it)) CALL PURGE_DSET(dset)
 	ENDIF
 
+* Was this a feature-mask for a DSG dataset(s)?  If so cancel that masking.
+
+	slen = TM_LENSTR1(buff1) 
+	CALL UNSET_FEATURE_MASKS (buff1, slen, is_fmask)
+
 * if this is a global foreground definition that replaces any variable
 * then purge cached calculations (8/95)
 	IF ( dset .EQ. unspecified_int4 ) THEN
@@ -828,6 +835,7 @@
 *	   ENDIF
  410	CONTINUE
 
+
 * if this name is used as the target of an aux (curvilinear) coordinate var
 * (re)defining it may invalidate cached results
         CALL GET_FVARS_LIST_BY_ATTNAME_AND_VAL
@@ -854,6 +862,12 @@
 	IF ( status .NE. ferr_ok ) RETURN
 
 
+* Was the variable a feature-mask?  If so then set the mask to the new definition.
+
+	IF (is_fmask) THEN
+	   slen = TM_LENSTR1(buff1) 
+	   CALL RELOAD_DSG_MASKVAR (buff1, slen)
+	ENDIF
 
 *     Inherit all attributes from another variable. If /TITLE, /UNITS etc were
 *     given on the LET command use them. INHERIT_ATTRS does not inherit the
@@ -3206,3 +3220,4 @@ c ?? if nlab=0, use next avail slot?
      . 'Error defining attribute on variable '//varname(:slen), *5000)
 
 	END
+

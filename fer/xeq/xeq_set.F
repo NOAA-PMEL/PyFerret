@@ -269,7 +269,7 @@
 !	INTEGER	reconfig   ! removed for dynamic memory management 2/2017
 
 * local variable declarations:
-	LOGICAL		TM_DATE_OK, is_ok, set_dsg
+	LOGICAL		TM_DATE_OK, is_ok, set_dsg, reload
 	INTEGER		REGION_NUMBER, VIEWPORT_NUMBER, GRID_FROM_NAME,
      .                  TM_GET_LINENUM, TM_LENSTR, TM_LENSTR1, 
      .                  TM_UNIT_ID, TM_UNITS_CAL, TM_GET_CALENDAR_ID,
@@ -710,7 +710,8 @@ c *kob* 4/97
 	         CALL DELETE_VARIABLE( mr )
 	      ENDDO
 
-	      CALL LOAD_DSG_MASKVAR (dset_num, fmask_var, status)
+	      reload = .FALSE.
+	      CALL LOAD_DSG_MASKVAR (dset_num, fmask_var, reload, status)
 	      
 
            ENDIF

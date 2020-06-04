@@ -78,6 +78,7 @@ process_if.F\
 proclaim.F\
 proclaim_c.F\
 redefine_ax_att.F\
+reload_dsg_maskvar.F\
 repl_exprns.F\
 reset_axis.F\
 reset_ax_att.F\

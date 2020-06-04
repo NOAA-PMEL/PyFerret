@@ -17,8 +17,7 @@ show data
 ! Mask applied on a listing
 list sst
 
-! redefine the mask. Just the act of redefining emask should trigger something.
-! for now it doesn't.  Use commands to 
+! redefine the mask. If the length still matches the mask is replaced.
 
 let emask = {,1,1}  
 set data/fmask=emask 1
@@ -41,13 +40,14 @@ show data
 set v ul
 plot pco2
 
-
 let/title="Where Longitude < 121W" mask =  if longitude lt -121 then 1
-
 set v ur
 plot pco2 
 
 use DSG_ERDDAP_Tao5daySst.nc
+
+! This mask doesn't have the right nfeatures length for datset 2 so 
+! the feature-mask "mask" that was on dataset 2 is canceled.
 
 let/title="Where station is 8s125w, 8s170w, 5n155w, 2s165e"  mask = element_index_str (station, {"8s125w", "8s170w", "5n155w", "2s165e"})
 

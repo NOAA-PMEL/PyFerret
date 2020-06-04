@@ -1009,7 +1009,7 @@ c	ENDIF
 	   xx = xpos - WID
 
 	   yy = ( ky_lo + y_inc* (center_add+ real(ndx-1)) )/1000.0 - 
-     .        yorg - 0.8*karht
+     .        yorg - 0.5*karht
 
 *	   FILL AND SHADE USE DIFFERENT COORD SYSTEMS -- *jd* 6.4.93
 

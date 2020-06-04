@@ -164,7 +164,8 @@
 *                  going on to next variable
 * V76:  1/2020 -   Remove obsolete ferr_ODR_error 
 * V745 *acm*  5/20  added mode_dsg to control turning off all DSG ops
-
+* V7.6 *acm*  6/20 Set a second attribute __feature_mask_var when defining a 
+*                  mask variable, used if we go and redefine the mask variable.
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -435,6 +436,8 @@
 
 		    varid = 0
 		    attname = '__feature_mask_'
+		    CALL CD_DELETE_ATTRIBUTE (iset, varid, attname, status )
+		    attname = '__feature_mask_var'
 		    CALL CD_DELETE_ATTRIBUTE (iset, varid, attname, status )
 		     
 * and eliminate all memory-resident user-defined vars and their uvar_grid 's

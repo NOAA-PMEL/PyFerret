@@ -6510,6 +6510,7 @@ Replacing definition of axis ZFAKE
 Replacing definition of grid GFAKE
  LISTing to file fake_model_temp.nc
 *** Running ferret script: bn_dsg_feature_mask.jnl
+           *** NOTE: Feature-mask on dataset 2 canceled. New definition of MASK does not match nfeatures of set 2
 *** Running ferret script: bn_dsg_repeat_m.jnl
 *** Running ferret script: bn_dsg_traj_plot.jnl
 *** Running ferret script: bn_regrid_from_dsg.jnl

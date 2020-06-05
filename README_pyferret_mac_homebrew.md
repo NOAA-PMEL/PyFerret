@@ -145,7 +145,9 @@ configuration file appropriately for your system; for example:
     DIR_PREFIX = $(HOME)/git/PyFerret
     INSTALL_FER_DIR = /usr/local/PyFerret
     BUILDTYPE = intel-mac
-    PYTHON_EXE = python3.7
+    CC = ($shell which clang)
+    FC = ($shell which gfortran)
+    PYTHON_EXE = python3.8
     GFORTRAN_LIB = $(shell $(FC) --print-file-name=libgfortran.dylib)
     CAIRO_LIBDIR = /usr/local/lib
     PIXMAN_LIBDIR = /usr/local/lib
@@ -160,7 +162,10 @@ Similarly, copy `external_functions/ef_utility/site_specific.mk.in` to
 `external_functions/ef_utility/site_specific.mk`:
 
     BUILDTYPE = intel-mac
-    PYTHON_EXE = python3.7
+    CC = ($shell which clang)
+    FC = ($shell which gfortran)
+    LD = ($shell which gfortran)
+    PYTHON_EXE = python3.8
 
 Build PyFerret and install it in the location given by the value of
 `INSTALL_FER_DIR` in the site_specific.mk file:

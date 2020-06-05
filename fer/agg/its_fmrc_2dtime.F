@@ -67,6 +67,8 @@
 
 * initialize
 	grid = ds_grid_number(fvar)
+* just in case this gets called with an inappropriate variable
+        IF ( grid .EQ. int4_init ) GOTO 2000
 
 * it must be 2D in the TF plane
 	IF (grid_line(x_dim,grid) .NE. mnormal

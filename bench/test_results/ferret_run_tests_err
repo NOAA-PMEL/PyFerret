@@ -3948,60 +3948,8 @@ Executed by script: *** GO bn_set_axis_name.jnl ***
 set axis/name=.fr x_in_meters
 Executed by script: *** GO bn_set_axis_name.jnl ***
 *** Running ferret script: bn_let_remote.jnl
-           *** NOTE: netCDF bounds variable definition error
-           *** NOTE: Bounds definition "time_bnds" points to no existing axis
-           *** NOTE: Ignoring BOUNDS attribute
-           *** NOTE: netCDF bounds variable definition error
-           *** NOTE: Bounds definition "depth_bnds" points to no existing axis
-           *** NOTE: Ignoring BOUNDS attribute
-           *** NOTE: netCDF bounds variable definition error
-           *** NOTE: Bounds definition "lat_bnds" points to no existing axis
-           *** NOTE: Ignoring BOUNDS attribute
-           *** NOTE: netCDF bounds variable definition error
-           *** NOTE: Bounds definition "lon_bnds" points to no existing axis
-           *** NOTE: Ignoring BOUNDS attribute
-           *** NOTE: dataset does not accept REMOTE variable definitions
-           *** NOTE: dataset does not accept REMOTE variable definitions
-           *** NOTE: dataset does not accept REMOTE variable definitions
-           *** NOTE: dataset does not accept REMOTE variable definitions
-           *** NOTE: netCDF bounds variable definition error
-           *** NOTE: Bounds definition "time_bnds" points to no existing axis
-           *** NOTE: Ignoring BOUNDS attribute
-           *** NOTE: netCDF bounds variable definition error
-           *** NOTE: Bounds definition "depth_bnds" points to no existing axis
-           *** NOTE: Ignoring BOUNDS attribute
-           *** NOTE: netCDF bounds variable definition error
-           *** NOTE: Bounds definition "lat_bnds" points to no existing axis
-           *** NOTE: Ignoring BOUNDS attribute
-           *** NOTE: netCDF bounds variable definition error
-           *** NOTE: Bounds definition "lon_bnds" points to no existing axis
-           *** NOTE: Ignoring BOUNDS attribute
-           *** NOTE: dataset does not accept REMOTE variable definitions
-           *** NOTE: dataset does not accept REMOTE variable definitions
-           *** NOTE: dataset does not accept REMOTE variable definitions
-           *** NOTE: dataset does not accept REMOTE variable definitions
-           *** NOTE: dataset does not accept REMOTE variable definitions
-           *** NOTE: dataset does not accept REMOTE variable definitions
-           *** NOTE: netCDF bounds variable definition error
-           *** NOTE: Bounds definition "time_bnds" points to no existing axis
-           *** NOTE: Ignoring BOUNDS attribute
-           *** NOTE: netCDF bounds variable definition error
-           *** NOTE: Bounds definition "depth_bnds" points to no existing axis
-           *** NOTE: Ignoring BOUNDS attribute
-           *** NOTE: netCDF bounds variable definition error
-           *** NOTE: Bounds definition "lat_bnds" points to no existing axis
-           *** NOTE: Ignoring BOUNDS attribute
-           *** NOTE: netCDF bounds variable definition error
-           *** NOTE: Bounds definition "lon_bnds" points to no existing axis
-           *** NOTE: Ignoring BOUNDS attribute
- **ERROR: command syntax: /REMOTE variable expression may not contain [d=
-DEFINE VARIABLE/DATA=1/remote rvar = t00an1[d=1,z=1:100@ave]
-Executed by script: *** GO bn_let_remote.jnl ***
- **ERROR: command syntax: /REMOTE variable definition must also specify /D=
-DEFINE VARIABLE/remote rvar = t00an1[d=1,z=1:100@ave]
-Executed by script: *** GO bn_let_remote.jnl ***
-           *** NOTE: dataset does not accept REMOTE variable definitions
-           *** NOTE: dataset does not accept REMOTE variable definitions
+syntax error, unexpected WORD_WORD, expecting SCAN_ATTR or SCAN_DATASET or SCAN_ERROR
+context: <!DOCTYPE^ HTML PUBLIC "-//IETF//DTD HTML 2.0//EN"><html><head><title>503 Service Temporarily Unavailable</title></head><body><h1>Service Temporarily Unavailable</h1><p>The server is temporarily unable to service yourrequest due to maintenance downtime or capacityproblems. Please try again later.</p><hr><address>Apache Server at ferret.pmel.noaa.gov Port 80</address></body></html>
 *** Running ferret script: bn691_bug_fixes.jnl
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -6291,6 +6239,8 @@ Replacing definition of axis TDATA
  LISTing to file mixed_or_proleptic.nc
  LISTing to file mixed_or_proleptic.nc
 *** Running ferret script: bn_int64.jnl
+           *** NOTE: Coordinate variable TIME is of non-numeric type.
+           *** NOTE: A dummy axis of subscripts will be used. Variable TIME contains the strings
  LISTing to file a.nc
 *** Running ferret script: bn_samplexyz.jnl
 *** Running ferret script: bn745_bug_fixes.jnl
@@ -6602,6 +6552,7 @@ Replacing definition of axis ZFAKE
 Replacing definition of grid GFAKE
  LISTing to file fake_model_temp.nc
 *** Running ferret script: bn_dsg_feature_mask.jnl
+           *** NOTE: Feature-mask on dataset 2 canceled. New definition of MASK does not match nfeatures of set 2
 *** Running ferret script: bn_dsg_repeat_m.jnl
 *** Running ferret script: bn_dsg_traj_plot.jnl
 *** Running ferret script: bn_regrid_from_dsg.jnl
@@ -6905,6 +6856,9 @@ Executed by script: *** GO err751_fcns_of_dsg ***
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
 *** Running ferret script: bn_ribbon_set.jnl
 *** Running ferret script: bn_mode_dsg.jnl
  **ERROR: invalid command: CANCEL MODE DSG when DSG datasets are open. Must first close all DSG datasets.
@@ -6915,6 +6869,14 @@ set mode dsg
 Executed by script: *** GO bn_mode_dsg.jnl ***
            *** NOTE: MODE DSG is turned off. Ingoring SET DATA/FEATURE=
            *** NOTE: SET DATA/FEATURE= applies only to Discrete Sampling Geometries datasets. Ignoring /FEATURE=
+*** Running ferret script: bn_string_type.jnl
+           *** NOTE: Units on axis "time" are not recognized: eays
+           *** NOTE: They will not be convertible:
+ LISTing to file a.nc
+ **ERROR: invalid command: Unrecognized option/outtype='string'
+           Valid options are /OUTTYPE=DOUBLE,FLOAT,INT,SHORT,or BYTE
+LIST/FORMAT=CDF/clobber/file=a.nc/outtype='string' str_temp
+Executed by script: *** GO bn_string_type.jnl ***
 *** Running ferret script: bn_gif.jnl
  **ERROR: dimensions improperly specified: specified data is not a line
            - its a 2D region: "plot/i=1:10/j=1:20/nolabel i+j"

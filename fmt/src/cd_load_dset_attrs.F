@@ -58,6 +58,7 @@
 * V751 8/18 *acm* don't issue a note if the file has featureType="grid"
 * V76  1/20 *acm* Orientation of Point-type data set to e_dim
 * V745 *acm*  5/20  added mode_dsg to control turning off all DSG ops
+* V7.6 *acm* 6/20 Issue 1980: When possible open invalid DSG datasets anyway with NOTES.
 
 * argument definitions:
 *       dset    - pointer to TMAP data set
@@ -176,7 +177,8 @@
      .		    .OR.  (STR_CASE_BLIND_COMPARE(cbuff32,"trajectoryprofile")
      .			   .EQ. str_match)                                      )THEN
 	               dsg_ragged(dset) = .FALSE.
-	               CALL TM_NOTE("FEATURE NOT YET IMPLEMENTED: "//cbuff32 , lunit_errors)
+	               CALL TM_NOTE('FEATURE-TYPE NOT YET IMPLEMENTED: '//cbuff32 , lunit_errors)
+	               CALL TM_NOTE('Initializing as a non-DSG dataset', lunit_errors)
 	            ELSE
 	               dsg_ragged(dset) = .FALSE.
 		       IF (STR_CASE_BLIND_COMPARE(cbuff32,"grid") .NE. str_match .AND. do_warn)

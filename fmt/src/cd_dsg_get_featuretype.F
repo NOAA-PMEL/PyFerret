@@ -38,6 +38,7 @@
 * for the dataset
 * V751 8/18 *acm* don't issue a note if the file has featureType="grid"
 * v76  2/20 *acm* add handling of Point feature-type
+* V7.6 *acm* 6/20 Issue 1980: When possible open invalid DSG datasets anyway with NOTES.
 
 
         include 'netcdf.inc'
@@ -89,7 +90,7 @@ c	include 'tmap_dims.parm'
 	ELSEIF ( (STR_CASE_BLIND_COMPARE(buff,"timeseriesprofile") .EQ. str_match)
      .     .OR.  (STR_CASE_BLIND_COMPARE(buff,"trajectoryprofile") .EQ. str_match) )THEN
 	   dsg_ragged = .FALSE.
-	   IF (do_warn) CALL TM_NOTE("FEATURE NOT YET IMPLEMENTED: "//buff , lunit_errors)
+	   IF (do_warn) CALL TM_NOTE("FEATURE-TYPE NOT YET IMPLEMENTED: "//buff , lunit_errors)
 
 	ELSE
 	   dsg_ragged = .FALSE.

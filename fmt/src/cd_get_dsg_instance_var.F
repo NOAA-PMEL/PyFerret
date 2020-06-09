@@ -1,5 +1,5 @@
         SUBROUTINE CD_GET_DSG_INSTANCE_VAR(dset, cdfid, ivcd, ivtm, vdims, 
-     .                                     nvdim, npts, idim, stored_lm, status)
+     .                       nvdim, npts, idim, stored_lm, errstr, status)
 
 
 *  This software was developed by the Thermal Modeling and Analysis
@@ -56,7 +56,7 @@
 *                 variable as a coordinate
 * v751 *acm*  6/19 Allow for longer strings as attribute values - std names -->256
 * v751 *acm* 11/19 Don't warn of constant lon/lat e.g. for single-station timeseries or Profiles
-
+* V7.6 *acm* 6/20 Issue 1980: When possible open invalid DSG datasets anyway with NOTES.
 
 * argument definitions:
 *       cdfid     - netCDF id number for already opened CDF file
@@ -88,6 +88,7 @@
 * argument declarations
         INTEGER  cdfid, dset, ivcd, ivtm, npts, idim, stored_lm, 
      .           vdims(*), nvdim, status
+	CHARACTER*(*) errstr
 
 * local variable declarations:
         LOGICAL NC_GET_ATTRIB, TM_HAS_STRING, got_it, ok_cal, has_bad, got_z
@@ -437,8 +438,8 @@
         status = 0   ! soft error
         GOTO 5100
  
- 5300   CALL WARN ('Missing values in the RowSize variable: '//
-     .   ds_var_code(ivtm)(:vlen) )
+ 5300	errstr = 'Missing values in the RowSize variable: '//
+     .   ds_var_code(ivtm)(:vlen) 
         status = merr_dsg_grid
         GOTO 5100
 
@@ -447,13 +448,13 @@
         status = 0   ! soft error
         GOTO 5100
 
- 5500   CALL WARN("Corrupted time coordinates in DSG file: "
-     .                  //ds_var_code(ivtm)(:vlen)  )
+ 5500	errstr = 'Corrupted time coordinates in DSG file: '
+     .                  //ds_var_code(ivtm)(:vlen)  
         status = merr_dsg_grid
         GOTO 5100
 
- 5600   CALL WARN("Corrupted vertical coordinate in DSG profile; no range or all missing: "
-     .                  //ds_var_code(ivtm)(:vlen) )
+ 5600   errstr = 'Corrupted vertical coordinate in DSG profile; no range or all missing: '
+     .                  //ds_var_code(ivtm)(:vlen) 
         status = merr_dsg_grid
         GOTO 5100
 	

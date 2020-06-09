@@ -1,5 +1,5 @@
 	SUBROUTINE CD_DSG_CHECK_TIMECOORD (nfeatures, obs_len, row_size_lm,
-     .					   t_coord_lm, errmsg, status)
+     .					   t_coord_lm, errstr, status)
 
 
 * check the time data: is it monotonically increasing?  For now this is
@@ -8,13 +8,15 @@
 
 * Also check that the row-size variable sums to the obs-dimlen
 
+* V7.6 *acm* 6/20 Issue 1980: When possible open invalid DSG datasets anyway with NOTES.
+
 	include 'tmap_errors.parm'
 	include 'tmap_dims.parm'
         include 'xdyn_linemem.cmn_text'
 
 
 	INTEGER nfeatures, obs_len, row_size_lm, t_coord_lm, status
-	CHARACTER*(*) errmsg
+	CHARACTER*(*) errstr
 
 	INTEGER i, irow, base, n_in_row, iobs, nrow, tsiz
 	REAL	clast, coord
@@ -52,11 +54,11 @@
 
  5000	RETURN
 
- 5100   errmsg = 'Time coordinates are not increasing within each feature. '//
+ 5100   errstr = 'Time coordinates are not increasing within each feature. '//
      .     'Data must be sorted by time.'
 	 status = merr_dsg_grid
 	GOTO 5000
- 5200   errmsg = 'Row-size data must sum to the length of the observation axis.'
+ 5200   errstr = 'Row-size data must sum to the length of the observation axis.'
 	status = merr_dsg_grid
 	GOTO 5000
 

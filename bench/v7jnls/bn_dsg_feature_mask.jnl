@@ -60,7 +60,8 @@ plot/color/thick t_25
 frame/file=dsg_traj_feature_mask.gif
 
 
-! All the datasets and masks are still in place.
+! All the datasets are still open.  The mask on dataset 2
+! is now removed as the variable that defined it was changed.
 
 show data
 set data 1

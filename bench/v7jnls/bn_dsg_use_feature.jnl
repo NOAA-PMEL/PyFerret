@@ -3,6 +3,8 @@
 ! 7/2018  Save a plot
 ! 9/2018  Allow USE/Feature= on open datasets. If the new
 !         feature type will work for the dataset, it's re-initialized.
+! 6/2020  For Issue 1980: When possible open invalid DSG datasets anyway 
+!         so errors here turn into NOTES.
 
 ! This dataset has featuretype=Trajectory but it also has a time 
 ! coordinate variable. It can be treated as a timeseries dataset
@@ -45,8 +47,7 @@ cancel data/all
 set mode ignore
 use/feature=profile dsg_cross_dateline.nc
 
-! A timeseries dataset can't be used as a trajectory (unless
-! there were lon/lat along the obs axis)
+! A timeseries dataset can't be used as a trajectory
 
 use DSG_ERDDAP_Tao5daySst
 show data
@@ -59,27 +60,43 @@ show data
 
 cancel data/all
 
-! Intentionally incomplete files. These are rejected as a DSG
-! coaching suggests setting /feature=none
+! The dataset is a trajectory-profile dataset, not yet implemented.
+use traj_prof_example
+show data
+
+cancel data/all
+
+set mode/last ignore
+
+! Not errors: opened as non-dsg datasets, with NOTES
+! Intentionally incomplete files. These are automatically
+! opened as non-dsg datasets, with NOTES.
 
 ! Missing a latitude coordinate. 
 use dsg_bad_coord
 sh dat
-can dat/all
+cancel data/all
 
 ! Missing the attribute on the RowSize variable
 use dsg_bad_atts1
 sh dat
-can dat/all
+cancel data/all
 
 ! Missing the attribute on the feature-id variable
 use dsg_bad_atts2
 sh dat
 
-can dat/all
+cancel data/all
 
+! This dataset is not DSG, it's saved from ERDDAP as NCCFMA
+! a 2-D form.  Ferret sees the FeatureType attribute but reports
+! it's not dsg, and continues as a gridded set.
 
-set mode /last ignore
+use alamo_float_CFMA_profiles
+show data
+
+cancel data/all
+
 
 ! Multiple variables with an axis attribute and units of lon/ lat.
 ! Here lon and lon360 variables - using the wrong one may be harmless
@@ -96,4 +113,3 @@ cancel data/all
 ! use/feature on a non-dsg dataset issues a warning
 use/feature=trajectory coads_climatology
 show data
-

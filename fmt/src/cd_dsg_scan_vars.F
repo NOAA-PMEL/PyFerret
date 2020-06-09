@@ -1,4 +1,4 @@
-	SUBROUTINE CD_DSG_SCAN_VARS(dset, cdfid, status)
+	SUBROUTINE CD_DSG_SCAN_VARS(dset, cdfid, errstr, status)
 
 *
 *
@@ -65,6 +65,7 @@
 * V76  1/20 *acm* working with Point-type dsg data 
 * V76  3/20 *acm* Improve notes about ambiguous coord info.
 * v7.6 *acm* 5/20 Issue 1876: can read string-typed data, write as char.
+* V7.6 *acm* 6/20 Issue 1980: When possible open invalid DSG datasets anyway with NOTES.
 
 * argument definitions:
 *       dset    - pointer to TMAP data set
@@ -89,6 +90,7 @@
 
 * argument declarations:
 	INTEGER	      dset, cdfid, status
+	CHARACTER*(*) errstr
 
 * local variable declarations:
 *  ivtm - TMAP library variable ID
@@ -96,7 +98,7 @@
 	LOGICAL NC_GET_ATTRIB, TM_LEGAL_NAME,
      .		got_it, got_axis, got_stdname, coordvar, got_a_variable,
      .		has_DSG_row_size, has_DSG_coordinates,
-     .		has_DSG_feature_id, need_coord(4)
+     .		has_DSG_feature_id, need_coord(4), udsg_err
 	INTEGER STR_UPCASE, TM_LENSTR1,
      .		NCF_INQ_DS, STR_CASE_BLIND_COMPARE, STR_SAME,
      .		ivcd, ivtm, vartyp, nvdim, vdims(8), nvatts, all_outflag,
@@ -136,6 +138,7 @@
 	las_pos = 1
 	global_bad = -1.E34
 	dsg_instance_axis = int4_init
+	udsg_err = .FALSE.
 
 * The feature-id variable is identified by having a feature_id attribute
 * according to the feature type
@@ -270,11 +273,11 @@
 	IF (slen .GT. 1) THEN
 	   buff1 = CD_DSG_FEATURENAME(orient)
 	   vlen = TM_LENSTR1( buff1 ) 
-	   buff = 'Required coordinate variables not found. '//
+	   errstr = 'Required coordinate variables not found. '//
      .	          buff1(:vlen)//
-     .            ' file is missing directions: '//vname(:slen)
-
-	   GOTO 5300
+     .            ' file is missing directions: '//vname(:slen) 
+	   status = merr_dsg_struc
+	   GOTO 5500
 	ENDIF
 	
 	got_a_variable = .FALSE.
@@ -287,7 +290,7 @@
            CALL CD_GET_VAR_INFO (dset, ivcd, vname, vartyp,
      .                 nvdim, vdims, nvatts, coordvar, 
      .                 all_outflag, status)
-           IF ( status .NE. merr_ok ) GOTO 5200
+           IF ( status .NE. merr_ok ) GOTO 5400
            vlen = TM_LENSTR1(vname)
 
            IF (vartyp .EQ. NF_CHAR) THEN
@@ -301,7 +304,7 @@
 * register the variable as a dependent variable in the dataset
 	   CALL CD_GET_1_DEP_VAR ( dset, cdfid, ivcd, las_pos, global_bad, 
      .				   ivtm, status )
-	   IF (status .NE. merr_ok) GOTO 5200
+	   IF (status .NE. merr_ok) GOTO 5400
 	   IF ( ivtm .NE. 0 ) THEN
 	      las_pos = ivtm	! optimizes next hunt for slot
 	      IF (.NOT.got_a_variable) THEN
@@ -375,8 +378,9 @@
 	   IF (nvdim .GT. 1) THEN
 	      cdfstat = NF_INQ_DIMLEN(cdfid, vdims(2), ax2_len)
 	      IF (ax2_len .GT. 1) THEN
-	         buff = 'DSG ragged array: observation variables must be 1-D '//vname(:vlen)
-		 GOTO 5400
+	         errstr = 'DSG ragged array: observation variables must be 1-D '//vname(:vlen)
+	         IF (status .NE. merr_dsg_grid) status = merr_dsg_struc
+	         GOTO 5500
 	      ENDIF
 	   ENDIF
 
@@ -395,15 +399,18 @@
 	      dsg_row_size_varid(dset) = ivcd
 	      CALL CD_GET_DSG_INSTANCE_VAR(dset, cdfid, ivcd, ivtm,
      .                 vdims, nvdim, eax_len, pdsg_row_size,
-     .                 dsg_loaded_lm(ivtm), status)
-	      IF (status .NE. merr_ok) GOTO 5200
+     .                 dsg_loaded_lm(ivtm), errstr, status)
+	      IF (status .NE. merr_ok) THEN
+	         IF (status .NE. merr_dsg_grid) status = merr_dsg_struc
+	         GOTO 5500
+	      ENDIF
 	      has_DSG_row_size = .TRUE.
 
 * ... the sample_dimension attribute provides the name of the obs dimension.
 *     Get its id number from its name.
-              slen = TM_LENSTR1(buff)
+	      slen = TM_LENSTR1(buff)
 	      cdfstat = NF_INQ_DIMID ( cdfid, buff(:slen), dsg_obs_dim)
-	      IF ( cdfstat .NE. NF_NOERR ) GOTO 5200
+	      IF ( cdfstat .NE. NF_NOERR )  GOTO 5400
 	      CYCLE 
 	   ENDIF
 
@@ -414,13 +421,17 @@
 
 	      IF (dsg_coord_var(idim,dset) .EQ. int4_init) THEN
 
-		 CALL CD_GET_DSG_INSTANCE_VAR(dset, cdfid, ivcd, ivtm,
-     .	             vdims, nvdim, ax_len, idim, dsg_loaded_lm(ivtm), status)
+		 CALL CD_GET_DSG_INSTANCE_VAR(dset, cdfid, ivcd, 
+     .	             ivtm,vdims, nvdim, ax_len, idim, 
+     .	             dsg_loaded_lm(ivtm), errstr, status)
 		 IF (status .EQ. 0) THEN 
 		     CYCLE  ! corrupted var, ignore as a coord
 		 ENDIF
 
-		 IF (status .NE. merr_ok) GOTO 5200
+		 IF (status .NE. merr_ok) THEN
+		    IF (status .NE. merr_dsg_grid) status = merr_dsg_struc
+		    GOTO 5500
+		 ENDIF
 		 dsg_coord_var(idim,dset) = ivtm
 		 IF (idim .EQ. orient)
      .			has_DSG_coordinates = .TRUE.
@@ -450,7 +461,7 @@
 	      CALL CD_GET_VAR_INFO (dset, ivcd, vname, vartyp,
      .                 nvdim, vdims, nvatts, coordvar, 
      .                 all_outflag, status)
-              IF ( status .NE. merr_ok ) GOTO 5200
+              IF ( status .NE. merr_ok ) GOTO 5400
 
               IF (vartyp .EQ. NF_CHAR) THEN
                  nvdim = nvdim - 1
@@ -547,10 +558,13 @@
 		    isend = -1*ivcd
 		    CALL CD_GET_DSG_INSTANCE_VAR(dset, cdfid, isend, ivtm,
      .                 vdims, nvdim, eax_len, pdsg_row_size,
-     .                 dsg_loaded_lm(ivtm), status)
+     .                 dsg_loaded_lm(ivtm), errstr, status)
 	         ENDIF
 
-		 IF (status .NE. merr_ok) GOTO 5200
+		 IF (status .NE. merr_ok) THEN
+		    IF (status .NE. merr_dsg_grid) status = merr_dsg_struc
+		    GOTO 5500
+		 ENDIF
 
 	         dsg_row_size_var(dset) = ivtm
 	         dsg_row_size_varid(dset) = unspecified_int4
@@ -581,8 +595,9 @@
 
 	   IF ( .NOT.has_DSG_feature_id .OR. (eax_len.GT.1 .AND.  
      .             dsg_feature_type(dset).NE.pfeatureType_Point) ) THEN
-	      buff = 'Row Size variable w/ sample_dimension not found. '
-	      GOTO 5300
+	      errstr = 'Row Size variable w/ sample_dimension attribute not found. ' 
+	      status = merr_dsg_struc
+	      GOTO 5500
 	   ENDIF
 
 	ENDIF
@@ -622,8 +637,10 @@
 *  row-size variable  (checked above)
 
 	IF (.NOT. has_DSG_feature_id) THEN
-	   buff = 'Feature-ID variable not found or invalid value of cf_role attribute'
-	   GOTO 5300
+	   errstr = 'Feature-ID variable not found or '//
+     .      'invalid value of cf_role attribute'
+	   status = merr_dsg_struc
+	   GOTO 5500
 	ENDIF
 
 *  No mask is set, but initialize the memory location to unspecified_int4
@@ -638,9 +655,12 @@
 	IF ( dsg_feature_type(dset).NE.pfeatureType_Point) 
      .     CALL CD_DSG_CHECK_TIMECOORD ( eax_len,  dsg_obs_dimlen(dset),
      .     dsg_loaded_lm(dsg_row_size_var(dset)), 
-     .     dsg_loaded_lm(dsg_coord_var(t_dim,dset)), buff, status )
+     .     dsg_loaded_lm(dsg_coord_var(t_dim,dset)), errstr, status )
 
-	IF (status .NE. merr_ok) GOTO 5600
+	IF (status .NE. merr_ok) THEN
+	   IF (status .NE. merr_dsg_grid) status = merr_dsg_struc
+	   GOTO 5500
+	ENDIF
 	
 * successful completion
 	status = merr_ok
@@ -649,6 +669,9 @@
 * hard errors
 
  5500   CONTINUE
+	udsg_err = (.NOT.udsg_err .AND. dsg_user_direction .NE. int4_init)
+	buff1 = CD_DSG_FEATURENAME(dsg_user_direction)
+
 	IF (dsg_instance_axis .NE. int4_init) CALL TM_DEALLO_DYN_LINE(dsg_instance_axis)
 	DO idim = 1, nferdims
 	   IF (ds_basic_axes(idim,dset) .NE. int4_init)
@@ -656,29 +679,26 @@
 	ENDDO
 	CALL CD_RELEASE_DSG_INSTANCE_VARS(dset)
 	dsg_ragged(dset) = .FALSE.
+
+* It's an error if they try USE/FEATURE= on invalid DSG dataset
+	IF (udsg_err) THEN
+	   buff = 'Requested USE/FEATURE='//buff1(:vlen)//
+     .        ', but dataset is not a valid DSG file '
+	   CALL TM_ERRMSG (merr_invalid, status, 'CD_DSG_SCAN_VARS',
+     .         no_descfile, no_stepfile,
+     .         buff, no_errstring, *5000)
+        ENDIF
+
 	GOTO 5000
   
  5100   buff1 = CD_DSG_FEATURENAME(dsg_user_direction)
 	buff = 'USE/FEATURE='//buff1(:vlen)//
      .     ' ... must have observations along '//direc(dsg_user_direction)
+	udsg_err = .TRUE.
 	CALL TM_ERRMSG (merr_dsg_grid, status, 'CD_DSG_SCAN_VARS',
      .     no_descfile, no_stepfile, buff, no_errstring, *5500)
 
- 5200   buff = ' '
-	CALL TM_ERRMSG
-     .     ( merr_dsg_struc, status, 'CD_DSG_INIT',
-     .     no_descfile, no_stepfile,
-     .     buff, no_errstring, *5500 )
-
- 5300   CALL TM_ERRMSG (merr_dsg_struc, status, 'CD_DSG_SCAN_VARS',
-     .     no_descfile, no_stepfile,
-     .     buff, no_errstring, *5500)
-
  5400   CALL TM_ERRMSG (merr_invalid, status, 'CD_DSG_SCAN_VARS',
-     .     no_descfile, no_stepfile,
-     .     buff, no_errstring, *5500)
-
- 5600   CALL TM_ERRMSG (merr_dsg_struc, status, 'CD_DSG_SCAN_VARS',
      .     no_descfile, no_stepfile,
      .     buff, no_errstring, *5500)
 

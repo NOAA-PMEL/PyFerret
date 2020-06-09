@@ -82,6 +82,7 @@
 * V76 12/19 *kms*  Temporarily disable this enhancement to recognize FMRC
 *                  datasets as such until revised FMRC handling is implemented.
 * V745 *acm*  5/20  added mode_dsg to control turning off all DSG ops
+* V7.6 *acm* 6/20 Issue 1980: When possible open invalid DSG datasets anyway with NOTES.
 
 * include files
 #include "gt_lib.parm"
@@ -108,9 +109,10 @@
 
 
 * local variable declarations:
-      INTEGER STR_SAME, cdfid, remote_dods_id,istat, native_tax
+      INTEGER STR_SAME, TM_LENSTR1, cdfid, remote_dods_id,istat, native_tax
 * 4/99 *kob* increase temp_axnams
-      CHARACTER*128 temp_axnams(nferdims,max_temp_grid)
+      CHARACTER CD_DSG_FEATURENAME*20
+      CHARACTER*128 temp_axnams(nferdims,max_temp_grid), errstr
       LOGICAL reversed(max_lines:line_ceiling), shifted
 
 * open the netCDF data file and save global information
@@ -134,7 +136,19 @@
 * **** 4/2017 DSG: try to process this as a DSG dataset
 
       IF (dsg_ragged(dset)) THEN
-	 CALL CD_DSG_SCAN_VARS( dset, cdfid, status )
+	 errstr = ''
+	 CALL CD_DSG_SCAN_VARS( dset, cdfid, errstr, status )
+
+	 IF (status .EQ. merr_dsg_grid .OR. status .EQ. merr_dsg_struc) THEN
+	    CALL WARN ('Dataset has FeatureType attribute: '//
+     .                  CD_DSG_FEATURENAME(dsg_feature_type(dset)) )
+	    CALL WARN ('But is not initialized as a DSG File: '//
+     .                  errstr(:TM_LENSTR1(errstr)) )
+	    CALL WARN ('Initializing the file as a non-DSG dataset')
+	    dsg_ragged(dset) = .FALSE.
+	    GOTO 1000
+	 ENDIF
+
          IF ( status .NE. merr_ok ) GOTO 5900
 	 IF (.NOT.dsg_ragged(dset)) THEN
 	    GOTO 5900  

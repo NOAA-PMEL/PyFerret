@@ -1,0 +1,71 @@
+! DSG Trajectory data from ERDDAP  
+
+set mode verify
+can mode logo
+
+use dsg_trajectory_example.nc
+
+! SHOW DATA lists the dataset type and the variable names 
+! with the number of trajectories listed in the M direction
+show data
+pause
+
+! SHOW GRID lists the basic organization of the ragged-array file
+! and summarizes the world coordinates represented in the file.
+show grid fco2_recommended
+pause
+
+set win/clear/asp=0.7/siz=0.5
+
+! The default "PLOT" command draws a ribbon plot along the 
+! trajectories, colored by the variable specified
+
+plot/thick/lev=v fco2_recommended
+go fland 5
+pause; ! frame/file=traj_plot.png
+
+plot/pal=ten_by_levels/thick/nolabels/key=hor/hlim=135:237 expocode
+go fland 5
+
+pause; ! frame/file=traj_by_id.png
+
+
+! constrain using /X= /Y=
+plot/x=130:150/y=30:45/thick fco2_recommended
+go land_detail 
+
+pause; ! frame/file=traj_constrain.png
+
+! show more of the map, usin /HLIM /VLIM
+
+
+plot/x=130:150/y=30:45/thick/hlim=128:150/vlim=30:45 fco2_recommended
+go fland 5
+
+pause; ! frame/file=traj_plot_region.png
+
+! Masking by trajectory: Define a mask based on trajectory names, and SET DATA/FMASK
+
+list expocode
+let mask = if STRINDEX(expocode, "33") GT 0 then 1
+
+list mask
+set data/fmask=mask 1
+
+plot/thick/lev=v temperature_equi
+pause
+
+cancel data/fmask 1
+
+! Finally, for Trajectory data, we can treat the dataset as if it's a 
+! timeseries-type DSG file.
+
+set data/feature=timeseries 1
+
+show data
+
+set window/asp=0.7
+
+! Plots are now a set of time series, colored by trajectory ID
+
+plot fco2_recommended

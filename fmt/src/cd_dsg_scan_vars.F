@@ -666,7 +666,8 @@
 	status = merr_ok
  5000	RETURN
 
-* hard errors
+* Invalid DSG: Clean up initialization as DSG and go back, try to 
+* initialize it as a non-DSG file
 
  5500   CONTINUE
 	udsg_err = (.NOT.udsg_err .AND. dsg_user_direction .NE. int4_init)
@@ -678,7 +679,13 @@
      .        CALL TM_DEALLO_DYN_LINE(ds_basic_axes(idim,dset) )
 	ENDDO
 	CALL CD_RELEASE_DSG_INSTANCE_VARS(dset)
+	DO  i = 1, maxvars
+	   IF (ds_var_setnum(i) .EQ. dset) ds_var_setnum(i) = set_not_open
+	ENDDO
 	dsg_ragged(dset) = .FALSE.
+
+
+* hard errors
 
 * It's an error if they try USE/FEATURE= on invalid DSG dataset
 	IF (udsg_err) THEN

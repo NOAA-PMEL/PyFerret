@@ -37,3 +37,8 @@ GO err751_use_order
 
 GO bn_reset
 GO err751_proleptic_gregorian
+
+IF ($program_name"0|PyFerret>1|*>0") then
+   GO bn_reset
+   GO err751_pyferret_sym_line
+ENDIF

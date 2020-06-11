@@ -1,0 +1,14 @@
+! err751_pyferret_sym_line.jnl
+! PyFerret issue #76: PLOT/LINE/SYM=boxfill did not draw the line
+! 6/11/2020 ACM
+
+IF ($program_name"0|Ferret>1|*>0") THEN EXIT/SCRIPT
+
+
+set view upper
+plot/line/sym/siz=0.2/i=1:5 1./i
+
+set view lower
+plot/line/sym=boxfill/siz=0.2/i=1:5 1./i
+
+frame/file=fancy_sym_line.png

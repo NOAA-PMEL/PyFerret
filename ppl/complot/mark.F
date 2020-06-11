@@ -37,7 +37,10 @@
 *      *acm* 10/01  remove VMS includes
 * V73  3/18 *kms*  For clarity, append MD to makedot.cmn values IPT, XDOT, 
 *                  and YDOT; make MDOT (99) a makedot.cmn parameter DOTSYMIM
-
+* V76  6/20 *acm*  Issue 76: If drawing PyFerret symbols (symbol number > 88) 
+*                  still need to execute the code setting the mode and the 
+*                  xyzplt call at the end so line plot still gets drawn.
+*
 *
 C**    @(#)mark.F	1.1    3/10/88
 C**
@@ -92,10 +95,10 @@ C
       IF (IMARK .GE. DOTSYMIM) THEN
 C         IMARK refers to a named symbol
           CALL makedot(IMARK - DOTSYMIM + 1)
-          RETURN
       ENDIF
 
-      IF(IMARK .LT. 1 .OR. IMARK .GT. 88)RETURN
+      IF(IMARK.LT.1 .OR. imark.EQ.DOTSYM) RETURN
+
 C
 C     DETERMINE THE SIZE OF THE DATA MARK AND ITS CODE.
 C
@@ -124,6 +127,7 @@ C
 C
 C     DRAW THE DATA MARK.
 C
+      IF (IMARK .LE. 88) THEN
       DO 10 IPT=IPOINT,ILAST
       IB = TABT(IPT)
 C
@@ -169,6 +173,8 @@ C
         PENF = .TRUE.
       ENDIF
    10 CONTINUE
+
+      ENDIF  ! mark .LT. 88
 C
 C     RESTORE THE CURRENT PLOTTING POSITION.
 C

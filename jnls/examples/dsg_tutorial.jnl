@@ -29,11 +29,12 @@ SET MODE VERIFY      ! show command file lines at the screen
 ! netCDF-CF-DSG datasets
 !
 ! Attributes in the file informs Ferret that this is a Feature Collection
-! organized as a Discrete Sampling Geometries dataset. The data is an 
-! ERDDAP output, using "save as .ncCF".  A "Feature" is a single Timeseries,
-! Profile, Trajectory or Point.  A Feature Collection is one or more Features
-! in a file.  The files are organized as Discrete Sampling Geometry Ragged-array
-! files, following the CF Standard for Discrete Sampling Geometries.
+! organized as a Discrete Sampling Geometries dataset. The data is often the 
+! output of an ERDDAP tabledap datset, using "save as .ncCF".  A "Feature" 
+! is a single Timeseries, Profile, Trajectory or Point.  A Feature Collection 
+! contains one or more Features in the file.  The files are organized as 
+! Discrete Sampling Geometry Contiguous ragged-array files, following the CF 
+! Standard for Discrete Sampling Geometries.
 !
 ! The datasets used in this demo are included in the current FerretDatasets Distribution 
 
@@ -78,9 +79,10 @@ show grid t_25
 ! view the plots.
 pause
 
-SET WINDOW/SIZE=1/ASPECT=.75:axis   ! default
-CANCEL VIEWPORTS
-CANCEL MODE LOGO
+! Set up the plot window
+set window/size=1/aspect=.75:axis   ! default
+cancel viewports
+cancel mode logo
 
 
 ! ********************************************************************
@@ -91,7 +93,7 @@ CANCEL MODE LOGO
 ! Each feature type has a native plot type “PLOT VAR”
 ! will plot the variable in the currently selected set of features.
 !
-! First lets make a map showing the locations and names of the stations.
+! First lets make a map showing the locations of the stations.
 ! This is nothing new, we draw a map and overlay the locations with PLOT/VS
 
 go basemap x=140:360 y=-40:40 20
@@ -103,14 +105,14 @@ pause
 
 set window/clear/siz=1/asp=0.6
 
-! Now plot all of the time series in the collection at once.
-! Since the plot will have so many time series lines, we choose
-! not to make a key; just 70 blue lines.
-! Ferret knows these are time series, and it understands DSG coordinates
-! internally, much as it would understand gridded coordinates.  So the
-! plot is properly formatted and self-describing.
+! Now plot the temperature variable for all of the time series in the
+! collection at once. They are all plotted together, with a line key
+! limited automatically to 40 of the lines (as is also done for many
+! lines in any other plot). Ferret understands DSG coordinates internally, 
+! much as it would understand gridded coordinates. So the plot is properly 
+! formatted and self-describing.
 
-plot/color=blue/line/nokey t_25
+plot t_25
 
 !----------------------------------------
 pause
@@ -121,11 +123,13 @@ pause
 ! ********************************************************************
 
 
-! PyFerret standard world coordinate limits qualifiers, X, Y, Z, T and E
-! work much as they would with a gridded dataset -- i.e. they control the
-! region displayed by the graphics and the data that gets plotted or listed.
-! This plot has fewer lines, so automatically give each one a new color or
-! style. The legend labels are the profile station IDs from the file.
+
+! Ordinary PyFerret qualifiers for coordinate limits, /X=, /Y=, /Z=, /T=, /E=  
+! operate as they do with a gridded dataset -- i.e. they control the region
+! displayed by the graphics and the data that gets plotted or listed. This
+! plot has fewer lines, so allow the PLOT command to automatically give each 
+! one a new color or style. The legend labels are the profile station IDs from 
+! the file.
 
 plot/thick/x=130e:170e/y=8s:5n/T=1-FEB-2017:15-APR-2017 T_25
 
@@ -288,7 +292,7 @@ use dsg_point_example
 show data
 
 plot/thick/lev=v larvae_size
-go land thick
+go land_detail
 
 pause
 

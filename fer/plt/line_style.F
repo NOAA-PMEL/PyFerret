@@ -67,6 +67,14 @@
 * v683 *acm* 11/12 Put sym_so_far into common - previously SAVEd here, no longer working.
 * V6.85 *acm* 9/13 New PLOT/COLOR w/o argument for all-color line plot
 * V698  4/16 *acm* New PLOT/SKIP=
+*
+* *** 
+* NOTE NOT doing this yet. Filled symbols stick out too much across plot axes.
+*          Figure soemething out about that first, at least for PLOT/VS plots, 
+*          maybe padding added automatically unless we know it's a lon/lat map plot.
+* V7.6  6/20 *acm* By default use nice PyFerret filled and other symbols for the first
+*                  several plot symbols.
+* *** 
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -79,6 +87,7 @@
         include 'LINES.INC'
 	include 'xprog_state.cmn'
         include 'ppl_dash_save.cmn'
+        include 'makedot.cmn'
 
 * calling argument declarations
 	LOGICAL use_line
@@ -86,16 +95,18 @@
 	REAL	sym_size, dashstyle(*)
 
 * internal variable declarations
+	INTEGER	FGD_GET_SYMBOLNUM, TM_LENSTR
         LOGICAL unique_symbol, symbol_only1, select_lines
-	INTEGER	style, ppl_draw_line, i, ltyp
+	INTEGER	style, ppl_draw_line, i, ltyp, slen
 
 * internal parameter declarations
 	INTEGER	num_line, ncolors, num_linebundles
 
 * internal variable declarations
-	INTEGER	ityp, imrk, style0, sym(num_sym)
+	INTEGER	ityp, imrk, style0, isym(num_sym), sym(num_sym)
         LOGICAL setdash
-	DATA	sym/1,3,17,19,21,23,25,27,29,31,33,35,39,41,43,47,51/
+	DATA	isym/1,3,17,19,21,23,25,27,29,31,33,35,39,41,43,47,51/
+	CHARACTER*12 symname
 
 * initialize
 
@@ -105,6 +116,28 @@
         ncolors = mode_arg(pmode_linecolors,1)
         num_linebundles = 3 * ncolors
         num_line = ncolors*num_sym
+ 
+* Set up to use several of the nice PyFerret symbols. 
+* Not yet, currently plot/sym=boxfill/line variable does not draw the line.
+
+	sym = isym
+
+*c* *** Not yet
+*c        symname = 'boxfill'
+*c        slen = TM_LENSTR(symname)
+*c        sym(1) = FGD_GET_SYMBOLNUM(symname, slen)  + DOTSYMIM - 1
+*c        symname = 'starfill'
+*c        slen = TM_LENSTR(symname)
+*c        sym(2) = FGD_GET_SYMBOLNUM(symname, slen)  + DOTSYMIM - 1
+*c        symname = 'circle'
+*c        slen = TM_LENSTR(symname)
+*c        sym(3) = FGD_GET_SYMBOLNUM(symname, slen)  + DOTSYMIM - 1
+*c        symname = 'diamplus'
+*c        slen = TM_LENSTR(symname)
+*c        sym(4) = FGD_GET_SYMBOLNUM(symname, slen)  + DOTSYMIM - 1
+*c        symname = 'hexwye'
+*c        slen = TM_LENSTR(symname)
+*c        sym(5) = FGD_GET_SYMBOLNUM(symname, slen)  + DOTSYMIM - 1
 
         IF ( so_far .EQ. 1 ) sym_so_far = 0      ! first line on screen
 * ... each line needs a new symbol for /SYMBOL or /LINE=n/SYMBOL

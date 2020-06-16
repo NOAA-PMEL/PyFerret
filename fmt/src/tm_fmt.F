@@ -301,7 +301,8 @@
         ELSEIF ( outstring(1:2) .EQ. ' .' ) THEN
            outstring(1:2) = '0.'
         ELSEIF ( (str_len .LT. slen) .AND. (outstring(1:2) .EQ. '-.') ) THEN
-           strend = outstring(2:str_len)
+*          Appending space just to get rid of a nonsense compiler warning
+           strend = outstring(2:str_len)//' '
            outstring = '-0'//strend
            str_len = str_len + 1
         ELSEIF ( (str_len .LT. slen) .AND. (outstring(1:1) .EQ. '.') ) THEN
@@ -312,7 +313,8 @@
 
 * Remove any initial spaces
         DO WHILE ( (str_len .GT. 1) .AND. (outstring(1:1) .EQ. ' ') )
-           strend = outstring(2:str_len)
+*          Appending space just to get rid of a nonsense compiler warning
+           strend = outstring(2:str_len)//' '
            outstring = strend
            str_len = str_len - 1
         ENDDO

@@ -2519,7 +2519,8 @@ c	ENDIF
         IF (dset .EQ. pdset_irrelevant .OR. 
      .     dset .EQ. unspecified_int4) THEN
 
-           varname = buff1(1:INDEX(buff1,".")-1)
+*          Appending space just to get rid of a nonsense compiler warning
+           varname = buff1(1:INDEX(buff1,".")-1)//' '
            CALL FIND_VAR_NAME(pdset_irrelevant, varname, cat, var)
            IF (  var .NE. munknown_var_name .AND.
      .           cat .EQ. cat_user_var) THEN

@@ -52,7 +52,7 @@
 	CHARACTER*(*) cbuff
 
 	INTEGER TM_LENSTR1, slen
-	CHARACTER SANITARY_VAR_CODE*128, vname*128, TM_FMT*10
+	CHARACTER SANITARY_VAR_CODE*128, vname*128, TM_FMT*48
 	
 * Probably just need the feature-id variable
 

@@ -1,51 +1,27 @@
 \CANCEL MODE VERIFY
 ! Description: A brief tutorial introduction to DSG capabilities in PyFerret (and Ferret)
 SAY   ... setting up demo environment ...
-! dsg_tutorial.jnl - *ACM* 04/20
-
-! This is only for V7.6 and up
-IF `($ferret_version) LT 7.6` THEN
-   SAY The DSG capabilities are available only in Version 7.6 and higher
-   exit/script
-endif
-
-! Check that they have the datasets.
-set mode ignore
-set redirect/journal stderr
-
-use dsg_tao5daysst_timeseries.nc
-let ok = `T_25,return=isready`
-if `ok eq 0` THEN
-   SAY The DSG example datasets are not installed. Update the datasets at \
-https://github.com/NOAA-PMEL/FerretDatasets
-   exit/script
-endif
-cancel variable ok
-cancel data/all
-cancel redirect
-cancel mode ignore
+! dsg_tutorial.jnl - *ACM* 08/19
 
 ! Clear any program state left by previous activities
-! and set the plot window.
 CANCEL REGION
 CANCEL VARIABLES/ALL
 CANCEL DATA/ALL
-CANCEL VIEWPORTS
-CANCEL MODE LOGO
-
-
-!  Now start...
-
 SET MODE VERIFY      ! show command file lines at the screen
-!
-! ****** An intro to Discrete Sampling Geometries capabilities in PyFerret/Ferret ******
 
-! ****** April 2020
+
+! ********************************************************************
 !
+!   An intro to Discrete Sampling Geometries capabilities in PyFerret/Ferret
+!   June 2020
+!
+! ********************************************************************
+
+
 ! This session demonstrates:
 ! * Open and examine the file
-! * Subset the feature collection
 ! * Line plots of the subset
+! * Subset the feature collection
 ! * Analysis operations on the Features
 ! * Model/feature comparisons
 !
@@ -53,246 +29,370 @@ SET MODE VERIFY      ! show command file lines at the screen
 ! netCDF-CF-DSG datasets
 !
 ! Attributes in the file informs Ferret that this is a Feature Collection
-! time series collection organized as a Discrete Sampling Geometries dataset.
-! The data is an ERDDAP output, using "save as .ncCF"
+! organized as a Discrete Sampling Geometries dataset. The data is often the 
+! output of an ERDDAP tabledap datset, using "save as .ncCF".  A "Feature" 
+! is a single Timeseries, Profile, Trajectory or Point.  A Feature Collection 
+! contains one or more Features in the file.  The files are organized as 
+! Discrete Sampling Geometry Contiguous ragged-array files, following the CF 
+! Standard for Discrete Sampling Geometries.
 !
+! The datasets used in this demo are included in the current FerretDatasets Distribution 
+
+
+!----------------------------------------
+pause
+
+! ********************************************************************
+!        Timeseries Feature Type 
+! ********************************************************************
+
+
 ! We start this exploration with a TimeSeries feature collection.
 ! The instance dimension maps to the ensemble (E) axis (70 features)
 ! The observations dimension maps to T, because these are time series.
-! The observation variables appear as 2D, with the T length equal to the
-! observations dimension of the netCDF file.  The actual array that gets
-! stored in memory will not match this -- it is the 1D contiguous ragged
-! array.
+! The observation variables are listed in "show data" as 2D, with the T 
+! length equal to the observations dimension of the netCDF file. The actual 
+! array that gets stored in memory will not match this -- it is the 1D 
+! contiguous ragged array.
 
-! ********************************************************************
+!----------------------------------------
 pause
 
-use dsg_tao5daysst_timeseries.nc
+use dsg_timeseries_example.nc
 show data
 
-! ********************************************************************
+!----------------------------------------
 pause
-
-! The Feature-type is shown as part of the header.  
-! Internally Ferret creates a "translation" grid based upon the units and
-! coordinate range for each relevant axis of the dataset, which allows the
-! gridded coordinate formatting routines to be used for DSG variables.
-! The output of SHOW DATA/FULL command includes extreme coordinate limits of 
-! the coordinates in the data set, as does SHOW GRID
+ 
+! Internally Ferret creates a “translation” grid based upon the units and
+! coordinate range for the coordinates for each relevant direction in the 
+! dataset, which allows the gridded coordinate formatting routines to be used 
+! for DSG variables. The output of SHOW DATA/FULL command includes extreme 
+! coordinate limits of the coordinates in the data set, as does SHOW GRID.
 
 show grid t_25
 
-! ********************************************************************
+!----------------------------------------
+
+! Setting up to make example plots.  
+! Continue to read the comments in the command window as you
+! view the plots.
 pause
 
-SET WINDOW/SIZE=0.7/ASPECT=.75:axis   ! default
+! Set up the plot window
+set window/size=1/aspect=.75:axis   ! default
+cancel viewports
+cancel mode logo
 
-! Graphics
-! Each feature type has a native plot type "PLOT VAR"
+
+! ********************************************************************
+!        Graphics 
+! ********************************************************************
+
+
+! Each feature type has a native plot type “PLOT VAR”
 ! will plot the variable in the currently selected set of features.
 !
-! First lets make a map showing the locations and names of the stations.
-! This is nothin nothing new, draw a map and overlay the locations with PLOT/VS
+! First lets make a map showing the locations of the stations.
+! This is nothing new, we draw a map and overlay the locations with PLOT/VS
 
 go basemap x=140:360 y=-40:40 20
 plot/vs/over/nolabel/color=blue/symbol=19/siz=0.2/thick longitude, latitude
 
-! ********************************************************************
+!----------------------------------------
 pause
 
 
-set window/clear/siz=0.5/asp=0.6
+set window/clear/siz=1/asp=0.6
 
-! Now plot all of the time series in the collection at once.
-! Since the plot will have so many time series lines, we choose
-! not to make a key; just 70 blue lines.
-! Ferret knows these are time series, and it understands DSG coordinates
-! internally, much as it would understand gridded coordinates.  So the
-! plot is properly formatted and self-describing.
+! Now plot the temperature variable for all of the time series in the
+! collection at once. They are all plotted together, with a line key
+! limited automatically to 40 of the lines (as is also done for many
+! lines in any other plot). Ferret understands DSG coordinates internally, 
+! much as it would understand gridded coordinates. So the plot is properly 
+! formatted and self-describing.
 
-plot/color=blue/line/nokey t_25
+plot t_25
 
-! ********************************************************************
+!----------------------------------------
 pause
 
 
-! Constraints
-! PyFerret standard world coordinate limits qualifiers, X, Y, Z, T and E
-! work much as they would with a gridded dataset -- i.e. they control the
-! region displayed by the graphics and the data that gets plotted or listed.
-! This plot has fewer lines, so automatically give each one a new color or
-! style. The legend labels are the profile station IDs from the file.
+! ********************************************************************
+!        Constraints         
+! ********************************************************************
+
+
+
+! Ordinary PyFerret qualifiers for coordinate limits, /X=, /Y=, /Z=, /T=, /E=  
+! operate as they do with a gridded dataset -- i.e. they control the region
+! displayed by the graphics and the data that gets plotted or listed. This
+! plot has fewer lines, so allow the PLOT command to automatically give each 
+! one a new color or style. The legend labels are the profile station IDs from 
+! the file.
 
 plot/thick/x=130e:170e/y=8s:5n/T=1-FEB-2017:15-APR-2017 T_25
 
 ! or equivalently, 
 ! plot/thick t_25[x=130e:170e,y=8s:5n,T=1-FEB-2017:15-APR-2017] T_25
-
-! ********************************************************************
+!----------------------------------------
 pause
 
-! Masking
+
+! ********************************************************************
+!        Masking         
+! ********************************************************************
+
+
 ! To select features (individual time series, profiles or trajectories)
 ! define a feature-mask. 
 ! SET DATA/FMASK=   (or USE/FMASK=) applies the mask to the dataset 
 ! until it is cancelled. A listing shows what mask is in place, and 
-! lists the data selected. We have also constrained the listing in time.
+! lists the data selected.
 
 let wmo_mask = IF wmo_platform_code EQ 51011 \
-               OR wmo_platform_code EQ 52313 then 1
+ OR wmo_platform_code EQ 52313 then 1
 
-use/fmask=wmo_mask dsg_tao5daysst_timeseries.nc
+use/fmask=wmo_mask dsg_timeseries_example.nc
 
 list/t=1-jan-2017:25-feb-2017 t_25
 
 plot/thick t_25
 
-! ********************************************************************
+!----------------------------------------
 
 pause
-set window/clear/siz=0.5/asp=0.8
+set window/clear/siz=1/asp=0.8
 
 cancel data/all
 cancel variable/all
 
-! Other Feature-types:
 
-! Profiles
+! ********************************************************************
+!               Other Feature-types:                                    
+!               Timeseries, Profile, Trajectory and Point types         
+!               are currently implemented.                              
+! ********************************************************************
+
+pause
+
+
+! ********************************************************************
+!        Profiles         
+! ********************************************************************
+
 ! Profile datasets, like timeseries, are drawn as lines of data at a
 ! collection of stations. The legend labels are the profile station ID’s
 ! from the file. Subsetting and masking is done in the same way as for 
 ! timeseries data.
 
-! ********************************************************************
+!----------------------------------------
 pause
 
-use dsg_pmelchukchi_profiles_subset
+use dsg_profile_example
 show data
 
 plot/thick sigma_t
 pause
+
 
 ! Another plot style uses the RIBBON/VS plot command, with 3 arguments: the 
 ! locations in two directions, and the variable to use for color. Time on the 
 ! horizontal axis will result in a formatted time axis. Or specify Longitude 
 ! or latitude on the horizontal axis.
 
-ribbon/vs/thick time, depth, sal
+ribbon/thick/vs latitude, depth, temp
 
-
-! ********************************************************************
+!----------------------------------------
 pause
 
 cancel data/all
 cancel variable/all
-set window/clear/siz=0.5/asp=0.7
+set window/clear/siz=1/asp=0.7
 
-! Trajectories
+
+! ********************************************************************
+!        Trajectories         
+! ********************************************************************
+
+
 ! Trajectory data has longitude, latitude, time and measurements along
 ! the trajectory paths.  The native plot type is a ribbon plot, location
 ! colored by measurement.  The PLOT command automatically draws a ribbon
 ! plot.  The usual plot qualifiers apply, setting color levels, palette,
-! and so on.
+! and so on.  Utility scripts such as "GO LAND" or GO FLAND" work as always.
 
-use dsg_socat_trajectory_subset.nc
+use dsg_trajectory_example.nc
 plot/thick/palette=plasma fco2_recommended
 go fland 5 black
 
-! ********************************************************************
+
+!----------------------------------------
 pause
 
 ! Or, color by the trajectory ID, so that each one has a color. If there
-! are few enough trajectories, the ID's are labeled along the colorbar.
+! are few enough trajectories, the ID's become the labels along the colorbar.
 
 go basemap x=130:240 y=25:80 5 black
 plot/over/nolabel/thick/palette=ten_by_levels/key=horiz expocode
 
-
-! ********************************************************************
+!----------------------------------------
 pause
 
-set window/clear/siz=0.5/asp=0.6
+set window/clear/siz=1/asp=0.6
 
-! Working with trajectory data as a time series
+
+! ********************************************************************
+!        Working with trajectory data as time series         
+! ********************************************************************
+
+
 ! For each observation along a trajectory we have a time coordinate
 ! as well as longitude and latitude. This means the data can be viewed
 ! as a set of time series. Change to a timeseries view with USE/FEATURETYPE.
 ! This can be applied when first opening the data or on an open dataset.
 
-use/featuretype=timeseries dsg_socat_trajectory_subset.nc
+use/featuretype=timeseries dsg_trajectory_example.nc
 plot fco2_recommended
 
-pause
-! And to ignore the DSG-specific elements of the file but use it as if
-! we were running pre-V7.6 Ferret,  /FEATURETYPE=none initializes the
-! dataset as a non-DSG file.
-
-! Note how coordinate information is not automatically applied when
-! working with the data in this mode
-
-use/featuretype=none dsg_socat_trajectory_subset.nc
-plot fco2_recommended
-
-! ********************************************************************
+!----------------------------------------
 pause
 
+! And for any DSG dataset, we can ignore the DSG-specific elements of
+! the file and handle it as we would have prior to PyFerret v7.6
+! Note how the grid is now just count-of-observations, and the plot
+! has no information about the coordinates.
+!
+! We no longer have automatic masking-by-feature and constraints-by-world coordinate
+
+use/feature=none dsg_trajectory_example.nc
+show data
+
+plot temperature_equi
+
+!----------------------------------------
+pause
 cancel data/all
 cancel variable/all
 
+ 
+!----------------------------------------
+set window/clear/siz=1/asp=1
 
+
+! ********************************************************************
+!        Points         
 ! ********************************************************************
 
 
-! Let's take a quick look at Point data.  The data is very simple,
-! with all information on the E axis. Each point is a feature.
+! Let's take a quick look at Point data. The plot type is a 
+! "ribbon" plot, locating the data in X-Y.
 
 use dsg_point_example
 show data
 
 plot/thick/lev=v larvae_size
+go land_detail
+
+pause
+
+cancel data/all
 
 
 
 ! ********************************************************************
+!
+! Changing gears now, from graphics to some of the analysis operations
+! we might do with any dataset. The syntax for constraints and masking 
+! is used here as well.
+!
+! ********************************************************************
+
 pause
 
-! Changing gears now, from graphics to some of the analysis we might
-! do with any dataset.
 
-! User-defined variables
-! Standard LET syntax works as always on DSG variables with only subtle differences.
-! For instance, transformations apply within each feature, not over the whole region.
+! ********************************************************************
+!        Writing subsets         
+! ********************************************************************
+
+
+! The SAVE command writes new DSG files containing subsets of DSG datasets. 
+! The elements of the DSG file including the ID and coordinate data are 
+! automatically written when an observed data variable is written, so the 
+! result is a valid DSG file. Use qualifiers or a mask to subset data
+
+use dsg_timeseries_example
+save/clobber/file=my_southern_stations.nc/x=0:180/y=-20:0 t_25
+
+use my_southern_stations.nc; show data
+
+
+! Currently we can APPEND new variables of the same size to a Dataset,
+! but appending further features or extending the dataset, for instance
+! in time, is not now implemented.
+!----------------------------------------
+pause
+
+
+cancel data/all
+sp rm my_southern_stations.nc
+
+
+set window/clear/siz=1/asp=0.6
+
+
+! ********************************************************************
+!        User-defined variables         
+! ********************************************************************
+
+
+! Standard LET syntax defines new variables based on DSG data.
+
+use/feature=timeseries dsg_trajectory_example.nc
+let/like=temperature_equi/units="K" temp_k = temperature_equi + 273.13
+plot/t=15-jun-2015:10-aug-2015 temp_k
+
+
+!----------------------------------------
+pause
+
+
+! ********************************************************************
+!        Transformations         
+! ********************************************************************
+
+
+! Transformations apply within each feature, not over the whole region.
 !
 ! Returning to our timeseries dataset, compute the maximum temperature reached
 ! and the number of valid data in each time series during Jan-March of 2017
 
-use dsg_tao5daysst_timeseries
+use dsg_timeseries_example
 
 LET t_max = t_25[T=1-JAN-2017:31-Mar-2017@MAX]
 LET t_ngood = t_25[T=1-JAN-2017:31-MAR-2017@NGD]
 
-list/E=1:15 t_max, t_ngood
+list/M=1:15 t_max, t_ngood
+
+
+! Now list a subset of the running-sum transformation for our profile data.
+! Note the sums start over with each new profile.
+
+use dsg_profile_example
+list/m=3:5/z=1:6/prec=6 sal, sal[z=@rsum]
+
+
+!----------------------------------------
 pause
-
-! The SAVE command will write new DSG datasets containing subsets or computed
-! variables.  Do not write the ID, Rowsize, or coordinate variables. They will
-! automatically be added to the file.
-
-
-use dsg_tao5daysst_timeseries
-save/clobber/file=my_southern_stations.nc/x=0:180/y=-20:0 t_25
-
-cancel data/all
-use my_southern_stations.nc
-show data
-
+can dat/all
 
 ! ********************************************************************
-pause
-cancel data/all
-sp rm my_southern_stations.nc
+!        Comparisons with gridded data        
+! ********************************************************************
 
-! DSG data differencing with model or other gridded data
+
+! DSG data differencing with model or other gridded data: sample data
+! from a grid at the times and locations of the DSG data
 !
 ! To sample data from the model grid, define a regridding operation,
 ! G= to "regrid" a variable on a rectangular grid onto the coordinate
@@ -302,23 +402,31 @@ sp rm my_southern_stations.nc
 ! Open an NCEP reanalysis dataset and compare the potential temperature
 ! data with the TAO buoy Timeseries data.
 
-use dsg_tao5daysst_timeseries
+use dsg_timeseries_example
 use http://www.esrl.noaa.gov/psd/thredds/dodsC/Datasets/ncep.reanalysis/surface/pottmp.sig995.2017.nc
 
 show data 2
 
-! ********************************************************************
+show grid t_25[d=1]
+
+show grid pottmp[d=2]
+
+!----------------------------------------
 pause
-set window/clear/siz=0.5/asp=0.6
+
+set window/clear/siz=1/asp=0.6
 
 ! Plot the gridded data sampled at the DSG space-time coordinates
 ! Note that if the amount of model data that must be accessed
 ! is large, Ferret dynamic memory management will apply scatter/
 ! gather to perform the computation in chunks
 
-plot/x=165:170/y=0:10 pottmp[d=2,g=t_25[d=1]]
+
+let/like=pottmp[d=2] pottmp_at_buoys = pottmp[d=2,g=t_25[d=1]]
+plot/x=300:360/y=-15:15 pottmp_at_buoys
 
 pause
+
 
 ! Compute the difference between observed and gridded values and plot
 ! the difference for the timeseries in the Atlantic Ocean. The NCEP 
@@ -327,33 +435,9 @@ pause
 let grid_t = pottmp[d=2,g=t_25[d=1]] - 273.15
 let/title="Timeseries - Gridded"/units="Deg C" diff = t_25[d=1] - grid_t
 
-plot/x=300:360 diff
+plot/x=300:360/y=-15:15 diff
 
-! ********************************************************************
-
-pause
-! Regridding DSG collections to a fixed grid allows for comparison 
-! between features, treating the collection as an ensemble.
-
-! For Timeseries datasets, define a fixed time axis and regrid a set 
-! of DSG timeseries to that axis.  The result is a Time by E grid where 
-! E is station number. 
-
-! Likewise for Profile collections, define a fixed depth axis and 
-! regrid the DSG profiles to that axis. The result is a grid in Depth 
-! E where E is station number.
-
-use Tao5daySst_timeseries_dsg
-define axis/t="15-jan-2017:12:00":21-apr-2017:10/unit=days tuniform
-let T_gridded= t_25[gt=tuniform]
-
-show grid t_gridded
-
-plot T_gridded[m=3] - T_gridded[m=2]
-
-plot T_gridded[E=@ave]   ! ensemble average of all time series
-
-
+!----------------------------------------
 
 
 ! dsg_tutorial is now completed.

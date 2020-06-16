@@ -1,0 +1,52 @@
+! DSG point data from ERDDAP  
+
+use dsg_point_example
+
+! SHOW DATA lists the dataset type and the variable names 
+! with the number of time series listed in the M direction
+
+show data
+pause
+
+
+! SHOW GRID lists the basic organization of the ragged-array file
+! (It does not at this time summarize the coordinate ranges.)
+
+show grid larvae_size
+pause
+
+
+
+! The default "PLOT" command draws a map plot of the lon/lat locations
+! colored by the variable specified
+
+plot/thick/lev=v larvae_size
+go fland 5
+pause
+
+! We can use PLOT/VS to see the distribution in time
+PLOT/VS/thick time, larvae_count
+pause
+
+! or try PLOT/VS/RIBBON to plot a variable vs time colored by another variable
+! Here subset in time using /T=
+
+plot/vs/ribbon/lev=v/thick/t=1-apr-2018:26-apr-2018 time, larvae_count, larvae_size
+pause
+
+! Define a mask on larvae_size
+
+let mask = if larvae_size gt 20 then 1
+set data/fmask=mask 1
+list larvae_size, common_name
+pause
+
+! Now look for data representing one of the varieties of fish.
+cancel data/fmask 1
+
+let mask = if STRINDEX(common_name, "Pacific sardine") GT 0 then 1
+set data/fmask=mask 1
+
+plot/thick/levels=v larvae_size
+go fland 5
+

@@ -273,7 +273,8 @@
 	ENDIF
 
  5900	buff = CX_DIM_STR(idim, cx, ':',full_precision,slen)
-	risc_buff = buff(:slen)
+*       Appending space just to get rid of a nonsense compiler warning
+	risc_buff = buff(:slen)//' '
         IF ( cx_hi_ss(cx,idim) .NE. cx_lo_ss(cx,idim) ) THEN
 	   CALL ERRMSG( ferr_limits, status,
      .		err_str(:lenstr)//' is not in the range '//risc_buff//

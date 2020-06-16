@@ -53,7 +53,7 @@ C
 
 	INTEGER TM_LENSTR, i, slen, istr, ilab 
 	CHARACTER*1 c, amper
-	CHARACTER*20 TM_FMT_SNGL
+	CHARACTER*48 TM_FMT_SNGL
 
 C Initialize
 

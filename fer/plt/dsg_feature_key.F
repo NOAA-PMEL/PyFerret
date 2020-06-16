@@ -55,7 +55,7 @@
      .		justify, i
 	
 	CHARACTER*2040	plot_title
-	CHARACTER	TM_FMT*12, buff1*16, fnum*12
+	CHARACTER	TM_FMT*48, buff1*16, fnum*12
 	REAL		xkeypos, ykeypos, xkeysize, ykeysize, 
      .			lab_ht, labsize, val
 

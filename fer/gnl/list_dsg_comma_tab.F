@@ -55,11 +55,11 @@
      .		idlen, ilen, direc(nvar), vstrlen, paren, coord_ord(4), 
      .		icol, ipad, sdim, blen, status
 	REAL	value
-	CHARACTER VAR_CODE*128, TM_FMT*16, VAR_UNITS*64, 
+	CHARACTER VAR_CODE*128, TM_FMT*48, VAR_UNITS*64,
      .		FMT*20, AX_TITLE*32, AX_TITLE_UNITS*64, SANITARY_VAR_CODE*128, 
      .		CD_DSG_FEATURENAME*20,
      .		strbuff*128, line_buff*10000, vcode(nvar)*128,  bad_buff*32,
-     .		col_head_format*64, pstr*15, feature_idname*14, id_buff*128,  
+     .		col_head_format*64, pstr*15, feature_idname*32, id_buff*128,
      .		tab_or_comma*1, cn*8
 
 	CHARACTER*255	VAR_TITLE, VAR_TITLE_MOD, PAREN_SURROUND, vname_buff
@@ -210,7 +210,8 @@
 	   ENDDO
 
 	   vname_buff = VAR_CODE( cat_file_var, dsg_feature_var(dset))
-	   strbuff = feature_idname(:TM_LENSTR1(feature_idname))
+*          Appending space just to get rid of a nonsense compiler warning
+	   strbuff = feature_idname(:TM_LENSTR1(feature_idname))//' '
 	   clen = TM_LENSTR1( strbuff )
 	   risc_buff = ' '
 
@@ -386,7 +387,7 @@ cc		 bufflen = bufflen+2
 * ... have the user's constraints removed this observation?
 	      IF (.NOT.process_obs(iobs)) CYCLE
 
-	      line_buff = id_buff(:ilen)
+	      line_buff = id_buff(:ilen)//' '
 	      slen = ilen
 
 * ... insert the relevant formatted coordinates, time first.

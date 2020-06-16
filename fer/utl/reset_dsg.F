@@ -54,7 +54,7 @@
 	LOGICAL its_dsg
 	INTEGER TM_DSG_DSET_FROM_GRID, cx, grid, dset, i, 
      .		the_cx, iaxis, orientation, obsdimlen, fline, nv
-	CHARACTER buff*32, TM_FMT*6, fmt*6
+	CHARACTER buff*32, TM_FMT*48, fmt*6
 
 * Get the DSG dataset, grid, and the orientation of the feature
 * so we can get the axes that were allocated.

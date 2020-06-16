@@ -482,7 +482,8 @@
      .		' on grid '//grid_name(grid)
 	      dlen = TM_LENSTR1( line )
 #ifdef NO_PREPEND_STRING
-	      risc_buff = line(:dlen)
+*             Appending space just to get rid of a nonsense compiler warning
+	      risc_buff = line(:dlen)//' '
 	      len_rbuff = dlen
 	      line = risc_buff(:len_rbuff)//' with '//
 #else
@@ -492,7 +493,8 @@
 	      dlen = TM_LENSTR1( line )
 	      IF ( ds_bad_flag(ivar) .NE. ds_missing_flag(ivar) ) THEN
 #ifdef NO_PREPEND_STRING
-	      risc_buff = line(:dlen)
+*             Appending space just to get rid of a nonsense compiler warning
+	      risc_buff = line(:dlen)//' '
 	      len_rbuff = dlen
 	      line = risc_buff(:len_rbuff)//' & '//
 #else
@@ -520,7 +522,8 @@
 		       ndec = -5  ! 
 		       IF (i .EQ. y_dim) ndec = -3
 #ifdef NO_PREPEND_STRING
-	               risc_buff = line(:len)
+*                      Appending space just to get rid of a nonsense compiler warning
+	               risc_buff = line(:len)//' '
  	               len_rbuff = len
 		       line = risc_buff(:len_rbuff)// ww_dim_name(i) // '=' //
 #else

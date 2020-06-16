@@ -99,7 +99,8 @@
 	      READ( string, *, ERR=5200 ) dcx_lo(idim)
 	      dcx_hi(idim) = dcx_lo(idim)		   
 	   ELSE
-	      raw_string = string(:colon_pos-1)
+*             Appending space just to get rid of a nonsense compiler warning
+	      raw_string = string(:colon_pos-1)//' '
 	      READ( raw_string, *, ERR=5200 ) dcx_lo(idim)	! AIX 10/95
 	      raw_string = string(colon_pos+1:)
 	      READ( raw_string, *, ERR=5200 ) dcx_hi(idim)	! AIX 10/95

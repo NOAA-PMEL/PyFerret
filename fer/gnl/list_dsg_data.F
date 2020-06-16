@@ -95,10 +95,10 @@
      .		vdims(2), idlen, ilen, ipad, idwid, data_len, nleft, nright,
      .		nok, direc(nvar), min_width, vstrlen, paren, trans, status
 	REAL	value, small, big, biggest
-	CHARACTER LEFINT*8, VAR_CODE*128, TM_FMT*16, VAR_UNITS*64, 
+	CHARACTER LEFINT*8, VAR_CODE*128, TM_FMT*48, VAR_UNITS*64,
      .		FMT*20, AX_TITLE*32, SANITARY_VAR_CODE*128, CD_DSG_FEATURENAME*20,
      .		strbuff*128, line_buff*10000, vcode(nvar)*128,  
-     .		col_head_format*32, pstr*15, feature_idname*10, buff*128,  
+     .		col_head_format*32, pstr*15, feature_idname*32, buff*128,
      .		good_fmt(max_intrp)*10, bad_fmt*10
 
 	CHARACTER*255	VAR_TITLE, VAR_TITLE_MOD, PAREN_SURROUND, vname_buff
@@ -583,7 +583,8 @@
 
 * ... have the user's constraints removed this observation?
 	      IF (.NOT.process_obs(iobs)) CYCLE
-	      line_buff = buff(:ilen)
+*             Appending space just to get rid of a nonsense compiler warning
+	      line_buff = buff(:ilen)//' '
 	      slen = ilen
 
 * ... insert the relevant formatted coordinates

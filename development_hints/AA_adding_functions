@@ -1,0 +1,28 @@
+8/5/92 *sh*
+This is a summary of the routines that need to be changed to add a new 
+function (like RHO_IES) to FERRET
+
+xalgebra_data - add name and number of args
+
+operate.f - add new functions to type declarations
+	  - add execution code at 3800 - 4300
+
+
+
+
+WRITE:  "do_smth_..." patterned after do_smth_binml.f
+	
+ferret.parm:	     add trans_smth_...
+
+interp_stack.parm:   isact_smth_...
+
+xalgebra_data.f:     add alg_trans_...text/title/num/etc
+
+get_context_mode:    error message text, only (could be automated ...)
+
+interp_stack:	     add EXTERNAL DO_SMTH_...
+		     add IF ( isact...   )  CALL ...
+
+offset_ss.f:	     add DATA and check out where this transformation belongs
+		     in the program logic
+

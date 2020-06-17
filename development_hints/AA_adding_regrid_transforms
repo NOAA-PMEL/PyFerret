@@ -1,0 +1,25 @@
+10/97 *sh*
+This is a summary of the routines that had to be changed to add the
+new regridding transform g=@XACT to Ferret
+
+wrote do_xact_regrid.F  (starting from do_lin_regrid.F)
+
+wrote xact_regrid_1_axis.F  (starting from lin_regrid_1-axis.F)
+
+ferret.parm:	     add prgrd_xact
+
+xalgebra_data.F:     add alg_regrid_title, alg_regrid_code
+			(regrid trans code may be *6 characters)
+			(repair initialization of "unspecified" right below)
+
+rqst_regrid.F	     add logic to determine how many source points to request
+			given a desired destination range (or full destination
+			axis range if unspecified by user)
+
+rcvd_regrid.F	     add logic to determine what destination range it is
+			possible to regrid given the available source points
+
+var_title_mod:	     check to see if titles of plots, etc. are nice
+		     e.g. (closest index above by 1 pts on X) isn't too nice
+		     modify var_title_mod and/or xalgebra_data text as needed
+

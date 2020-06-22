@@ -30,7 +30,7 @@
 *  INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER
 *  RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF
 *  CONTRACT, NEGLIGENCE OR OTHER TORTUOUS ACTION, ARISING OUT OF OR IN
-*  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
+*  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE.
 *
 *
 * create a new output window and de-activate (but don't remove) the last
@@ -52,7 +52,7 @@
 *                - TM_LENSTR1 was declared LOGICAL !
 *                - added NEW_GKS_WINDOW for OS independence
 *                - fixed /ASPECT default behavior to consistent "edge" (10/91)
-* V230: 3/92: Sun port - 
+* V230: 3/92: Sun port -
 *                - replaced CALL GQDSP with CALL QUERY_DISPLAY_SIZE
 *                  and CALL GSWKVP with CALL SET_WINDOW_SIZE for ATC GKS
 *      10/92:    - update PPL_viewports_active so metafiles start fresh
@@ -76,10 +76,10 @@
 *      Don't set window to any number but 1 if batch graphics active
 * *kob* 1.29.97 changed "can\'t" to cannot for compiler reasons
 * V540 *sh* 9/01 - pass axis white space to SET_AX_SIZE (from PLOT_SETUP.cmn)
-* V600 *acm* 9/05  add SET WINDOW/TITLE.  If no title has been set, set it to 
-*                  the session date:time. Save window_title in xplot_setup.cmn 
+* V600 *acm* 9/05  add SET WINDOW/TITLE.  If no title has been set, set it to
+*                  the session date:time. Save window_title in xplot_setup.cmn
 *                  for use in subsequent windows. Also define a symbol WIN_TITLE
-*  v600 *acm* 5/2006 Flag no_plot_yet: changes so user can change the number of 
+*  v600 *acm* 5/2006 Flag no_plot_yet: changes so user can change the number of
 *                  line colors.
 * V602: *acm* 1/07 Changes for metafile-batch mode
 * V68   *acm* 4/11 change how flag meta_batch is computed (different Makefile)
@@ -94,7 +94,7 @@
 * PyFr  *kms*  6/13 Add /XPIXELS, /YPIXELS, /XINCHES, /YINCHES to SET WINDOW;
 *                   Call WINDOW_SIZE_FROM_OPTS to deal with them
 * PyFr  *kms*  7/13 Call SET_PPL_VALUES to set scaled lengths and label sizes;
-*                   set physical_chg to .TRUE. if START_PPLUS called or 
+*                   set physical_chg to .TRUE. if START_PPLUS called or
 *                   if the engine changes
 * V69x *sh* 21/1/15 clarify data type of arguments sent to QUERY_DISPLAY_SIZE
 * V7   *kms*  10/16 Add SET WINDOW /SCALE=
@@ -107,7 +107,7 @@
 	include 'xplot_state.cmn'
 	include 'errmsg.parm'
         include 'ppl_in_ferret.cmn' ! with PPL_viewports_active
-	include	'pltcom_dat.decl' 
+	include	'pltcom_dat.decl'
 	include	'PLTCOM.DAT'         	  ! with asize,bsize
         include 'plt_inc.decl'     ! with width/height
         include 'PLT.INC'
@@ -123,19 +123,19 @@
        INTEGER status
 
 * internal variable declarations:
-	   LOGICAL TM_DIGIT, MATCH4, FGD_ENGINE_MATCH, 
+	   LOGICAL TM_DIGIT, MATCH4, FGD_ENGINE_MATCH,
      .         physical_chg, relocate, chg_window, axis_ref
-       INTEGER TM_LENSTR1, ier, id, itype, imeter, irx, iry, 
-     .         wn, n, qp, ivp, colon_pos, slen, tlen, i, s1, 
+       INTEGER TM_LENSTR1, TM_LENSTR, ier, id, itype, imeter, irx, iry,
+     .         wn, n, qp, ivp, colon_pos, slen, tlen, i, s1,
      .         bkgcolor, xpixels, ypixels
-	   REAL    xln, yln, xmn, xmx, ymn, ymx, scl, 
+	   REAL    xln, yln, xmn, xmx, ymn, ymx, scl,
      .         xstretch, ystretch, aspect, ref_len, xsc, ysc
-	   REAL*4  rzero, rone, fcty, fctx, 
+	   REAL*4  rzero, rone, fcty, fctx,
      .         xwlo, ywlo, xwhi, ywhi, dfltthick,
      .         redfrac, grnfrac, bluefrac, opaqfrac,
      .         xinches, yinches, sc, owd
        CHARACTER UPPER_CASE*1, GKS_X_CONID*16, warnmsg*80,
-     .         arg1*1, buffer*24, xwind_id*80, short_buff*24
+     .         arg1*1, buffer*2048, xwind_id*80, short_buff*24
 
 * local parameter declarations:
 	INTEGER slash_new,
@@ -150,7 +150,8 @@
      .          slash_thicken,
      .          slash_textprom,
      .          slash_outline,
-     .          slash_scale
+     .          slash_scale,
+     .          slash_wmark
 	PARAMETER ( slash_new      =  1+1,
      .              slash_clear    =  4+1,
      .              slash_title    =  5+1,
@@ -163,14 +164,15 @@
      .              slash_thicken  = 12+1,
      .              slash_textprom = 17+1,
      .              slash_outline  = 18+1,
-     .              slash_scale    = 19+1 )
+     .              slash_scale    = 19+1,
+     .              slash_wmark    = 20+1 )
 
 	rzero = 0.0
 	rone = 1.0
         physical_chg = .FALSE.
 
 * /TITLE=text
-* This text becomes the name of the workstation. The name gets truncated 
+* This text becomes the name of the workstation. The name gets truncated
 * at the first blank space. Replace any internal spaces with underscore.
 
 	IF ( .NOT.pplus_started ) window_title = ' '
@@ -194,8 +196,8 @@
            window_title = today_date(s1:tlen)//':'//today_time
 
 * Or the directory.
-!  This works, but with slashes the path name does not get appended. 
-!  gks calls shorten FERRET_2_/home/ja8/ansley/FERRET/fer 
+!  This works, but with slashes the path name does not get appended.
+!  gks calls shorten FERRET_2_/home/ja8/ansley/FERRET/fer
 !  to just the directory name.  If we do use the directory, change
 ! the code in open_gks_ws.F to do it the same way.
 
@@ -222,7 +224,7 @@ c 75        CONTINUE
 
 * get number
 	IF ( num_args .EQ. 0 .AND. qual_given(slash_new) .GT. 0 ) THEN
-           
+
 * ... find next free number
 * *kob* 1/00 - check to make sure user doesnt open window 9 - reserved
 *              for animation purposes
@@ -233,7 +235,7 @@ c 75        CONTINUE
            CALL ERRMSG(ferr_prog_limit,status,'# windows',*5000)
 	ELSEIF ( num_args .GT. 0 ) THEN
 * ... use number given
-	   buffer = cmnd_buff(arg_start(1):arg_end(1)) 
+	   buffer = cmnd_buff(arg_start(1):arg_end(1))
 	   IF ( .NOT.TM_DIGIT( buffer ) ) GOTO 5040
 * *kob* 4/97
 #ifdef MANDATORY_FORMAT_WIDTHS
@@ -252,23 +254,23 @@ c 75        CONTINUE
 	      ENDIF
  55	   CONTINUE
 	   GOTO 5060
-	ENDIF	   
+	ENDIF
 
-* valid number ? 
+* valid number ?
 * *kob* 1/00 - check to make sure user doesnt open window 9 - reserved
 *              for animation purposes
- 60	IF ( (n.LT.1 .OR. n.GT.(max_windows-1)) .AND. 
+ 60	IF ( (n.LT.1 .OR. n.GT.(max_windows-1)) .AND.
      .          .NOT.animate  ) CALL ERRMSG
      .		( ferr_out_of_range, status, 'legal numbers are 1-8', *5000 )
 
-* Determine the graphics engine to use.  This also sets the default 
-* anti-alias state for that engine.  If a new window and neither 
+* Determine the graphics engine to use.  This also sets the default
+* anti-alias state for that engine.  If a new window and neither
 * /quality nor /engine is given, the default engine is assigned.
         qp = qual_given(slash_quality)
         IF ( qp .GT. 0 ) THEN
 * /QUALITY=... given; translate to an engine name to use,
 * but do not force it to be used (in case -nodisplay was specified)
-            CALL EQUAL_STRING(cmnd_buff(qual_start(qp):qual_end(qp)), 
+            CALL EQUAL_STRING(cmnd_buff(qual_start(qp):qual_end(qp)),
      .                        buffer, status)
             IF ( status .NE. ferr_ok ) RETURN
             IF ( buffer .EQ. ' ' ) THEN
@@ -290,8 +292,8 @@ c 75        CONTINUE
                     IF ( status .NE. ferr_ok ) RETURN
                 ENDIF
             ELSE
-                CALL ERRMSG(ferr_syntax, status, 
-     .                      'Unknown /QUALITY value of ' // 
+                CALL ERRMSG(ferr_syntax, status,
+     .                      'Unknown /QUALITY value of ' //
      .                      buffer(1:slen), *5000)
             ENDIF
             qp = qual_given(slash_engine)
@@ -305,7 +307,7 @@ c 75        CONTINUE
             qp = qual_given(slash_engine)
             IF ( qp .GT. 0 ) THEN
 * /ENGINE=... given; force the use of this engine
-                CALL EQUAL_STRING(cmnd_buff(qual_start(qp):qual_end(qp)), 
+                CALL EQUAL_STRING(cmnd_buff(qual_start(qp):qual_end(qp)),
      .                         buffer, status)
                 IF ( status .NE. ferr_ok ) RETURN
                 slen = TM_LENSTR1(buffer)
@@ -344,7 +346,7 @@ c 75        CONTINUE
 	IF ( chg_window ) THEN
 * ... change windows --> segments will remain until previous window is cleared
 	   vp_num = mvp_dflt
-           PPL_viewports_active = .FALSE.    ! communicate to PPLUS (10/92) 
+           PPL_viewports_active = .FALSE.    ! communicate to PPLUS (10/92)
 	   DO 80 ivp = mvp_dflt, max_viewport
 	      vp_seg0(ivp) = 0
 	      vp_segn(ivp) = 0
@@ -352,7 +354,7 @@ c 75        CONTINUE
 	ENDIF
 
 * Decipher /SIZE /ASPECT /XPIXELS /YPIXELS /XINCHES /YINCHES
-        CALL WINDOW_SIZE_FROM_OPTS(n, xinches, yinches, 
+        CALL WINDOW_SIZE_FROM_OPTS(n, xinches, yinches,
      .              xpixels, ypixels, physical_chg, status)
         IF ( status .NE. ferr_ok ) RETURN
 
@@ -401,24 +403,24 @@ c 75        CONTINUE
 * ... clear previous plot and any viewports used within it
 *     and set the size of the window.
 *          Set ASIZE and BSIZE to invalid values so the SIZE routine
-*          in SET_VIEWPORT will not return immediately, thinking there 
+*          in SET_VIEWPORT will not return immediately, thinking there
 *          was no size change from the ASIZE and BSIZE values set above.
            ASIZE = 0.0
            BSIZE = 0.0
            CALL SET_VIEWPORT( mvp_dflt )
 
-*          Send the scaling factor to the viewer so the image is 
-*          the desired pixel size.  To make up for integer rounding, 
+*          Send the scaling factor to the viewer so the image is
+*          the desired pixel size.  To make up for integer rounding,
 *          compute the scaling factor using both height and width.
            xsc = xpixels / (xinches * windowdpix(n))
            ysc = ypixels / (yinches * windowdpiy(n))
-*          negative value means set the scale to the absolute value 
+*          negative value means set the scale to the absolute value
 *          and then turn on auto-scaling
            sc = -1.0 * SQRT(xsc * ysc)
            CALL FGD_SEND_IMAGE_SCALE(n, sc)
 
-*          Save xpixels and ypixels for specifying the default size 
-*          when saving raster graphics as well as values for 
+*          Save xpixels and ypixels for specifying the default size
+*          when saving raster graphics as well as values for
 *          PPL$XPIXEL and PPL$YPIXEL
            wn_xpixels(n) = xpixels
            wn_ypixels(n) = ypixels
@@ -448,7 +450,7 @@ c 75        CONTINUE
 * set line thickness scaling factor?
         qp = qual_given(slash_thicken)
         IF ( qp .GT. 0 ) THEN
-            CALL EQUAL_VAL(cmnd_buff(qual_start(qp):qual_end(qp)), 
+            CALL EQUAL_VAL(cmnd_buff(qual_start(qp):qual_end(qp)),
      .                     scl, status)
             IF ( status .NE. ferr_ok ) RETURN
             IF ( scl .LE. 0.0 ) GOTO 5070
@@ -459,7 +461,7 @@ c 75        CONTINUE
 * set text size scaling factor?
         qp = qual_given(slash_textprom)
         IF ( qp .GT. 0 ) THEN
-            CALL EQUAL_VAL(cmnd_buff(qual_start(qp):qual_end(qp)), 
+            CALL EQUAL_VAL(cmnd_buff(qual_start(qp):qual_end(qp)),
      .                     scl, status)
             IF ( status .NE. ferr_ok ) RETURN
             IF ( scl .LE. 0.0 ) GOTO 5090
@@ -470,7 +472,7 @@ c 75        CONTINUE
 * set polygon/rectangle outline width?
         qp = qual_given(slash_outline)
         IF ( qp .GT. 0 ) THEN
-            CALL EQUAL_VAL(cmnd_buff(qual_start(qp):qual_end(qp)), 
+            CALL EQUAL_VAL(cmnd_buff(qual_start(qp):qual_end(qp)),
      .                     scl, status)
             IF ( status .NE. ferr_ok ) RETURN
             IF ( scl .LT. 0.0 ) GOTO 5100
@@ -481,7 +483,7 @@ c 75        CONTINUE
 * set scaling factor used in the viewer?
         qp = qual_given(slash_scale)
         IF ( qp .GT. 0 ) THEN
-            CALL EQUAL_VAL(cmnd_buff(qual_start(qp):qual_end(qp)), 
+            CALL EQUAL_VAL(cmnd_buff(qual_start(qp):qual_end(qp)),
      .                     scl, status)
             IF ( status .NE. ferr_ok ) RETURN
             sc = scl
@@ -493,7 +495,7 @@ c 75        CONTINUE
 * background color specified?
         qp = qual_given(slash_color)
         IF ( qp .GT. 0 ) THEN
-            CALL EQUAL_COLOR(cmnd_buff(qual_start(qp):qual_end(qp)), 
+            CALL EQUAL_COLOR(cmnd_buff(qual_start(qp):qual_end(qp)),
      .                       bkgcolor, dfltthick, status)
             IF ( status .NE. ferr_ok ) RETURN
 *           Check if opacity is given before resetting the background
@@ -502,7 +504,7 @@ c 75        CONTINUE
 * opacity specified? (must be after /COLOR to reset alpha channel value)
         qp = qual_given(slash_opacity)
         IF ( qp .GT. 0 ) THEN
-            CALL EQUAL_VAL(cmnd_buff(qual_start(qp):qual_end(qp)), 
+            CALL EQUAL_VAL(cmnd_buff(qual_start(qp):qual_end(qp)),
      .                     scl, status)
             IF ( status .NE. ferr_ok ) RETURN
             IF ( (scl .LT. 0.0) .OR. (scl .GT. 100.0) ) GOTO 5080
@@ -510,10 +512,21 @@ c 75        CONTINUE
 *           create a temporary color with the new opacity for the active window
             CALL DUP_COLOR_SET_OPACITY(n, bkgcolor, opaqfrac)
         ENDIF
-  
+
+
+* wmark specified?
+        qp = qual_given(slash_wmark)
+        IF ( qp .GT. 0 ) THEN
+            CALL EQUAL_STR_LC(cmnd_buff(qual_start(qp):qual_end(qp)),
+     .                        buffer, status)
+            IF ( status .NE. ferr_ok ) RETURN
+            s1 = TM_LENSTR(buffer)
+            CALL FGD_WMARK(n, buffer, s1)
+        ENDIF
+
         IF ( bkgcolor > 0 ) THEN
 *           Get the RGBA fractions for the new background
-            CALL FGD_GQCR(n, bkgcolor, ier, 
+            CALL FGD_GQCR(n, bkgcolor, ier,
      .                    redfrac, grnfrac, bluefrac, opaqfrac)
 *           Modify color zero and redraw the background
             CALL FGD_GSCR(n, 0, redfrac, grnfrac, bluefrac, opaqfrac)
@@ -532,17 +545,16 @@ c 75        CONTINUE
  5050	CALL ERRMSG( ferr_out_of_range, status, buffer,*5000)
  5060	CALL ERRMSG( ferr_invalid_command,status,
      .          'no open window',*5000 )
- 5070   CALL ERRMSG( ferr_out_of_range, status, 
+ 5070   CALL ERRMSG( ferr_out_of_range, status,
      .          'Invalid thicken specification; '//
      .          'a positive number must be given', *5000)
- 5080   CALL ERRMSG( ferr_out_of_range, status, 
+ 5080   CALL ERRMSG( ferr_out_of_range, status,
      .          'Invalid opacity specification; '//
      .          'a value from 0 to 100 must be given', *5000)
- 5090   CALL ERRMSG( ferr_out_of_range, status, 
+ 5090   CALL ERRMSG( ferr_out_of_range, status,
      .          'Invalid text prominence specification; '//
      .          'a positive number must be given', *5000)
- 5100   CALL ERRMSG( ferr_out_of_range, status, 
+ 5100   CALL ERRMSG( ferr_out_of_range, status,
      .          'Invalid outline width specification; '//
      .          'a non-negative number must be given', *5000)
 	END
-

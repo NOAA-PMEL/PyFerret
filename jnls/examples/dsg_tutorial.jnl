@@ -126,10 +126,8 @@ pause
 
 ! Ordinary PyFerret qualifiers for coordinate limits, /X=, /Y=, /Z=, /T=, /E=  
 ! operate as they do with a gridded dataset -- i.e. they control the region
-! displayed by the graphics and the data that gets plotted or listed. This
-! plot has fewer lines, so allow the PLOT command to automatically give each 
-! one a new color or style. The legend labels are the profile station IDs from 
-! the file.
+! displayed by the graphics and the data that gets plotted or listed. The legend 
+! labels are the profile station IDs.
 
 plot/thick/x=130e:170e/y=8s:5n/T=1-FEB-2017:15-APR-2017 T_25
 
@@ -380,6 +378,27 @@ list/M=1:15 t_max, t_ngood
 
 use dsg_profile_example
 list/m=3:5/z=1:6/prec=6 sal, sal[z=@rsum]
+
+
+!----------------------------------------
+pause
+can dat/all
+
+
+! ********************************************************************
+!        Regridding to a common time or vertical axis   
+! ********************************************************************
+! A set of timeseries or profiles in a DSG dataset may not have a common set 
+! of time coordinates or depth levels, respectively.  They can be regridded to 
+! a common time or z axis using an ordinary regridding operation.
+
+! SHOW GRID output has shown us that the dataset has this time range. we can use
+! any time interval
+
+use dsg_timeseries_example
+define axis/t="15-jan-2017:12:00":21-apr-2017:10/unit=days tuniform
+let/like=t_25 t_25_station_vs_time =  t_25[gt=tuniform]
+shade t_25_station_vs_time
 
 
 !----------------------------------------

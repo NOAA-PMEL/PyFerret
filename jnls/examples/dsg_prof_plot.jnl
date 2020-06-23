@@ -1,0 +1,44 @@
+! DSG point data from ERDDAP  
+
+set mode verify
+can mode logo
+
+
+use dsg_profile_example
+
+! SHOW DATA lists the dataset type and the variable names 
+! with the number of profiles listed in the M direction
+show data
+pause
+
+
+! SHOW GRID lists the basic organization of the ragged-array file
+! and summarizes the world coordinates represented in the file.
+show grid temp
+pause
+
+set win/siz=0.6
+
+! The default "PLOT" command draws depth plot for each profile, 
+! varible-value vs depth.
+
+plot temp
+pause; ! frame/file=prof_plot.gif
+
+
+! Waterfall plots are another useful style.  These are drawn as
+! a ribbon plot, listing the horizontal and vertical axes, and
+! the varible to use for the colors.  Depth is 
+
+ribbon/vs/thick time, depth, temp
+pause; ! frame/file=prof_time_depth_plot.gif
+
+ribbon/vs/thick longitude, depth, temp
+pause; ! frame/file=prof_lon_depth_plot.gif
+
+
+! Where are the stations located?  This is a standard 
+! PLOT/VS plot.
+plot/vs/thick/color=blue/siz=0.2 longitude, latitude
+
+

@@ -387,6 +387,7 @@ cc		 bufflen = bufflen+2
 * ... have the user's constraints removed this observation?
 	      IF (.NOT.process_obs(iobs)) CYCLE
 
+*             Appending space just to get rid of a nonsense compiler warning
 	      line_buff = id_buff(:ilen)//' '
 	      slen = ilen
 

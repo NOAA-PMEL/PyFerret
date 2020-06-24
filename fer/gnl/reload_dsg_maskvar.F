@@ -21,7 +21,7 @@
      .		attoutflag, maxlen, alen, status
 	REAL	attval
 	CHARACTER*32 attname, attstring, dummy
-	CHARACTER(10) TM_FMT
+	CHARACTER*48 TM_FMT
 
 * ... loop over datasets. See if the variable is listed as a feature-mask
 *     for the dataset.  If so re-load the mask.

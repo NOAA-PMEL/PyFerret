@@ -63,7 +63,7 @@
         LOGICAL process_feature(nfeatures)
 	INTEGER i, idim, irow_l, irow_f, nobs, ifeature, row_size_lm
 	REAL	tol, add, del, a_add, lon_lo, lon_hi, val_mod
-	CHARACTER TM_FMT*8
+	CHARACTER TM_FMT*48
 
 * initialize
 

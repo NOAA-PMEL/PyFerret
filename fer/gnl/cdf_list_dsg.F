@@ -121,7 +121,7 @@
      .                  dndims, dlen, dnv, ngatts, ftype, f_direc
 	REAL*8		GET_LINE_COORD, vals(100), bad, val, scalefac, addoff
 
-	CHARACTER	SANITARY_VAR_CODE*128, TM_FMT*12, 
+	CHARACTER	SANITARY_VAR_CODE*128, TM_FMT*48,
      .                  CD_DSG_FEATURENAME*20, CD_AXIS_NAME*128, 
      .                  varcode*128, varname*128, buff*2048, 
      .                  buff1*128, buff2*128, obsdimname*128, 

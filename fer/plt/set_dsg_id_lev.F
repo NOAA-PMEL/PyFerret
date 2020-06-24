@@ -70,7 +70,7 @@
      .		tot_len, ilev, count, status
 
 	PARAMETER (tot_len=1500)
-	CHARACTER TM_FMT*128, GET_STRING_ELEMENT*30,
+	CHARACTER TM_FMT*48, GET_STRING_ELEMENT*30,
      .		str_buff*128, all_keylab*(tot_len), labsym_buff*30, c*1, num_buff*12
 
 

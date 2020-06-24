@@ -39,7 +39,7 @@ c set data/fmask=
      .		i, ivar, grid, loc,  ndim, idir, npts, cx, mr1, 
      .		nfeatures, idim, dim(nferdims), attlen, varid, 
      .		attid, attype, attoutflag, slen
-	CHARACTER FULL_VAR_TITLE*128, TM_FMT*12,  
+	CHARACTER FULL_VAR_TITLE*128, TM_FMT*48,
      .		buff*128, mask_title*128
 	REAL	dummy
 

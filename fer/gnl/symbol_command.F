@@ -223,7 +223,8 @@
 	      risc_buff = ' '
 	      nchar = 1
 	   ELSE
-	      risc_buff = symval(:nchar)
+*             Appending space just to get rid of a nonsense compiler warning
+	      risc_buff = symval(:nchar)//' '
 	   ENDIF
 * ... append onto it anything to the right of the symbol in the cmnd buffer
 	   IF ( epos .LT. clen ) THEN

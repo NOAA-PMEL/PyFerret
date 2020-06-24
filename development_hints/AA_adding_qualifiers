@@ -1,0 +1,73 @@
+How to add new qualifiers to Ferret
+
+7/9/98 *sh*
+
+As an example, this document will use the particular case of adding
+a new qualifier to the FILE command (alias).
+
+--------
+
+1a. first check in
+	dat/xcommand_data.F
+
+locate the command and sub-command in question
+  (for alias commands use SHOW ALIAS in Ferret -- e.g. "FILE" is really
+	SET DATA)
+Note that the comment lines in some cases fail to list all of
+the qualifiers ... no significance to this, just maintenance of comments.
+
+==> Qualifiers (or subcommands) shown as '****' are unused and available.
+==> qualifier names may be up to 8 characters (only 1st 4 chars are significant
+	-- others are just used by SHOW COMMAND)
+==> Indicate the changes that you make in the docs at the top of the file.
+
+
+
+1b. if there are no unused qualifiers available for the desired
+command/sub-command then
+
+i.) go to file
+	common/xcommand.cmn
+
+Find the command and subcommand in question
+(e.g. " . nqual1g =10, nqual_at1h = nqual_at1g + nqual1g, !'DATA'  ")
+for the SET DATA command.
+
+The parameter "nqual1g" is the number of qualifiers for this command.
+When increasing it, typically add space for 2 or 3 more qualifiers than
+currently needed, so that future addition as are simpler. Say we increase
+"10" to "15" in this file.
+
+ii.) return to dat/xcommand_data.F
+important: immediately add new lines of the form
+
+        DATA qualifiers  (nqual_at1g+10) / '****' /   !avail
+        DATA qualifiers  (nqual_at1g+11) / '****' /   !avail
+        DATA qualifiers  (nqual_at1g+12) / '****' /   !avail
+        DATA qualifiers  (nqual_at1g+13) / '****' /   !avail
+        DATA qualifiers  (nqual_at1g+14) / '****' /   !avail
+
+Now return to step 1a.
+
+2. Optionally, you may want to define parameters for the new qualifiers
+in common/slash.parm. Note that the numbering is offset by 1 relative to
+nn in "nqual_at1g+nn".
+
+
+3. The typical style followed to use the qualifiers is something like this:
+
+        loc = qual_given(slash_set_data_whatever )
+        IF ( loc .GT. 0 ) THEN
+           CALL EQUAL_STRING(
+     .                   cmnd_buff(qual_start(loc):qual_end(loc)),
+     .                   rhs, status )              
+           IF ( status .NE. ferr_ok ) GOTO 5000
+==> "rhs" should be a CHARACTER array large enough to hold the right hand
+	side of     /qual="rhs text"
+	typically a reusable scratch buffer will already exist in the code.
+==> special logic for the qualifier goes here
+        ELSE
+==> default code here for cases where the qualifier is NOT given
+        ENDIF
+
+

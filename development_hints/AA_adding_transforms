@@ -1,0 +1,48 @@
+9/97 *sh*
+This is a summary of the routines that had to be changed to add the 4
+new transforms @NRDA,NRDB,NRIA,NRIB to FERRET
+
+wrote do_nearest.F  (handles @NRDA, NRDB, NRIA, NRIB)
+
+wrote do_nearest_dist_above.F (for @NRDA) which calls DO_NEAREST
+		(ditto for NRDB, NRIA, NRIB)
+
+ferret.parm:	     add trans_nrst_...
+
+interp_stack.parm:   isact_nrst_...
+
+xalgebra_data.f:     add alg_trans_...text/title/num/etc
+
+interp_stack:	     add EXTERNAL DO_NEAREST_...
+		     add IF ( isact...   )  CALL ...
+
+offset_ss.f:	     add DATA and check out where this transformation belongs
+		     in the program logic
+
+var_title_mod:	     check to see if titles of plots, etc. are nice
+		     e.g. (closest index above by 1 pts on X) isn't too nice
+		     modify var_title_mod and/or xalgebra_data text as needed
+
+=================================================
+
+
+8/29/91 *sh*
+This is a summary of the routines that need to be changed to add a new filter 
+(like @SBX) to FERRET
+
+WRITE:  "do_smth_..." patterned after do_smth_binml.f
+	
+ferret.parm:	     add trans_smth_...
+
+interp_stack.parm:   isact_smth_...
+
+xalgebra_data.f:     add alg_trans_...text/title/num/etc
+
+get_context_mods:    error message text, only (could be automated ...)
+
+interp_stack:	     add EXTERNAL DO_SMTH_...
+		     add IF ( isact...   )  CALL ...
+
+offset_ss.f:	     add DATA and check out where this transformation belongs
+		     in the program logic
+

@@ -48,9 +48,11 @@ FC = $(shell which gfortran)
 ## =========================
 ## Python executable to invoke for build and install.
 ## =========================
+# PYTHON_EXE = python2.6
 # PYTHON_EXE = python2.7
 PYTHON_EXE = python3.6
 # PYTHON_EXE = python3.7
+# PYTHON_EXE = python3.8
 
 ## =========================
 ## Full path to the python include files directory.
@@ -74,7 +76,7 @@ GFORTRAN_LIB =
 ## If given and not empty, the Cairo static libraries found under this directory will be used.
 ## If empty or not given, the system's Cairo shared libraries will be used.
 ## =========================
-# CAIRO_LIBDIR = /usr/local/cairo-1.14.12/lib
+# CAIRO_LIBDIR = /usr/local/cairo/lib
 # CAIRO_LIBDIR = $(HOME)/.local/lib
 # CAIRO_LIBDIR = /usr/local/lib
 CAIRO_LIBDIR =
@@ -86,7 +88,7 @@ CAIRO_LIBDIR =
 ## If empty or not given, the system's Pixman-1 shared library will be used.
 ## This value should be empty or not given if CAIRO_LIBDIR is empty or not given.
 ## =========================
-# PIXMAN_LIBDIR = /usr/local/pixman-0.34.0/lib
+# PIXMAN_LIBDIR = /usr/local/pixman/lib
 # PIXMAN_LIBDIR = $(HOME)/.local/lib
 # PIXMAN_LIBDIR = /usr/local/lib
 PIXMAN_LIBDIR =
@@ -122,7 +124,7 @@ GLIB2_LIBDIR =
 ## If empty or not given, NetCDF shared libraries (which specify the HDF5 and
 ## compression libraries required) will be used.
 ## =========================
-HDF5_LIBDIR = /usr/local/hdf5-1.10.5/lib
+HDF5_LIBDIR = /usr/local/hdf5/lib
 # HDF5_LIBDIR = $(HOME)/.local/lib
 # HDF5_LIBDIR = /usr/local/lib
 # HDF5_LIBDIR = /usr/lib64
@@ -151,7 +153,7 @@ SZ_LIBDIR =
 ## (along with the HDF5 static libraries).
 ## If HDF5_LIBDIR is empty or not given, NetCDF shared libraries will be used.
 ## =========================
-NETCDF_LIBDIR = /usr/local/netcdf-4.6.3/lib
+NETCDF_LIBDIR = /usr/local/netcdf/lib
 # NETCDF_LIBDIR = $(HOME)/.local/lib
 # NETCDF_LIBDIR = /usr/local/lib
 # NETCDF_LIBDIR = /usr/lib64

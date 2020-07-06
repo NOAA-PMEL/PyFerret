@@ -58,9 +58,11 @@ LD = $(shell which gfortran)
 ## =========================
 ## Python version used by PyFerret
 ## =========================
+# PYTHON_EXE = python2.6
 # PYTHON_EXE = python2.7
 PYTHON_EXE = python3.6
 # PYTHON_EXE = python3.7
+# PYTHON_EXE = python3.8
 
 ## =========================
 ## FER_LOCAL_EXTFCNS is the directory in which to install

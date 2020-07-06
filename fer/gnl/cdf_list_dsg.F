@@ -95,7 +95,7 @@
      .                  got_it, got_title, got_units, got_history,
      .                  got_missing, got_fill, do_warn, coordvar,
      .                  process_feature(nfeatures), process_obs(nobs_in), 
-     .                  its_dsg, has_mask, have_dimname,
+     .                  has_mask, have_dimname,
      .                  instance_coord(4), relevant_coord(4),
      .                  instance_var(nvars), point_var(nvars),
      .                  instance_vars_only, point_vars_only, synthetic_rowsiz, 

@@ -1,3 +1,12 @@
+6/29/2020
+The primary way to add new functions to Ferret is by means of an
+internally-linked external function. Though less flexible than
+native functions - the user needs to specificially subset the data
+they're sending into the function -- the writing of them is simpler.
+How to write External functions is documented in the Documentation at
+https://ferret.pmel.noaa.gov/Ferret/documentation/external-functions
+
+
 8/5/92 *sh*
 This is a summary of the routines that need to be changed to add a new 
 function (like RHO_IES) to FERRET

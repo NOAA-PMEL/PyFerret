@@ -1348,7 +1348,7 @@ static PyObject *pyferretGetStrData(PyObject *self, PyObject *args, PyObject *kw
      */
     FORTRAN(get_str_data_array_params)(dataname, &lendataname, &arraystart, 
                                memlo, memhi, steplo, stephi, incr, axis_types,
-                               errmsg, &lenerrmsg, 1024, 64, 2112);
+                               errmsg, &lenerrmsg, 1024, 2112);
     if ( lenerrmsg > 0 ) {
         errmsg[lenerrmsg] = '\0';
         PyErr_SetString(PyExc_ValueError, errmsg);

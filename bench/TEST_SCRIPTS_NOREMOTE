@@ -342,6 +342,9 @@ bn_ribbon_set.jnl
 bn_mode_dsg.jnl
 bn_string_type.jnl
 
+bn761_bug_fixes.jnl
+bn_dsg_naming.jnl
+
 !
 ! bn_gif, bn_all_ef, and bn_startupfile at end
 !

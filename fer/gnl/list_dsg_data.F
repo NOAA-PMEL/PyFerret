@@ -53,6 +53,7 @@
 * V76  1/20 *acm* Point-type DSG datasets do not have a feature-id variable
 * V76  3/20 *acm* Tweak to column-header line so names don't run together
 * v7.6 *acm* 5/20 Issue 1876: can read string-typed data.
+* v7.61 *acm* 7/20 remove extraneous -id from lines that show feature-id .
 
         include 'netcdf.inc'
 	include 'tmap_dims.parm'
@@ -146,7 +147,7 @@
 
 	IF (orientation.GE.pfeatureType_Trajectory .AND. orientation.LE.pfeatureType_Point) THEN
 	   strbuff = CD_DSG_FEATURENAME(orientation)
-	   feature_idname = strbuff(:tm_lenstr1(strbuff)) // '-id'
+	   feature_idname = strbuff(:tm_lenstr1(strbuff))
 	ENDIF
 
 * determine precision for outputting values
@@ -396,7 +397,7 @@
 
 	   IF (orientation .NE. pfeatureType_Point) THEN
 	      WRITE ( risc_buff, FMT ) 
-     .           vname_buff(:vname_len), feature_idname(:TM_LENSTR1(feature_idname))
+     .           vname_buff(:vname_len), feature_idname(:TM_LENSTR1(feature_idname))//'-id'
 	      IF (.NOT.norow) CALL SPLIT_LIST(pttmode_explct, list_lun, risc_buff, 0)
 	   ENDIF
 

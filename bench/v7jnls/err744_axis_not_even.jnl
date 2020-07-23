@@ -2,13 +2,17 @@
 ! issue 334:  coordinate axis has a point_spacing=even attribute
 ! Which should be checked more carefully and ignored.
 ! 4/15/2019 ACM
+! 7/ 8/2020 acm
 
 use wrong_reg_axis.nc
 list avar
 
-! But if the user specifies USE/REGULART then that overrides everything
-! The coordinates are now different from what's in the file, but they're regular.
+! The file should have a point_spacing="uneven", since the axis
+! is irregular.
+save/clobber/file=a.nc
+sp ncdump -h a.nc
 
-cancel data/all
-use/regulart wrong_reg_axis.nc
-list avar
+! This variable is on a floating-point axis that is regular.
+! Prior to 7/2020 the test we have used here marked it as irregular.
+use yfloat
+show grid var

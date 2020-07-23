@@ -1,0 +1,66 @@
+! bn_naming_dsg.jnl
+! 7/14/2020
+!
+!  Use datasets constructed with names for variables
+!  and dimensions that do not match the standard examples.
+!  e.g. the metadata dimension with the profile id's and metadata
+!  or timeseries id's and metadata is called baa, the obs dimension
+!  is ocount, rowsize, longitude, latitude, depth, time have other 
+!  names.  The DSG-ness depends on the structure not the names 
+!  (except for feature name as defined in the standard.)
+!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! trajectory !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+use dsg_naming_traj.nc
+sh dat
+list/m=3 sst
+
+! Check that the rowsize, id are still in the E direction
+use/feature=none 1
+sh dat
+list rsiz[m=@max]
+list/i=3:7 chron
+
+can dat/all
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! timeseries !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+use dsg_naming_time.nc
+
+sh dat
+list/m=3 sst
+
+! Check that the rowsize, id, lon, lat are still in the E direction
+use/feature=none 1
+sh dat
+list rsiz[m=@max]
+list/i=12:15 chron
+can dat/all
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! profile !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+use dsg_naming_prof.nc
+sh dat
+list/m=2/z=0:15 deepness
+
+! Check that the rowsize, id, lon, lat are still in the E direction
+use/feature=none 1
+sh dat
+list deepness[i=@max]
+
+list/i=7:10 deepness
+
+can dat/all
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! point !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+! Point data, everything in the E direction
+use dsg_naming_point.nc
+sh dat
+list/m=3:5 sst
+
+! with Feature=none, everything in the X direction
+use/feature=none dsg_naming_point.nc
+sh dat
+list/i=3:5 sst
+
+

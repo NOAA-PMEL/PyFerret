@@ -67,6 +67,7 @@
 * v7.6 *acm* 5/20 Issue 1876: can read string-typed data, write as char.
 * V7.6 *acm* 6/20 Issue 1980: When possible open invalid DSG datasets anyway with NOTES.
 * V7.61 *acm* 7/20 Adding logic for TrajectoryProfile and TimeseriesProfile datasets.
+* V7.61 *acm* 7/80 FOR NOW, initialize TrajectoryProfile and TimeseriesProfile as profile.
 
 * argument definitions:
 *       dset    - pointer to TMAP data set
@@ -182,7 +183,13 @@
 	CALL CD_DSG_GET_FILE_FEATURETYPE (dset, dset_ftype, do_warn)
 	IF ( (dset_ftype .EQ. pfeatureType_TrajectoryProfile .OR.
      .        dset_ftype .EQ. pfeatureType_TimeseriesProfile) .AND. 
-     .        dsg_user_direction .NE. z_dim) GOTO 5600
+     .        dsg_user_direction .NE. z_dim) THEN
+	   buff = 'For now '//ftrname(:vlen)//' not implemented. '//
+     .            ' Treating data as FeatureType=profile'
+	   CALL WARN (buff)
+	   dsg_user_direction = z_dim
+	   dsg_orientation(dset) = pfeatureType_Profile
+	ENDIF
 
 * If its TimeseriesProfile and they said use/feature=profile, need to
 * get info on the lon/lat coordinates from the timeseries dimension and

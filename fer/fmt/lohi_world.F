@@ -62,6 +62,7 @@
 * V698 *sh* 4/16 hack to format E axis limits as integers
 *	         Note:  this is a poor fix.  See 4/16 note below
 * V74+ *acm* 8/18 DSG dataset? If so find coordinates on the dsg_xlate_grid 
+* V761 8/20 *acm* Longer LOHI_WORLD, LOHI_STRING strings higher-precision outputs
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -89,7 +90,7 @@
      .          dset, sub_len, ndec, grid, line, status, 
      .          cx_try, cat, var, loss, hiss, delss, j, decimal
 	REAL*8	TM_WORLD, BOX_SIZE, bc_to_t0, lo, hi, small
-	CHARACTER*40	LOHI_STRING
+	CHARACTER*48	LOHI_STRING
 
 * initialize
 	IF (cx .GE. 1) THEN

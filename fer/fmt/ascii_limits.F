@@ -62,6 +62,7 @@
 * V75+ *acm*5/19 Issue 1930. Do not write member name in header unless we're 
 *                looking at just one ensemble member (typo fix).
 * V751 *acm*5/19 If DSG dataset, get the calendar of the time var
+* V761 8/20 *acm* Longer LOHI_WORLD, LOHI_STRING strings higher-precision outputs
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -86,7 +87,7 @@
      .			TM_LENSTR1, ENSEMBLE_MEMBER_DSET,
      .			max_len, len_trans, llen, trans, i,
      .			grid, cal_id, len_cal, dset, slen2, memb_dset
-	CHARACTER	ALG_TRANS_TITL*20, LOHI_WORLD*44, LEFINT*4, 
+	CHARACTER	ALG_TRANS_TITL*20, LOHI_WORLD*48, LEFINT*4, 
      .			TM_FMT*48, TM_GET_CAL*32, TM_GET_F_CAL*32,
      .			VAR_CODE*128,
      .			trans_title*128, cal_name*32

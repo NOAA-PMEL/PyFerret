@@ -63,7 +63,7 @@
 * otherwise it's a valid single-feature dataset.
 
         ivar = dsg_row_size_var(dset)
-        IF (ivar .NE. int4_init .AND. ivar.GT. 0) THEN
+        IF (ivar .NE. int4_init .AND. ivar.GT.0) THEN
            IF (dsg_loaded_lm(ivar) .NE. int4_init) CALL TM_FREE_LM_DYNMEM(dsg_loaded_lm(ivar))
            dsg_row_size_var(dset) = int4_init
            dsg_loaded_lm(ivar)    = int4_init
@@ -78,12 +78,38 @@
           ENDIF
         ENDDO
 
+* index var for timeseriesProfile or trajectoryprofile
+	
+        ivar = dsg_index_var(dset)
+        IF (ivar .NE. int4_init .AND. ivar.GT.0) THEN
+           IF (dsg_loaded_lm(ivar) .NE. int4_init) CALL TM_FREE_LM_DYNMEM(dsg_loaded_lm(ivar))
+           dsg_index_var(dset) = int4_init
+           dsg_loaded_lm(ivar)    = int4_init
+        ENDIF
+
+* id var for station or trajectory for timeseriesProfile or trajectoryProfile
+	
+        ivar = dsg_ftrset_var(dset)
+        IF (ivar .NE. int4_init .AND. ivar.GT.0) THEN
+           IF (dsg_loaded_lm(ivar) .NE. int4_init) CALL TM_FREE_LM_DYNMEM(dsg_loaded_lm(ivar))
+           dsg_index_var(dset) = int4_init
+           dsg_loaded_lm(ivar)    = int4_init
+        ENDIF
+
 * was a feature-mask set? deallocate that.
 	IF (dsg_msk_lm(dset).NE.int4_init .AND. dsg_msk_lm(dset).NE.unspecified_int4) THEN
 	   CALL FREE_LINE_DYNMEM( dsg_msk_lm(dset) )
 	   CALL TM_DEALLO_DYN_LINE( dsg_msk_lm(dset) )
 	   dsg_msk_lm(dset) = int4_init
 	ENDIF
+
+* was a index-mask set? deallocate that.
+	IF (dsg_mask_ftrset_lm(dset).NE.int4_init .AND. dsg_mask_ftrset_lm(dset).NE.unspecified_int4) THEN
+	   CALL FREE_LINE_DYNMEM( dsg_mask_ftrset_lm(dset) )
+	   CALL TM_DEALLO_DYN_LINE( dsg_mask_ftrset_lm(dset) )
+	   dsg_mask_ftrset_lm(dset) = int4_init
+	ENDIF
+
 
 
 * Reset a couple more settings regarding dsg datasets

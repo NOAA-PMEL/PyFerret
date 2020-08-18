@@ -1,0 +1,8 @@
+* xinit.parm
+* 
+* 8/20 acm Pull this out of ferret.parm so it can be included 
+*          in routines under fmt/src.  The value of pCR is set
+*          in initialize_ferret.F
+
+	CHARACTER*1	pCR
+	COMMON /XINIT_PROBLEMS/ pCR 

@@ -160,25 +160,30 @@
 		    got_it = NC_GET_ATTRIB ( dset, varid, name, do_warn, 
      .                                   '.', maxlen, attlen, attoutflag, 
      .                                   cbuff32, val)
+
 	            IF     (STR_CASE_BLIND_COMPARE(cbuff32,"timeseries") .EQ. str_match) THEN
 	              dsg_feature_type(dset) = pfeatureType_TimeSeries
 		       dsg_orientation(dset) = t_dim		! T axis
+
 	            ELSEIF (STR_CASE_BLIND_COMPARE(cbuff32,"profile") .EQ. str_match) THEN
 	              dsg_feature_type(dset) = pfeatureType_Profile
 		       dsg_orientation(dset) = z_dim		! Z axis
+
 	            ELSEIF (STR_CASE_BLIND_COMPARE(cbuff32,"trajectory") .EQ. str_match) THEN
 	               dsg_feature_type(dset) = pfeatureType_Trajectory
 		       dsg_orientation(dset) = x_dim		! X axis (arbitrarily)
+
 	            ELSEIF (STR_CASE_BLIND_COMPARE(cbuff32,"point") .EQ. str_match) THEN
 	               dsg_feature_type(dset) = pfeatureType_Point
 		       dsg_orientation(dset) = e_dim		! E axis 
-	            ELSEIF ( (STR_CASE_BLIND_COMPARE(cbuff32,"timeseriesprofile")
-     .		           .EQ. str_match)
-     .		    .OR.  (STR_CASE_BLIND_COMPARE(cbuff32,"trajectoryprofile")
-     .			   .EQ. str_match)                                      )THEN
-	               dsg_ragged(dset) = .FALSE.
-	               CALL TM_NOTE('FEATURE-TYPE NOT YET IMPLEMENTED: '//cbuff32 , lunit_errors)
-	               CALL TM_NOTE('Initializing as a non-DSG dataset', lunit_errors)
+
+	            ELSEIF (STR_CASE_BLIND_COMPARE(cbuff32,"TrajectoryProfile") .EQ. str_match) THEN
+	               dsg_feature_type(dset) = pfeatureType_TrajectoryProfile
+		       dsg_orientation(dset) = y_dim		! Y axis, arbitrarily
+
+	            ELSEIF (STR_CASE_BLIND_COMPARE(cbuff32,"TimeseriesProfile") .EQ. str_match) THEN
+	               dsg_feature_type(dset) = pfeatureType_TimeseriesProfile
+		       dsg_orientation(dset) = f_dim		! F axis, arbitrarily
 	            ELSE
 	               dsg_ragged(dset) = .FALSE.
 		       IF (STR_CASE_BLIND_COMPARE(cbuff32,"grid") .NE. str_match .AND. do_warn)

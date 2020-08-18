@@ -94,10 +94,14 @@
 	DATA	dsg_coord_var		/maxdsg_coords *int4_init/
 	DATA	dsg_obs_axis		/int4_init/
 	DATA	dsg_instance_axis	/int4_init/
-	DATA	dsg_instance_dim	/int4_init/
+	DATA	dsg_ifeature_dim	/int4_init/
+	DATA	dsg_instnc_ftrset_dim	/int4_init/
 	DATA	dsg_obs_dim		/int4_init/
 	DATA	dsg_loaded_lm		/maxvars*int4_init/
 	DATA	dsg_user_direction	/int4_init/
+	DATA	dsg_ftrset_var		/pdsetalloc*int4_init/
+	DATA	dsg_index_var		/pdsetalloc*int4_init/
+	DATA	dsg_mask_ftrset_lm	/pdsetalloc*int4_init/
 
 * Initialize variables associated with data set
 	DATA	ds_type			/pdsetalloc*char_init04/

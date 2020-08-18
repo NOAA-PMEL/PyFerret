@@ -66,7 +66,7 @@
 
 * internal variable declarations:
 	LOGICAL process_feature(nfeatures), process_obs(nobs_total), 
-     .		relevant_coord(4), has_keys, its_dsg, multi_var
+     .		relevant_coord(4), has_keys, its_dsg, its_cmpnd, multi_var
 	INTEGER	CGRID_SIZE, DSG_WHATS_IT, TM_DSG_DSET_FROM_GRID,
      .		iline, nlines, idim, the_dim, ndim, max_feature_lines, cx0, 
      .		the_cx, slen, tlen, cx, grid, feature_line, orientation, 
@@ -87,8 +87,8 @@
 * Trajectories as plot/vs/ribbon plots are set up elsewhere.
 
 	its_dsg = .TRUE.
-	CALL TM_DSG_FACTS( grid,
-     .			   orientation, obsdimlen, feature_line, its_dsg )
+	CALL TM_DSG_FACTS( grid,orientation, obsdimlen, feature_line, 
+     .			   its_dsg, its_cmpnd )
 	IF (.NOT. its_dsg) GOTO 5500
 	gxlate = dsg_xlate_grid(dset)
 	row_size_lm = dsg_loaded_lm(dsg_row_size_var(dset))

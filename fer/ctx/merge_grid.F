@@ -153,7 +153,7 @@
 	LOGICAL		INHERITED_LIMITS, ITSA_PURE_SUM_VAR, TM_ITSA_DSG,
      .			ITSA_COMPATIBLE_DSG_GRID, ITSA_DSG_POINTS,
      .			same, nest, expl_com_lim, abstgrid, normabst,
-     .			var_is_const, its_dsg
+     .			var_is_const, its_dsg, its_cmpnd
 	INTEGER		CX_DIM_LEN, TM_LENSTR1, REGION_CLASS,
      .			NEST_REGION_CLASS,  WHICH_GCFCN, GCF_RTN_TYPE,
      .			TM_DSG_DSET_FROM_GRID,
@@ -310,7 +310,7 @@
 
 	   IF (.NOT.normabst .AND. dsg_xlate_grid(dsg_dset) .GT. mgrid_buff) THEN 
 	      
-	      CALL TM_DSG_FACTS( com_grd, dsg_orient, obsdimlen, fline, its_dsg )
+	      CALL TM_DSG_FACTS( com_grd, dsg_orient, obsdimlen, fline, its_dsg, its_cmpnd )
 	      DO idim = x_dim, t_dim
 	         grid_line(idim, mgrid_buff)  = grid_line(idim, dsg_xlate_grid(dsg_dset))
 	      ENDDO

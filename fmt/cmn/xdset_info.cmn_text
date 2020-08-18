@@ -28,6 +28,13 @@
 * V695+ 5/15 *sh* added ds_var_c_cache_ptr - ptr to cached var (typ aux var)
 * V698+ 12/15 *sh* declare larger dset arrays: maxdsets ==> pdsetalloc
 * V720   4/17 *sh* add DSG variables 
+* V761   6/20 *acm* rename dsg_instance_dim to dsg_ifeature_dim 
+*                  --> dsg_instnc_ftrset_dim is the instance_dimension for the traj of 
+*		    a traj-feature or tser-feature dataset
+*                  --> dsg_index_var is the variable having attribute instance_dimension.  
+*                   The attribute points to the time or trajectory dimension, and 
+*                   the variable is a timeseries-index var or trajectory-index var, 
+*                   pointing to the timeseries or trajectory which profiles belong to.
 
 **************************************************************************
 * V720
@@ -45,14 +52,22 @@
      .		dsg_obs_axis,			! ragged vars get this & E axes
      .		dsg_instance_axis,		! only needed during dset init
      .		dsg_obs_dim,			! only needed during dset init
-     .		dsg_instance_dim,		! only needed during dset init
+     .		dsg_ifeature_dim,		! only needed during dset init
      .		dsg_loaded_lm(maxvars),		! dyn lm number if pre-loaded
-     .		dsg_user_direction		! user-imposed DSG direction
-	LOGICAL dsg_ragged
-	INTEGER	dsg_feature_type, dsg_row_size_var, dsg_row_size_varid, dsg_coord_var,
+     .		dsg_user_direction,		! user-imposed DSG direction
+     .		dsg_ftrset_var(pdsetalloc),	! varid of the "ftrset" var e.g. tseries id for timeseriesProfile data
+     .		dsg_index_var(pdsetalloc),	! the "index" var e.g. timeseries_index for timeseriesProfile data
+     .		dsg_instnc_ftrset_axis,		! only needed during dset init
+     .		dsg_instnc_ftrset_dim,		! only needed during dset init
+     .		dsg_mask_ftrset_lm(pdsetalloc)	! mask dyn line, tser or traj direc of compound data types
+     
+     	LOGICAL dsg_ragged
+     	INTEGER	dsg_feature_type, dsg_row_size_var, dsg_row_size_varid, dsg_coord_var,
      .		dsg_orientation, dsg_obs_axis, dsg_instance_axis,
      .		dsg_obs_dimlen, dsg_xlate_grid, dsg_feature_var, dsg_obs_dim, 
-     .		dsg_instance_dim, dsg_loaded_lm, dsg_user_direction, dsg_msk_lm
+     .		dsg_ifeature_dim, dsg_loaded_lm, dsg_user_direction, dsg_msk_lm,
+     .		dsg_ftrset_var, dsg_index_var, dsg_instnc_ftrset_axis, 
+     .		dsg_instnc_ftrset_dim, dsg_mask_ftrset_lm
 **************************************************************************
 
 

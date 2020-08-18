@@ -87,10 +87,15 @@ c	include 'tmap_dims.parm'
 	   orientation = x_dim		! X axis (arbitrarily)
 	   dsg_ragged = .TRUE.
 
-	ELSEIF ( (STR_CASE_BLIND_COMPARE(buff,"timeseriesprofile") .EQ. str_match)
-     .     .OR.  (STR_CASE_BLIND_COMPARE(buff,"trajectoryprofile") .EQ. str_match) )THEN
-	   dsg_ragged = .FALSE.
-	   IF (do_warn) CALL TM_NOTE("FEATURE-TYPE NOT YET IMPLEMENTED: "//buff , lunit_errors)
+	ELSEIF (STR_CASE_BLIND_COMPARE(buff,"pfeatureType_TrajectoryProfile") .EQ. str_match) THEN
+	   ftype = pfeatureType_TrajectoryProfile
+	   orientation = y_dim		! Y axis (arbitrarily)
+	   dsg_ragged = .TRUE.
+
+	ELSEIF (STR_CASE_BLIND_COMPARE(buff,"pfeatureType_TimeseriesProfile") .EQ. str_match) THEN
+	   ftype = pfeatureType_TimeseriesProfile
+	   orientation = f_dim		! F axis (arbitrarily)
+	   dsg_ragged = .TRUE.
 
 	ELSE
 	   dsg_ragged = .FALSE.

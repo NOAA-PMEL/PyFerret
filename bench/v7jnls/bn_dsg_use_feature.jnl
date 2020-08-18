@@ -55,13 +55,7 @@ show data
 ! This is an error
 use/feature=trajectory DSG_ERDDAP_Tao5daySst
 
-! but the dataset is still open from the earlier initializatin
-show data
-
-cancel data/all
-
-! The dataset is a trajectory-profile dataset, not yet implemented.
-use traj_prof_example
+! but the dataset is still open from the earlier initialization
 show data
 
 cancel data/all

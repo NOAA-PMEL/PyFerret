@@ -131,7 +131,8 @@
      .          normal(nferdims), non_modulo(nferdims), 
      .          self(nferdims), transformed
 	INTEGER HASH_CX, line, lm, status,
-     .		mv, defining_grid, idim, var, cat, dset, mline
+     .		mv, defining_grid, idim, var, cat, 
+     .		dset, mline, sum
         REAL*8  TM_WORLD, ww_hi_bound, c_cache_ptr
 
 * initialize
@@ -182,10 +183,18 @@
 	      ENDDO
 	   ENDIF
 	   lm = dsg_loaded_lm(var)
-	   IF (.NOT.transformed .AND. lm.NE.int4_init) THEN
+	   IF (.NOT.transformed .AND. lm.EQ.int4_init) THEN
+	      sum = 0
+	      IF (lm.EQ.dsg_row_size_var(dset)) sum = sum+1
+	      DO idim = 1,t_dim
+	          IF (dsg_coord_var(idim,dset) .EQ. int4_init) CYCLE
+		  IF (lm.EQ.dsg_loaded_lm(dsg_coord_var(idim,dset))) sum = sum+1
+	      ENDDO 
 * ... create and return an mr table entry pointing to the dsg_linemem
-	      CALL CREATE_LM_TABLE_ONLY_MEM_VAR( cx, lm, mr, status )
-              IF (status .EQ. ferr_ok) GOTO 1000
+	      IF (sum.GT.0) THEN
+	         CALL CREATE_LM_TABLE_ONLY_MEM_VAR( cx, lm, mr, status )
+                 IF (status .EQ. ferr_ok) GOTO 1000
+	      ENDIF
 * ... in rare chance of error status, the cache hit failed
 	   ENDIF
 	ENDIF

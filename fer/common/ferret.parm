@@ -273,10 +273,12 @@
 * (in FUNCTION ISUBSCRIPT to resolve ambiguities when coord is on box boundary)
 	INTEGER		round_up,
      .			round_dn,
-     .			round_never
+     .			round_never,
+     .			round_sngl
 	PARAMETER     ( round_up    = 1,
      .			round_dn    = 2,
-     .			round_never = 3	)
+     .			round_never = 3,
+     .			round_sngl  = 0	)
 
 * codes to designate what mathematical transformations have been applied
 	INTEGER		max_plane_transform,
@@ -784,10 +786,11 @@
 	PARAMETER     ( pagg_promotion_indicator_dset = -6767)
 
 * flags to indicate DSG-ness
-	INTEGER		pdsg_not_dsg, pdsg_instance, pdsg_observation
+	INTEGER		pdsg_not_dsg, pdsg_instance, pdsg_observation, pdsg_f2var
 	PARAMETER     ( pdsg_not_dsg     = 0,
      .			pdsg_instance    = 1,
-     .			pdsg_observation = 2 )
+     .			pdsg_observation = 2,
+     .			pdsg_f2var = 2 )
 	REAL	        dsg_masked_out_flag
 	PARAMETER     ( dsg_masked_out_flag = -12345.)
 

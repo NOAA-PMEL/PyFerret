@@ -102,8 +102,7 @@
 	LOGICAL		NO_LINE_RANGE, GEOG_LABEL, TM_ITSA_DSG_RAGGED,
      .			versus, all_1_ind, all_1_dep, formatted, use_nice, 
      .			this_no_range(max_line_on_plot), indep_is_log, set_lev, 
-     .			its_dsg, mask_applied, user_hlim
-	CHARACTER*2040	plot_title
+     .			its_dsg, its_cmpnd, mask_applied, user_hlim
 	CHARACTER	LEFINT*8, LEFT_REAL*16, FULL_VAR_TITLE*2040,
      .			indep_ax*1, dep_ax*1, tstyle*3, 
      .			buff1*40, buff2*16, t1_date*14, tref*14, fmt*4
@@ -181,7 +180,7 @@
 	dset = TM_DSG_DSET_FROM_GRID( grid )
 	nfeatures = TM_DSG_NFEATURES( grid )
 	its_dsg = .TRUE.    
-	CALL TM_DSG_FACTS( grid, idim, obsdimlen, fline, its_dsg )
+	CALL TM_DSG_FACTS( grid, idim, obsdimlen, fline, its_dsg, its_cmpnd )
 	IF (.NOT. its_dsg) GOTO 5200
 
 * The variable may be on the feature-axis. We will deal with that later but
@@ -591,9 +590,9 @@
 
 	      IF (qual_given(slash_plot_levels) .EQ. 0) THEN
 	         CALL SET_DSG_ID_LEV 
-     .           (dset, cx, nfeatures, dep_dat, mr_type(mv), changed_key)
-
-	         set_lev = .TRUE.
+     .              (dset, cx, nfeatures, dep_dat, mr_type(mv), changed_key)
+ 
+	        set_lev = .TRUE.
 	      ELSE
 
 * If they said /levels=v this doesnt make sense.  Just use linear levs.
@@ -762,12 +761,12 @@
 	ENDIF
 
 *  TITLES
-* Main plot title. Add a "Colored by var2" label for the ribbon color variable
+* Main plot title. The main plot label is the the ribbon color variable
 *
 	hlen = xlen ! single-precision xlen from PPLUS common -> double prec. var
 
 	IF ( .NOT.no_labels ) 
-     .          CALL LINE_PLOT_LABELS (var1, nkey_entries, ndv, cx_list, 
+     .          CALL LINE_PLOT_LABELS (nmv, nkey_entries, ndv, cx_list, 
      .		this_no_range, overlay, versus, nokey, .FALSE., 
      .		tstyle, cal_id_1, ribbon_var, indep_lab, dep_lab, 
      .		ind_min, dep_len, hlen, nfeatures, dset, 

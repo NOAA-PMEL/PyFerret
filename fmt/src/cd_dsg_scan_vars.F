@@ -13,7 +13,7 @@
 *  and distribute this software, and any derivative works thereof, and
 *  its supporting documentation for any purpose whatsoever, provided
 *  that this entire notice appears in all copies of the software,
-*  derivative works and supporting documentation.  Further, the user5/4/2005
+*  derivative works and supporting documentation.  Further, the user
 *  agrees to credit NOAA/PMEL/TMAP in any publications that result from
 *  the use of this software or in any product that includes this
 *  software. The names TMAP, NOAA and/or PMEL, however, may not be used
@@ -66,11 +66,29 @@
 * V76  3/20 *acm* Improve notes about ambiguous coord info.
 * v7.6 *acm* 5/20 Issue 1876: can read string-typed data, write as char.
 * V7.6 *acm* 6/20 Issue 1980: When possible open invalid DSG datasets anyway with NOTES.
+* V7.61 *acm* 7/20 Adding logic for TrajectoryProfile and TimeseriesProfile datasets.
 
 * argument definitions:
 *       dset    - pointer to TMAP data set
 *	cdfid   - id of currently open CDF file
 *	status	- return status
+*
+* for TrajectoryProfile and TimeseriesProfile datasets, notes from the CF standard:
+*
+* H.5.3. Ragged array representation of time series profiles
+* ...[The standard] uses the contiguous ragged array representation for each profile (9.5.43.3), 
+* and the indexed ragged array representation to organise the profiles into time series (9.3.54). 
+* The canonical use case is when writing real-time data streams that contain profiles from many 
+* stations, arriving randomly, with the data for each entire profile written all at once. 
+*
+* H.6.3. Ragged array representation of trajectory profiles
+* ...[The standard]  uses the contiguous ragged array representation for each profile (9.3.3), and 
+* the indexed ragged array representation to organise the profiles into time series (9.3.4). 
+* The canonical use case is when writing real-time data streams that contain profiles from many 
+* trajectories, arriving randomly, with the data for each entire profile written all at once.
+*
+* We will use feature to talk about the profiles for these data types and ftrset to refer to the
+* trajectory or the timeseries station, containing a set of profiles.
 
 * include files
         include 'netcdf.inc'
@@ -97,17 +115,19 @@
 *  ivcd - netCDF file variable ID
 	LOGICAL NC_GET_ATTRIB, TM_LEGAL_NAME,
      .		got_it, got_axis, got_stdname, coordvar, got_a_variable,
-     .		has_DSG_row_size, has_DSG_coordinates,
-     .		has_DSG_feature_id, need_coord(4), udsg_err
+     .		has_DSG_row_size, has_DSG_coordinates, has_DSG_feature_id, 
+     .		need_coord(4), udsg_err, cmpnd_ftype, redo_lonlat
 	INTEGER STR_UPCASE, TM_LENSTR1,
      .		NCF_INQ_DS, STR_CASE_BLIND_COMPARE, STR_SAME,
      .		ivcd, ivtm, vartyp, nvdim, vdims(8), nvatts, all_outflag,
-     .		i, maxlen, vlen, slen, eax_len, ax_len, ax2_len, is_dim,
-     .		cdfstat, attlen, attoutflag, istat, las_pos, first_pos,
-     .		dset_num, ndims, nvars, ngatts, recdim, idim,
-     .		ax_att_var(4), ax_att_provisional(4), isend, ivtm1, orient
-	CHARACTER    vname*128, buff*1028, buff1*128, name*8, axdim*1, lunits*64, dir_code*2
-	REAL	vals(2), global_bad
+     .		i, ii, maxlen, vlen, slen, eax_len, ax_len, ax2_len, fax_len, 
+     .		is_dim,cdfstat, attlen, attoutflag, istat, las_pos, 
+     .		first_pos,dset_num, ndims, nvars, ngatts, recdim, idim,
+     .		ax_att_var(4), ax_att_provisional(4), isend, ivtm1, orient,
+     .		index_varid, index_var_lm, dsg_time_var, ignore_dim, dset_ftype
+	CHARACTER vname*128, buff*1028, buff1*128, dname*128, axdim*1, 
+     .		lunits*64, dir_code*2, index_dir_buff*20, ftrname*20, ignore_what*1
+	REAL	vals(2), bad
 
 	CHARACTER*20 CD_DSG_FEATURENAME
 	CHARACTER*2  direc(4)
@@ -134,23 +154,62 @@
 	has_DSG_coordinates = .FALSE.
 	has_DSG_feature_id  = .FALSE.
         maxlen = 1028
-	eax_len = 0
+	eax_len = int4_init
+	fax_len = int4_init
 	las_pos = 1
-	global_bad = -1.E34
+	bad = -1.E34
 	dsg_instance_axis = int4_init
+	dsg_instnc_ftrset_axis = int4_init
+	dsg_ftrset_var(dset) = int4_init
+	ignore_dim = unspecified_int4
+	ignore_what = ' '
 	udsg_err = .FALSE.
+	redo_lonlat = .FALSE.
 
 * The feature-id variable is identified by having a feature_id attribute
 * according to the feature type
 
 * get the vital statistics for the data set 
         dset_num = dset
-        istat = NCF_INQ_DS (dset_num, ndims, nvars, ngatts, recdim )
+        CALL CD_GET_DS_INFO (dset_num, ndims, nvars, ngatts, recdim, status)
+	istat = NCF_INQ_DS (dset_num, ndims, nvars, ngatts, recdim )
+
 	orient = dsg_orientation(dset) 
+
+
+* If its TimeseriesProfile must (for now) use/feature=profile
+
+	CALL CD_DSG_GET_FILE_FEATURETYPE (dset, dset_ftype, do_warn)
+	IF ( (dset_ftype .EQ. pfeatureType_TrajectoryProfile .OR.
+     .        dset_ftype .EQ. pfeatureType_TimeseriesProfile) .AND. 
+     .        dsg_user_direction .NE. z_dim) GOTO 5600
+
+* If its TimeseriesProfile and they said use/feature=profile, need to
+* get info on the lon/lat coordinates from the timeseries dimension and
+* put it into the profile-axis direction.
+
+	IF (dsg_user_direction .EQ. z_dim) THEN
+
+	   IF (dset_ftype .EQ. pfeatureType_TrajectoryProfile .OR.
+     .         dset_ftype .EQ. pfeatureType_TimeseriesProfile)
+     .                       orient = dset_ftype
+	   redo_lonlat =  (dset_ftype .EQ. pfeatureType_TimeseriesProfile)
+
+	ENDIF
+
+	cmpnd_ftype = (orient .EQ. pfeatureType_TrajectoryProfile .OR.
+     .                 orient .EQ. pfeatureType_TimeseriesProfile)
+
+
+	ftrname = CD_DSG_FEATURENAME ( orient ) 
+	IF (cmpnd_ftype) THEN
+	   i = MAX(INDEX(ftrname, 'Profile'), INDEX(ftrname, 'profile'))
+	   index_dir_buff = ftrname(:i-1)//'_id'
+	ENDIF
 
 * First find probable coordinate variabes - if the axis attribute is
 * present these will be the coords even if other variables have units
-* indicating an axis direction. This to distinguish e.g between deplooyment
+* indicating an axis direction. This to distinguish e.g between deployment
 * time and location vs the observation times and locations.
 
 * Prioritize attributes for direction: 
@@ -160,13 +219,19 @@
 * When these are found, use units to nail down the direction.
 *
 * Check: need lon, lat, time for all feature types. Profiles need depth/height.
+* Can get away without z direction for trajectories or timeseries.
 
 	DO idim = 1, 4
 	   ax_att_var(idim) = int4_init
 	   ax_att_provisional(idim) = int4_init
 	   need_coord(idim) = .TRUE.
-	   IF (idim.EQ.z_dim .AND. orient.NE.z_dim) need_coord(z_dim) = .FALSE.
+	   IF ((orient.EQ.x_dim .OR. orient.EQ.t_dim) .AND. 
+     .          idim.EQ.z_dim ) need_coord(z_dim) = .FALSE.
 	ENDDO
+
+*** Here as we're searching for the coordinate variables, also look for the 
+*** instance_dimension attribute for TimeseriesProfile or TrajectoryProfile datasets. 
+***   This will simplify finding the essential elements of those datasets.
 
         DO ivcd = 1, nvars
            CALL CD_GET_VAR_INFO (dset, ivcd, vname, vartyp,
@@ -188,7 +253,6 @@
      .            STR_SAME (buff, 'latitude')  .EQ. 0 .OR.
      .            STR_SAME (buff, 'depth')     .EQ. 0 .OR. 
      .            STR_SAME (buff, 'altitude')  .EQ. 0 ) THEN
-
 	      ELSE 
 	         got_stdname = .FALSE.
 	      ENDIF
@@ -244,8 +308,52 @@
               ENDDO  IDIMLOOP
      
            ENDIF  ! got axis or std name
-	   
-	   IF (vartyp.LT.nf_byte .OR. vartyp.GT.nf_string) GOTO 5700
+
+* For Trajectory-Profile or Timeseries-Profile data, locate the 
+* trajectory or timeseries id variable and its dimension.
+
+	   IF (cmpnd_ftype) THEN
+
+	      got_it = NC_GET_ATTRIB( dset, ivcd, 'instance_dimension',
+     .                 do_warn, vname(:vlen), maxlen, attlen, attoutflag, 
+     .                 buff, vals )
+	      IF (got_it) THEN
+	         CALL CD_GET_DIM_ID (dset, buff, dsg_instnc_ftrset_dim)
+		 index_varid = ivcd
+	      ENDIF
+
+	      got_it = NC_GET_ATTRIB( dset, ivcd, 'cf_role',
+     .                 do_warn, vname(:vlen), maxlen, attlen, attoutflag, 
+     .                 buff, vals )
+
+* Is the cf_role either trajectory_id or timeseries_id? 
+
+	      IF (got_it) THEN
+	         IF (STR_SAME (buff, index_dir_buff) .EQ. 0 ) dsg_ftrset_var(dset) = ivcd
+
+* the dataset is traj-profile or tser-profile, but we are doing use/featrure=profile.
+* Get the trajectory or timeseries dimension and ignore variables in that direction.
+
+		 IF (orient .EQ. pfeatureType_Profile) THEN
+		    IF (STR_SAME (buff, 'trajectory_id') .EQ. 0 ) THEN
+		       dsg_ftrset_var(dset) = ivcd
+		       CALL CD_GET_VAR_DIMS_INFO (dset, ivcd, vname, nvdim, 
+     .                     vdims, status)
+		       ignore_dim = vdims(nvdim)
+		       ignore_what = 'X'
+		    ENDIF
+		    IF (STR_SAME (buff, 'timeseries_id') .EQ. 0 ) THEN
+		       dsg_ftrset_var(dset) = ivcd
+		       CALL CD_GET_VAR_DIMS_INFO (dset, ivcd, vname, nvdim, 
+     .                     vdims, status)
+		       ignore_dim = vdims(nvdim)
+		       ignore_what = 'T'
+		    ENDIF 
+
+	         ENDIF
+	      ENDIF
+
+	   ENDIF !cmpnd_ftype
 
         ENDDO ! ivcd
 
@@ -271,17 +379,19 @@
 	   ENDIF
 	ENDDO
 	IF (slen .GT. 1) THEN
-	   buff1 = CD_DSG_FEATURENAME(orient)
-	   vlen = TM_LENSTR1( buff1 ) 
+	   slen = TM_LENSTR1( ftrname ) 
 	   errstr = 'Required coordinate variables not found. '//
-     .	          buff1(:vlen)//
-     .            ' file is missing directions: '//vname(:slen) 
+     .	          ftrname(:slen)//
+     .            ' file is missing directions: '//vname(:vlen) 
 	   status = merr_dsg_struc
-	   GOTO 5500
+	   GOTO 6000
 	ENDIF
-	
+
 	got_a_variable = .FALSE.
-	dsg_instance_dim = no_dim
+	dsg_ifeature_dim = no_dim
+
+	dsg_time_var = ax_att_var(t_dim)  ! used in setting up for timeseriesProfile
+
 
 *** process the key instance variables in the file
         ivcdloop: DO ivcd = 1,nvars
@@ -299,10 +409,14 @@
 	      IF (nvdim .GT. 1)  vdims(2) = vdims(3)
 	   ENDIF
 
+* Are we ignoring timeseries-direction or trajectory-direction variables
+* in a use/feature=profile command?
 
+	   IF (vdims(1) .EQ. ignore_dim) CYCLE
 ****
 * register the variable as a dependent variable in the dataset
-	   CALL CD_GET_1_DEP_VAR ( dset, cdfid, ivcd, las_pos, global_bad, 
+	   
+	   CALL CD_GET_1_DEP_VAR ( dset, cdfid, ivcd, las_pos, bad, 
      .				   ivtm, status )
 	   IF (status .NE. merr_ok) GOTO 5400
 	   IF ( ivtm .NE. 0 ) THEN
@@ -311,6 +425,35 @@
 	         first_pos = ivtm
 	         got_a_variable = .TRUE.
 	      ENDIF
+	   ENDIF
+
+* Make a coordinate axis for the timeseries or trajectories in the compound datasets.
+
+	   IF (cmpnd_ftype .AND. ivcd .EQ. dsg_ftrset_var(dset)) THEN
+	      CALL CD_GET_DS_DIMS (dset, vdims(1), dname, ax_len, status)
+
+	      fax_len = ax_len
+	      CALL CD_GET_DSG_INSTANCE_VAR(dset, cdfid, ivcd, ivtm,
+     .                 nvdim, fax_len, pdsg_fs_dim, dsg_time_var,
+     .                 dsg_loaded_lm(ivtm), errstr, status)
+
+	      CYCLE ivcdloop
+	   ENDIF
+
+* Save the index varible for the timeseries or trajectory dimension in compound datasets.
+* its dimension is the number of profiles.
+
+	   IF (cmpnd_ftype .AND. ivcd .EQ. index_varid) THEN
+	      dsg_index_var(dset) = ivtm
+	      CALL CD_GET_DSG_INSTANCE_VAR(dset, cdfid, ivcd, ivtm,
+     .                 nvdim, ax_len, pdsg_indx_var, dsg_time_var,
+     .                 dsg_loaded_lm(ivtm), errstr, status)
+
+	      index_var_lm = dsg_loaded_lm(ivtm)
+	      IF (eax_len .NE. int4_init .OR. status.NE.merr_ok) THEN
+	         IF (ax_len .NE. eax_len) GOTO 5500
+	      ENDIF
+	      CYCLE ivcdloop
 	   ENDIF
 
 	   IF (nvdim.EQ.0) CYCLE  ivcdloop  ! scalar variables
@@ -328,37 +471,52 @@
      .                 do_warn, vname(:vlen), maxlen, attlen, attoutflag, 
      .                 buff, vals )
 	   IF (got_it) THEN
-	      
-	      buff1 = CD_DSG_FEATURENAME ( orient ) ! compare with buff...
-	      buff1 = buff1(:TM_LENSTR1(buff1))//'_id'
+
+* IF we found a trajectory_id or timeseries_id for a compound-feature-type
+* dataset, the variable hadn't got an ivtm yet.
+	      IF (ivcd .EQ. dsg_ftrset_var(dset)) dsg_ftrset_var(dset) = ivtm
+
+	      buff1 = ftrname(:TM_LENSTR1(ftrname))//'_id'
+
+* For the compound types, look for profile_id. There is also a trajectory_id
+* or timeseries_id, taken care of elsewhere.
+
+	      IF (cmpnd_ftype) buff1 = 'profile_id'
+
+* Get the dimension of the ID variable, eax_len
 
 	      IF (STR_SAME (buff, buff1) .EQ. 0) THEN
 	         has_DSG_feature_id = .TRUE.
 	         dsg_feature_var(dset) = ivtm 
 
 	         cdfstat = NF_INQ_DIMLEN(cdfid, vdims(1), eax_len)
-	         dsg_instance_dim = vdims(1)
+	         CALL CD_GET_DS_DIMS (dset, vdims(1), dname, eax_len, status)
+	         dsg_ifeature_dim = vdims(1)
 	         CYCLE  ivcdloop
 
-* check other valid feature types (if use/feature= then the type may not match)
 	      ELSE
 
-	         DO idim = 1, 4
-		    IF (idim .EQ. 2) CYCLE 
-		    buff1 = CD_DSG_FEATURENAME ( idim ) 
-		    buff1 = buff1(:TM_LENSTR1(buff1))//'_id'
-	            IF (STR_SAME (buff, buff1) .EQ. 0) THEN
-		       has_DSG_feature_id = .TRUE.
-		       dsg_feature_var(dset) = ivtm 
+* For the compound types, already have the trajectory_id and timeseries_id
 
-		       cdfstat = NF_INQ_DIMLEN(cdfid, vdims(1), eax_len)
-		       dsg_instance_dim = vdims(1)
-	               CYCLE  ivcdloop
-		    ENDIF
-		 ENDDO
+	         IF (cmpnd_ftype) CYCLE  ivcdloop
 
-		 CALL WARN('Invalid cf_role attribute ignored on variable '//
-     .               vname(:vlen) )
+* check other valid feature types: If use/feature=timeseries for a trajectory dataset 
+* then that is valid.  If use/feature=profile for a timeseriesprofile or trajectoryprofile
+* dataset then will ignore the cf_role="timeseries_id" or cf_role="trajectory_id" attrib.
+
+	         IF (dset_ftype .EQ. x_dim) buff = 'timeseries_id' 
+		 IF (STR_SAME (buff, buff1) .EQ. 0) THEN
+		    has_DSG_feature_id = .TRUE.
+		    dsg_feature_var(dset) = ivtm 
+
+		    cdfstat = NF_INQ_DIMLEN(cdfid, vdims(1), eax_len)
+		    CALL CD_GET_DS_DIMS (dset, vdims(1), dname, eax_len, status)
+		    dsg_ifeature_dim = vdims(1)
+		    CYCLE  ivcdloop
+		 ENDIF
+
+c		 CALL WARN('Invalid cf_role attribute ignored on variable '//
+c     .               vname(:vlen) )
 	      ENDIF
 
 	   ELSE
@@ -374,13 +532,15 @@
 ! Allow for this case but not other multi-dimensioned variables.
 
 	   cdfstat = NF_INQ_DIMLEN(cdfid, vdims(1), ax_len)
+	   CALL CD_GET_DS_DIMS (dset, vdims(1), dname, ax_len, status)
 
 	   IF (nvdim .GT. 1) THEN
 	      cdfstat = NF_INQ_DIMLEN(cdfid, vdims(2), ax2_len)
+	      CALL CD_GET_DS_DIMS (dset, vdims(2), dname, ax2_len, status)
 	      IF (ax2_len .GT. 1) THEN
 	         errstr = 'DSG ragged array: observation variables must be 1-D '//vname(:vlen)
 	         IF (status .NE. merr_dsg_grid) status = merr_dsg_struc
-	         GOTO 5500
+	         GOTO 6000
 	      ENDIF
 	   ENDIF
 
@@ -389,20 +549,27 @@
      .                 do_warn, vname(:vlen), maxlen, attlen, attoutflag, 
      .                 buff, vals )
 	   IF (got_it) THEN
-	      cdfstat = NF_INQ_DIMLEN(cdfid, dsg_instance_dim, ax_len)
+	      ax_len = 0
+	      IF (dsg_ifeature_dim .GT. no_dim) THEN
+	         cdfstat = NF_INQ_DIMLEN(cdfid, dsg_ifeature_dim, ax_len)
+	         CALL CD_GET_DS_DIMS (dset, dsg_ifeature_dim, dname, ax_len, status)
+	      ENDIF
 	      IF (ax_len.EQ.0) THEN
 * ... first encounter with instance axis
-	         dsg_instance_dim = vdims(1)
-	         cdfstat = NF_INQ_DIMLEN(cdfid, dsg_instance_dim, eax_len)
+	         dsg_ifeature_dim = vdims(1)
+		 
+	         cdfstat = NF_INQ_DIMLEN(cdfid, dsg_ifeature_dim, eax_len)
+	         CALL CD_GET_DS_DIMS(dset, dsg_ifeature_dim, dname, eax_len, status)
 	      ENDIF
 	      dsg_row_size_var(dset) = ivtm
 	      dsg_row_size_varid(dset) = ivcd
 	      CALL CD_GET_DSG_INSTANCE_VAR(dset, cdfid, ivcd, ivtm,
-     .                 vdims, nvdim, eax_len, pdsg_row_size,
+     .                 nvdim, eax_len, pdsg_row_size, dsg_time_var,
      .                 dsg_loaded_lm(ivtm), errstr, status)
+
 	      IF (status .NE. merr_ok) THEN
 	         IF (status .NE. merr_dsg_grid) status = merr_dsg_struc
-	         GOTO 5500
+	         GOTO 6000
 	      ENDIF
 	      has_DSG_row_size = .TRUE.
 
@@ -410,6 +577,7 @@
 *     Get its id number from its name.
 	      slen = TM_LENSTR1(buff)
 	      cdfstat = NF_INQ_DIMID ( cdfid, buff(:slen), dsg_obs_dim)
+	      CALL CD_GET_DIM_ID (dset, buff(:slen), dsg_obs_dim)
 	      IF ( cdfstat .NE. NF_NOERR )  GOTO 5400
 	      CYCLE 
 	   ENDIF
@@ -422,26 +590,43 @@
 	      IF (dsg_coord_var(idim,dset) .EQ. int4_init) THEN
 
 		 CALL CD_GET_DSG_INSTANCE_VAR(dset, cdfid, ivcd, 
-     .	             ivtm,vdims, nvdim, ax_len, idim, 
+     .	             ivtm, nvdim, ax_len, idim, dsg_time_var,
      .	             dsg_loaded_lm(ivtm), errstr, status)
+
 		 IF (status .EQ. 0) THEN 
 		     CYCLE  ! corrupted var, ignore as a coord
 		 ENDIF
 
 		 IF (status .NE. merr_ok) THEN
 		    IF (status .NE. merr_dsg_grid) status = merr_dsg_struc
-		    GOTO 5500
+		    GOTO 6000
 		 ENDIF
 		 dsg_coord_var(idim,dset) = ivtm
-		 IF (idim .EQ. orient)
-     .			has_DSG_coordinates = .TRUE.
+		 IF (idim .EQ. orient) has_DSG_coordinates = .TRUE.
 
-		 EXIT 
 	      ENDIF
 	   ENDDO
 	   CYCLE ivcdloop  ! unrecognized DSG axis orientation. 
 
 	ENDDO ivcdloop
+
+	IF (.NOT.has_DSG_coordinates .AND. cmpnd_ftype ) THEN
+	   
+	   ndims = 0
+	   DO idim = 1, 4
+	      IF (ax_att_var(idim) .NE. int4_init) ndims = ndims + 1
+	   ENDDO
+	   
+	   has_DSG_coordinates = (ndims .EQ. 4)
+	ENDIF
+
+* If this is a timeseriesProfile dataset, then the X-Y coordinates are in
+* the timeseries instance-dimension direction. Use the station index variable
+* to redefine the dsg-coordiate variables for the translation grid to list these 
+* coordinates in the profile dimension.  The test when orient is profile is
+* for the case when the user has said USE/feature=profile for a TimeseriesProfile set.
+
+	IF (redo_lonlat) CALL CD_DSG_TP_TO_PROF (dset)
 
 * A valid DSG contiguous ragged dataset must have a rowSize variable
 * and coordinates on the dsg_orientation axis. If they erroneously set
@@ -469,10 +654,10 @@
 	         IF (nvdim .GT. 1)  vdims(2) = vdims(3)
 	      ENDIF
 	      cdfstat = NF_INQ_DIMLEN(cdfid, vdims(1), eax_len)
-
+	      CALL CD_GET_DS_DIMS (dset, vdims(1), dname, eax_len, status)
 	      has_DSG_feature_id = .TRUE.
 	      dsg_feature_var(dset) = dsg_coord_var(t_dim,dset) 
-	      dsg_instance_dim = vdims(1)
+	      dsg_ifeature_dim = vdims(1)
 	      dsg_obs_dimlen(dset) = eax_len
 	      dsg_row_size_var(dset) = 1
 
@@ -490,9 +675,10 @@
 	      CALL CD_GET_VAR_DIMS_INFO (dset, dsg_feature_var(dset), vname, nvdim, 
      .            vdims, status)
 	
-	      IF (dsg_instance_dim .EQ. no_dim) THEN
-	          cdfstat = NF_INQ_DIMLEN(cdfid, vdims(1), eax_len)
-	          IF (eax_len .EQ. 1) dsg_instance_dim = vdims(1)
+	      IF (dsg_ifeature_dim .EQ. no_dim) THEN
+	          cdfstat = NF_INQ_DIMLEN(cdfid, vdims(1), eax_len )
+		  CALL CD_GET_DS_DIMS (dset, vdims(1), dname, eax_len, status)
+	          IF (eax_len .EQ. 1) dsg_ifeature_dim = vdims(1)
 	      ENDIF
 
 	      IF (eax_len.EQ.1 .OR. dsg_feature_type(dset).EQ.pfeatureType_Point) THEN
@@ -510,8 +696,8 @@
 	         ds_var_title(ivtm)    = 'synthesized rowsize'
 	         ds_var_titl_mod(ivtm) = ' '
 	         ds_var_units(ivtm)    = 'count'
-	         ds_missing_flag(ivtm) = global_bad
-	         ds_bad_flag(ivtm)     = global_bad
+	         ds_missing_flag(ivtm) = bad
+	         ds_bad_flag(ivtm)     = bad
 	         ds_var_type(ivtm)     = ptype_float
 
 	         ds_grid_start(e_dim,ivtm) = 1
@@ -557,13 +743,14 @@
 	         ELSE
 		    isend = -1*ivcd
 		    CALL CD_GET_DSG_INSTANCE_VAR(dset, cdfid, isend, ivtm,
-     .                 vdims, nvdim, eax_len, pdsg_row_size,
+     .                 nvdim, eax_len, pdsg_row_size, dsg_time_var,
      .                 dsg_loaded_lm(ivtm), errstr, status)
+
 	         ENDIF
 
 		 IF (status .NE. merr_ok) THEN
 		    IF (status .NE. merr_dsg_grid) status = merr_dsg_struc
-		    GOTO 5500
+		    GOTO 6000
 		 ENDIF
 
 	         dsg_row_size_var(dset) = ivtm
@@ -585,7 +772,7 @@
 		    dsg_obs_dim = vdims(1)
 		 ELSE
 		    DO idim = 1, nvdim
-		       IF (vdims(idim) .NE. dsg_instance_dim) dsg_obs_dim = vdims(idim)
+		       IF (vdims(idim) .NE. dsg_ifeature_dim) dsg_obs_dim = vdims(idim)
 		    ENDDO
 		 ENDIF
 
@@ -597,11 +784,10 @@
      .             dsg_feature_type(dset).NE.pfeatureType_Point) ) THEN
 	      errstr = 'Row Size variable w/ sample_dimension attribute not found. ' 
 	      status = merr_dsg_struc
-	      GOTO 5500
+	      GOTO 6000
 	   ENDIF
 
 	ENDIF
-
 
 *   * * * * * * * * * * * * * * * * * * * * * * * * 
 * pass through the variable names making sure that case-sensitive
@@ -630,7 +816,6 @@
  310    CONTINUE
 	ENDIF
 
-
 * Checklist:
 *  coordinate variables for at least, X, Y, T. (checked above)
 *  feature-id variable
@@ -640,7 +825,16 @@
 	   errstr = 'Feature-ID variable not found or '//
      .      'invalid value of cf_role attribute'
 	   status = merr_dsg_struc
-	   GOTO 5500
+	   GOTO 6000
+	ENDIF
+
+	IF (cmpnd_ftype) THEN
+	   buff = ''
+
+	   IF (fax_len .EQ. int4_init) THEN
+	      buff = 'ID variable not found:'//index_dir_buff(:TM_LENSTR1(index_dir_buff))
+	      vlen = TM_LENSTR1(buff)
+	   ENDIF
 	ENDIF
 
 *  No mask is set, but initialize the memory location to unspecified_int4
@@ -659,9 +853,15 @@
 
 	IF (status .NE. merr_ok) THEN
 	   IF (status .NE. merr_dsg_grid) status = merr_dsg_struc
-	   GOTO 5500
+	   GOTO 6000
 	ENDIF
 	
+	
+*...  No mask for timeseries or trajecotry on tseries-profile or traj-profile data
+*      is set, but initialize the memory location to unspecified_int4
+
+	IF (cmpnd_ftype) dsg_mask_ftrset_lm(dset) = unspecified_int4
+
 * successful completion
 	status = merr_ok
  5000	RETURN
@@ -669,11 +869,11 @@
 * Invalid DSG: Clean up initialization as DSG and go back, try to 
 * initialize it as a non-DSG file
 
- 5500   CONTINUE
+ 6000   CONTINUE
 	udsg_err = (.NOT.udsg_err .AND. dsg_user_direction .NE. int4_init)
-	buff1 = CD_DSG_FEATURENAME(dsg_user_direction)
 
 	IF (dsg_instance_axis .NE. int4_init) CALL TM_DEALLO_DYN_LINE(dsg_instance_axis)
+	IF (dsg_instnc_ftrset_axis .NE. int4_init) CALL TM_DEALLO_DYN_LINE(dsg_instnc_ftrset_axis)
 	DO idim = 1, nferdims
 	   IF (ds_basic_axes(idim,dset) .NE. int4_init)
      .        CALL TM_DEALLO_DYN_LINE(ds_basic_axes(idim,dset) )
@@ -689,7 +889,7 @@
 
 * It's an error if they try USE/FEATURE= on invalid DSG dataset
 	IF (udsg_err) THEN
-	   buff = 'Requested USE/FEATURE='//buff1(:vlen)//
+	   buff = 'Requested USE/FEATURE='//ftrname(:vlen)//
      .        ', but dataset is not a valid DSG file '
 	   CALL TM_ERRMSG (merr_invalid, status, 'CD_DSG_SCAN_VARS',
      .         no_descfile, no_stepfile,
@@ -698,23 +898,31 @@
 
 	GOTO 5000
   
- 5100   buff1 = CD_DSG_FEATURENAME(dsg_user_direction)
-	buff = 'USE/FEATURE='//buff1(:vlen)//
+ 5100   vlen = TM_LENSTR1(ftrname)
+	buff = 'USE/FEATURE='//ftrname(:vlen)//
      .     ' ... must have observations along '//direc(dsg_user_direction)
 	udsg_err = .TRUE.
 	CALL TM_ERRMSG (merr_dsg_grid, status, 'CD_DSG_SCAN_VARS',
-     .     no_descfile, no_stepfile, buff, no_errstring, *5500)
+     .     no_descfile, no_stepfile, buff, no_errstring, *6000)
 
  5400   CALL TM_ERRMSG (merr_invalid, status, 'CD_DSG_SCAN_VARS',
      .     no_descfile, no_stepfile,
-     .     buff, no_errstring, *5500)
+     .     buff, no_errstring, *6000)
 
+ 5500   vlen = TM_LENSTR1(ftrname)
+	buff = 'Invalid Index variable in '//ftrname(:vlen)//' dataset. '//
+     .         'Incorrect length or values not in range of num-profiles'
+	CALL TM_ERRMSG (merr_invalid, status, 'CD_DSG_SCAN_VARS',
+     .     no_descfile, no_stepfile,
+     .     buff, no_errstring, *6000)
 
- 5700   CALL TM_ERRMSG
-     .     ( merr_notsupport, status, 'CD_SCAN_VARS', dset_num,
-     .         no_stepfile, 
-     .         'String Data Type not implemented: variable '//vname(:vlen),
-     .         no_errstring,*5500)
+ 5600   ftrname = CD_DSG_FEATURENAME ( dset_ftype ) 
+	vlen = TM_LENSTR1(ftrname)
+	buff = ftrname(:vlen)//' Feature Type not yet implemented. Try "'//
+     .         'USE/FEATURE=profile "'
+	CALL TM_ERRMSG (merr_invalid, status, 'CD_DSG_SCAN_VARS',
+     .     no_descfile, no_stepfile,
+     .     buff, no_errstring, *6000)
 
 	RETURN
 	END

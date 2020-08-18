@@ -39,6 +39,7 @@
 *    - non-DSG
 *    - DSG instance variable
 *    - DSG contiguous ragged array
+*    - timeseries- or trajectory- variable in a timseriesProfile or trajectoryProfile set
 
 * V720 *sh* 4/17
 
@@ -58,8 +59,13 @@
 * the test of DSG-ness is line_dsg_dset points to dset on the E axis
 	line = grid_line(e_dim,grid)
 	IF (line .EQ. mnormal) THEN
-	   DSG_WHATS_IT = pdsg_not_dsg
-	   RETURN
+	   line = grid_line(f_dim,grid)
+	   IF (line .EQ. mnormal) THEN
+	      DSG_WHATS_IT = pdsg_not_dsg
+	      RETURN
+	   ELSE
+	      DSG_WHATS_IT = pdsg_f2var
+	   ENDIF
 	ENDIF
 	dset = line_dsg_dset(line)
 	IF (dset .EQ. pline_not_dsg) THEN
@@ -70,12 +76,12 @@
 * we are looking at a DSG grid
 * the test for contiguous ragged is the existence of a feature axis
 * with line_dsg_dset == the dset
-* For user-variables that use some grid-changin functions, the
+* For user-variables that use some grid-changing functions, the
 * result is defined as having abstract axes (e.g. STRINDEX(expocode, "PAN")
 * has an abstract axis in axes other than the E axis that it gets from expocode.
 
-
 	orient = dsg_orientation(dset)
+	IF (orient.EQ.y_dim .OR. orient.EQ.f_dim) orient = z_dim ! compound feature type
 	line = grid_line(orient,grid)
 	IF (grid_line(orient,grid) .EQ. mnormal  .OR. 
      .      grid_line(orient,grid) .EQ. grid_line(1,mgrid_xabstract)) THEN

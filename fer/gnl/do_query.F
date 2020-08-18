@@ -55,8 +55,9 @@
 * v540 *acm* 10/01 increase length of ds_name
 * v540 *acm* 10/01  remove VMS include statements
 * v604 *acm* 7/07 increase length of ds_name
-*       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
-
+*      *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
+* V761 *acm* 7/20 Issue 1981:in ISUBSCR_CX distinguish rounding for single 
+*                 point vs range of points
         IMPLICIT NONE
         include 'tmap_dims.parm'
 #        include "tmap_dset.parm"
@@ -506,7 +507,7 @@
  	   CALL TRANSLATE_LIMIT( cmnd_buff(arg_start(5):arg_end(5)),
      .		           dim, .FALSE., lo, formatted, cal_id, status )
 	   IF ( status .NE. ferr_ok ) GOTO 5315
-	   i = ISUBSCR_CX( lo, grid, dim, cx_last, round_dn )
+	   i = ISUBSCR_CX( lo, grid, dim, cx_last, round_sngl )
 	ELSE
 #ifdef MANDATORY_FORMAT_WIDTHS
 * no fixed field width works but "*" may cause problems too
@@ -563,7 +564,7 @@
  	   CALL TRANSLATE_LIMIT( cmnd_buff(arg_start(5):arg_end(5)),
      .		           dim, .FALSE., lo, formatted, cal_id, status )
 	   IF ( status .NE. ferr_ok ) GOTO 5315
-	   i = ISUBSCR_CX( lo, grid, dim, cx_last, round_dn )
+	   i = ISUBSCR_CX( lo, grid, dim, cx_last, round_sngl )
 	ELSE
 #ifdef MANDATORY_FORMAT_WIDTHS
 * no fixed field width works but "*" may cause problems too

@@ -257,8 +257,8 @@
 	include 'taxis_inc.decl'
 	include 'TAXIS.INC'
 	include 'PPLDAT.INC'
-        include 'switch_inc.decl'
-        include 'SWITCH.INC'
+	include 'switch_inc.decl'
+	include 'SWITCH.INC'
         include 'pyfonts.cmn'
 	include 'xdset_info.cmn_text'
 	include 'xdsg_context.cmn'
@@ -284,7 +284,7 @@
      .			indep_is_log, dep_is_log, use_nice,
      .                  this_no_range(max_line_on_plot), set_axis,
      .                  timeax_both, do_units, doing_ribbon_color,
-     .                  x_is_time, y_is_time, its_traj, its_dsg, 
+     .                  x_is_time, y_is_time, its_traj, its_dsg, its_cmpnd,
      .                  expand_dsg_ok, color_dsg_id, user_hlim
 	CHARACTER*2040	FULL_VAR_TITLE, KEY_STRING, plot_title
 	CHARACTER	INTERNAL_WHOI_DATE*14, VAR_UNITS*64,
@@ -388,7 +388,8 @@
 	    dset = TM_DSG_DSET_FROM_GRID( grid )
 	    nfeatures = TM_DSG_NFEATURES( grid )	    
 	    its_dsg = .TRUE.
-	    CALL TM_DSG_FACTS( grid, orientation, obsdimlen, fline, its_dsg )
+* The dataset may be DSG but the variable not.
+	    CALL TM_DSG_FACTS( grid, orientation, obsdimlen, fline, its_dsg, its_cmpnd )
 	    IF (its_dsg) THEN
 
 	       its_traj = dsg_feature_type(dset).EQ.pfeatureType_Trajectory .OR.  
@@ -459,7 +460,7 @@
 	adjust_time = .FALSE.
 	cx_x = cx_list(1)
 	xtra_lab = ' '
-	nkey_entries = nmv
+	nkey_entries = numv
 	itmp = mnormal
 	do_units = .TRUE.
 	x_is_time = .FALSE.
@@ -467,10 +468,10 @@
 	tstyle = ' '
 	the_taxis = no_dim
 	icode = 0
+	ribbon_var = 0
 	gap_var = 0
 	t1_date = ' '
 	tref = ' '
-	ribbon_var = 0
 
 * set limit on the number of plot keys
         IF (.NOT.nokey  .AND.  numv.GT.max_key_entries) THEN

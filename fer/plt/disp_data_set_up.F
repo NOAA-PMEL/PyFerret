@@ -87,7 +87,7 @@
 	INTEGER	ax1_work, ax2_work, status
 
 * internal variable declarations:
-	LOGICAL TM_ITSA_DSG_RAGGED, TM_ITSA_DSG, plot_vs, typerr
+	LOGICAL TM_ITSA_DSG_RAGGED, TM_ITSA_DSG, plot_vs, typerr, its_dsg, its_cmpnd
 	INTEGER	MR_DIM_LEN, CX_DIM_LEN, CGRID_SIZE, TM_DSG_NFEATURES,
      .		TM_DSG_DSET_FROM_GRID,
      .		idim, ndim, dim(nferdims), mr1, cx, ivar,
@@ -134,7 +134,7 @@
 
 	    dset = TM_DSG_DSET_FROM_GRID( grid )
 	    nfeatures = TM_DSG_NFEATURES( grid )	    
-	    CALL TM_DSG_FACTS( grid, idim, obsdimlen, fline )
+	    CALL TM_DSG_FACTS( grid, idim, obsdimlen, fline, its_dsg, its_cmpnd )
 
 	    IF (idim.EQ.pfeatureType_Trajectory .OR. idim.EQ.pfeatureType_Point) THEN
 	       plot_vs = .TRUE.

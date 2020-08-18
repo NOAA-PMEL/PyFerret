@@ -2,7 +2,7 @@
      .		a_lo_x, a_lo_y, a_lo_z, a_lo_t, a_lo_e, a_lo_f,
      .		a_hi_x, a_hi_y, a_hi_z, a_hi_t, a_hi_e, a_hi_f,
      .		use_lo, use_hi, stride,
-     .		data_grid, file_num, status )
+     .		data_grid, file_num, n2feat, status )
 *
 *
 *  This software was developed by the Thermal Modeling and Analysis
@@ -65,12 +65,16 @@
 * V674 2/12 *acm* 6D Ferret: use nferdims rather than 4 for dimension indexing
 *
 * include files
-	include 'tmap_dims.parm'		! data set dimension
+* include files
+        include 'tmap_dims.parm'                ! data set dimension
 #include "gt_lib.parm"
-	include 'tmap_errors.parm'		! err code parm defs
-	include 'xtm_grid.cmn_text'		! grid info
-		include 'xdset_info.cmn_text'	! data set info common
-	external xdset_info_data
+        include 'tmap_errors.parm'              ! err code parm defs
+	include 'tmap_dtypes.parm'
+        include 'xtm_grid.cmn_text'             ! grid info
+                include 'xdset_info.cmn_text'   ! data set info common
+        external xdset_info_data
+
+        include 'xdyn_linemem.cmn_text'
 
 * arguments:
 *	dset_num    - internal data set # (from TM_INIT_DSET)
@@ -79,10 +83,13 @@
 *	use_dims    - indices of model data block desired
 *	data_grid   - array containing model data (output)
 *	file_num    - file number (output)
+*	n2feat	    - IF > 0, then we are reading station 
+*			or traj info as instance data for 
+*			timeseriesprofile or trajectoryprofile
 *	status      - error status upon completion (output)
 *
 	CHARACTER*(*)	variable
-	INTEGER		dset_num, file_num, status
+	INTEGER		dset_num, file_num, n2feat, status
 	INTEGER		a_lo_x, a_lo_y, a_lo_z, a_lo_t, a_lo_e, a_lo_f, 
      .                  a_hi_x, a_hi_y, a_hi_z, a_hi_t, a_hi_e, a_hi_f,
      .			use_lo(*), use_hi(*), stride(*)
@@ -100,7 +107,9 @@
      .			i, j, k, l, in, jn, kn, ln, vargrid, thisline,
      .			Dstart, Dend, Drange,
      .			Rstart, Rend, Rrange,
-     .			Tstart, Tend, Trange
+     .			Tstart, Tend, Trange,
+     .			nprof, index_lm, ista, iprof 
+
 	INTEGER		i_lo, j_lo, k_lo, l_lo, m_lo, n_lo, 
      .			i_hi, j_hi, k_hi, l_hi, m_hi, n_hi,
      .			iadj, jadj, kadj, ladj, madj, nadj
@@ -128,7 +137,9 @@
      .			(adj(5),madj),
      .			(adj(6),nadj)
 
+
 * initialize
+
 
 	actual_lo(1) = a_lo_x
 	actual_lo(2) = a_lo_y
@@ -160,7 +171,7 @@
      .                               string_array_result1(1),
      .                               maxvars,
      .                               num_indices)
-        DO 100 n = 1, num_indices
+	DO 100 n = 1, num_indices
             ivar = string_array_result1(n)
             IF ( ds_var_setnum(ivar) .EQ. dset_num) THEN
 	        varpos = ivar
@@ -173,6 +184,7 @@
 * if it is - get the modulo line, and make sure at this time there's only 1
 * axis needing a modulo read call.
   110	vargrid = ds_grid_number(varpos)
+
 	modline = 0
 	DO 120 lcnt = 1,nferdims
 	  thisline = grid_line(lcnt,vargrid)
@@ -189,11 +201,62 @@
   120	CONTINUE
 	
 	IF (modline .EQ. 0) THEN
+
+	  nprof = a_hi_e
+	  IF (n2feat .GT. 0) a_hi_e = n2feat
+
 	  CALL TM_CHOOSE_READ ( dset_num, varpos,
      .		a_lo_x, a_lo_y, a_lo_z, a_lo_t, a_lo_e, a_lo_f,
      .		a_hi_x, a_hi_y, a_hi_z, a_hi_t, a_hi_e, a_hi_f,
      .		use_lo, use_hi, stride,
      .		data_grid, file_num, status )
+ 
+
+* put the 1..nstation data into 1..profile
+
+	  IF (n2feat .GT. 0) THEN
+
+	     index_lm = dsg_loaded_lm(dsg_index_var(dset_num))
+
+	     IF (ds_var_type(ivar) .EQ. ptype_string) THEN
+
+
+* Read in the last slots of data to allocate string memory
+* 
+	        a_hi_e = nprof-n2feat
+		CALL TM_CHOOSE_READ ( dset_num, varpos,
+     .	 	  a_lo_x, a_lo_y, a_lo_z, a_lo_t, a_lo_e, a_lo_f,
+     .		  a_hi_x, a_hi_y, a_hi_z, a_hi_t, a_hi_e, a_hi_f,
+     .		  use_lo, use_hi, stride,
+     .		  data_grid(a_lo_x,a_lo_y,a_lo_z,a_lo_t,n2feat+1,a_lo_f), 
+     .		  file_num, status )
+
+	        DO iprof = nprof, 2, -1
+
+	           ista = dsg_linemem(index_lm)%ptr(iprof) + 1
+		   CALL COPY_C_STRING(
+     .		   data_grid(a_lo_x,a_lo_y,a_lo_z,a_lo_t,ista,a_lo_f), 
+     .		   data_grid(a_lo_x,a_lo_y,a_lo_z,a_lo_t,iprof,a_lo_f) )
+
+	        ENDDO
+
+	     ELSE
+
+	        DO iprof = nprof, 2, -1
+
+	           ista = dsg_linemem(index_lm)%ptr(iprof) + 1
+	           data_grid(a_lo_x,a_lo_y,a_lo_z,a_lo_t,iprof,a_lo_f) = 
+     .		   data_grid(a_lo_x,a_lo_y,a_lo_z,a_lo_t,ista,a_lo_f)
+	        
+		ENDDO
+
+	     ENDIF
+
+	     a_hi_e = nprof
+
+	  ENDIF
+
+
 	  IF (status .NE. merr_ok) GOTO 9999
 
 * It's modulo : Set-up
@@ -271,6 +334,13 @@
   180	    CONTINUE
 	  ENDIF
 	ENDIF
+
+
+
+*	n2feat	    - IF > 0, then we are reading station 
+*			or traj info as instance data for 
+*			timeseriesprofile or trajectoryprofile
+
 	status = merr_ok
 	GOTO 9999
 

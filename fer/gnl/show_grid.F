@@ -93,7 +93,7 @@
 	INTEGER grid, cx, status
 
 * local variable declarations:
-	LOGICAL FOUR_D_GRID, TM_ITSA_DSG, its_dsg, showing_grid
+	LOGICAL FOUR_D_GRID, TM_ITSA_DSG, its_dsg, its_cmpnd, showing_grid
 	INTEGER TM_LENSTR1, DSG_WHATS_IT, TM_DSG_DSET_FROM_GRID,
      .		i, idim, listdims, uvar, dsg_orient, obsdimlen, 
      .		feature_line, slen, dset
@@ -112,7 +112,7 @@
 	its_dsg = TM_ITSA_DSG(grid)
 	IF (its_dsg) THEN
 	   CALL TM_DSG_FACTS( grid, dsg_orient, obsdimlen, 
-     .                  feature_line, its_dsg )
+     .                  feature_line, its_dsg, its_cmpnd )
     
 	   IF (DSG_WHATS_IT(grid) .NE. pdsg_instance) THEN 
 	      buff = CD_DSG_FEATURENAME(dsg_orient)

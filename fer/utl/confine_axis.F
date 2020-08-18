@@ -100,7 +100,8 @@
 
 * internal variable declarations:
 !	LOGICAL lim_redundant
-	LOGICAL TM_ITSA_DSG, ITSA_DSG_POINTS, its_irrelevant, its_dsg
+	LOGICAL TM_ITSA_DSG, ITSA_DSG_POINTS, its_irrelevant,
+     .		its_dsg, its_cmpnd
 	INTEGER	ISUBSCRIPT, TM_LENSTR1, TM_DSG_DSET_FROM_GRID,
      .		dset, ss, min_ss, max_ss, lo_ss, hi_ss,
      .		axis, grid, lenstr, slen, cat, var, istat,
@@ -122,10 +123,10 @@
 	cat  = cx_category(cx)
 	var  = cx_variable(cx)
 	its_dsg = TM_ITSA_DSG(grid) .OR. ITSA_DSG_POINTS(cx)
-	IF (its_dsg) THEN
-	   dset = TM_DSG_DSET_FROM_GRID( grid )
-	   CALL TM_DSG_FACTS( grid, orientation, obs_dimlen, fline, its_dsg )
-	ENDIF
+c	IF (its_dsg) THEN
+c	   dset = TM_DSG_DSET_FROM_GRID( grid )
+c	   CALL TM_DSG_FACTS( grid, orientation, obs_dimlen, fline, its_dsg, its_cmpnd )
+c	ENDIF
 
 * (11/95) expressions such as "2+2"
 	IF (cat .EQ. cat_user_var) THEN

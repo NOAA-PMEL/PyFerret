@@ -92,7 +92,9 @@
 
 * local variable declarations:
 	LOGICAL	BKWD_AXIS, GEOG_LABEL, ITSA_TRUEMONTH_AXIS, TM_FPEQ,
-     .          calendar, original, true_month, ss_ok, its_dsg_ragged, its_dsg
+     .          calendar, original, true_month, ss_ok, its_dsg_ragged, 
+     .          its_dsg, its_cmpnd
+
 	INTEGER TM_LENSTR1, TM_SUBSC, TM_GET_CALENDAR_ID, STR_SAME,
      .          lo, hi, i, line, dlen, ndec, status,nlen, naxlen, 
      .          int1, slen, i1ss, inss, cal_id, dsg_orient, obsdimlen, 
@@ -307,8 +309,9 @@ c Compressing transfm, w/o limits
 
 	   IF (its_dsg_ragged) THEN
 	      CALL TM_DSG_FACTS( grid, dsg_orient, obsdimlen, 
-     .                  feature_line, its_dsg )
+     .                  feature_line, its_dsg, its_cmpnd )
      
+	      IF (its_cmpnd) dsg_orient = z_dim
 	      IF (its_dsg_ragged .AND. idim.LE.t_dim .AND. idim.NE.dsg_orient) THEN
 	         title = 'normal'
 	         WRITE ( risc_buff, 3010 ) title, ww_dim_name( idim )

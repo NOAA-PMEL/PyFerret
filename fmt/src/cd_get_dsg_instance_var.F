@@ -1,5 +1,5 @@
-        SUBROUTINE CD_GET_DSG_INSTANCE_VAR(dset, cdfid, ivcd, ivtm, vdims, 
-     .                       nvdim, npts, idim, stored_lm, errstr, status)
+        SUBROUTINE CD_GET_DSG_INSTANCE_VAR(dset, cdfid, ivcd, ivtm, nvdim, 
+     .                npts, idim, dsg_time_var, stored_lm, errstr, status)
 
 
 *  This software was developed by the Thermal Modeling and Analysis
@@ -57,17 +57,18 @@
 * v751 *acm*  6/19 Allow for longer strings as attribute values - std names -->256
 * v751 *acm* 11/19 Don't warn of constant lon/lat e.g. for single-station timeseries or Profiles
 * V7.6 *acm* 6/20 Issue 1980: When possible open invalid DSG datasets anyway with NOTES.
+* V7.61 *acm* 7/20 TimeseriesProfile and TrajectoryProfile datasets
 
 * argument definitions:
 *       cdfid     - netCDF id number for already opened CDF file
 *       dset      - dataset number for already opened CDF file
 *       ivcd      - netCDF variable id number
 *       ivtm      - XDSET_INFO COMMON variable number
-*       vdims     - var may be on a 1-by-npts grid
 *       nvdim     - number of dims, 1 or 2
 *       npts      - number of values to read into memory
 *       idim      - orientation of the coordinate (or "0" for rowSize)
 *       stored_lm - dynamic memory line number of the instance variable read from the file 
+*       dsg_time_var - The time variable, used to adjust things if the data is TimeseriesProfile
 *       status    - return status
 
 * include files
@@ -87,17 +88,18 @@
 
 * argument declarations
         INTEGER  cdfid, dset, ivcd, ivtm, npts, idim, stored_lm, 
-     .           vdims(*), nvdim, status
+     .           nvdim, dsg_time_var, status
 	CHARACTER*(*) errstr
 
 * local variable declarations:
-        LOGICAL NC_GET_ATTRIB, TM_HAS_STRING, got_it, ok_cal, has_bad, got_z
+        LOGICAL NC_GET_ATTRIB, TM_HAS_STRING, 
+     .          got_it, ok_cal, has_bad, got_z, is_ftrset_var
         INTEGER TM_LENSTR1, TM_UNIT_ID, STR_SAME, 
      .          TM_GET_CALENDAR_ID, TM_UNITS_CAL, STR_UPCASE,
      .          dtype, attlen, vlen, attoutflag, iaxis,
      .          start(2), numpts(2), i, vtype, since_t0, days_neg4713,
-     .		units, cal_id, slen, flen
-        REAL    vals(2), delta, coord, coord_min, coord_max, bad
+     .		units, cal_id, slen, flen, orient, ftrset_dir, naxis
+        REAL    vals(2), vdims(2), delta, coord, coord_min, coord_max, bad
         CHARACTER CD_DSG_FEATURENAME*20, axname*9, buff*256, ftrname*20
 
 * local parameter declaration
@@ -112,13 +114,32 @@
 
 * initialize
         vlen = TM_LENSTR1(ds_var_code(ivtm))
+        orient = dsg_orientation(dset)
 
-	ftrname = CD_DSG_FEATURENAME( dsg_orientation(dset))
+	ftrname = CD_DSG_FEATURENAME(orient)
 	flen = TM_LENSTR1(ftrname)
 
+	IF (idim .EQ. pdsg_fs_dim) ftrset_dir = f_dim
 
 * allocate memory for the variable
-        rqst_n = npts
+
+
+* The TimeseriesProfile lon and lat coordinates are per timeseries.  We will
+* later get the profiles correspondin to stations from the station index and
+* store lon and lat per profile for the translation grid.  So make the axis
+* of length nprofile.  Reset npts using the length of the T coordinate = nprofiles.
+* Do this also for orientation set to profile; it may be a TimeseriesProfile
+* dataset where the user has said USE/FEATURE=profile.
+
+	naxis = npts
+	IF ( (idim.EQ.x_dim .OR. idim.EQ.y_dim) .AND. 
+     .       (dsg_orientation(dset) .EQ. pfeatureType_TimeseriesProfile .OR. 
+     .        dsg_orientation(dset) .EQ. pfeatureType_Profile) ) THEN
+	   CALL CD_GET_VAR_DIMS_INFO (dset, dsg_time_var, buff, nvdim, vdims, status)
+	   CALL CD_GET_DS_DIMS(dset, vdims(1), buff, naxis, status)
+	ENDIF
+
+        rqst_n = naxis
         CALL TM_GET_LM_DYNMEM(rqst_n, stored_lm, status)
         IF (status .NE. merr_ok) GOTO 5000
 
@@ -129,7 +150,7 @@
 	   coord = dsg_obs_dimlen(dset)
 	   CALL PUT_LINE_COORD ( dsg_linemem(stored_lm)%ptr, 1, coord )   
 
-	ELSE
+	ELSEIF (idim .NE. pdsg_fs_dim) THEN
 	   IF (nvdim .EQ. 1) THEN
               CALL CD_RD_R8_ARR( cdfid, ivcd, 1, npts, dtype,
      .                          "reading "//ds_var_code(ivtm)(:vlen)
@@ -152,7 +173,6 @@
 
         IF (idim .EQ. pdsg_row_size) THEN
 
-
 * Get the missing and fill-value attributes, use them to set ds_bad_flag.
 * Consolidate to one bad-value 
 
@@ -169,6 +189,7 @@
 	   IF ( status .NE. merr_ok ) GOTO 5000
 	   line_direction(iaxis) = axis_orients(E_dim)
 	   line_units(iaxis)    = un_name(pun_instance)
+
 * ... save this axis to be used during grid creation
 	   dsg_instance_axis = iaxis
 
@@ -216,8 +237,46 @@
      .              vtype, attlen, attoutflag, buff, vals, status) 
      	   ENDIF
 
+* ... end of rowsize setup
 
-        ELSE  ! pdsg_row_size
+	ELSEIF (idim .EQ. pdsg_fs_dim) THEN
+
+* ... create a simple abstract axis in the F dir for timeseries or trajectory variables
+	   
+           axname = "FTR_INDX"
+           delta = 1.
+	   coord_min = 1.
+
+           iaxis = 0
+           CALL TM_MAKE_BASIC_AXIS( axname, coord_min, delta, npts,
+     .				    iaxis, status )
+           IF ( status .NE. merr_ok ) GOTO 5100
+
+           line_direction(iaxis) = axis_orients(ftrset_dir)
+           line_name(iaxis) = axname
+           line_name_orig(iaxis) = ds_var_code(ivtm)
+
+* ... save this axis to be used during grid creation
+           dsg_instnc_ftrset_axis = iaxis
+	   
+* ... assign this axis to the dataset
+           ds_basic_axes(ftrset_dir,dset) = iaxis
+
+* ... end of pdsg_fs_dim setup
+
+
+* ... We have stored the trajectory index or timeseries index variable
+*     Check that the values are in [0,nprofile-1]
+
+	ELSEIF (idim .EQ. pdsg_indx_var) THEN
+
+	   CALL CD_GET_DSG_COORD_EXTREMES(dset, ivcd, ivtm,
+     .      idim, coord_min, coord_max, status)
+
+	   IF ( coord_min.LT.0 .OR. coord_max.GT.(npts-1) ) GOTO 5800
+
+* Coordinate directions x,y,z,t
+	ELSE
 
 * Get the missing and fill-value attributes, use them to set ds_bad_flag.
 * Consolidate to one bad-value 
@@ -245,14 +304,14 @@
      .      idim, coord_min, coord_max, status)
 
 	   IF (status.NE.merr_ok .OR. coord_min.EQ.arbitrary_large_val8 ) THEN
-	      IF (idim .EQ. z_dim .AND. dsg_orientation(dset).EQ.Z_dim) THEN
+	      IF (idim .EQ. z_dim .AND. orient.EQ.Z_dim) THEN
 	         GOTO 5600
 	      ELSE
 	         GOTO 5700  
 	      ENDIF
 	   ENDIF
 
-* ...  Basic checks on data ranges   dsg_orientation(dset).EQ.Z_dim
+* ...  Basic checks on data ranges
 *      Allow constant time, lon, lat on profile data, 
 *      or constant lon,lat on timeseries data or profile data
 *      or constant depth on timeseries or trajectory data.  For this case,
@@ -284,27 +343,29 @@
 	   ENDIF
 
 * ... create a simple axis
+
 	   axname = "FEATURE_"//axis_dimname(idim) ! e.g. "FEATURE_T"
            IF (npts.EQ.1) THEN
               delta = 1.  ! arbitrary
            ELSE
 	      delta = (coord_max-coord_min)/DBLE(npts-1)
            ENDIF
+
            iaxis = 0
-	   CALL TM_MAKE_BASIC_AXIS( axname, coord_min, delta, npts,
+	   CALL TM_MAKE_BASIC_AXIS( axname, coord_min, delta, naxis,
      .				    iaxis, status )
 	   IF ( status .NE. merr_ok ) GOTO 5100
+	   
 	   line_direction(iaxis) = axis_orients(idim)
-
 	   line_name_orig(iaxis) = ds_var_code(ivtm)
- 
+	   
 * ... decode and insert units
 
            got_it = NC_GET_ATTRIB( dset, ivcd, 'units',
      .                 do_warn, ds_var_code(ivtm)(:vlen),
      .                 maxlen, attlen, attoutflag, 
      .                 line_units(iaxis), vals )
-           line_unit_code(iaxis) = TM_UNIT_ID(line_units(iaxis))
+           IF (got_it) line_unit_code(iaxis) = TM_UNIT_ID(line_units(iaxis))
 
            IF (idim .EQ. T_dim) THEN
 
@@ -405,24 +466,29 @@
 
 * ... assign this axis to the dataset
            ds_basic_axes(idim,dset) = iaxis
+
         ENDIF
 
 * save other important DSG feature axis information
-        IF (idim .EQ. dsg_orientation(dset)) THEN
-	   dsg_obs_axis	= iaxis    ! makes life easy during grid creation
-	   dsg_obs_dimlen(dset) = npts
-! DSGTBD: Are there feature types with no time axis? no lon/lat?
-!         for now requiring x, y, t, and depth/height is optional. 7/18
-
-	   IF (idim .EQ. T_dim) ds_time_axis(dset) = iaxis
-
-        ENDIF   ! pdsg_row_size
+        IF (idim .EQ. orient) THEN
+           dsg_obs_axis	= iaxis    ! makes life easy during grid creation
+           dsg_obs_dimlen(dset) = npts
+           IF (idim .EQ. T_dim) ds_time_axis(dset) = iaxis
+        ENDIF   
+* 
+        IF (idim .EQ. z_dim .AND. 
+     .      (orient .EQ. pfeatureType_TrajectoryProfile .OR.
+     .       orient .EQ. pfeatureType_TimeseriesProfile) ) THEN
+           dsg_obs_axis	= iaxis    ! makes life easy during grid creation
+           dsg_obs_dimlen(dset) = npts
+        ENDIF   
 
 * flag that this is a DSG axis
-	line_dsg_dset(iaxis) = dset
+ 3000	line_dsg_dset(iaxis) = dset
 
 * successful completion
-        RETURN
+        status = merr_ok
+	RETURN
 
 * error exit
  5000   RETURN
@@ -462,6 +528,10 @@
 * bad coords in depth/altitude for a trajectory or timeseries dataset. 
 * Get rid of this as a coord and continue.
         status = 0   ! soft error
+        GOTO 5100
+
+* station-index error, message written in calling routine.
+ 5800   status = merr_dsg_grid
         GOTO 5100
 
         END

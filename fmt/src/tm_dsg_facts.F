@@ -1,5 +1,5 @@
 	SUBROUTINE TM_DSG_FACTS( grid, orientation, obsdimlen, 
-     .			feature_line, is_dsg )
+     .			feature_line, is_dsg, is_cmpnd )
 
 *
 *
@@ -42,6 +42,8 @@
 
 * V720 *sh* 4/17
 * V74+ *acm* 9/18 Allow an abstract axis (e.g. merging grids)
+* V761 *acm* 7/20 Return a flag for a compound type, timeseriesProfile or
+*                 trajectoryProfile.
 
       include 'netcdf.inc'
       include 'tmap_errors.parm'
@@ -53,7 +55,7 @@
       include 'xfr_grid.cmn'
 
 * argument declarations
-	LOGICAL is_dsg
+	LOGICAL is_dsg, is_cmpnd
 	INTEGER grid, orientation, obsdimlen, feature_line
 
 * internal variable declarations
@@ -81,6 +83,8 @@
 	feature_line = grid_line(orientation,grid)
 
 	obsdimlen = dsg_obs_dimlen(dset)
+
+	is_cmpnd = orientation.EQ.y_dim .OR. orientation.EQ.f_dim
 
 * success
         RETURN

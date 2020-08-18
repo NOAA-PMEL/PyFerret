@@ -14,7 +14,7 @@
 *                  and increase char_init to CHARACTER*2048
 * V720   4/17 *sh* add DSG variables 
 * V76   1/20 *acm* Orientation of Point-type data set to e_dim
-
+* V761  6/20 *acm* TrajectoryProfile and TimeseriesProfile feature types
 
 * codes for data sets
 	INTEGER		set_not_open,set_open,file_not_open
@@ -191,11 +191,13 @@
 * codes for DSG dataset featureType
 	INTEGER 	pfeatureType_Point,
      .			pfeatureType_Trajectory,
-     .			pfeatureType_xyzTrajectory,
+     .			pfeatureType_TrajectoryProfile,
      .			pfeatureType_Profile,
-     .			pfeatureType_TimeSeries
+     .			pfeatureType_TimeSeries,
+     .			pfeatureType_TimeseriesProfile
 	PARAMETER      (pfeatureType_Trajectory    = 1,
-     .			pfeatureType_xyzTrajectory = 2,     ! may not be needed
+     .			pfeatureType_TrajectoryProfile = 2,
      .			pfeatureType_Profile	   = 3,
      .			pfeatureType_TimeSeries	   = 4,
-     .			pfeatureType_Point 	   = 5 )
+     .			pfeatureType_Point 	   = 5,
+     .			pfeatureType_TimeseriesProfile = 6  )

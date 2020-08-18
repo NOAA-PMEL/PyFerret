@@ -55,7 +55,9 @@
 * V76  *acm*  4/20 Fix when setting instance_var flag. 
 * V76  *acm*  4/20 Fix for data type, writing string data
 * V76  *acm*  4/20 Additions for writing subsets of point datasets
-* v7.6 *acm* 5/20 Issue 1876: can read string-typed data, write as char.
+* v7.6 *acm*  5/20 Issue 1876: can read string-typed data, write as char.
+* v7.61 *acm* 8/20 If there was a USE/FEATURE= then write the data with
+*                  both featuretype and cf_role as that feature type.
 
         include 'netcdf.inc'
 #include "netcdf_declareUnderscore.inc"
@@ -513,6 +515,7 @@ c	IF (.NOT. instance_vars_only) THEN
 	no_id = (orientation.EQ.e_dim .AND. .NOT.got_it)   ! ?? or just .NOT.got_it ??
 	
 	IF (.NOT. no_id) THEN
+
 	   CALL CD_MAKE_VAR( cdfid, dset, varcode, outtype, maxstrlen,
      .               grid, lo_e, hi_e, recdim, enhead, new, 
      .               edges_flag, do_bounds, mode_upcase_output, 
@@ -544,11 +547,36 @@ c	IF (.NOT. instance_vars_only) THEN
 	      status = STR_DNCASE(buff1, ftrname)
 	      slen = TM_LENSTR1(buff1)
  	      buff1 = ftrname(:slen)//'_id'
+
+	   ELSE
+	   
+* Have they done USE/FEATURE= xx  to change the feature-type?  If so 
+* change the cf_role attribute and add a comment to the global attributes
+
+	      buff = ''
+	      buff2 = ftrname(:TM_LENSTR1(ftrname))//'_id'
+	      IF (STR_SAME(buff1, buff2) .NE. 0) THEN
+	         buff = 'Written from '//buff1(:TM_LENSTR1(buff1)-3)// 
+     .                 ' file treated as Feature-Type = '//
+     .                 ftrname(:TM_LENSTR1(ftrname)) 
+	         buff1 = buff2
+	         status = STR_DNCASE(buff1, buff2)
+
+	      ENDIF
+
 	   ENDIF
 
 	   lbuff = TM_LENSTR1(buff1)
 	   CALL CD_WRITE_ATTRIB(cdfid, varcode, attname,
      .                              buff1(:lbuff), .FALSE., status )
+
+	   lbuff = TM_LENSTR1(buff)
+	   IF (lbuff .GT. 1) THEN
+	      attname = 'comment'
+	      slen = TM_LENSTR1(buff)
+	      CALL CD_WRITE_ATTRIB(cdfid, pcdf_global,
+     .              attname, buff(:slen), .TRUE., status )
+	   ENDIF
 
 	ENDIF  ! no_od
 

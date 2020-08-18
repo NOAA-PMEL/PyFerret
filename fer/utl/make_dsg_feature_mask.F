@@ -66,7 +66,7 @@
 	LOGICAL fmask(nfeatures)
 
 * internal variable declarations:
-        LOGICAL one_or_other, ismod, its_dsg, ignore_depth
+        LOGICAL one_or_other, ismod, its_dsg, its_cmpnd, ignore_depth
 	INTEGER grid, i, idim, lm, orientation, obsdimlen, feature_line
 	REAL    GET_LINE_COORD, coord, ftr_lo(4,nfeatures), ftr_hi(4,nfeatures), 
      .		flo, fhi, axmod, bad, val
@@ -76,7 +76,8 @@
 * Will allow depth coordinates to be missing for timeseries or trajectory data
 
 	grid = dsg_xlate_grid(dset)
-	CALL TM_DSG_FACTS( grid, orientation, obsdimlen, feature_line, its_dsg )
+	CALL TM_DSG_FACTS( grid, orientation, obsdimlen, feature_line, 
+     .                     its_dsg, its_cmpnd )
 	ignore_depth = orientation.EQ.pfeatureType_Trajectory .OR. 
      .                 orientation.EQ.pfeatureType_Point .OR. 
      .                 orientation.EQ.pfeatureType_TimeSeries

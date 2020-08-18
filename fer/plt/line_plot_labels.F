@@ -98,7 +98,7 @@
 
 * internal variable declarations:
 	LOGICAL TM_ITSA_DSG, user_title, units_same, do_units, its_dsg,
-     .          reset_dsg, process_feature(nfeatures), yes_key
+     .          reset_dsg, process_feature(nfeatures), yes_key, lonlat
 	INTEGER	TM_LENSTR1, TM_LENSTR, TM_UNIT_ID, STR_SAME, 
      .		TM_DSG_DSET_FROM_GRID,
      .		ipl, nline_in_mem, slen, slen1, status, ptitl, style, 
@@ -120,6 +120,7 @@
 
 	its_dsg = .FALSE.
 	reset_dsg = .FALSE.
+	lonlat = .FALSE.
 	
 	IF (cxdsg_empty_set) THEN
 	   buff1 = CD_DSG_FEATURENAME ( cxdsg_orient )
@@ -278,7 +279,7 @@ c     .			plot_title(:slen)//'")
 
 	         IF ( its_dsg ) THEN 
 
-* Read the feature-id value. If it's numeric turn it into a string
+* Read the feature-level value. If it's numeric turn it into a string
 
                     CALL CD_READ_ONE ( dset_dsg, fvar_varid, nfeatr(ipl), dtype, value, 
      .                                 plot_title, slen, status )
@@ -498,7 +499,7 @@ c     .			plot_title(:slen)//'")
      .			   dflt_letsize_label*textscale, ppl_centered,
      .			   lab_loc_absolute, lab_loc_absolute )
      
-	      IF (nmv .EQ. 1) THEN
+	      IF (nmv .EQ. var1) THEN
 	         plot_title = 'Longitude (degrees_east)'
 	         slen = TM_LENSTR1( plot_title )
 	         CALL BOX_LABEL( indep_lab,
@@ -514,6 +515,7 @@ c     .			plot_title(:slen)//'")
      .			   0.0, 0.0, 0.6*dep_len, dflt_letsize_label,
      .			   dflt_letsize_label, ppl_centered,
      .			   lab_loc_absolute, lab_loc_absolute )
+	         lonlat = .TRUE.
 	      ENDIF
 	   ENDIF
 
@@ -556,7 +558,7 @@ c     .			plot_title(:slen)//'")
 	   ENDIF 
 
 	   istart = var1
-	   IF (versus .AND. ribbon_plot) istart = 1
+	   IF (.NOT.lonlat .AND. versus .AND. ribbon_plot) istart = 1
 
 	   DO 1600 ipl = istart, var1+1
 	      IF (ipl.EQ.var1 .AND. (versus.AND.ribbon_plot)) GOTO 1600  

@@ -51,7 +51,7 @@
 
 	INTEGER nvars, cx_list(*)
 
-	LOGICAL its_dsg
+	LOGICAL its_dsg, its_cmpnd
 	INTEGER TM_DSG_DSET_FROM_GRID, cx, grid, dset, i, 
      .		the_cx, iaxis, orientation, obsdimlen, fline, nv
 	CHARACTER buff*32, TM_FMT*48, fmt*6
@@ -66,7 +66,7 @@
 	nv = nvars
 	
 	its_dsg = .TRUE.
-	CALL TM_DSG_FACTS( grid, orientation, obsdimlen, fline, its_dsg )
+	CALL TM_DSG_FACTS( grid, orientation, obsdimlen, fline, its_dsg, its_cmpnd )
 
 	IF (nv .GT. 1) THEN
 

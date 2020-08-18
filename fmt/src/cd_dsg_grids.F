@@ -74,7 +74,8 @@
 	include 'xio.cmn_text'
 	external xio_data
 	include 'xtm_grid.cmn_text'
-	        include 'xdset_info.cd_equiv'
+	include 'xdset_info.cd_equiv'
+	include 'xinit.parm'
 
 * argument declarations
 	INTEGER	 dset, cdfid, status
@@ -83,12 +84,16 @@
 * local variable declarations:
 * *kob* explicit definitions not allowed on decl line in linux...
 *       moved them to parameter line 10/96
-      LOGICAL coordvar, one_by_nobs
+
+      LOGICAL coordvar, one_by_nobs, cmpnd_ftype, is_ftrset_var, 
+     .	      was_cmpnd
       INTEGER TM_LENSTR1, TM_FIND_GRID_SLOT,
      .	      i, tmvar, ivar, vartyp, nvdims, vdims(8), nvatts, vlen,
      .	      all_outflag, idim, tmpgrid, obs_orient, igrid, grid_cnt,
-     .	      istat, ax_len, check_dir
-      CHARACTER name*128, vname*128
+     .	      istat, ax_len, check_dir, ncdims, cdims(8), ftrset_dir, 
+     .	      f2dim, dset_ftype, blen
+
+      CHARACTER name*128, vname*128, buff*128
       CHARACTER*20 CD_DSG_FEATURENAME
       CHARACTER*2  direc(4)
 
@@ -102,12 +107,38 @@
 	DO i = max_grids, grid_ceiling
 	   tmp_nam_ptr(i) = 0
 	ENDDO
+
+	was_cmpnd = .FALSE.
+	f2dim = no_dim
+	ftrset_dir = no_dim
+	blen = 0
+	buff = ''
+
 	obs_orient = dsg_orientation(dset)
-	
-	check_dir = x_dim
-	IF (obs_orient .EQ. pfeatureType_Trajectory) check_dir = x_dim
-	IF (obs_orient .EQ. pfeatureType_Profile   ) check_dir = z_dim
-	IF (obs_orient .EQ. pfeatureType_TimeSeries) check_dir = t_dim 
+
+	IF (dsg_user_direction .EQ. z_dim) THEN
+	   CALL CD_DSG_GET_FILE_FEATURETYPE (dset, dset_ftype, .FALSE.)
+	   was_cmpnd =  (dset_ftype .EQ. pfeatureType_TimeseriesProfile .OR.
+     .                   dset_ftype .EQ. pfeatureType_TrajectoryProfile)
+
+	ENDIF
+
+	cmpnd_ftype = (dsg_orientation(dset) .EQ. pfeatureType_TrajectoryProfile .OR.
+     .                 dsg_orientation(dset) .EQ. pfeatureType_TimeseriesProfile .OR.
+     .                 was_cmpnd)
+	IF (cmpnd_ftype) THEN
+	   CALL CD_GET_VAR_DIMS_INFO ( dset, dsg_ftrset_var(dset), 
+     .        name, ncdims, cdims, status)
+	   ftrset_dir = f_dim
+	   f2dim = cdims(1)
+	   IF (ncdims .EQ. 2) f2dim = cdims(2)  ! first dim is strlen
+
+	   obs_orient = z_dim
+
+	ENDIF
+
+	check_dir = obs_orient
+	IF (obs_orient .EQ. pfeatureType_Point) check_dir = x_dim
 
 * * * * loop through each variable in this TMAP data set * * *
 * if it doesn't have a grid pointer create a suitable one and point to it
@@ -122,6 +153,36 @@
      .     ( istat+pcdferr,status,'CD_DSG_GRIDS',cdfid,ivar,
      .       no_errstring, no_errstring, *5900 )
            vlen = TM_LENSTR1(vname)
+	   
+* if a string variable, the first dimension is the string axis (ignore it)
+	   IF (vartyp .EQ. NF_CHAR) THEN
+	      IF (nvdims .GT. 1) nvdims = nvdims - 1
+	      vdims(1) = vdims(2)
+	   ENDIF
+
+* Is this a variable on the time-index or traj-index axis of a compound type? 
+	
+           is_ftrset_var = f2dim .EQ. vdims(1)
+	   IF (ivar.EQ.dsg_coord_var(x_dim, dset) .OR. 
+     .	       ivar.EQ.dsg_coord_var(y_dim, dset) ) is_ftrset_var = .FALSE.
+
+* If it's a station-var or trajectory-var in a use/feature=profile timeseriesprofile
+* or trajectoryprofile, then will expand the data onto the profile grid
+
+           IF (was_cmpnd .AND. is_ftrset_var) THEN  
+	       IF (blen.GT.0) THEN
+	          IF (blen+vlen+2.LT.128) THEN
+	             buff = buff(:blen)//', '//vname(:vlen)
+		     blen = blen + vlen+2
+		  ELSE
+		     buff = buff(:blen)//' ...'
+		     blen = blen+4
+		  ENDIF
+	       ELSE
+	          buff = vname(:vlen)
+		  blen = vlen
+	       ENDIF
+	   ENDIF
 
 * The rowsize variable may have been constructed in cd_dsg_scan_vars. If so,
 * use the grid from the feature-id variable.
@@ -140,13 +201,6 @@
 	      ENDIF 
 	   ENDIF
 
-
-* if a string variable, the first dimension is the string axis (ignore it)
-	   IF (vartyp .EQ. NF_CHAR) THEN
-	      IF (nvdims .GT. 1) nvdims = nvdims - 1
-	      vdims(1) = vdims(2)
-	   ENDIF
-
 * use the next grid building slot to build a grid for this variable
            tmpgrid = num_tmp_grids + 1
 
@@ -158,15 +212,25 @@
               ds_grid_end  (idim,tmvar) = 1
 	   ENDDO
 
-* all DSG grids have the E axis of instances (scalars handled below).
-             
-	   temp_axnams(5,tmpgrid) = line_name(dsg_instance_axis)
-	   ds_grid_end(5,tmvar)   = line_dim (dsg_instance_axis)
+* all Trajectory, Timeseries, Profile, and Point DSG grids have the E axis of instances (scalars handled below).
+* For TrajectoryProfile and Timeseries Profile there are Trajectory and Timeseries grids.
+
+* For the compound types, fake an e axis which we will promote data to
+
+	   IF (is_ftrset_var) THEN
+c	      temp_axnams(ftrset_dir,tmpgrid) = line_name(dsg_instnc_ftrset_axis)
+c	      ds_grid_end(ftrset_dir,tmvar)   = line_dim (dsg_instnc_ftrset_axis)
+	      temp_axnams(e_dim,tmpgrid) = line_name(dsg_instance_axis)
+	      ds_grid_end(e_dim,tmvar)   = line_dim (dsg_instance_axis)
+	   ELSE
+	      temp_axnams(e_dim,tmpgrid) = line_name(dsg_instance_axis)
+	      ds_grid_end(e_dim,tmvar)   = line_dim (dsg_instance_axis)
+	   ENDIF
 
 * assign the remaining grid info
-	   IF (vdims(1) .EQ. dsg_instance_dim) THEN
+	   IF (vdims(1) .EQ. dsg_ifeature_dim) THEN
 * ... 1D instance grid
-	      ds_ordering(1,tmvar) = 5
+	      ds_ordering(1,tmvar) = e_dim
 
 * ... This allows for the NCEI-style files which are a single feature
 *     with obs variables on a nobs by 1 grid
@@ -181,6 +245,12 @@
 	         ds_ordering(2,tmvar) = 5
 	         ds_ordering(1,tmvar) = obs_orient
 	      ENDIF
+
+
+	   ELSEIF (vdims(1) .EQ. dsg_instnc_ftrset_dim) THEN
+* ... 1D instance grid for the trajectory or timeseries 
+*     of a trajectory-profile or timeseries-profile st
+	      ds_ordering(1,tmvar) = e_dim !  ftrset_dim
 
 	   ELSEIF (vdims(1) .EQ. dsg_obs_dim) THEN
 * ... 2D observation grid 
@@ -198,10 +268,11 @@
 	      
 * ... variable does not belong with this DSG dataset
 
-* TODO: maybe other variables should be ignored (removed from dset)
-*         rather than aborting the DSG processing
+* Ignore the variable.  For instance if we've got a timeseriesProfile
+* dataset and they've said use/feature=profile, then ignore the timeseries 
+* variables.
 
-	      GOTO 4100
+*	      GOTO 4100
 	   ENDIF
 
 * Does the data have obs data along the direction relative to the feature type?
@@ -258,9 +329,19 @@
 
        ENDDO  ! loop tmvar over vars
 
+
 * successful completion
  5000 	status = merr_ok
-        RETURN
+        
+	IF (blen.NE.0) THEN 
+	   name = CD_DSG_FEATURENAME(dset_ftype)
+	   CALL WARN ('Using '//name(:TM_LENSTR1(name))//
+     .      ' data as Profile. Converting variables to profile'//
+     .      ' dimension:'//pCR//
+     .       buff(:blen))
+	ENDIF
+
+	RETURN
 
 * error exits
 * soft error - reject this as a dsg_ragged dataset, but soldier on as a netCDF

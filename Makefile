@@ -154,7 +154,7 @@ externals_debug :
 ## Remove everything that was built
 .PHONY : clean
 clean :
-	$(MAKE) -C $(DIR_PREFIX)/bench clean
+#	$(MAKE) -C $(DIR_PREFIX)/bench clean
 	$(MAKE) -C $(DIR_PREFIX)/bin/build_fonts/unix clean
 	$(MAKE) -C $(DIR_PREFIX)/external_functions clean
 	rm -fr $(DIR_PREFIX)/install $(DIR_PREFIX)/build ferret.jnl*

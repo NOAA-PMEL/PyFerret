@@ -81,7 +81,7 @@
 * internal variable declarations:
 	LOGICAL  ITSA_DSG_POINTS, 
      .		process_feature(nfeatures), process_obs(nobs), its_dsg, 
-     .		has_mask, norow, its_point_data, do_blank
+     .		its_cmpnd, has_mask, norow, its_point_data, do_blank
 	LOGICAL instance_coord(4), relevant_coord(4),
      .		instance_var(nvar), point_var(nvar), 
      .		instance_vars_only, point_vars_only, 
@@ -135,8 +135,8 @@
 	cx = cx_list(1)
 	grid = cx_grid(cx)
 	its_dsg = .TRUE.
-	CALL TM_DSG_FACTS( grid,
-     .			   orientation, obsdimlen, feature_line, its_dsg )
+	CALL TM_DSG_FACTS( grid, orientation, obsdimlen, 
+     .			   feature_line, its_dsg, its_cmpnd )
 	IF (.NOT. its_dsg) GOTO 5200
 	row_size_lm = dsg_loaded_lm(dsg_row_size_var(dset))
 
@@ -145,7 +145,8 @@
 
 	feature_idname = 'feature'
 
-	IF (orientation.GE.pfeatureType_Trajectory .AND. orientation.LE.pfeatureType_Point) THEN
+	IF (orientation.GE.pfeatureType_Trajectory .AND.
+     .      orientation.LE.pfeatureType_TimeseriesProfile) THEN
 	   strbuff = CD_DSG_FEATURENAME(orientation)
 	   feature_idname = strbuff(:tm_lenstr1(strbuff))
 	ENDIF

@@ -139,7 +139,7 @@
 	LOGICAL	EXPLICIT_UVAR, ITSA_GCVAR, NC_GET_ATTRIB, 
      .		TM_ITSA_DSG,
      .          its_gc, its_sample, start_sampling, got_it, coordvar,
-     .          reset_ss, do_err
+     .          reset_ss, do_err, its_dsg, its_cmpnd
 	INTEGER KNOWN_GRID, TM_LENSTR1, GCF_PARENT_UVAR, GCF_PARENT_CHAR,
      .		GCF_FIND_FCN, GCF_ARG_EVAL_ORDER, GET_VAR_GRID,
      .		MGRID_SIZE, TM_DSG_ORIENTATION, TM_DSG_DSET_FROM_GRID,
@@ -147,7 +147,7 @@
      .		dflt_cx, start, end, saved_grid, ifcn, size,
      .		dset, lo_isp, uvar, item, itype, idim,
      .		nitem, new_mr, len_name, csp1, cat, cvar, 
-     .          dsg_grid, orientation
+     .          dsg_grid, orientation, obsdimlen, feature_line
         REAL    counter_const
 	CHARACTER TM_FMT*48, name*150
 
@@ -583,9 +583,12 @@
 * axes.  Here we correct that into a ragged array representation
 
 	dsg_grid = cx_grid(big_cx)
+	its_dsg = TM_ITSA_DSG(dsg_grid)
 	IF ( TM_ITSA_DSG(dsg_grid) .AND.  
      .	     cx_data_set(big_cx) .EQ. cx_data_set(lo_cx) ) THEN
-	   orientation = TM_DSG_ORIENTATION(dsg_grid)
+     
+	   CALL TM_DSG_FACTS( dsg_grid, orientation, obsdimlen, 
+     .                        feature_line, its_dsg, its_cmpnd )
 	   CALL FLESH_OUT_AXIS(orientation, big_cx, status)
 	   CALL FLESH_OUT_AXIS(e_dim,       big_cx, status)
 	   CALL TRANSFER_CONTEXT( big_cx, lo_cx )

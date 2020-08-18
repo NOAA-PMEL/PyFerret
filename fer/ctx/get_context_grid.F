@@ -232,6 +232,8 @@
 	      dsgness = DSG_WHATS_IT(std_grid)
 	      dset = TM_DSG_DSET_FROM_GRID(std_grid)! always same as cx (?)
 	      orientation = dsg_orientation(dset)
+	      IF (orientation.EQ.pfeatureType_TimeseriesProfile .OR. 
+     .		  orientation.EQ.pfeatureType_TrajectoryProfile) orientation = z_dim
 * ... trap transformations that are nonsense on ragged arrays
 *     transforming "across" (rather than along) the obs axis is nonsense
 	      DO idim = 1, e_dim
@@ -298,7 +300,7 @@
 	dsg_pts = .FALSE.
 	IF (TM_ITSA_DSG(std_grid)) THEN
 	    orientation = dsg_orientation(dset)
-	    dsg_pts = dsg_orientation(dset).EQ.5 .OR. dsg_orientation(dset).EQ.0
+	    dsg_pts = dsg_orientation(dset).EQ.e_dim .OR. dsg_orientation(dset).EQ.0
 	ENDIF
 * **** END OF DSG handling ****
 

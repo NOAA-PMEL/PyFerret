@@ -61,6 +61,8 @@
 * V683  *acm*10/12 Improve handling of F axes and info about the calendar of the grid.
 * V695  *acm* 2/15 cx_calendar stores info about calendar formatting of T and F axes
 * V71 12/16 *acm* For ticket 2158: working with true monthly time axes.
+* V761  *acm* 7/20 Issue 1981: if coord equals the upper-limit of the uppermost grid 
+*                  cell and it's round_down, then this is a modulo op, modulo=-1
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -78,7 +80,7 @@
 	LOGICAL	TM_DFPEQ, TM_ITS_SUBSPAN_MODULO, TM_FPEQ_SNGL, 
      .		ITSA_TRUEMONTH_AXIS, is_regular, calendar, true_month
 	INTEGER	lo_look, hi_look, axis, ibot, itop, look,
-     .		line_len, isubsc, num_mod
+     .		line_len, isubsc, num_mod, round
 	REAL*8	SECS_TO_TSTEP, TM_WORLD, TM_WW_AXLEN,
      .		wwindex, wcoord, half_way, start, aend, span, 
      .		first, last, dsubsc, timefac
@@ -86,6 +88,13 @@
 
 * initialize
         isubsc = 0
+        num_mod = 0
+
+* Distinguish round-down when getting subscripts for a pair lo:hi
+* with round-down for a single point
+
+	round = round_code
+	IF (round_code .EQ. round_sngl) round = round_dn
 
 * which axis are we on ?
 	axis    = grid_line ( idim, grid )
@@ -161,9 +170,14 @@
      .                          num_mod = num_mod - 1
 	   ELSEIF ( wcoord .LT. start ) THEN
 	      num_mod = ( wcoord - aend  ) / span		! (negative)
+	   ELSEIF (TM_DFPEQ(wcoord, start) .AND. round.EQ.round_dn .AND.
+     .             round_code.NE.round_sngl .AND.
+     .             .NOT.TM_ITS_SUBSPAN_MODULO(axis)) THEN 
+	      num_mod = - 1
 	   ELSE
 	      num_mod = 0
 	   ENDIF
+
 	   wcoord = wcoord - num_mod*span
 	ENDIF
 
@@ -195,12 +209,12 @@
 	   half_way = line_delta(axis)/2.
 	   half = 0.5
 
-	   IF ( round_code .EQ. round_up ) THEN
+	   IF ( round .EQ. round_up ) THEN
 	      delsubsc = ABS( REAL(dsubsc)-FLOAT(isubsc) )
 	      IF ( TM_FPEQ_SNGL(delsubsc, half) )
      .         dsubsc = (wcoord+half_way-first)/line_delta(axis)
 	   ENDIF  
-	   IF ( round_code .EQ. round_dn ) THEN
+	   IF ( round .EQ. round_dn ) THEN
 	      delsubsc = ABS( REAL(dsubsc)-FLOAT(isubsc) )
 	      IF ( TM_FPEQ_SNGL(delsubsc, half) )
      .         dsubsc = (wcoord-half_way-first)/line_delta(axis)
@@ -211,9 +225,9 @@
 
 	   IF ( TM_DFPEQ(dsubsc,DBLE( isubsc )) ) THEN
 * ...... value is on box boundary
-	      IF     ( round_code .EQ. round_up ) THEN
+	      IF     ( round .EQ. round_up ) THEN
 	         isubsc = isubsc + 1
-	      ELSEIF ( round_code .EQ. round_dn ) THEN
+	      ELSEIF ( round .EQ. round_dn ) THEN
 	         CONTINUE
 	      ELSE
 	         STOP 'ISUBSCR_CX round code'
@@ -256,9 +270,9 @@
 
 * value on box boundary ?
 	      IF ( TM_DFPEQ( half_way, wcoord ) ) THEN
-	         IF     ( round_code .EQ. round_up ) THEN
+	         IF     ( round .EQ. round_up ) THEN
 		    isubsc = hi_look
-	         ELSEIF ( round_code .EQ. round_dn ) THEN
+	         ELSEIF ( round .EQ. round_dn ) THEN
 		    isubsc = lo_look
 	         ELSE
 	            STOP 'ISUBSCR_CX round code'

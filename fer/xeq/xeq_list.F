@@ -790,9 +790,11 @@ c     .		 .AND. .NOT.do_comma_del
 	         perm(2) = i
 	      ENDIF
 	   ENDIF
-	   CALL CREATE_PERMUTATION(cx,mr,perm,mr_perm,do_cdf,status)
-	   IF ( status .NE. ferr_ok ) GOTO 500
-           npermuted = npermuted + 1
+	   IF (.NOT.has_dsg) THEN
+	      CALL CREATE_PERMUTATION(cx,mr,perm,mr_perm,do_cdf,status)
+	      IF ( status .NE. ferr_ok ) GOTO 500
+              npermuted = npermuted + 1
+	   ENDIF
 	ENDIF
 
 * is this a listing of DSG variables

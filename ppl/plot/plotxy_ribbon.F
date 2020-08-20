@@ -313,8 +313,10 @@ C     CHECK POINTS FOR OUT OF RANGE   (CM)
 
 		  IF (xadd .NE. xaddlast) THEN
 		     datxlast = datx - xadd + xaddlast
-		     CALL TRANS(I,datxlast,daty,XT,YT)
-		     CALL PLOT(xt,yt,idn,0)
+		     IF (datxlast.LT.xhi .AND. datxlast.GT.xlo) THEN
+		        CALL TRANS(I,datxlast,daty,XT,YT)
+		        CALL PLOT(xt,yt,idn,0)
+		     ENDIF
 		     CALL TRANS(I,datx,daty,XT,YT)
 		     CALL PLOT(XT,YT,0,0)
 		     CALL PLOT(XT,YT,IDN,0)

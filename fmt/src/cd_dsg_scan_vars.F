@@ -176,7 +176,7 @@
 	istat = NCF_INQ_DS (dset_num, ndims, nvars, ngatts, recdim )
 
 	orient = dsg_orientation(dset) 
-
+	ftrname = CD_DSG_FEATURENAME ( orient ) 
 
 * If its TimeseriesProfile must (for now) use/feature=profile
 
@@ -184,7 +184,8 @@
 	IF ( (dset_ftype .EQ. pfeatureType_TrajectoryProfile .OR.
      .        dset_ftype .EQ. pfeatureType_TimeseriesProfile) .AND. 
      .        dsg_user_direction .NE. z_dim) THEN
-	   buff = 'For now '//ftrname(:vlen)//' not implemented. '//
+	   vlen = TM_LENSTR1(ftrname)
+	   buff = 'For now '//ftrname(:vlen)//' type not implemented. '//
      .            ' Treating data as FeatureType=profile'
 	   CALL WARN (buff)
 	   dsg_user_direction = z_dim
@@ -207,8 +208,6 @@
 	cmpnd_ftype = (orient .EQ. pfeatureType_TrajectoryProfile .OR.
      .                 orient .EQ. pfeatureType_TimeseriesProfile)
 
-
-	ftrname = CD_DSG_FEATURENAME ( orient ) 
 	IF (cmpnd_ftype) THEN
 	   i = MAX(INDEX(ftrname, 'Profile'), INDEX(ftrname, 'profile'))
 	   index_dir_buff = ftrname(:i-1)//'_id'

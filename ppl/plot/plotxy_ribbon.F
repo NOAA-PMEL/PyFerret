@@ -72,6 +72,7 @@ C
 * V698  4/16 *acm* New PLOT/NTH=
 * V73  3/18 *kms*  For clarity, append MD to makedot.cmn values IPT, XDOT, 
 *                  and YDOT; make MDOT (99) a makedot.cmn parameter DOTSYMIM
+* V762  8/20 *acm* Don't draw outside plot edges when doing modulo correction.
 
         include         'xinterrupt.cmn' ! 1/89 *sh*
         include         'ppl_in_ferret.cmn'
@@ -363,7 +364,7 @@ C     CHECK POINTS FOR OUT OF RANGE   (CM)
 		  
 	          IF (line_ndx .LT. 1) line_ndx = 1
 
-	          IF ( colr_ndx.NE.last_colr_ndx) THEN
+	          IF ( colr_ndx.NE.last_colr_ndx ) THEN
 		     
 * In default (not fast) mode, draw sub-segments filling in all the colors
 * corresponding to the index range between the color at this point and the
@@ -371,6 +372,7 @@ C     CHECK POINTS FOR OUT OF RANGE   (CM)
 
 		     IF (.NOT.RIBBON_FAST .AND. 
      .                    .NOT.isbad .AND. .NOT.last_bad .AND.
+     .                    last_colr_ndx.GT.0 .AND.
      .                    ABS(colr_ndx-last_colr_ndx) .GT. 1 .AND.
      .                    (.NOT.new_branch) .AND. ITYPE(I).NE.3) THEN
 

@@ -62,6 +62,7 @@
 * V760 *acm* 4/20 PLOT_DSG_CHECK_LON360 now applies a lon-360 conversion of the 
 *                 longitudes if it'll be better and /HLIM not given
 * V760 *acm* 5/20 initialize dep_dim. Was unset when we get latitude from the DSG dataset
+* V762 *acm* 8/20 Add a second test for is this a trajectory ribbon plot.
 
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
@@ -271,7 +272,7 @@
      .                      status)
 	   IF (npts .NE. obsdimlen) THEN
 	      status = 0
-	      GOTO 5140
+	      GOTO 4000
 	   ENDIF
 	   numcx = 1  ! The context should come from the color-by var
 	   CALL GRP_CX_DOC( cx_list(nmv), numcx, cx_plot, key_doc )
@@ -446,7 +447,7 @@
      .                          status  )
 	      IF (npts .NE. obsdimlen) THEN
 	         status = 0
-	         GOTO 5140
+	         GOTO 4000
 	      ENDIF
 	   ENDIF
 
@@ -784,6 +785,10 @@
 	status = ferr_ok
 	IF (overlay) iautot = iautot_save
 	RETURN
+	
+* not trajectory after all, will just do a ribbon-plot.
+
+ 4000	RETURN
 
 * error exit
  5000	CALL PPLCMD ( from, line, 0, 'NLINES', 1, 1 )	! wipe buffers clean

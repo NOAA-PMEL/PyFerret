@@ -209,8 +209,12 @@
      .                 orient .EQ. pfeatureType_TimeseriesProfile)
 
 	IF (cmpnd_ftype) THEN
+	   ftrname = CD_DSG_FEATURENAME ( orient ) 
 	   i = MAX(INDEX(ftrname, 'Profile'), INDEX(ftrname, 'profile'))
 	   index_dir_buff = ftrname(:i-1)//'_id'
+
+	   IF (redo_lonlat) ftrname = CD_DSG_FEATURENAME (dsg_orientation(dset))
+
 	ENDIF
 
 * First find probable coordinate variabes - if the axis attribute is
@@ -626,14 +630,6 @@ c     .               vname(:vlen) )
 	   has_DSG_coordinates = (ndims .EQ. 4)
 	ENDIF
 
-* If this is a timeseriesProfile dataset, then the X-Y coordinates are in
-* the timeseries instance-dimension direction. Use the station index variable
-* to redefine the dsg-coordiate variables for the translation grid to list these 
-* coordinates in the profile dimension.  The test when orient is profile is
-* for the case when the user has said USE/feature=profile for a TimeseriesProfile set.
-
-	IF (redo_lonlat) CALL CD_DSG_TP_TO_PROF (dset)
-
 * A valid DSG contiguous ragged dataset must have a rowSize variable
 * and coordinates on the dsg_orientation axis. If they erroneously set
 * the /FEATURETYPE to an invalid direction, that's an error. Otherwise
@@ -794,6 +790,16 @@ c     .               vname(:vlen) )
 	   ENDIF
 
 	ENDIF
+	
+
+* If this is a timeseriesProfile dataset, then the X-Y coordinates are in
+* the timeseries instance-dimension direction. Use the station index variable
+* to redefine the dsg-coordiate variables for the translation grid to list these 
+* coordinates in the profile dimension.  The test when orient is profile is
+* for the case when the user has said USE/feature=profile for a TimeseriesProfile set.
+
+	IF (redo_lonlat) CALL CD_DSG_TP_TO_PROF (dset)
+
 
 *   * * * * * * * * * * * * * * * * * * * * * * * * 
 * pass through the variable names making sure that case-sensitive

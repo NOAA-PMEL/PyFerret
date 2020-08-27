@@ -1,0 +1,294 @@
+! color_datekey.jnl
+!
+! set up date/time labels for the color key when a plot is colored by a time variable.
+!!
+! Arguments 
+
+!  1 "V" OR "H" for a vertical or horizontal key
+!  2 variable describing the colored-by-time data, e.g.
+!      *  a time variable from a DSG dataset, with time units and a time-origin attribute,
+!      *  or LET timepts = t[gt=timeaxis]
+!  2 optional: hr, min, sec to force hour:min and/or :sec on the time labels.
+!
+!  This script is run when drawing an overlay plot.  It requires a full plot of 
+!  the region to have been drawn so it can use automatically generated symbols
+!  to locate the plot-key labels. It is run after PLOT/SET has been issued. Examples:
+!
+!  A dataset where "sample_time" is the time coordinate variable
+!
+!  USE my_dsg_trajectory_data.nc  
+!  GO basemap x=-90:-60 y=30:48 5
+!  PLOT/OVER/THICK/NOLAB/KEY/SET sample_time
+!   GO color_datekey "H" sample_time
+!  PPL PLOT/OVER
+!
+!  ! For a vertical key, define a viewport in order to leave space for the labels
+!  ! (Or use the script "go margins".)
+!
+!  DEFINE VIEWPORT/X=0:0.8/Y=0:1 xyview
+!  SET VIEW xyview
+!
+!  USE my_dsg_trajectory_data.nc
+!  GO basemap x=-90:-60 y=30:48 5
+!  PLOT/OVER/THICK/NOLAB/KEY/SET sample_time
+!   GO color_datekey "v" sample_time
+!  PPL PLOT/OVER
+
+
+DEFINE SYMBOL horizontal_key = ($1"0|H>1|h>1|*>0")
+
+
+IF ($horizontal_key) THEN 
+   LET key_label_size = 0.08
+
+   ppl ylab
+   ppl xlab
+   let ckx1 = `($ppl$xorg)+0.5`
+   let ckx2 = `($ppl$xorg)+($ppl$xlen)-0.5`
+   let cky1 = `($ppl$yorg)+($ppl$ylen)+0.04`
+   let cky2 = `cky1+0.2`
+
+   ppl shakey ,0,0.0000001,100,,,`ckx1`,`ckx2`,`cky1`,`cky2`
+
+ELSE
+   ppl shakey ,,0.0000001
+
+ENDIF
+
+! define a time axis to use based on the time data in argument 2
+! with fewer points, and with a larger range if the range is quite short.
+
+
+DEFINE SYMBOL shape = `($2),RETURN=shape`
+DEFINE SYMBOL indx = ($shape"0|POINT>0|X>i|Z>k|T>l|E>m|*>0")
+
+IF ($indx"0|0|*>1") THEN
+   LET t1 = ($2)[($indx)=@MIN]
+   LET t2 = ($2)[($indx)=@MAX]
+   IF ($indx"|m>0|*>1") THEN
+      LET tmin = `t1[e=@min]`
+      LET tmax = `t2[e=@max]`
+   ELSE
+     LET tmin = `t1`
+     LET tmax = `t2`
+   ENDIF
+ELSE
+
+! single point in time
+   LET t1 = ($2)
+   LET t2 = t1
+   LET tmin = t1
+   LET tmax = t1
+ENDIF
+
+
+! Adjust if start and end times are too close together
+LET oneday = 1
+
+LET since_loc = STRINDEX("`($2).units`","since") - 2
+IF `since_loc GT 1` THEN 
+   LET tunits = SUBSTRING("`($2).units`",1,`since_loc`)
+   DEFINE SYMBOL tunits = `tunits`
+ENDIF
+LET time_units = "($tunits)"
+
+IF `STRINDEX(time_units, "sec") GT 0` THEN LET oneday = 24*60*60
+IF `STRINDEX(time_units, "min") GT 0` THEN LET oneday = 24*60
+IF `STRINDEX(time_units, "ho") GT 0` THEN LET oneday = 24
+IF `STRINDEX(time_units, "da") GT 0` THEN LET oneday = 1
+
+LET del = `(tmax-tmin)/oneday`
+
+IF `del LT 1` THEN
+   IF `tmin GT 0` THEN 
+      LET tmin = `tmin - oneday`
+      LET tmax = `tmax + oneday`
+   ELSE
+      LET tmin = `tmin + oneday`
+      LET tmax = `tmax - oneday`
+   ENDIF   
+ENDIF
+
+DEFINE AXIS/T=`tmin`:`tmax`:1/T0="`($2).time_origin`"/units=($tunits) ck_taxis 
+LET ck_ttvar = t[gt=ck_taxis]
+LET nt = `ck_ttvar,RETURN=lsize`
+
+! If the units are seconds since, we don't need that much resolution for this. Make it hours.
+
+IF `($tunits"0|seconds>1|*>0") AND nt GT 100*3600` THEN \
+DEFINE AXIS/T=`tmin`:`tmax`:3600/T0="`($2).time_origin`"/units=($tunits) ck_taxis 
+
+! Keep the axis from being super dense.
+if `nt gt 2000` THEN \
+DEFINE AXIS/T=`tmin`:`tmax`/NPOINTS=2000/T0="`($2).time_origin`"/units=($tunits) ck_taxis 
+
+! finished defining the time axis
+
+
+LET ck_tpts = t[gt=ck_taxis]
+LET/QUIET PLMlabel = $3"0|hr>1|min>2|sec>3|*>0"
+
+LET TLAB_tstart = `ck_tpts[L=@min]`
+DEFINE SYMBOL TLAB_tstart = `TLAB_tstart`
+
+LET TLAB_tend = `ck_tpts[L=@max]`
+DEFINE SYMBOL TLAB_tend = `TLAB_tend`
+
+LET TLAB_tstep = int((`TLAB_tend`-`TLAB_tstart`)/4)
+DEFINE SYMBOL TLAB_tstep = `TLAB_tstep`
+
+LET dates_same = 0
+
+LET ttime = `($TLAB_tstart)+0*($TLAB_tstep)`
+DEFINE SYMBOL day_0_fourth = `TAX_DATESTRING(ttime, ck_tpts, "day")`
+
+LET ttime = `($TLAB_tstart)+1*($TLAB_tstep)`
+DEFINE SYMBOL day_1_fourth = `TAX_DATESTRING(ttime, ck_tpts, "day")`
+IF `STRCMP("($day_1_fourth)", "($day_0_fourth)") EQ 0` THEN LET dates_same = 1
+
+LET ttime = `($TLAB_tstart)+2*($TLAB_tstep)`
+LET ttime_last = `ttime`
+DEFINE SYMBOL day_2_fourth = `TAX_DATESTRING(ttime, ck_tpts, "day")`
+IF `STRCMP("($day_2_fourth)", "($day_1_fourth)") EQ 0` THEN LET dates_same = 1
+
+LET ttime = `($TLAB_tstart)+3*($TLAB_tstep)`
+LET ttime_last = `ttime`
+DEFINE SYMBOL day_3_fourth = `TAX_DATESTRING(ttime, ck_tpts, "day")`
+IF `STRCMP("($day_3_fourth)", "($day_2_fourth)") EQ 0` THEN LET dates_same = 1
+
+! The last section may be degenerate depending on the 
+! underlying time axis. Force it not to be, within
+! single-precision time coordinates
+
+LET ttime = `($TLAB_tstart)+4*($TLAB_tstep)`
+IF `ttime LE ttime_last` THEN 
+   LET ttime = `(1. - 1.e-5)* ($TLAB_tend) - 1`
+ENDIF 
+DEFINE SYMBOL day_4_fourth = `TAX_DATESTRING(ttime, ck_tpts, "day")`
+IF `STRCMP("($day_4_fourth)", "($day_3_fourth)") EQ 0` THEN LET dates_same = 1
+
+! --------
+! If some of the date symbols were repeated, add hours:minutes on a
+! second line under the lables.
+
+IF `dates_same GT 0` THEN
+   IF `PLMlabel LT 2` THEN LET PLMlabel = 2
+
+   LET ttime = `($TLAB_tstart)+0*($TLAB_tstep)`
+   LET dayfrac = `TAX_DAYFRAC(ttime, ck_tpts)`
+   IF `PLMlabel GT 0` THEN
+      GO pdatekey_dms
+      DEFINE SYMBOL day_0_fourth = ($day_0_fourth)($dms)
+   ENDIF
+   
+   LET ttime = `($TLAB_tstart)+1*($TLAB_tstep)`
+   LET dayfrac = `TAX_DAYFRAC(ttime, ck_tpts)`
+   IF `PLMlabel GT 0` THEN
+      GO pdatekey_dms
+      DEFINE SYMBOL day_1_fourth = ($day_1_fourth)($dms)
+   ENDIF
+   
+   LET ttime = `($TLAB_tstart)+2*($TLAB_tstep)`
+   LET dayfrac = `TAX_DAYFRAC(ttime, ck_tpts)`
+   IF `PLMlabel GT 0` THEN
+      GO pdatekey_dms
+      DEFINE SYMBOL day_2_fourth = ($day_2_fourth)($dms)
+   ENDIF
+   
+   LET ttime = `($TLAB_tstart)+3*($TLAB_tstep)`
+   LET dayfrac = `TAX_DAYFRAC(ttime, ck_tpts)`
+   IF `PLMlabel GT 0` THEN
+      GO pdatekey_dms
+      DEFINE SYMBOL day_3_fourth = ($day_3_fourth)($dms)
+   ENDIF
+   
+   ! The last section may be degenerate depending on the 
+   ! underlying time axis. Force it not to be, within
+   ! single-precision time coordinates
+   
+   LET ttime = `($TLAB_tstart)+4*($TLAB_tstep)`
+   IF `ttime LE ttime_last` THEN 
+      LET ttime = `(1. - 1.e-5)* ($TLAB_tend) - 1`
+   ENDIF 
+   LET dayfrac = `TAX_DAYFRAC(ttime, ck_tpts)`
+   IF `PLMlabel GT 0` THEN
+      GO pdatekey_dms
+      DEFINE SYMBOL day_4_fourth = ($day_4_fourth)($dms)
+   ENDIF
+
+ENDIF
+
+DEFINE SYMBOL datesize = 0.09
+IF `dates_same GT 0` THEN  DEFINE SYMBOL datesize = 0.07
+
+! --------
+IF ($horizontal_key"0|0|*>1") THEN
+
+LET vht = (($ppl$ylen) + ($ppl$yorg)) * 1.15
+IF ($vp_height"0|*>1") THEN LET vht = ($vp_height)
+
+LET rem = vht - (($ppl$ylen) + ($ppl$yorg))
+LET ymaxx = 0.22*($ppl$ylen)
+LET key_hi = MIN (`($ppl$yorg) + ($ppl$ylen) + ymaxx`,`vht-0.051*rem`)
+
+LET key_lo = (($ppl$yorg) + ($ppl$ylen) + 0.22*MIN (rem,ymaxx))
+LET key_lo = (($ppl$ylen) + 0.22*MIN (rem,ymaxx))
+LET key_inc = `0.1 * (key_hi - key_lo) + 0.05`
+
+LET key_hi = `key_lo + 4.0*key_inc`
+LET key_hi = `key_lo + 2.0*key_inc`
+let key_hi = `key_lo + 0.7*key_inc`
+
+let keylen = `ckx2-ckx1`
+let keydel = keylen/4
+let keystart = ckx1 - ($ppl$xorg)
+
+LET barline = "l"
+IF ($program_name"0|PyFerret>1|*>0") THEN LET barline = "|"
+
+let ybar = `key_lo+.2*key_inc`
+
+LABEL/NOUSER `keydel*0+keystart`,`key_hi`,0,0,($datesize),($day_0_fourth)
+LABEL/NOUSER `keydel*0+keystart`,`ybar`,0,0,.07,`barline`
+
+LABEL/NOUSER `keydel*1+keystart`,`key_hi`,0,0,($datesize),($day_1_fourth)
+LABEL/NOUSER `keydel*1+keystart`,`ybar`,0,0,.07,`barline`
+
+LABEL/NOUSER `keydel*2+keystart`,`key_hi`,0,0,($datesize),($day_2_fourth)
+LABEL/NOUSER `keydel*2+keystart`,`ybar`,0,0,.07,`barline`
+
+LABEL/NOUSER `keydel*3+keystart`,`key_hi`,0,0,($datesize),($day_3_fourth)
+LABEL/NOUSER `keydel*3+keystart`,`ybar`,0,0,.07,`barline`
+
+LABEL/NOUSER `keydel*4+keystart`,`key_hi`,0,0,($datesize),($day_4_fourth)
+LABEL/NOUSER `keydel*4+keystart`,`ybar`,0,0,.07,`barline`
+
+ELSE ! vertical key
+
+   
+! Based on what key.F does to define the upper x corner of the colorbar key.
+! If we are in a viewport, start with vp_width
+! 10/2011 change size of labels to 0.1
+
+LET vwid = (($ppl$xlen) + ($ppl$xorg)) * 1.15
+IF ($vp_width"0|*>1") THEN LET vwid = ($vp_width)
+
+LET rem = vwid - (($ppl$xlen) + ($ppl$xorg))
+LET xmaxx = 0.25*($ppl$xlen)
+LET key_hi = MIN (`($ppl$xorg) + ($ppl$xlen) + xmaxx`,`vwid-0.051*rem`)
+
+LET key_lo = (($ppl$xorg) + ($ppl$xlen) + 0.25*MIN (rem,xmaxx))
+LET key_lo = (($ppl$xlen) + 0.25*MIN (rem,xmaxx))
+LET key_inc = `0.1 * (key_hi - key_lo)`
+
+LET key_hi = `key_lo + 4.0*key_inc`
+LET key_hi = `key_lo + 2.0*key_inc`
+
+LABEL/NOUSER `key_hi`,`(($ppl$ylen)*0)/4-.05`,-1,0,($datesize),($day_0_fourth)
+LABEL/NOUSER `key_hi`,`(($ppl$ylen)*1)/4-.05`,-1,0,($datesize),($day_1_fourth)
+LABEL/NOUSER `key_hi`,`(($ppl$ylen)*2)/4-.05`,-1,0,($datesize),($day_2_fourth)
+LABEL/NOUSER `key_hi`,`(($ppl$ylen)*3)/4-.05`,-1,0,($datesize),($day_3_fourth)
+LABEL/NOUSER `key_hi`,`(($ppl$ylen)*4)/4-.05`,-1,0,($datesize),($day_4_fourth)
+
+ENDIF
+! End of file ------------ color_datekey.jnl--------------------------

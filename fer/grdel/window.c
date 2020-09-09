@@ -1920,7 +1920,8 @@ grdelBool grdelWindowSegmentDelete(grdelType window, int segid)
     return 1;
 }
 
-grdelBool grdelWindowSetWmark(grdelType window, char *filename, int len_filename)
+grdelBool grdelWindowSetWmark(grdelType window, char *filename, int len_filename,
+                              float xloc, float yloc, float scalefrac, float opacity)
 {
     GDWindow *mywindow;
     grdelBool success;
@@ -1943,7 +1944,7 @@ grdelBool grdelWindowSetWmark(grdelType window, char *filename, int len_filename
 
     if ( mywindow->bindings.cferbind != NULL ) {
         success = mywindow->bindings.cferbind->
-                            setWaterMark(mywindow->bindings.cferbind, filename, len_filename);
+                            setWaterMark(mywindow->bindings.cferbind, filename, len_filename, xloc, yloc, scalefrac, opacity);
         if ( ! success ) {
             /* grdelerrmsg already assigned */
             return 0;
@@ -1951,7 +1952,7 @@ grdelBool grdelWindowSetWmark(grdelType window, char *filename, int len_filename
     }
     else if ( mywindow->bindings.pyobject != NULL ) {
         result = PyObject_CallMethod(mywindow->bindings.pyobject,
-                                     "setWaterMark", "s#", filename, len_filename);
+                                     "setWaterMark", "s#", filename, len_filename, xloc, yloc, scalefrac, opacity);
         if ( result == NULL ) {
             sprintf(grdelerrmsg, "grdelWindowSetWmark: Error when calling the "
                     "Python binding's setWaterMark method: %s", pyefcn_get_error());
@@ -2022,10 +2023,26 @@ void FORTRAN(fgdsegdelete)(int *success, void **window, int *segid)
     *success = result;
 }
 
-void FORTRAN(fgdwinsetwmark)(int *success, void **window, char *filename, int *len_filename, int flen)
+/*
+ * Sets watermark image as contents of image specified by filename.
+ *
+ * Input Arguments:
+ *     window: Window object to use
+ *     filename: path to watermark image
+ *     len_filename: number of characters in filename string
+ *     xloc: horizontal position of watermark on final image
+ *     yloc: vertical position of watermakr on final image
+ *     scalefrac: proportion of displayed image to real image
+ *     opacity: percentage of transparency to display watermark with
+ * Output Arguments:
+ *     success: non-zero if successful; zero if an error occurred.
+ *              Use fgderrmsg_ to retrieve the error message.
+ */
+void FORTRAN(fgdwinsetwmark)(int *success, void **window, char *filename, int *len_filename,
+                             float *xloc, float *yloc, float *scalefrac, float *opacity)
 {
     grdelBool result;
 
-    result = grdelWindowSetWmark(*window, filename, *len_filename);
+    result = grdelWindowSetWmark(*window, filename, *len_filename, *xloc, *yloc, *scalefrac, *opacity);
     *success = result;
 }

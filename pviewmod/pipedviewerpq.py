@@ -1296,7 +1296,6 @@ class PipedViewerPQ(QMainWindow):
         '''
         ptcoords = cmnd["points"]
         ptsize = cmnd["size"]
-        ptsize = cmnd["size"]
         try:
             highlight = self.__helper.getColorFromCmnd(cmnd["highlight"])
         except KeyError:
@@ -1549,12 +1548,31 @@ class PipedViewerPQ(QMainWindow):
         '''
         return self.__widthfactor
 
-    def setWaterMark(self, filename):
+    def setWaterMark(self, filename, xloc, yloc, scalefrac, opacity):
         '''
-        Overlay water mark from location: filename.
+        Overlay water mark from filename.
         '''
-        raise TypeError ("setWaterMark: not implemented")
-        return
+        # Convert filename to unicode for QPicture.load
+        # print("user filename: " + filename)
+        # filename = filename.encode("utf-8")
+        # print("unicode: ", filename)
+        # Command dictionary for view window
+        cmnd_wmark = {"clipit": True,
+                      "viewfracs": {"left":0.0, "right": 0.5,
+                                    "top": 0.5, "bottom":1.0}}
+        print(cmnd_wmark)
+        # Initialize new view window to display image in
+        self.beginView(cmnd_wmark)
+        self.__activepicture.load(filename)
+        self.__activepainter.drawPicture(0, 0, self.__activepicture)
+        self.endView()
+        print("endView")
+
+        self.__drawcount += 1
+        # Limit the number of drawing commands per picture
+        if self.__drawcount >= self.__maxdraws:
+            self.updateScene()
+        print("drawcount")
 
 
 class PipedViewerPQProcess(Process):

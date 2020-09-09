@@ -13,34 +13,34 @@ const char *CCFBSymbolId = "CCFBSymbolId";
 
 /*
  * Create a Symbol object for this "Window".
- * 
- * If numpts is less than one, or if ptsx or ptsy is NULL, the symbol name 
- * must already be known, either as a pre-defined symbol or from a previous 
+ *
+ * If numpts is less than one, or if ptsx or ptsy is NULL, the symbol name
+ * must already be known, either as a pre-defined symbol or from a previous
  * call to this function.
  *
- * Current pre-defined symbol names are ones involving circles: 
- *    'dot': very small filled circle 
- *    'dotplus': very small filled circle and outer lines of a plus mark 
- *    'dotex': very small filled circle and outer lines of an ex mark 
- *    'circle': unfilled circle 
- *    'circfill': normal-sized filled circle 
- *    'circplus': small unfilled circle and outer lines of a plus mark 
+ * Current pre-defined symbol names are ones involving circles:
+ *    'dot': very small filled circle
+ *    'dotplus': very small filled circle and outer lines of a plus mark
+ *    'dotex': very small filled circle and outer lines of an ex mark
+ *    'circle': unfilled circle
+ *    'circfill': normal-sized filled circle
+ *    'circplus': small unfilled circle and outer lines of a plus mark
  *    'circex': small unfilled circle and outer lines of an ex mark
  *
- * If numpts is greater than zero and ptsx and ptsy are not NULL, the 
- * arguments ptsx and ptsy are X- and Y-coordinates that define the symbol 
- * as multiline subpaths in a [-50,50] square.  The location of the point 
- * this symbol represents will be at the center of the square.  An invalid 
- * coordinate (outside [-50,50]) will terminate the current subpath, and 
- * the next valid coordinate will start a new subpath.  This definition 
+ * If numpts is greater than zero and ptsx and ptsy are not NULL, the
+ * arguments ptsx and ptsy are X- and Y-coordinates that define the symbol
+ * as multiline subpaths in a [-50,50] square.  The location of the point
+ * this symbol represents will be at the center of the square.  An invalid
+ * coordinate (outside [-50,50]) will terminate the current subpath, and
+ * the next valid coordinate will start a new subpath.  This definition
  * will replace an existing symbol with the given name.
  *
  * Arguments:
  *     window: Window in which this symbol is to be used
  *     symbolname: name of the symbol
  *     symbolnamelen: actual length of the symbol name
- *     ptsx: vertex X-coordinates 
- *     ptsy: vertex Y-coordinates 
+ *     ptsx: vertex X-coordinates
+ *     ptsy: vertex Y-coordinates
  *     numpts: number of vertices
  *
  * Returns a pointer to the symbol object created.  If an error occurs,
@@ -50,16 +50,16 @@ grdelType cairoCFerBind_createSymbol(CFerBind *self, const char *symbolname, int
                         const float ptsx[], const float ptsy[], int numpts, grdelBool fill)
 {
     CairoCFerBindData *instdata;
-    CCFBSymbol *symbolobj;
-    cairo_surface_t *pathsurface;
-    cairo_t *pathcontext;
-    int      somethingdrawn;
-    int      newstart;
-    int      laststart;
-    int      lastend;
-    int      k;
-    double   xval;
-    double   yval;
+    CCFBSymbol        *symbolobj;
+    cairo_surface_t   *pathsurface;
+    cairo_t           *pathcontext;
+    int               somethingdrawn;
+    int               newstart;
+    int               laststart;
+    int               lastend;
+    int               k;
+    double            xval;
+    double            yval;
 
     /* Sanity check */
     if ( (self->enginename != CairoCFerBindName) &&
@@ -96,7 +96,7 @@ grdelType cairoCFerBind_createSymbol(CFerBind *self, const char *symbolname, int
     symbolobj->name[namelen] = '\0';
 
     /* Create a 200x200 (pixel or point) surface matching that of the actual drawing surface */
-    pathsurface = cairo_surface_create_similar(instdata->surface, 
+    pathsurface = cairo_surface_create_similar(instdata->surface,
                         cairo_surface_get_content(instdata->surface), 200, 200);
     if ( cairo_surface_status(pathsurface) != CAIRO_STATUS_SUCCESS ) {
         strcpy(grdelerrmsg, "cairoCFerBind_createSymbol: unable to create surface for symbol");
@@ -132,7 +132,7 @@ grdelType cairoCFerBind_createSymbol(CFerBind *self, const char *symbolname, int
             yval = -1.0 * (double) (ptsy[k]);
             if ( (xval < -100.0) || (xval > 100.0) || (yval < -100.0) || (yval > 100.0) ) {
                 /* check if the current subpath should be closed */
-                if ( (laststart >= 0) && (lastend > laststart) && 
+                if ( (laststart >= 0) && (lastend > laststart) &&
                      (fabs(ptsx[lastend] - ptsx[laststart]) < 0.001) &&
                      (fabs(ptsy[lastend] - ptsy[laststart]) < 0.001) ) {
                     cairo_close_path(pathcontext);
@@ -163,7 +163,7 @@ grdelType cairoCFerBind_createSymbol(CFerBind *self, const char *symbolname, int
             return NULL;
         }
         /* final check if the (sub)path should be closed */
-        if ( (laststart >= 0) && (lastend > laststart) && 
+        if ( (laststart >= 0) && (lastend > laststart) &&
              (fabs(ptsx[lastend] - ptsx[laststart]) < 0.001) &&
              (fabs(ptsy[lastend] - ptsy[laststart]) < 0.001) ) {
             cairo_close_path(pathcontext);
@@ -281,4 +281,3 @@ grdelType cairoCFerBind_createSymbol(CFerBind *self, const char *symbolname, int
 
     return symbolobj;
 }
-

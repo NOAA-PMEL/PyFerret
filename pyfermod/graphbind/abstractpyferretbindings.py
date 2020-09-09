@@ -531,7 +531,7 @@ class AbstractPyFerretBindings(object):
         '''
         raise AttributeError('not implemented')
 
-    def setWaterMark(self, filename):
+    def setWaterMark(self, filename, xloc, yloc, scalefrac, opacity):
         '''
         Overlays water mark.
 

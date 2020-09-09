@@ -134,7 +134,7 @@
      .			nqual1t    , nqual_at2a
 	PARAMETER    (	nsub1   =20, nsub_at2   = nsub_at1   + nsub1,
      .			nqual1a = 0, nqual_at1b = nqual_at1a + nqual1a,	!'    '
-     .			nqual1b =24, nqual_at1c = nqual_at1b + nqual1b,	!'WIND'
+     .			nqual1b =30, nqual_at1c = nqual_at1b + nqual1b,	!'WIND'
      .			nqual1c =27, nqual_at1d = nqual_at1c + nqual1c,	!'REGI'
      .			nqual1d = 1, nqual_at1e = nqual_at1d + nqual1d,	!'VIEW'
      .			nqual1e = 0, nqual_at1f = nqual_at1e + nqual1e,	!'EXPR'

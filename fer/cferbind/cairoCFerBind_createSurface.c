@@ -19,9 +19,9 @@
 grdelBool cairoCFerBind_createSurface(CFerBind *self)
 {
     CairoCFerBindData *instdata;
-    char  *fmtname;
-    double width;
-    double height;
+    char              *fmtname;
+    double            width;
+    double            height;
     cairo_rectangle_t extents;
 
     /* Sanity check */
@@ -62,7 +62,7 @@ grdelBool cairoCFerBind_createSurface(CFerBind *self)
         case CCFBIF_PDF:
             /* Surface size is given in (floating-point) points */
             width = instdata->imagewidth * 72.0 / instdata->pixelsperinch;
-            height = instdata->imageheight * 72.0 / instdata->pixelsperinch; 
+            height = instdata->imageheight * 72.0 / instdata->pixelsperinch;
             instdata->surface = cairo_pdf_surface_create(instdata->imagename, width, height);
             /* Never use the alpha channel to avoid embedded image */
             instdata->noalpha = 1;
@@ -71,7 +71,7 @@ grdelBool cairoCFerBind_createSurface(CFerBind *self)
         case CCFBIF_PS:
             /* Surface size is given in (floating-point) points */
             width = instdata->imagewidth * 72.0 / instdata->pixelsperinch;
-            height = instdata->imageheight * 72.0 / instdata->pixelsperinch; 
+            height = instdata->imageheight * 72.0 / instdata->pixelsperinch;
             if ( width > height ) {
                 /*
                  * Landscape orientation
@@ -91,7 +91,7 @@ grdelBool cairoCFerBind_createSurface(CFerBind *self)
         case CCFBIF_SVG:
             /* Surface size is given in (floating-point) points */
             width = instdata->imagewidth * 72.0 / instdata->pixelsperinch;
-            height = instdata->imageheight * 72.0 / instdata->pixelsperinch; 
+            height = instdata->imageheight * 72.0 / instdata->pixelsperinch;
             instdata->surface = cairo_svg_surface_create(instdata->imagename, width, height);
             fmtname = "SVG";
             break;
@@ -100,7 +100,7 @@ grdelBool cairoCFerBind_createSurface(CFerBind *self)
             extents.x = 0.0;
             extents.y = 0.0;
             extents.width = instdata->imagewidth * 72.0 / instdata->pixelsperinch;
-            extents.height = height = instdata->imageheight * 72.0 / instdata->pixelsperinch; 
+            extents.height = height = instdata->imageheight * 72.0 / instdata->pixelsperinch;
 #ifdef CAIRO_HAS_RECORDING_SURFACE
             instdata->surface = cairo_recording_surface_create(CAIRO_CONTENT_COLOR_ALPHA, &extents);
 #else
@@ -144,7 +144,7 @@ grdelBool cairoCFerBind_createSurface(CFerBind *self)
          */
         if ( instdata->imageformat == CCFBIF_PS ) {
             width = instdata->imagewidth * 72.0 / instdata->pixelsperinch;
-            height = instdata->imageheight * 72.0 / instdata->pixelsperinch; 
+            height = instdata->imageheight * 72.0 / instdata->pixelsperinch;
             if ( width > height ) {
                 /* surface was created with coordinates (0,0) to (height, width) */
                 cairo_matrix_t transmat;
@@ -184,4 +184,3 @@ grdelBool cairoCFerBind_createSurface(CFerBind *self)
 
     return 1;
 }
-

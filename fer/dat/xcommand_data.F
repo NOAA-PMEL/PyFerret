@@ -321,10 +321,15 @@
 		DATA qualifiers  (nqual_at1b+18)/ 'OUTLINE'	/
 		DATA qualifiers  (nqual_at1b+19)/ 'SCALE'	/
 		DATA qualifiers  (nqual_at1b+20)/ 'WMARK'	/
-		DATA qualifiers  (nqual_at1b+21)/ '****'	/
-		DATA qualifiers  (nqual_at1b+22)/ '****'	/
-		DATA qualifiers  (nqual_at1b+23)/ '****'  /
-		DATA qualifiers  (nqual_at1b+24)/ '****'  /
+		DATA qualifiers  (nqual_at1b+21)/ 'WMSCALE'	/
+		DATA qualifiers  (nqual_at1b+22)/ 'WMOPAC'	/
+		DATA qualifiers  (nqual_at1b+23)/ 'WMXLOC'  /
+		DATA qualifiers  (nqual_at1b+24)/ 'WMYLOC'  /
+		DATA qualifiers  (nqual_at1b+25)/ '****'  /
+		DATA qualifiers  (nqual_at1b+26)/ '****'  /
+		DATA qualifiers  (nqual_at1b+27)/ '****'  /
+		DATA qualifiers  (nqual_at1b+28)/ '****'  /
+		DATA qualifiers  (nqual_at1b+29)/ '****'  /
 * SET REGION
 	   DATA subcommands      (nsub_at1 + 2)	/ 'REGION'	/
 	   DATA num_qualifs      (nsub_at1 + 2)	/ nqual1c	/

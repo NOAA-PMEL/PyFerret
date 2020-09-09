@@ -89,7 +89,8 @@ typedef struct CFerBind_struct {
      grdelBool (*drawText)(struct CFerBind_struct *self, const char *text, int textlen,
                            double startx, double starty, grdelType font, grdelType color,
                            double rotation);
-     grdelBool (*setWaterMark)(struct CFerBind_struct *self, char *filename, int len_filename);
+     grdelBool (*setWaterMark)(struct CFerBind_struct *self, char *filename, int len_filename,
+                               float xloc, float yloc, float scalefrac, float opacity);
 } CFerBind;
 
 /*

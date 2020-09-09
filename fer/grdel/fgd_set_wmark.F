@@ -5,13 +5,18 @@
 *     windowid - number of the window to use
 *     filename - water mark image filename
 *     len_filename - length of image filename
+*     xloc - horizontal position in pixels of watermark image corner
+*     yloc - vertical position in pixels of watermark image corner
+*     scalefrac - multiple of watermark image x and y dimensions
+*     opacity - number between 0 and 1 specifying image visibiliry
 
-        SUBROUTINE FGD_SET_WMARK(windowid, filename, len_filename)
+        SUBROUTINE FGD_SET_WMARK(windowid, filename, len_filename, xloc, yloc, scalefrac, opacity)
 
         IMPLICIT NONE
         INTEGER windowid
         CHARACTER*2048 filename
         INTEGER len_filename
+        REAL*4 xloc, yloc, scalefrac, opacity
 
         INCLUDE 'ferret.parm'
         INCLUDE 'tmap_dims.parm'
@@ -34,7 +39,8 @@
         IF ( windowobjs(windowid) .NE. nullobj ) THEN
 *           Update the width scaling factor of this window
             CALL FGDWINSETWMARK(success,
-     .                          windowobjs(windowid), filename, len_filename)
+     .                          windowobjs(windowid), filename, len_filename,
+     .                          xloc, yloc, scalefrac, opacity)
             IF ( success .EQ. 0 ) THEN
 *               Error - output error message
                 errstr = ' '

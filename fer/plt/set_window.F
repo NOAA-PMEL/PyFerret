@@ -127,13 +127,16 @@
      .         physical_chg, relocate, chg_window, axis_ref
        INTEGER TM_LENSTR1, TM_LENSTR, ier, id, itype, imeter, irx, iry,
      .         wn, n, qp, ivp, colon_pos, slen, tlen, i, s1,
-     .         bkgcolor, xpixels, ypixels
+     .         bkgcolor, xpixels, ypixels,
+     .         qp_op, qp_xl, qp_yl, qp_scl
 	   REAL    xln, yln, xmn, xmx, ymn, ymx, scl,
-     .         xstretch, ystretch, aspect, ref_len, xsc, ysc
+     .         xstretch, ystretch, aspect, ref_len, xsc, ysc,
+     .         wmkx, wmky, scale, opac
 	   REAL*4  rzero, rone, fcty, fctx,
      .         xwlo, ywlo, xwhi, ywhi, dfltthick,
      .         redfrac, grnfrac, bluefrac, opaqfrac,
-     .         xinches, yinches, sc, owd
+     .         xinches, yinches, sc, owd,
+     .         xloc, yloc, scalefrac, opacity
        CHARACTER UPPER_CASE*1, GKS_X_CONID*16, warnmsg*80,
      .         arg1*1, buffer*2048, xwind_id*80, short_buff*24
 
@@ -151,21 +154,29 @@
      .          slash_textprom,
      .          slash_outline,
      .          slash_scale,
-     .          slash_wmark
+     .          slash_wmark,
+     .          slash_wmark_scale,
+     .          slash_wmark_opac,
+     .          slash_wmark_xloc,
+     .          slash_wmark_yloc
 	PARAMETER ( slash_new      =  1+1,
-     .              slash_clear    =  4+1,
-     .              slash_title    =  5+1,
-     .              slash_quality  =  6+1,
-     .              slash_aalias   =  7+1,
-     .              slash_noaalias =  8+1,
-     .              slash_engine   =  9+1,
-     .              slash_color    = 10+1,
-     .              slash_opacity  = 11+1,
-     .              slash_thicken  = 12+1,
-     .              slash_textprom = 17+1,
-     .              slash_outline  = 18+1,
-     .              slash_scale    = 19+1,
-     .              slash_wmark    = 20+1 )
+     .              slash_clear       =  4+1,
+     .              slash_title       =  5+1,
+     .              slash_quality     =  6+1,
+     .              slash_aalias      =  7+1,
+     .              slash_noaalias    =  8+1,
+     .              slash_engine      =  9+1,
+     .              slash_color       = 10+1,
+     .              slash_opacity     = 11+1,
+     .              slash_thicken     = 12+1,
+     .              slash_textprom    = 17+1,
+     .              slash_outline     = 18+1,
+     .              slash_scale       = 19+1,
+     .              slash_wmark       = 20+1,
+     .              slash_wmark_scale = 21+1,
+     .              slash_wmark_opac  = 22+1,
+     .              slash_wmark_xloc  = 23+1,
+     .              slash_wmark_yloc  = 24+1 )
 
 	rzero = 0.0
 	rone = 1.0
@@ -514,14 +525,58 @@ c 75        CONTINUE
         ENDIF
 
 
-* wmark specified?
+* wmark specified? pass along values specified in /WMOPAC /WMSCALE /WMXLOC /WMYLOC
         qp = qual_given(slash_wmark)
         IF ( qp .GT. 0 ) THEN
             CALL EQUAL_STR_LC(cmnd_buff(qual_start(qp):qual_end(qp)),
      .                        buffer, status)
             IF ( status .NE. ferr_ok ) RETURN
             s1 = TM_LENSTR(buffer)
-            CALL FGD_WMARK(n, buffer, s1)
+
+            qp_op = qual_given(slash_wmark_opac)
+            IF ( qp_op .GT. 0 ) THEN
+                CALL EQUAL_VAL(cmnd_buff(qual_start(qp_op):qual_end(qp_op)),
+     .                         opac, status)
+                IF ( status .NE. ferr_ok ) RETURN
+                IF ( (opac .LT. 0.0) .OR. (opac .GT. 100.0) ) GOTO 5080
+                opac = opac / 100.0
+            ELSE
+               opac = 0.5
+            ENDIF
+
+            qp_scl = qual_given(slash_wmark_scale)
+            IF ( qp_scl .GT. 0 ) THEN
+                CALL EQUAL_VAL(cmnd_buff(qual_start(qp_scl):qual_end(qp_scl)),
+     .                         scale, status)
+                IF ( status .NE. ferr_ok ) RETURN
+            ELSE
+                scale = 1.0
+            ENDIF
+
+            qp_xl = qual_given(slash_wmark_xloc)
+            IF ( qp_xl .GT. 0 ) THEN
+                CALL EQUAL_VAL(cmnd_buff(qual_start(qp_xl):qual_end(qp_xl)),
+     .                         wmkx, status)
+                IF ( status .NE. ferr_ok ) RETURN
+            ELSE
+                wmkx = 0.0
+            ENDIF
+
+            qp_yl = qual_given(slash_wmark_yloc)
+            IF ( qp_yl .GT. 0 ) THEN
+                CALL EQUAL_VAL(cmnd_buff(qual_start(qp_yl):qual_end(qp_yl)),
+     .                         wmky, status)
+                IF ( status .NE. ferr_ok ) RETURN
+            ELSE
+                wmky = 0.0
+            ENDIF
+
+            xloc = wmkx
+            yloc = wmky
+            scalefrac = scale
+            opacity = opac
+
+            CALL FGD_SET_WMARK(n, buffer, s1, xloc, yloc, scalefrac, opacity)
         ENDIF
 
         IF ( bkgcolor > 0 ) THEN

@@ -188,7 +188,7 @@ class PipedImagerPQ(QMainWindow):
 
     def closeEvent(self, event):
         '''
-        Clean up and send the WINDOW_CLOSED_MESSAGE on the response pipe 
+        Clean up and send the WINDOW_CLOSED_MESSAGE on the response pipe
         before closing the window.
         '''
         self.__timer.stop()
@@ -259,13 +259,13 @@ class PipedImagerPQ(QMainWindow):
         self.__label.resize(labelwidth, labelheight)
         # update the label from the new pixmap
         self.__label.update()
-       
+
     def clearScene(self, bkgcolor=None):
         '''
         Deletes the scene image and fills the label with bkgcolor.
-        If bkgcolor is None or an invalid color, the color used is 
-        the one used from the last clearScene or redrawScene call 
-        with a valid color (or opaque white if a color has never 
+        If bkgcolor is None or an invalid color, the color used is
+        the one used from the last clearScene or redrawScene call
+        with a valid color (or opaque white if a color has never
         been specified).
         '''
         # get the color to use for clearing (the background color)
@@ -315,7 +315,7 @@ class PipedImagerPQ(QMainWindow):
             if self.__autoscale:
                 self.__scalefactor = 1.0
                 barheights = self.menuBar().height() + self.statusBar().height()
-                self.resize(newwidth + self.__framedelta, 
+                self.resize(newwidth + self.__framedelta,
                             newheight + self.__framedelta + barheights)
             # clear the scene with the last clearing color
             self.clearScene(None)
@@ -326,7 +326,7 @@ class PipedImagerPQ(QMainWindow):
         and subsequent dictionaries imageinfo.  The image is created
         from multiple calls to this function since there is a limit
         on the size of a single object passed through a pipe.
-        
+
         The first imageinfo dictionary given when creating an image
         must define the following key and value pairs:
             "width": width of the image in pixels
@@ -346,7 +346,7 @@ class PipedImagerPQ(QMainWindow):
             "blockdata": this block of data as a bytearray
 
         On receipt of the last block of data (blocknum == numblocks)
-        the scene image will be created and the scene will be updated. 
+        the scene image will be created and the scene will be updated.
 
         Raises:
             KeyError - if one of the above keys is not given
@@ -437,7 +437,7 @@ class PipedImagerPQ(QMainWindow):
 
     def autoScaleScene(self):
         '''
-        Selects a scaling factor that maximizes the scene within the window 
+        Selects a scaling factor that maximizes the scene within the window
         frame without requiring scroll bars.  Intended to be called when
         the window size is changed by the user and auto-scaling is turn on.
 
@@ -462,7 +462,7 @@ class PipedImagerPQ(QMainWindow):
         newcwheight = int(factor * self.__sceneheight + 0.5)
         newcwwidth = int(factor * self.__scenewidth + 0.5)
 
-        # if the window does not have the correct aspect ratio, resize it so 
+        # if the window does not have the correct aspect ratio, resize it so
         # it will; this will generate another call to this method.  Otherwise,
         # scale the scene and be done.
         if self.isMaximized() or \
@@ -471,7 +471,7 @@ class PipedImagerPQ(QMainWindow):
             self.scaleScene(factor, False)
             return True
         else:
-            self.resize(newcwwidth + self.__framedelta, 
+            self.resize(newcwwidth + self.__framedelta,
                         newcwheight + self.__framedelta + barheights)
             return False
 
@@ -480,7 +480,7 @@ class PipedImagerPQ(QMainWindow):
         Scales both the horizontal and vertical directions by factor.
         Scaling factors are not accumulative.  So if the scene was
         already scaled, that scaling is "removed" before this scaling
-        factor is applied.  If resizewin is True, the main window is 
+        factor is applied.  If resizewin is True, the main window is
         resized to accommodate this new scaled scene size.
 
         If factor is zero, just switch to auto-scaling at the current
@@ -523,7 +523,7 @@ class PipedImagerPQ(QMainWindow):
                 mwheight = newlabheight + barheights + self.__framedelta
                 mwwidth = newlabwidth + self.__framedelta
                 # Do not exceed the available real estate on the screen.
-                # If autoscaling is in effect, the resize will trigger 
+                # If autoscaling is in effect, the resize will trigger
                 # any required adjustments.
                 scrnrect = QApplication.desktop().availableGeometry()
                 if mwwidth > 0.95 * scrnrect.width():
@@ -578,7 +578,7 @@ class PipedImagerPQ(QMainWindow):
     def saveSceneToFile(self, filename, imageformat, transparent, rastsize):
         '''
         Save the current scene to the named file.
-        
+
         If imageformat is empty or None, the format is guessed from
         the filename extension.
 
@@ -587,7 +587,7 @@ class PipedImagerPQ(QMainWindow):
 
         If given, rastsize is the pixels size of the saved image.
         If rastsize is not given, the saved image will be saved
-        at the current scaled image size.  
+        at the current scaled image size.
         '''
         # This could be called when there is no image present.
         # If this is the case, ignore the call.
@@ -918,4 +918,3 @@ def _test_pipedimagerpq():
 
 if __name__ == "__main__":
     _test_pipedimagerpq()
-

@@ -6,7 +6,7 @@ include ../../site_specific.mk
 include ../../platform_specific.mk.$(BUILDTYPE)
 
 LIBNAME = ../../lib/libcferbind.a
-CHDRS = $(wildcard *.h) ../common/ferret.h ../grdel/grdel.h 
+CHDRS = $(wildcard *.h) ../common/ferret.h ../grdel/grdel.h
 CSRCS = $(wildcard *.c)
 COBJS = $(CSRCS:.c=.o)
 
@@ -14,7 +14,8 @@ COBJS = $(CSRCS:.c=.o)
 # Just add the additional warning flags to CFLAGS
 .PHONY : all
 all :
-	$(MAKE) "CFLAGS = $(CFLAGS) -Wall -Wno-pointer-to-int-cast -Werror" $(LIBNAME)
+	# $(MAKE) "CFLAGS = $(CFLAGS) -Wall -Wno-pointer-to-int-cast -Werror" $(LIBNAME)
+	$(MAKE) "CFLAGS = $(CFLAGS) -Wall -Wno-pointer-to-int-cast" $(LIBNAME)
 
 $(LIBNAME) : $(COBJS)
 	$(AR) $(ARFLAGS) $(LIBNAME) $(COBJS)
@@ -29,4 +30,3 @@ clean :
 #
 # End of Makefile
 #
-

@@ -74,7 +74,7 @@ typedef struct CCFBFont_Struct {
 #endif
     int underline;
 } CCFBFont;
-    
+
 /* Structure for creating a linked list of image or recording surfaces */
 typedef struct CCFBPicture_Struct {
     struct CCFBPicture_Struct *next;
@@ -97,8 +97,8 @@ typedef struct CairoCFerBindData_struct {
     CCFBImageFormat imageformat;
     /* Anti-alias non-text elements? */
     int antialias;
-    /* 
-     * Never use colors with an alpha channel (ARGB32) ? 
+    /*
+     * Never use colors with an alpha channel (ARGB32) ?
      * If false (zero), it will depend on the output format.
      */
     int noalpha;
@@ -110,9 +110,9 @@ typedef struct CairoCFerBindData_struct {
     CCFBPicture *lastpic;
     int segid;
     /*
-     * The current surface and context.  These are not created until 
-     * a view is created and drawing is about to begin.  Ferret will 
-     * modify the above values, possibly multiple times, prior to the 
+     * The current surface and context.  These are not created until
+     * a view is created and drawing is about to begin.  Ferret will
+     * modify the above values, possibly multiple times, prior to the
      * start of drawing.
      */
     cairo_surface_t *surface;
@@ -120,7 +120,7 @@ typedef struct CairoCFerBindData_struct {
     /* Flag that something has been drawn to the current surface */
     int somethingdrawn;
     /*
-     * Flag that something about the image has changed since the last 
+     * Flag that something about the image has changed since the last
      * update.  Only really used by the PipedImager engine.
      */
     int imagechanged;
@@ -129,6 +129,14 @@ typedef struct CairoCFerBindData_struct {
      * Only assigned and used by the PipedImager engine.
      */
     grdelType viewer;
+    /*
+     * Parameters for setting watermark image source file and display properties.
+     */
+    float xloc;
+    float yloc;
+    float scalefrac;
+    float opacity;
+    char  wmark_filename[CCFB_NAME_SIZE];
 } CairoCFerBindData;
 
 grdelBool cairoCFerBind_setImageName(CFerBind *self, const char *imagename,
@@ -154,7 +162,7 @@ grdelBool cairoCFerBind_scaleWindow(CFerBind *self, double scale);
 grdelBool cairoCFerBind_showWindow(CFerBind *self, int visible);
 grdelBool cairoCFerBind_saveWindow(CFerBind *self, const char *filename, int namelen,
                                    const char *formatname, int fmtnamelen, int transbkg,
-                                   double xinches, double yinches, 
+                                   double xinches, double yinches,
                                    int xpixels, int ypixels,
                                    void **annotations, int numannotations);
 grdelType cairoCFerBind_createColor(CFerBind *self, double redfrac,
@@ -174,7 +182,7 @@ grdelType cairoCFerBind_createBrush(CFerBind *self, grdelType color,
 grdelBool cairoCFerBind_replaceBrushColor(CFerBind *self,
                                           grdelType brush, grdelType color);
 grdelBool cairoCFerBind_deleteBrush(CFerBind *self, grdelType brush);
-grdelType cairoCFerBind_createSymbol(CFerBind *self, const char *symbolname, int namelen, 
+grdelType cairoCFerBind_createSymbol(CFerBind *self, const char *symbolname, int namelen,
                         const float ptsx[], const float ptsy[], int numpts, grdelBool fill);
 grdelBool cairoCFerBind_deleteSymbol(CFerBind *self, grdelType symbol);
 grdelBool cairoCFerBind_setWidthFactor(CFerBind *self, double widthfactor);
@@ -192,5 +200,7 @@ grdelBool cairoCFerBind_textSize(CFerBind *self, const char *text, int textlen,
 grdelBool cairoCFerBind_drawText(CFerBind *self, const char *text, int textlen,
                                  double startx, double starty, grdelType font,
                                  grdelType color, double rotation);
+grdelBool cairoCFerBind_setWaterMark(CFerBind *self, const char filename[], int len_filename,
+                                     float xloc, float yloc, float scalefrac, float opacity);
 
 #endif

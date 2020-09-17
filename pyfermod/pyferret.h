@@ -83,7 +83,7 @@ void FORTRAN(get_str_data_array_params)(char dataname[], int *lendataname, char 
                             int memlo[MAX_FERRET_NDIM], int memhi[MAX_FERRET_NDIM],
                             int steplo[MAX_FERRET_NDIM], int stephi[MAX_FERRET_NDIM],
                             int incr[MAX_FERRET_NDIM], AXISTYPE axtypes[MAX_FERRET_NDIM], char errmsg[],
-                            int *lenerrmsg, int maxlen_dataname, int maxlen_dataunit, int maxlen_errmsg);
+                            int *lenerrmsg, int maxlen_dataname, int maxlen_errmsg);
 void FORTRAN(get_data_array_coords)(double axiscoords[], char axisunit[], char axisname[],
                             int *axisnum, int *numcoords, char errmsg[], int *lenerrmsg,
                             int maxlen_axisunit, int maxlen_axisname, int maxlen_errmsg);

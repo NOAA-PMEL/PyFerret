@@ -36,7 +36,7 @@ SET MODE VERIFY      ! show command file lines at the screen
 ! Discrete Sampling Geometry Contiguous ragged-array files, following the CF 
 ! Standard for Discrete Sampling Geometries.
 !
-! The datasets used in this demo are included in the current FerretDatasets Distribution 
+! The datasets used in this demo are included for the current FerretDatasets Distribution 
 
 
 !----------------------------------------
@@ -91,9 +91,9 @@ cancel mode logo
 
 
 ! Each feature type has a native plot type “PLOT VAR”
-! will plot the variable in the currently selected set of features.
+! will plot the variable for the currently selected set of features.
 !
-! First lets make a map showing the locations of the stations.
+! First let's make a map showing the locations of the stations.
 ! This is nothing new, we draw a map and overlay the locations with PLOT/VS
 
 go basemap x=140:360 y=-40:40 20
@@ -126,10 +126,8 @@ pause
 
 ! Ordinary PyFerret qualifiers for coordinate limits, /X=, /Y=, /Z=, /T=, /E=  
 ! operate as they do with a gridded dataset -- i.e. they control the region
-! displayed by the graphics and the data that gets plotted or listed. This
-! plot has fewer lines, so allow the PLOT command to automatically give each 
-! one a new color or style. The legend labels are the profile station IDs from 
-! the file.
+! displayed by the graphics and the data that gets plotted or listed. The legend 
+! labels are the profile station IDs.
 
 plot/thick/x=130e:170e/y=8s:5n/T=1-FEB-2017:15-APR-2017 T_25
 
@@ -147,7 +145,7 @@ pause
 ! To select features (individual time series, profiles or trajectories)
 ! define a feature-mask. 
 ! SET DATA/FMASK=   (or USE/FMASK=) applies the mask to the dataset 
-! until it is cancelled. A listing shows what mask is in place, and 
+! until it is canceled. A listing shows what mask is in place, and 
 ! lists the data selected.
 
 let wmo_mask = IF wmo_platform_code EQ 51011 \
@@ -198,7 +196,7 @@ pause
 
 ! Another plot style uses the RIBBON/VS plot command, with 3 arguments: the 
 ! locations in two directions, and the variable to use for color. Time on the 
-! horizontal axis will result in a formatted time axis. Or specify Longitude 
+! horizontal axis will result in a formatted time axis. Or specify longitude 
 ! or latitude on the horizontal axis.
 
 ribbon/thick/vs latitude, depth, temp
@@ -248,8 +246,8 @@ set window/clear/siz=1/asp=0.6
 
 
 ! For each observation along a trajectory we have a time coordinate
-! as well as longitude and latitude. This means the data can be viewed
-! as a set of time series. Change to a timeseries view with USE/FEATURETYPE.
+! as well as longitude and latitude. This means the data can be interpreted
+! as a set of time series. Change to a timeseries interpretation with USE/FEATURETYPE.
 ! This can be applied when first opening the data or on an open dataset.
 
 use/featuretype=timeseries dsg_trajectory_example.nc
@@ -327,7 +325,7 @@ save/clobber/file=my_southern_stations.nc/x=0:180/y=-20:0 t_25
 use my_southern_stations.nc; show data
 
 
-! Currently we can APPEND new variables of the same size to a Dataset,
+! Currently we can APPEND new variables of the same size to a dataset,
 ! but appending further features or extending the dataset, for instance
 ! in time, is not now implemented.
 !----------------------------------------
@@ -362,7 +360,7 @@ pause
 ! ********************************************************************
 
 
-! Transformations apply within each feature, not over the whole region.
+! Transformations apply within each feature, not over over the whole file or region.
 !
 ! Returning to our timeseries dataset, compute the maximum temperature reached
 ! and the number of valid data in each time series during Jan-March of 2017
@@ -386,6 +384,27 @@ list/m=3:5/z=1:6/prec=6 sal, sal[z=@rsum]
 pause
 can dat/all
 
+
+! ********************************************************************
+!        Regridding to a common time or vertical axis   
+! ********************************************************************
+! A set of timeseries or profiles in a DSG dataset may not have a common set 
+! of time coordinates or depth levels, respectively.  They can be regridded to 
+! a common time or z axis using an ordinary regridding operation.
+
+! SHOW GRID output has shown us that the dataset has this time range. we can use
+! any time interval
+
+use dsg_timeseries_example
+define axis/t="15-jan-2017:12:00":21-apr-2017:10/unit=days tuniform
+let/like=t_25 t_25_station_vs_time =  t_25[gt=tuniform]
+shade t_25_station_vs_time
+
+
+!----------------------------------------
+pause
+can dat/all
+
 ! ********************************************************************
 !        Comparisons with gridded data        
 ! ********************************************************************
@@ -399,7 +418,7 @@ can dat/all
 ! collection implied by a Discrete Sampling Geometry, the locations and 
 ! times of the station data.
 
-! Open an NCEP reanalysis dataset and compare the potential temperature
+! Open a reference gridded dataset and compare the potential temperature
 ! data with the TAO buoy Timeseries data.
 
 use dsg_timeseries_example
@@ -418,25 +437,36 @@ set window/clear/siz=1/asp=0.6
 
 ! Plot the gridded data sampled at the DSG space-time coordinates
 ! Note that if the amount of model data that must be accessed
-! is large, Ferret dynamic memory management will apply scatter/
-! gather to perform the computation in chunks
+! is large, Ferret dynamic memory management will read the data and 
+! compute the result in pieces.
 
+let/like=pottmp[d=2] pottmp_at_buoys = pottmp[d=2,g=t_25[d=1]]
+list/x=140w/y=0/t=15-jan-2017:15-feb-2017 t_25[d=1], pottmp_at_buoys
+
+! Note that the units of the POTTMP data are degrees K.  We'll need to take
+! that into account
+pause
 
 let/like=pottmp[d=2] pottmp_at_buoys = pottmp[d=2,g=t_25[d=1]]
 plot/x=300:360/y=-15:15 pottmp_at_buoys
 
-pause
+! Compute the difference between observed and gridded values.
 
+! Define a variable to sample the gridded variable "pottmp" at the station 
+! locations and times of the timeseries collection. Convert the NCEP temperature 
+! from Degrees K to degrees C.
 
-! Compute the difference between observed and gridded values and plot
-! the difference for the timeseries in the Atlantic Ocean. The NCEP 
-! temperature is in Degrees K, so convert to C
+let pottmp_at_buoys = pottmp[d=2,g=t_25[d=1]] - 273.15
 
-let grid_t = pottmp[d=2,g=t_25[d=1]] - 273.15
-let/title="Timeseries - Gridded"/units="Deg C" diff = t_25[d=1] - grid_t
+! Now define a variable with the difference between the timeseries 
+! observations and the sampled grid.
+
+let/title="Timeseries - Gridded"/units="Deg C" diff = t_25[d=1] - pottmp_at_buoys
+
+! And finally  plot the difference for the timeseries stations that are located 
+! in the Atlantic Ocean.
 
 plot/x=300:360/y=-15:15 diff
-
 !----------------------------------------
 
 

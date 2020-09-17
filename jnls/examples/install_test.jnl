@@ -1,0 +1,38 @@
+
+cancel mode verify
+say 
+say Simple test of Ferret or PyFerret installation.
+say 
+
+! test_install.jnl
+!
+! PyFerret/Ferret test script  6/20/2020
+! Tests environment for jnl files, data files, color palettes, fonts.
+! Tests image creation and save.
+!
+! This script makes a quick test of a PyFerret or Ferret installation
+! Once the installation is done, execute the ferret_paths or pyferret_paths 
+! shell script. Then start the programs with a startup option:
+
+! pyferret -nodisplay
+!     or   
+!  ferret -gif
+!
+! and at the yes? prompt, enter "GO test_install.jnl"
+
+
+use coads_climatology
+shade/L=1/x=311:331/y=1:11 sst
+frame/file=test.gif
+
+IF ($program_name"0|PyFerret>1|*>0") THEN 
+   say Examine the image file test.png
+   say The image will be a grid of colored rectangles
+ELSE
+   say Examine the image file test.gif
+   say The image will be a grid of colored rectangles
+ENDIF
+say
+
+set mode/last verify
+quit

@@ -400,6 +400,26 @@ echo " Customize ferret_paths files..."
 if get_fer_dir && get_fer_dsets && get_ferpaths_dir && get_ferpaths_link && get_python_vars; then
     create_ferret_paths_and_pyferret
     echo " "
+    
+    echo " "
+    echo " "
+    echo " ---------------------- "
+    echo " "
+    echo " Optional test of installation:"
+    echo " "
+    echo "After you exit this Finstall script,"
+    echo " "
+    echo "1- Source the ferret_paths shell script just created "
+    echo "2- Start PyFerret with"
+    echo " "
+    echo "> pyferret -nodisplay"
+    echo " "
+    echo "   at the yes? prompt enter   'GO install_test.jnl'"
+    echo "The script output names an image file it has generated"
+    echo " "
+    echo " ---------------------- "
+    echo " "
+
     exit 0
 else
     echo " "

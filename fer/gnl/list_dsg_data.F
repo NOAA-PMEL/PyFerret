@@ -396,7 +396,7 @@
 
 	   IF (orientation .NE. pfeatureType_Point) THEN
 	      WRITE ( risc_buff, FMT ) 
-     .           vname_buff(:vname_len), feature_idname(:TM_LENSTR1(feature_idname))//'-id'
+     .           vname_buff(:vname_len), feature_idname(:TM_LENSTR1(feature_idname))
 	      IF (.NOT.norow) CALL SPLIT_LIST(pttmode_explct, list_lun, risc_buff, 0)
 	   ENDIF
 

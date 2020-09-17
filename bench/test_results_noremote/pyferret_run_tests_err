@@ -6569,26 +6569,28 @@ Replacing definition of grid GFAKE
 load  TEMP_CTD_RBR_MEAN[d=1,g=reg_var]
 Executed by script: *** GO bn_regrid_from_dsg.jnl ***
 *** Running ferret script: bn_dsg_use_feature.jnl
- **TMAP ERR: Corrupted CF-DSG structure or attributes
-             Required coordinate variables not found. Profile file is missing directions: vert
+ **TMAP ERR: Invalid command
+             Requested USE/FEATURE=Profile, but dataset is not a valid DSG file
 SET DAT/FORM=CDF/feature=profile dsg_cross_dateline.nc
 Executed by script: *** GO bn_dsg_use_feature.jnl ***
            *** NOTE: Coordinates inconsistent with FeatureType. Trajectory data must have observations along XYT
  **TMAP ERR: Invalid command
              Error on SET DATA/FEATURE= applied to an open dataset.
              Data set: ./data/DSG_ERDDAP_Tao5daySst.nc
- **TMAP ERR: Corrupted CF-DSG structure or attributes
-             Required coordinate variables not found. Trajectory file is missing directions: lat
-SET DAT/FORM=CDF dsg_bad_coord
-Executed by script: *** GO bn_dsg_use_feature.jnl ***
- **TMAP ERR: Corrupted CF-DSG structure or attributes
-             Row Size variable w/ sample_dimension not found.
-SET DAT/FORM=CDF dsg_bad_atts1
-Executed by script: *** GO bn_dsg_use_feature.jnl ***
- **TMAP ERR: Corrupted CF-DSG structure or attributes
-             Feature-ID variable not found or invalid value of cf_role attribute
-SET DAT/FORM=CDF dsg_bad_atts2
-Executed by script: *** GO bn_dsg_use_feature.jnl ***
+           *** NOTE: FEATURE-TYPE NOT YET IMPLEMENTED: TrajectoryProfile
+           *** NOTE: Initializing as a non-DSG dataset
+           *** NOTE: Dataset has FeatureType attribute: Trajectory
+           *** NOTE: But is not initialized as a DSG File: Required coordinate variables not found. Trajectory file is missing directions: lat
+           *** NOTE: Initializing the file as a non-DSG dataset
+           *** NOTE: Dataset has FeatureType attribute: Trajectory
+           *** NOTE: But is not initialized as a DSG File: Row Size variable w/ sample_dimension attribute not found.
+           *** NOTE: Initializing the file as a non-DSG dataset
+           *** NOTE: Dataset has FeatureType attribute: Trajectory
+           *** NOTE: But is not initialized as a DSG File: Feature-ID variable not found or invalid value of cf_role attribute
+           *** NOTE: Initializing the file as a non-DSG dataset
+           *** NOTE: Dataset has FeatureType attribute: Profile
+           *** NOTE: But is not initialized as a DSG File: DSG ragged array: observation variables must be 1-D PRES
+           *** NOTE: Initializing the file as a non-DSG dataset
            *** NOTE: Ambiguous DSG coordinate info. Multiple variables claiming to be X axis: lons, lon360. Using lons.
            *** NOTE: Ambiguous DSG coordinate info. Multiple variables claiming to be Y axis: yindex, lats. Using yindex.
            *** NOTE: SET DATA/FEATURE= applies only to Discrete Sampling Geometries datasets. Ignoring /FEATURE=
@@ -6855,6 +6857,9 @@ Bailing out of external function "box_edges":
  **ERROR: error in external function
 list box_edges (t_25)
 Executed by script: *** GO err751_fcns_of_dsg ***
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo

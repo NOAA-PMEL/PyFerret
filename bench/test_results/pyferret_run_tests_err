@@ -6408,6 +6408,45 @@ Executed by script: *** GO bn_iso8601_time.jnl ***
 set axis/t0=2010-15-01 TIME1
 Executed by script: *** GO bn_iso8601_time.jnl ***
 *** Running ferret script: bn_agg_given_taxis.jnl
+/bin/ls: cannot access aggf/forecast_??.nc: No such file or directory
+ LISTing to file aggf/forecast_01.nc
+ LISTing to file aggf/forecast_02.nc
+ LISTing to file aggf/forecast_03.nc
+ LISTing to file aggf/forecast_04.nc
+ LISTing to file aggf/forecast_05.nc
+ LISTing to file aggf/forecast_06.nc
+ LISTing to file aggf/forecast_07.nc
+ LISTing to file aggf/forecast_08.nc
+ LISTing to file aggf/forecast_09.nc
+ LISTing to file aggf/forecast_10.nc
+ LISTing to file aggf/forecast_11.nc
+ LISTing to file aggf/forecast_12.nc
+ LISTing to file aggf/forecast_13.nc
+ LISTing to file aggf/forecast_14.nc
+ LISTing to file aggf/forecast_15.nc
+ LISTing to file aggf/forecast_16.nc
+ LISTing to file aggf/forecast_17.nc
+ LISTing to file aggf/forecast_18.nc
+ LISTing to file aggf/forecast_19.nc
+ LISTing to file aggf/forecast_20.nc
+ LISTing to file aggf/forecast_21.nc
+ LISTing to file aggf/forecast_22.nc
+ LISTing to file aggf/forecast_23.nc
+ LISTing to file aggf/forecast_24.nc
+ LISTing to file aggf/forecast_25.nc
+ LISTing to file aggf/forecast_26.nc
+ LISTing to file aggf/forecast_27.nc
+ LISTing to file aggf/forecast_28.nc
+ LISTing to file aggf/forecast_29.nc
+ LISTing to file aggf/forecast_30.nc
+ LISTing to file aggf/forecast_31.nc
+ LISTing to file aggf/forecast_32.nc
+ LISTing to file aggf/forecast_33.nc
+ LISTing to file aggf/forecast_34.nc
+ LISTing to file aggf/forecast_35.nc
+ LISTing to file aggf/forecast_36.nc
+ LISTing to file aggf/forecast_37.nc
+ LISTing to file aggf/forecast_38.nc
            *** NOTE: Time axis coordinates matched using @XACT
            *** NOTE: Time axis coordinates matched using @BIN
            *** NOTE: Time axis coordinates matched using @ASN
@@ -7110,11 +7149,11 @@ Executed by script: *** GO bn_setting_text.jnl ***
 *** Running python script: testfervar.py
 >>> ... ... >>> >>> >>> Traceback (most recent call last):
   File "<stdin>", line 1, in <module>
-  File "....../lib/python2.7/site-packages/pyferret/ferdset.py", line 230, in __delattr__
+  File "....../lib/python3.6/site-packages/pyferret/ferdset.py", line 230, in __delattr__
     self.__delitem__(name)
-  File "....../lib/python2.7/site-packages/pyferret/ferdset.py", line 165, in __delitem__
+  File "....../lib/python3.6/site-packages/pyferret/ferdset.py", line 165, in __delitem__
     value._removefromferret()
-  File "....../lib/python2.7/site-packages/pyferret/fervar.py", line 882, in _removefromferret
+  File "....../lib/python3.6/site-packages/pyferret/fervar.py", line 882, in _removefromferret
     raise NotImplementedError('%s is a file variable; close the dataset to remove' % fername)
 NotImplementedError: SST[d=coads_climatology.cdf] is a file variable; close the dataset to remove
 

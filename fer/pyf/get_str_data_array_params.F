@@ -39,10 +39,9 @@
 * Input:
 *     datnam - description of the data array to retrieve
 *     lennam - actual length of datnam
-*     memory - ferret memory
 *
 * Output:
-*     start - offset into memory giving the start of the data array
+*     arraystart - offset into memory giving the start of the data array
 *     memlo, memhi - array dimensions
 *                    (memlo() = memhi() = -999 for invalid axes)
 *     steplo, stephi, incr - step values for the actual data requested

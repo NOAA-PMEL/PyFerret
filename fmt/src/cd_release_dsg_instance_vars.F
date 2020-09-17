@@ -97,20 +97,18 @@
         ENDIF
 
 * was a feature-mask set? deallocate that.
-	IF (dsg_msk_lm(dset).NE.int4_init .AND. dsg_msk_lm(dset).NE.unspecified_int4) THEN
+	IF (dsg_msk_lm(dset) .NE. unspecified_int4) THEN
 	   CALL FREE_LINE_DYNMEM( dsg_msk_lm(dset) )
 	   CALL TM_DEALLO_DYN_LINE( dsg_msk_lm(dset) )
-	   dsg_msk_lm(dset) = int4_init
+	   dsg_msk_lm(dset) = unspecified_int4
 	ENDIF
 
-* was a index-mask set? deallocate that.
-	IF (dsg_mask_ftrset_lm(dset).NE.int4_init .AND. dsg_mask_ftrset_lm(dset).NE.unspecified_int4) THEN
+* was a trajectory- or station-mask set? deallocate that.
+	IF (dsg_mask_ftrset_lm(dset) .NE. unspecified_int4) THEN
 	   CALL FREE_LINE_DYNMEM( dsg_mask_ftrset_lm(dset) )
 	   CALL TM_DEALLO_DYN_LINE( dsg_mask_ftrset_lm(dset) )
 	   dsg_mask_ftrset_lm(dset) = int4_init
 	ENDIF
-
-
 
 * Reset a couple more settings regarding dsg datasets
 

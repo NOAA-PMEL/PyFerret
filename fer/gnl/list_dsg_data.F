@@ -81,25 +81,27 @@
 * internal variable declarations:
 	LOGICAL  ITSA_DSG_POINTS, 
      .		process_feature(nfeatures), process_obs(nobs), its_dsg, 
-     .		its_cmpnd, has_mask, norow, its_point_data, do_blank
-	LOGICAL instance_coord(4), relevant_coord(4),
-     .		instance_var(nvar), point_var(nvar), 
-     .		instance_vars_only, point_vars_only, 
+     .		its_cmpnd, has_mask, norow, its_point_data, do_blank,
+     .		has_ftrset_vars, has_ftrset_coord
+	LOGICAL instance_coord(4), relevant_coord(4), ftrset_coord(4),
+     .		instance_var(nvar), point_var(nvar),  ftrset_var(nvar),
+     .		instance_vars_only, point_vars_only, ftrset_vars_only,
      .		ftr_label, constraint_labels, all_bad
-	INTEGER CGRID_SIZE, TM_LENSTR1, DSG_WHATS_IT,
-     .		GET_OFFSET_C_STRING_LEN, CX_DIM_LEN, GET_MAX_STRING_LEN,
+	INTEGER CGRID_SIZE, TM_LENSTR1, DSG_WHATS_IT, GET_OFFSET_C_STRING_LEN, 
+     .		CX_DIM_LEN, GET_MAX_STRING_LEN, TM_DSG_NF2FEATURES,
      .		i, j, ifeature, ivar, iobs, nobs, idim, cx, grid, slen,
-     .		orientation, obsdimlen, coord_lm(4), fvar_varid, base, ptr,
-     .		bufflen, line, mr,  gxlate, row_size_lm, clen, nblank,
-     .		feature_line, prec_digits(nvar), col_width(nvar), iwd, 
-     .		alen, slen1, slen2, vname_len, list_dsg_digits, dtype, 
-     .		vdims(2), idlen, ilen, ipad, idwid, data_len, nleft, nright,
-     .		nok, direc(nvar), min_width, vstrlen, paren, trans, status
+     .		orientation, obsdimlen, coord_lm(4), fvar_varid, 
+     .		ftrset_varid, base, ptr,bufflen, line, mr,  gxlate, 
+     .		row_size_lm, clen, nblank,feature_line, prec_digits(nvar), 
+     .		col_width(nvar), iwd, alen, slen1, slen2, vname_len, 
+     .		list_dsg_digits, dtype, vdims(2), idlen, ilen, ipad, idwid, 
+     .		data_len, nleft, nright,nok, direc(nvar), min_width, vstrlen, 
+     .		paren, trans, nftrsets, ista, lm_index, varid, status
 	REAL	value, small, big, biggest
 	CHARACTER LEFINT*8, VAR_CODE*128, TM_FMT*48, VAR_UNITS*64,
      .		FMT*20, AX_TITLE*32, SANITARY_VAR_CODE*128, CD_DSG_FEATURENAME*20,
      .		strbuff*128, line_buff*10000, vcode(nvar)*128,  
-     .		col_head_format*32, pstr*15, feature_idname*32, buff*128,
+     .		col_head_format*32, pstr*30, feature_idname*32, buff*128,
      .		good_fmt(max_intrp)*10, bad_fmt*10
 
 	CHARACTER*255	VAR_TITLE, VAR_TITLE_MOD, PAREN_SURROUND, vname_buff
@@ -118,9 +120,14 @@
      .	     coord_head(3)/'   DEPTH            '/,
      .	     coord_head(4)/'            TIME    '/
 
+        INTEGER, DIMENSION(:), ALLOCATABLE :: station_index
+        LOGICAL, DIMENSION(:), ALLOCATABLE :: process_ftrset
+
 * initialize
 
         norow = qual_given(slash_list_norow) .GT. 0
+	
+	nftrsets = TM_DSG_NF2FEATURES (dset)
 
 * comma or tab delimited? 
 
@@ -137,19 +144,16 @@
 	its_dsg = .TRUE.
 	CALL TM_DSG_FACTS( grid, orientation, obsdimlen, 
      .			   feature_line, its_dsg, its_cmpnd )
-	IF (.NOT. its_dsg) GOTO 5200
+	IF (.NOT.its_dsg) CALL TM_DSG_FACTS( gxlate, orientation, obsdimlen, 
+     .			   feature_line, its_dsg, its_cmpnd )
 	row_size_lm = dsg_loaded_lm(dsg_row_size_var(dset))
 
 	its_point_data = ITSA_DSG_POINTS(cx)
 	IF (its_point_data) orientation = pfeatureType_Point
 
 	feature_idname = 'feature'
+	feature_idname = CD_DSG_FEATURENAME(orientation)
 
-	IF (orientation.GE.pfeatureType_Trajectory .AND.
-     .      orientation.LE.pfeatureType_TimeseriesProfile) THEN
-	   strbuff = CD_DSG_FEATURENAME(orientation)
-	   feature_idname = strbuff(:tm_lenstr1(strbuff))
-	ENDIF
 
 * determine precision for outputting values
 
@@ -171,6 +175,8 @@
 * are there any observation vars?  Or is this all instance vars?
 	point_vars_only    = .TRUE.   ! a hack to list E=@AVE result
 	instance_vars_only = .TRUE.   ! a hack to list instance vars only
+	has_ftrset_coord = .FALSE.
+	has_ftrset_vars = .FALSE.
 	ftr_label = .TRUE.
 
 
@@ -178,9 +184,12 @@
 	IF (orientation .EQ. pfeatureType_Point) THEN
 	   point_vars_only = .FALSE.
 	   instance_vars_only = .FALSE.
+	   has_ftrset_vars = .FALSE.
 	   ftr_label = .FALSE.
 	   DO ivar = 1, nvar
 	      point_var(ivar) = CGRID_SIZE(cx) .EQ. 1
+	      instance_var(ivar) = .FALSE.
+	      ftrset_var(ivar) = .FALSE.
 	   ENDDO
 
 	ELSE
@@ -189,10 +198,23 @@
 	      cx = cx_list(ivar)
 	      grid = cx_grid(cx)
 	      instance_var(ivar) = DSG_WHATS_IT(grid) .EQ. pdsg_instance
+	      ftrset_var(ivar) = its_cmpnd .AND. DSG_WHATS_IT(grid) .EQ. pdsg_fs_dim
 	      point_var(ivar) = CGRID_SIZE(cx) .EQ. 1
 	      IF (.NOT.point_var(ivar)   ) point_vars_only    = .FALSE.
 	      IF (.NOT.instance_var(ivar)) instance_vars_only = .FALSE.
+	      IF (ftrset_var(ivar)) has_ftrset_vars = .TRUE.
 	   ENDDO
+	   
+	   ftrset_vars_only = has_ftrset_vars
+	   IF (has_ftrset_vars) THEN
+	      DO ivar = 1, nvar
+	         IF (.NOT.ftrset_var(ivar) .AND. .NOT.point_var(ivar)) ftrset_vars_only = .FALSE.
+	      ENDDO
+
+	      IF (ftrset_vars_only) CALL TM_DSG_FTRSET_FACTS( grid, dset, orientation, 
+     .			nfeatures, nftrsets, its_dsg, its_cmpnd, status )
+
+	   ENDIF
 
 	ENDIF
 
@@ -225,10 +247,15 @@
 	      cx = cx_list(ivar)
 
 	      IF (point_var(ivar)) THEN
-* ... compressed feature result
-	         small = memry(mr)%ptr(1)
-		 big = small
-		 IF ( small .NE. mr_bad_data(mr_list(ivar)) ) nok = 1
+* ... compressed feature 
+                  small = memry(mr)%ptr(1)
+                  big = small
+                  IF ( small .NE. mr_bad_data(mr_list(ivar)) ) nok = 1
+
+	      ELSE IF (ftrset_var(ivar)) THEN
+
+		 CALL MINMAX ( memry(mr_list(ivar))%ptr, nftrsets, 
+     .			   mr_bad_data(mr_list(ivar)), small, big, nok)
 
 	      ELSE
 
@@ -274,6 +301,12 @@
 	   CALL CD_GET_VAR_ID  (dset, line_buff, fvar_varid, status)
 	ENDIF
 
+	IF (orientation.EQ.pfeatureType_timeseriesProfile .OR.
+     .      orientation.EQ.pfeatureType_trajectoryProfile) THEN
+	   line_buff = SANITARY_VAR_CODE(cat_file_var, dsg_ftrset_var(dset) )
+	   CALL CD_GET_VAR_ID  (dset, line_buff, ftrset_varid, status)
+	ENDIF
+
 * which dimensions are relevant to show
 
 	IF (.NOT.norow) THEN
@@ -284,10 +317,16 @@
 	         ivar = dsg_coord_var(idim,dset)
 	         coord_lm(idim) = dsg_loaded_lm(ivar)  ! line memory table indices
 	         instance_coord(idim) = line_dim(line) .EQ. nfeatures
+	         ftrset_coord(idim) = its_cmpnd .AND. line_dim(line) .EQ. nftrsets
+		 IF (ftrset_coord(idim)) has_ftrset_coord = .TRUE.
+
 * ... it causes confusion to show observation coordinates if the variables
 *     requested are all instance variables
 *     e.g. for time series, what is the time of the rowSize variable?
-	         IF (instance_vars_only .AND. .NOT.instance_coord(idim))
+	         IF (instance_vars_only .AND. 
+     .		      .NOT.(instance_coord(idim).OR.ftrset_coord(idim)) )
+     .		      relevant_coord(idim) = .FALSE.
+	         IF (ftrset_vars_only .AND. .NOT.ftrset_coord(idim))
      .		      relevant_coord(idim) = .FALSE.
 	      ENDIF
 	   ENDDO
@@ -302,6 +341,27 @@
 	ENDIF
 	IF (norow) ftr_label = .FALSE.
 	IF (orientation .EQ. pfeatureType_Point) ftr_label = .FALSE.
+
+
+* If it's just feature-set variables (timeseries-station or trajectory info) make
+* create a mask showing which stations/trajectories to list.  The feature-mask 
+* contains information about the region constraints and any masks that are in play.
+
+	IF (ftrset_vars_only) THEN
+	   ALLOCATE (process_ftrset(nftrsets )) 
+	   CALL MAKE_DSG_FTRSET_MASK(dset, cx, nfeatures, process_feature, 
+     .           nftrsets, process_ftrset)
+	ENDIF
+
+* Get the station-index variable for trajectoryProfile or timeseriesProfile data
+
+	IF (nftrsets.GT.0) THEN
+	   ALLOCATE (station_index(nfeatures))
+	   lm_index = dsg_loaded_lm(dsg_index_var(dset))
+	   DO i = 1, nfeatures
+	      station_index(i) = dsg_linemem(lm_index)%ptr(i) + 1
+	   ENDDO
+	ENDIF
 
 * Header
 
@@ -319,9 +379,30 @@
 
 * ... Is a feature mask set on this dataset?
 	   IF (dsg_msk_lm(dset) .NE. unspecified_int4) THEN 
-	      risc_buff = 'Mask on features has been set: '
+	      strbuff = feature_idname
+	      IF (orientation.EQ.pfeatureType_TimeseriesProfile .OR. 
+     .           orientation.EQ.pfeatureType_TrajectoryProfile)  strbuff = 'Profile'
+	      IF (orientation.EQ.pfeatureType_Trajectory) strbuff = 'Trajectorie'
+	      risc_buff = 'Mask on '//
+     .          strbuff(:TM_LENSTR1(strbuff))//'s has been set: '
+     
 	      slen1 = TM_LENSTR1( risc_buff ) + 1
 	      
+	      CALL GET_DSG_MASK_TITLE (dset, risc_buff(slen1+1:), has_mask, slen2)
+
+	      slen1 = TM_LENSTR1( risc_buff ) 
+	      IF (slen2 .EQ. 0) slen1 = slen1 - 1
+
+	      IF (slen1 .GT. 0)  CALL SPLIT_LIST(pttmode_explct, list_lun, risc_buff(:slen1), 0) 
+	   ENDIF ! feature-mask
+
+
+	   IF (dsg_ftrsetmsk_lm(dset) .NE. unspecified_int4) THEN 
+	      IF (orientation.GE.pfeatureType_TrajectoryProfile) 
+     .           risc_buff = 'Mask on Trajectories has been set: '
+	      IF (orientation.GE.pfeatureType_TimeseriesProfile) 
+     .           risc_buff = 'Mask on Timeseries stations has been set: '
+	      slen1 = TM_LENSTR1( risc_buff ) + 1
 	      CALL GET_DSG_MASK_TITLE (dset, risc_buff(slen1+1:), has_mask, slen2)
 
 	      slen1 = TM_LENSTR1( risc_buff ) 
@@ -395,8 +476,7 @@
 	   vname_buff = VAR_CODE( cat_file_var, dsg_feature_var(dset))
 	   risc_buff = ' '
 
-
-	   IF (orientation .NE. pfeatureType_Point) THEN
+	   IF (orientation .NE. pfeatureType_Point .AND. .NOT.ftrset_vars_only) THEN
 	      WRITE ( risc_buff, FMT ) 
      .           vname_buff(:vname_len), feature_idname(:TM_LENSTR1(feature_idname))//'-id'
 	      IF (.NOT.norow) CALL SPLIT_LIST(pttmode_explct, list_lun, risc_buff, 0)
@@ -478,6 +558,26 @@
 
 	   line_buff = '    FEATURE  '//strbuff(:clen)
 	   slen = 23
+	   
+	   IF (orientation .EQ. pfeatureType_TrajectoryProfile) THEN
+	      line_buff = '    PROFILE  PROF-ID  TRAJECT-ID '
+	      slen = 33
+	   ENDIF
+
+
+	   IF (orientation .EQ. pfeatureType_TimeseriesProfile)  THEN
+	      line_buff = '    PROFILE  STATION-ID  PROF-ID '
+	      slen = 33
+	   ENDIF
+
+	   IF (ftrset_vars_only) THEN
+	      strbuff =  VAR_CODE( cat_file_var, dsg_ftrset_var(dset))
+	      clen = TM_LENSTR1(strbuff)
+	      line_buff = '    TRAJECT     '//strbuff(:clen)
+	      IF (orientation .EQ. pfeatureType_TimeseriesProfile)
+     .	        line_buff = '    TIMESER   '//strbuff(:clen)
+	      slen = 23
+	   ENDIF
 
 	   DO idim = 1, 4
 	      IF (relevant_coord(idim)) THEN
@@ -509,9 +609,12 @@
 	ipad = 0
 
 	IF (.NOT.norow) THEN
-	   CALL CD_GET_VAR_TYPE (dset, fvar_varid, strbuff, dtype, status)
+	   varid = fvar_varid
+	   IF (ftrset_vars_only) varid = ftrset_varid
+
+	   CALL CD_GET_VAR_TYPE (dset, varid, strbuff, dtype, status)
 	   IF (dtype .EQ. NF_CHAR) THEN
-	      CALL CD_GET_VAR_DIMS_INFO (dset, fvar_varid, strbuff, bufflen, 
+	      CALL CD_GET_VAR_DIMS_INFO (dset, varid, strbuff, bufflen, 
      .           vdims, status)
               CALL CD_GET_DS_DIMS (dset, vdims(1), strbuff, idlen, status)
 	      ipad =(8-idlen)/2 
@@ -520,7 +623,152 @@
 	   ENDIF
 	ENDIF
 
+
 *  ***** LIST THE DATA ******
+
+	IF (ftrset_vars_only) THEN
+
+* ... loop over the trajectories or timeseries-stations
+	   DO ista = 1, nftrsets 
+
+* ... have the user's constraints removed this feature?
+	      IF (.NOT.process_ftrset(ista) ) CYCLE
+
+* ... each line starts with the trajectory  or timeseries-station ID.
+
+	      buff = pstr
+	      IF (.NOT.norow) WRITE(buff, 3100) ista
+
+	      ilen = 13
+
+* Read the feature-id value. If it's numeric turn it into a string
+
+	      IF (norow) THEN
+	         ilen = 0
+	      ELSE
+	      
+	         slen = bufflen+2
+	         idwid = 20
+	         idlen = 13
+	         CALL CD_READ_ONE ( dset, ftrset_varid, ista, dtype, value, 
+     .                              strbuff, bufflen, status )
+
+	         bufflen = TM_LENSTR1(strbuff)
+	         IF (dtype .EQ. NF_CHAR .OR. dtype.EQ.NF_STRING) THEN
+	            IF (bufflen .LT. idlen) bufflen = idlen
+	         ELSE
+	            strbuff(slen:) = '  '//TM_FMT(value, 8, 12, bufflen)
+	            bufflen = MAX(12,bufflen)
+	            ipad = 3
+	         ENDIF
+
+	         buff(ilen+1:) = strbuff(:bufflen)
+	         ilen = ilen + bufflen - 5
+		 bufflen = bufflen+slen
+
+	      ENDIF !(norow) 
+
+*             Appending space just to get rid of a nonsense compiler warning
+	      line_buff = buff(:ilen)//' '
+	      slen = ilen
+
+* ... insert the relevant formatted coordinates
+	      IF (.NOT. norow) THEN
+	         DO idim = 1, 4
+	            IF ( relevant_coord(idim) ) THEN
+
+	               value = dsg_linemem(coord_lm(idim))%ptr(ista)
+
+	               IF (ABS(value) .GE. ABS(bad_val4)) THEN
+		          strbuff = '*'
+	               ELSE
+		          CALL TRANSLATE_TO_WORLD( value, idim, gxlate, 
+     .					     ax_dec_pt(idim), strbuff)
+	               ENDIF
+	               clen = TM_LENSTR1(strbuff)
+	               paren = INDEX((strbuff), "(")
+	               IF (paren .GT. 0) clen = MIN(clen,paren-1)
+	               nblank = MAX(coord_width(idim)-clen, 1)
+	               line_buff(slen+nblank+1:) = strbuff(:clen)
+	               slen = slen + coord_width(idim)
+	            ENDIF
+	         ENDDO
+
+	      ENDIF ! .not. norow
+
+* ... insert the formatted data
+	      bufflen = slen
+	      DO ivar = 1, nvar
+	         mr = mr_list(ivar)
+	 
+	         IF ( mr_type(mr) .EQ. ptype_string ) THEN
+	           vstr = '                '
+	            vstr(1:1) = '"'
+ 
+	            IF (point_var(ivar)) THEN
+* ... compressed station result
+	               iwd = 0
+	            ELSEIF (ftrset_var(ivar)) THEN
+* ... feature value
+	               iwd = ista - 1
+	            ENDIF
+
+	            slen = GET_OFFSET_C_STRING_LEN(mr_c_pointer(mr),
+     .					 iwd )
+	            slen = MIN(slen, vstrlen-2)  ! fixed length of vstr...
+	            CALL GET_OFFSET_C_STRING(mr_c_pointer(mr),
+     .				   iwd,
+     .				   vstr(2:),
+     .				   slen    )
+	            vstr(slen+2:slen+2) = '"'    
+
+	        ELSE
+
+	           IF (point_var(ivar)) THEN
+* ... compressed feature result
+	            value = memry(mr)%ptr(1)
+* ... station value
+	            ELSE
+		       value = memry(mr)%ptr(ista)
+	            ENDIF
+	            IF (value .EQ. mr_bad_data(mr)) THEN
+	               vstr = "..."
+	            ELSE
+	               WRITE(vstr, good_fmt(ivar)) value
+	            ENDIF
+
+* remove leading blanks   (better way to handle this?)
+		    DO i = 1, vstrlen
+                       IF ( vstr( i:i ) .NE. ' ' ) EXIT
+		    ENDDO
+		    CALL TM_PACK_STRING(vstr, vstr, 1, i, clen)
+	            clen = TM_LENSTR1(vstr)
+
+	         ENDIF
+		 
+* remove leading blanks   (better way to handle this?)
+		 DO i = 1, vstrlen
+                    IF ( vstr( i:i ) .NE. ' ' ) ExIT
+		 ENDDO
+		 CALL TM_PACK_STRING(vstr, vstr, 1, i, clen)
+	         clen = TM_LENSTR1(vstr)
+
+
+	         nblank = MAX(col_width(ivar)-clen, 1)
+	         line_buff(bufflen+nblank+1:) = vstr
+	         bufflen = bufflen + col_width(ivar)
+
+	      ENDDO   ! loop over nvars
+
+* ... write out the line
+	      CALL SPLIT_LIST(pttmode_explct, list_lun, line_buff, 0)
+
+	   ENDDO   ! loop over ftrsets
+
+	   GOTO 5000
+
+	ENDIF  ! ftrset_vars_only
+
 	base = 0    ! obs index at end of preceding feature
 
 * ... loop over the features
@@ -538,41 +786,78 @@
 	   ENDIF
 
 * ... each line starts with the feature number and Feature ID
+*     For trajectoryProfile or timeseriesProfile, also the trajectory 
+*     or timeseries-station ID.
+
 	   buff = pstr
 	   IF (.NOT.norow) WRITE(buff, 3100) ifeature
  3100	   FORMAT(I6, 2x)
-	   ilen = 8
+	   ilen = 12
 
 * Read the feature-id value. If it's numeric turn it into a string
 
-	   IF (ftr_label) THEN
-	      idwid = 15
-	      CALL CD_READ_ONE ( dset, fvar_varid, ifeature, dtype, value, 
-     .                                 strbuff, bufflen, status )
+	   IF (norow) THEN
+	      ilen = 0
+	   ELSE
 
-	      IF (dtype .EQ. NF_CHAR .OR. dtype.EQ.NF_STRING) THEN
-	         bufflen = MIN(idlen, bufflen)
-	         IF (bufflen .LT. idwid) THEN
-	            ipad = INT(idwid-bufflen)
+	      IF (ftr_label) THEN
+
+	         idwid = 15
+
+	         IF (nftrsets .GT. 0) THEN
+		    CALL CD_READ_ONE ( dset, ftrset_varid, station_index(ifeature), 
+     .                              dtype, value, strbuff, bufflen, status )
+	         ELSE
+	            CALL CD_READ_ONE ( dset, fvar_varid, ifeature, dtype, value, 
+     .                                 strbuff, bufflen, status )
 	         ENDIF
-	      ELSE
-	         strbuff = '  '//TM_FMT(value, 8, 12, bufflen)
-	         bufflen = MAX(12,bufflen)
-	         ipad = 3
-	      ENDIF
+
+	         IF (dtype .EQ. NF_CHAR .OR. dtype.EQ.NF_STRING) THEN
+	            bufflen = MIN(idlen, bufflen)
+	            IF (bufflen .LT. idwid) ipad = INT(idwid-bufflen)
+	         ELSE
+	            strbuff = '  '//TM_FMT(value, 8, 12, bufflen)
+	            bufflen = MAX(12,bufflen)
+	            ipad = 3
+	         ENDIF
+
+	         IF (nftrsets .GT. 0) THEN
+	            slen = bufflen+4
+		    idwid = 20
+		    idlen = idlen + 8
+		    CALL CD_READ_ONE ( dset, fvar_varid, ifeature, dtype, value, 
+     .                                 strbuff(slen:), bufflen, status )
+
+	            bufflen = bufflen + slen-1
+		    bufflen = TM_LENSTR1(strbuff)
+		    IF (dtype .EQ. NF_CHAR .OR. dtype.EQ.NF_STRING) THEN
+	               bufflen = MIN(idlen, bufflen)
+	               IF (bufflen .LT. idwid) THEN
+	                  ipad = INT(idwid-bufflen)
+	               ENDIF
+	           ELSE
+	               strbuff(slen:) = '  '//TM_FMT(value, 8, 12, bufflen)
+	               bufflen = MAX(12,bufflen)
+	               ipad = 3
+	           ENDIF
+		   bufflen = bufflen+slen
+		   
+	         ENDIF  ! nftrsets
 
 * if compressed along the e dimension don't include the feature-id value.
-	   ELSE
-	      strbuff = '               '
-	      pstr = ' '
-	      ipad = 0
-	      bufflen = 15
-	   ENDIF
+	      ELSE
+	         strbuff = '               '
+	         pstr = ' '
+	         ipad = 0
+	         bufflen = 15
+	      ENDIF
 
-	   bufflen = MIN(32-ilen-ipad, bufflen)
-	   buff(ilen+1:) = pstr(:ipad)//strbuff(:bufflen)
-	   ilen = ilen + bufflen + ipad
-	   IF (norow) ilen = 0
+	      bufflen = MIN(32-ilen-ipad, bufflen)
+	      buff(ilen+1:) = pstr(:ipad)//strbuff(:bufflen)
+	      ilen = ilen + bufflen + ipad
+
+
+	   ENDIF !(norow) 
 
 
 * ... get observation-level mask for this feature
@@ -593,7 +878,11 @@
 	      IF (.NOT. norow) THEN
 	         DO idim = 1, 4
 	            IF ( relevant_coord(idim) ) THEN
-	               IF (instance_coord(idim)) THEN
+* ... station coordinate
+	               IF (ftrset_coord(idim)) THEN
+		          ista = station_index(ifeature)
+			  value = dsg_linemem(coord_lm(idim))%ptr(ista)
+	               ELSE IF (instance_coord(idim)) THEN
 * ... feature coordinate
 	                  value = dsg_linemem(coord_lm(idim))%ptr(ifeature)
 	               ELSE
@@ -653,6 +942,10 @@
 	           IF (point_var(ivar)) THEN
 * ... compressed feature result
 	               value = memry(mr)%ptr(1)
+* ... station value
+	            ELSEIF (ftrset_var(ivar)) THEN
+		          ista = station_index(ifeature)
+			  value = memry(mr)%ptr(ista)
 	            ELSEIF (instance_var(ivar)) THEN
 * ... feature value
 	               value = memry(mr)%ptr(ifeature)
@@ -692,11 +985,12 @@
 	   IF (point_vars_only) EXIT		! list just one "feature" line
 	ENDDO   ! loop over features
 
- 5000	RETURN
+ 5000	CONTINUE
+	IF (nftrsets .GT. 0) DEALLOCATE (station_index)
+	IF (ftrset_vars_only) DEALLOCATE (process_ftrset)
+	RETURN
+
  5100	CALL ERRMSG( ferr_invalid_command, status,
      .		'Error getting value from LIST/PRECISION= ',
-     .		*5000 )
- 5200	CALL ERRMSG( ferr_grid_definition, status,
-     .		'Data grid is not a DSG grid ',
      .		*5000 )
 	END

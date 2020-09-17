@@ -34,35 +34,71 @@ c set data/fmask=
 	CHARACTER*(*) fmask_var
 	
 	LOGICAL TM_LEGAL_NAME, TM_ITSA_DSG
-	INTEGER TM_DSG_DSET_FROM_GRID, TM_DSG_NFEATURES, 
+	INTEGER TM_DSG_NFEATURES, 
      .		TM_LENSTR1, CX_DIM_LEN,
      .		i, ivar, grid, loc,  ndim, idir, npts, cx, mr1, 
      .		nfeatures, idim, dim(nferdims), attlen, varid, 
-     .		attid, attype, attoutflag, slen
+     .		attid, attype, attoutflag, slen, orient
 	CHARACTER FULL_VAR_TITLE*128, TM_FMT*48,
      .		buff*128, mask_title*128
 	REAL	dummy
 
 c Make sure the name is ok
 	
-	   IF (fmask_var .EQ. ' ') GOTO 5100
-	   IF ( .NOT.TM_LEGAL_NAME(fmask_var) ) GOTO 5200
+	IF (fmask_var .EQ. ' ') GOTO 5100
+	IF ( .NOT.TM_LEGAL_NAME(fmask_var) ) GOTO 5200
 
+* ... A feature-mask was already applied to the dataset. Wipe that one out.
 
-c find a variable in this dataset and test whether it's a dsg dataset
-	      
-	DO ivar = 1, maxvars
-	   IF ( ds_var_setnum(ivar) .EQ. dset ) THEN
-              grid = ds_grid_number(ivar)
-              EXIT
+	IF (dsg_msk_lm(dset) .NE. unspecified_int4 .OR. 
+     .       dsg_ftrsetmsk_lm(dset) .NE. unspecified_int4)  THEN
+	   
+	   IF (dsg_ftrsetmsk_lm(dset) .NE. unspecified_int4) THEN
+	      CALL FREE_LINE_DYNMEM( dsg_ftrsetmsk_lm(dset) )
+	      CALL TM_DEALLO_DYN_LINE( dsg_ftrsetmsk_lm(dset) )
+	      dsg_ftrsetmsk_lm(dset) = unspecified_int4
 	   ENDIF
-	ENDDO
+	   IF (dsg_msk_lm(dset) .NE. unspecified_int4)  THEN
+	      CALL FREE_LINE_DYNMEM( dsg_msk_lm(dset) )
+	      CALL TM_DEALLO_DYN_LINE( dsg_msk_lm(dset) )
+	      dsg_msk_lm(dset) = unspecified_int4
+	   ENDIF
 
-	IF (.NOT. TM_ITSA_DSG( grid ) ) GOTO 5300
+* ... wipe memory clear of stored variables - this could change all definitions
+	   DO i = 1,max_mr_avail
+	      IF ( mr_protected( i ) .NE. mr_deleted ) 
+     .               CALL DELETE_VARIABLE( i )
+	   ENDDO
 
-	IF (dset .NE. TM_DSG_DSET_FROM_GRID( grid ) ) GOTO 5300
-	nfeatures = TM_DSG_NFEATURES( grid )	
+	ENDIF
 
+	orient = dsg_orientation(dset)
+	IF (orient.LT.pfeatureType_Trajectory .OR. 
+     .      orient.GT.pfeatureType_TimeseriesProfile) GOTO 5300
+
+       DO ivar = 1, maxvars
+	   IF ( ds_var_setnum(ivar) .EQ. dset ) THEN
+	      grid = ds_grid_number(ivar)
+              EXIT
+          ENDIF
+       ENDDO
+       
+* Get an dsg grid with the e-axis from the dataset. We know
+* its a dsg dataset because dsg_orientation was set.
+
+       IF (.NOT. TM_ITSA_DSG( grid ) ) THEN
+          i = ivar+1
+          DO ivar = i, maxvars
+	  IF ( ds_var_setnum(ivar) .EQ. dset ) THEN
+	      IF (ds_grid_number(ivar).NE.grid) THEN
+	         grid = ds_grid_number(ivar)
+                 EXIT
+	      ENDIF
+          ENDIF
+          ENDDO
+       ENDIF
+
+       nfeatures = TM_DSG_NFEATURES( grid )	
 
 * Set the line-memory to store the mask data
 
@@ -190,7 +226,7 @@ c find a variable in this dataset and test whether it's a dsg dataset
  5200	CALL ERRMSG( ferr_invalid_command, status,
      .			'/FMASK=name is not an acceptable name', *5000)
  5300	CALL ERRMSG (ferr_invalid_command, status,
-     .'/FMASK is set only for Dicrete Sampling Geometries datasets',
+     .'/FMASK is set only for Discrete Sampling Geometries datasets',
      .               						*5000 )
  5400	buff = TM_FMT(DBLE(nfeatures), 0, 12, i) 
 	CALL ERRMSG (ferr_invalid_command, status,

@@ -1,4 +1,5 @@
-	SUBROUTINE PLOT_DSG_DATA_SET_UP( nfeatures, nobs_total, status )
+	SUBROUTINE PLOT_DSG_DATA_SET_UP( nfeatures, nobs_total, 
+     .					 dsg_as_time, status )
 
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -60,26 +61,41 @@
 	include 'xdset_info.cmn_text'
 	include 'xdyn_linemem.cmn_text'
 	include 'xdsg_context.cmn'
+#include "tmap_dset.parm"
+
 	
 * calling argument declarations:
+	LOGICAL dsg_as_time
 	INTEGER	nfeatures, nobs_total, status
 
 * internal variable declarations:
 	LOGICAL process_feature(nfeatures), process_obs(nobs_total), 
-     .		relevant_coord(4), has_keys, its_dsg, its_cmpnd, multi_var
+     .		relevant_coord(4), has_keys, its_dsg, its_cmpnd,
+     .		multi_var, new_line
 	INTEGER	CGRID_SIZE, DSG_WHATS_IT, TM_DSG_DSET_FROM_GRID,
-     .		iline, nlines, idim, the_dim, ndim, max_feature_lines, cx0, 
+     .		iline, nlines, idim, ndim, the_dim, max_feature_lines, cx0, 
      .		the_cx, slen, tlen, cx, grid, feature_line, orientation, 
      .		obsdimlen, dset, gxlate, igrid, ifeature, coord_lm(4), 
      .		ivar, row_size_lm, nobs, irow_f, irow_l, iaxis, ic, 
-     .		irow_start, irow_end, base, icxvar
-	REAL	value, val_last, val_edge, vdel
+     .		irow_start, irow_end, base, icxvar, lm_index, 
+     .		itim_f, ista, ntim, mv, dep_dim, npts2
+     
+        INTEGER*8 rqst_n
+	REAL	value, val_last, val_edge, vdel, bad
 	CHARACTER buff1, LEFINT*8, buff8*8,  buff*256
 
+        INTEGER, DIMENSION(:), ALLOCATABLE :: station_index
+        REAL, DIMENSION(:), ALLOCATABLE :: dep_dat
+
+* signal that plot set-up has begun
+	IF ( mode_diagnostic ) CALL SPLIT_LIST(pttmode_ops, ttout_lun,
+     .				'set up line plots', 15)
 * initialize
 	cx = is_cx(1)
+	mv = is_mr(1)
 	grid = cx_grid(cx)
 	dset = TM_DSG_DSET_FROM_GRID( grid )
+
 
 * get the plot orientation 4=timeseries,3=profile,1=trajectory
 * for 1-D plots, plotting trajectory on an unraveled axis 
@@ -87,7 +103,7 @@
 * Trajectories as plot/vs/ribbon plots are set up elsewhere.
 
 	its_dsg = .TRUE.
-	CALL TM_DSG_FACTS( grid,orientation, obsdimlen, feature_line, 
+	CALL TM_DSG_FACTS( grid, orientation, obsdimlen, feature_line, 
      .			   its_dsg, its_cmpnd )
 	IF (.NOT. its_dsg) GOTO 5500
 	gxlate = dsg_xlate_grid(dset)
@@ -96,6 +112,13 @@
 * ... unrecognized orientation	         
 	IF (orientation .EQ. 0) GOTO 5200  ! ??
 
+* By default, if it's trajectoryProfile or timeseriesProfile plot as profiles
+* as if plot/along=z. (If it's trajectoryProfile plotted as trajectory, 
+* plot_dsg_data_set_up is not called.)
+
+	IF (orientation .EQ. pfeatureType_TimeseriesProfile ) orientation = pFeatureType_Profile
+	IF (orientation .EQ. pfeatureType_TrajectoryProfile ) orientation = pFeatureType_Profile
+
 * If its an instance var, this can be plotted as an ordinary line plot in E.
 
 	IF (DSG_WHATS_IT(grid) .EQ. pdsg_instance .OR.  CGRID_SIZE(cx) .EQ. 1) THEN
@@ -103,8 +126,8 @@
 	   GOTO 5000
 	ENDIF
 
-* which dimensions are relevant in the grid will label the plot
-* with ranges of orthogional directions
+* What coordinate variables are represented in the grid?
+
 	DO idim = 1, 4
 	   iline = grid_line(idim, gxlate)
 	   relevant_coord(idim) =  (iline .NE. mnormal)
@@ -115,20 +138,76 @@
 	ENDDO
 
 * create a mask showing which features to plot
+
 	CALL MAKE_DSG_FEATURE_MASK(dset, cx, process_feature, nfeatures)
 
-* how many individual lines have been requested?
+* Get the station-index variable for trajectoryProfile or timeseriesProfile data
+* Change the grid we are using to the grid of the station-index variable.
+
+	IF (dsg_as_time) THEN
+
+	   ALLOCATE (station_index(nfeatures))
+	   lm_index = dsg_loaded_lm(dsg_index_var(dset))
+	   DO ifeature = 1, nfeatures
+	      station_index(ifeature) = dsg_linemem(lm_index)%ptr(ifeature) + 1
+	   ENDDO
+
+* Get the observations, will select the one per profile to put into the timeseries
+* for each station.
+
+	   ALLOCATE (dep_dat(nobs_total))
+	   CALL EXTRACT_LINE ( cx,
+     .				memry(mv)%ptr,
+     .				mv,
+     .				dep_dat,
+     .				dep_dim,
+     .				ndim,
+     .				npts2,
+     .				status	)
+	   ! compare nobs_total and npts2.  ndim should be 1
+	   bad = mr_bad_data(mv)	   
+
+* dynamic memory which will contain the data on each feature selected for the timeseries
+	
+	   rqst_n = nfeatures ! I*8 argument
+	   CALL TM_GET_LM_DYNMEM(rqst_n, cxdsg_lm_tsdat, status)
+
+	   grid = gxlate
+
+	ENDIF
+
+
+* Reset nlines: how many stations in the request?  A line will be the data at
+* one level of the profile, becoming a timeseries at the station.
 
 	nlines = 0
-	
+	ista = 0
 	DO ifeature = 1, nfeatures 
-
-* ... have the user's constraints removed this feature?
 	   IF (.NOT.process_feature(ifeature)) CYCLE
-	   nobs = dsg_linemem(row_size_lm)%ptr(ifeature)  ! feature length
-	   IF (nobs .GT. 0) nlines = nlines+1
 
+	   nobs = dsg_linemem(row_size_lm)%ptr(ifeature)  ! feature length
+	   IF (nobs .GT. 0) THEN
+
+	      IF (dsg_as_time) THEN
+
+	         IF (station_index(ifeature) .NE. ista) THEN
+                    nlines = nlines+1
+                    ista = ista+1
+	         ENDIF
+
+* Initialize nfeatures values on timeseries station-line
+	         CALL PUT_LINE_COORD ( dsg_linemem(cxdsg_lm_tsdat)%ptr, ifeature, bad )
+
+	      ELSE
+
+	         nlines = nlines+1
+
+	      ENDIF
+
+	   ENDIF ! nobs
+              
 	ENDDO
+
 
 * Multi-feature DSG data can only plot one variable
 
@@ -137,7 +216,6 @@
 	   IF (nlines .GT. 1) GOTO 5100
 	   multi_var = .TRUE.
 	ENDIF
-
 
 * ... If the mask or constraints results in no data selected, load nominal 
 *     data so a blank plot can be drawn.
@@ -223,23 +301,39 @@ c A message is written in PLOT_SET_UP
      .			// buff8(:slen) )
 	   buff8 = LEFINT( max_feature_lines,  slen  )
 	   CALL WARN('Plotting first '// buff8(:slen) )
+	   nlines = max_feature_lines
 	ENDIF
+
 
 * populate the contexts
 
 	CALL TRANSFER_CONTEXT( is_cx(1), cx_buff )
+
+* For each station, populate a line in time using the first valid value
+* from the profile at that station and time.
+
+	the_dim = orientation
+	IF (dsg_as_time) the_dim = t_dim
 
 	cx0 = is_cx(1) - 1
         iline = 0
 	irow_f = 1
 	irow_l = 0
 
+	IF (dsg_as_time) THEN
+	   ista = 0
+	   ntim = 0
+	   itim_f = 1
+	   the_dim = t_dim
+	ENDIF
+
+	the_cx = cx0
+
 	DO ifeature = 1, nfeatures 
 	   nobs = dsg_linemem(row_size_lm)%ptr(ifeature)  ! feature length
 	   IF (nobs .EQ. 0)  GOTO 222
 	   irow_l = irow_f + nobs - 1
 	   IF (.NOT.process_feature(ifeature)) GOTO 222
-	   iline = iline + 1
 
 * ... get observation-level mask for this feature
 
@@ -247,38 +341,91 @@ c A message is written in PLOT_SET_UP
 	   CALL MAKE_DSG_OBS_MASK(dset, cx, ifeature, base,
      .				  process_obs(irow_f), nobs)
 
-	   is_mr(iline) = is_mr(1)  ! a single mr shared by all
+	   IF (dsg_as_time) THEN  ! new station?
 
-	   the_cx = cx0 + iline
-	   is_cx(iline) = the_cx
-	   CALL TRANSFER_CONTEXT( cx_buff, the_cx )
+	      new_line = .FALSE.
+	      IF (station_index(ifeature) .NE. ista) THEN
+
+	         new_line = .TRUE.
+* ... context of the previous station-line
+
+	         IF (ista .GE. 1 .OR. ifeature.EQ.nfeatures) THEN
+		    cx_feature(the_cx) = ista  ! ??
+		    cx_by_ss(the_dim, the_cx) = .TRUE.
+		    cx_lo_ss(the_cx,the_dim) = itim_f
+		    cx_hi_ss(the_cx,the_dim) = ntim
+
+		    itim_f = ntim+1
+
+	         ENDIF
+
+	         ista = ista + 1
+	         the_cx = cx0 + ista
+	         is_cx(ista) = the_cx 
+	         is_mr(ista) = is_mr(1)  ! a single mr shared by all
+
+* we are storing the data for station timeseries in temporary dynamic line
+* storage so no need to think about mr()
+
+		 CALL TRANSFER_CONTEXT( cx_buff, the_cx )
+
+		 cx_lo_ss(the_cx,orientation) = unspecified_int4
+		 cx_hi_ss(the_cx,orientation) = unspecified_int4
+
+	      ENDIF
+
+	   ELSE 
+
+* Not dsg_as_time
+
+	      iline = iline + 1
+	      is_mr(iline) = is_mr(1)  ! a single mr shared by all
+	   
+	      the_cx = cx0 + iline
+	      is_cx(iline) = the_cx
+	      CALL TRANSFER_CONTEXT( cx_buff, the_cx )
+	      new_line = .TRUE.
+
+	   ENDIF ! IF dsg_as_time
+
 
 * Define a new set of coordinates, as if an axis of the original total length,
 * but the coordinates at indices irow_f through irow_l will contain the coordinates 
 * from the feature that we want. Define a grid to contain this axis.
 
-	   igrid = unspecified_int4
-	   CALL TM_ALLO_TMP_GRID (igrid, status)
-	   IF (status .NE. ferr_ok) GOTO 5000
+	   IF (new_line) THEN
 
-	   CALL TM_COPY_GRID_W_LINE_USE (grid, igrid)
-	   CALL TM_DEALLO_DYN_LINE( grid_line(orientation, grid) )
+	      igrid = unspecified_int4
+	      CALL TM_ALLO_TMP_GRID (igrid, status)
+	      IF (status .NE. ferr_ok) GOTO 5000
 
-	   CALL TM_ALLO_TMP_LINE(iaxis, status)
-	   CALL GET_LINE_DYNMEM (nobs_total, iaxis, status)
-	   IF (status .NE. ferr_ok) GOTO 5000
+	      IF (dsg_as_time) THEN  ! just get the time axis into new grid
+	         CALL TM_COPY_GRID (grid, igrid)
+		 DO idim = 1, nferdims
+		    IF (idim .NE. the_dim) grid_line(idim, igrid) = 0
+		 ENDDO
+	      ELSE
+	         CALL TM_COPY_GRID_W_LINE_USE (grid, igrid)
+	         CALL TM_DEALLO_DYN_LINE( grid_line(the_dim, grid) )
+	      ENDIF
+
+	      CALL TM_ALLO_TMP_LINE(iaxis, status)
+	      CALL GET_LINE_DYNMEM (nobs_total, iaxis, status)
+	      IF (status .NE. ferr_ok) GOTO 5000
 	   
-	   grid_line(orientation, igrid) = iaxis
-	   cx_grid(the_cx) = igrid
-	   CALL TM_USE_LINE(iaxis)
+	      grid_line(the_dim, igrid) = iaxis
+	      cx_grid(the_cx) = igrid
+	      CALL TM_USE_LINE(iaxis)
 
 * Inherit axis properties
-	   CALL TM_COPY_LINE (grid_line(orientation,grid), iaxis)
-	   line_regular(iaxis) = .FALSE.
+	      CALL TM_COPY_LINE (grid_line(the_dim,grid), iaxis)
+	      line_regular(iaxis) = .FALSE.
 
 * rename the axis. (Is this necessary? Nice for debugging anyway)
-	   CALL TM_NEW_LINE_NAME ( line_name(iaxis), buff )
-	   line_name(iaxis) = buff
+	      CALL TM_NEW_LINE_NAME ( line_name(iaxis), buff )
+	      line_name(iaxis) = buff
+
+	   ENDIF  ! new_line
 
 * Find first and last valid points for this feature applying the user's context 
 * This just masks the range of the independent variable. Still need to apply the 
@@ -296,50 +443,75 @@ c A message is written in PLOT_SET_UP
               ENDIF
 	   ENDDO
 
-	   DO ic = irow_l, irow_f, -1
-	      IF (.NOT.process_obs(ic) .AND. irow_end.EQ. 0) THEN
-	         CYCLE
-	      ELSE 
-	         irow_end = ic
-		 EXIT ! from loop
-              ENDIF
-	   ENDDO
+	   IF (dsg_as_time) THEN
 
-	   IF (irow_start.EQ.0 .OR. irow_end.EQ.0) CYCLE  ! shouldnt happen.
+* When collecting points at a station for a timeseries of timeseriesProfile data, 
+* choose the first point if more than one returned by the masking.  Store the coordinate
+* value in linemem(iaxis) and the corresponding data from the profile in dsg_linemem(lm_tsdat)
+
+	      ntim = ntim + 1
+	      value = dsg_linemem(coord_lm(the_dim))%ptr(ifeature)
+	      CALL PUT_LINE_COORD (linemem(iaxis)%ptr, ntim, value)
+	      CALL PUT_LINE_COORD (dsg_linemem(cxdsg_lm_tsdat)%ptr, ntim, dep_dat(ic) )  
+	   ELSE
+
+	      DO ic = irow_l, irow_f, -1
+	         IF (.NOT.process_obs(ic) .AND. irow_end.EQ. 0) THEN
+	            CYCLE
+	         ELSE 
+	            irow_end = ic
+		    EXIT ! from loop
+                 ENDIF
+	      ENDDO
+
+	      IF (irow_start.EQ.0 .OR. irow_end.EQ.0) CYCLE  ! shouldnt happen.
 
 * Put the coordinates from this feature-line into the locations
 * on the orientation-axis corresponding to our index range.
 
-	   DO ic = irow_start, irow_end
-	      value = dsg_linemem(coord_lm(orientation))%ptr(ic)
-	      CALL PUT_LINE_COORD(linemem(iaxis)%ptr, ic, value)
-	      IF (ic .GT. irow_start) THEN
-	         vdel = (value-val_last)/2.
-		 val_edge = value - vdel
-		 CALL PUT_LINE_COORD(lineedg(iaxis)%ptr, ic, val_edge)
-	      ENDIF
-	      val_last = value
-	   ENDDO
-	   IF (ic .GT. irow_start+1) THEN 
-	      val_edge = value + vdel
-	      CALL PUT_LINE_COORD(lineedg(iaxis)%ptr, ic, val_edge)
-	   ENDIF
+	      DO ic = irow_start, irow_end
+	         value = dsg_linemem(coord_lm(the_dim))%ptr(ic)
+	         CALL PUT_LINE_COORD(linemem(iaxis)%ptr, ic, value)
+	         IF (ic .GT. irow_start) THEN
+	            vdel = (value-val_last)/2.
+		    val_edge = value - vdel
+		    CALL PUT_LINE_COORD(lineedg(iaxis)%ptr, ic, val_edge)
+	         ENDIF
+	         val_last = value
+	      ENDDO
+	      IF (ic .GT. irow_start+1) THEN 
+	         val_edge = value + vdel
+	         CALL PUT_LINE_COORD(lineedg(iaxis)%ptr, ic, val_edge)
+	     ENDIF
 
 *** To be able to recover the feature number, so keys can be labeled?
 
-	   cx_feature(the_cx) = ifeature
+	      cx_feature(the_cx) = ifeature
 	   
 * ... set up the feature-axis positions 
-	   cx_by_ss(orientation, the_cx) = .TRUE.
-	   cx_lo_ss(the_cx,orientation) = irow_start
-	   cx_hi_ss(the_cx,orientation) = irow_end
+	      cx_by_ss(the_dim, the_cx) = .TRUE.
+	      cx_lo_ss(the_cx,the_dim) = irow_start
+	      cx_hi_ss(the_cx,the_dim) = irow_end
+
+	   ENDIF  ! dsg_as_time
 
 * ... prepare for the next feature
 
  222	   irow_f = irow_l + 1
 
+	   IF (iline .GE. max_feature_lines) EXIT
 	ENDDO
 
+* context for last station
+	IF (dsg_as_time) THEN
+	   cx_feature(the_cx) = ista  
+	   cx_by_ss(the_dim, the_cx) = .TRUE.
+	   cx_lo_ss(the_cx,the_dim) = itim_f
+	   cx_hi_ss(the_cx,the_dim) = ntim
+
+	   cx_lo_ss(the_cx,orientation) = unspecified_int4
+	   cx_hi_ss(the_cx,orientation) = unspecified_int4
+	ENDIF
 
   333	CONTINUE
 
@@ -358,6 +530,9 @@ c A message is written in PLOT_SET_UP
 	   ENDDO
 	ENDIF
 
+	IF (dsg_as_time) DEALLOCATE (station_index) 
+	IF (dsg_as_time) DEALLOCATE (dep_dat) 
+	
 * successful completion
 	RETURN
 

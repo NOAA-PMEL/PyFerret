@@ -1,4 +1,4 @@
-	SUBROUTINE MAKE_DSG_FEATURE_MASK(dset, cx, fmask, nfeatures )
+	SUBROUTINE MAKE_DSG_FEATURE_MASK(dset, cx, fmask, nfeatures)
 
 *
 *
@@ -59,17 +59,26 @@
 	include 'xdsg_context.cmn'
 	include 'xprog_state.cmn'
 	include 'xvariables.cmn'
-#include "tmap_dset.parm"
+#        include "tmap_dset.parm"
+
 
 * calling argument declarations:
 	INTEGER dset, cx, nfeatures
 	LOGICAL fmask(nfeatures)
 
 * internal variable declarations:
-        LOGICAL one_or_other, ismod, its_dsg, its_cmpnd, ignore_depth
-	INTEGER grid, i, idim, lm, orientation, obsdimlen, feature_line
+        LOGICAL one_or_other, ismod, its_dsg, its_cmpnd, ignore_depth, 
+     .		smask, have_station_index
+	INTEGER TM_DSG_NF2FEATURES, 
+     .		grid, i, idim, lm, orientation, obsdimlen, feature_line, 
+     .		nftrsets, n2, lm_index
 	REAL    GET_LINE_COORD, coord, ftr_lo(4,nfeatures), ftr_hi(4,nfeatures), 
-     .		flo, fhi, axmod, bad, val
+     .		flo, fhi, axmod, bad, val, constrain_lo_lo(4), constrain_hi_hi(4), 
+     .		del_lo, del_hi
+
+        INTEGER, DIMENSION(:), ALLOCATABLE :: station_index
+        LOGICAL, DIMENSION(:), ALLOCATABLE :: f2mask
+
 
 	axmod = 360.0
 
@@ -105,9 +114,51 @@
 	   ENDDO
 	ENDIF
 
+* Did the user send in a station or trajectory mask with SET DATA/SMASK= or SET DATA/SMASK= 
+
+	smask = dsg_ftrsetmsk_lm(dset).NE.unspecified_int4 .AND. 
+     .      dsg_ftrsetmsk_lm(dset).NE.int4_init
+	have_station_index = .FALSE.
+
+* If it's a timeseries profile then longitude and latitude coordinates
+* need to be expanded to the feature-dimestion.
+
+	IF (orientation .EQ. pfeatureType_TimeseriesProfile .OR. smask) THEN
+
+	   ALLOCATE (station_index(nfeatures))
+
+	   lm_index = dsg_loaded_lm(dsg_index_var(dset))
+	   DO i = 1, nfeatures
+	      station_index(i) = dsg_linemem(lm_index)%ptr(i) + 1
+	   ENDDO
+
+	   have_station_index = .TRUE.
+	ENDIF
+
+* Did the user send in a station or trajectory mask with SET DATA/SMASK= or SET DATA/SMASK= 
+
+	IF (smask) THEN
+	
+	   nftrsets = TM_DSG_NF2FEATURES (dset)
+	   ALLOCATE (f2mask(nftrsets))
+	   
+	   DO i = 1, nftrsets 
+	      val = GET_LINE_COORD (linemem(dsg_ftrsetmsk_lm(dset))%ptr, i)
+	      f2mask(i) = (val.NE.0. .AND. val.NE.bad_val4) 
+	   ENDDO
+
+* which feature is in the station or traj
+
+	   DO i = 1, nfeatures
+	      n2 = station_index(i)
+	      fmask(i) = f2mask(n2)
+	   ENDDO
+	   
+	   DEALLOCATE(f2mask)
+
 * Did the user send in a mask with e.g. "PLOT/FMASK var, maskvals"
 
-	IF (dsg_msk_lm(dset) .NE. unspecified_int4) THEN
+	ELSE IF (dsg_msk_lm(dset) .NE. unspecified_int4) THEN
 	   DO i = 1, nfeatures 
 	      val = GET_LINE_COORD (linemem(dsg_msk_lm(dset))%ptr, i)
 	      fmask(i) = (val.NE.0. .AND. val.NE.bad_val4) 
@@ -115,10 +166,61 @@
 	ENDIF
 
 * quick exit?
-	IF (cxdsg_no_coord_constraints .OR. cx .EQ. cx_none) RETURN
+	IF (cxdsg_no_coord_constraints .OR. cx .EQ. cx_none) THEN   
+	   IF ( have_station_index) DEALLOCATE(station_index)
+	   RETURN
+	ENDIF
 
 * get the coordinate extremes feature by feature
 	CALL DSG_FEATURE_LIMS(dset, nfeatures, ftr_lo, ftr_hi)
+
+* If the constraint in any direction is just one value, will look for 
+* nearest.
+
+	DO idim = 1, 4
+
+	   IF (.NOT.cxdsg_has_coord(idim)) CYCLE
+	   constrain_lo_lo(idim) = cxdsg_constrain_lo(idim)
+	   constrain_hi_hi(idim) = cxdsg_constrain_hi(idim)
+
+	   IF (cxdsg_constrain_lo(idim) .NE. cxdsg_constrain_hi(idim)) CYCLE
+
+* Set a new range, the next smallest value than the constraint, and the next largest.
+* Or if the coordinates match the constraint, keep that value.
+
+	   val = ABS(unspecified_val8)
+	   del_lo = val
+	   del_hi = val
+	   DO i = 1, nfeatures
+	      IF (.NOT.fmask(i)) CYCLE
+
+	      IF (ftr_lo(idim,i) .LE. cxdsg_constrain_lo(idim) .AND. 
+     .	          cxdsg_constrain_lo(idim)-ftr_lo(idim,i) .LT. del_lo)
+     .	         del_lo = cxdsg_constrain_lo(idim) - ftr_lo(idim,i) 
+
+	      IF (ftr_hi(idim,i) .GT. cxdsg_constrain_hi(idim) .AND. 
+     .	          ftr_hi(idim,i)-cxdsg_constrain_hi(idim) .LT. del_hi)
+     .	         del_hi = ftr_hi(idim,i) - cxdsg_constrain_hi(idim)
+
+	   ENDDO
+
+	   IF (del_lo.EQ.val .AND. del_hi.EQ.val) THEN
+	      del_lo = 0.
+	      del_hi = 0.
+	   ELSE IF (del_lo .EQ. val) THEN
+	      del_lo = del_hi
+	   ELSE IF (del_hi .EQ. val) THEN
+	      del_hi = del_lo
+	   ENDIF
+
+	   constrain_lo_lo(idim) = cxdsg_constrain_lo(idim) - del_lo
+	   constrain_hi_hi(idim) = cxdsg_constrain_hi(idim) + del_hi
+	   
+	   cx_lo_ww(idim,cx_plot) = cxdsg_constrain_lo(idim) 
+	   cx_hi_ww(idim,cx_plot) = cxdsg_constrain_lo(idim) 
+
+	ENDDO
+
 
 * first mask at the feature level based on instance coordinates
 	DO idim = 1, t_dim
@@ -142,27 +244,27 @@
      .		      ignore_depth ) CYCLE  ! Depths might be all bad, feature still ok
 
 		 IF (idim .EQ. x_dim) THEN
-		    CALL MODSCAT ( cxdsg_constrain_lo(idim), 
-     .		       cxdsg_constrain_hi(idim), axmod, 1, flo)
-		    CALL MODSCAT ( cxdsg_constrain_lo(idim), 
-     .		       cxdsg_constrain_hi(idim), axmod, 1, fhi)
+		    CALL MODSCAT ( constrain_lo_lo(idim), 
+     .		       constrain_hi_hi(idim), axmod, 1, flo)
+		    CALL MODSCAT ( constrain_lo_lo(idim), 
+     .		       constrain_hi_hi(idim), axmod, 1, fhi)
 		    ismod = flo.NE.ftr_lo(idim,i) .OR. fhi.NE.ftr_hi(idim,i)
 		 ENDIF 
 
 * Does the requested region lie partially or entirely within the feature?
 		 one_or_other =
-     .              ( (cxdsg_constrain_lo(idim) .GE. flo .AND. 
-     .                 cxdsg_constrain_lo(idim) .LE. fhi )      .OR.   
-     .		      (cxdsg_constrain_hi(idim) .GE. flo .AND. 
-     .		       cxdsg_constrain_hi(idim) .LE. fhi)     )
+     .              ( (constrain_lo_lo(idim) .GE. flo .AND. 
+     .                 constrain_lo_lo(idim) .LE. fhi )      .OR.   
+     .		      (constrain_hi_hi(idim) .GE. flo .AND. 
+     .		       constrain_hi_hi(idim) .LE. fhi)     )
 
 * or if the feature lies within the requested region that's ok too 
 		 IF (.NOT.one_or_other) THEN
 		    one_or_other =
-     .              ( (flo .GE. cxdsg_constrain_lo(idim) .AND. 
-     .                 flo .LE. cxdsg_constrain_hi(idim) )      .OR.   
-     .		      (fhi .GE. cxdsg_constrain_lo(idim) .AND. 
-     .		       fhi .LE. cxdsg_constrain_hi(idim))     )    
+     .              ( (flo .GE. constrain_lo_lo(idim) .AND. 
+     .                 flo .LE. constrain_hi_hi(idim) )      .OR.   
+     .		      (fhi .GE. constrain_lo_lo(idim) .AND. 
+     .		       fhi .LE. constrain_hi_hi(idim))     )    
 		 ENDIF
 
 		 fmask(i) = fmask(i).AND. one_or_other
@@ -174,18 +276,36 @@
 
 	      lm = cxdsg_coord_lm(idim)
 	      DO i = 1, nfeatures
-	         coord = dsg_linemem(lm)%ptr(i)
+	         IF (idim.LE.y_dim .AND. 
+     .		     orientation.EQ.pfeatureType_TimeseriesProfile) THEN
+	            coord = dsg_linemem(lm)%ptr(station_index(i))
+	         ELSE
+	            coord = dsg_linemem(lm)%ptr(i)
+	         ENDIF
 	         IF (coord .EQ. bad) CYCLE
 		 IF (idim .EQ. x_dim) CALL MODSCAT  (
-     .		       cxdsg_constrain_lo(idim), 
-     .		       cxdsg_constrain_hi(idim), axmod, 1, coord)
+     .		       constrain_lo_lo(idim), 
+     .		       constrain_hi_hi(idim), axmod, 1, coord)
 
-                 fmask(i) = fmask(i)
-     .		  .AND. coord .LE. cxdsg_constrain_hi(idim) 
-     .		  .AND. coord .GE. cxdsg_constrain_lo(idim)
+c                 IF (coord.LT.constrain_lo_lo(idim) .OR. 
+c     .		     coord.GT.constrain_hi_hi(idim) 
+c		   GOTO 5100
+
+		 fmask(i) = fmask(i)
+     .		  .AND. coord .LE. constrain_hi_hi(idim) 
+     .		  .AND. coord .GE. constrain_lo_lo(idim)
+
 	      ENDDO
 	   ENDIF
 	ENDDO
+	
+	IF ( have_station_index) DEALLOCATE(station_index)
 
-	RETURN
+5000	RETURN
+
+c    also need to send back a status flag
+c 5100	CALL ERRMSG( ferr_out_of_range, status, 
+c     .     'Found oordinate data outside of world-coordinate range' //pCR//
+c     .     'Check the actual_size attributes for '//ww_dim_name(idim), *5000 )
+
 	END

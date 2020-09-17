@@ -48,8 +48,8 @@
 
 * Get lon or lat per station
 	   lm_coord = dsg_loaded_lm(dsg_coord_var(idim,dset))
-	   DO iprof = 1, nstations
-	      coord_data(iprof) = dsg_linemem(lm_coord)%ptr(iprof)
+	   DO ista = 1, nstations
+	      coord_data(ista) = dsg_linemem(lm_coord)%ptr(ista)
 	   ENDDO
 
 * which profile number is at station sta_index

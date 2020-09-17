@@ -195,7 +195,7 @@
      .			do_comma_del, do_tab_del, do_dods, do_xml,
      .			permute, all_at_once, list_at_eof, head_enh,
      .			clobber, quiet, have_outtype, curvi_axes(nferdims), 
-     .			do_shrink, as_global, arg1_quoted, re_verify
+     .			do_shrink, as_global, arg1_quoted, re_verify, its_cmpnd
 
 	INTEGER		TM_LENSTR1, CX_DIM_LEN, STR_CASE_BLIND_COMPARE,
      .                  STR_UPCASE, GET_MAX_STRING_LEN, DSG_WHATS_IT,
@@ -207,7 +207,9 @@
      .                  edges_flag, keepax_flag, nn, slen, do_bounds,
      .			my_mr(max_intrp), my_cx(max_intrp), frame_bottom,
      .			nvars2list, grid, dsg_type, dset, nfeatures, var,
-     .			longest_feature, nctype, cdfid, strmlen, usr_maxstrlen
+     .			longest_feature, nctype, cdfid, strmlen, usr_maxstrlen,
+     .			dgrid, orient, nftrsets
+
 	INTEGER*8	i8_size
 	REAL		big_val, little_val
 
@@ -387,7 +389,10 @@ c     .		 .AND. .NOT.do_comma_del
 	DO ilist = 1, num_uvars_in_cmnd
 	   cx = is_cx(ilist)
 	   grid = cx_grid(cx)
-	   IF (DSG_WHATS_IT(grid) .NE. pdsg_not_dsg) THEN 
+	   dsg_type = DSG_WHATS_IT(grid)
+	   IF (dsg_type.EQ. pdsg_fs_dim) THEN
+	      has_dsg = .FALSE.
+	   ELSE IF (dsg_type .NE. pdsg_not_dsg) THEN 
 	      dset = TM_DSG_DSET_FROM_GRID( grid )
 	      has_dsg = .TRUE.
 	      EXIT
@@ -797,13 +802,18 @@ c     .		 .AND. .NOT.do_comma_del
 	   ENDIF
 	ENDIF
 
-* is this a listing of DSG variables
+* is this a listing of DSG variables? get the longest feature
+
 * DSGTBD:  Is there a use case for treating DSG instance variables as 1D grids?
+*  If the dataset is DSG but the variables are just station-id's or trajectory id's
+*  still use list_dsg_data to write the listing.
+
 	has_dsg = .FALSE.
 	DO ilist = 1, nvars2list
 	   cx = my_cx(ilist)
 	   grid = cx_grid(cx)
-	   IF (DSG_WHATS_IT(grid) .NE. pdsg_not_dsg) THEN 
+	   dsg_type = DSG_WHATS_IT(grid)
+	   IF (dsg_type.NE.pdsg_not_dsg .AND. dsg_type.NE.pdsg_fs_dim) THEN 
 	      dset = TM_DSG_DSET_FROM_GRID( grid )
 	      nfeatures = TM_DSG_NFEATURES( grid )
 	      CALL DSG_COORD_LIMS(dset, pdsg_row_size, little_val, big_val)
@@ -812,6 +822,12 @@ c     .		 .AND. .NOT.do_comma_del
 	      EXIT
 	   ENDIF
 	ENDDO
+	IF (dsg_type.EQ.pdsg_fs_dim) THEN
+	   dgrid = grid
+	   CALL TM_DSG_FTRSET_FACTS( dgrid, dset, orient, nfeatures, 
+     .        nftrsets, has_dsg, its_cmpnd, status ) 
+	   IF (status .NE. ferr_ok) has_dsg = .FALSE.
+	ENDIF
 
 * DSG data and gridded data cannot be mixed in the same listing
 * nor can DSG's from different datasets -- essentially separate reference 

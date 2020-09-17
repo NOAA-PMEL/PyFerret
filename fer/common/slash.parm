@@ -85,6 +85,8 @@
 * v76  *acm* 11/19 New LIST/NOCOORDS to write dimensions only not coord vars. 
 * v76  *acm* 11/19  Issue 1959: Change SET MEMORY/SIZE= to SET MEMORY/MAX= 
 *                               (keep /SIZE for bkwds compatibility)
+* V7.62 *acm* 8/20 DSG-enabled Ferret: SET DATA/SMASK= specifies a mask on station or
+*                  trajectory for timeseriesProfile or trajectoryProfile data
 
 * command qualifier states
 	INTEGER		qual_on,
@@ -220,6 +222,7 @@
      .                  slash_set_data_strict,
      .                  slash_set_data_feature,
      .                  slash_set_data_fmask,
+     .                  slash_set_data_smask,
      .
      .			slash_set_var_title,
      .			slash_set_var_unit,
@@ -551,6 +554,7 @@
      .                  slash_set_data_strict   = 15,
      .                  slash_set_data_feature  = 16,
      .                  slash_set_data_fmask	= 17,
+     .                  slash_set_data_smask    = 18,
      .
      .			slash_set_var_title	= 1,
      .			slash_set_var_unit	= 2,

@@ -82,9 +82,10 @@
 	PARAMETER (num_parm = 15)	! number of add_parm's in descriptor
 	PARAMETER (num_gridfiles = 6)	! number of grid_filenames in descript.
 	PARAMETER (nferdims = 6)	! number of dimensions in Ferret grids.
+	PARAMETER (num_clim = 8)	! number of pre-defined climatological axes.
 * DSG parameters
 	PARAMETER (max_lm = 1000)	! number of dynamic mem lines
 	PARAMETER (pdsg_row_size = -321)! identifies the DSG rowSize variable
+* DSG parameters for TimeseriesProfile or TrajectoryProfile datasets
 	PARAMETER (pdsg_indx_var = -432)! identifies the DSG Timeseriesindex or Trajectoryindex
-	PARAMETER (pdsg_fs_dim = -543)	! identifies the DSG Tseries or Traj ftrset-dim size
-	PARAMETER (num_clim = 8)	! number of pre-defined climatological axes.
+	PARAMETER (pdsg_fs_dim = -543)	! identifies the DSG Tseries or Traj station-dim size

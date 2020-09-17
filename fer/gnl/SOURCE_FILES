@@ -61,6 +61,7 @@ list_dsg_comma_tab.F\
 list_multi.F\
 list_multi_sub.F\
 load_dsg_maskvar.F\
+load_dsg_mask_ftrset_var.F\
 mem_to_bytes.F\
 mouse_command.F\
 name_equal_string.F\
@@ -79,6 +80,7 @@ proclaim.F\
 proclaim_c.F\
 redefine_ax_att.F\
 reload_dsg_maskvar.F\
+reload_dsg_ftrmaskvar.F\
 repl_exprns.F\
 reset_axis.F\
 reset_ax_att.F\

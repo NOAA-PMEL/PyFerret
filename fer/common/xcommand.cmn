@@ -36,21 +36,13 @@
 *                  /OUTFILE= /APPEND /CLOBBER
 * V6.6  *kms* 5/10 add SET REDIRECT and CANCEL REDIRECT for stdout/stderr redirection
 *       *kms* 7/10 add OPEN alias for SET DATA /BROWSE
-* PyFr *kms*  8/10 Add DEFINE PYFUNC /NAME=<alias> python.module.name
-* V6.8 *acm*  1/12 Add SET DATA/STRICT 
-* PyFr *kms*  3/11 Add CANCEL PYVAR /ALL /DATASET
-* PyFr *kms*  1/12 Add SET GRAPHICS /ENGINE /ANTIALIA /NOANTIAL
-* V68  *acm*  5/12 Add DEFINE DATA/AGGREGATE/TITLE/QUIET
-* V683 *acm*  8/12 New SET LIST/OUTTYPE CANCEL LIST/OUTTYPE, and SAVE/OUTTYPE 
+* V6.8  *acm* 1/12 Add SET DATA/STRICT 
+* V68 *acm* 5/12   Add DEFINE DATA/AGGREGATE/TITLE/QUIET
+* V683  8/12 *acm*  New SET LIST/OUTTYPE CANCEL LIST/OUTTYPE, and SAVE/OUTTYPE 
 * V684 *acm* 12/12 Changes for VECTOR/MODULO on curvilinear plots.
-* PyFr *kms*  1/13 Remove SET GRAPHICS /ENGINE /ANTIALIA /NOANTIAL;
 * V685 *acm*  4/13 Add /HIDDEN on DEF DATA/AGG
-*                  Add /QUALITY= /AAlias /NoAAlias /ENGINE= to SET WINDOW
-* PyFr *kms*  7/13 Add /THICKEN to SET WINDOW to specify line thickness scaling factor
-* PyFr *kms*  7/13 Add /XPIXELS, /YPIXELS, /XINCHES, /YINCHES to SET WINDOW and FRAME
 * V685+ *sh*  9/13 Add SHOW VARIABLE/TREE and alias VTREE
 * V695 *acm*  2/15 Add DEFINE AGGREGATE/F alias, FMRC
-* V695 *acm*  3/15 Changes for PyFerret fonts. Add SET TEXT, SHOW TEXT, CANCEL TEXT
 * V695 *acm*  6/15 New command ANNOTATE
 * V695 *acm*  6/15 New subcommand DEFINE ANNOTATION
 * V695 *sh*  10/15 New alias TSERIES (bump num_predefined_alias to 25)
@@ -58,12 +50,15 @@
 * V698 *ACM*  4/15 New PLOT/SKIP= (and leave space for PyFerret PLOT/OPACITY=)
 * V7    *acm* 6/16 Ticket 2434: command qualifiers /DEGMINSEC= /HALFSPAC
 *                  DEGMINSEC=1 for Deg-Min axis labels, =2 for Deg-Min-Sec. Default = 1
+* V7    6/16 *kms* Add reserved slots for PyFerret commands and qualifiers
+*                  to simplify future merges of Ferret into PyFerret
 *                  /HALFSPAC adds a half space between the degree sign and E/W or N/S
 * V7   *acm*  6/12 Add Union aggregations: DEFINE DATA/AGG/U
 * V722 *kms* 10/17 Remove threddsBrowser (too big, outdated, and unused)
 * V740 *acm*  2/18 Issue 966: LET/LIKE= Get attributes from another variable
 * V740 *kms*  3/18 Add space for PyFerret PLOT/HIGHLIGHT=
 * V74+ *acm*  9/18 Add aliases FMASK for SET DATA/FMASK and CLEARMASK for CANCEL DATA/FMASK
+* V74+ *acm*  9/18 Add aliases SMASK for SET DATA/SMASK
 
 * PARAMETERS are used to store numbers of subcommands and qualifiers for use
 * in BLOCK DATA XCOMMAND_DATA.  They are also used to compute pointers into
@@ -150,7 +145,7 @@
      .			nqual1o = 3, nqual_at1p = nqual_at1o + nqual1o,	!'NCCACHE'
      .			nqual1p = 8, nqual_at1q = nqual_at1p + nqual1p,	!'REDIRECT'
      .			nqual1q = 0, nqual_at1r = nqual_at1q + nqual1q,	!'GIFFILE'
-     .			nqual1r = 6, nqual_at1s = nqual_at1r + nqual1r,	!'TEXT'
+     .			nqual1r = 6, nqual_at1s = nqual_at1r + nqual1r,	!'TEXT' in PyFerret
      .			nqual1s = 4, nqual_at1t = nqual_at1s + nqual1s,	!'****'
      .			nqual1t = 4, nqual_at2a = nqual_at1t + nqual1t	!'****'
      .		      )
@@ -203,7 +198,7 @@
      .			nqual2s = 1, nqual_at2t = nqual_at2s + nqual2s,	!'NCCACHE'
      .			nqual2t = 1, nqual_at2u = nqual_at2t + nqual2t,	!'GIFFILE'
      .			nqual2u = 7, nqual_at2v = nqual_at2u + nqual2u, !'FUNC'
-     .                  nqual2v = 2, nqual_at2w = nqual_at2v + nqual2v, !'TEXT'
+     .                  nqual2v = 2, nqual_at2w = nqual_at2v + nqual2v, !'TEXT' in PyFerret
      .                  nqual2w = 3, nqual_at3a = nqual_at2w + nqual2w  !'QUER' 
      .		      )
 
@@ -249,8 +244,8 @@
      .			nqual3p = 1, nqual_at3q = nqual_at3p + nqual3p,	!'ALIAS'
      .			nqual3q = 1, nqual_at3r = nqual_at3q + nqual3q,	!'SYMBOL'
      .			nqual3r = 1, nqual_at3s = nqual_at3r + nqual3r,	!'NCCACHE'
-     .			nqual3s = 3, nqual_at3t = nqual_at3s + nqual3s,	!'PYVAR'
-     .			nqual3t = 7, nqual_at4a = nqual_at3t + nqual3t	!'TEXT'
+     .			nqual3s = 3, nqual_at3t = nqual_at3s + nqual3s,	!'PYVAR' in PyFerret
+     .			nqual3t = 7, nqual_at4a = nqual_at3t + nqual3t	!'TEXT' in PyFerret
      .		      )
 
 * CONTOUR	 - commmand # 4
@@ -448,7 +443,7 @@
      .			total_num_commands	= 30,
      .			total_num_subcommands	= nsub_at31 - 1,
      .			total_num_qualifiers	= nqual_at31a - 1,
-     .	                num_predefined_alias    = 27,
+     .	                num_predefined_alias    = 28,
      .			max_queries		= 50 )
 
 * declarations

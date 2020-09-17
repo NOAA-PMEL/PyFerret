@@ -124,6 +124,7 @@
 	      cx_lo_ss(cx,idim) = unspecified_int4
 	      cx_hi_ss(cx,idim) = unspecified_int4
 	   ENDDO
+	   IF (its_cmpnd) dsg_orientation = z_dim
 	   cx_lo_ss(cx,dsg_orientation) = 1
 	   cx_hi_ss(cx,dsg_orientation) = dsg_obsdimlen
 * ... leave the world coordinates as-is

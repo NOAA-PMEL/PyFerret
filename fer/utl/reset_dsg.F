@@ -43,6 +43,7 @@
 
 	include	'tmap_dims.parm'
 	include 'ferret.parm'
+	include 'errmsg.parm'
 	include 'xvariables.cmn'
 	include 'xcontext.cmn'
 	include 'xtm_grid.cmn_text'
@@ -52,16 +53,26 @@
 	INTEGER nvars, cx_list(*)
 
 	LOGICAL its_dsg, its_cmpnd
-	INTEGER TM_DSG_DSET_FROM_GRID, cx, grid, dset, i, 
-     .		the_cx, iaxis, orientation, obsdimlen, fline, nv
+	INTEGER TM_DSG_DSET_FROM_GRID, CX_DIM_LEN,
+     .		cx, grid, dset, i, the_cx, iaxis, orientation, 
+     .		obsdimlen, fline, nv, status
 	CHARACTER buff*32, TM_FMT*48, fmt*6
 
 * Get the DSG dataset, grid, and the orientation of the feature
 * so we can get the axes that were allocated.
+* If plotting timeseriesProfile as a set of time series, the 
+* directions of the grids has been changed.  Recover the information
+* needed to reset using cx_buff
 
 	cx = is_cx(1)
 	grid = cx_grid(cx)
 	dset = TM_DSG_DSET_FROM_GRID( grid )
+
+	IF (dset .LE. pdset_irrelevant) THEN
+	   grid = cx_grid(cx_buff)
+	   dset = TM_DSG_DSET_FROM_GRID( grid )
+	ENDIF
+	IF (dset .LE. pdset_irrelevant) GOTO 5100
 
 	nv = nvars
 	
@@ -110,5 +121,7 @@
 
 	cxdsg_empty_set = .FALSE.
 
-	RETURN
+ 5000	RETURN
+ 5100	CALL ERRMSG( ferr_internal, status, 'RESET_DSG', *5000)
+
 	END

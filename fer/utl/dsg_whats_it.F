@@ -62,16 +62,17 @@
 	   line = grid_line(f_dim,grid)
 	   IF (line .EQ. mnormal) THEN
 	      DSG_WHATS_IT = pdsg_not_dsg
-	      RETURN
 	   ELSE
-	      DSG_WHATS_IT = pdsg_f2var
+               DSG_WHATS_IT = pdsg_fs_dim
 	   ENDIF
 	ENDIF
 	dset = line_dsg_dset(line)
-	IF (dset .EQ. pline_not_dsg) THEN
+	IF (dset.EQ.pline_not_dsg .OR. dset.EQ.pdsg_not_dsg) THEN
 	   DSG_WHATS_IT = pdsg_not_dsg
 	   RETURN
 	ENDIF
+
+	IF (DSG_WHATS_IT .EQ. pdsg_fs_dim) RETURN
 
 * we are looking at a DSG grid
 * the test for contiguous ragged is the existence of a feature axis

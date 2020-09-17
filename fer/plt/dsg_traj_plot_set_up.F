@@ -100,7 +100,7 @@
 * V500 *kob* 3/99- up VAR_CODE and VAR_UNITS to 64 chars
 * internal variable declarations:
 
-	LOGICAL		NO_LINE_RANGE, GEOG_LABEL, TM_ITSA_DSG_RAGGED,
+	LOGICAL		NO_LINE_RANGE, TM_ITSA_DSG_RAGGED,
      .			versus, all_1_ind, all_1_dep, formatted, use_nice, 
      .			this_no_range(max_line_on_plot), indep_is_log, set_lev, 
      .			its_dsg, its_cmpnd, mask_applied, user_hlim
@@ -138,7 +138,7 @@
 
 * signal that plot set-up has begun
 	IF ( mode_diagnostic ) CALL SPLIT_LIST(pttmode_ops, ttout_lun,
-     .				'setting up plot', 15)
+     .				'setting up DSG trajectory plot', 15)
 
 * initialize
 
@@ -175,8 +175,6 @@
 
 	grid1 = cx_grid( cx )
 
-	IF (  qual_given(slash_plot_along) .GT. 0 )  
-     .	       CALL WARN ('PLOT/ALONG is ignored for discrete DSG data')
 	grid = cx_grid(is_cx(nmv))
 	dset = TM_DSG_DSET_FROM_GRID( grid )
 	nfeatures = TM_DSG_NFEATURES( grid )
@@ -633,7 +631,6 @@
 * If the user set some /LEVELS then compute_mnstd just returns 
 
 
-	ENDIF ! cxdsg_empty_set
 
 
 	IF (need_histo) THEN
@@ -658,6 +655,8 @@
 	   ENDIF
 
 	ENDIF
+
+	ENDIF ! cxdsg_empty_set
  
 * pass the data to PLOT+
 
@@ -682,10 +681,6 @@
 * ... increment number of lines on plot
 	nline_on     = nline_on     + 1
 	nline_in_mem = nline_in_mem + 1
-
-* ... assign line style for the data plotting:
-	CALL LINE_STYLE(line_symbol, sym_size, skipsym, color, color1, use_line,
-     .			   do_dash, dashstyle, nline_in_mem, nline_on)
  
 *     Create a gaps-variable. Any masking is applied as the gaps are marked.
 
@@ -708,10 +703,6 @@
 	CALL PPLCMD ( from, line, 0, ppl_buff, 1, 1)
  3007	FORMAT ( 'GAPLOC ',I5 )
 
-	CALL LINE_STYLE(line_symbol, sym_size, skipsym, color, color1, use_line,
-     .			   do_dash, dashstyle, nline_in_mem, nline_on)
-
-        nline_on = nline_on + color1 - 1
 
 * axis scaling and formatting apply possible user settings
 * ... independent axis

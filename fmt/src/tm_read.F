@@ -203,7 +203,7 @@
 	IF (modline .EQ. 0) THEN
 
 	  nprof = a_hi_e
-	  IF (n2feat .GT. 0) a_hi_e = n2feat
+	  IF (n2feat .GT. 0 .AND. a_hi_f.EQ.1) a_hi_e = n2feat
 
 	  CALL TM_CHOOSE_READ ( dset_num, varpos,
      .		a_lo_x, a_lo_y, a_lo_z, a_lo_t, a_lo_e, a_lo_f,
@@ -212,14 +212,14 @@
      .		data_grid, file_num, status )
  
 
-* put the 1..nstation data into 1..profile
+* If the trajectoryProfile or timeseriesProfile data is being
+* handle as simple profile data,  put the 1..nstation or 
+* 1..ntrajectory data into 1..profile
 
-	  IF (n2feat .GT. 0) THEN
-
+	  IF (n2feat.GT.0  .AND.  dsg_orientation(dset_num).EQ.z_dim) THEN
 	     index_lm = dsg_loaded_lm(dsg_index_var(dset_num))
 
 	     IF (ds_var_type(ivar) .EQ. ptype_string) THEN
-
 
 * Read in the last slots of data to allocate string memory
 * 

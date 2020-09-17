@@ -154,6 +154,8 @@ itsa_truemonth_axis.F\
 legal_chars.F\
 make_axis.F\
 make_dsg_feature_mask.F\
+make_dsg_feature_mask_dirs.F\
+make_dsg_ftrset_mask.F\
 make_dsg_obs_mask.F\
 make_step_axis.F\
 mask_dsg_fvar.F\

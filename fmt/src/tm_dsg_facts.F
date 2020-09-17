@@ -50,6 +50,7 @@
       include 'tmap_dims.parm'
       include 'implicit.parm'
 #include "gt_lib.parm"
+#include "tmap_dset.parm"
       include 'xtm_grid.cmn_text'
       include 'xdset_info.cmn_text'
       include 'xfr_grid.cmn'
@@ -59,41 +60,40 @@
 	INTEGER grid, orientation, obsdimlen, feature_line
 
 * internal variable declarations
-	INTEGER e_line, dset, mabstract, status
+	INTEGER DSG_WHATS_IT, e_line, dset, mabstract, status
+
+	is_dsg = .FALSE.
+	is_cmpnd = .FALSE.
 
 * the E axis points to the DSG orientation. 
 * Or is this even a dsg grid? The dataset may be dsg, but what if we're just 
 * defining some other variable, maybe defining a mask.
 
 	e_line = grid_line(e_dim,grid)
+	   
 	mabstract = grid_line( x_dim, mgrid_abstract )
 
-	IF (e_line.EQ.mpsnorm .OR. e_line.EQ.mabstract) THEN
-	   is_dsg = .FALSE.
-	   GOTO 9999
-	ENDIF
+	IF (e_line.EQ.mpsnorm .OR. e_line.EQ.mabstract) GOTO 9999
 
 	dset = line_dsg_dset(e_line)
-	
-* this only happens if the programmer made an error
-	IF (dset .EQ. pline_not_dsg) STOP 'TM_DSG_FACTS'
 
+* Can happen with a use/feature=none
+
+	IF (dset.EQ. pline_not_dsg) GOTO 9999
+
+	is_dsg = .TRUE.
 	orientation = dsg_orientation(dset)
-
 	feature_line = grid_line(orientation,grid)
-
 	obsdimlen = dsg_obs_dimlen(dset)
 
-	is_cmpnd = orientation.EQ.y_dim .OR. orientation.EQ.f_dim
+	is_cmpnd = orientation.EQ.pfeatureType_TrajectoryProfile .OR. 
+     .		   orientation.EQ.pfeatureType_TimeseriesProfile
 
 * success
         RETURN
 
 * unreported error -- just a message
  9999	RETURN
- 5100	CALL TM_ERRMSG (merr_undefline, status, 'TM_DSG_FACTS',
-     .                       no_descfile, no_stepfile,
-     .                       no_errstring, no_errstring, *9999)
 
         END
 

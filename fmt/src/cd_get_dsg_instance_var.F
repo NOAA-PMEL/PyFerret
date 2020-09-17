@@ -125,14 +125,15 @@
 
 
 * The TimeseriesProfile lon and lat coordinates are per timeseries.  We will
-* later get the profiles correspondin to stations from the station index and
-* store lon and lat per profile for the translation grid.  So make the axis
-* of length nprofile.  Reset npts using the length of the T coordinate = nprofiles.
-* Do this also for orientation set to profile; it may be a TimeseriesProfile
-* dataset where the user has said USE/FEATURE=profile.
+* later get the profiles corresponding to stations from the station index and
+* store lon and lat per profile for the translation grid (cd_dsg_tp_to_prof). So
+* make the axis of length nprofile.  Reset npts using the length of the T 
+* coordinate = nprofiles. Do this also for orientation set to profile; it may 
+* be a TimeseriesProfile dataset where the user has said USE/FEATURE=profile.
 
 	naxis = npts
 	IF ( (idim.EQ.x_dim .OR. idim.EQ.y_dim) .AND. 
+     .        dsg_user_direction .EQ. z_dim .AND.
      .       (dsg_orientation(dset) .EQ. pfeatureType_TimeseriesProfile .OR. 
      .        dsg_orientation(dset) .EQ. pfeatureType_Profile) ) THEN
 	   CALL CD_GET_VAR_DIMS_INFO (dset, dsg_time_var, buff, nvdim, vdims, status)
@@ -243,7 +244,7 @@
 
 * ... create a simple abstract axis in the F dir for timeseries or trajectory variables
 	   
-           axname = "FTR_INDX"
+           axname = "ftrset_N"
            delta = 1.
 	   coord_min = 1.
 
@@ -530,7 +531,7 @@
         status = 0   ! soft error
         GOTO 5100
 
-* station-index error, message written in calling routine.
+* ftrset_dir-index error, message written in calling routine.
  5800   status = merr_dsg_grid
         GOTO 5100
 

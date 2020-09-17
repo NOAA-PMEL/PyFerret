@@ -71,7 +71,8 @@
 *                  instead of pdsetalloc*char_init1024
 * V720   4/17 *sh* add DSG variables 
 
-#include "tmap_dset.parm"		
+#include "tmap_dset.parm"
+#include "gt_lib.parm"
 	include 'tmap_dims.parm'		! parameter definitions
 	include 'xdset_info.cmn_text'
 
@@ -90,7 +91,8 @@
 	DATA	dsg_orientation		/pdsetalloc*int4_init/
 	DATA	dsg_obs_dimlen		/pdsetalloc*int4_init/
 	DATA	dsg_xlate_grid		/pdsetalloc*int4_init/
-	DATA	dsg_msk_lm		/pdsetalloc*int4_init/
+	DATA	dsg_msk_lm		/pdsetalloc*unspecified_int4/
+	DATA	dsg_ftrsetmsk_lm	/pdsetalloc*unspecified_int4/
 	DATA	dsg_coord_var		/maxdsg_coords *int4_init/
 	DATA	dsg_obs_axis		/int4_init/
 	DATA	dsg_instance_axis	/int4_init/

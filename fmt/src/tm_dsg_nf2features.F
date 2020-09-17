@@ -48,6 +48,7 @@
 	include 'errmsg.parm'
 #include "tmap_dset.parm"
 	include 'xdset_info.cmn_text'
+	include 'xdset_info.cd_equiv'
 	external xdset_info_data
 
 * argument declarations
@@ -61,7 +62,12 @@
 
 	IF (dsg_ftrset_var(dset) .EQ. int4_init) GOTO 5500
 
-	CALL CD_GET_VAR_DIMS_INFO ( dset, dsg_ftrset_var(dset), 
+* If they said use/feature=profile then n2features = 0
+
+	IF (dsg_orientation(dset).NE.pfeatureType_TrajectoryProfile .AND.
+     .      dsg_orientation(dset).NE.pfeatureType_TimeseriesProfile) RETURN
+
+	CALL CD_GET_VAR_DIMS_INFO ( dset, cd_varid(dsg_ftrset_var(dset)), 
      .        name, ndims, vdims, status)
      
 	IF (status .NE. merr_ok) GOTO 5500

@@ -127,7 +127,7 @@
      .                 dsg_orientation(dset) .EQ. pfeatureType_TimeseriesProfile .OR.
      .                 was_cmpnd)
 	IF (cmpnd_ftype) THEN
-	   CALL CD_GET_VAR_DIMS_INFO ( dset, dsg_ftrset_var(dset), 
+	   CALL CD_GET_VAR_DIMS_INFO ( dset, cd_varid(dsg_ftrset_var(dset)), 
      .        name, ncdims, cdims, status)
 	   ftrset_dir = f_dim
 	   f2dim = cdims(1)
@@ -163,11 +163,13 @@
 * Is this a variable on the time-index or traj-index axis of a compound type? 
 	
            is_ftrset_var = f2dim .EQ. vdims(1)
-	   IF (ivar.EQ.dsg_coord_var(x_dim, dset) .OR. 
-     .	       ivar.EQ.dsg_coord_var(y_dim, dset) ) is_ftrset_var = .FALSE.
+	   IF (was_cmpnd .AND.
+     .         (ivar.EQ.dsg_coord_var(x_dim, dset) .OR. 
+     .	        ivar.EQ.dsg_coord_var(y_dim, dset)) ) is_ftrset_var = .FALSE.
 
-* If it's a station-var or trajectory-var in a use/feature=profile timeseriesprofile
-* or trajectoryprofile, then will expand the data onto the profile grid
+* If it's a timeseries-station-var or trajectory-var in a use/feature=profile 
+* timeseriesprofile or trajectoryprofile set, then will expand the data onto 
+* the profile grid
 
            IF (was_cmpnd .AND. is_ftrset_var) THEN  
 	       IF (blen.GT.0) THEN
@@ -217,11 +219,9 @@
 
 * For the compound types, fake an e axis which we will promote data to
 
-	   IF (is_ftrset_var) THEN
-c	      temp_axnams(ftrset_dir,tmpgrid) = line_name(dsg_instnc_ftrset_axis)
-c	      ds_grid_end(ftrset_dir,tmvar)   = line_dim (dsg_instnc_ftrset_axis)
-	      temp_axnams(e_dim,tmpgrid) = line_name(dsg_instance_axis)
-	      ds_grid_end(e_dim,tmvar)   = line_dim (dsg_instance_axis)
+	   IF (is_ftrset_var .AND. .NOT.was_cmpnd) THEN
+	      temp_axnams(ftrset_dir,tmpgrid) = line_name(dsg_instnc_ftrset_axis)
+	      ds_grid_end(ftrset_dir,tmvar)   = line_dim (dsg_instnc_ftrset_axis)
 	   ELSE
 	      temp_axnams(e_dim,tmpgrid) = line_name(dsg_instance_axis)
 	      ds_grid_end(e_dim,tmvar)   = line_dim (dsg_instance_axis)
@@ -250,7 +250,10 @@ c	      ds_grid_end(ftrset_dir,tmvar)   = line_dim (dsg_instnc_ftrset_axis)
 	   ELSEIF (vdims(1) .EQ. dsg_instnc_ftrset_dim) THEN
 * ... 1D instance grid for the trajectory or timeseries 
 *     of a trajectory-profile or timeseries-profile st
-	      ds_ordering(1,tmvar) = e_dim !  ftrset_dim
+	      ds_ordering(1,tmvar) = f_dim !  ftrset_dim
+
+* ... treating it as a profile dataset 
+	      IF (was_cmpnd) ds_ordering(1,tmvar) = e_dim
 
 	   ELSEIF (vdims(1) .EQ. dsg_obs_dim) THEN
 * ... 2D observation grid 

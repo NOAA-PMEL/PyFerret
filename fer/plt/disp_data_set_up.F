@@ -81,21 +81,24 @@
 #include "tmap_dset.parm"
 	include 'xdset_info.cmn_text'
 	include 'xtm_grid.cmn_text'
+	include 'xtext_info.cmn'
 
 	
 * calling argument declarations:
 	INTEGER	ax1_work, ax2_work, status
 
 * internal variable declarations:
-	LOGICAL TM_ITSA_DSG_RAGGED, TM_ITSA_DSG, plot_vs, typerr, its_dsg, its_cmpnd
+	LOGICAL TM_ITSA_DSG_RAGGED, TM_ITSA_DSG, 
+     .		plot_vs, typerr, its_dsg, its_cmpnd, its_traj, 
+     .		dsg_as_traj, dsg_as_time
 	INTEGER	MR_DIM_LEN, CX_DIM_LEN, CGRID_SIZE, TM_DSG_NFEATURES,
      .		TM_DSG_DSET_FROM_GRID,
      .		idim, ndim, dim(nferdims), mr1, cx, ivar,
      .		factor, loc, grid, dset, nfeatures, obsdimlen, 
-     .		fline, dtyp, numv
+     .		fline, dtyp, numv, along_dim
 	INTEGER*8 i8_ax_len
 	REAL	big_val, little_val
-	CHARACTER buff*4
+	CHARACTER buff*4, buff1*1
 
 * check for PLOT/VS -- significant in axis buffer sizes
 	plot_vs = cmnd_num .EQ. cmnd_plot
@@ -128,20 +131,27 @@
 	 grid = cx_grid(cx)
 	 
 	 grid_is_dsg = TM_ITSA_DSG( grid )
+
+*  IF (PLOT/ALONG=xy/z=lo:hi ) for trajectoryprofile --> dsg_as_traj
+*  TODO: 
+*    Trajectory as timeseries              
+
 	 IF (cmnd_num .EQ. cmnd_plot .AND. grid_is_dsg) THEN
-	    IF (  qual_given(slash_plot_along) .GT. 0.AND. .NOT.plot_vs )  
-     .	       CALL WARN ('PLOT/ALONG is ignored for discrete DSG data')
 
 	    dset = TM_DSG_DSET_FROM_GRID( grid )
 	    nfeatures = TM_DSG_NFEATURES( grid )	    
 	    CALL TM_DSG_FACTS( grid, idim, obsdimlen, fline, its_dsg, its_cmpnd )
 
-	    IF (idim.EQ.pfeatureType_Trajectory .OR. idim.EQ.pfeatureType_Point) THEN
-	       plot_vs = .TRUE.
-	    ELSE IF (.NOT. plot_vs) THEN
+	    CALL DSG_PLTALONG_SETUP (dset, idim, its_traj, dsg_as_traj, 
+     .				dsg_as_time, status)
+	    IF (status .NE. ferr_ok) GOTO 5200
+
+	    IF (idim.EQ.pfeatureType_Trajectory .OR. idim.EQ.pfeatureType_Point) plot_vs = .TRUE.
+	    IF (.NOT.plot_vs) THEN
 	       typerr = (cx_type(cx) .EQ. ptype_string) 
 	       IF (typerr) GOTO 5200
-	       IF (grid_is_dsg) CALL PLOT_DSG_DATA_SET_UP(nfeatures, obsdimlen, status)
+	       IF (grid_is_dsg) CALL PLOT_DSG_DATA_SET_UP(nfeatures, obsdimlen, 
+     .				 dsg_as_time, status)
 	       IF (status .NE. ferr_ok) GOTO 5200
             ENDIF
 	 ENDIF

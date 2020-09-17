@@ -125,7 +125,8 @@
      .		is_dim,cdfstat, attlen, attoutflag, istat, las_pos, 
      .		first_pos,dset_num, ndims, nvars, ngatts, recdim, idim,
      .		ax_att_var(4), ax_att_provisional(4), isend, ivtm1, orient,
-     .		index_varid, index_var_lm, dsg_time_var, ignore_dim, dset_ftype
+     .		index_varid, index_var_lm, dsg_time_var, ignore_dim, 
+     .		dset_ftype, ftrset_ivcd
 	CHARACTER vname*128, buff*1028, buff1*128, dname*128, axdim*1, 
      .		lunits*64, dir_code*2, index_dir_buff*20, ftrname*20, ignore_what*1
 	REAL	vals(2), bad
@@ -162,6 +163,7 @@
 	dsg_instance_axis = int4_init
 	dsg_instnc_ftrset_axis = int4_init
 	dsg_ftrset_var(dset) = int4_init
+	ftrset_ivcd = int4_init
 	ignore_dim = unspecified_int4
 	ignore_what = ' '
 	udsg_err = .FALSE.
@@ -178,19 +180,20 @@
 	orient = dsg_orientation(dset) 
 	ftrname = CD_DSG_FEATURENAME ( orient ) 
 
+	CALL CD_DSG_GET_FILE_FEATURETYPE (dset, dset_ftype, do_warn)
+
 * If its TimeseriesProfile must (for now) use/feature=profile
 
-	CALL CD_DSG_GET_FILE_FEATURETYPE (dset, dset_ftype, do_warn)
-	IF ( (dset_ftype .EQ. pfeatureType_TrajectoryProfile .OR.
-     .        dset_ftype .EQ. pfeatureType_TimeseriesProfile) .AND. 
-     .        dsg_user_direction .NE. z_dim) THEN
-	   vlen = TM_LENSTR1(ftrname)
-	   buff = 'For now '//ftrname(:vlen)//' type not implemented. '//
-     .            ' Treating data as FeatureType=profile'
-	   CALL WARN (buff)
-	   dsg_user_direction = z_dim
-	   dsg_orientation(dset) = pfeatureType_Profile
-	ENDIF
+c	IF ( (dset_ftype .EQ. pfeatureType_TrajectoryProfile .OR.
+c     .        dset_ftype .EQ. pfeatureType_TimeseriesProfile) .AND. 
+c     .        dsg_user_direction .NE. z_dim) THEN
+c	   vlen = TM_LENSTR1(ftrname)
+c	   buff = 'For now '//ftrname(:vlen)//' type not implemented. '//
+c     .            ' Treating data as FeatureType=profile'
+c	   CALL WARN (buff)
+c	   dsg_user_direction = z_dim
+c	   dsg_orientation(dset) = pfeatureType_Profile
+c	ENDIF
 
 * If its TimeseriesProfile and they said use/feature=profile, need to
 * get info on the lon/lat coordinates from the timeseries dimension and
@@ -205,11 +208,11 @@
 
 	ENDIF
 
-	cmpnd_ftype = (orient .EQ. pfeatureType_TrajectoryProfile .OR.
-     .                 orient .EQ. pfeatureType_TimeseriesProfile)
+	cmpnd_ftype = (dset_ftype .EQ. pfeatureType_TrajectoryProfile .OR.
+     .                 dset_ftype .EQ. pfeatureType_TimeseriesProfile)
 
 	IF (cmpnd_ftype) THEN
-	   ftrname = CD_DSG_FEATURENAME ( orient ) 
+	   ftrname = CD_DSG_FEATURENAME ( dset_ftype ) 
 	   i = MAX(INDEX(ftrname, 'Profile'), INDEX(ftrname, 'profile'))
 	   index_dir_buff = ftrname(:i-1)//'_id'
 
@@ -336,24 +339,26 @@
      .                 do_warn, vname(:vlen), maxlen, attlen, attoutflag, 
      .                 buff, vals )
 
-* Is the cf_role either trajectory_id or timeseries_id? 
+* Is the cf_role either trajectory_id or timeseries_id? Keep track of the cdf id
+* Will set ftrset_var later.
 
 	      IF (got_it) THEN
-	         IF (STR_SAME (buff, index_dir_buff) .EQ. 0 ) dsg_ftrset_var(dset) = ivcd
+	         IF (STR_SAME (buff, index_dir_buff) .EQ. 0 ) ftrset_ivcd = ivcd
 
 * the dataset is traj-profile or tser-profile, but we are doing use/featrure=profile.
 * Get the trajectory or timeseries dimension and ignore variables in that direction.
+* Later will promote these variables to the profile-dimension.
 
 		 IF (orient .EQ. pfeatureType_Profile) THEN
 		    IF (STR_SAME (buff, 'trajectory_id') .EQ. 0 ) THEN
-		       dsg_ftrset_var(dset) = ivcd
+		       ftrset_ivcd = ivcd
 		       CALL CD_GET_VAR_DIMS_INFO (dset, ivcd, vname, nvdim, 
      .                     vdims, status)
 		       ignore_dim = vdims(nvdim)
 		       ignore_what = 'X'
 		    ENDIF
 		    IF (STR_SAME (buff, 'timeseries_id') .EQ. 0 ) THEN
-		       dsg_ftrset_var(dset) = ivcd
+		       ftrset_ivcd = ivcd
 		       CALL CD_GET_VAR_DIMS_INFO (dset, ivcd, vname, nvdim, 
      .                     vdims, status)
 		       ignore_dim = vdims(nvdim)
@@ -428,6 +433,8 @@
 	   
 	   CALL CD_GET_1_DEP_VAR ( dset, cdfid, ivcd, las_pos, bad, 
      .				   ivtm, status )
+	   IF (ftrset_ivcd .EQ. ivcd) dsg_ftrset_var(dset) = ivtm
+
 	   IF (status .NE. merr_ok) GOTO 5400
 	   IF ( ivtm .NE. 0 ) THEN
 	      las_pos = ivtm	! optimizes next hunt for slot
@@ -439,7 +446,7 @@
 
 * Make a coordinate axis for the timeseries or trajectories in the compound datasets.
 
-	   IF (cmpnd_ftype .AND. ivcd .EQ. dsg_ftrset_var(dset)) THEN
+	   IF (cmpnd_ftype .AND. ivtm .EQ. dsg_ftrset_var(dset)) THEN
 	      CALL CD_GET_DS_DIMS (dset, vdims(1), dname, ax_len, status)
 
 	      fax_len = ax_len
@@ -481,10 +488,6 @@
      .                 do_warn, vname(:vlen), maxlen, attlen, attoutflag, 
      .                 buff, vals )
 	   IF (got_it) THEN
-
-* IF we found a trajectory_id or timeseries_id for a compound-feature-type
-* dataset, the variable hadn't got an ivtm yet.
-	      IF (ivcd .EQ. dsg_ftrset_var(dset)) dsg_ftrset_var(dset) = ivtm
 
 	      buff1 = ftrname(:TM_LENSTR1(ftrname))//'_id'
 
@@ -793,7 +796,7 @@ c     .               vname(:vlen) )
 	
 
 * If this is a timeseriesProfile dataset, then the X-Y coordinates are in
-* the timeseries instance-dimension direction. Use the station index variable
+* the timeseries instance-dimension direction. Use the ftrset index variable
 * to redefine the dsg-coordiate variables for the translation grid to list these 
 * coordinates in the profile dimension.  The test when orient is profile is
 * for the case when the user has said USE/feature=profile for a TimeseriesProfile set.
@@ -869,10 +872,10 @@ c     .               vname(:vlen) )
 	ENDIF
 	
 	
-*...  No mask for timeseries or trajecotry on tseries-profile or traj-profile data
+*...  No mask for timeseries or trajectory on tseries-profile or traj-profile data
 *      is set, but initialize the memory location to unspecified_int4
 
-	IF (cmpnd_ftype) dsg_mask_ftrset_lm(dset) = unspecified_int4
+	dsg_mask_ftrset_lm(dset) = unspecified_int4
 
 * successful completion
 	status = merr_ok

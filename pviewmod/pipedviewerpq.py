@@ -192,6 +192,7 @@ class PipedViewerPQ(QMainWindow):
         self.__yloc = None
         self.__scalefrac = None
         self.__opacity = None
+        self.__wmkdrawn = False
 
     def createMenus(self):
         '''
@@ -338,20 +339,21 @@ class PipedViewerPQ(QMainWindow):
         self.statusBar().clearMessage()
         # restore the cursor back to normal
         QApplication.restoreOverrideCursor()
-        # if watermark is specified, display after other plotting occurs
-        if self.__wmarkFilename is not None:
-            # Initialize watermark objects
-            wmkpic = QPixmap(self.__wmarkFilename)
-            wmkpt = QPointF()
-            wmkpt.setX(self.__xloc)
-            wmkpt.setY(self.__yloc)
-            # set watermark image display opacity
-            painter.setOpacity(self.__opacity / k)
-            # set image scale
-            painter.scale(self.__scalefrac, self.__scalefrac)
-            # paint watermark image at specified location
-            painter.setRenderHint(QPainter.Antialiasing)
-            painter.drawPixmap(wmkpt, wmkpic)
+        # # if watermark is specified, display after other plotting occurs
+        # if self.__wmarkFilename is not None:
+        #     print(len(self.__viewpics))
+        #     # Initialize watermark objects
+        #     wmkpic = QPixmap(self.__wmarkFilename)
+        #     wmkpt = QPointF()
+        #     wmkpt.setX(self.__xloc)
+        #     wmkpt.setY(self.__yloc)
+        #     # set watermark image display opacity
+        #     painter.setOpacity(self.__opacity / len(self.__viewpics))
+        #     # set image scale
+        #     painter.scale(self.__scalefrac, self.__scalefrac)
+        #     # paint watermark image at specified location
+        #     painter.setRenderHint(QPainter.Antialiasing)
+        #     painter.drawPixmap(wmkpt, wmkpic)
         return modrects
 
     def drawLastPictures(self, ignorevis):
@@ -396,6 +398,23 @@ class PipedViewerPQ(QMainWindow):
                                        0.0, 0.0, self.__scalefactor, \
                                        "Drawing", not wascleared)
             painter.end()
+        # if watermark is specified, display after other plotting occurs
+        if (self.__wmarkFilename is not None) and not self.__wmkdrawn:
+            painter = QPainter(self.__label.pixmap())
+            # Initialize watermark objects
+            wmkpic = QPixmap(self.__wmarkFilename)
+            wmkpt = QPointF()
+            wmkpt.setX(self.__xloc)
+            wmkpt.setY(self.__yloc)
+            # set watermark image display opacity
+            painter.setOpacity(self.__opacity)
+            # set image scale
+            painter.scale(self.__scalefrac, self.__scalefrac)
+            # paint watermark image at specified location
+            painter.setRenderHint(QPainter.Antialiasing)
+            painter.drawPixmap(wmkpt, wmkpic)
+            painter.end()
+            self.__wmkdrawn = True
         # Notify the label of changes to the scene
         if wascleared:
             # the entire scene changed

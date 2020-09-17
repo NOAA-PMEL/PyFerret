@@ -801,14 +801,17 @@ class PyFerretBindings(AbstractPyFerretBindings):
             cmnd["rotate"] = rotate
         self.__window.submitCommand(cmnd)
 
-    def setWaterMark(self, filename, xloc, yloc, scalefrac, opacity):
+    def setWaterMark(self, filename, len_filename, xloc, yloc, scalefrac, opacity):
         '''
         Overlays water mark.
 
         Arguments:
-            filename: path to water mark image
-
-
+            filename:     path to water mark image
+            len_filename: number of characters in filename
+            xloc:         horizontal position of upper left corner of watermark image
+            yloc:         vertical position of upper left corner of watermark image
+            scalefrac:    multiple of original image size to display plot as
+            opacity:      image visibility in range [0.0,1.0] where 0->invisible, 1->opaque
         '''
         cmnd = { "action":"setWaterMark",
                  "filename":filename,

@@ -1930,8 +1930,12 @@ grdelBool grdelWindowSetWmark(grdelType window, char *filename, int len_filename
 #ifdef GRDELDEBUG
     fprintf(debuglogfile, "grdelWindowSetWmark called: "
             "window = %p, "
-            "filename = %*c\n",
-            window, len_filename, filename);
+            "filename = %*c, "
+            "xloc = %f, "
+            "yloc = %f, "
+            "scalefrac = %f, "
+            "opacity = %f\n",
+            window, len_filename, filename, xloc, yloc, scalefrac, opacity);
     fflush(debuglogfile);
 #endif
 
@@ -1952,7 +1956,7 @@ grdelBool grdelWindowSetWmark(grdelType window, char *filename, int len_filename
     }
     else if ( mywindow->bindings.pyobject != NULL ) {
         result = PyObject_CallMethod(mywindow->bindings.pyobject,
-                                     "setWaterMark", "s#", filename, len_filename, xloc, yloc, scalefrac, opacity);
+                                     "setWaterMark", "s#iffff", filename, len_filename, xloc, yloc, scalefrac, opacity);
         if ( result == NULL ) {
             sprintf(grdelerrmsg, "grdelWindowSetWmark: Error when calling the "
                     "Python binding's setWaterMark method: %s", pyefcn_get_error());

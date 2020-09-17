@@ -186,6 +186,12 @@ class PipedViewerPQ(QMainWindow):
         self.__timer.timeout.connect(self.checkCommandPipe)
         self.__timer.setInterval(0)
         self.__timer.start()
+        # initialize the parameters for watermark image display
+        self.__wmarkFilename = None
+        self.__xloc = None
+        self.__yloc = None
+        self.__scalefrac = None
+        self.__opacity = None
 
     def createMenus(self):
         '''
@@ -332,6 +338,20 @@ class PipedViewerPQ(QMainWindow):
         self.statusBar().clearMessage()
         # restore the cursor back to normal
         QApplication.restoreOverrideCursor()
+        # if watermark is specified, display after other plotting occurs
+        if self.__wmarkFilename is not None:
+            # Initialize watermark objects
+            wmkpic = QPixmap(self.__wmarkFilename)
+            wmkpt = QPointF()
+            wmkpt.setX(self.__xloc)
+            wmkpt.setY(self.__yloc)
+            # set watermark image display opacity
+            painter.setOpacity(self.__opacity / k)
+            # set image scale
+            painter.scale(self.__scalefrac, self.__scalefrac)
+            # paint watermark image at specified location
+            painter.setRenderHint(QPainter.Antialiasing)
+            painter.drawPixmap(wmkpt, wmkpic)
         return modrects
 
     def drawLastPictures(self, ignorevis):
@@ -924,6 +944,7 @@ class PipedViewerPQ(QMainWindow):
                 self.paintScene(painter, 0, 0.0, 0.0,
                                 widthscalefactor, "Saving", False)
             painter.end()
+
             # save the image to file
             if not image.save(myfilename, myformat):
                 raise ValueError("Unable to save the plot as " + myfilename)
@@ -1074,7 +1095,8 @@ class PipedViewerPQ(QMainWindow):
         elif cmndact == "drawText":
             self.drawSimpleText(cmnd)
         elif cmndact == "setWaterMark":
-            self.setWaterMark(cmnd['filename'])
+            # self.setWaterMark(cmnd)
+            self.setWaterMark(cmnd['filename'], None, cmnd['xloc'], cmnd['yloc'], cmnd['scalefrac'], cmnd['opacity'])
         else:
             raise ValueError("Unknown command action %s" % str(cmndact))
 
@@ -1548,32 +1570,22 @@ class PipedViewerPQ(QMainWindow):
         '''
         return self.__widthfactor
 
-    def setWaterMark(self, filename, xloc, yloc, scalefrac, opacity):
+    def setWaterMark(self, filename, len_filename, xloc, yloc, scalefrac, opacity):
         '''
-        Overlay water mark from filename.
+        Overlay watermark from contents of filename.
+
+        Recognized keys from cmnd:
+            "filename":  water mark image file
+            "xloc":      horizontal position of upper left corner of watermark image
+            "yloc":      vertical position of upper left corner of watermark image
+            "scalefrac": multiple of original image size to display plot as
+            "opacity":   image visibility in range [0.0, 1.0] where 0->invisible, 1->opaque
         '''
-        # Convert filename to unicode for QPicture.load
-        # print("user filename: " + filename)
-        # filename = filename.encode("utf-8")
-        # print("unicode: ", filename)
-        # Command dictionary for view window
-        cmnd_wmark = {"clipit": True,
-                      "viewfracs": {"left":0.0, "right": 0.5,
-                                    "top": 0.5, "bottom":1.0}}
-        print(cmnd_wmark)
-        # Initialize new view window to display image in
-        self.beginView(cmnd_wmark)
-        self.__activepicture.load(filename)
-        self.__activepainter.drawPicture(0, 0, self.__activepicture)
-        self.endView()
-        print("endView")
-
-        self.__drawcount += 1
-        # Limit the number of drawing commands per picture
-        if self.__drawcount >= self.__maxdraws:
-            self.updateScene()
-        print("drawcount")
-
+        self.__wmarkFilename = str(filename)
+        self.__xloc = xloc
+        self.__yloc = yloc
+        self.__scalefrac = scalefrac
+        self.__opacity = opacity
 
 class PipedViewerPQProcess(Process):
     '''

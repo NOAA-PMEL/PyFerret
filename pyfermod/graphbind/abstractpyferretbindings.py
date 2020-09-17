@@ -531,13 +531,21 @@ class AbstractPyFerretBindings(object):
         '''
         raise AttributeError('not implemented')
 
-    def setWaterMark(self, filename, xloc, yloc, scalefrac, opacity):
+    def setWaterMark(self, filename, len_filename, xloc, yloc, scalefrac, opacity):
         '''
-        Overlays water mark.
+        Overlays watermark.
 
         Arguments:
-            filename: path to water mark image
-
-
+            filename:     path to water mark image
+            len_filename: number of characters in filename
+            xloc:         horizontal position of upper left corner of watermark image
+            yloc:         vertical position of upper left corner of watermark image
+            scalefrac:    multiple of original image size to display plot as
+            opacity:      image visibility in range [0.0,1.0] where 0->invisible, 1->opaque
         '''
+        print(filename)
+        print(xloc)
+        print(yloc)
+        print(scalefrac)
+        print(opacity)
         raise AttributeError('not implented')

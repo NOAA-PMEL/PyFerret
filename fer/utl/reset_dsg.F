@@ -101,6 +101,13 @@
 	   the_cx = the_cx + 1
 	   grid = cx_grid(the_cx)
 	   iaxis = grid_line(orientation, grid)
+	   
+	   IF (iaxis .EQ. 0 .AND. its_cmpnd) THEN
+	      iaxis = grid_line(t_dim, grid)
+	      IF (iaxis .EQ. 0) iaxis = grid_line(z_dim, grid)
+	   ENDIF
+
+	   IF (iaxis .EQ. 0) CYCLE
 
 	   CALL TM_deallo_dyn_grid( grid )
 	   CALL FREE_LINE_DYNMEM ( iaxis )

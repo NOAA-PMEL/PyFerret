@@ -182,6 +182,7 @@
 
 	nlines = 0
 	ista = 0
+	ntim = 0
 	DO ifeature = 1, nfeatures 
 	   IF (.NOT.process_feature(ifeature)) CYCLE
 
@@ -192,11 +193,14 @@
 
 	         IF (station_index(ifeature) .NE. ista) THEN
                     nlines = nlines+1
-                    ista = ista+1
+                    ista = station_index(ifeature)
 	         ENDIF
 
+		 ntim = ntim + 1
+
 * Initialize nfeatures values on timeseries station-line
-	         CALL PUT_LINE_COORD ( dsg_linemem(cxdsg_lm_tsdat)%ptr, ifeature, bad )
+
+	         CALL PUT_LINE_COORD ( dsg_linemem(cxdsg_lm_tsdat)%ptr, ntim, bad )
 
 	      ELSE
 
@@ -346,8 +350,7 @@ c A message is written in PLOT_SET_UP
 	      new_line = .FALSE.
 	      IF (station_index(ifeature) .NE. ista) THEN
 
-	         new_line = .TRUE.
-* ... context of the previous station-line
+* ... set the context of the previous station-line
 
 	         IF (ista .GE. 1 .OR. ifeature.EQ.nfeatures) THEN
 		    cx_feature(the_cx) = ista  ! ??
@@ -359,10 +362,12 @@ c A message is written in PLOT_SET_UP
 
 	         ENDIF
 
-	         ista = ista + 1
-	         the_cx = cx0 + ista
-	         is_cx(ista) = the_cx 
-	         is_mr(ista) = is_mr(1)  ! a single mr shared by all
+	         new_line = .TRUE.
+		 iline = iline + 1
+	         ista = station_index(ifeature)
+	         the_cx = cx0 + iline
+	         is_cx(iline) = the_cx 
+	         is_mr(iline) = is_mr(1)  ! a single mr shared by all
 
 * we are storing the data for station timeseries in temporary dynamic line
 * storage so no need to think about mr()
@@ -399,15 +404,15 @@ c A message is written in PLOT_SET_UP
 	      CALL TM_ALLO_TMP_GRID (igrid, status)
 	      IF (status .NE. ferr_ok) GOTO 5000
 
-	      IF (dsg_as_time) THEN  ! just get the time axis into new grid
-	         CALL TM_COPY_GRID (grid, igrid)
-		 DO idim = 1, nferdims
-		    IF (idim .NE. the_dim) grid_line(idim, igrid) = 0
-		 ENDDO
-	      ELSE
+c	      IF (dsg_as_time) THEN  ! just get the time axis into new grid
+c	         CALL TM_COPY_GRID (grid, igrid)
+c		 DO idim = 1, nferdims
+c		    IF (idim .NE. the_dim) grid_line(idim, igrid) = 0
+c		 ENDDO
+c	      ELSE
 	         CALL TM_COPY_GRID_W_LINE_USE (grid, igrid)
 	         CALL TM_DEALLO_DYN_LINE( grid_line(the_dim, grid) )
-	      ENDIF
+c	      ENDIF
 
 	      CALL TM_ALLO_TMP_LINE(iaxis, status)
 	      CALL GET_LINE_DYNMEM (nobs_total, iaxis, status)
@@ -448,6 +453,8 @@ c A message is written in PLOT_SET_UP
 * When collecting points at a station for a timeseries of timeseriesProfile data, 
 * choose the first point if more than one returned by the masking.  Store the coordinate
 * value in linemem(iaxis) and the corresponding data from the profile in dsg_linemem(lm_tsdat)
+* The time coordinates are in the n-features dimension, so get the time coordinate from 
+* the current ifeature.
 
 	      ntim = ntim + 1
 	      value = dsg_linemem(coord_lm(the_dim))%ptr(ifeature)

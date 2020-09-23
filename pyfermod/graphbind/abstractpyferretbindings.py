@@ -1,12 +1,12 @@
 '''
 Defines the abstract base class for bindings to the graphics calls
 from PyFerret.  Specific engine bindings should create a subclass of
-AbstractPyFerretBindings and re-implement the methods to call the 
-methods or functions for that engine.  This class definition should 
+AbstractPyFerretBindings and re-implement the methods to call the
+methods or functions for that engine.  This class definition should
 then be registered with PyFerret (pyferret.graphbind.addPyFerretBindings).
 
 When PyFerret creates a Window for an engine, it first creates an
-instance of the appropriate bindings class and then calls the 
+instance of the appropriate bindings class and then calls the
 "createWindow" method on that instance.  Thus instance variables
 will be for the one window associated with the bindings instance.
 '''
@@ -16,14 +16,14 @@ class AbstractPyFerretBindings(object):
     Abstract base class for providing bindings to graphics calls
     from PyFerret for a graphics engine.  The methods defined in
     this class should all be re-implemented in a subclass for
-    proper PyFerret behavior. 
+    proper PyFerret behavior.
     '''
 
     def __init__(self):
         '''
         When PyFerret creates a Window for an engine, it creates
         an instance of the appropriate bindings class, then calls
-        the createWindow method of this instance created.  Thus 
+        the createWindow method of this instance created.  Thus
         instance variables will be for the one window associated
         with the bindings instance.
         '''
@@ -37,7 +37,7 @@ class AbstractPyFerretBindings(object):
         Initializes the graphics engine if needed.
 
         The rasteronly option is for possible faster drawing by
-        drawing directly to an image surface.  If true, deleting 
+        drawing directly to an image surface.  If true, deleting
         segments may not be supported.
 
         Arguments:
@@ -70,7 +70,7 @@ class AbstractPyFerretBindings(object):
             formatname - name of the image format (case insensitive,
                          can be NULL)
             fmtnamelen - actual length of formatname (zero if NULL)
-       
+
         If formatname is empty or NULL, the filename extension of
         imagename, if it exists and is recognized, will determine
         the format.
@@ -84,7 +84,7 @@ class AbstractPyFerretBindings(object):
         not be supported.
 
         If a file was not opened from this call, the saveWindow
-        method must be called to save the image.  Thus, the 
+        method must be called to save the image.  Thus, the
         filename provided here may only be used as a default
         filename.
         '''
@@ -130,7 +130,7 @@ class AbstractPyFerretBindings(object):
 
     def endView(self):
         '''
-        Closes the current View.  When this call returns, the graphics 
+        Closes the current View.  When this call returns, the graphics
         drawn to the View should be visible in its Window.
         '''
         raise AttributeError('not implemented')
@@ -168,9 +168,9 @@ class AbstractPyFerretBindings(object):
 
     def clearWindow(self, bkgcolor):
         '''
-        Clears the Window of all drawings.  The window is 
+        Clears the Window of all drawings.  The window is
         initialized to all bkgcolor (the background color).
- 
+
         Arguments:
             bkgcolor: initialize (fill) the Window with this Color
         '''
@@ -179,8 +179,8 @@ class AbstractPyFerretBindings(object):
     def redrawWindow(self, bkgcolor):
         '''
         Redraw the current drawing except using bkgcolor as the
-        background color (the initialization color for the Window). 
-        
+        background color (the initialization color for the Window).
+
         Arguments:
             bkgcolor: initialize (fill) the Window with this Color
                       before redrawing the current drawing.
@@ -212,9 +212,9 @@ class AbstractPyFerretBindings(object):
 
     def scaleWindow(self, scale):
         '''
-        Sets the scaling factor for the Window.  If zero, switch to 
-        auto-scaling (automatically scales to best fit window size 
-        without changing aspect ratio).  If negative, scale using 
+        Sets the scaling factor for the Window.  If zero, switch to
+        auto-scaling (automatically scales to best fit window size
+        without changing aspect ratio).  If negative, scale using
         the absolute value and then switch to auto-scaling.
 
         Arguments:
@@ -232,7 +232,7 @@ class AbstractPyFerretBindings(object):
         '''
         raise AttributeError('not implemented')
 
-    def saveWindow(self, filename, fileformat, transparent, 
+    def saveWindow(self, filename, fileformat, transparent,
                    xinches, yinches, xpixels, ypixels, annotations):
         '''
         Save the contents of the window to a file.  This might be called
@@ -257,8 +257,8 @@ class AbstractPyFerretBindings(object):
         entire scene is initialized as transparent.
 
         If annotations is not None, the strings given in the tuple
-        are to be displayed above the image.  These annotations add 
-        height, as needed, to the saved image (i.e., yinches or 
+        are to be displayed above the image.  These annotations add
+        height, as needed, to the saved image (i.e., yinches or
         ypixels is the height of the image below these annotations).
         '''
         raise AttributeError('not implemented')
@@ -333,7 +333,7 @@ class AbstractPyFerretBindings(object):
     def replacePenColor(self, pen, newcolor):
         '''
         Replaces the color in pen with newcolor.
-        
+
         Arguments:
             pen: Pen object to modify
             newcolor: Color to use
@@ -366,7 +366,7 @@ class AbstractPyFerretBindings(object):
     def replaceBrushColor(self, brush, newcolor):
         '''
         Replaces the color in brush with newcolor.
-        
+
         Arguments:
             brush: Brush object to modify
             newcolor: Color to use
@@ -388,15 +388,15 @@ class AbstractPyFerretBindings(object):
         '''
         Returns a Symbol object associated with the given name.
 
-        If pts is not given, the symbol name must already be known, 
-        either as a pre-defined symbol or from a previous call to 
+        If pts is not given, the symbol name must already be known,
+        either as a pre-defined symbol or from a previous call to
         this method.
 
-        If pts is given, the value is coordinates that define the symbol 
-        as multiline subpaths in a [-50,50] square.  The location of the 
-        point this symbol represents will be at the center of the square. 
-        An invalid coordinate (outside [-50,50]) will terminate the current 
-        subpath, and the next valid coordinate will start a new subpath. 
+        If pts is given, the value is coordinates that define the symbol
+        as multiline subpaths in a [-50,50] square.  The location of the
+        point this symbol represents will be at the center of the square.
+        An invalid coordinate (outside [-50,50]) will terminate the current
+        subpath, and the next valid coordinate will start a new subpath.
         This definition will replace an existing symbol with the given name.
 
         Arguments:
@@ -404,9 +404,9 @@ class AbstractPyFerretBindings(object):
             pts:  (sequence of pairs of floats) vertex coordinates
             fill: (bool) color-fill symbol?
 
-        Raises an error 
-            if name is not a string, 
-            if pts, if not None, is not a sequence of pairs of numbers, or 
+        Raises an error
+            if name is not a string,
+            if pts, if not None, is not a sequence of pairs of numbers, or
             if unable to create the Symbol object for any other reason.
         Returns a Symbol object.
         '''
@@ -499,17 +499,17 @@ class AbstractPyFerretBindings(object):
 
     def textSize(self, text, font):
         '''
-        Returns the width and height of the text if drawn in the given font.  
-        The width is such that continuing text should be positioned at the 
-        start of this text plus this width.  The height will always be the 
+        Returns the width and height of the text if drawn in the given font.
+        The width is such that continuing text should be positioned at the
+        start of this text plus this width.  The height will always be the
         ascent plus descent for the font and is independent of the text.
 
         Arguments:
             text: the text string to draw
             font: the font to use
 
-        Returns: (width, height) of the text in "device units" 
-              (pixels at the current window DPI) 
+        Returns: (width, height) of the text in "device units"
+              (pixels at the current window DPI)
         '''
         raise AttributeError('not implemented')
 
@@ -531,3 +531,21 @@ class AbstractPyFerretBindings(object):
         '''
         raise AttributeError('not implemented')
 
+    def setWaterMark(self, filename, len_filename, xloc, yloc, scalefrac, opacity):
+        '''
+        Overlays watermark.
+
+        Arguments:
+            filename:     path to water mark image
+            len_filename: number of characters in filename
+            xloc:         horizontal position of upper left corner of watermark image
+            yloc:         vertical position of upper left corner of watermark image
+            scalefrac:    multiple of original image size to display plot as
+            opacity:      image visibility in range [0.0,1.0] where 0->invisible, 1->opaque
+        '''
+        print(filename)
+        print(xloc)
+        print(yloc)
+        print(scalefrac)
+        print(opacity)
+        raise AttributeError('not implented')

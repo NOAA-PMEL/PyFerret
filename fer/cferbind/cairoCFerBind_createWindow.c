@@ -70,6 +70,7 @@ CFerBind *cairoCFerBind_createWindow(int noalpha, int rasteronly)
     bindings->drawRectangle = cairoCFerBind_drawRectangle;
     bindings->textSize = cairoCFerBind_textSize;
     bindings->drawText = cairoCFerBind_drawText;
+    bindings->setWaterMark = cairoCFerBind_setWaterMark;
 
     /* Create the instance-specific data structure */
     bindings->instancedata = (CairoCFerBindData *) FerMem_Malloc(sizeof(CairoCFerBindData), __FILE__, __LINE__);
@@ -107,4 +108,3 @@ CFerBind *cairoCFerBind_createWindow(int noalpha, int rasteronly)
 
     return bindings;
 }
-

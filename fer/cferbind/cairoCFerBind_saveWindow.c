@@ -16,7 +16,7 @@
  * Saves this "Window" to file.
  *
  * Arguments:
- *     filename   - name of the image file to create, 
+ *     filename   - name of the image file to create,
  *                  or an empty string or NULL
  *     namelen    - actual length of filename (zero if NULL)
  *     formatname - name of the image format (case insensitive)
@@ -39,17 +39,18 @@
  * A filename consisting of only an extension (e.g., ".png")
  * will be treated as not having an extension.
  *
- * If transbkg is zero, the saved image is filled with the 
- * last clearing color before drawing the current image with a 
+ * If transbkg is zero, the saved image is filled with the
+ * last clearing color before drawing the current image with a
  * transparent background.
  *
  * Returns one if successful.   If an error occurs, grdelerrmsg
  * is assigned an appropriate error message and zero is returned.
  */
-grdelBool cairoCFerBind_saveWindow(CFerBind *self, const char *filename, 
-                        int namelen, const char *formatname, int fmtnamelen, 
-                        int transbkg, double xinches, double yinches, 
-                        int xpixels, int ypixels, 
+
+grdelBool cairoCFerBind_saveWindow(CFerBind *self, const char *filename,
+                        int namelen, const char *formatname, int fmtnamelen,
+                        int transbkg, double xinches, double yinches,
+                        int xpixels, int ypixels,
                         void **annotations, int numannotations)
 {
     CairoCFerBindData *instdata;
@@ -96,7 +97,7 @@ grdelBool cairoCFerBind_saveWindow(CFerBind *self, const char *filename,
         status = cairo_status(instdata->context);
         if ( status != CAIRO_STATUS_SUCCESS ) {
             sprintf(grdelerrmsg, "cairoCFerBind_saveWindow: "
-                                 "cairo context error: %s", 
+                                 "cairo context error: %s",
                                  cairo_status_to_string(status));
             return 0;
         }
@@ -110,13 +111,13 @@ grdelBool cairoCFerBind_saveWindow(CFerBind *self, const char *filename,
         status = cairo_surface_status(instdata->surface);
         if ( status != CAIRO_STATUS_SUCCESS ) {
             sprintf(grdelerrmsg, "cairoCFerBind_saveWindow: "
-                                 "cairo surface error: %s", 
+                                 "cairo surface error: %s",
                                  cairo_status_to_string(status));
             return 0;
         }
     }
 
-    /* 
+    /*
      * Only allow annotations with recording surfaces.
      * Batch mode is deprecated and it is too complicated.
      */
@@ -125,7 +126,7 @@ grdelBool cairoCFerBind_saveWindow(CFerBind *self, const char *filename,
         return 0;
     }
 
-    /* Check the surface type - 
+    /* Check the surface type -
      *    PNG from -png command line option
      *    PDF from metadata mode
      *    REC from normal opertaions
@@ -233,7 +234,7 @@ grdelBool cairoCFerBind_saveWindow(CFerBind *self, const char *filename,
         penwidth = 2.0;
         /*
          * Create the recording surface for the annotations;
-         * keep the same width, less padding, as the image; the 
+         * keep the same width, less padding, as the image; the
          * height is actually arbitrary.
          */
         extents.x = 0.0;
@@ -293,7 +294,7 @@ grdelBool cairoCFerBind_saveWindow(CFerBind *self, const char *filename,
         status = cairo_status(annocontext);
         if ( status != CAIRO_STATUS_SUCCESS ) {
             sprintf(grdelerrmsg, "cairoCFerBind_saveWindow: "
-                                 "cairo annotation context error: %s", 
+                                 "cairo annotation context error: %s",
                                  cairo_status_to_string(status));
             cairo_destroy(annocontext);
             cairo_surface_finish(annosurface);
@@ -309,7 +310,7 @@ grdelBool cairoCFerBind_saveWindow(CFerBind *self, const char *filename,
         status = cairo_surface_status(annosurface);
         if ( status != CAIRO_STATUS_SUCCESS ) {
             sprintf(grdelerrmsg, "cairoCFerBind_saveWindow: "
-                                 "cairo annotation surface error: %s", 
+                                 "cairo annotation surface error: %s",
                                  cairo_status_to_string(status));
             cairo_surface_finish(annosurface);
             cairo_surface_destroy(annosurface);
@@ -390,7 +391,7 @@ grdelBool cairoCFerBind_saveWindow(CFerBind *self, const char *filename,
         if ( savewidth > saveheight ) {
             /*
              * Landscape orientation
-             * Swap savewidth and saveheight and then translate and rotate 
+             * Swap savewidth and saveheight and then translate and rotate
              * (see below) per Cairo requirements.
              */
             savesurface = cairo_ps_surface_create(savename, saveheight, savewidth);
@@ -470,9 +471,9 @@ grdelBool cairoCFerBind_saveWindow(CFerBind *self, const char *filename,
         cairo_ps_surface_set_eps(savesurface, 1);
     }
 
-    /* 
-     * If not a transparent background, or if the alpha channel 
-     * is not supported, fill in the background (with an opaque 
+    /*
+     * If not a transparent background, or if the alpha channel
+     * is not supported, fill in the background (with an opaque
      * color if the alpha channel is not supported).
      */
     if ( (! transbkg) || noalpha ) {
@@ -495,8 +496,8 @@ grdelBool cairoCFerBind_saveWindow(CFerBind *self, const char *filename,
 
     /* Check if there are annotations (with content) to be drawn */
     if ( layoutheight > 0.0 ) {
-        /* 
-         * Draw the annotations in a white-filled, black-outlined 
+        /*
+         * Draw the annotations in a white-filled, black-outlined
          * rectangle at the top of the temporary surface.
          */
         cairo_new_path(savecontext);
@@ -518,7 +519,7 @@ grdelBool cairoCFerBind_saveWindow(CFerBind *self, const char *filename,
         cairo_set_line_cap(savecontext, CAIRO_LINE_CAP_SQUARE);
         cairo_set_line_join(savecontext, CAIRO_LINE_JOIN_MITER);
         cairo_stroke(savecontext);
-        /* 
+        /*
          * Draw the transparent-background annotations image
          * onto the save surface within the rectangle.
          */
@@ -537,8 +538,8 @@ grdelBool cairoCFerBind_saveWindow(CFerBind *self, const char *filename,
         cairo_surface_destroy(annosurface);
     }
 
-    /* 
-     * Draw the transparent-background images onto this 
+    /*
+     * Draw the transparent-background images onto this
      * temporary surface, beneath any annotations rectangle.
      */
     for (thispic = instdata->firstpic; thispic != NULL; thispic = thispic->next) {
@@ -548,6 +549,25 @@ grdelBool cairoCFerBind_saveWindow(CFerBind *self, const char *filename,
     if ( instdata->surface != NULL ) {
         cairo_set_source_surface(savecontext, instdata->surface, 0.0, offset);
         cairo_paint(savecontext);
+    }
+
+    /* If a watermark png file is given create the image, else do nothing */
+    if ( instdata->wmark_filename[0] != '\0' ) {
+        cairo_surface_t *wmark_surface;
+
+        /* create watermark surface */
+        wmark_surface = cairo_image_surface_create_from_png(instdata->wmark_filename);
+
+        /* scale and position image */
+        cairo_scale(savecontext, instdata->scalefrac, instdata->scalefrac);
+        cairo_translate(savecontext, instdata->xloc, instdata->yloc);
+
+        /* paint watermark with opacity fraction */
+        cairo_set_source_surface(savecontext, wmark_surface, 0.0, 0.0);
+        cairo_paint_with_alpha(savecontext, instdata->opacity);
+
+        /* clear surface after painting */
+        cairo_surface_destroy(wmark_surface);
     }
 
     /* Just to be safe */
@@ -567,9 +587,9 @@ grdelBool cairoCFerBind_saveWindow(CFerBind *self, const char *filename,
         cairo_surface_destroy(savesurface);
     }
     else {
-        /* 
+        /*
          * Vector images are written directly to file.
-         * Check there were no errors after finishing 
+         * Check there were no errors after finishing
          * off the surface.
          */
         cairo_surface_finish(savesurface);
@@ -588,4 +608,3 @@ grdelBool cairoCFerBind_saveWindow(CFerBind *self, const char *filename,
 
     return 1;
 }
-

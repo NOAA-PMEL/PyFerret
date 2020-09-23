@@ -30,7 +30,7 @@
 *  INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER
 *  RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF
 *  CONTRACT, NEGLIGENCE OR OTHER TORTUOUS ACTION, ARISING OUT OF OR IN
-*  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
+*  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE.
 *
 *
 * command names, subcommands and qualifiers
@@ -44,9 +44,9 @@
 * Use caution when defining new commands:
 * 1- Ferret commands are matched to the first 4 characters only. Make sure
 *    new commands are unique to the first 4 characters.
-* 2- If you are tempted to reorder the lists of commands or subcommands, know 
-*    that users areprone to even more abbreviation. E.g. "can v" is used for 
-*    "cancel viewport" all over the place, and that happens ONLY because "VIEWPORT" 
+* 2- If you are tempted to reorder the lists of commands or subcommands, know
+*    that users areprone to even more abbreviation. E.g. "can v" is used for
+*    "cancel viewport" all over the place, and that happens ONLY because "VIEWPORT"
 *    comes before "VARIABLE" in the subcommands for CANCEL.
 * !!!!!!!!!!
 *
@@ -112,7 +112,7 @@
 *       3/99 *jd* - more qualifs for POLYGON and fixed num_qualifs bug for it
 *       3/99 *jc* - added /INTERNAL to SHOW FUNCTION command
 *       4/99 *sh* - added PAUSE alias
-*	     *sh* - added DEFINE AXIS/EDGES and SHOW AXIS/X/Y/Z/T/E/F/IJ/K/L 
+*	     *sh* - added DEFINE AXIS/EDGES and SHOW AXIS/X/Y/Z/T/E/F/IJ/K/L
 *	     *sh* - added SET AXIS/DEPTH
 *	6/99 *sh* - added WHERE alias
 * V510  3/00 *sh* - added SET DATA/REGULAR_T
@@ -133,14 +133,14 @@
 *       5/01 *acm* - added PLOT/DASH[=(dn1,up1,dn2,up2) qualifier
 *       1/01 *acm* - added /CALENDAR qualifier
 * V531: 5/01 *kob* - replace old ANIMATE alias which spawned a call
-*	             to what must be the now-defunct xds with new 
+*	             to what must be the now-defunct xds with new
 *		     animate alias which uses internal double buffering
 * V533: 6/01 *sh* - added SET VARIABLE/NAME=
 *            *acm* - added PLOT/VLOG, PLOT/HLOG: plot qualifiers to set log,
 *                    inverse log axes and log depth axes.
-*       7/01 *acm* - added /AXES[=TOP,BOTTOM,LEFT,RIGHT]  for 
+*       7/01 *acm* - added /AXES[=TOP,BOTTOM,LEFT,RIGHT]  for
 *		     PLOT, CONTOUR, POLYGON, SHADE, VECTOR.
-*       8/01 *kob* - add LOOP, PROMPT, SCRIPT, PROGRAM qualifiers 
+*       8/01 *kob* - add LOOP, PROMPT, SCRIPT, PROGRAM qualifiers
 *                    to EXIT command
 * V540: 9/01 *sh* - added DEFINE VIEWPORT/AXES
 *	10/01 *sh* - added alias COLUMNS for SET DATA/FORMAT=Delimited
@@ -151,14 +151,14 @@
 *       6/02 *acm* - add CANCEL AXIS/ALL
 * V552: 4/02 *acm* - add SET VARIABLE/SCALEFAC/OFFSET
 * V553: 7/03 *acm* - add SHOW DATA/XML for DAS, DDS output
-* V553: 7/03 *acm* - add SHOW AXIS/XML 
+* V553: 7/03 *acm* - add SHOW AXIS/XML
 * V553: 9/03 *acm* - add SHOW AXIS/DODS for binary output of axis coordinates
 *                       also needs /FILE=  and /APPEND
 * V554: 10/03 *acm* - add SHOW AXIS/EDGES/DODS for binary output of axis coordinates
 * V554:  1/04 *acm* - add REPEAT/RANGE=/NAME= qualifiers
-* V554:  2/04 *acm* - add /HGRAT=/VGRAT qualifiers to plot commands, setting 
+* V554:  2/04 *acm* - add /HGRAT=/VGRAT qualifiers to plot commands, setting
 *                     GRATICULE lines at tic marks
-* V570:  5/04 *acm* - Add DEFINE AXIS/BOUNDS 
+* V570:  5/04 *acm* - Add DEFINE AXIS/BOUNDS
 *                     and LIST/EDGES, LIST/BOUNDS (for NetCDF output only)
 *       *acm* 6/05 - add SET AXIS/CALENDAR /T0 /UNITS
 *       *acm* 6/05 - add CANCEL AXIS/DEPTH
@@ -171,8 +171,8 @@
 
 * V600:  8/05 *acm* - add LIST/NOROWLAB
 * V600:  9/05 *acm* - add SET WINDOW/TITLE
-* V600:  3/07 *acm* - fixing bug 439&1390. Add logical variable its_action_command 
-* V600   6/05 *acm* - SHOW ATTRIBUTE[/ALL][/DATA=] var 
+* V600:  3/07 *acm* - fixing bug 439&1390. Add logical variable its_action_command
+* V600   6/05 *acm* - SHOW ATTRIBUTE[/ALL][/DATA=] var
 *                   - SHOW DATA/ATTR output all attributes for nc files
 * V600:  8/05 *acm* - add LIST/NOROWLAB
 *       *acm* 8/05 - add DEFINE ATTRIBUTE
@@ -189,24 +189,24 @@
 * V6.2  *acm* 5/09 new alias KEYMARK
 * V6.6  *acm* 1/10 new qualifiers for LIST netCDF4: NCFORMAT,
 *                  XCHUNK,YCHUNK,ZCHUNK,TCHUNK,DEFLATE,SHUFFLE,ENDIAN
-* V6.5  *acm* 3/10 new qualifiers on (some) SHOW commands and on MESSAGE: 
+* V6.5  *acm* 3/10 new qualifiers on (some) SHOW commands and on MESSAGE:
 *                  /OUTFILE= /APPEND /CLOBBER
 * V6.6  *acm* 2/10 new qualifiers for SET LIST netCDF4: NCFORMAT,
 *                  XCHUNK,YCHUNK,ZCHUNK,TCHUNK,DEFLATE,SHUFFLE,ENDIAN
 *       *kms* 5/10 add SET AXIS/REGULAR to force interpreting the axis as regular
-*       *kms* 5/10 add SET REDIRECT /TEE /JOURNAL /FILE /APPEND /CLOBBER 
+*       *kms* 5/10 add SET REDIRECT /TEE /JOURNAL /FILE /APPEND /CLOBBER
 *                  and CANCEL REDIRECT for stdout/stderr redirection
 *       *kms* 7/10 add SET DATA /BROWSE to browse for the dataset
 * V6.63 *acm* 7/10 Add VECTOR/KEY to force key even if /NOLAB
 *       *kms* 7/10 add SET DATA /BROWSE to browse for the dataset
-* V664  8.10 *kms* Add EXIT/TOPYTHON to exit the ferret_dispatch loop 
+* V664  8.10 *kms* Add EXIT/TOPYTHON to exit the ferret_dispatch loop
 *                  but just re-enter the loop if not under pyferret
 *                  Add DEFINE PYFUNC /NAME=<alias> python.module.name
 * V68 *acm* 1/12   Add USE/STRICT; see ticket 1910.
 * PyFr  *kms* 3/11 Add CANCEL PYVAR /ALL /DATASET
 * PyFr  *kms* 1/12 Add SET GRAPHICS /ENGINE /ANTIALIA /NOANTIAL
 * V68 *acm* 5/12   Add DEFINE DATA /AGGREGATE /NAME= /QUIET
-* V683*acm* 8/12   New SET LIST/OUTTYPE, CANCEL LIST/OUTTYPE and SAVE/OUTTYPE 
+* V683*acm* 8/12   New SET LIST/OUTTYPE, CANCEL LIST/OUTTYPE and SAVE/OUTTYPE
 * V683*acm 10/12   NEW SET AXIS/OUTTYPE to change default coordinate axis output type
 * V684 *acm* 12/12 Changes for POLY/MODULO and  VECTOR/MODULO on curvilinear plots.
 * V685 *acm*  1/13 DEFINE VARIABLE/REMOTE
@@ -228,7 +228,7 @@
 * V687  3/14 *acm* add SET AXIS/NAME
 * V693+ 11/14 *sh* renaming 'sigma' as 'layerz' throughout
 * V695 *acm*  2/15 Add DEFINE AGGREGATE/F alias, FMRC
-* V695 *acm*  3/15 Changes for PyFerret fonts. Add SHOW TEXT, 
+* V695 *acm*  3/15 Changes for PyFerret fonts. Add SHOW TEXT,
 *             4/15 Add SET TEXT/FONT/COLOR/ITALIC/BOLD/ISIZ
 *                  Add CANCEL TEXT/FONT/COLOR/ITALIC/BOLD/ISIZ
 *                  No args on SHOW TEXT
@@ -239,11 +239,11 @@
 * v696 *acm* 11/15 SET VAR/UNITS instead of /UNIT, just for consistency
 * V697 *acm* 12/15 Correct typo: LIST/SINGLY was shown as /SINGLE
 * V698+ *acm* 2/16 Ticket 2362: Change /D= qualifier to /DATASET=
-* V698  3/16 *acm* Removed Philander-Seigel code including diagnostic 
+* V698  3/16 *acm* Removed Philander-Seigel code including diagnostic
 *                  variables, pre-defined axes and grids, cat_calc_var.
 *       3/16 *sh*  added PLOT/ALONG=axis
 * V698  4/16 *acm* New PLOT/SKIP= (and leave space for PyFerret PLOT/OPACITY=)
-* V698  4/16 *acm* Change it to PLOT/SKIPSYM= 
+* V698  4/16 *acm* Change it to PLOT/SKIPSYM=
 * V7    *acm* 6/16 Ticket 2434: command qualifiers /DEGMINSEC= /HALFSPAC
 *                  DEGMINSEC=1 for Deg-Min axis labels, =2 for Deg-Min-Sec. Default = 1
 *                  /HALFSPAC adds a half space between the degree sign and E/W or N/S
@@ -251,11 +251,11 @@
 *                  to simplify future merges of Ferret into PyFerret
 * V7   10/16 *kms* New SET WINDOW /SCALE=
 * V710 *acm*  3/16 Added DEFINE AXIS /LIKE=
-* V710 *acm*  3/16 Ticket 2158: Add DEFINE AXIS /MONTHLY 
+* V710 *acm*  3/16 Ticket 2158: Add DEFINE AXIS /MONTHLY
 * V702 *sh*   1/17 Removed the USER command
 *	      3/17 Added SHOW MEMORY/DIAGNOSTIC
 * V720 *acm*  3/17 Ticket 2512: Add STAT/PRECISION=
-* V720 *acm*  5/17 Ticket 2530 add WIRE/COLOR= 
+* V720 *acm*  5/17 Ticket 2530 add WIRE/COLOR=
 * V722 *kms* 10/17 Remove threddsBrowser (too big, outdated, and unused)
 * V723 *acm* 11/17 New SAVE/ASGLOBAL option to write global attribute to netCDF file
 * V74  *acm*  2/17 New DEFINE AXIS/LIKE and DEFINE VARIABLE/LIKE
@@ -263,8 +263,8 @@
 * V7.4+ *acm* 9/18 DSG-enabled Ferret: SET DATA/FMASK= specifies a feature mask
 * V74+ *acm*  9/18 Add aliases FMASK for SET DATA/FMASK and CLEARMASK for CANCEL DATA/FMASK
 * v751 *acm*  8/19 Issue 1946, allow for user-set string dimension length, SAVE/STRLEN
-* v751 *acm*  8/19 New LIST/NOCOORDS to write dimensions only not coord vars. 
-* v76  *acm* 11/19  Issue 1959: 
+* v751 *acm*  8/19 New LIST/NOCOORDS to write dimensions only not coord vars.
+* v76  *acm* 11/19  Issue 1959:
 *                  SET MEMORY/SIZE= to SET MEMORY/MAX= (keep /SIZE for bkwds compatibility)
 * V7.62 *acm* 8/20 DSG-enabled Ferret: SET DATA/SMASK= specifies a mask on station or
 *                  trajectory for timeseriesProfile or trajectoryProfile data
@@ -273,12 +273,12 @@
 * Use caution when defining new commands, qualifiers, or changing these data structures:
 * 1- Ferret commands are matched to the first 4 characters only. Make sure
 *    new commands are unique to the first 4 characters.
-* 2- If you are tempted to reorder the lists of commands or subcommands, know 
-*    that users often use even more abbreviation. E.g. "can v" is used for 
-*    "cancel viewport" in many scripts, and that works ONLY because "VIEWPORT" 
+* 2- If you are tempted to reorder the lists of commands or subcommands, know
+*    that users often use even more abbreviation. E.g. "can v" is used for
+*    "cancel viewport" in many scripts, and that works ONLY because "VIEWPORT"
 *    comes before "VARIABLE" in the subcommands for CANCEL.
 * !!!!!!!!!!
- 
+
 
 
         IMPLICIT NONE
@@ -322,6 +322,16 @@
 		DATA qualifiers  (nqual_at1b+17)/ 'TEXTPROM'	/
 		DATA qualifiers  (nqual_at1b+18)/ 'OUTLINE'	/
 		DATA qualifiers  (nqual_at1b+19)/ 'SCALE'	/
+		DATA qualifiers  (nqual_at1b+20)/ 'WMARK'	/
+		DATA qualifiers  (nqual_at1b+21)/ 'WMSCALE'	/
+		DATA qualifiers  (nqual_at1b+22)/ 'WMOPAC'	/
+		DATA qualifiers  (nqual_at1b+23)/ 'WMXLOC'  /
+		DATA qualifiers  (nqual_at1b+24)/ 'WMYLOC'  /
+		DATA qualifiers  (nqual_at1b+25)/ '****'  /
+		DATA qualifiers  (nqual_at1b+26)/ '****'  /
+		DATA qualifiers  (nqual_at1b+27)/ '****'  /
+		DATA qualifiers  (nqual_at1b+28)/ '****'  /
+		DATA qualifiers  (nqual_at1b+29)/ '****'  /
 * SET REGION
 	   DATA subcommands      (nsub_at1 + 2)	/ 'REGION'	/
 	   DATA num_qualifs      (nsub_at1 + 2)	/ nqual1c	/
@@ -368,7 +378,7 @@
 	   DATA subcommands      (nsub_at1 + 5)	/ 'LIST'	/
 	   DATA num_qualifs      (nsub_at1 + 5)	/ nqual1f	/
 	   DATA qualifier_pointer(nsub_at1 + 5)	/ nqual_at1f	/
-* SET LIST/PRECISION=#digits, /FILE=filename, /FORMAT=list_format, /APPEND, 
+* SET LIST/PRECISION=#digits, /FILE=filename, /FORMAT=list_format, /APPEND,
 * (for netcdf4 /NCFORMAT= /ENDIAN=, /DEFLATE=, /SHUFFLE=,  /XCHUNK...
 		DATA qualifiers  (nqual_at1f+0)	/ 'PRECISION'	/
 		DATA qualifiers  (nqual_at1f+1)	/ 'FILE'	/
@@ -401,8 +411,8 @@
 		DATA qualifiers  (nqual_at1g+7)	/ 'SAVE'	/
 		DATA qualifiers  (nqual_at1g+8)	/ 'RESTORE'	/
 		DATA qualifiers  (nqual_at1g+9)	/ 'ORDER'	/   !5/94
-		DATA qualifiers  (nqual_at1g+10) / 'TYPE'       / 
-		DATA qualifiers  (nqual_at1g+11) / 'SWAP'       / 
+		DATA qualifiers  (nqual_at1g+10) / 'TYPE'       /
+		DATA qualifiers  (nqual_at1g+11) / 'SWAP'       /
 		DATA qualifiers  (nqual_at1g+12) / 'REGULART'   /
 		DATA qualifiers  (nqual_at1g+13) / 'DELIMITE'   /
 		DATA qualifiers  (nqual_at1g+14) / 'STRICT'     /
@@ -478,7 +488,7 @@
 	   DATA subcommands      (nsub_at1 +13)	/ 'ATTRIBUT'	/
 	   DATA num_qualifs      (nsub_at1 +13)	/ nqual1n	/
 	   DATA qualifier_pointer(nsub_at1 +13)	/ nqual_at1n	/
-* SET ATRR /TYPE /DATASET /OUTPUT /LIKE 
+* SET ATRR /TYPE /DATASET /OUTPUT /LIKE
 		DATA qualifiers  (nqual_at1n+0)	/ 'TYPE'	/
 		DATA qualifiers  (nqual_at1n+1)	/ 'DATASET'	/
 		DATA qualifiers  (nqual_at1n+2)	/ 'OUTPUT'	/
@@ -516,7 +526,7 @@
            DATA subcommands      (nsub_at1 +17)	/ 'TEXT'	/
            DATA num_qualifs      (nsub_at1 +17)	/ nqual1r	/
            DATA qualifier_pointer(nsub_at1 +17)	/ nqual_at1r	/
-* SET TEXT /FONT /COLOR /ITALIC /BOLD 
+* SET TEXT /FONT /COLOR /ITALIC /BOLD
                 DATA qualifiers  (nqual_at1r+0)	/ 'FONT'	/
                 DATA qualifiers  (nqual_at1r+1)	/ 'COLOR'	/
                 DATA qualifiers  (nqual_at1r+2)	/ 'ITALIC'	/
@@ -675,7 +685,7 @@
 	   DATA subcommands      (nsub_at2 +12)	/ 'GRID'	/
 	   DATA num_qualifs      (nsub_at2 +12)	/ nqual2m	/
 	   DATA qualifier_pointer(nsub_at2 +12)	/ nqual_at2m	/
-* SHOW GRID /ALL/I/J/K/L/M/N/X/Y/Z/T/E/F/DATASET/XML/OUTFILE/APPEND/CLOBBER 
+* SHOW GRID /ALL/I/J/K/L/M/N/X/Y/Z/T/E/F/DATASET/XML/OUTFILE/APPEND/CLOBBER
 		DATA qualifiers  (nqual_at2m+0)	/ 'ALL '	/
 		DATA qualifiers  (nqual_at2m+1)	/ 'I   '	/
 		DATA qualifiers  (nqual_at2m+2)	/ 'J   '	/
@@ -899,7 +909,7 @@
 	   DATA num_qualifs      (nsub_at3 +15)	/ nqual3p	/
 	   DATA qualifier_pointer(nsub_at3 +15)	/ nqual_at3p	/
 		DATA qualifiers  (nqual_at3p+0)	/ 'ALL'	/
-* CANCEL SYMBOL							  
+* CANCEL SYMBOL
 	   DATA subcommands      (nsub_at3 +16)	/ 'SYMBOL'	/
 	   DATA num_qualifs      (nsub_at3 +16)	/ nqual3q	/
 	   DATA qualifier_pointer(nsub_at3 +16)	/ nqual_at3q	/
@@ -974,18 +984,18 @@
 		DATA qualifiers  (nqual_at4a+33)/ 'PEN'/	!/pen (denig!!)
 		DATA qualifiers  (nqual_at4a+34)/ 'HLIMITS'/	! horiz
 		DATA qualifiers  (nqual_at4a+35)/ 'VLIMITS'/	! vertical
-		DATA qualifiers  (nqual_at4a+36)/ '****'/	! HLOG (place holder, not implemented for contuor) 
+		DATA qualifiers  (nqual_at4a+36)/ '****'/	! HLOG (place holder, not implemented for contuor)
 		DATA qualifiers  (nqual_at4a+37)/ '****'/	! VLOG (place holder)
 		DATA qualifiers  (nqual_at4a+38)/ 'AXES'/	! /axes[=...]
 		DATA qualifiers  (nqual_at4a+39)/ 'HGRATICU'/	! tic liness, dash or line
 		DATA qualifiers  (nqual_at4a+40)/ 'VGRATICU'/	! tic liness, color or pen#
-		DATA qualifiers  (nqual_at4a+41)/ 'GRATICUL'/	! 
+		DATA qualifiers  (nqual_at4a+41)/ 'GRATICUL'/	!
 		DATA qualifiers  (nqual_at4a+42)/ 'MODULO'/	! modulo for curvilinear plots
 		DATA qualifiers  (nqual_at4a+43)/ 'THICKNES'/	! pen thickness
 		DATA qualifiers  (nqual_at4a+44)/ 'OPACITY'/	! overriding oapcity
 		DATA qualifiers  (nqual_at4a+45)/ 'DEGMINSEC'/	! Request deg/min or deg/min/sec axis labels
 		DATA qualifiers  (nqual_at4a+46)/ 'HALFSPAC'/	! Request a space before the E/W or N/S on axis labels
-		DATA qualifiers  (nqual_at4a+47)/ '****'/	! 
+		DATA qualifiers  (nqual_at4a+47)/ '****'/	!
 
 * LIST	 - command # 5
 	DATA commands(5)			/ 'LIST'	/
@@ -996,7 +1006,7 @@
 	   DATA subcommands      (nsub_at5 + 0)	/ '    '	/
 	   DATA num_qualifs      (nsub_at5 + 0)	/ nqual5a	/
 	   DATA qualifier_pointer(nsub_at5 + 0)	/ nqual_at5a	/
-* LIST/I/J/K/L/M/N/X/Y/Z/T/E/F/D /HEAD /NOHEAD /G /FILE /APPEND /ORDER /FORMAT /QUIET 
+* LIST/I/J/K/L/M/N/X/Y/Z/T/E/F/D /HEAD /NOHEAD /G /FILE /APPEND /ORDER /FORMAT /QUIET
 		DATA qualifiers  (nqual_at5a+0)	/ 'I'	/
 		DATA qualifiers  (nqual_at5a+1)	/ 'J'	/
 		DATA qualifiers  (nqual_at5a+2)	/ 'K'	/
@@ -1018,9 +1028,9 @@
 		DATA qualifiers  (nqual_at5a+18)/ 'ORDER'/
 		DATA qualifiers  (nqual_at5a+19)/ 'FORMAT'/
 		DATA qualifiers  (nqual_at5a+20)/ 'TITLE'/
-		DATA qualifiers  (nqual_at5a+21)/ 'PRECISION'/ !used to be EPKEY 
+		DATA qualifiers  (nqual_at5a+21)/ 'PRECISION'/ !used to be EPKEY
 		DATA qualifiers  (nqual_at5a+22)/ 'RIGID'/ ! /RIGID (CDF)
-		DATA qualifiers  (nqual_at5a+23)/ 'ILIMITS'/ 
+		DATA qualifiers  (nqual_at5a+23)/ 'ILIMITS'/
 		DATA qualifiers  (nqual_at5a+24)/ 'JLIMITS'/
 		DATA qualifiers  (nqual_at5a+25)/ 'KLIMITS'/
 		DATA qualifiers  (nqual_at5a+26)/ 'LLIMITS'/
@@ -1055,7 +1065,7 @@
 		DATA qualifiers  (nqual_at5a+55)/ 'LAYERZ'/
 		DATA qualifiers  (nqual_at5a+56)/ 'ASGLOBAL'/
 		DATA qualifiers  (nqual_at5a+57)/ 'STRLEN'/   ! user-set length of string-dimension
-		DATA qualifiers  (nqual_at5a+58)/ 'NOCOORDS'/ ! write dimensions only not coord vars. 
+		DATA qualifiers  (nqual_at5a+58)/ 'NOCOORDS'/ ! write dimensions only not coord vars.
 		DATA qualifiers  (nqual_at5a+59)/ '****'/
 
 * PLOT - command # 6
@@ -1111,8 +1121,8 @@
 		DATA qualifiers  (nqual_at6a+40)/ 'NOYADJUS'/	! noyadjust
 		DATA qualifiers  (nqual_at6a+41)/ 'KEY'/	! [=cont] for Ribbon plot
 		DATA qualifiers  (nqual_at6a+42)/ 'RIBBON'/	! for Ribbon plot
-		DATA qualifiers  (nqual_at6a+43)/ 'LEVELS'/	! 
-		DATA qualifiers  (nqual_at6a+44)/ 'PALETTE'/	! 
+		DATA qualifiers  (nqual_at6a+43)/ 'LEVELS'/	!
+		DATA qualifiers  (nqual_at6a+44)/ 'PALETTE'/	!
 		DATA qualifiers  (nqual_at6a+45)/ 'FAST'/	! style for Ribbon plot
 		DATA qualifiers  (nqual_at6a+46)/ 'MISSING'/	! For missing-dat in ribbon plot
 		DATA qualifiers  (nqual_at6a+47)/ 'OPACITY'/	! overriding opacity
@@ -1309,7 +1319,7 @@
 	   DATA subcommands      (nsub_at10 + 8)/ 'ATTRIBUT'	/
 	   DATA num_qualifs      (nsub_at10 + 8)/ nqual10i	/
 	   DATA qualifier_pointer(nsub_at10 + 8)/ nqual_at10i	/
-* DEFINE ATTRIBUTE /DATASET /TYPE /OUTPUT /QUIET 
+* DEFINE ATTRIBUTE /DATASET /TYPE /OUTPUT /QUIET
 		DATA qualifiers  (nqual_at10i+ 0)/ 'DATASET' /
 		DATA qualifiers  (nqual_at10i+ 1)/ 'TYPE' /
 		DATA qualifiers  (nqual_at10i+ 2)/ 'OUTPUT' /
@@ -1442,7 +1452,7 @@
 		DATA qualifiers  (nqual_at13a+36)/ 'HGRATICU'/	! horiz tic lines
 		DATA qualifiers  (nqual_at13a+37)/ 'VGRATICU'/	! vert tic lines
 		DATA qualifiers  (nqual_at13a+38)/ 'GRATICUL'/
-		DATA qualifiers  (nqual_at13a+39)/ 'KEY'/	!KEY 
+		DATA qualifiers  (nqual_at13a+39)/ 'KEY'/	!KEY
 		DATA qualifiers  (nqual_at13a+40)/ 'MODULO'/
 		DATA qualifiers  (nqual_at13a+41)/ 'OPACITY'/	! overriding opacity
 		DATA qualifiers  (nqual_at13a+42)/ '****'/
@@ -1506,9 +1516,9 @@
 		DATA qualifiers  (nqual_at16a+11)/ 'F'	/
 		DATA qualifiers  (nqual_at16a+12)/ 'ANIMATE' /
 		DATA qualifiers  (nqual_at16a+13)/ 'LOOP'  /
-		DATA qualifiers  (nqual_at16a+14)/ 'RANGE' /   
-		DATA qualifiers  (nqual_at16a+15)/ 'NAME' /   
-		DATA qualifiers  (nqual_at16a+16)/ '****' /  
+		DATA qualifiers  (nqual_at16a+14)/ 'RANGE' /
+		DATA qualifiers  (nqual_at16a+15)/ 'NAME' /
+		DATA qualifiers  (nqual_at16a+16)/ '****' /
 
 * STATISTICS - command # 17
 	DATA commands(17)			/ 'STAT'	/
@@ -1644,14 +1654,14 @@
 		DATA qualifiers  (nqual_at21a+9) / 'T'	/
 		DATA qualifiers  (nqual_at21a+10) / 'E'	/
 		DATA qualifiers  (nqual_at21a+11) / 'F'	/
-		DATA qualifiers  (nqual_at21a+12) / 'OVERLAY'/ 
-		DATA qualifiers  (nqual_at21a+13) / 'SET_UP'/  
+		DATA qualifiers  (nqual_at21a+12) / 'OVERLAY'/
+		DATA qualifiers  (nqual_at21a+13) / 'SET_UP'/
 		DATA qualifiers  (nqual_at21a+14)/ 'FRAME'/
 		DATA qualifiers  (nqual_at21a+15)/ 'DATASET'   /
 		DATA qualifiers  (nqual_at21a+16)/ 'VIEWPOIN'/
 		DATA qualifiers  (nqual_at21a+17)/ 'ZLIMITS'/
-		DATA qualifiers  (nqual_at21a+18)/ 'TRANPOSE'/  
-		DATA qualifiers  (nqual_at21a+19)/ 'NOLABEL'/   
+		DATA qualifiers  (nqual_at21a+18)/ 'TRANPOSE'/
+		DATA qualifiers  (nqual_at21a+19)/ 'NOLABEL'/
 		DATA qualifiers  (nqual_at21a+20)/ 'ZSCALE'/
 		DATA qualifiers  (nqual_at21a+21)/ 'COLOR'/
 		DATA qualifiers  (nqual_at21a+22)/ 'THICKNES'/
@@ -1952,4 +1962,3 @@
 	DATA num_queries /0/   ! unused
 
 	END
-

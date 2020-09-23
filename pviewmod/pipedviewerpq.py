@@ -128,7 +128,7 @@ class PipedViewerPQ(QMainWindow):
         self.__scalefactor = 1.0
         # automatically adjust the scaling factor to fit the window frame?
         self.__autoscale = True
-        # values used to decide if the scene needs to be updated 
+        # values used to decide if the scene needs to be updated
         self.__lastpicdrawn = 0
         self.__createpixmap = True
         self.__clearpixmap = True
@@ -186,6 +186,13 @@ class PipedViewerPQ(QMainWindow):
         self.__timer.timeout.connect(self.checkCommandPipe)
         self.__timer.setInterval(0)
         self.__timer.start()
+        # initialize the parameters for watermark image display
+        self.__wmarkFilename = None
+        self.__xloc = None
+        self.__yloc = None
+        self.__scalefrac = None
+        self.__opacity = None
+        self.__wmkdrawn = False
 
     def createMenus(self):
         '''
@@ -227,7 +234,7 @@ class PipedViewerPQ(QMainWindow):
 
     def closeEvent(self, event):
         '''
-        Clean up and send the WINDOW_CLOSED_MESSAGE on the response pipe 
+        Clean up and send the WINDOW_CLOSED_MESSAGE on the response pipe
         before closing the window.
         '''
         self.__timer.stop()
@@ -332,6 +339,21 @@ class PipedViewerPQ(QMainWindow):
         self.statusBar().clearMessage()
         # restore the cursor back to normal
         QApplication.restoreOverrideCursor()
+        # # if watermark is specified, display after other plotting occurs
+        # if self.__wmarkFilename is not None:
+        #     print(len(self.__viewpics))
+        #     # Initialize watermark objects
+        #     wmkpic = QPixmap(self.__wmarkFilename)
+        #     wmkpt = QPointF()
+        #     wmkpt.setX(self.__xloc)
+        #     wmkpt.setY(self.__yloc)
+        #     # set watermark image display opacity
+        #     painter.setOpacity(self.__opacity / len(self.__viewpics))
+        #     # set image scale
+        #     painter.scale(self.__scalefrac, self.__scalefrac)
+        #     # paint watermark image at specified location
+        #     painter.setRenderHint(QPainter.Antialiasing)
+        #     painter.drawPixmap(wmkpt, wmkpic)
         return modrects
 
     def drawLastPictures(self, ignorevis):
@@ -376,6 +398,23 @@ class PipedViewerPQ(QMainWindow):
                                        0.0, 0.0, self.__scalefactor, \
                                        "Drawing", not wascleared)
             painter.end()
+        # if watermark is specified, display after other plotting occurs
+        if (self.__wmarkFilename is not None) and not self.__wmkdrawn:
+            painter = QPainter(self.__label.pixmap())
+            # Initialize watermark objects
+            wmkpic = QPixmap(self.__wmarkFilename)
+            wmkpt = QPointF()
+            wmkpt.setX(self.__xloc)
+            wmkpt.setY(self.__yloc)
+            # set watermark image display opacity
+            painter.setOpacity(self.__opacity)
+            # set image scale
+            painter.scale(self.__scalefrac, self.__scalefrac)
+            # paint watermark image at specified location
+            painter.setRenderHint(QPainter.Antialiasing)
+            painter.drawPixmap(wmkpt, wmkpic)
+            painter.end()
+            self.__wmkdrawn = True
         # Notify the label of changes to the scene
         if wascleared:
             # the entire scene changed
@@ -390,9 +429,9 @@ class PipedViewerPQ(QMainWindow):
     def clearScene(self, bkgcolor):
         '''
         Removes all view pictures, and fills the scene with bkgcolor.
-        If bkgcolor is None or an invalid color, the color used is 
-        the one used from the last clearScene or redrawScene call 
-        with a valid color (or opaque white if a color has never 
+        If bkgcolor is None or an invalid color, the color used is
+        the one used from the last clearScene or redrawScene call
+        with a valid color (or opaque white if a color has never
         been specified).
         '''
         # If there is an active View with content,
@@ -421,10 +460,10 @@ class PipedViewerPQ(QMainWindow):
 
     def redrawScene(self, bkgcolor=None):
         '''
-        Clear the scene using the given background color and redraw all 
-        the pictures to the displayed scene.  If bkgcolor is None or an 
-        invalid color, the color used is the one used from the last 
-        clearScene or redrawScene call with a valid color (or opaque 
+        Clear the scene using the given background color and redraw all
+        the pictures to the displayed scene.  If bkgcolor is None or an
+        invalid color, the color used is the one used from the last
+        clearScene or redrawScene call with a valid color (or opaque
         white if a color has never been specified).
         '''
         # If there is an active View, end it now, but do not update the scene
@@ -471,7 +510,7 @@ class PipedViewerPQ(QMainWindow):
             if self.__autoscale:
                 self.__scalefactor = 1.0
                 barheights = self.menuBar().height() + self.statusBar().height()
-                self.resize(newwidth + self.__framedelta, 
+                self.resize(newwidth + self.__framedelta,
                             newheight + self.__framedelta + barheights)
                 # the resize should redraw the scene
             else:
@@ -499,7 +538,7 @@ class PipedViewerPQ(QMainWindow):
 
     def autoScaleScene(self):
         '''
-        Selects a scaling factor that maximizes the scene within the window 
+        Selects a scaling factor that maximizes the scene within the window
         frame without requiring scroll bars.  Intended to be called when
         the window size is changed by the user and auto-scaling is turn on.
 
@@ -524,7 +563,7 @@ class PipedViewerPQ(QMainWindow):
         newcwheight = int(factor * self.__sceneheight + 0.5)
         newcwwidth = int(factor * self.__scenewidth + 0.5)
 
-        # if the window does not have the correct aspect ratio, resize it so 
+        # if the window does not have the correct aspect ratio, resize it so
         # it will; this will generate another call to this method.  Otherwise,
         # scale the scene and be done.
         if self.isMaximized() or \
@@ -533,7 +572,7 @@ class PipedViewerPQ(QMainWindow):
             self.scaleScene(factor, False)
             return True
         else:
-            self.resize(newcwwidth + self.__framedelta, 
+            self.resize(newcwwidth + self.__framedelta,
                         newcwheight + self.__framedelta + barheights)
             return False
 
@@ -542,7 +581,7 @@ class PipedViewerPQ(QMainWindow):
         Scales both the horizontal and vertical directions by factor.
         Scaling factors are not accumulative.  So if the scene was
         already scaled, that scaling is "removed" before this scaling
-        factor is applied.  If resizewin is True, the main window is 
+        factor is applied.  If resizewin is True, the main window is
         resized to accommodate this new scaled scene size.
 
         If factor is zero, just switch to auto-scaling at the current
@@ -585,7 +624,7 @@ class PipedViewerPQ(QMainWindow):
                 mwheight = newlabheight + barheights + self.__framedelta
                 mwwidth = newlabwidth + self.__framedelta
                 # Do not exceed the available real estate on the screen.
-                # If autoscaling is in effect, the resize will trigger 
+                # If autoscaling is in effect, the resize will trigger
                 # any required adjustments.
                 scrnrect = QApplication.desktop().availableGeometry()
                 if mwwidth > 0.95 * scrnrect.width():
@@ -643,7 +682,7 @@ class PipedViewerPQ(QMainWindow):
             self.__lastfilename = fileName
             self.__lastformat = fileFormat
 
-    def saveSceneToFile(self, filename, imageformat, transparent, 
+    def saveSceneToFile(self, filename, imageformat, transparent,
                         vectsize, rastsize, myannotations):
         '''
         Save the current scene to the named file.  If imageformat
@@ -651,21 +690,21 @@ class PipedViewerPQ(QMainWindow):
         extension.
 
         If transparent is False, the entire scene is initialized
-        to the last clearing color used, using a filled rectangle 
+        to the last clearing color used, using a filled rectangle
         for vector images.
 
-        If given, vectsize is the size in inches of a saved vector 
-        image.  If vectsize is not given, a vector image will be 
+        If given, vectsize is the size in inches of a saved vector
+        image.  If vectsize is not given, a vector image will be
         saved at the current displayed scaled image size, unless
-        specified otherwise if showPrintDialog is True.  
+        specified otherwise if showPrintDialog is True.
 
-        If given, rastsize is the pixels size of a saved raster 
-        image.  If rastsize is not given, a raster image will be 
-        saved at the current displayed scaled image size.  
+        If given, rastsize is the pixels size of a saved raster
+        image.  If rastsize is not given, a raster image will be
+        saved at the current displayed scaled image size.
 
         If myannotations is not None, the strings given in the tuple
-        are to be displayed above the image.  These annotations add 
-        height, as needed, to the saved image (i.e., vectsize or 
+        are to be displayed above the image.  These annotations add
+        height, as needed, to the saved image (i.e., vectsize or
         rastsize gives the height of the image below these annotations).
         '''
         # This could be called when there is no scene present.
@@ -761,12 +800,12 @@ class PipedViewerPQ(QMainWindow):
                     printer.setPaperSize(QSizeF(imageheight, imagewidth), QPrinter.Inch)
                 else:
                     printer.setPaperSize(QSizeF(imagewidth, imageheight), QPrinter.Inch)
-                # The above has issues with Qt 4.6 at GFDL - 
+                # The above has issues with Qt 4.6 at GFDL -
                 # still puts it on the default letter size page.
                 # So just always use a letter size page.
                 # printer.setPaperSize(QPrinter.Letter)
             except AttributeError:
-                # setPaperSize introduced in 4.4 and made setPageSize 
+                # setPaperSize introduced in 4.4 and made setPageSize
                 # obsolete; but RHEL5 Qt4 is 4.2, so set to letter size
                 printer.setPageSize(QPrinter.Letter)
             # No margins (setPageMargins introduced in 4.4)
@@ -787,7 +826,7 @@ class PipedViewerPQ(QMainWindow):
                 # with the last clearing color.
                 # Only draw if not completely transparent
                 if (self.__lastclearcolor.getRgb())[3] > 0:
-                    painter.fillRect(QRectF(0, 0, printwidth, printheight), 
+                    painter.fillRect(QRectF(0, 0, printwidth, printheight),
                                      self.__lastclearcolor)
             # Scaling printfactor for the scene to the saved image
             widthscalefactor = imagewidth * self.physicalDpiX() / float(self.__scenewidth)
@@ -799,23 +838,23 @@ class PipedViewerPQ(QMainWindow):
                 printfactor = printres / self.physicalDpiX()
                 # Draw a solid white rectangle with black outline for the annotations
                 painter.setBrush(QBrush(Qt.white, Qt.SolidPattern))
-                painter.setPen(QPen(QBrush(Qt.black, Qt.SolidPattern), 
+                painter.setPen(QPen(QBrush(Qt.black, Qt.SolidPattern),
                                     2.0 * printfactor, Qt.SolidLine, Qt.SquareCap, Qt.MiterJoin))
-                painter.drawRect(QRectF(1.0 * printfactor, 1.0 * printfactor, 
-                    (self.__scenewidth - 2.0) * printfactor, 
+                painter.drawRect(QRectF(1.0 * printfactor, 1.0 * printfactor,
+                    (self.__scenewidth - 2.0) * printfactor,
                     ((annosize.height() + 2.0 * self.__addedannomargin) - 2.0) * printfactor))
                 # And add the annotations within this box
                 painter.drawPicture(QPointF(self.__addedannomargin * printfactor,
-                                            self.__addedannomargin * printfactor), 
+                                            self.__addedannomargin * printfactor),
                                     annopicture)
                 # Draw the scene to the printer - scaling already in effect
-                self.paintScene(painter, 0, 0.0, 
-                        (annosize.height() + 2.0 * self.__addedannomargin) * printfactor, 
+                self.paintScene(painter, 0, 0.0,
+                        (annosize.height() + 2.0 * self.__addedannomargin) * printfactor,
                         1.0, "Saving", False)
             else:
                 # No annotations so just do the normal drawing
-                self.paintScene(painter, 0, 0.0, 0.0, 
-                                widthscalefactor, "Saving", False)                
+                self.paintScene(painter, 0, 0.0, 0.0,
+                                widthscalefactor, "Saving", False)
             painter.end()
         elif myformat == 'svg':
             generator = QSvgGenerator()
@@ -853,22 +892,22 @@ class PipedViewerPQ(QMainWindow):
                 painter.scale(widthscalefactor, widthscalefactor)
                 # Draw a solid white rectangle with black outline for the annotations
                 painter.setBrush(QBrush(Qt.white, Qt.SolidPattern))
-                painter.setPen(QPen(QBrush(Qt.black, Qt.SolidPattern), 
+                painter.setPen(QPen(QBrush(Qt.black, Qt.SolidPattern),
                                     2.0, Qt.SolidLine, Qt.SquareCap, Qt.BevelJoin))
-                painter.drawRect(QRectF(1.0, 1.0, 
-                            self.__scenewidth - 2.0, 
+                painter.drawRect(QRectF(1.0, 1.0,
+                            self.__scenewidth - 2.0,
                             annosize.height() + 2.0 * self.__addedannomargin - 2.0))
                 # And add the annotations within this box
-                painter.drawPicture(QPointF(self.__addedannomargin,self.__addedannomargin), 
+                painter.drawPicture(QPointF(self.__addedannomargin,self.__addedannomargin),
                                     annopicture)
                 # Draw the scene to the printer - scaling already in effect
-                self.paintScene(painter, 0, 
-                                0.0, annosize.height() + 2.0 * self.__addedannomargin, 
+                self.paintScene(painter, 0,
+                                0.0, annosize.height() + 2.0 * self.__addedannomargin,
                                 1.0, "Saving", False)
             else:
                 # No annotations so just do the normal drawing
-                self.paintScene(painter, 0, 0.0, 0.0, 
-                                widthscalefactor, "Saving", False)                
+                self.paintScene(painter, 0, 0.0, 0.0,
+                                widthscalefactor, "Saving", False)
             painter.end()
         else:
             if rastsize:
@@ -889,7 +928,7 @@ class PipedViewerPQ(QMainWindow):
             image.setDotsPerMeterX(self.physicalDpiX() / 0.0254)
             image.setDotsPerMeterY(self.physicalDpiY() / 0.0254)
             # Initialize the image
-            # Note that completely transparent gives black for formats not supporting 
+            # Note that completely transparent gives black for formats not supporting
             # the alpha channel (JPEG) whereas ARGB32 with 0x00FFFFFF gives white
             if not transparent:
                 # Clear the image with self.__lastclearcolor
@@ -907,23 +946,24 @@ class PipedViewerPQ(QMainWindow):
                 painter.scale(widthscalefactor, widthscalefactor)
                 # Draw a solid white rectangle with black outline for the annotations
                 painter.setBrush(QBrush(Qt.white, Qt.SolidPattern))
-                painter.setPen(QPen(QBrush(Qt.black, Qt.SolidPattern), 
+                painter.setPen(QPen(QBrush(Qt.black, Qt.SolidPattern),
                                     2.0, Qt.SolidLine, Qt.SquareCap, Qt.BevelJoin))
-                painter.drawRect(QRectF(1.0, 1.0, 
-                            self.__scenewidth - 2.0, 
+                painter.drawRect(QRectF(1.0, 1.0,
+                            self.__scenewidth - 2.0,
                             annosize.height() + 2.0 * self.__addedannomargin - 2.0))
                 # And add the annotations within this box
-                painter.drawPicture(QPointF(self.__addedannomargin,self.__addedannomargin), 
+                painter.drawPicture(QPointF(self.__addedannomargin,self.__addedannomargin),
                                     annopicture)
                 # Draw the scene to the printer - scaling already in effect
-                self.paintScene(painter, 0, 
-                                0.0, annosize.height() + 2.0 * self.__addedannomargin, 
+                self.paintScene(painter, 0,
+                                0.0, annosize.height() + 2.0 * self.__addedannomargin,
                                 1.0, "Saving", False)
             else:
                 # No annotations so just do the normal drawing
-                self.paintScene(painter, 0, 0.0, 0.0, 
-                                widthscalefactor, "Saving", False)                
+                self.paintScene(painter, 0, 0.0, 0.0,
+                                widthscalefactor, "Saving", False)
             painter.end()
+
             # save the image to file
             if not image.save(myfilename, myformat):
                 raise ValueError("Unable to save the plot as " + myfilename)
@@ -1021,8 +1061,8 @@ class PipedViewerPQ(QMainWindow):
             try:
                 myannotations = cmnd["annotations"]
             except KeyError:
-                myannotations = None 
-            self.saveSceneToFile(filename, fileformat, transparent, 
+                myannotations = None
+            self.saveSceneToFile(filename, fileformat, transparent,
                                  vectsize, rastsize, myannotations)
         elif cmndact == "setWidthFactor":
             newfactor = float(cmnd.get("factor", -1.0))
@@ -1073,6 +1113,9 @@ class PipedViewerPQ(QMainWindow):
             self.__rspdpipe.send(info)
         elif cmndact == "drawText":
             self.drawSimpleText(cmnd)
+        elif cmndact == "setWaterMark":
+            # self.setWaterMark(cmnd)
+            self.setWaterMark(cmnd['filename'], None, cmnd['xloc'], cmnd['yloc'], cmnd['scalefrac'], cmnd['opacity'])
         else:
             raise ValueError("Unknown command action %s" % str(cmndact))
 
@@ -1184,8 +1227,8 @@ class PipedViewerPQ(QMainWindow):
     def beginSegment(self, segid):
         '''
         Associates a segment ID with the current empty view
-        (picture) and all future views until endSegment is 
-        called.  If the current view is not empty, the current 
+        (picture) and all future views until endSegment is
+        called.  If the current view is not empty, the current
         view is ended and a new view started.  If there is not
         a active view, the segment ID is just saved for the
         next active view.
@@ -1194,7 +1237,7 @@ class PipedViewerPQ(QMainWindow):
             self.endView(True)
             self.beginViewFromSides(self.__fracsides, self.__clipit)
         self.__segid = segid
-        
+
     def endSegment(self, update):
         '''
         Ends the current active view and starts a new view.
@@ -1220,13 +1263,13 @@ class PipedViewerPQ(QMainWindow):
             if vsegid != segid:
                 newpicts.append((viewpic, vsegid))
             else:
-                # picture was deleted, so will need to 
+                # picture was deleted, so will need to
                 # regenerate the scene from the beginning
                 self.__clearpixmap = True
                 self.__lastpicdrawn = 0
         self.__viewpics[:] = newpicts
         # Do NOT update since there may be more segments to be deleted
-        # Rely on the receiving an update or redraw command at the end 
+        # Rely on the receiving an update or redraw command at the end
 
     def updateScene(self):
         '''
@@ -1294,7 +1337,6 @@ class PipedViewerPQ(QMainWindow):
         '''
         ptcoords = cmnd["points"]
         ptsize = cmnd["size"]
-        ptsize = cmnd["size"]
         try:
             highlight = self.__helper.getColorFromCmnd(cmnd["highlight"])
         except KeyError:
@@ -1322,7 +1364,7 @@ class PipedViewerPQ(QMainWindow):
             self.__activepainter.setBrush(Qt.NoBrush)
             mypen = QPen(mybrush, 8.0, Qt.SolidLine, Qt.FlatCap, Qt.MiterJoin)
             self.__activepainter.setPen(mypen)
-        # typical symbols are 100x100 pixels 
+        # typical symbols are 100x100 pixels
         scalefactor = ptsize * self.widthScalingFactor() / 100.0
         if self.__maxsymbolwidth < 100.0 * scalefactor:
             self.__maxsymbolwidth = 100.0 * scalefactor
@@ -1448,11 +1490,11 @@ class PipedViewerPQ(QMainWindow):
         Returns the pair (width, height) for given text when drawn.
         Raises a KeyError if the "text" key is not given.
 
-        The width value is the width for the text that can be used 
-        for positioning the next text item to draw.  The height 
+        The width value is the width for the text that can be used
+        for positioning the next text item to draw.  The height
         value is the ascent plus decent for the font and does not
         depend of the text.  The bounding rectangle for the actual
-        drawn text may exceed this (width, height) if, 
+        drawn text may exceed this (width, height) if,
         e.g., italic or unusual characters.
 
         Recognized keys from cmnd:
@@ -1518,7 +1560,7 @@ class PipedViewerPQ(QMainWindow):
                 self.__activepainter.rotate(rotdeg)
             except KeyError:
                 pass
-            
+
             if PYTHONQT_VERSION == 'PyQt4':
                 mytext = QString.fromUtf8(mytext)
             self.__activepainter.drawText(0, 0, mytext)
@@ -1532,21 +1574,37 @@ class PipedViewerPQ(QMainWindow):
 
     def setWidthScalingFactor(self, factor):
         '''
-        Assign the scaling factor for line widths and symbol sizes 
-        to convert from points (1/72 inches) to pixels, and to apply 
-        any additional width scaling specified by factor. 
+        Assign the scaling factor for line widths and symbol sizes
+        to convert from points (1/72 inches) to pixels, and to apply
+        any additional width scaling specified by factor.
         '''
         self.__widthfactor  = (self.physicalDpiX() + self.physicalDpiY()) / 144.0
         self.__widthfactor *= factor
-        
+
     def widthScalingFactor(self):
         '''
-        Return the scaling factor for line widths and symbol sizes 
-        to convert from points (1/72 inches) to pixels, and to apply 
-        any additional width scaling specified by setWidthFactor. 
+        Return the scaling factor for line widths and symbol sizes
+        to convert from points (1/72 inches) to pixels, and to apply
+        any additional width scaling specified by setWidthFactor.
         '''
-        return self.__widthfactor 
+        return self.__widthfactor
 
+    def setWaterMark(self, filename, len_filename, xloc, yloc, scalefrac, opacity):
+        '''
+        Overlay watermark from contents of filename.
+
+        Recognized keys from cmnd:
+            "filename":  water mark image file
+            "xloc":      horizontal position of upper left corner of watermark image
+            "yloc":      vertical position of upper left corner of watermark image
+            "scalefrac": multiple of original image size to display plot as
+            "opacity":   image visibility in range [0.0, 1.0] where 0->invisible, 1->opaque
+        '''
+        self.__wmarkFilename = str(filename)
+        self.__xloc = xloc
+        self.__yloc = yloc
+        self.__scalefrac = scalefrac
+        self.__opacity = opacity
 
 class PipedViewerPQProcess(Process):
     '''
@@ -1635,7 +1693,7 @@ def _test_pipedviewerpq():
                                      "top":0.5, "bottom":1.0},
                         "clip":True } )
     drawcmnds.append( { "action":"drawRectangle",
-                        "left": 5, "right":245, 
+                        "left": 5, "right":245,
                         "top":245, "bottom":495,
                         "fill":{"color":"green", "alpha":128} } )
     mypentapts = [ (.25 * ptx, .25 * pty + 250) for (ptx, pty) in pentagonpts ]
@@ -1814,4 +1872,3 @@ def _test_pipedviewerpq():
 
 if __name__ == "__main__":
     _test_pipedviewerpq()
-

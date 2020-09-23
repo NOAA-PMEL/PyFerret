@@ -69,7 +69,7 @@ typedef struct CFerBind_struct {
      grdelBool (*replaceBrushColor)(struct CFerBind_struct *self,
                                     grdelType brush, grdelType color);
      grdelBool (*deleteBrush)(struct CFerBind_struct *self, grdelType brush);
-     grdelType (*createSymbol)(struct CFerBind_struct *self, const char *symbolname, int namelen, 
+     grdelType (*createSymbol)(struct CFerBind_struct *self, const char *symbolname, int namelen,
                                const float ptsx[], const float ptsy[], int numpts, grdelBool fill);
      grdelBool (*deleteSymbol)(struct CFerBind_struct *self, grdelType symbol);
      grdelBool (*setWidthFactor)(struct CFerBind_struct *self, double widthfactor);
@@ -89,14 +89,16 @@ typedef struct CFerBind_struct {
      grdelBool (*drawText)(struct CFerBind_struct *self, const char *text, int textlen,
                            double startx, double starty, grdelType font, grdelType color,
                            double rotation);
+     grdelBool (*setWaterMark)(struct CFerBind_struct *self, char *filename, int len_filename,
+                               float xloc, float yloc, float scalefrac, float opacity);
 } CFerBind;
 
 /*
  * Calls the appropriate createWindow function to create the bindings
- * instance and any other appropriate initialization for this "Window". 
+ * instance and any other appropriate initialization for this "Window".
  */
 CFerBind *cferbind_createWindow(const char *enginename, int engnamelen,
-                                const char *windowname, int winnamelen, 
+                                const char *windowname, int winnamelen,
                                 int visible, int noalpha, int rasteronly);
 
 /* The createWindow function for the Cairo engine */

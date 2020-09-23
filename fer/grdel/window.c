@@ -95,8 +95,8 @@ void FORTRAN(fgderrmsg)(char *errmsg, int *errmsglen)
  * grdelerrmsg contains an explanatory message.
  */
 grdelType grdelWindowCreate(const char *engine, int enginelen,
-                            const char *title, int titlelen, 
-                            grdelBool visible, grdelBool noalpha, 
+                            const char *title, int titlelen,
+                            grdelBool visible, grdelBool noalpha,
                             grdelBool rasteronly)
 {
     GDWindow *window;
@@ -158,11 +158,11 @@ grdelType grdelWindowCreate(const char *engine, int enginelen,
         rasteronlybool = Py_True;
     else
         rasteronlybool = Py_False;
-    window->bindings.pyobject = 
-            PyObject_CallMethod(pyferret_graphbind_module_pyobject, 
-                                "createWindow", "s#s#OOO", 
+    window->bindings.pyobject =
+            PyObject_CallMethod(pyferret_graphbind_module_pyobject,
+                                "createWindow", "s#s#OOO",
                                 engine, enginelen,
-                                title, titlelen, 
+                                title, titlelen,
                                 visiblebool, noalphabool, rasteronlybool);
     if ( window->bindings.pyobject == NULL ) {
         sprintf(grdelerrmsg, "grdelWindowCreate: error when calling createWindow "
@@ -291,7 +291,7 @@ grdelBool grdelWindowDelete(grdelType window)
 }
 
 /*
- * Frees objects and memory associated with a Window created by 
+ * Frees objects and memory associated with a Window created by
  * grdelWindowCreate.  Assumes the actual window has already been
  * closed; e.g., using the window frame 'X' button.  Assigns
  * grdelerrmsg, normally with the 'window was closed' message.
@@ -479,7 +479,7 @@ grdelBool grdelWindowClear(grdelType window, grdelType bkgcolor)
 }
 
 /*
- * Redraws the current drawing with bkgcolor as the background Color. 
+ * Redraws the current drawing with bkgcolor as the background Color.
  *
  * Arguments:
  *     window: Window to be cleared
@@ -637,7 +637,7 @@ grdelBool grdelWindowSetAntialias(grdelType window, int antialias)
         }
     }
     else if ( mywindow->bindings.pyobject != NULL ) {
-        if ( antialias == 0 ) 
+        if ( antialias == 0 )
             aaobj = Py_False;
         else
             aaobj = Py_True;
@@ -852,7 +852,7 @@ grdelBool grdelWindowSetVisible(grdelType window, grdelBool visible)
  *     yinches: vertical size of vector image in inches
  *     xpixels: horizontal size of raster image in pixels
  *     ypixels: vertical size of raster image in pixels
- *     annotations: array of annotation strings; 
+ *     annotations: array of annotation strings;
  *                  pointers are always 8 bytes apart
  *     numannotations: number of annotation strings
  *
@@ -865,7 +865,7 @@ grdelBool grdelWindowSetVisible(grdelType window, grdelBool visible)
 grdelBool grdelWindowSave(grdelType window, const char *filename,
                           int filenamelen, const char *fileformat,
                           int formatlen, grdelBool transparentbkg,
-                          float xinches, float yinches, 
+                          float xinches, float yinches,
                           int xpixels, int ypixels,
                           void **annotations, int numannotations)
 {
@@ -1007,7 +1007,7 @@ grdelBool grdelWindowScreenInfo(grdelType window, float *dpix, float *dpiy,
                                  "binding's windowScreenInfo method: %s", pyefcn_get_error());
             return 0;
         }
-        if ( ! PyArg_ParseTuple(result, "ffii", dpix, dpiy, 
+        if ( ! PyArg_ParseTuple(result, "ffii", dpix, dpiy,
                                                 screenwidth, screenheight) ) {
             Py_DECREF(result);
             sprintf(grdelerrmsg, "grdelWindowScreenInfo: Error when parsing the Python "
@@ -1034,7 +1034,7 @@ grdelBool grdelWindowScreenInfo(grdelType window, float *dpix, float *dpiy,
 
 
 /*
- * Assign the window DPI.  
+ * Assign the window DPI.
  * Will only be successful if the window is not associated with a display.
  *
  * Input Arguments:
@@ -1042,7 +1042,7 @@ grdelBool grdelWindowScreenInfo(grdelType window, float *dpix, float *dpiy,
  *     newdpi: the number of dots per inch to assign
  *
  * Output Arguments:
- *     success: one if successful, 
+ *     success: one if successful,
  *              zero if an error occurred,
  *              negative one if the window is associated with a display
  */
@@ -1153,12 +1153,12 @@ grdelBool grdelWindowSetWidthFactor(grdelType window, float widthfactor)
  *             Use fgderrmsg_ to retreive the error message.
  */
 void FORTRAN(fgdwincreate)(void **window, char *engine, int *enginelen,
-                   char *title, int *titlelen, int *visible, 
+                   char *title, int *titlelen, int *visible,
                    int *noalpha, int *rasteronly)
 {
     grdelType mywindow;
 
-    mywindow = grdelWindowCreate(engine, *enginelen, title, *titlelen, 
+    mywindow = grdelWindowCreate(engine, *enginelen, title, *titlelen,
                                  *visible, *noalpha, *rasteronly);
     *window = mywindow;
 }
@@ -1230,11 +1230,11 @@ void FORTRAN(fgdwinclear)(int *success, void **window, void **bkgcolor)
 }
 
 /*
- * Redraws the current drawing with bkgcolor as the background Color. 
+ * Redraws the current drawing with bkgcolor as the background Color.
  *
  * Input Arguments:
  *     window: Window to be cleared
- *     bkgcolor: Color to fill (initialize) the scene 
+ *     bkgcolor: Color to fill (initialize) the scene
  *               prior to redrawing the scene.
  * Output Arguments:
  *     success: non-zero if successful; zero if an error occurred.
@@ -1400,14 +1400,14 @@ void FORTRAN(fgdwinscreeninfo)(int *success, void **window, float *dpix, float *
 {
     grdelBool result;
 
-    result = grdelWindowScreenInfo(*window, dpix, dpiy, 
+    result = grdelWindowScreenInfo(*window, dpix, dpiy,
                                    screenwidth, screenheight);
     *success = result;
 }
 
 
 /*
- * Assign the window DPI.  
+ * Assign the window DPI.
  * Will only be successful if the window is not associated with a display.
  *
  * Input Arguments:
@@ -1415,7 +1415,7 @@ void FORTRAN(fgdwinscreeninfo)(int *success, void **window, float *dpix, float *
  *     newdpi: the number of dots per inch to assign
  *
  * Output Arguments:
- *     success: one if successful, 
+ *     success: one if successful,
  *              zero if an error occurred (use fgderrmsg_ to retrieve the error message),
  *              negative one if the window is associated with a display
  */
@@ -1782,7 +1782,7 @@ grdelBool grdelWindowSegmentBegin(grdelType window, int segid)
         }
     }
     else if ( mywindow->bindings.pyobject != NULL ) {
-        result = PyObject_CallMethod(mywindow->bindings.pyobject, 
+        result = PyObject_CallMethod(mywindow->bindings.pyobject,
                                      "beginSegment", "i", segid);
         if ( result == NULL ) {
             sprintf(grdelerrmsg, "grdelWindowSegmentBegin: Error when calling the "
@@ -1802,7 +1802,7 @@ grdelBool grdelWindowSegmentBegin(grdelType window, int segid)
 }
 
 /*
- * Ends the current Segment in a Window. 
+ * Ends the current Segment in a Window.
  *
  * Arguments:
  *     window: Window on which the segment was defined
@@ -1862,7 +1862,7 @@ grdelBool grdelWindowSegmentEnd(grdelType window)
 }
 
 /*
- * Deletes the drawing commands in the indicated Segment of a Window. 
+ * Deletes the drawing commands in the indicated Segment of a Window.
  *
  * Arguments:
  *     window: Window on which the segment was defined
@@ -1901,7 +1901,7 @@ grdelBool grdelWindowSegmentDelete(grdelType window, int segid)
         }
     }
     else if ( mywindow->bindings.pyobject != NULL ) {
-        result = PyObject_CallMethod(mywindow->bindings.pyobject, 
+        result = PyObject_CallMethod(mywindow->bindings.pyobject,
                                      "deleteSegment", "i", segid);
         if ( result == NULL ) {
             sprintf(grdelerrmsg, "grdelWindowSegmentDelete: error when calling the "
@@ -1920,8 +1920,61 @@ grdelBool grdelWindowSegmentDelete(grdelType window, int segid)
     return 1;
 }
 
+grdelBool grdelWindowSetWmark(grdelType window, char *filename, int len_filename,
+                              float xloc, float yloc, float scalefrac, float opacity)
+{
+    GDWindow *mywindow;
+    grdelBool success;
+    PyObject *result;
+
+#ifdef GRDELDEBUG
+    fprintf(debuglogfile, "grdelWindowSetWmark called: "
+            "window = %p, "
+            "filename = %*c, "
+            "xloc = %f, "
+            "yloc = %f, "
+            "scalefrac = %f, "
+            "opacity = %f\n",
+            window, len_filename, filename, xloc, yloc, scalefrac, opacity);
+    fflush(debuglogfile);
+#endif
+
+    if ( grdelWindowVerify(window) == NULL ) {
+        strcpy(grdelerrmsg, "grdelWindowSetWmark: window argument "
+                            "is not a grdel Window");
+        return 0;
+    }
+    mywindow = (GDWindow *) window;
+
+    if ( mywindow->bindings.cferbind != NULL ) {
+        success = mywindow->bindings.cferbind->
+                            setWaterMark(mywindow->bindings.cferbind, filename, len_filename, xloc, yloc, scalefrac, opacity);
+        if ( ! success ) {
+            /* grdelerrmsg already assigned */
+            return 0;
+        }
+    }
+    else if ( mywindow->bindings.pyobject != NULL ) {
+        result = PyObject_CallMethod(mywindow->bindings.pyobject,
+                                     "setWaterMark", "s#iffff", filename, len_filename, xloc, yloc, scalefrac, opacity);
+        if ( result == NULL ) {
+            sprintf(grdelerrmsg, "grdelWindowSetWmark: Error when calling the "
+                    "Python binding's setWaterMark method: %s", pyefcn_get_error());
+            return 0;
+        }
+        Py_DECREF(result);
+    }
+    else {
+        strcpy(grdelerrmsg, "grdelWindowSetWmark: unexpected error, "
+                            "no bindings associated with this Window");
+        return 0;
+    }
+
+    return 1;
+}
+
 /*
- * Start a Segment in a Window. 
+ * Start a Segment in a Window.
  * A "Segment" is a group of drawing commands.
  *
  * Input Arguments:
@@ -1940,7 +1993,7 @@ void FORTRAN(fgdsegbegin)(int *success, void **window, int *segid)
 }
 
 /*
- * Ends the current Segment in a Window. 
+ * Ends the current Segment in a Window.
  *
  * Input Arguments:
  *     window: Window object to use
@@ -1957,7 +2010,7 @@ void FORTRAN(fgdsegend)(int *success, void **window)
 }
 
 /*
- * Deletes the drawing commands in the indicated Segment of a Window. 
+ * Deletes the drawing commands in the indicated Segment of a Window.
  *
  * Input Arguments:
  *     window: Window object to use
@@ -1974,3 +2027,26 @@ void FORTRAN(fgdsegdelete)(int *success, void **window, int *segid)
     *success = result;
 }
 
+/*
+ * Sets watermark image as contents of image specified by filename.
+ *
+ * Input Arguments:
+ *     window: Window object to use
+ *     filename: path to watermark image
+ *     len_filename: number of characters in filename string
+ *     xloc: horizontal position of watermark on final image
+ *     yloc: vertical position of watermakr on final image
+ *     scalefrac: proportion of displayed image to real image
+ *     opacity: percentage of transparency to display watermark with
+ * Output Arguments:
+ *     success: non-zero if successful; zero if an error occurred.
+ *              Use fgderrmsg_ to retrieve the error message.
+ */
+void FORTRAN(fgdwinsetwmark)(int *success, void **window, char *filename, int *len_filename,
+                             float *xloc, float *yloc, float *scalefrac, float *opacity)
+{
+    grdelBool result;
+
+    result = grdelWindowSetWmark(*window, filename, *len_filename, *xloc, *yloc, *scalefrac, *opacity);
+    *success = result;
+}

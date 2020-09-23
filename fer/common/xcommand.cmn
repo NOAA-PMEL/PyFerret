@@ -6,7 +6,7 @@
 * 8.98    - increased possible qualifiers for CONTOUR and SHADE *jd*
 * 12.98   - increased num_predefined_alias -> 14 for alias "pattern" *jd*
 * 2/99 *sh* - added POLYGON command
-* 3/99 *jd* - increase qualifiers for POLYGON to 30   
+* 3/99 *jd* - increase qualifiers for POLYGON to 30
 * 3/99 *jc* - increased possible qualifiers for SHOW FUNCTION
 * 4/99 *sh* increased num_predefined_alias for PAUSE alias
 *      *sh* incresed qualifiers for DEFINE AXIS and SHOW AXIS
@@ -19,12 +19,12 @@
 *       10/01 *kob* - increase number of qualifiers for EXIT (LOOP/SCRIPT, etc)
 * V553   9/03 *acm* - increased number of qualifiers for SHOW AXIS
 * V554   1/04 *acm* - increased number of quals for REPEAT command
-* V570   5/04 *acm* - increased number of qualifiers for LIST command 
+* V570   5/04 *acm* - increased number of qualifiers for LIST command
 *                     for SAVE/BOUNDS, SAVE/EDGES
 *       *acm* 6/04 - add SET AXIS/CALENDAR /T0 /UNITS
 *       *acm* 6/04 - add CANCEL AXIS/DEPTH
 * V581  *acm* 5/05 *kob* - increase number of qualifiers for EXIT (adding /CYCLE)
-* V600:  3/07 *acm* - fixing bug 439&1390. Add logical variable its_action_command 
+* V600:  3/07 *acm* - fixing bug 439&1390. Add logical variable its_action_command
 * V600  *acm* 5/05 - add SHOW ATTRIBUTE
 *       *acm* 8/05 - add DEFINE ATTRIBUTE
 *       *acm* 9/05 - add SET ATTRIBUTE
@@ -32,13 +32,16 @@
 * V606  *acm* 7/06 -     DEFINE AXIS/QUIET
 * v62   *acm* 5/09 - new alias KEYMARK
 * v6.6  *acm* 1/10 - more qualifiers on LIST for netcdf4 control
-* V6.5  *acm* 3/10 new qualifiers on (some) SHOW commands and on MESSAGE: 
+* V6.5  *acm* 3/10 new qualifiers on (some) SHOW commands and on MESSAGE:
 *                  /OUTFILE= /APPEND /CLOBBER
 * V6.6  *kms* 5/10 add SET REDIRECT and CANCEL REDIRECT for stdout/stderr redirection
 *       *kms* 7/10 add OPEN alias for SET DATA /BROWSE
-* V6.8  *acm* 1/12 Add SET DATA/STRICT 
-* V68 *acm* 5/12   Add DEFINE DATA/AGGREGATE/TITLE/QUIET
-* V683  8/12 *acm*  New SET LIST/OUTTYPE CANCEL LIST/OUTTYPE, and SAVE/OUTTYPE 
+* PyFr *kms*  8/10 Add DEFINE PYFUNC /NAME=<alias> python.module.name
+* V6.8 *acm*  1/12 Add SET DATA/STRICT
+* PyFr *kms*  3/11 Add CANCEL PYVAR /ALL /DATASET
+* PyFr *kms*  1/12 Add SET GRAPHICS /ENGINE /ANTIALIA /NOANTIAL
+* V68  *acm*  5/12 Add DEFINE DATA/AGGREGATE/TITLE/QUIET
+* V683 *acm*  8/12 New SET LIST/OUTTYPE CANCEL LIST/OUTTYPE, and SAVE/OUTTYPE
 * V684 *acm* 12/12 Changes for VECTOR/MODULO on curvilinear plots.
 * V685 *acm*  4/13 Add /HIDDEN on DEF DATA/AGG
 * V685+ *sh*  9/13 Add SHOW VARIABLE/TREE and alias VTREE
@@ -74,13 +77,13 @@
 *			  all qualifiers are "global" rather than "positional"
 *	nsub_atN	- pointer into array SUBCOMMANDS to first subcommand of
 *			  command N
-*	nqual_atNx	- pointer into array QUALIFIERS to first qualifier 
-*			  of command N, subcommand x. 
+*	nqual_atNx	- pointer into array QUALIFIERS to first qualifier
+*			  of command N, subcommand x.
 
 * adding new commands,subcommands and qualifiers:
 * commands    - To add a command simply define the parameters for the new
-*		command at the end of the existing commands and update the 
-*		"summary PARAMETERS".  Then make corresponding additions to 
+*		command at the end of the existing commands and update the
+*		"summary PARAMETERS".  Then make corresponding additions to
 *		BLOCK DATA XCOMMAND_DATA.
 * subcommands -	To add new subcommands simply change nsubN and insert additional
 *		lines of nqualNx = ... defining the numbers of qualifiers.  Be
@@ -94,12 +97,12 @@
 * Use caution when defining new commands, qualifiers, or changing these data structures:
 * 1- Ferret commands are matched to the first 4 characters only. Make sure
 *    new commands are unique to the first 4 characters.
-* 2- If you are tempted to reorder the lists of commands or subcommands, know 
-*    that users often use even more abbreviation. E.g. "can v" is used for 
-*    "cancel viewport" in many scripts, and that works ONLY because "VIEWPORT" 
+* 2- If you are tempted to reorder the lists of commands or subcommands, know
+*    that users often use even more abbreviation. E.g. "can v" is used for
+*    "cancel viewport" in many scripts, and that works ONLY because "VIEWPORT"
 *    comes before "VARIABLE" in the subcommands for CANCEL.
 * !!!!!!!!!!
- 
+
 
 
 * pointers to first elements of arrays
@@ -130,7 +133,7 @@
      .			nqual1t    , nqual_at2a
 	PARAMETER    (	nsub1   =20, nsub_at2   = nsub_at1   + nsub1,
      .			nqual1a = 0, nqual_at1b = nqual_at1a + nqual1a,	!'    '
-     .			nqual1b =20, nqual_at1c = nqual_at1b + nqual1b,	!'WIND'
+     .			nqual1b =30, nqual_at1c = nqual_at1b + nqual1b,	!'WIND'
      .			nqual1c =27, nqual_at1d = nqual_at1c + nqual1c,	!'REGI'
      .			nqual1d = 1, nqual_at1e = nqual_at1d + nqual1d,	!'VIEW'
      .			nqual1e = 0, nqual_at1f = nqual_at1e + nqual1e,	!'EXPR'
@@ -151,7 +154,7 @@
      .			nqual1t = 4, nqual_at2a = nqual_at1t + nqual1t	!'****'
      .		      )
 
- 
+
 * SHOW		 - commmand # 2
 	INTEGER		nsub2      , nsub_at3  ,
      .			nqual2a    , nqual_at2b,
@@ -199,8 +202,8 @@
      .			nqual2s = 1, nqual_at2t = nqual_at2s + nqual2s,	!'NCCACHE'
      .			nqual2t = 1, nqual_at2u = nqual_at2t + nqual2t,	!'GIFFILE'
      .			nqual2u = 7, nqual_at2v = nqual_at2u + nqual2u, !'FUNC'
-     .                  nqual2v = 2, nqual_at2w = nqual_at2v + nqual2v, !'TEXT' in PyFerret
-     .                  nqual2w = 3, nqual_at3a = nqual_at2w + nqual2w  !'QUER' 
+     .                  nqual2v = 2, nqual_at2w = nqual_at2v + nqual2v, !'TEXT'
+     .                  nqual2w = 3, nqual_at3a = nqual_at2w + nqual2w  !'QUER'
      .		      )
 
 
@@ -453,7 +456,7 @@
      .			qualifiers  (total_num_qualifiers)
 	CHARACTER*8	alias_name  (total_num_alias)
 	CHARACTER*8	queries	    (max_queries)
-	CHARACTER*64	alias	    (total_num_alias)	     
+	CHARACTER*64	alias	    (total_num_alias)
 
 	INTEGER*2	num_subcommands   (total_num_commands),
      .			subcommand_pointer(total_num_commands),
@@ -475,17 +478,3 @@
      .				alias_len,
      .				alias,
      .				queries, num_queries
-
-
-
-
-
-
-
-
-
-
-
-
-
-

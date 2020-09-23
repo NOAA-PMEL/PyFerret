@@ -38,14 +38,14 @@ class PyFerretBindings(AbstractPyFerretBindings):
         '''
         super(PyFerretBindings, self).__init__()
         self.__window = None
- 
+
     def createPipedViewerWindow(self, viewertype, title, visible, noalpha):
         '''
         Creates a PipedViewer of viewertype as the window of this
         instance of the bindings.
 
         Arguments:
-            viewertype: type of PipedViewer to use 
+            viewertype: type of PipedViewer to use
             title: display title for the Window
             visible: display Window on start-up?
             noalpha: do not use the alpha channel in colors?
@@ -93,7 +93,7 @@ class PyFerretBindings(AbstractPyFerretBindings):
             formatname - name of the image format (case insensitive,
                          can be NULL)
             fmtnamelen - actual length of formatname (zero if NULL)
-       
+
         If formatname is empty or NULL, the filename extension of
         imagename, if it exists and is recognized, will determine
         the format.
@@ -112,12 +112,12 @@ class PyFerretBindings(AbstractPyFerretBindings):
     def setAntialias(self, antialias):
         '''
         Turns on (antilaias True) or off (antialias False) anti-aliasing
-        in future drawing commands. 
+        in future drawing commands.
         '''
         cmnd = { "action":"antialias",
                  "antialias":bool(antialias) }
         self.__window.submitCommand(cmnd)
-        
+
     def beginView(self, leftfrac, bottomfrac, rightfrac, topfrac, clipit):
         '''
         Start a view in the PipedViewer Window.  The view fractions
@@ -148,7 +148,7 @@ class PyFerretBindings(AbstractPyFerretBindings):
                              "with topfrac < bottomfrac" % (topfracflt, bottomfracflt))
         cmnd = { "action":"beginView",
                  "viewfracs":{"left":leftfracflt, "right":rightfracflt,
-                              "top":topfracflt, "bottom":bottomfracflt }, 
+                              "top":topfracflt, "bottom":bottomfracflt },
                  "clip":bool(clipit) }
         self.__window.submitCommand(cmnd)
 
@@ -208,9 +208,9 @@ class PyFerretBindings(AbstractPyFerretBindings):
 
     def clearWindow(self, bkgcolor):
         '''
-        Clears the Window of all drawings.  The window is 
+        Clears the Window of all drawings.  The window is
         initialized to all bkgcolor (the background color).
- 
+
         Arguments:
             bkgcolor: initialize (fill) the Window with this Color
         '''
@@ -225,8 +225,8 @@ class PyFerretBindings(AbstractPyFerretBindings):
     def redrawWindow(self, bkgcolor):
         '''
         Redraw the current drawing except using bkgcolor as the
-        background color (the initialization color for the Window). 
-        
+        background color (the initialization color for the Window).
+
         Arguments:
             bkgcolor: initialize (fill) the Window with this Color
                       before redrawing the current drawing.
@@ -346,8 +346,8 @@ class PyFerretBindings(AbstractPyFerretBindings):
         entire scene is initialized as transparent.
 
         If annotations is not None, the strings given in the tuple
-        are to be displayed above the image.  These annotations add 
-        height, as needed, to the saved image (i.e., yinches or 
+        are to be displayed above the image.  These annotations add
+        height, as needed, to the saved image (i.e., yinches or
         ypixels is the height of the image below these annotations).
         '''
         cmnd = { }
@@ -472,7 +472,7 @@ class PyFerretBindings(AbstractPyFerretBindings):
     def replacePenColor(self, pen, newcolor):
         '''
         Replaces the color in pen with newcolor.
-        
+
         Arguments:
             pen: Pen object to modify
             newcolor: Color to use
@@ -511,7 +511,7 @@ class PyFerretBindings(AbstractPyFerretBindings):
     def replaceBrushColor(self, brush, newcolor):
         '''
         Replaces the color in brush with newcolor.
-        
+
         Arguments:
             brush: Brush object to modify
             newcolor: Color to use
@@ -533,8 +533,8 @@ class PyFerretBindings(AbstractPyFerretBindings):
         '''
         Returns a Symbol object associated with the given name.
 
-        If pts is not given, the symbol name must already be known, 
-        either as a pre-defined symbol or from a previous call to 
+        If pts is not given, the symbol name must already be known,
+        either as a pre-defined symbol or from a previous call to
         this method.
 
         Current pre-defined symbol names are ones involving circles:
@@ -545,11 +545,11 @@ class PyFerretBindings(AbstractPyFerretBindings):
             'circex': small unfilled circle and outer lines of an ex mark
             'circplus': small unfilled circle and outer lines of a plus mark
 
-        If pts is given, the value is coordinates that define the symbol 
-        as multiline subpaths in a [-50,50] square.  The location of the 
-        point this symbol represents will be at the center of the square. 
-        An invalid coordinate (outside [-50,50]) will terminate the current 
-        subpath, and the next valid coordinate will start a new subpath. 
+        If pts is given, the value is coordinates that define the symbol
+        as multiline subpaths in a [-50,50] square.  The location of the
+        point this symbol represents will be at the center of the square.
+        An invalid coordinate (outside [-50,50]) will terminate the current
+        subpath, and the next valid coordinate will start a new subpath.
         This definition will replace an existing symbol with the given name.
 
         Arguments:
@@ -557,12 +557,12 @@ class PyFerretBindings(AbstractPyFerretBindings):
             pts:  (sequence of pairs of floats) vertex coordinates
             fill: (bool) color-fill symbol?
 
-        Raises an error 
-            if name is not a string, 
-            if pts, if not None, is not a sequence of pairs of numbers, or 
+        Raises an error
+            if name is not a string,
+            if pts, if not None, is not a sequence of pairs of numbers, or
             if unable to create the Symbol object for any other reason.
         '''
-        # If no points, assume the symbol is already defined but do not waste 
+        # If no points, assume the symbol is already defined but do not waste
         # time validating this.  The symbol object is just the symbol name.
         if not isinstance(name, str):
             raise RuntimeException('symbol name is not a string')
@@ -571,8 +571,8 @@ class PyFerretBindings(AbstractPyFerretBindings):
         # Send the symbol definition to the viewer engine
         self.__window.blockErrMonitor()
         try:
-            cmnd = { 'action': 'createSymbol', 
-                     'name': name, 
+            cmnd = { 'action': 'createSymbol',
+                     'name': name,
                      'pts': pts,
                      'fill': fill }
             self.__window.submitCommand(cmnd)
@@ -624,7 +624,7 @@ class PyFerretBindings(AbstractPyFerretBindings):
         cmnd = { "action":"setWidthFactor",
                  "factor":widthfactor }
         self.__window.submitCommand(cmnd)
-        
+
     def drawMultiline(self, ptsx, ptsy, pen):
         '''
         Draws connected line segments.
@@ -729,17 +729,17 @@ class PyFerretBindings(AbstractPyFerretBindings):
 
     def textSize(self, text, font):
         '''
-        Returns the width and height of the text if drawn in the given font.  
-        The width is such that continuing text should be positioned at the 
-        start of this text plus this width.  The height will always be the 
+        Returns the width and height of the text if drawn in the given font.
+        The width is such that continuing text should be positioned at the
+        start of this text plus this width.  The height will always be the
         ascent plus descent for the font and is independent of the text.
 
         Arguments:
             text: the text string to draw
             font: the font to use
 
-        Returns: (width, height) of the text in "device units" 
-              (pixels at the current window DPI) 
+        Returns: (width, height) of the text in "device units"
+              (pixels at the current window DPI)
         '''
         self.__window.blockErrMonitor()
         try:
@@ -799,6 +799,26 @@ class PyFerretBindings(AbstractPyFerretBindings):
             cmnd["fill"] = pen
         if rotate != 0.0:
             cmnd["rotate"] = rotate
+        self.__window.submitCommand(cmnd)
+
+    def setWaterMark(self, filename, len_filename, xloc, yloc, scalefrac, opacity):
+        '''
+        Overlays water mark.
+
+        Arguments:
+            filename:     path to water mark image
+            len_filename: number of characters in filename
+            xloc:         horizontal position of upper left corner of watermark image
+            yloc:         vertical position of upper left corner of watermark image
+            scalefrac:    multiple of original image size to display plot as
+            opacity:      image visibility in range [0.0,1.0] where 0->invisible, 1->opaque
+        '''
+        cmnd = { "action":"setWaterMark",
+                 "filename":filename,
+                 "xloc":xloc,
+                 "yloc":yloc,
+                 "scalefrac":scalefrac,
+                 "opacity":opacity }
         self.__window.submitCommand(cmnd)
 
 
@@ -1018,7 +1038,7 @@ def _test_pyferretbindings():
         bindinst.drawPoints(ptsx, ptsy, mysymbol, mycolors[7], 20, None)
         bindinst.deleteSymbol(mysymbol)
         ptsx = (450, 450, 450, 450, 450)
-        mysymbol = bindinst.createSymbol("bararrow", 
+        mysymbol = bindinst.createSymbol("bararrow",
                             ( (-50,50), (-10,10),
                               (-999, -999),
                               (50,0), (50,50), (0,50),
@@ -1052,4 +1072,3 @@ def _test_pyferretbindings():
 
 if __name__ == "__main__":
     _test_pyferretbindings()
-

@@ -232,6 +232,7 @@
 * V760 *acm* 4/20 Similarly, if PLOT/VS and a depth coord var is on the vertical
 *                 axis, reverse the axis to run DEEP:SHALLOW
 * V762 *acm* 8/20 Add a second test for is this a trajectory ribbon plot.
+* v763 *acm* 9/20 Plots of id-variables in trajectory-profile, timeseries-profile data
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -254,7 +255,6 @@
 	include 'TAXIS.INC'
 	include 'PPLDAT.INC'
         include 'switch_inc.decl'
-	include 'pyfonts.cmn'
         include 'SWITCH.INC'
 	include 'xdset_info.cmn_text'
 	include 'xdsg_context.cmn'
@@ -361,6 +361,7 @@
 	grid = cx_grid(is_cx(1))
 	dset = cx_data_set(cx)
 	indep_dim = plot_axis(1)
+	dsg_as_time = .FALSE.
 
 	numv = nmv  ! local copy
 	line_symbol = symbol
@@ -405,8 +406,6 @@
      .			dsg_as_traj, dsg_as_time, status)
 	    IF (status .NE. ferr_ok) GOTO 5000
 
-	    IF (its_traj) ribbon_plot = .TRUE.
-	    
 * Is this just a regular ribon plot with 3 variables (not a lon/lat traj plot)? 
 * OR a PLOT/VS var1,var2 from a DSG dataset for var1,var2 not lon/lat?
 * This may turn off ribbon_plot
@@ -414,6 +413,8 @@
 	    IF (.NOT.dsg_as_traj .AND. .NOT.dsg_as_time) 
      .	         CALL CHECK_PLOT_TRAJ (versus, numv, grid, its_traj)
 	    its_traj = its_traj .OR. do_traj
+
+	    IF (its_traj) ribbon_plot = .TRUE.
 
 *  numv = 1 if we're doing the trajectory ribbon plot automatically with PLOT var
 *  Still allow doing it the old fashioned way numv = 2  for plot/vs lon, lat
@@ -433,7 +434,7 @@
 		ENDIF
 
 	       IF (do_traj .OR. dsg_as_traj) THEN
-		  CALL  DSG_TRAJ_ALONGXY_SETUP( 
+		  CALL  DSG_TRAJ_ALONGXY_SETUP( dset, 
      .                 overlay, no_labels, symbol, sym_size, color, 
      .                 color1, use_line, do_dash, dashstyle, nokey,
      .                 only_val, skipsym, mv_list, cx_list, 
@@ -442,7 +443,7 @@
 	       ELSE
 
 		  its_traj = dsg_feature_type(dset) .EQ. pfeatureType_Trajectory
-		  CALL DSG_TRAJ_PLOT_SET_UP ( 
+		  CALL DSG_TRAJ_PLOT_SET_UP ( dset,
      .                overlay, no_labels, symbol, sym_size, color, color1, 
      .                use_line, do_dash, dashstyle, nokey, its_traj, only_val, 
      .                skipsym,  mv_list(1), cx_list(1), numv, indep_dat, dep_dat, status )
@@ -1189,7 +1190,7 @@ c		       ind_max = indep_dat(1) + 240*3600
  1000	CONTINUE
 	status = ferr_ok
 	IF (overlay) iautot = iautot_save
-	IF (dsg_as_time) THEN
+	IF (dsg_as_time .AND. cxdsg_lm_tsdat.NE.mnormal) THEN
 	   CALL TM_FREE_LM_DYNMEM (cxdsg_lm_tsdat)
 	   cxdsg_lm_tsdat = mnormal
 	ENDIF
@@ -1199,7 +1200,7 @@ c		       ind_max = indep_dat(1) + 240*3600
 * error exit
  5000	CALL PPLCMD ( from, line, 0, 'NLINES', 1, 1 )	! wipe buffers clean
  	IF (itmp .NE. mnormal) CALL TM_DEALLO_DYN_LINE( itmp )
-	IF (dsg_as_time) THEN
+	IF (dsg_as_time .AND. cxdsg_lm_tsdat.NE.mnormal) THEN
 	   CALL TM_FREE_LM_DYNMEM (cxdsg_lm_tsdat)
 	   cxdsg_lm_tsdat = mnormal
 	ENDIF

@@ -44,6 +44,7 @@
 * V74+ *acm* 9/18 Allow an abstract axis (e.g. merging grids)
 * V761 *acm* 7/20 Return a flag for a compound type, timeseriesProfile or
 *                 trajectoryProfile.
+* V763 *acm* 9/20 Return if grid not defined.
 
       include 'netcdf.inc'
       include 'tmap_errors.parm'
@@ -64,6 +65,8 @@
 
 	is_dsg = .FALSE.
 	is_cmpnd = .FALSE.
+
+	IF (grid .LE. 0) RETURN
 
 * the E axis points to the DSG orientation. 
 * Or is this even a dsg grid? The dataset may be dsg, but what if we're just 

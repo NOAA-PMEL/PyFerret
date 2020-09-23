@@ -45,7 +45,8 @@
 * V7.3+ *acm* 12/2017
 * V7.6  *acm* 11/2019  Allow for the possibility of 0 obs in a feature.
 *                      If this is the case, skip it.
-* V760 *acm* 3/20 Set up for case when constraints result in no features
+* V760 *acm* 3/20      Set up for case when constraints result in no features
+* V763 *acm* 9/20      Issue a note about data taken from z profiles for xy plots.
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -71,7 +72,7 @@
 * internal variable declarations:
 	LOGICAL process_feature(nfeatures), process_obs(nobs_total), 
      .		relevant_coord(4), has_keys, its_dsg, its_cmpnd,
-     .		multi_var, new_line
+     .		multi_var, new_line, first_warn
 	INTEGER	CGRID_SIZE, DSG_WHATS_IT, TM_DSG_DSET_FROM_GRID,
      .		iline, nlines, idim, ndim, the_dim, max_feature_lines, cx0, 
      .		the_cx, slen, tlen, cx, grid, feature_line, orientation, 
@@ -95,7 +96,7 @@
 	mv = is_mr(1)
 	grid = cx_grid(cx)
 	dset = TM_DSG_DSET_FROM_GRID( grid )
-
+	first_warn = .TRUE.
 
 * get the plot orientation 4=timeseries,3=profile,1=trajectory
 * for 1-D plots, plotting trajectory on an unraveled axis 
@@ -141,10 +142,23 @@
 
 	CALL MAKE_DSG_FEATURE_MASK(dset, cx, process_feature, nfeatures)
 
+
+	IF (dsg_as_time) THEN
+
+* IF it's PLOT/ALONG=XY/Z=/LO:HI or PLOT/ALONG=T/Z=/LO:HI then the locgic here returns 
+* the first value encountered within the Z range along each profile.
+* IF no /Z= region is given then it returns the first valid value found in each profile.
+* Issue a note about this.
+
+	   IF (cx_lo_ww(z_dim, cx_cmnd) .EQ. unspecified_val8  ) THEN
+	      CALL WARN (
+     .        'PLOT/ALONG=  with no /Z= specified uses the first value encountered in each profile')
+	      first_warn = .FALSE.
+	   ENDIF
+
 * Get the station-index variable for trajectoryProfile or timeseriesProfile data
 * Change the grid we are using to the grid of the station-index variable.
 
-	IF (dsg_as_time) THEN
 
 	   ALLOCATE (station_index(nfeatures))
 	   lm_index = dsg_loaded_lm(dsg_index_var(dset))
@@ -191,15 +205,13 @@
 
 	      IF (dsg_as_time) THEN
 
-	         IF (station_index(ifeature) .NE. ista) THEN
+	         ntim = ntim + 1
+		 IF (station_index(ifeature) .NE. ista) THEN
                     nlines = nlines+1
                     ista = station_index(ifeature)
 	         ENDIF
 
-		 ntim = ntim + 1
-
 * Initialize nfeatures values on timeseries station-line
-
 	         CALL PUT_LINE_COORD ( dsg_linemem(cxdsg_lm_tsdat)%ptr, ntim, bad )
 
 	      ELSE
@@ -363,7 +375,7 @@ c A message is written in PLOT_SET_UP
 	         ENDIF
 
 	         new_line = .TRUE.
-		 iline = iline + 1
+	         iline = iline + 1
 	         ista = station_index(ifeature)
 	         the_cx = cx0 + iline
 	         is_cx(iline) = the_cx 
@@ -421,7 +433,7 @@ c	      ENDIF
 	      grid_line(the_dim, igrid) = iaxis
 	      cx_grid(the_cx) = igrid
 	      CALL TM_USE_LINE(iaxis)
-
+	      
 * Inherit axis properties
 	      CALL TM_COPY_LINE (grid_line(the_dim,grid), iaxis)
 	      line_regular(iaxis) = .FALSE.
@@ -447,6 +459,16 @@ c	      ENDIF
 		 EXIT ! from loop
               ENDIF
 	   ENDDO
+	   DO ic = irow_l, irow_f, -1
+	      IF (.NOT.process_obs(ic) .AND. irow_end.EQ. 0) THEN
+	         CYCLE
+	      ELSE 
+	         irow_end = ic
+	         EXIT ! from loop
+	      ENDIF
+	   ENDDO
+
+	   IF (irow_start.EQ.0 .OR. irow_end.EQ.0) CYCLE  ! shouldnt happen.
 
 	   IF (dsg_as_time) THEN
 
@@ -459,19 +481,13 @@ c	      ENDIF
 	      ntim = ntim + 1
 	      value = dsg_linemem(coord_lm(the_dim))%ptr(ifeature)
 	      CALL PUT_LINE_COORD (linemem(iaxis)%ptr, ntim, value)
-	      CALL PUT_LINE_COORD (dsg_linemem(cxdsg_lm_tsdat)%ptr, ntim, dep_dat(ic) )  
+	      CALL PUT_LINE_COORD (dsg_linemem(cxdsg_lm_tsdat)%ptr, ntim, dep_dat(irow_start) )  
+	      IF (irow_start .NE. irow_end .AND. first_warn) THEN
+	         CALL WARN (
+     .            'PLOT/ALONG= /Z=LO:HI uses the first value in the Z- range on each profile')
+		 first_warn = .FALSE.
+	      ENDIF
 	   ELSE
-
-	      DO ic = irow_l, irow_f, -1
-	         IF (.NOT.process_obs(ic) .AND. irow_end.EQ. 0) THEN
-	            CYCLE
-	         ELSE 
-	            irow_end = ic
-		    EXIT ! from loop
-                 ENDIF
-	      ENDDO
-
-	      IF (irow_start.EQ.0 .OR. irow_end.EQ.0) CYCLE  ! shouldnt happen.
 
 * Put the coordinates from this feature-line into the locations
 * on the orientation-axis corresponding to our index range.
@@ -511,6 +527,7 @@ c	      ENDIF
 
 * context for last station
 	IF (dsg_as_time) THEN
+	   
 	   cx_feature(the_cx) = ista  
 	   cx_by_ss(the_dim, the_cx) = .TRUE.
 	   cx_lo_ss(the_cx,the_dim) = itim_f

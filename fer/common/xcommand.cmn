@@ -59,6 +59,7 @@
 * V740 *kms*  3/18 Add space for PyFerret PLOT/HIGHLIGHT=
 * V74+ *acm*  9/18 Add aliases FMASK for SET DATA/FMASK and CLEARMASK for CANCEL DATA/FMASK
 * V74+ *acm*  9/18 Add aliases SMASK for SET DATA/SMASK
+* V763 *acm*  9/20 CANCEL DATA/FMASK and CANCEL DATA/SMASK both cancel all feature masks.
 
 * PARAMETERS are used to store numbers of subcommands and qualifiers for use
 * in BLOCK DATA XCOMMAND_DATA.  They are also used to compute pointers into
@@ -232,7 +233,7 @@
      .			nqual3d = 3, nqual_at3e = nqual_at3d + nqual3d,	!'MEMO'
      .			nqual3e = 1, nqual_at3f = nqual_at3e + nqual3e,	!'EXPR'
      .			nqual3f = 7, nqual_at3g = nqual_at3f + nqual3f,	!'LIST'
-     .			nqual3g = 3, nqual_at3h = nqual_at3g + nqual3g,	!'DATA'
+     .			nqual3g = 4, nqual_at3h = nqual_at3g + nqual3g,	!'DATA'
      .			nqual3h = 1, nqual_at3i = nqual_at3h + nqual3h,	!'MODE'
      .			nqual3i = 1, nqual_at3j = nqual_at3i + nqual3i,	!'MOVI'
      .			nqual3j = 1, nqual_at3k = nqual_at3j + nqual3j,	!'VIEW'

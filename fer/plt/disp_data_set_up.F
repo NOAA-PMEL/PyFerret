@@ -67,6 +67,7 @@
 * V75+ 5/19 *acm*  DSG lon/lat plots of profile or timeseries datasets
 * V76  1/20 *acm* working with Point-type dsg data
 * V760 *acm* 3/20 Flag for case when constraints result in no features
+* v763 *acm* 9/20 Plots of id-variables in trajectory-profile, timeseries-profile data
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -92,7 +93,7 @@
      .		plot_vs, typerr, its_dsg, its_cmpnd, its_traj, 
      .		dsg_as_traj, dsg_as_time
 	INTEGER	MR_DIM_LEN, CX_DIM_LEN, CGRID_SIZE, TM_DSG_NFEATURES,
-     .		TM_DSG_DSET_FROM_GRID,
+     .		TM_DSG_DSET_FROM_GRID, DSG_WHATS_IT,
      .		idim, ndim, dim(nferdims), mr1, cx, ivar,
      .		factor, loc, grid, dset, nfeatures, obsdimlen, 
      .		fline, dtyp, numv, along_dim
@@ -131,6 +132,10 @@
 	 grid = cx_grid(cx)
 	 
 	 grid_is_dsg = TM_ITSA_DSG( grid )
+	 IF (DSG_WHATS_IT(grid) .EQ. pdsg_fs_dim) THEN
+	    grid_is_dsg = .TRUE.
+	    grid = dsg_xlate_grid(dset)
+	 ENDIF
 
 *  IF (PLOT/ALONG=xy/z=lo:hi ) for trajectoryprofile --> dsg_as_traj
 *  TODO: 

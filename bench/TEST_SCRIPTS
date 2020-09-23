@@ -345,6 +345,7 @@ bn761_bug_fixes.jnl
 bn_dsg_naming.jnl
 bn_profile_from_timeprof.jnl
 bn_profile_from_trajprof.jnl
+bn_dsg_compound.jnl
 
 !
 ! bn_gif, bn_all_ef, and bn_startupfile at end

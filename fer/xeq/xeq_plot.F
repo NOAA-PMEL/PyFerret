@@ -135,8 +135,9 @@
 * V751 8/19 *acm*  DSG-enabled Ferret: argumemnt to ITSA_DSG_TRAJ is no longer a dummy
 * V76  1/20 *acm*  working with Point-type dsg data
 * V76  4/20 *acm*  New flag ribbon_on so that RIBBON/SET; PPL PLOT works correctly
+* v763 *acm* 9/20  Ribbon plots of id-variables in trajectory-profile, timeseries-profile data
 
-        IMPLICIT NONE
+	IMPLICIT NONE
 	include 'tmap_dims.parm'
 	include 'ferret.parm'
 	include 'errmsg.parm'
@@ -174,13 +175,13 @@
      .			do_key, spectrum, addgaps, along, its_traj, 
      .			its_dsg, dsg_as_traj, dsg_as_time, is_cmpnd
 	INTEGER		TM_LENSTR1, TM_LENSTR, STR_UPCASE, STR_SAME,
-     .                  FGD_GET_SYMBOLNUM,
+     .                  FGD_GET_SYMBOLNUM, TM_DSG_DSET_FROM_GRID,
      .                  symbol, color, icolor, ipen, icolor1, ipen1, status,
      .			loc, limit, slen, thick, step_inc,
      .			ax1_work, ax2_work,
      .			do_dash, s1, s2, it_start(4), it_end(4),
      .			nparm, num_it, i, iax(4), i1,
-     .                  loch, locv, nvs, skipsym, idir, grid
+     .                  loch, locv, nvs, skipsym, idir, grid, dset
 	REAL		val, sym_size, dashstyle(4), only_val
         REAL*4          thickness, opacity, thick1
 	CHARACTER	LEFINT*4, buff*128
@@ -459,6 +460,12 @@ CC       => Set values here instead.
 	IF (dsg_user_direction .NE. 0) THEN
 	   grid = cx_grid(is_cx(1))
 	   CALL TM_DSG_FACTS ( grid, idir, i1, i, its_dsg, is_cmpnd )
+	   
+	   IF (TM_DSG_DSET_FROM_GRID(grid) .LT. pdset_irrelevant) THEN
+	      dset = cx_data_set(is_cx(1))
+	      IF (dset .GT.pdset_irrelevant )  grid = dsg_xlate_grid(dset)
+	      CALL TM_DSG_FACTS ( grid, idir, i1, i, its_dsg, is_cmpnd )
+	   ENDIF
 	ENDIF 
 	 
 	IF (its_dsg .OR. is_cmpnd) THEN

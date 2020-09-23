@@ -20,8 +20,8 @@ cancel data/fmask 1
 
 ! Requests where the constraints result in no features
 ! lying within the locations/times selected.
-list/x=-122:-121.5 temperature
-plot/x=-122:-121.5 temperature
+list/x=-138:-131.5 temperature
+plot/x=-138:-131.5 temperature
  
 
 ! If we plot with a constraint on coordinates, the labels in the upper
@@ -58,7 +58,7 @@ show symbol *axis*
 ($use_data)
 ! subset profile data in z, in z/ time, in lon/lat/z
 list/z=5:20 temperature
-list/z=0:15/t=5-mar-2008:1-apr-2008 temperature
+list/z=0:15/t=5-jan-2010:8-jan-2010 temperature
 
 ! Function of an instance variable to constrain data
 list strindex(station_code, "33"), station_code
@@ -203,8 +203,8 @@ cancel var/all
 ! Make some fake gridded data: Z from the gridded z axis, 
 ! with small variations in X and Y
 
-define axis/t=5-MAR-2008:01-APR-2008:6/units=hours/t0=1-MAR-2008 tfake
-define axis/x=220:236:0.5/units=degrees_east/modulo xfake
+define axis/t=4-JAN-2010:10-jan-2010:6/units=hours/t0=1-jan-2010 tfake
+define axis/x=-140:-130:0.5/units=degrees_east/modulo xfake
 define axis/y=38:45:0.5/units=degrees_north yfake
 define axis/z=0:71:2/depth/unit=meters zfake
 
@@ -218,5 +218,5 @@ USE fake_model_temp.nc
 list/m=8 zz[d=fake_model_temp,g=temperature[d=1]]
 
 ! Compare, the gridded data at that location 
-list/x=-137.4/y=45/t="1-apr-2008:01" zz
+list/x=-137.4/y=45/t="7-jan-2010:01" zz
 

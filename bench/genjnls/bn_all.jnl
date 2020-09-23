@@ -1349,6 +1349,14 @@ GO bn761_bug_fixes
 GO bn_reset bn_dsg_naming
 GO bn_dsg_naming
 
+! *********** v7.62 Additions ***********
+
+GO bn_reset bn_dsg_reshapefcn
+GO bn_dsg_reshapefcn
+
+GO bn_reset bn_dsg_compound
+GO bn_compound_dsg
+
 ! *********** PyFerret-specific scripts ***********
 
 IF ($program_name"0|PyFerret>1|*>0") THEN

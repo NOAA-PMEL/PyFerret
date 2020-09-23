@@ -58,6 +58,8 @@
 * v7.6 *acm*  5/20 Issue 1876: can read string-typed data, write as char.
 * v7.61 *acm* 8/20 If there was a USE/FEATURE= then write the data with
 *                  both featuretype and cf_role as that feature type.
+* V7.63 *acm* 9/20 DSG trajectoryProfile, TimeseriesProfile data saves not implemented.
+*                  issue an error message.
 
         include 'netcdf.inc'
 #include "netcdf_declareUnderscore.inc"
@@ -78,6 +80,7 @@
 	include 'xtoday.cmn'
 	include 'xinterrupt.cmn'
         include 'netcdf4_settings.cmn'
+#        include "tmap_dset.parm"
 
 * calling argument declarations:
         LOGICAL         append, quiet, do_coords
@@ -175,6 +178,10 @@
 	dset_num = cx_data_set( cx_list(ivar) )
 	dset_num = dset_dsg
 
+	orientation = dsg_orientation(dset_num)
+	IF (orientation.EQ.pfeatureType_TrajectoryProfile .OR. 
+     .	       orientation.EQ.pfeatureType_TimeseriesProfile ) GOTO 5700
+
 * The variables must all be from the same DSG dataset.
 
 * are there any observation vars?  Or is this all instance vars?
@@ -190,7 +197,6 @@
 	   IF (.NOT.point_var(ivar)   ) point_vars_only    = .FALSE.
 	   IF (.NOT.instance_var(ivar)) instance_vars_only = .FALSE.
 
-	   orientation = dsg_orientation(dset_num)
 	ENDDO
 
 	ivar = 1
@@ -1225,6 +1231,10 @@ c	IF (.NOT. instance_vars_only) THEN
  5600    CALL ERRMSG ( ferr_invalid_command, status,
      .                 'Writing psedo-variables to DSG files is not implemented: '//varcode,
      .                 *5800 )
+ 5700    CALL ERRMSG ( ferr_invalid_command, status,
+     .        'Writing data from TrajectoryProfile and TimeseriesProfile datasets'//pCR//
+     .        ' to DSG files is not implemented. Try starting with USE/FEATURE=profile',
+     .                 *5900 )
 
  5800   CALL ERRMSG ( ferr_TMAP_error, final_status, ' ', *5810 )
  5810	nready = ivar - 1
@@ -1233,5 +1243,6 @@ c	IF (.NOT. instance_vars_only) THEN
 	cdfstat = NF_CLOSE(cdfid)
 	GOTO 5000
 	
+ 5900	RETURN
 	END
 

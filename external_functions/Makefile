@@ -24,6 +24,7 @@ include ../platform_specific.mk.$(BUILDTYPE)
 # Macro Definitions
 #
 
+# DIRS = ef_utility
 DIRS = ef_utility contributed decimate examples fft las statistics stringfcns
 MOREDIRS = cmprsi_by extrema featurecollections gridding tax_times
 

@@ -59,12 +59,8 @@
 * internal variable declarations:
 	INTEGER		TM_LENSTR1, slen
 
-#ifdef unix
 	include 'xalt_messages.cmn_text'
 	include 'xrisc_buff.cmn'
-#else
-	INCLUDE 'TMAP_FORMAT:XALT_MESSAGES.CMN'
-#endif
 
 * string length
 	slen = TM_LENSTR1( string )

@@ -38,6 +38,8 @@
 * Alter the subscript ranges set by NON_ARRAY_SUBSC into a 2D form
 * dimension 1 - either the E or the orientation axis (whichever is relevant)
 * dimension 2 - F
+* The orientation dimension is the z-direction for trajectory-profile 
+* and timeseries-profile feature types
 
 * Arguably a stylisticly nicer and more generic name for this routine might
 * have been CONSOLIDATE_ARRAY_SUBSCRIPTS, as its function is nor DSG-specific.
@@ -59,25 +61,28 @@
 	INTEGER nmr, mr_list(nmr), orientation
 
 * internal variable declarations:
-	INTEGER swap_dim, ss, mr
+	INTEGER swap_dim, ss, mr, orient
 
 * now consolidate the E and the orientation axes into the Xdim
 * note that the orientation may already be x_dim. make sure to preserve if so
 
+	orient = orientation
+	IF (orient.EQ.y_dim .OR. orient.EQ.f_dim) orient = z_dim
+
 	DO  mr  = 1, nmr
-	   IF (hi_ss(mr,orientation) .NE. unspecified_int4) THEN
+	   IF (hi_ss(mr,orient) .NE. unspecified_int4) THEN
 * ... a ragged array "observation" variable
-	      swap_dim = orientation
+	      swap_dim = orient
 	   ELSE
 	      swap_dim = e_dim
 	   ENDIF
 	   ss = lo_ss( mr, x_dim )
 	   lo_ss( mr, x_dim ) = lo_ss( mr, swap_dim )
-	   IF (ss .NE. unspecified_int4) lo_ss( mr, orientation ) = ss 
+	   IF (ss .NE. unspecified_int4) lo_ss( mr, orient ) = ss 
 
 	   ss = hi_ss( mr, x_dim )
 	   hi_ss( mr, x_dim ) = hi_ss( mr, swap_dim )
-	   IF (ss .NE. unspecified_int4) hi_ss( mr, orientation ) = ss 
+	   IF (ss .NE. unspecified_int4) hi_ss( mr, orient ) = ss 
 	ENDDO
 
 	RETURN

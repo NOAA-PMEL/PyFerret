@@ -3696,12 +3696,10 @@ ooooooooooooooooooooooooooooooooooooooooooo
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
-           *** NOTE: Axis "X1_20" is irregular. Ignoring erroneous point_spacing=even attribute.
  LISTing to file aa.nc
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
-           *** NOTE: Axis "X1_20" is irregular. Ignoring erroneous point_spacing=even attribute.
  LISTing to file aa.nc
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -6351,6 +6349,7 @@ ooooooooooooooooooooooooooooooooooooooooooo
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
            *** NOTE: Axis "XAXIS" is irregular. Ignoring erroneous point_spacing=even attribute.
+ LISTing to file a.nc
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -6405,45 +6404,6 @@ Executed by script: *** GO bn_iso8601_time.jnl ***
 set axis/t0=2010-15-01 TIME1
 Executed by script: *** GO bn_iso8601_time.jnl ***
 *** Running ferret script: bn_agg_given_taxis.jnl
-/bin/ls: cannot access aggf/forecast_??.nc: No such file or directory
- LISTing to file aggf/forecast_01.nc
- LISTing to file aggf/forecast_02.nc
- LISTing to file aggf/forecast_03.nc
- LISTing to file aggf/forecast_04.nc
- LISTing to file aggf/forecast_05.nc
- LISTing to file aggf/forecast_06.nc
- LISTing to file aggf/forecast_07.nc
- LISTing to file aggf/forecast_08.nc
- LISTing to file aggf/forecast_09.nc
- LISTing to file aggf/forecast_10.nc
- LISTing to file aggf/forecast_11.nc
- LISTing to file aggf/forecast_12.nc
- LISTing to file aggf/forecast_13.nc
- LISTing to file aggf/forecast_14.nc
- LISTing to file aggf/forecast_15.nc
- LISTing to file aggf/forecast_16.nc
- LISTing to file aggf/forecast_17.nc
- LISTing to file aggf/forecast_18.nc
- LISTing to file aggf/forecast_19.nc
- LISTing to file aggf/forecast_20.nc
- LISTing to file aggf/forecast_21.nc
- LISTing to file aggf/forecast_22.nc
- LISTing to file aggf/forecast_23.nc
- LISTing to file aggf/forecast_24.nc
- LISTing to file aggf/forecast_25.nc
- LISTing to file aggf/forecast_26.nc
- LISTing to file aggf/forecast_27.nc
- LISTing to file aggf/forecast_28.nc
- LISTing to file aggf/forecast_29.nc
- LISTing to file aggf/forecast_30.nc
- LISTing to file aggf/forecast_31.nc
- LISTing to file aggf/forecast_32.nc
- LISTing to file aggf/forecast_33.nc
- LISTing to file aggf/forecast_34.nc
- LISTing to file aggf/forecast_35.nc
- LISTing to file aggf/forecast_36.nc
- LISTing to file aggf/forecast_37.nc
- LISTing to file aggf/forecast_38.nc
            *** NOTE: Time axis coordinates matched using @XACT
            *** NOTE: Time axis coordinates matched using @BIN
            *** NOTE: Time axis coordinates matched using @ASN
@@ -6643,15 +6603,13 @@ load  TEMP_CTD_RBR_MEAN[d=1,g=reg_var]
 Executed by script: *** GO bn_regrid_from_dsg.jnl ***
 *** Running ferret script: bn_dsg_use_feature.jnl
  **TMAP ERR: Invalid command
-             Requested USE/FEATURE=Profile, but dataset is not a valid DSG file
+             Requested USE/FEATURE=Prof, but dataset is not a valid DSG file
 SET DAT/FORM=CDF/feature=profile dsg_cross_dateline.nc
 Executed by script: *** GO bn_dsg_use_feature.jnl ***
            *** NOTE: Coordinates inconsistent with FeatureType. Trajectory data must have observations along XYT
  **TMAP ERR: Invalid command
              Error on SET DATA/FEATURE= applied to an open dataset.
              Data set: ./data/DSG_ERDDAP_Tao5daySst.nc
-           *** NOTE: FEATURE-TYPE NOT YET IMPLEMENTED: TrajectoryProfile
-           *** NOTE: Initializing as a non-DSG dataset
            *** NOTE: Dataset has FeatureType attribute: Trajectory
            *** NOTE: But is not initialized as a DSG File: Required coordinate variables not found. Trajectory file is missing directions: lat
            *** NOTE: Initializing the file as a non-DSG dataset
@@ -6936,6 +6894,9 @@ ooooooooooooooooooooooooooooooooooooooooooo
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
 *** Running ferret script: bn_ribbon_set.jnl
 *** Running ferret script: bn_mode_dsg.jnl
  **ERROR: invalid command: CANCEL MODE DSG when DSG datasets are open. Must first close all DSG datasets.
@@ -6954,6 +6915,37 @@ Executed by script: *** GO bn_mode_dsg.jnl ***
            Valid options are /OUTTYPE=DOUBLE,FLOAT,INT,SHORT,or BYTE
 LIST/FORMAT=CDF/clobber/file=a.nc/outtype='string' str_temp
 Executed by script: *** GO bn_string_type.jnl ***
+*** Running ferret script: bn761_bug_fixes.jnl
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
+*** Running ferret script: bn_dsg_naming.jnl
+*** Running ferret script: bn_profile_from_timeprof.jnl
+           *** NOTE: Using Timeseriesprofile data as Profile. Converting variables to profile dimension:
+          station
+ LISTing to file a.nc
+ LISTing to file a.nc
+           *** NOTE: Using Timeseriesprofile data as Profile. Converting variables to profile dimension:
+          station
+           *** NOTE: Using Timeseriesprofile data as Profile. Converting variables to profile dimension:
+          station
+           *** NOTE: Using Timeseriesprofile data as Profile. Converting variables to profile dimension:
+          station
+ LISTing to file fake_model_temp.nc
+*** Running ferret script: bn_profile_from_trajprof.jnl
+           *** NOTE: Using Trajectoryprofile data as Profile. Converting variables to profile dimension:
+          trajectory
+ LISTing to file a.nc
+ LISTing to file a.nc
+           *** NOTE: Using Trajectoryprofile data as Profile. Converting variables to profile dimension:
+          trajectory
+           *** NOTE: Using Trajectoryprofile data as Profile. Converting variables to profile dimension:
+          trajectory
+           *** NOTE: Using Trajectoryprofile data as Profile. Converting variables to profile dimension:
+          trajectory
+           *** NOTE: Using Trajectoryprofile data as Profile. Converting variables to profile dimension:
+          trajectory
+ LISTing to file fake_model_temp.nc
 *** Running ferret script: bn_gif.jnl
  **ERROR: dimensions improperly specified: specified data is not a line
            - its a 2D region: "plot/i=1:10/j=1:20/nolabel i+j"

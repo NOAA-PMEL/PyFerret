@@ -224,6 +224,8 @@
 * v76  *acm* 11/19  Issue 1959: Change SET MEMORY/SIZE= to SET MEMORY/MAX= 
 *                               (keep /SIZE for bkwds compatibility)
 * V745 *acm*  5/20  added mode_dsg to control turning off all DSG ops
+* V761 *acm*  9/20  Set an /SMASK for stations on a timeseriesProfile dataset or
+*                  trajectories on a trajectoryProfile one.
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -715,6 +717,28 @@ c *kob* 4/97
 	      
 
            ENDIF
+
+* SET DATA/SMASK= for a dataset that's already open  
+           IF (qual_given(slash_set_data_smask) .GT. 0) THEN
+	      loc = qual_given(slash_set_data_smask)
+	      CALL EQUAL_STRING (cmnd_buff(qual_start(loc):qual_end(loc)),
+     .                        fmask_var, status)
+	      IF (status .NE. ferr_ok) GOTO 5000
+
+* ... eliminate all memory-resident user-defined vars and their uvar_grid 's
+	      CALL PURGE_ALL_UVARS
+
+	      DO mr = 1,max_mr_avail
+	         IF ( mr_protected( mr ) .EQ. mr_deleted ) CYCLE
+	         IF (mr_category(mr) .EQ. cat_user_var) CALL PURGE_ALL_UVARS_SUB( mr_variable(mr) )
+	         CALL DELETE_VARIABLE( mr )
+	      ENDDO
+
+	      reload = .FALSE.
+	      CALL LOAD_DSG_MASK_FTRSET_VAR (dset_num, fmask_var, reload, status)
+
+	   ENDIF
+
 
  750	CONTINUE
 

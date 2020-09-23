@@ -266,6 +266,8 @@
 * v751 *acm*  8/19 New LIST/NOCOORDS to write dimensions only not coord vars.
 * v76  *acm* 11/19  Issue 1959:
 *                  SET MEMORY/SIZE= to SET MEMORY/MAX= (keep /SIZE for bkwds compatibility)
+* V7.62 *acm* 8/20 DSG-enabled Ferret: SET DATA/SMASK= specifies a mask on station or
+*                  trajectory for timeseriesProfile or trajectoryProfile data
 *
 * !!!!!!!!!!
 * Use caution when defining new commands, qualifiers, or changing these data structures:
@@ -416,7 +418,7 @@
 		DATA qualifiers  (nqual_at1g+14) / 'STRICT'     /
 		DATA qualifiers  (nqual_at1g+15) / 'FEATURE'    /
 		DATA qualifiers  (nqual_at1g+16) / 'FMASK'      /
-		DATA qualifiers  (nqual_at1g+17) / '****'       /
+		DATA qualifiers  (nqual_at1g+17) / 'SMASK'       /
 		DATA qualifiers  (nqual_at1g+18) / '****'       /
 		DATA qualifiers  (nqual_at1g+19) / '****'       /
 * SET MODE
@@ -848,6 +850,7 @@
 		DATA qualifiers  (nqual_at3g+0)	/ 'ALL '	/
 		DATA qualifiers  (nqual_at3g+1)	/ 'NOERROR'	/
 		DATA qualifiers  (nqual_at3g+2)	/ 'FMASK'	/
+		DATA qualifiers  (nqual_at3g+3)	/ 'SMASK'	/
 * CANCEL MODE
 	   DATA subcommands      (nsub_at3 + 7)	/ 'MODE'	/
 	   DATA num_qualifs      (nsub_at3 + 7)	/ nqual3h	/
@@ -1916,16 +1919,19 @@
      .		alias_name(26)	/ 'FMASK' /,
      .		alias_len(26)	/ 14 /,
      .		alias(26)	/ 'SET DATA/FMASK' /
-     .		alias_name(27)	/ 'CLEARMASK' /,
+     .		alias_name(27)	/ 'SMASK' /,
      .		alias_len(27)	/ 17 /,
-     .		alias(27)	/ 'CANCEL DATA/FMASK' /
+     .		alias(27)	/ 'SET DATA/SMASK' /
+     .		alias_name(28)	/ 'CLEARMASK' /,
+     .		alias_len(28)	/ 17 /,
+     .		alias(28)	/ 'CANCEL DATA/MASK' /
 
         DATA
      .		(alias_name(i),i=num_predefined_alias+1,150)
-     .                   / 123*unspecified_name4 /,
-     .		(alias_len(i),i=num_predefined_alias+1,150) / 123*4 /,
+     .                   / 122*unspecified_name4 /,
+     .		(alias_len(i),i=num_predefined_alias+1,150) / 122*4 /,
      .		(alias(i),i=num_predefined_alias+1,150)
-     .                   / 123*unspecified_name4 /
+     .                   / 122*unspecified_name4 /
 
 	DATA queries(1) / 'STATUS' /,
      .	     queries(2) / 'MESSAGE' /,

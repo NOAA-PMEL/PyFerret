@@ -68,6 +68,7 @@ C
 * V698  4/16 *acm* New PLOT/SKIP=
 * V73  3/18 *kms*  For clarity, append MD to makedot.cmn values IPT, XDOT, 
 *                  and YDOT; make MDOT (99) a makedot.cmn parameter DOTSYMIM
+* V762  8/20 *acm* Don't draw outside plot edges when doing modulo correction.
 
         include         'xinterrupt.cmn' ! 1/89 *sh*
         include         'ppl_in_ferret.cmn'
@@ -319,8 +320,10 @@ C     CHECK POINTS FOR OUT OF RANGE   (CM)
 * the new point on new wrap, then go on.
 		  IF (xadd .NE. xaddlast) THEN
 		     datxlast = datx - xadd + xaddlast
-		     CALL TRANS(I,datxlast,daty,XT,YT)
-		     CALL PLOT(xt,yt,idn,0)
+		     IF (datxlast.LT.xhi .AND. datxlast.GT.xlo) THEN
+		        CALL TRANS(I,datxlast,daty,XT,YT)
+		        CALL PLOT(xt,yt,idn,0)
+		     ENDIF
 		     CALL TRANS(I,datx,daty,XT,YT)
 		     CALL PLOT(XT,YT,0,0)
 		     CALL PLOT(XT,YT,IDN,0)

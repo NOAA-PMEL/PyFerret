@@ -70,7 +70,6 @@
 * V600  *acm* 1/06  prevent values of LOG10(0.0) 
 * V68   *acm* 12/11 Fix ticket 1905. Axis-lengths that need more than 6 characters
 *                   were being cut off.
-* PyFr  *kms* 11/10 added display of pyvars associated with the dataset
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 * V6.8  acm  6/12 Implement mode_6d_lab, set by default. If canceled, the 
 *                 various SHOW commnands will not list info for E,F dimensions.
@@ -118,7 +117,8 @@
 	include	'xrisc.cmn'
 	include 'calendar.decl'
 	include 'calendar.cmn'
-        include 'xpyvar_info.cmn'
+	include 'xpyvar_info.cmn'
+
 
 * calling argument declarations:
 	LOGICAL	full
@@ -161,6 +161,7 @@
 * If the dataset is a DSG dataset, note the FeatureType
         its_dsg = .FALSE.
 	DO ivar = 1, maxvars
+            IF ( ds_var_setnum(ivar) .NE. dset ) CYCLE
 	   igrid = ds_grid_number(ivar)
 	   IF (igrid .EQ. int4_init) CYCLE
 	   IF (TM_ITSA_DSG_RAGGED(igrid)) THEN
@@ -176,11 +177,8 @@
 	   tlen = TM_LENSTR1( risc_buff ) + 1
 	   risc_buff = risc_buff(:tlen)//  CD_DSG_FEATURENAME(dsg_orient)
 
-	   IF (dsg_orient.LT.pfeatureType_Trajectory .OR. 
-     .         dsg_orient.GT.pfeatureType_Point) risc_buff = ''
-
 	   tlen = TM_LENSTR1( risc_buff )
-	   IF (tlen .GT. 0)  CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0) 
+	   IF (tlen .GT. 1)  CALL SPLIT_LIST(pttmode_explct, lun, risc_buff, 0) 
 	   
 * Is a feature mask set on this dataset?
 	   IF (dsg_msk_lm(dset) .NE. int4_init .AND. dsg_msk_lm(dset).NE.unspecified_int4) THEN 
@@ -192,7 +190,7 @@
 	      tlen = TM_LENSTR1( risc_buff ) 
 	      IF (dlen .EQ. 0) tlen = tlen - 1
 
-	      IF (tlen .GT. 0)  CALL SPLIT_LIST(pttmode_explct, lun, risc_buff(:tlen), 0) 
+	      IF (tlen .GT. 1)  CALL SPLIT_LIST(pttmode_explct, lun, risc_buff(:tlen), 0) 
 	   ENDIF ! feature-mask
 
 	ENDIF
@@ -317,8 +315,14 @@
            ENDIF
 
            IF (.NOT.is_undetermined) THEN
+	      
 	      grid_dsg = TM_ITSA_DSG_RAGGED(igrid)
-	      IF (grid_dsg) dsg_orient = dsg_orientation(dset)
+	      IF (grid_dsg) THEN
+	         dsg_orient = dsg_orientation(dset)
+		 IF (dsg_orient.EQ.pfeatureType_TrajectoryProfile .OR.
+     .		     dsg_orient.EQ.pfeatureType_TimeseriesProfile)
+     .		   dsg_orient = z_dim
+	      ENDIF
 
               DO 100 i = 1, listdims
                  WRITE( rbuff(i+listdims),'(I8)' ) ds_grid_start(i,ivar)
@@ -595,6 +599,7 @@ c	IF ( full  .AND. grid_dsg) taxis = grid_line(t_dim, dsg_xlate_grid(dset))
             ENDIF
             CALL SHOW_1_PYVAR(lun, i, full)
  580    CONTINUE
+
 
 * show the data-set-specific user-defined variables
 * Skip intermediate variables by checking uvar_parent

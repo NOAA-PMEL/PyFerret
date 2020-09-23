@@ -206,7 +206,7 @@
 	INTEGER		REGION_NUMBER, FIND_DSET_NUMBER,
      .                  TM_GET_LINENUM, TM_GET_GRIDNUM, 
      .			TM_GET_GRID_OF_LINE, TM_LENSTR1, STR_UPCASE,
-     .                  STR_SAME, ITS_GIF_GRAPHICS, ITS_BATCH_GRAPHICS,
+     .                  STR_SAME, ITS_BATCH_GRAPHICS,
      .			ivp, i, blen, ier, i1, num_protected_axes,
      .			status, variable, category,
      .			idim, iqual, iset, item, ivar, nth, mr,
@@ -226,10 +226,11 @@
      .                  attname*128, show_str*512, buff2*3, DUMMY*512
 
 * local parameter declarations:
-	INTEGER		slash_del_temp, slash_del_perm, slash_can_dat_fmask
+	INTEGER		slash_del_temp, slash_del_perm, slash_can_dat_fmask, slash_can_dat_smask
 	PARAMETER     ( slash_del_temp = 1+1,
      .			slash_del_perm = 2+1,
-     .			slash_can_dat_fmask = 3 )
+     .			slash_can_dat_fmask = 3,
+     .			slash_can_dat_smask = 4 )
 
 * command given with /ALL ?
 	slash_all = .FALSE.
@@ -428,15 +429,26 @@
 
  705	CONTINUE
 
-** CANCEL DATA/FMASK
+** CANCEL DATA/FMASK same as CANCEL DATA/SMASK : both masks are canceled.
 * This does not cancel the dataset, just the FMASK property
 * deallocate line memory if a mask-by-feature variable was used.
 * 
-	      IF (qual_given(slash_can_dat_fmask) .GT. 0) THEN
-	         IF (dsg_msk_lm(iset) .NE. unspecified_int4) THEN
-	            CALL FREE_LINE_DYNMEM( dsg_msk_lm(iset) )
-	            CALL TM_DEALLO_DYN_LINE( dsg_msk_lm(iset) )
-	            dsg_msk_lm(iset) = unspecified_int4
+	      IF (qual_given(slash_can_dat_fmask) .GT. 0 .OR. 
+     .		  qual_given(slash_can_dat_smask) .GT. 0) THEN
+	         IF (dsg_msk_lm(iset) .NE. unspecified_int4 .OR. 
+     .		     dsg_ftrsetmsk_lm(iset) .NE. unspecified_int4) THEN
+
+		    IF (dsg_msk_lm(iset) .NE. unspecified_int4 ) THEN
+	               CALL FREE_LINE_DYNMEM( dsg_msk_lm(iset) )
+	               CALL TM_DEALLO_DYN_LINE( dsg_msk_lm(iset) )
+	               dsg_msk_lm(iset) = unspecified_int4
+		    ENDIF
+		    
+		    IF (dsg_ftrsetmsk_lm(iset) .NE. unspecified_int4 ) THEN
+	               CALL FREE_LINE_DYNMEM( dsg_ftrsetmsk_lm(iset) )
+	               CALL TM_DEALLO_DYN_LINE( dsg_ftrsetmsk_lm(iset) )
+	               dsg_ftrsetmsk_lm(iset) = unspecified_int4
+		    ENDIF
 
 		    varid = 0
 		    attname = '__feature_mask_'

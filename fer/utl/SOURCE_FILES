@@ -42,6 +42,7 @@ copy_ptr_into_sub.F\
 copy_into_sub.F\
 copy_ptr_grid_sub.F\
 count_number_list.F\
+cx_dim_diff.F\
 create_counter_list.F\
 cstring_insert.F\
 de_escape_string.F\
@@ -154,6 +155,8 @@ itsa_truemonth_axis.F\
 legal_chars.F\
 make_axis.F\
 make_dsg_feature_mask.F\
+make_dsg_feature_mask_dirs.F\
+make_dsg_ftrset_mask.F\
 make_dsg_obs_mask.F\
 make_step_axis.F\
 mask_dsg_fvar.F\

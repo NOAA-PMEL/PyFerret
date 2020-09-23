@@ -27,6 +27,8 @@ disp_reset.F\
 disp_set_up.F\
 dsg_feature_key.F\
 dsg_label_nofeature.F\
+dsg_pltalong_setup.F\
+dsg_traj_alongxy_setup.F\
 dsg_traj_plot_set_up.F\
 echof_off.F\
 equal_color.F\
@@ -60,6 +62,7 @@ plot_dsg_apply_obs_mask.F\
 plot_dsg_check_lon360.F\
 plot_dsg_data_set_up.F\
 plot_set_up.F\
+plot_vs_set_up.F\
 polygon_set_up.F\
 pos_lab.F\
 ppl_axes_off.F\

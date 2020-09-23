@@ -1,0 +1,223 @@
+! bn_profile_from_trajprof.jnl
+! V7.61 8/6/2020 ACM
+!  Tests on timeseriesProfile data opened with use/feature=profile.
+
+
+DEFINE SYMBOL use_data = use/feature=profile dsg_trajprofile_example.nc
+
+($use_data)
+
+show data
+show grid temperature
+plot temperature
+
+! listings
+
+let pmask = {1,,1,,,,,,,,,,,1,}
+set data/fmask=pmask 1
+list temperature
+
+list/form=comma temperature
+
+cancel data/fmask 1
+  
+
+! Test requests when the constraints result in no features
+! lying within the locations/times selected.
+list/x=112:120 temperature
+plot/x=112:120 temperature
+
+! If we plot with a constraint on coordinates, the labels in the upper
+! left that show the region orthogonal to the plot reflect the subset 
+
+! unconstrained
+set view upper
+plot/thick temperature
+show symbol lab($labnum_x) lab($labnum_y) lab($labnum_t) lab($labnum_e)
+
+! Constrain in X; the XYTE ranges shown in the upper left show the 
+! coordinate range of the data actually shown.
+
+set view lower
+plot/thick/x=-140:-133 temperature
+show symbol lab($labnum_x) lab($labnum_y) lab($labnum_t) lab($labnum_e)
+
+! or constrain with a mask
+
+let pmask = {,,,,,,,,,,1,1,,1,}
+set data/fmask=pmask 1
+
+plot/thick temperature
+show symbol lab($labnum_x) lab($labnum_y) lab($labnum_t) lab($labnum_e)
+
+cancel data/fmask 1
+cancel view
+
+! more subset plots
+
+plot/thick temperature
+show symbol *axis*
+
+plot/x=100:102/thick temperature
+show symbol *axis*
+
+
+! Save to netCDF
+! Save an obs variable and a user-defined var on the same grid.
+
+let/like=temperature nobig = if temperature le 1.8 then temperature
+list/m=8:9 temperature, nobig
+
+save/clobber/file=a.nc temperature
+save/append/file=a.nc nobig
+
+cancel data/all
+use a
+show data
+list/m=8:9 temperature, nobig
+
+
+can dat/all
+
+! /FEATURE=none, grids are just the 1-D axes
+
+use/feature=none dsg_trajprofile_example
+show data
+show grid temperature
+
+cancel data/all
+ 
+! testing subsetting in Time, space. 
+
+($use_data)
+
+! subset profile data in z, in z/ time, in lon/lat/z
+list/z=5:20 temperature
+list/z=0:15/t=20-MAY-2020 :26-MAY-2020 temperature
+
+  
+! Function of an instance variable to constrain data
+
+list/prec=7 if station_id GT 38880000 then station_id, station_id
+
+cancel data/all
+
+! Transforms:
+
+!!!!!!!!!!!!
+! NGD, NBD  MIN, MAX
+
+($use_data)
+
+list/m=1:5 rowsize, temperature[z=@ngd], temperature[z=@nbd], temperature[z=@min], temperature[z=@max]
+
+let tmin = temperature[z=@min]
+let tmax = temperature[z=@max]
+
+list rowsize[e=@min], rowsize[e=@max]
+list tmin[e=@min], tmax[e=@max]
+
+! Which profiles have some bad data?
+
+LET gappy = if temperature GT 2 then temperature
+
+list station_id, rowsize, temperature[z=@ngd], gappy[z=@nbd]
+list/m=5 temperature, gappy
+
+!!!!!!!!!!!!
+! FILLERS 
+! FLN, FAV, FNR
+! Filling ends and restarts with each new feature
+
+LET gappy = if temperature GT 2 then temperature
+list/m=8:9 gappy, gappy[z=@fln], gappy[z=@fav], gappy[z=@fnr]
+
+!!!!!!!!!!!!
+! SMOOTHERS
+
+let/title="SBX" box = temperature[z=@sbx]
+let/title="SWL" swl = temperature[z=@swl]
+let/title="SHN" shn = temperature[z=@shn]
+let/title="SPZ" spz = temperature[z=@spz] 
+list/m=8 temperature, box, swl, shn, spz
+
+plot/line/thick/m=8 temperature, box, swl, shn, spz
+
+!!!!!!!!!!!!
+! DIFFERENCES
+
+list/m=8:9 temperature, temperature[z=@ddc], temperature[z=@ddb], temperature[z=@ddf]
+
+!!!!!!!!!!!!
+! AVERAGES and  INTEGRALS
+
+list temperature[z=@ave], temperature[z=@sum], temperature[z=@sum]/rowsize
+list temperature[z=@din]
+list/m=8:9 temperature, temperature[z=@iin], temperature[z=@rsum]
+
+
+let s_ave = temperature[z=@ave]
+list s_ave[e=@sum]
+
+
+!!!!!!!!!!!!
+! WEIGHTS
+! @WGT weights for ave, integration
+
+list/m=9  temperature, temperature[z=@wgt], depth[z=@ddf]
+
+
+!!!!!!!!!!!!
+! EVENT MASK
+
+list/m=8:9 temperature, temperature[z=@evn:9], temperature[z=@evn:8.5]
+
+cancel data/all
+cancel var/all
+ 
+! Regridding
+
+! Profile to fixed z axis
+($use_data)
+
+! Define a regular z axis
+define axis/z=2:60:2/units=m/depth zreg
+
+! Sanity check - regrid the depth variable should reproduce the reg-axis depths
+list/order=ez/pre=6 depth[gz=zreg]
+
+! Regrid temperature
+list/order=ez/pre=6 temperature[gz=zreg]
+
+list/order=ez/pre=6/z=10:26 temperature[gz=zreg]
+
+
+! Regrid to DSG
+
+! Gridded-to-profile
+! demonstrate regridding model data to DSG using file data
+cancel data/all
+cancel var/all
+
+($use_data)
+
+! Make some fake gridded data: Z from the gridded z axis, 
+! with small variations in X and Y
+
+define axis/t=1-MAY-2020:30-MAY-2020:12/units=hours/t0=1-MAY-2020 tfake
+define axis/x=98:112:0.5/units=degrees_east/modulo xfake
+define axis/y=-52:-56:0.2/units=degrees_north yfake
+define axis/z=0:700:20/depth/unit=meters zfake
+
+define grid/x=xfake/y=yfake/z=zfake/t=tfake gfake
+let/title="z-data from grid" zz = z[g=gfake] + 0.05*x[g=gfake]+ 0.1* y[g=gfake]+ 0001*t[g=gfake]
+save/clobber/file=fake_model_temp.nc/outtype=float zz
+cancel variables/all
+
+
+USE fake_model_temp.nc
+list/m=8 zz[d=fake_model_temp,g=temperature[d=1]]
+
+! Compare, the gridded data at that location 
+list/x=109.32/y=-54.98/t="25-MAY-2020 10:40" zz
+

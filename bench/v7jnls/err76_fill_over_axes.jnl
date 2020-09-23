@@ -1,0 +1,13 @@
+! err76_fill_over_axes.jnl
+! Issue
+! 7/22/2020 
+
+! The sequence "shade/noax var; fill/over/axes var" as is done in LAS 
+! draws a bad plot for this dataset; the axes were drawn all garbled over 
+! to the left of the plot.
+!
+use fill_overlay_bug.nc
+shade/noax/nokey/nolab salt_latlon
+fill/over/nolab/axes salt_latlon
+
+frame/file=fill_over_axes.gif

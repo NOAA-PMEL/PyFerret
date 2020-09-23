@@ -54,14 +54,18 @@
 	include 'xcontext.cmn'
 	include 'xdsg_context.cmn'
 	include 'xvariables.cmn'
+#include "tmap_dset.parm"
 
 * calling argument declarations:
 	INTEGER dset, nfeatures
 	REAL lolims(4,nfeatures), hilims(4,nfeatures)
 
 * internal variable declarations:
-        INTEGER i, j, lm, idim, var, rslm, obs_dimlen, flen, iobs0
+        LOGICAL tsprof
+	INTEGER i, j, lm, idim, var, rslm, obs_dimlen, flen, iobs0
 	REAL cmin, cmax, coord, bad
+
+        INTEGER, DIMENSION(:), ALLOCATABLE :: station_index
 
 * initialize
 	obs_dimlen = dsg_obs_dimlen(dset)
@@ -78,6 +82,23 @@
 !    i. get the lm values from the attributes
 !    ii. copy the stored extremes back from lm memory
 !  3.  Remember to free this memory when closing the DSG dataset
+
+
+* For TimeseriesProfile, get the station-index and use it to set feature-coordinate using station-location
+
+
+	tsprof = (dsg_orientation(dset) .EQ. pfeatureType_TimeseriesProfile) 
+	IF (tsprof) THEN
+
+	   ALLOCATE (station_index(nfeatures))
+	   lm = dsg_loaded_lm(dsg_index_var(dset))
+
+	   DO i = 1, nfeatures
+	      station_index(i) = dsg_linemem(lm)%ptr(i) + 1
+	    ENDDO
+	    
+	ENDIF
+
 
 * get the DSG coordinate extremes
 
@@ -106,8 +127,15 @@
 	         ENDDO
 * The single coordinate for this feature
 	      ELSE
+
+* location of profiles (maybe at a station) 
+
 	         DO i = 1, nfeatures
-	            coord = dsg_linemem(lm)%ptr(i)
+	            IF (tsprof) THEN
+		       coord = dsg_linemem(lm)%ptr(station_index(i))
+		    ELSE
+		       coord = dsg_linemem(lm)%ptr(i)
+		    ENDIF
 		    IF (coord .EQ. bad) CYCLE
 	            lolims(idim,i) = coord
 	            hilims(idim,i) = coord
@@ -120,6 +148,8 @@
 	      ENDDO
 	   ENDIF
 	ENDDO
+
+	IF (tsprof) DEALLOCATE(station_index)
 
 	RETURN
 	END

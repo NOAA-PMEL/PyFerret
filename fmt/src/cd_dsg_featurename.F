@@ -40,18 +40,19 @@
 
 	INTEGER pfeatureType
       
-	CHARACTER*20 feattype(1:5)
+	CHARACTER*20 feattype(1:6)
 
 	DATA	feattype(1) / 'Trajectory ' /,
      .		feattype(2) / 'Trajectoryprofile ' /,
      .		feattype(3) / 'Profile ' /,
      .		feattype(4) / 'Timeseries' /,
-     .		feattype(5) / 'Point ' /
+     .		feattype(5) / 'Point ' /,
+     .		feattype(6) / 'Timeseriesprofile ' /
 
 	CD_DSG_FEATURENAME = '***'
 
-	IF (pfeatureType.GE.pfeatureType_Trajectory .AND. 
-     .      pfeatureType.LE.pfeatureType_Point) 
+	IF (pfeatureType .GE. pfeatureType_Trajectory .AND. 
+     .      pfeatureType .LE. pfeatureType_TimeseriesProfile) 
      .     CD_DSG_FEATURENAME = feattype(pfeatureType)
 	
         RETURN

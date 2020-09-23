@@ -60,6 +60,8 @@
 * To be a DSG contiguous ragged grid it must be 2D with
 * the E axis pointing to the DSG orientation and the
 * oriented axis carrying the true netCDF obs dim length
+* TrajectoryProfile or TimeseriesProfile have obs in z
+
 	line = grid_line(e_dim,grid)
 	IF (line .EQ. mpsnorm) RETURN
 
@@ -69,7 +71,9 @@
 	   TM_ITSA_DSG_RAGGED = .FALSE.
 	ELSE
 
-	   orient = dsg_orientation(dset)
+	  orient = dsg_orientation(dset)
+	  IF  (orient.EQ.y_dim .OR. orient.EQ.f_dim) orient = z_dim
+
 	   line = grid_line(orient,grid)
 	   IF (line .EQ. mpsnorm) RETURN
 

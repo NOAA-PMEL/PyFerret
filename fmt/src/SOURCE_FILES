@@ -22,9 +22,11 @@ cd_dsg_check_timecoord.F\
 cd_dsg_feature_ok.F\
 cd_dsg_featurename.F\
 cd_dsg_get_featuretype.F\
+cd_dsg_get_file_featuretype.F\
 cd_dsg_grids.F\
 cd_dsg_read.F\
 cd_dsg_scan_vars.F\
+cd_dsg_tp_to_prof.F\
 cd_dset_remoteok.F\
 cd_encode_url.F\
 cd_get_1_axis.F\
@@ -216,7 +218,9 @@ tm_dset_use_grids.F\
 tm_dsg_dset_from_grid.F\
 tm_dsg_e_axis.F\
 tm_dsg_facts.F\
+tm_dsg_ftrset_facts.F\
 tm_dsg_instance_grid.F\
+tm_dsg_nf2features.F\
 tm_dsg_nfeatures.F\
 tm_dsg_obs_grid.F\
 tm_dsg_orientation.F\

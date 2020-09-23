@@ -59,16 +59,26 @@
 	INTEGER dset, cx, nfeatures
 
 * internal variable declarations:
-        INTEGER i, idim, var, inst_grid, lm
+        INTEGER i, idim, var, inst_grid, lm, obs_dimlen
 	REAL min_ww, max_ww
 
 * initialize
 	var = dsg_row_size_var(dset)
 	inst_grid = ds_grid_number(var)
 
+	obs_dimlen = dsg_obs_dimlen(dset)
+
 * get the E axis limits as integers
 	cxdsg_lo_e = cx_lo_ww(e_dim,cx) + .5   ! +.5 cuz ww lims
 	cxdsg_hi_e = cx_hi_ww(e_dim,cx)
+
+* Grid of the timeseries-station or trajectory variable in a timeseriesProfile or trajectorProfile set
+	IF (cx_lo_ww(e_dim,cx) .EQ. unspecified_val8 .OR. 
+     .      cx_lo_ww(e_dim,cx) .EQ. unspecified_val8) THEN
+	   cxdsg_lo_e = 1
+	   cxdsg_hi_e = nfeatures
+	ENDIF
+        
 	cxdsg_constrain_e = cxdsg_lo_e.GT.1 .OR. cxdsg_hi_e.LT.nfeatures
 
 * has the user constrained beyond the default WW limits of the dataset?
@@ -104,8 +114,7 @@
 	      cxdsg_bad_val(idim) = ds_bad_flag(var)
 	      lm = dsg_loaded_lm(var)
 	      cxdsg_coord_lm(idim) = lm
-* ... all DSG vars are one of 2 grids: obs or instance
-	      cxdsg_is_obs_coord(idim) = ds_grid_number(var) .NE. inst_grid
+	      cxdsg_is_obs_coord(idim) = lm_size(lm) .EQ. obs_dimlen
 	   ENDIF
 	ENDDO
 

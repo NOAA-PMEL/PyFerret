@@ -195,8 +195,14 @@
 * if it has a cf_role attribute, we'll put its axis in the E direction.
 *  trajectory:cf_role = "trajectory_id" (or var w/ "profile_id", or "timeseries_id")
 * (IF there is a instance_dimension attribute, it's value is the the instance axis,
-* to be put in the E direction. If there is a sample_dimension attribute on some variable, its value is the obs 
-* dimension, to be put in the X direction.) 
+* to be put in the E direction. If there is a sample_dimension attribute on some variable, 
+* its value is the obs  dimension, to be put in the X direction.) 
+* All that is true for Point, Timeseries, Trajectory or Profile data.  If we have a 
+* TrajectoryProfile or TimeseriesProfile dataset, the instance_dimension attribute points 
+* to the trajectory-index or timeseries-index dimension. For this reason think of the 
+* instance dimension for point, trajectory, timeseries, or profilefeature types as the 
+* ifeature-dim.  For the compound feature types, ifeature-dim is the dimension counting 
+* number of profiles.
 
 	   has_perm = .FALSE.
 	   DO idim=1, nferdims
@@ -211,7 +217,7 @@
 * find the instance dimension
 
               DO 15 idim = 1, nvdims
-	         IF (idim .EQ. eax) cfrole_dim = idim
+	         IF (vdims(idim) .EQ. eax) cfrole_dim = idim
  15          CONTINUE
              GOTO 35  ! only one cf_role attribute recognized
 

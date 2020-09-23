@@ -221,6 +221,8 @@
 *                  But, if they've said USE/REGULART then go ahead and treat it as regular.
 * v7445*acm*  4/19 Fix the calls to TM_SCALE 
 * V7.51 *acm* 5/2019: Issue 1934: error with Epic file where east lons were treated as west
+* V7.61 *acm* 7/2020: back to issue 334, test was too stringent. Normalize by the coordinate
+*                     data size and use single precision.
 *
 * argument definitions:
 *       cdfid    - netCDF id number for already opened CDF file  (to go away with new attr. hanling)
@@ -263,7 +265,7 @@
       LOGICAL NC_GET_ATTRIB, CD_GET_ATTVAL,
      .        TM_HAS_STRING, TM_FPEQ_EPS, TM_DFPEQ, CD_GET_ATTVALC, 
      .        CD_GET_ATTVAL_L, TM_CHECK_BNDS, TM_CHECK_BNDS_CENTERED, 
-     .        TM_FPEQ, TM_DFPEQ_TOL, NC_GET_ATTRIB_DP,
+     .        TM_FPEQ, TM_DFPEQ_TOL, NC_GET_ATTRIB_DP, TM_FPEQ_SNGL,
      .        got_it, got_torg, do_warn,
      .        epic_time, west_lon, yyyymmdd_time, 
      .        got_mod, mod_tf, setmodfalse, ok_cal, ok,
@@ -286,7 +288,7 @@
 
       REAL    rbuff, delta, first_delta, val, val2, lm_len, 
      .        scale, offset, start
-      REAL*4  r4delta
+      REAL*4  r4delta, r1, r2, rscale
       REAL*8  TM_LONW2LONE, TM_WW_AXLEN, GET_LINE_COORD,
      .        tmp8, axwwlen, dscale, doffset,  micro_adj, madj
       CHARACTER*12 TM_LEFINT
@@ -333,6 +335,9 @@
 !      IF ( nvdims .NE. 1 ) CALL TM_ERRMSG
 !     .     ( cdfstat+pcdferrmax, status, 'CD_GET_1_AXIS', cdfid, ivar,
 !     .     vname(:vlen), 'not a 1D variable', *5900 )
+
+
+      is_double = vartype .EQ. ncdouble
 
 * get axis length:
 
@@ -693,9 +698,8 @@ c           IF ( status .NE. merr_ok ) GOTO 1000        ! 3/99 soft error
       ENDIF
 
 * was a regular time axis forced on us by the user?
-      IF (tregular) THEN 
-        IF (line_direction(iaxis).EQ."TI" .OR.
-     .      line_direction(iaxis).EQ."TT" ) line_regular(iaxis) = .TRUE.
+      IF ( tregular .AND. line_direction(iaxis)(1:1).EQ."T" ) THEN
+        line_regular(iaxis) = .TRUE.
         got_bnds = .FALSE.
 	got_edges = .FALSE.
 	its_irregular = .FALSE.
@@ -752,13 +756,14 @@ c           IF ( status .NE. merr_ok ) GOTO 1000        ! 3/99 soft error
      .                       val2, status )
          ENDIF
 
-*  Do the first-delta and computed delta-coordinates agree?
+*  Do the first-delta and computed delta-coordinates agree? Scale by the coordinate size.
+*  val is 1st coord pt, val2 is last pt
 
-         IF (is_double) THEN
-            ok = TM_DFPEQ(first_delta, ABS(val2-val)/DBLE(npts-1) ) 
-         ELSE
-            ok = TM_FPEQ(first_delta, ABS(val2-val)/DBLE(npts-1) ) 
-         ENDIF
+	 rscale = (abs(val) + abs(val2))/ 2.
+	 r1 = (ABS(val2-val)/DBLE(npts-1) )/ rscale
+	 r2 = first_delta/ rscale
+
+	 ok = TM_FPEQ_SNGL(r1, r2) 
          
 	 IF (.NOT. ok ) THEN
             CALL TM_NOTE('Axis "'//vname(:vlen)//'" is irregular. Ignoring'//
@@ -914,9 +919,6 @@ c           IF ( status .NE. merr_ok ) GOTO 1000        ! 3/99 soft error
          IF ( west_lon ) THEN
             CALL TM_LONW2E_LINE (linemem(iaxis)%ptr, npts)
          ENDIF
-	 
-         is_double = vartype .EQ. ncdouble
-
 
 * Check for misordered or repeated data
 * If repeated values, apply micro-adjusting, or report as a warning if the 

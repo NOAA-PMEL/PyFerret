@@ -320,6 +320,9 @@
 	   ENDDO
 	   grid_line(E_dim, igrid) = dsg_instance_axis
 	   grid_line(F_dim, igrid) = mpsnorm
+	   IF (dsg_instnc_ftrset_axis .NE. int4_init) 
+     .		grid_line(F_dim, igrid) = dsg_instnc_ftrset_axis
+
 * ... save pointer to this grid as part of the dataset
 	   dsg_xlate_grid(dset) = igrid
 	ENDIF

@@ -49,6 +49,7 @@
 *                  routine name LOHI_STRING internally.
 *       *acm* 3/12 cleanup ifdefs and unnecessary include files
 * V751 6/19 *acm* TM_FMT rewrite: formatting of lon/lat coordinate strings
+* V761 8/20 *acm* Longer LOHI_WORLD, LOHI_STRING strings higher-precision outputs
 
         IMPLICIT NONE
 	include	'ferret.parm'

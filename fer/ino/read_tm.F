@@ -77,16 +77,18 @@
 
 * internal variable declarations:
 	LOGICAL	TM_ITSA_DSG_RAGGED,
-     .		has_a_stride, has_strides(nferdims), its_dsg
-	INTEGER MGRID_SIZE_DELTA,
+     .		has_a_stride, has_strides(nferdims), 
+     .		its_dsg, its_dsg_promote
+	INTEGER MGRID_SIZE_DELTA, TM_DSG_NF2FEATURES,
      .			idim, variable, category, data_set, grid,
      .			sf_num, tmap_status, 
      .			lo_ss(nferdims), hi_ss(nferdims),
      .			lo_s1, lo_s2, lo_s3, lo_s4, lo_s5, lo_s6, 
      .			hi_s1, hi_s2, hi_s3, hi_s4, hi_s5, hi_s6,
-     .			stride(nferdims), lo_ss_ds,hi_ss_ds, line
+     .			stride(nferdims), lo_ss_ds,hi_ss_ds, line, n2feat,
+     .			nvdims, vdims(2), npts
 * V500 *kob* 3/99- up VAR_CODE and local var variable_code to 64 chars
-	CHARACTER*128	VAR_CODE, variable_code
+	CHARACTER*128	VAR_CODE, variable_code, buff
 
 * *kob* 2/99 - add declaration for new c function
 	INTEGER REPLACEABLE_BAD_FLAGS
@@ -138,6 +140,7 @@
 !	IF ( has_a_stride ) CALL UN_CACHE( mr )   ! since lo:hi are "fake"
 
 * set up array of subscripts
+
 	DO 300 idim = 1, nferdims
 *<jli
            line = grid_line(idim, grid)
@@ -256,12 +259,24 @@
 * read the data
 
 	IF (its_dsg) THEN
+	
 	   CALL CD_DSG_READ(data_set,
      .			    variable,
      .			    memry(mr)%ptr,
      .			    mr_type(mr),
      .			    tmap_status	)
 	ELSE
+	   
+	   n2feat = TM_DSG_NF2FEATURES (data_set)
+	   IF (n2feat .GT. 0) THEN
+	   
+	      CALL CD_GET_VAR_DIMS_INFO (data_set, variable, 
+     .        buff, nvdims, vdims, status)
+	      IF (nvdims.EQ.2) vdims(1) = vdims(2) 
+	      CALL CD_GET_DS_DIMS (data_set, vdims(1), buff, npts, status)
+	      IF (n2feat .NE. npts) n2feat = 0
+	   ENDIF
+
 	   CALL TM_READ( data_set,
      .			 variable_code,
      .			 lo_s1, lo_s2, lo_s3, lo_s4, lo_s5, lo_s6, 
@@ -271,6 +286,7 @@
      .			 stride,
      .			 memry( mr )%ptr,
      .			 sf_num,
+     .			 n2feat,
      .			 tmap_status		)
 	ENDIF 
 	IF ( tmap_status .NE. merr_ok ) THEN

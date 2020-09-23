@@ -29,7 +29,6 @@
 * V671  6/11 *acm*  New 2D linear xy regridding, fixing ticket 1862
 * V671 7/11  *acm* Ticket 1868 IFV - masking expressions with ifValid, treating 
 *		   zero as valid. 
-* PyFr 11/10 *kms* - added category cat_pystat_var (python static variable)
 * V680  2/12 *kms* Add e_dim, and f_dim parameters, nferdims is in tmap_dims.parm
 * V680 5/12 *acm* 6D Ferret, changes for DEFINE DATA/AGGREGATE
 * V690 12/13-3/14 *sh* added max_auxregrid_trans for aux variable regridding,
@@ -54,9 +53,12 @@
 *                  variables, pre-defined axes and grids, cat_calc_var.
 * V698  3/16 *sh* expanded max_gfdl_dsets for EF agg needs+
 * V7   *acm*  6/12 Add Union aggregations: DEFINE DATA/AGG/U
+* V71  11/10 *kms* Add category cat_pystat_var (python static variable) 
+*                  just as a placeholder in Ferret (to reduce differences)
 * V710 *acm* 10/16 Ticket 2422: variables uvar_grid, uvar_data_type, uvar_aux_cat, 
 *                  uvar_aux_var replaced with calls to LIST routines in NCF_Util.c 
 *                  Increase size of max_gfdl_dsets and max_grids
+* V720: 4/17 *acm* Add direction-changing functions as a subset of grid-changing ones
 * V720: 4/17 *acm* Add direction-changing functions as a subset of grid-changing ones
 * V720: 6/17 *acm* Ticket 2346: new @IIN regridding transform
 * V740: 1/18 *acm* for issue 1854, protection status temporarily reset 
@@ -64,6 +66,11 @@
 * V740: 3/18 *acm* Introduce parameter abstractax_len for abstract axis length 99999999
 * V741 *acm* 5/18 Promoting global attributes to a variable in ensembles, new cat_agg_gpromote
 * V7.44 11/18 *acm* Issue 1905: add int64 as a data type 
+* V761 *acm* 7/20 Issue 1981:in ISUBSCR_CX distinguish rounding for single 
+*                 point vs range of points
+* V761 *acm* 7/20 Pull out the definition of pCR (carriage return character to put
+*                 into output messages that go thorough LIST_MULTI) into a separate
+*                 incude file to let it be easily included under fmt/src/
 
 * this should always match maxdsets in TMAP_FORMAT:
 	INTEGER		max_gfdl_dsets
@@ -120,13 +127,8 @@
      .			unspecified_name4	= '&&&&',
      .			unspecified_val4	= -2.5E34 )
 
-* 3/03 *kob* - kludge: this COMMON inserted to allow g77 to comply with all
-*              other compilers
-	CHARACTER*1	pCR
-	COMMON /XINIT_PROBLEMS/ pCR 
-*	PARAMETER     ( pCR = o'015' )
 
-
+	INCLUDE 'xinit.parm'
 
 * quantities relevant to management of memory and memory variables
 	INTEGER		mr_deleted,		mr_nonexist,
@@ -273,10 +275,12 @@
 * (in FUNCTION ISUBSCRIPT to resolve ambiguities when coord is on box boundary)
 	INTEGER		round_up,
      .			round_dn,
+     .			round_sngl,
      .			round_never
 	PARAMETER     ( round_up    = 1,
      .			round_dn    = 2,
-     .			round_never = 3	)
+     .			round_never = 3,
+     .			round_sngl  = 0	)
 
 * codes to designate what mathematical transformations have been applied
 	INTEGER		max_plane_transform,
@@ -784,10 +788,10 @@
 	PARAMETER     ( pagg_promotion_indicator_dset = -6767)
 
 * flags to indicate DSG-ness
-	INTEGER		pdsg_not_dsg, pdsg_instance, pdsg_observation
+	INTEGER		pdsg_not_dsg, pdsg_instance, pdsg_observation, pdsg_f2var
 	PARAMETER     ( pdsg_not_dsg     = 0,
      .			pdsg_instance    = 1,
-     .			pdsg_observation = 2 )
+     .			pdsg_observation = 2,
+     .			pdsg_f2var	 = 3)
 	REAL	        dsg_masked_out_flag
 	PARAMETER     ( dsg_masked_out_flag = -12345.)
-

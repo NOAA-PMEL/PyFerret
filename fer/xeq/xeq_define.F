@@ -417,7 +417,8 @@
      .            letdset, its_remote, agg_hide, def_att_quiet, purge_all,
      .            user, norm, nouser, use_strict, have_expr, 
      .            original, true_month, line_alloc, truemonth_noted,
-     .            is_double, misordered, bnds_or_edges, okmod, is_like, is_fmask
+     .            is_double, misordered, bnds_or_edges, okmod, is_like, 
+     .            is_fmask, is_smask
 	INTEGER   REGION_NUMBER, GRID_FROM_NAME, VIEWPORT_NUMBER, STR_UPCASE,
      .		  CX_DIM_LEN, ALIAS_ID, EFCN_SCAN,
      .		  TM_GET_LINENUM, TM_LENSTR1, 
@@ -800,7 +801,7 @@
 * Was this a feature-mask for a DSG dataset(s)?  If so cancel that masking.
 
 	slen = TM_LENSTR1(buff1) 
-	CALL UNSET_FEATURE_MASKS (buff1, slen, is_fmask)
+	CALL UNSET_FEATURE_MASKS (buff1, slen, is_fmask, is_smask)
 
 * if this is a global foreground definition that replaces any variable
 * then purge cached calculations (8/95)
@@ -867,6 +868,10 @@
 	IF (is_fmask) THEN
 	   slen = TM_LENSTR1(buff1) 
 	   CALL RELOAD_DSG_MASKVAR (buff1, slen)
+	ENDIF
+	IF (is_smask) THEN
+	   slen = TM_LENSTR1(buff1) 
+	   CALL RELOAD_DSG_FTRMASKVAR (buff1, slen)
 	ENDIF
 
 *     Inherit all attributes from another variable. If /TITLE, /UNITS etc were

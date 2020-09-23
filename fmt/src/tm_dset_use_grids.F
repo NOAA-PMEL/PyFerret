@@ -67,6 +67,13 @@
 	   ENDIF
  50	CONTINUE
 
+* Do we need to bump up the use-count of the xlation grid?
+
+c	IF (dsg_ragged(dset)) THEN
+c	   IF (dsg_xlate_grid(dset) .NE. int4_init) 
+c     .         CALL TM_USE_DYN_GRID( dsg_xlate_grid(dset) )
+c	ENDIF 
+
 * always successful completion
 	RETURN
 

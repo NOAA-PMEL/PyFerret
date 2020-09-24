@@ -147,12 +147,12 @@
 
 * IF it's PLOT/ALONG=XY/Z=/LO:HI or PLOT/ALONG=T/Z=/LO:HI then the locgic here returns 
 * the first value encountered within the Z range along each profile.
-* IF no /Z= region is given then it returns the first valid value found in each profile.
+* IF no /Z= region is given then it returns the first value found along each profile.
 * Issue a note about this.
 
 	   IF (cx_lo_ww(z_dim, cx_cmnd) .EQ. unspecified_val8  ) THEN
 	      CALL WARN (
-     .        'PLOT/ALONG=  with no /Z= specified uses the first value encountered in each profile')
+     .        'PLOT/ALONG=  with no /Z= specified uses the first data value in each profile')
 	      first_warn = .FALSE.
 	   ENDIF
 
@@ -325,7 +325,7 @@ c A message is written in PLOT_SET_UP
 
 	CALL TRANSFER_CONTEXT( is_cx(1), cx_buff )
 
-* For each station, populate a line in time using the first valid value
+* For each station, populate a line in time using the first value
 * from the profile at that station and time.
 
 	the_dim = orientation
@@ -444,7 +444,7 @@ c	      ENDIF
 
 	   ENDIF  ! new_line
 
-* Find first and last valid points for this feature applying the user's context 
+* Find first and last points for this feature applying the user's context 
 * This just masks the range of the independent variable. Still need to apply the 
 * process_obs mask to the independent variable when plotting.
 
@@ -484,7 +484,7 @@ c	      ENDIF
 	      CALL PUT_LINE_COORD (dsg_linemem(cxdsg_lm_tsdat)%ptr, ntim, dep_dat(irow_start) )  
 	      IF (irow_start .NE. irow_end .AND. first_warn) THEN
 	         CALL WARN (
-     .            'PLOT/ALONG= /Z=LO:HI uses the first value in the Z- range on each profile')
+     .            'PLOT/ALONG= /Z=LO:HI uses the first data value in the Z- range on each profile')
 		 first_warn = .FALSE.
 	      ENDIF
 	   ELSE

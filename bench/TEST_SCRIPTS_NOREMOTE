@@ -347,6 +347,8 @@ bn_dsg_naming.jnl
 bn_profile_from_timeprof.jnl
 bn_profile_from_trajprof.jnl
 bn_dsg_compound.jnl
+bn_dsg_plotalong.jnl
+bn_dsg_return_coord.jnl
 
 !
 ! bn_gif, bn_all_ef, and bn_startupfile at end
@@ -360,27 +362,3 @@ bn_startupfile.jnl
 ! (not part of normal benchmark tests)
 !
 err700_decimate.jnl
-!
-! PyFerret-only Ferret scripts
-!
-bn_color_wire.jnl
-bn_outline_poly.jnl
-bn_contourcolor.jnl
-bn_inf2missing.jnl
-bn_pointplots.jnl
-bn_symbolpattern.jnl
-bn_symbolcolors.jnl
-bn_stats_histogram.jnl
-bn_setting_text.jnl
-!
-! PyFerret-only Python scripts
-!
-testgetstrdata.py
-testferregion.py
-testferdset.py
-testfervar.py
-testferaggdset.py
-testferaxis.py
-testfergrid.py
-testferpyvar.py
-testfermethods.py

@@ -1,0 +1,72 @@
+! bn_dsg_plotalong.jnl
+! tests of PLOT/ALONG= for DSG datasets
+!   plot/along-xy will make a map plot for timeseries, profile, 
+!   timeseriesprofile or trajectoryprofile data
+!   plot/along=t makes a timeseries plot of timeseriesprofile data.
+
+use profile_dsg.nc
+set view ul
+plot/along=xy sal
+
+use simple_timeseries_dsg
+set view ur
+plot/along=xy sst
+
+use dsg_trajprofile_example.nc
+set view ll
+plot/along=xy temperature
+
+use dsg_tserprofile_example.nc
+set view lr
+plot/along=xy temperature
+
+frame/file=plot_alongxy_dsg.gif
+cancel view
+
+! Now test plot/along= giving the native plot type,
+! which should do plot as if /along= were not given.
+
+use profile_dsg.nc
+set view ul
+plot/along=z sal
+
+use simple_timeseries_dsg
+set view ur
+plot/along=t sst
+
+use dsg_trajprofile_example.nc
+set view ll
+plot/along=z temperature
+
+use dsg_tserprofile_example.nc
+set view lr
+plot/along=z temperature
+
+frame/file=plot_along_native_dsg.gif
+
+cancel view
+! Intentional errors, specifying /along= for directions
+! that are invalid for the data type
+
+set mode ignore
+
+use profile_dsg.nc
+plot/along=y sal
+plot/along=t sal
+
+use simple_timeseries_dsg
+plot/along=y sst
+plot/along=z sst
+
+use dsg_trajprofile_example.nc
+plot/along=y temperature
+plot/along=t temperature
+
+use dsg_point_data.nc
+plot/along=y sst
+use dsg_point_data.nc
+plot/along=z sst
+use dsg_point_data.nc
+plot/along=t sst
+
+set mode /last ignore

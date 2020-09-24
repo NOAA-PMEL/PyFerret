@@ -126,8 +126,6 @@ SET MODE VERIFY
 ! cancel mode 6d_lab
 ! V702 *sh* 3/17 - added dynamic memory benchmarks.  Tweaked a couple of others
 
-alias frame say frame
-
 GO bn_reset bn_syntax
 GO bn_syntax
 cancel mode metafile      !9/97
@@ -1356,6 +1354,9 @@ GO bn_dsg_reshapefcn
 
 GO bn_reset bn_dsg_compound
 GO bn_compound_dsg
+
+GO bn_reset bn_dsg_plotalong
+GO bn_dsg_plotalong
 
 ! *********** PyFerret-specific scripts ***********
 

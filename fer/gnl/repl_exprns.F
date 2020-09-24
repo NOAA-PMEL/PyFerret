@@ -166,6 +166,7 @@
 	INTEGER   CGRID_SIZE, CGRID_AXIS, TM_LENSTR1, CX_DIM_LEN,
      .		  FIND_DSET_NUMBER, GET_ABSTRACT_LINE, TM_LENSTR,
      .		  TM_GET_GRIDNUM, GRID_FROM_NAME, TM_SUBSC, TM_GET_CALENDAR_ID,
+     .		  TM_DSG_DSET_FROM_GRID,
      .		  str_len, lenbuff, iend, itmp, axis,
      .		  mr, cx, mr_temp, i, i1, i2, use_digits, true_end,
      .		  qual_end, brkt, idim, use_width, dset, varid,
@@ -177,7 +178,8 @@
 	REAL	  result, val, aval
 	REAL*8 TM_WORLD, TM_WW_AXLEN, ww
 	CHARACTER TM_FMT*48, LEFINT*16, VAR_TITLE*(max_len),
-     .		  VAR_UNITS*(max_len), GET_STRING_ELEMENT*(max_len),
+     .		  VAR_UNITS*(max_len), GET_STRING_ELEMENT*(max_len), 
+     .		  VAR_CODE*1024,
      .		  repl*(max_len), bad_str*(max_len), return_errmsg*256,
      .            buff*128, varname*512, attname*128, aname*128, name*128
         CHARACTER*6 typstring(0:6)
@@ -205,7 +207,7 @@
         coordvar = .FALSE.
         apply_cx = .FALSE.
 	str_len = 0
-        is_dsg = .FALSE.
+	is_dsg = .FALSE.
 	
 	grid = unspecified_int4
 	cx_only = .FALSE.   ! do merge_grid in mode for not evaluating full context
@@ -795,7 +797,7 @@
            WRITE (return_errmsg,*)  
      .       'use RETURN= shape,size,grid,title,bad,t0,f0,units,dset, '//pCR//
      .	     '  dsetnum,dsetpath,dsettitle,*size,*start,*end,'//pCR//
-     .       '  *units,*axis,nc_scale,nc_offset,user_scale,user_offset,'//pCR//
+     .       '  *units,*axis,*coord,nc_scale,nc_offset,user_scale,user_offset,'//pCR//
      .       '  calendar,dtype,xmod,tmod,status,isDepth,isReady,defined'
 !     .       '  calendar,dtype,xmod,tmod,status,isDepth,isReady,isLoaded' ! w isLoaded
 
@@ -1156,7 +1158,7 @@
 !	         repl = '1'
 !	      ENDIF
 !	   
-* ... RETURN=*SIZE, *START, *END, *UNITS, *AXIS
+* ... RETURN=*SIZE, *START, *END, *UNITS, *AXIS, or *COORD for dsg datasets
 	   ELSE	
 * ... axis specific requests - must start with i,j,k,l,m,n or x,y,z,t,e,f
 	      DO 220 idim = 1, nferdims
@@ -1187,6 +1189,34 @@
 		    CALL CHOOSE_LINE_NAME(axis, orig_name, repl)
 	         ENDIF
 	         need_formatting = .FALSE.
+
+	      ELSEIF ( repl(2:5) .EQ. "COOR") THEN
+	         grid = cx_grid(cx)
+		 IF (TM_ITSA_DSG(grid)) THEN
+
+		    dset = TM_DSG_DSET_FROM_GRID( grid )
+
+		    IF (idim.LE.t_dim) THEN
+		       repl = VAR_CODE( cat_file_var, dsg_coord_var(idim,dset))
+
+		    ELSE
+		       axis = CGRID_AXIS ( idim, cx )
+		       IF (axis.EQ.mnormal .OR. axis.EQ.munknown) THEN
+	                 repl = 'NORMAL'
+		       ELSE
+* Get axis name. If mode upcase is canceled, use original spelling if defined
+		          orig_name = .FALSE.
+		          CALL CHOOSE_LINE_NAME(axis, orig_name, repl)
+		       ENDIF
+		       need_formatting = .FALSE.
+		    ENDIF
+
+		 ELSE ! not dsg
+		    GOTO 5530
+		 ENDIF
+
+	         need_formatting = .FALSE.
+
 	      ELSEIF ( repl(2:5) .EQ. "UNIT" ) THEN
 	         axis = CGRID_AXIS ( idim, cx )
 	         IF (axis.EQ.mnormal .OR. axis.EQ.munknown) THEN
@@ -1415,4 +1445,9 @@ c		    ENDIF
  5520   risc_buff = cmnd(i:qual_end)
 	CALL ERRMSG( ferr_invalid_command, status,
      .     return_errmsg//pCR//risc_buff, *5000)
+
+ 5530   risc_buff = cmnd(i:qual_end)
+	CALL ERRMSG( ferr_invalid_command, status,
+     .       'Variable is not on a DSG grid in a DSG dataset: '
+     .					//risc_buff, *5000)
 	END

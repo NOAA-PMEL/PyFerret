@@ -3696,12 +3696,10 @@ ooooooooooooooooooooooooooooooooooooooooooo
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
-           *** NOTE: Axis "X1_20" is irregular. Ignoring erroneous point_spacing=even attribute.
  LISTing to file aa.nc
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
-           *** NOTE: Axis "X1_20" is irregular. Ignoring erroneous point_spacing=even attribute.
  LISTing to file aa.nc
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -6354,6 +6352,7 @@ ooooooooooooooooooooooooooooooooooooooooooo
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
            *** NOTE: Axis "XAXIS" is irregular. Ignoring erroneous point_spacing=even attribute.
+ LISTing to file a.nc
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -6646,15 +6645,13 @@ load  TEMP_CTD_RBR_MEAN[d=1,g=reg_var]
 Executed by script: *** GO bn_regrid_from_dsg.jnl ***
 *** Running ferret script: bn_dsg_use_feature.jnl
  **TMAP ERR: Invalid command
-             Requested USE/FEATURE=Profile, but dataset is not a valid DSG file
+             Requested USE/FEATURE=Prof, but dataset is not a valid DSG file
 SET DAT/FORM=CDF/feature=profile dsg_cross_dateline.nc
 Executed by script: *** GO bn_dsg_use_feature.jnl ***
            *** NOTE: Coordinates inconsistent with FeatureType. Trajectory data must have observations along XYT
  **TMAP ERR: Invalid command
              Error on SET DATA/FEATURE= applied to an open dataset.
              Data set: ./data/DSG_ERDDAP_Tao5daySst.nc
-           *** NOTE: FEATURE-TYPE NOT YET IMPLEMENTED: TrajectoryProfile
-           *** NOTE: Initializing as a non-DSG dataset
            *** NOTE: Dataset has FeatureType attribute: Trajectory
            *** NOTE: But is not initialized as a DSG File: Required coordinate variables not found. Trajectory file is missing directions: lat
            *** NOTE: Initializing the file as a non-DSG dataset
@@ -6960,6 +6957,37 @@ Executed by script: *** GO bn_mode_dsg.jnl ***
            Valid options are /OUTTYPE=DOUBLE,FLOAT,INT,SHORT,or BYTE
 LIST/FORMAT=CDF/clobber/file=a.nc/outtype='string' str_temp
 Executed by script: *** GO bn_string_type.jnl ***
+*** Running ferret script: bn761_bug_fixes.jnl
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
+*** Running ferret script: bn_dsg_naming.jnl
+*** Running ferret script: bn_profile_from_timeprof.jnl
+           *** NOTE: Using Timeseriesprofile data as Profile. Converting variables to profile dimension:
+          station
+ LISTing to file a.nc
+ LISTing to file a.nc
+           *** NOTE: Using Timeseriesprofile data as Profile. Converting variables to profile dimension:
+          station
+           *** NOTE: Using Timeseriesprofile data as Profile. Converting variables to profile dimension:
+          station
+           *** NOTE: Using Timeseriesprofile data as Profile. Converting variables to profile dimension:
+          station
+ LISTing to file fake_model_temp.nc
+*** Running ferret script: bn_profile_from_trajprof.jnl
+           *** NOTE: Using Trajectoryprofile data as Profile. Converting variables to profile dimension:
+          trajectory
+ LISTing to file a.nc
+ LISTing to file a.nc
+           *** NOTE: Using Trajectoryprofile data as Profile. Converting variables to profile dimension:
+          trajectory
+           *** NOTE: Using Trajectoryprofile data as Profile. Converting variables to profile dimension:
+          trajectory
+           *** NOTE: Using Trajectoryprofile data as Profile. Converting variables to profile dimension:
+          trajectory
+           *** NOTE: Using Trajectoryprofile data as Profile. Converting variables to profile dimension:
+          trajectory
+ LISTing to file fake_model_temp.nc
 *** Running ferret script: bn_gif.jnl
  **ERROR: dimensions improperly specified: specified data is not a line
            - its a 2D region: "plot/i=1:10/j=1:20/nolabel i+j"

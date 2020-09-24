@@ -114,6 +114,8 @@
 * V720: 4/17 *acm* Add direction-changing functions as a subset of grid-changing ones
 * V751: 8/19 *acm* Remove the code for returning attributes to new routine attr_context.F
 * V751 7/19 *acm*  DSG-enabled Ferret: working with user-defined variables
+* V763 9/20 *acm* Update context handling for working with expressions and functions 
+*                  involving DSG variables.
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -137,9 +139,9 @@
 
 * internal variable declarations:
 	LOGICAL	EXPLICIT_UVAR, ITSA_GCVAR, NC_GET_ATTRIB, 
-     .		TM_ITSA_DSG,
+     .		TM_ITSA_DSG, CX_DIM_DIFF,
      .          its_gc, its_sample, start_sampling, got_it, coordvar,
-     .          reset_ss, do_err
+     .          reset_ss, do_err, its_dsg, its_cmpnd
 	INTEGER KNOWN_GRID, TM_LENSTR1, GCF_PARENT_UVAR, GCF_PARENT_CHAR,
      .		GCF_FIND_FCN, GCF_ARG_EVAL_ORDER, GET_VAR_GRID,
      .		MGRID_SIZE, TM_DSG_ORIENTATION, TM_DSG_DSET_FROM_GRID,
@@ -147,7 +149,7 @@
      .		dflt_cx, start, end, saved_grid, ifcn, size,
      .		dset, lo_isp, uvar, item, itype, idim,
      .		nitem, new_mr, len_name, csp1, cat, cvar, 
-     .          dsg_grid, orientation
+     .          dsg_grid, orientation, obsdimlen, feature_line
         REAL    counter_const
 	CHARACTER TM_FMT*48, name*150
 
@@ -583,12 +585,20 @@
 * axes.  Here we correct that into a ragged array representation
 
 	dsg_grid = cx_grid(big_cx)
+	its_dsg = TM_ITSA_DSG(dsg_grid)
 	IF ( TM_ITSA_DSG(dsg_grid) .AND.  
-     .	     cx_data_set(big_cx) .EQ. cx_data_set(lo_cx) ) THEN
-	   orientation = TM_DSG_ORIENTATION(dsg_grid)
+     .	     cx_data_set(big_cx) .EQ. cx_data_set(lo_cx) .AND.  
+     .	     .NOT. its_gc) THEN
+     
+	   CALL TM_DSG_FACTS( dsg_grid, orientation, obsdimlen, 
+     .                        feature_line, its_dsg, its_cmpnd )
 	   CALL FLESH_OUT_AXIS(orientation, big_cx, status)
 	   CALL FLESH_OUT_AXIS(e_dim,       big_cx, status)
-	   CALL TRANSFER_CONTEXT( big_cx, lo_cx )
+
+	   IF (CX_DIM_DIFF( big_cx, lo_cx, orientation) .OR. 
+     .         CX_DIM_DIFF( big_cx, lo_cx, e_dim ) )
+     .       CALL TRANSFER_CONTEXT( big_cx, lo_cx )
+
 	ENDIF
 
 * Deallocate dynamic grid if one is associated with this result
@@ -728,3 +738,4 @@ c Tentative fix for ticket 2234.  See also ticket 2547.
      .		*5000)
 
 	END	
+

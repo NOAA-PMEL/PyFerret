@@ -147,6 +147,9 @@
 * V751 *acm*11/19 new qualifier SAVE/NOCOORDS
 * V7.6 *acm* 2/20 When save/asglobal, do not update the conventions or history
 * v7.6 *acm* 5/20 Issue 1876: can read string-typed data, write as char.
+* V761 *acm* 7/20 Issue 1981:in ISUBSCR_CX distinguish rounding for single 
+*                 point vs range of points
+
 
         IMPLICIT NONE
         include 'netcdf.inc'
@@ -526,6 +529,8 @@
      .			( user_lo, grid, idim, cx, round_up )
 	            make_hi(idim) = ISUBSCR_CX 
      .			( user_hi, grid, idim, cx, round_dn )
+	            IF (user_hi .EQ. user_lo) make_hi(idim) = ISUBSCR_CX 
+     .			( user_hi, grid, idim, cx, round_sngl )
 	            IF ( .NOT.line_modulo(iaxis)  
      .		   .AND. ( make_hi(idim) .GT. line_dim(iaxis)
      .	              .OR. make_lo(idim) .LT. 1 )	   )	GOTO 5300

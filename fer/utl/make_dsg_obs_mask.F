@@ -64,7 +64,8 @@
 
 * internal variable declarations:
         INTEGER i, idim, lm, iptr
-	REAL    coord, axmod, bad
+	REAL    coord, axmod, bad, val, del_lo, del_hi,
+     .		constrain_lo_lo(4), constrain_hi_hi(4)
 
 	axmod = 360.0 
 
@@ -87,7 +88,70 @@
 	   IF (.NOT.cxdsg_constrain (idim))    CYCLE
 	   IF (.NOT.cxdsg_has_coord(idim))     CYCLE
 	   IF (.NOT.cxdsg_is_obs_coord(idim) ) CYCLE
+
 	   
+	   bad = cxdsg_bad_val(idim)
+	   lm = cxdsg_coord_lm(idim)
+
+* If the constraint in any direction is just one value, will look for 
+* nearest.
+
+	   constrain_lo_lo(idim) = cxdsg_constrain_lo(idim)
+	   constrain_hi_hi(idim) = cxdsg_constrain_hi(idim)
+
+	   IF (cxdsg_constrain_lo(idim) .EQ. cxdsg_constrain_hi(idim)) THEN
+
+* Set a new range, the next smallest value than the constraint, and the next largest.
+* Or if the coordinates match the constraint, keep that value.e
+	      
+	      val = ABS(unspecified_val8)
+	      del_lo = val
+	      del_hi = val
+	      DO i = 1, nobs
+
+	         iptr = iobs0+i
+	         coord = dsg_linemem(lm)%ptr(iptr)
+	         IF (coord .EQ. bad) CYCLE
+
+	         IF (idim .EQ. x_dim) CALL MODSCAT  (
+     .		       cxdsg_constrain_lo(idim), 
+     .		       cxdsg_constrain_hi(idim), axmod, 1, coord)
+
+	         IF (coord .LE. cxdsg_constrain_lo(idim) .AND. 
+     .	             cxdsg_constrain_lo(idim)-coord .LT. del_lo)
+     .	            del_lo = cxdsg_constrain_lo(idim) - coord 
+
+		 IF (coord .GT. cxdsg_constrain_hi(idim) .AND. 
+     .	             coord-cxdsg_constrain_hi(idim) .LT. del_hi)
+     .	            del_hi = coord - cxdsg_constrain_hi(idim)
+
+	      ENDDO
+
+* If the value is at the end of the range of values, only one of these may
+* have been set.
+	      IF (del_lo.EQ.val .AND. del_hi.EQ.val) THEN
+	         del_lo = 0.
+	         del_hi = 0.
+	     ELSE IF (del_lo .EQ. val) THEN
+	         del_lo = del_hi
+	      ELSE IF (del_hi .EQ. val) THEN
+	         del_hi = del_lo
+	      ENDIF
+
+* choose the nearest to the given constraint value 
+* TODO: Could return both and then the routine using the data would
+*       interpolate if mode_interpolate, etc.
+
+	      IF (del_lo .LE. del_hi) THEN
+	         constrain_lo_lo(idim) = cxdsg_constrain_lo(idim) - del_lo
+	      ELSE
+	         constrain_hi_hi(idim) = cxdsg_constrain_hi(idim) + del_hi
+	      ENDIF
+	      cx_lo_ww(idim,cx_plot) = cxdsg_constrain_lo(idim) 
+	      cx_hi_ww(idim,cx_plot) = cxdsg_constrain_lo(idim) 
+	
+	   ENDIF ! cxdsg_constrain_lo(idim) .EQ. cxdsg_constrain_hi
+
 	   bad = cxdsg_bad_val(idim)
 	   lm = cxdsg_coord_lm(idim)
 	   DO i = 1, nobs
@@ -96,12 +160,12 @@
 	      IF (coord .EQ. bad) CYCLE
 
 	      IF (idim .EQ. x_dim) CALL MODSCAT  (
-     .		       cxdsg_constrain_lo(idim), 
-     .		       cxdsg_constrain_hi(idim), axmod, 1, coord)
+     .		       constrain_lo_lo(idim), 
+     .		       constrain_hi_hi(idim), axmod, 1, coord)
 
 	      use_obs(i) = use_obs(i)
-     .		.AND. coord .LE. cxdsg_constrain_hi(idim) 
-     .		.AND. coord .GE. cxdsg_constrain_lo(idim)
+     .		.AND. coord .LE. constrain_hi_hi(idim) 
+     .		.AND. coord .GE. constrain_lo_lo(idim)
 	   ENDDO
 	ENDDO
 

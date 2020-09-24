@@ -62,6 +62,7 @@
 * V760 *acm* 4/20 PLOT_DSG_CHECK_LON360 now applies a lon-360 conversion of the 
 *                 longitudes if it'll be better and /HLIM not given
 * V760 *acm* 5/20 initialize dep_dim. Was unset when we get latitude from the DSG dataset
+* V762 *acm* 8/20 Add a second test for is this a trajectory ribbon plot.
 
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
@@ -99,11 +100,10 @@
 * V500 *kob* 3/99- up VAR_CODE and VAR_UNITS to 64 chars
 * internal variable declarations:
 
-	LOGICAL		NO_LINE_RANGE, GEOG_LABEL, TM_ITSA_DSG_RAGGED,
+	LOGICAL		NO_LINE_RANGE, TM_ITSA_DSG_RAGGED,
      .			versus, all_1_ind, all_1_dep, formatted, use_nice, 
      .			this_no_range(max_line_on_plot), indep_is_log, set_lev, 
-     .			its_dsg, mask_applied, user_hlim
-	CHARACTER*2040	plot_title
+     .			its_dsg, its_cmpnd, mask_applied, user_hlim
 	CHARACTER	LEFINT*8, LEFT_REAL*16, FULL_VAR_TITLE*2040,
      .			indep_ax*1, dep_ax*1, tstyle*3, 
      .			buff1*40, buff2*16, t1_date*14, tref*14, fmt*4
@@ -138,7 +138,7 @@
 
 * signal that plot set-up has begun
 	IF ( mode_diagnostic ) CALL SPLIT_LIST(pttmode_ops, ttout_lun,
-     .				'setting up plot', 15)
+     .				'setting up DSG trajectory plot', 15)
 
 * initialize
 
@@ -175,13 +175,11 @@
 
 	grid1 = cx_grid( cx )
 
-	IF (  qual_given(slash_plot_along) .GT. 0 )  
-     .	       CALL WARN ('PLOT/ALONG is ignored for discrete DSG data')
 	grid = cx_grid(is_cx(nmv))
 	dset = TM_DSG_DSET_FROM_GRID( grid )
 	nfeatures = TM_DSG_NFEATURES( grid )
 	its_dsg = .TRUE.    
-	CALL TM_DSG_FACTS( grid, idim, obsdimlen, fline, its_dsg )
+	CALL TM_DSG_FACTS( grid, idim, obsdimlen, fline, its_dsg, its_cmpnd )
 	IF (.NOT. its_dsg) GOTO 5200
 
 * The variable may be on the feature-axis. We will deal with that later but
@@ -272,7 +270,7 @@
      .                      status)
 	   IF (npts .NE. obsdimlen) THEN
 	      status = 0
-	      GOTO 5140
+	      GOTO 4000
 	   ENDIF
 	   numcx = 1  ! The context should come from the color-by var
 	   CALL GRP_CX_DOC( cx_list(nmv), numcx, cx_plot, key_doc )
@@ -447,7 +445,7 @@
      .                          status  )
 	      IF (npts .NE. obsdimlen) THEN
 	         status = 0
-	         GOTO 5140
+	         GOTO 4000
 	      ENDIF
 	   ENDIF
 
@@ -591,9 +589,9 @@
 
 	      IF (qual_given(slash_plot_levels) .EQ. 0) THEN
 	         CALL SET_DSG_ID_LEV 
-     .           (dset, cx, nfeatures, dep_dat, mr_type(mv), changed_key)
-
-	         set_lev = .TRUE.
+     .              (dset, cx, nfeatures, dep_dat, mr_type(mv), changed_key)
+ 
+	        set_lev = .TRUE.
 	      ELSE
 
 * If they said /levels=v this doesnt make sense.  Just use linear levs.
@@ -633,7 +631,6 @@
 * If the user set some /LEVELS then compute_mnstd just returns 
 
 
-	ENDIF ! cxdsg_empty_set
 
 
 	IF (need_histo) THEN
@@ -658,6 +655,8 @@
 	   ENDIF
 
 	ENDIF
+
+	ENDIF ! cxdsg_empty_set
  
 * pass the data to PLOT+
 
@@ -682,10 +681,6 @@
 * ... increment number of lines on plot
 	nline_on     = nline_on     + 1
 	nline_in_mem = nline_in_mem + 1
-
-* ... assign line style for the data plotting:
-	CALL LINE_STYLE(line_symbol, sym_size, skipsym, color, color1, use_line,
-     .			   do_dash, dashstyle, nline_in_mem, nline_on)
  
 *     Create a gaps-variable. Any masking is applied as the gaps are marked.
 
@@ -708,10 +703,6 @@
 	CALL PPLCMD ( from, line, 0, ppl_buff, 1, 1)
  3007	FORMAT ( 'GAPLOC ',I5 )
 
-	CALL LINE_STYLE(line_symbol, sym_size, skipsym, color, color1, use_line,
-     .			   do_dash, dashstyle, nline_in_mem, nline_on)
-
-        nline_on = nline_on + color1 - 1
 
 * axis scaling and formatting apply possible user settings
 * ... independent axis
@@ -762,12 +753,12 @@
 	ENDIF
 
 *  TITLES
-* Main plot title. Add a "Colored by var2" label for the ribbon color variable
+* Main plot title. The main plot label is the the ribbon color variable
 *
 	hlen = xlen ! single-precision xlen from PPLUS common -> double prec. var
 
 	IF ( .NOT.no_labels ) 
-     .          CALL LINE_PLOT_LABELS (var1, nkey_entries, ndv, cx_list, 
+     .          CALL LINE_PLOT_LABELS (nmv, nkey_entries, ndv, cx_list, 
      .		this_no_range, overlay, versus, nokey, .FALSE., 
      .		tstyle, cal_id_1, ribbon_var, indep_lab, dep_lab, 
      .		ind_min, dep_len, hlen, nfeatures, dset, 
@@ -785,6 +776,10 @@
 	status = ferr_ok
 	IF (overlay) iautot = iautot_save
 	RETURN
+	
+* not trajectory after all, will just do a ribbon-plot.
+
+ 4000	RETURN
 
 * error exit
  5000	CALL PPLCMD ( from, line, 0, 'NLINES', 1, 1 )	! wipe buffers clean

@@ -132,14 +132,23 @@
 * ... stack them above one another in the upper left
 
         grid = cx_grid(joint_cx)
-
         dset_num = cx_data_set(joint_cx)
+	dset_dsg = pdsg_not_dsg
         IF (dset_num .GT. pdset_irrelevant) THEN
 	   dset_dsg = TM_DSG_DSET_FROM_GRID( grid )
+	   
+	   IF (dset_dsg.LT.pdset_irrelevant .AND. dset_num.GT.pdset_irrelevant) THEN
+	      IF (dsg_xlate_grid(dset_num) .GT. 0) THEN
+	         dset_dsg = dset_num
+		 grid = dsg_xlate_grid(dset_num) 
+	      ENDIF
+	   ENDIF
+
            IF (dset_dsg .GT. pdset_irrelevant) THEN
 	      IF ( dsg_ragged(dset_dsg) ) grid = dsg_xlate_grid(dset_dsg) 
 	      cx_grid(joint_cx) = grid
 	      cx_data_set(joint_cx) = dset_dsg
+	      dset_dsg = TM_DSG_DSET_FROM_GRID( grid )
 	   ENDIF
         ENDIF
 

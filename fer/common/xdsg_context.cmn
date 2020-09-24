@@ -16,7 +16,9 @@
 	INTEGER	cxdsg_coord_lm(4),     ! linemem pointer to coordinates
      .		cxdsg_lo_e,	       ! low  E constraint as integer
      .		cxdsg_hi_e,	       ! high E constraint as integer
-     .		cxdsg_orient	       ! orientation of the dataset
+     .		cxdsg_orient,	       ! orientation of the dataset
+     .		cxdsg_lm_tsdat	       ! linemem pointer to timeseries data 
+				       !  selected from timeseriesProfile for plotting
 	REAL	cxdsg_constrain_lo(4), ! context ww lo constraint
      .		cxdsg_constrain_hi(4), ! context ww hi constraint
      .		cxdsg_bad_val(4)       ! location data may be missing
@@ -33,6 +35,7 @@
      .		cxdsg_coord_lm,
      .		cxdsg_lo_e,
      .		cxdsg_hi_e,
+     .		cxdsg_lm_tsdat,
      .		cxdsg_orient,
      .		cxdsg_constrain_e,
      .		cxdsg_no_coord_constraints,

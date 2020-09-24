@@ -1,0 +1,77 @@
+! bn_dsg_compound.jnl
+! Demo of plotting and listing, for "compound" DSG data types: 
+! TrajectoryProfile and TimeseriesProfile
+
+use dsg_trajprofile_example.nc
+show data
+
+! The trajectory-id
+list trajectory
+
+! A variable on the profile-id direction, 
+list trajectoryindex
+
+! The default plot is a profile plot with all the profiles in all trajectories
+set view left
+plot temperature
+
+! Define a mask on the trajectory-id direction.
+let mask = {,,1}
+set data/smask=mask 1
+set view right
+plot temperature
+frame/file=dsg_trajprof_profiles.gif
+
+! Listing of variables with all the coordinate info
+list/z=1:50 temperature
+
+
+cancel data/fmask 1
+cancel view
+
+! PLOT/ALONG= for a map plot.  Optionally specify /z= a range
+! else the code will use the first valid value on each profile
+
+plot/along=xy/y=-55.3:-54/x=108:110/thick/line/sym=18/siz=0.12 temperature
+frame/file=dsg_trajprof_traj.gif
+
+! Plot trajectories colored by ID
+
+plot/along=xy/thick/line/sym=18/siz=0.12 trajectory
+
+
+cancel data/all
+
+use dsg_tserprofile_example
+
+! The  station ID
+list station
+
+! The profile ID (as named in the ERDDAP dataset)
+list station_code
+
+! The default plot is a profile plot with all the profiles at all timeseries stations
+plot temperature
+
+set view left
+plot temperature
+
+! Define a mask on the trajectory-id direction.
+let mask = if station EQ "NH03" then 1
+set data/smask=mask 1
+set view right
+plot temperature
+frame/file=dsg_tserprof_profiles.gif
+
+
+cancel view
+cancel data/smask 1
+
+
+! PLOT/ALONG=T for a Timeseries plot.  Optionally specify /z= a range
+! else the code will use the first valid value on each profile
+
+
+plot/along=t/z=22:30/thick/line/sym=19/siz=0.2 temperature
+frame/file=dsg_tserprof_tser.gif
+

@@ -98,13 +98,13 @@
 
 * internal variable declarations:
 	LOGICAL TM_ITSA_DSG, user_title, units_same, do_units, its_dsg,
-     .          reset_dsg, process_feature(nfeatures), yes_key
+     .          reset_dsg, process_feature(nfeatures), yes_key, lonlat
 	INTEGER	TM_LENSTR1, TM_LENSTR, TM_UNIT_ID, STR_SAME, 
-     .		TM_DSG_DSET_FROM_GRID,
+     .		TM_DSG_DSET_FROM_GRID, TM_DSG_NF2FEATURES,
      .		ipl, nline_in_mem, slen, slen1, status, ptitl, style, 
      .		justify, iunits, istart, i, nfeatr(nfeatures), dtype, 
-     .		fvar_varid, dset_dsg, nlab
-	
+     .		fvar_varid, dset_dsg, nlab, cx, nftrsets
+
 	CHARACTER*2040	FULL_VAR_TITLE, VAR_TITLE_ONLY, KEY_STRING, 
      .			plot_title, plot_title_1
 	CHARACTER	VAR_UNITS*64, SECS_TO_DATE*20, TM_FMT*48,
@@ -114,12 +114,15 @@
 	REAL		xkeypos, ykeypos, xkeysize, ykeysize, 
      .			lab_ht, labsize, value
 	REAL*4		SYMWID, rht
+	
+        LOGICAL, DIMENSION(:), ALLOCATABLE :: process_ftrset
 
 	ptitl = qual_given( slash_title )
 	user_title = ptitl .GT. 0
 
 	its_dsg = .FALSE.
 	reset_dsg = .FALSE.
+	lonlat = .FALSE.
 	
 	IF (cxdsg_empty_set) THEN
 	   buff1 = CD_DSG_FEATURENAME ( cxdsg_orient )
@@ -133,26 +136,67 @@
 * if we are overlaying on an existing plot put the new variable name on as a
 * key at the lower left
 
+	nftrsets = 0
 	IF (nfeatures.GT.0) THEN
 	   its_dsg = .TRUE.
+	   cx = is_cx(var1)
 
-* create a mask showing which features to plot and a list of feature-numbers to label
+	   DO i = 1, nfeatures
+	      nfeatr(i) = -1
+	   ENDDO
+
+* create a mask showing which features were plotted, get a list of feature-numbers to label
 * This may be a user-defined variable or expression on a DSG grid. Get the DSG dataset number.
 
-	   dset_dsg = TM_DSG_DSET_FROM_GRID( cx_grid(is_cx(var1)) )
-	   CALL MAKE_DSG_FEATURE_MASK(dset_dsg, cx_list(var1), process_feature, nfeatures)
-	   ipl = 0
-	   DO i = 1, nfeatures
-	      IF (process_feature(i)) THEN
-	         ipl = ipl + 1
-		 nfeatr(ipl) = i
-	      ENDIF
-	   ENDDO
+	   dset_dsg = TM_DSG_DSET_FROM_GRID( cx_grid(cx) )
+	   IF (dset_dsg .LT. pdset_irrelevant) THEN 
+
+* a trajectoryProfile or timeseriesProfile dataset where we've changed the
+* contexts to plot as trajectory or timeseries. Get back the context for the
+* overall plot and set up the masks
+
+	      dset_dsg = dset
+	      nftrsets = TM_DSG_NF2FEATURES (dset_dsg)
+	      cx = cx_buff
+	      CALL MAKE_DSG_FEATURE_MASK(dset_dsg, cx_list(var1), 
+     .                                   process_feature, nfeatures)
+	         
+	      ALLOCATE (process_ftrset(nftrsets )) 
+	      CALL MAKE_DSG_FTRSET_MASK(dset, cx, nfeatures, process_feature, 
+     .           nftrsets, process_ftrset)
+     
+	      ipl = 0
+	      DO i = 1, nftrsets
+	         IF (process_ftrset(i)) THEN
+	            ipl = ipl + 1
+		    nfeatr(ipl) = i
+	         ENDIF
+	      ENDDO
+
+* The varid of the ftrset-id variable (trajectory or station)
+ 
+	      dummy = SANITARY_VAR_CODE(cat_file_var, dsg_ftrset_var(dset_dsg) )
+	      CALL CD_GET_VAR_ID  (dset_dsg, dummy, fvar_varid, status)
+
+	   ELSE  ! feature-mask
+
+	      CALL MAKE_DSG_FEATURE_MASK(dset_dsg, cx_list(var1), 
+     .                                   process_feature, nfeatures)
+	      ipl = 0
+	      DO i = 1, nfeatures
+	         IF (process_feature(i)) THEN
+	            ipl = ipl + 1
+		    nfeatr(ipl) = i
+	         ENDIF
+	      ENDDO
 
 * The varid of the feature-id variable
  
-	   dummy = SANITARY_VAR_CODE(cat_file_var, dsg_feature_var(dset_dsg) )
-	   CALL CD_GET_VAR_ID  (dset_dsg, dummy, fvar_varid, status)
+	      dummy = SANITARY_VAR_CODE(cat_file_var, dsg_feature_var(dset_dsg) )
+	      CALL CD_GET_VAR_ID  (dset_dsg, dummy, fvar_varid, status)
+
+	   ENDIF
+
 
 	ENDIF
 
@@ -174,7 +218,7 @@
 	   ENDIF
 	ENDIF
 
-
+  400	CONTINUE
 	IF (ribbon_plot) GOTO 1000
 
 
@@ -261,8 +305,9 @@ c     .			plot_title(:slen)//'")
 	   slen = TM_LENSTR1( plot_title )
 	   IF (units_same) CALL BOX_LABEL( dep_lab,
      .			   plot_title(:slen),
-     .			   0.0, 0.0, 0.6*dep_len, dflt_letsize_label*textscale,
-     .			   dflt_letsize_label*textscale, ppl_centered,
+     .                    0.0, 0.0, 0.6*dep_len, dflt_letsize_label*textscale,
+     .                    dflt_letsize_label*textscale, ppl_centered,
+
      .			   lab_loc_absolute, lab_loc_absolute )
 
 * ... keys for the dependent vars, or if one, only the title or axis label
@@ -277,8 +322,9 @@ c     .			plot_title(:slen)//'")
 	      IF ( yes_key) THEN
 
 	         IF ( its_dsg ) THEN 
+		    IF (nfeatr(ipl) .LT. 0) CYCLE
 
-* Read the feature-id value. If it's numeric turn it into a string
+* Read the feature-level value. If it's numeric turn it into a string
 
                     CALL CD_READ_ONE ( dset_dsg, fvar_varid, nfeatr(ipl), dtype, value, 
      .                                 plot_title, slen, status )
@@ -420,10 +466,9 @@ c     .			plot_title(:slen)//'")
 	         slen = TM_LENSTR1( plot_title )
 	      ELSE
 
-	         IF ( .NOT. its_dsg ) plot_title = KEY_STRING( cx_list(ipl), cx_xtra_doc, slen ) 
+	         IF ( .NOT. its_dsg ) plot_title = KEY_STRING( cx_list(ipl), cx_xtra_doc, slen )
 
-	         IF (.NOT.use_keys .OR. its_dsg) plot_title = VAR_TITLE_ONLY( cx_list(ipl), slen )
-
+		 IF (.NOT.use_keys .OR. its_dsg) plot_title = VAR_TITLE_ONLY( cx_list(ipl), slen )
 	      ENDIF
               IF (this_no_range(ipl) .AND. mode_nodata_lab) THEN
                  plot_title(slen+1:slen+14) = ' No Valid Data'
@@ -481,7 +526,7 @@ c     .			plot_title(:slen)//'")
 	   buff1 = VAR_UNITS(cx_list(2))  ! ? was cx_y
 	   iunits = TM_UNIT_ID(buff1)
 	   IF (iunits .NE. 4) THEN
-	      CALL BOX_LABEL( dep_lab,
+	   IF (units_same) CALL BOX_LABEL( dep_lab,
      .			   plot_title(:slen),
      .			   0.0, 0.0, 0.6*dep_len, dflt_letsize_label*textscale,
      .			   dflt_letsize_label*textscale, ppl_centered,
@@ -498,7 +543,7 @@ c     .			plot_title(:slen)//'")
      .			   dflt_letsize_label*textscale, ppl_centered,
      .			   lab_loc_absolute, lab_loc_absolute )
      
-	      IF (nmv .EQ. 1) THEN
+	      IF (nmv .EQ. var1) THEN
 	         plot_title = 'Longitude (degrees_east)'
 	         slen = TM_LENSTR1( plot_title )
 	         CALL BOX_LABEL( indep_lab,
@@ -514,6 +559,7 @@ c     .			plot_title(:slen)//'")
      .			   0.0, 0.0, 0.6*dep_len, dflt_letsize_label,
      .			   dflt_letsize_label, ppl_centered,
      .			   lab_loc_absolute, lab_loc_absolute )
+	         lonlat = .TRUE.
 	      ENDIF
 	   ENDIF
 
@@ -556,7 +602,7 @@ c     .			plot_title(:slen)//'")
 	   ENDIF 
 
 	   istart = var1
-	   IF (versus .AND. ribbon_plot) istart = 1
+	   IF (.NOT.lonlat .AND. versus .AND. ribbon_plot) istart = 1
 
 	   DO 1600 ipl = istart, var1+1
 	      IF (ipl.EQ.var1 .AND. (versus.AND.ribbon_plot)) GOTO 1600  
@@ -612,6 +658,7 @@ c     .			plot_title(:slen)//'")
 ! Restore dataset title
 	IF (reset_dsg) CALL SET_DSET_TITLE (dset_dsg, dummy)
 
+	IF (nftrsets.GT.0) DEALLOCATE (process_ftrset)
 
 	RETURN
 	END

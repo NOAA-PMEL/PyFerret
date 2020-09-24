@@ -66,12 +66,12 @@
 	include 'xrisc.cmn'
 
 * calling argument declarations
-	LOGICAL		its_gc, its_dsg
+	LOGICAL		its_gc
 	INTEGER		iarg, dflt_cx, mrg_cx, com_cx, status
 	CHARACTER*(*)	com_str
 
 * local variable declarations
-	LOGICAL		TM_ITSA_DSG, ss_save
+	LOGICAL		TM_ITSA_DSG, ss_save, its_dsg, its_cmpnd
 	INTEGER		CGRID_AXIS, CX_DIM_LEN, WHICH_GCFCN,
      .			idim, mrg_ax, mrg_len, com_ax, com_len, 
      .			choice(4,5), i, icom, imrg, uvar,
@@ -167,8 +167,8 @@
 * get the DSG-ness -- GET_UVAR_GRID ensures valid DSG grid merging
 	its_dsg = TM_ITSA_DSG(cx_grid(mrg_cx))
 	IF (its_dsg) THEN
-	   CALL TM_DSG_FACTS(cx_grid(com_cx),
-     .		dsg_orientation, dsg_obs_dimlen, dsg_obs_line, its_dsg)
+	   CALL TM_DSG_FACTS(cx_grid(com_cx), dsg_orientation, 
+     .		dsg_obs_dimlen, dsg_obs_line, its_dsg, its_cmpnd)
 	ENDIF
 
 * get the variable under consideration from the merged context
@@ -253,6 +253,7 @@
 * Only the F axis of a DSG is a "gridded" axis
 * On all others the DSG may have world coordinates, but the subscript limits
 * are irrelevant.  (Always full limits.  No subsetting is possible.)
+	   IF (its_cmpnd) dsg_orientation = z_dim
 	   IF (its_dsg .AND. idim.NE.f_dim) THEN
 * ... insist that consistent constraints are given on all merged contexts
 	      IF (cx_lo_ww(idim,mrg_cx) .EQ. unspecified_val8) THEN

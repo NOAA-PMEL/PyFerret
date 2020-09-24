@@ -1,6 +1,5 @@
 	SUBROUTINE RIBBON_PLOT_SET_UP (versus, nvars, addgaps, 
-     .		ipen, overlay, spectrum, status)
-
+     .		dsg_as_traj, idir, thick, overlay, spectrum, status)
 
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -64,13 +63,13 @@
 
 * calling argument declarations:
 	LOGICAL versus, overlay, addgaps, spectrum
-	INTEGER nvars, ipen, status
+	INTEGER nvars, thick, status
 
 * internal variable declarations:
-	LOGICAL TM_HAS_STRING,  do_key, its_traj
+	LOGICAL TM_HAS_STRING,  do_key, its_traj, dsg_as_traj
 	INTEGER	MR_DIM_LEN, CX_DIM_LEN, CGRID_SIZE, TM_DSG_NFEATURES,
      .		TM_LENSTR1, TM_LENSTR, STR_SAME,
-     .          nvs, loc, cx, grid, slen, nfeatures
+     .          nvs, loc, cx, grid, slen, nfeatures, idir
 	REAL	val
 	CHARACTER buff*128, TM_INQ_PATH*2048, sfile*2048
 
@@ -78,11 +77,6 @@
 	
 	cx = is_cx(1)
 	grid = cx_grid(cx)
-
-	IF (grid_is_dsg .AND. versus) THEN
-	   CALL CHECK_PLOT_TRAJ (versus, nvars, grid, its_traj)
-	   IF (.NOT. ribbon_plot) RETURN
-	ENDIF
 
 	IF (versus) THEN
 	   nvs = 3
@@ -116,21 +110,26 @@
 	loc = qual_given( slash_plot_color )
 	IF ( loc .GT. 0  ) GOTO 5200
 
-* If a thickness is given, set pen number to the thickness
+* If a thickness is given, set pen number to the thickness, pen=1,2,or 3
 
-	   ipen = 1
- 	   loc = qual_given( slash_plot_thick )
-	   IF ( loc .GT. 0  ) THEN
+	loc = qual_given( slash_plot_thick )
+	IF ( loc .GT. 0  ) THEN
 
-	      CALL EQUAL_VAL( cmnd_buff(qual_start(loc):qual_end(loc)),
-     .			   val, status )
+	  CALL EQUAL_VAL( cmnd_buff(qual_start(loc):qual_end(loc)),
+     .			  val, status )
 
-	      IF ( val .NE. unspecified_val4 ) THEN
-	         ipen = NINT( val )	! user-specified line style
-	      ELSE
-	         ipen = 2  ! default if no value is specified
-	      ENDIF
-	   ENDIF
+	  IF ( val .NE. unspecified_val4 ) THEN
+	     thick = NINT( val )	! user-specified line style
+	  ELSE
+	     thick = 2  ! default if no value is specified
+	  ENDIF
+	ELSE
+
+* When plotting dsg as trajectory or points in XY (e.g. timeseriesProfile with /ALONG=xy)
+* use thick unless they've set something else.
+
+	   IF (dsg_as_traj) thick = 2
+	ENDIF
 
 * A "gaps" variable specifies the end of line segments to draw for PLOT/VS/RIBBON.
 * If it's DSG we handle all that from the grid defs; interferes with /MASKFEATURE
@@ -141,8 +140,11 @@
 * Style: fast for one-color per point, default is to interpolate
 * colors between points
 
+* For trajectoryProfile as Trajectory, connect the profile locations with
+* a line, using "fast" style
+
 	loc = qual_given( slash_plot_fast  )
-	IF ( loc.GT.0 ) THEN
+	IF ( loc.GT.0 .OR. (dsg_as_traj .AND. idir.EQ.x_dim) ) THEN
 	  CALL PPLCMD ( from, line, 0, 'RIBFAST 1', 1, 1 )
 	ELSE
 	  CALL PPLCMD ( from, line, 0, 'RIBFAST 0', 1, 1 )

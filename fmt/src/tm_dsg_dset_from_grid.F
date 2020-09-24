@@ -38,6 +38,7 @@
 * return the dataset that owns this DSG grid
 
 * V720 *sh* 4/17
+* V763 *acm* 9/20 Return if grid not defined.
 
       include 'netcdf.inc'
       include 'tmap_errors.parm'
@@ -52,6 +53,9 @@
 
 * internal variable declarations
 	INTEGER e_line, status
+	
+	TM_DSG_DSET_FROM_GRID = pline_not_dsg
+	IF (grid .LE. 0) RETURN
 
 * every DSG grid has an E axis with line_dsg_dset
 	e_line = grid_line(e_dim,grid)

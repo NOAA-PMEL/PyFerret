@@ -84,6 +84,8 @@
 *                  directions orthogonal to grid, those should be ignored
 * V751 *acm* 6/19 Remove unused declarations
 * V76  *acm* 3/20 Implementing regridding to point-type DSG data
+* V761 *acm* 7/20 Issue 1981:in ISUBSCR_CX distinguish rounding for single 
+*                 point vs range of points
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -423,7 +425,7 @@ c	   CALL TRANSFER_CONTEXT( hi_cx, lo_cx )
      .			//'e.g. "Z=@57@ITP" is OK but "Z=@ITP" is not',
      .								*5000 )
 	         ww_given = cx_lo_ww(axis,hi_cx)
-	         ss = ISUBSCR_CX(ww_given,grid,axis,hi_cx,round_dn)
+	         ss = ISUBSCR_CX(ww_given,grid,axis,hi_cx,round_sngl)
 	         ww_nrst = TM_WORLD( ss, grid, axis, box_middle )
 	         CALL GRID_SUBSCRIPT_EXTREMES( lo_ss, hi_ss, grid, axis )
 	         cx_by_ss(axis,hi_cx) = .TRUE.

@@ -46,7 +46,8 @@
      .		max_dyn_lines, line_ceiling, grid_ceiling,
      .		tmp_line_hook, tmp_grid_hook, nferdims, maxvar2,
      .		pdsetalloc, pdsets_addl, pdset_dummy, pdset_global, 
-     .		dgrid_buff, max_lm, pdsg_row_size, num_clim, line_0
+     .		dgrid_buff, max_lm, pdsg_row_size, pdsg_indx_var, pdsg_fs_dim,
+     .		num_clim, line_0
 
 * parameters used for dimensioning arrays
 	PARAMETER (dgrid_buff = 0)	! scratch buffer for grids (as in ferret.parm)
@@ -81,9 +82,10 @@
 	PARAMETER (num_parm = 15)	! number of add_parm's in descriptor
 	PARAMETER (num_gridfiles = 6)	! number of grid_filenames in descript.
 	PARAMETER (nferdims = 6)	! number of dimensions in Ferret grids.
+	PARAMETER (num_clim = 8)	! number of pre-defined climatological axes.
 * DSG parameters
 	PARAMETER (max_lm = 1000)	! number of dynamic mem lines
 	PARAMETER (pdsg_row_size = -321)! identifies the DSG rowSize variable
-
-	PARAMETER (num_clim = 8)	! number of pre-defined climatological axes.
-
+* DSG parameters for TimeseriesProfile or TrajectoryProfile datasets
+	PARAMETER (pdsg_indx_var = -432)! identifies the DSG Timeseriesindex or Trajectoryindex
+	PARAMETER (pdsg_fs_dim = -543)	! identifies the DSG Tseries or Traj station-dim size

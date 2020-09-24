@@ -38,6 +38,7 @@
 * return the feature orientation of this DSG grid
 
 * V720 *sh* 5/17
+* V763 *acm* 9/20 Return if grid not defined.
 
       include 'netcdf.inc'
       include 'tmap_errors.parm'
@@ -52,6 +53,9 @@
 
 * internal variable declarations
 	INTEGER e_line, dset,  status
+
+	TM_DSG_ORIENTATION = pline_not_dsg
+	IF (grid .LE. 0) RETURN
 
 * the E axis length is the number of features
 	e_line = grid_line(e_dim,grid)

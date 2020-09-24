@@ -94,7 +94,7 @@ frame /file=time_plot_precision_hovmuller.gif
 
 fill ztvar1970
 let var2 = L[gt=tax2] + z[gz=zaxis]
-shade/over/t="1-feb-2010:12:00":"2-feb-2010:06:00"/lev=40/pal=grayscale  var2
+shade/over/nolab/t="1-feb-2010:12:00":"2-feb-2010:06:00"/lev=40/pal=grayscale  var2
 
 frame /file=time_plot_precision_2doverlay.gif
 

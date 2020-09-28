@@ -536,6 +536,7 @@ c     .                    npts, nfeatures, ind_min, ind_max, user_hlim)
 * load color-by data into dep_dat
 
 	grid = cx_grid( cx )
+	bad = mr_bad_data(mv)
 
 * set up a color-by variable
 
@@ -621,7 +622,6 @@ c     .                    npts, nfeatures, ind_min, ind_max, user_hlim)
 	IF (status .NE. ferr_ok) GOTO 5000
 
 	set_lev = .FALSE.  ! will auto-set levels
-	bad = mr_bad_data(mv)
 
 * ... Now get the data values to use in the color-by-variable plot along
 *     the trajectories.
@@ -688,7 +688,7 @@ c     .                    npts, nfeatures, ind_min, ind_max, user_hlim)
 
 	      imask = imask + 1
 	      IF (irow_start.EQ.0 .OR. irow_end.EQ.0) THEN
-	         dep_dat(imask) = bad_val4
+	         dep_dat(imask) = bad
 	      ELSE
 	         
 		 psum = 0.
@@ -702,7 +702,7 @@ c     .                    npts, nfeatures, ind_min, ind_max, user_hlim)
 
 	         ENDDO
 		 
-		 dep_dat(imask) = bad_val4
+		 dep_dat(imask) = bad
 		 IF (psum .GT. 0.) dep_dat(imask) = psum / pcnt
 	      ENDIF
 
@@ -737,7 +737,7 @@ c     .                    npts, nfeatures, ind_min, ind_max, user_hlim)
 * ... clean up temporary variable
 	   CALL DELETE_VARIABLE( mvh_temp )
 	ELSE IF (.NOT.set_lev) THEN
-	   rbad = bad_val4
+	   rbad = bad
 	   CALL COMPUTE_MNSTD (dep_dat, mr_bad_data(mv), need_std, nmasked, rbad, status)
 
 	   IF (need_std .AND. status.NE.ferr_ok) THEN

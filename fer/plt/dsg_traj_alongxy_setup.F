@@ -737,7 +737,7 @@ c     .                    npts, nfeatures, ind_min, ind_max, user_hlim)
 * ... clean up temporary variable
 	   CALL DELETE_VARIABLE( mvh_temp )
 	ELSE IF (.NOT.set_lev) THEN
-	   rbad = bad
+	   rbad = bad_val4
 	   CALL COMPUTE_MNSTD (dep_dat, mr_bad_data(mv), need_std, nmasked, rbad, status)
 
 	   IF (need_std .AND. status.NE.ferr_ok) THEN

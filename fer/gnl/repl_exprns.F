@@ -133,6 +133,7 @@
 *                  correct info for `var,return=dset` and dsetnum and dsetpath.
 * V745  4/19 *acm* ticket 1916, special handling getting context for RETURN= outputs
 * V751  6/19 *acm* ticket 1929, don't chop off str_len when testing for reformatting at the end
+* V7.63 9/20 *acm* add `var,RETURN=*coord` to get coordinate variables for DSG datasets
 
         IMPLICIT NONE
 #include "netcdf.inc"

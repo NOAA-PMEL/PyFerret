@@ -79,10 +79,10 @@
      .		obsdimlen, dset, gxlate, igrid, ifeature, coord_lm(4), 
      .		ivar, row_size_lm, nobs, irow_f, irow_l, iaxis, ic, 
      .		irow_start, irow_end, base, icxvar, lm_index, 
-     .		itim_f, ista, ntim, mv, dep_dim, npts2
+     .		itim_f, ista, ntim, mv, dep_dim, npts2, i
      
         INTEGER*8 rqst_n
-	REAL	value, val_last, val_edge, vdel, bad
+	REAL	value, val_last, val_edge, vdel, bad, psum, pcnt
 	CHARACTER buff1, LEFINT*8, buff8*8,  buff*256
 
         INTEGER, DIMENSION(:), ALLOCATABLE :: station_index
@@ -416,15 +416,8 @@ c A message is written in PLOT_SET_UP
 	      CALL TM_ALLO_TMP_GRID (igrid, status)
 	      IF (status .NE. ferr_ok) GOTO 5000
 
-c	      IF (dsg_as_time) THEN  ! just get the time axis into new grid
-c	         CALL TM_COPY_GRID (grid, igrid)
-c		 DO idim = 1, nferdims
-c		    IF (idim .NE. the_dim) grid_line(idim, igrid) = 0
-c		 ENDDO
-c	      ELSE
-	         CALL TM_COPY_GRID_W_LINE_USE (grid, igrid)
-	         CALL TM_DEALLO_DYN_LINE( grid_line(the_dim, grid) )
-c	      ENDIF
+	      CALL TM_COPY_GRID_W_LINE_USE (grid, igrid)
+	      CALL TM_DEALLO_DYN_LINE( grid_line(the_dim, grid) )
 
 	      CALL TM_ALLO_TMP_LINE(iaxis, status)
 	      CALL GET_LINE_DYNMEM (nobs_total, iaxis, status)
@@ -481,10 +474,30 @@ c	      ENDIF
 	      ntim = ntim + 1
 	      value = dsg_linemem(coord_lm(the_dim))%ptr(ifeature)
 	      CALL PUT_LINE_COORD (linemem(iaxis)%ptr, ntim, value)
-	      CALL PUT_LINE_COORD (dsg_linemem(cxdsg_lm_tsdat)%ptr, ntim, dep_dat(irow_start) )  
+
+
+* Compute the average data from this feature in the z range given
+	      psum = 0.
+	      pcnt = 0.
+	      DO i = irow_start, irow_end
+
+	         IF (dep_dat(i) .NE. bad) THEN
+	            psum = psum + dep_dat(i) 
+	            pcnt = pcnt + 1.
+	         ENDIF
+
+	      ENDDO
+		 
+	      IF (psum .GT. 0.) THEN
+	         psum = psum / pcnt
+	      ELSE
+	         psum = bad_val4
+	      ENDIF
+
+	      CALL PUT_LINE_COORD (dsg_linemem(cxdsg_lm_tsdat)%ptr, ntim, psum )  
 	      IF (irow_start .NE. irow_end .AND. first_warn) THEN
 	         CALL WARN (
-     .            'PLOT/ALONG= /Z=LO:HI uses the first data value in the Z- range on each profile')
+     .            'PLOT/ALONG= /Z=LO:HI plots the AVE data in the Z- range on each profile')
 		 first_warn = .FALSE.
 	      ENDIF
 	   ELSE

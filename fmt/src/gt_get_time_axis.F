@@ -31,7 +31,7 @@
 *  INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER
 *  RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF
 *  CONTRACT, NEGLIGENCE OR OTHER TORTUOUS ACTION, ARISING OUT OF OR IN
-*  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
+*  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE.
 *
 *
 *
@@ -56,7 +56,7 @@
 * revision 1.01 - 02/06/88 - line_modulo not initialized - corrected *sh*
 * revision 1.02 - 02/17/89 - Fixed next_line_mem_pos error(1 less than correct)
 * 6/24/92 *sh* & *ko* - bug fix: logic for line_regular if gap in step files
-*                     - fix to bug fix (8/92 *sh*) - prev_lastep was INTEGER 
+*                     - fix to bug fix (8/92 *sh*) - prev_lastep was INTEGER
 * 8/28/96 *kob*	      - bug fix: change type of "itt" to real*8
 *		      - bug fix: get rid of all bpos stuff and instead
 *				 call tm_irregax_mid to set up box
@@ -64,10 +64,10 @@
 * 9/5/96 *kob*	      - bug fix: change of itt to real created a problem at
 *			         loop 110, because itt was being used as the
 *			         loop variable.  Not all of the timesteps in
-*				 each stepfile were being loaded into the 
+*				 each stepfile were being loaded into the
 *				 line_mem array.  Loop now based on calculated
 *				 nteps_in_file.
-* 5/14/96 *kob*	       -Linux port - added an "INT" in calculating nsteps in the 
+* 5/14/96 *kob*	       -Linux port - added an "INT" in calculating nsteps in the
 *				     stepfile.  roundoff /dp differences were causing
 *				     a problem in linux/nag f90, so we added a small
 *				     number (dp_epsilon = 1.d-10) to make sure INT operation
@@ -79,7 +79,7 @@
 * V600 *acm* 6/05 new flag line_fixname stores whether axis name is changed on input.
 * V62  *acm* 3/09 Save original name when axis name changed on input
 * V65  *acm* 2/10- all warnings and notes to std error not std out
-* V663 *acm* 6/10 Fix bug where error message on bad time axis in des file 
+* V663 *acm* 6/10 Fix bug where error message on bad time axis in des file
 *                 overflows its text buffer
 * v67  *ACM* 5/11 lengthen string for error messages: long filenames overran string
 *      *acm* 3/12 not reading GT files any more but this routine is called for MC files.
@@ -145,7 +145,7 @@
      .                           SNGL(sf_1step(istp)-prev_lastep)))
      .              line_regular(scr) = .FALSE.
 	    ENDIF
-	    IF (line_start(scr) .EQ. unspecified_val8) 
+	    IF (line_start(scr) .EQ. unspecified_val8)
      .	        line_start(scr) = sf_1step(istp)
             prev_lastep = sf_lastep(istp)
 	  ENDIF
@@ -158,7 +158,7 @@
 	ELSE
 * ... irregular
 
-          CALL GET_LINE_DYNMEM (nsteps, scr, status) 
+          CALL GET_LINE_DYNMEM (nsteps, scr, status)
           IF (status .NE. merr_ok) GOTO 9999
 
 	  line_start(scr)   = unspecified_val8
@@ -217,7 +217,7 @@
 * ...Check if time/date string conversion is possible
 
         cal_id = TM_GET_CALENDAR_ID (line_cal_name(scr))
-        
+
         IF (line_shift_origin(scr)) THEN
            buff = '01-JAN-0001 00:00:00'
         ELSE
@@ -232,8 +232,8 @@
 	  line_direction(scr) = 'NA'
 	  lenb = TM_LENSTR1 (ds_name(dset_num))
 	  WRITE (string, 1000) ds_name(dset_num)(:lenb)
- 1000	  FORMAT 
-     .   ('missing or improper date/time format for T0 in ',A) 
+ 1000	  FORMAT
+     .   ('missing or improper date/time format for T0 in ',A)
          lenb = TM_LENSTR1( string )
          CALL TM_NOTE( string(:lenb), lunit_errors )
 
@@ -247,17 +247,20 @@
 * ...Warn about possible gaps in axis
 * Bug fix - change next statment from compound if to if then ---kob 10/8/91
 	IF (.NOT. line_regular(nline)) THEN
-           IF (.NOT. TM_CHECK_BOX_LOC(linemem(scr)%ptr,
-     .                   lineedg(scr)%ptr, nsteps ) ) GOTO 9100
-        ENDIF
-        CALL TM_COPY_LINE ( scr, nline )
-        line_name(nline) = line_name(scr)
+          IF (.NOT. TM_CHECK_BOX_LOC(linemem(scr)%ptr, lineedg(scr)%ptr, nsteps ) ) GOTO 9100
+       ENDIF
+
+* bug fix - Ferret issue #1984.  The copy-line operation has been done, correctly
+* in tm_get_like_line
+
+*       CALL TM_COPY_LINE ( scr, nline )
+*       line_name(nline) = line_name(scr)
 
 *  deallocate the temporary line storage used to compile the axis.
-        IF ( .NOT. line_regular(scr) ) THEN
-           CALL FREE_LINE_DYNMEM(scr)
-           line_regular(scr) = .TRUE.
-        ENDIF
+       IF ( .NOT. line_regular(scr) ) THEN
+          CALL FREE_LINE_DYNMEM(scr)
+          line_regular(scr) = .TRUE.
+       ENDIF
 
 * Time axis complete
 	GT_GET_TIME_AXIS = nline

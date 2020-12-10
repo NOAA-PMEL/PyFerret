@@ -32,7 +32,7 @@
 *  INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER
 *  RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF
 *  CONTRACT, NEGLIGENCE OR OTHER TORTUOUS ACTION, ARISING OUT OF OR IN
-*  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
+*  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE.
 *
 *
 * determine if all the data indicated are of the same value
@@ -45,34 +45,42 @@
 * revision 0.0 - 3/2/88
 * revision 0.1 - 9/22/88 - bug fix.  start at subscript 1
 *       *acm* 3/12 cleanup ifdefs and unnecessary include files
+* *acm* 10/13/20 Do the comparisons in single-precision.
 
         IMPLICIT NONE
-	include	'ferret.parm'
+      include	'ferret.parm'
 
 * calling argument declarations:
-	INTEGER	npts
-	REAL 	array( npts ), bad_flag, val1
+      INTEGER	npts
+	    REAL 	array( npts ), bad_flag, val1
 
 * internal variable declarations:
-	INTEGER	i
+	    INTEGER	i
+	    REAL*4 bad_r4, val_r4, arr_r4
 
 * comparison value
-	val1 = bad_flag
+      bad_r4 = bad_flag
+      val_r4 = bad_r4
 
 * check all data within the indicated context
-	DO 100 i = 1, npts
-	   IF ( array( i ) .NE. val1 ) THEN
-	      IF     ( val1       .EQ. bad_flag ) THEN
-	         val1 = array( i )
-	      ELSEIF ( array( i ) .NE. bad_flag ) THEN
-	         NO_LINE_RANGE = .FALSE.
-	         RETURN
-	      ENDIF
-	   ENDIF
- 100	CONTINUE
+	    DO 100 i = 1, npts
+		     arr_r4 = array(i)
+		     IF ( arr_r4 .NE. val_r4 ) THEN
+              IF     ( val_r4 .EQ. bad_r4 ) THEN
+                 val_r4 = arr_r4
+              ELSEIF ( arr_r4 .NE. bad_r4 ) THEN
+                 NO_LINE_RANGE = .FALSE.
+             val1 = val_r4
+                 RETURN
+              ENDIF
+          ENDIF
+  100 CONTINUE
 
 * they were all identical --> val1 contains bad_flag if they were all bad
-	NO_LINE_RANGE = .TRUE.
+	    NO_LINE_RANGE = .TRUE.
 
-	RETURN
-	END
+	    val1 = val_r4
+      IF (val_r4 .EQ. bad_r4) val1 = bad_flag
+
+	    RETURN
+	    END

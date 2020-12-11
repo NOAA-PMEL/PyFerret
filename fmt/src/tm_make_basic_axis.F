@@ -49,7 +49,10 @@
 * v694 1/15 *acm* for ticket 2227: Set the new line_dim_only flag. If a 
 *                 dimension from a nc file is not also a 1-D coordinate 
 *                 var, don't write the axis Ferret creates.
- 
+
+*             ACM 12/10/2020
+*             bug fix - Ferret issue #1984.  The setting for line_dsg_dset was
+*             not initialized (may not be a bug but good to be complete).
 
 * argument definitions:
 *       name      - name for axis
@@ -64,6 +67,7 @@
 	include 'tmap_dims.parm'
 #include "tmap_dset.parm"
 #include "gt_lib.parm"
+#include "implicit.parm"
 	include 'xdset_info.cmn_text'
 	external xdset_info_data
 	include 'xtm_grid.cmn_text'
@@ -99,6 +103,7 @@
       line_tunit(iaxis)     = real4_init
       line_direction(iaxis) = 'NA'
       line_dim_only(iaxis)   = .TRUE.
+      line_dsg_dset(iaxis)   = pline_not_dsg
 
 * successful completion
       status = merr_ok

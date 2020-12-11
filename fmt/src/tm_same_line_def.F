@@ -77,7 +77,7 @@
 
 * Local definitions
         LOGICAL         TM_FPEQ, TM_FPEQ_SNGL, TM_DFPEQ, dynamic
-	INTEGER*4	j
+	INTEGER*4	TM_LENSTR1, STR_CASE_BLIND_COMPARE, len, istat, j
 	REAL*8		TM_WORLD_AX, xx1, xx2
 	REAL*4  asingle, bsingle
 
@@ -113,11 +113,17 @@
 	  IF (line_direction(line1) .NE. line_direction(line2)) GOTO 1000
 
 * DSG axes are unique per dataset
-	  IF (line_dsg_dset(line1) .NE. line_dsg_dset(line2))   GOTO 1000
+	  IF (line_dsg_dset(line1) .NE. line_dsg_dset(line2) .AND. 
+     .          line_dsg_dset(line1).NE.line_0 .AND. line_dsg_dset(line2).NE.line_0)   GOTO 1000
 
 * Check special values for time axis
 	  IF (line_direction(line2) .EQ. 'TI') THEN
-	    IF (line_t0(line2) .NE. line_t0(line1)) GOTO 1000
+
+	    len = TM_LENSTR1( line_t0(line1) )
+	    istat = STR_CASE_BLIND_COMPARE(line_t0(line2)(:len),line_t0(line1)(:len))
+	    IF (istat .NE. str_match) GOTO 1000
+c	    IF (line_t0(line2) .NE. line_t0(line1)) GOTO 1000
+
 	    IF (line_shift_origin(line2) .NEQV. line_shift_origin(line1))
      .           GOTO 1000
 	    IF (line_tunit(line2) .NE. line_tunit(line1)) GOTO 1000

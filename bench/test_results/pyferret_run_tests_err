@@ -145,14 +145,14 @@ MESSAGE/CONTINUE `sst*/3,return=lunits`
 Executed by script: *** GO bn_grave.jnl ***
  **ERROR: invalid command:  use RETURN= shape,size,grid,title,bad,t0,f0,units,dset,
             dsetnum,dsetpath,dsettitle,*size,*start,*end,
-            *units,*axis,nc_scale,nc_offset,user_scale,user_offset,
+            *units,*axis,*coord,nc_scale,nc_offset,user_scale,user_offset,
             calendar,dtype,xmod,tmod,status,isDepth,isReady,defined
           sst,return=Xsize
 MESSAGE/CONTINUE `sst,return=Xsize`
 Executed by script: *** GO bn_grave.jnl ***
  **ERROR: invalid command:  use RETURN= shape,size,grid,title,bad,t0,f0,units,dset,
             dsetnum,dsetpath,dsettitle,*size,*start,*end,
-            *units,*axis,nc_scale,nc_offset,user_scale,user_offset,
+            *units,*axis,*coord,nc_scale,nc_offset,user_scale,user_offset,
             calendar,dtype,xmod,tmod,status,isDepth,isReady,defined
           sst,return=trash
 MESSAGE/CONTINUE `sst,return=trash`
@@ -1253,6 +1253,9 @@ Replacing definition of axis YAX
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
+sh: 1: ncrename: not found
+sh: 1: ncrename: not found
+sh: 1: ncrename: not found
 *** Running ferret script: bn_cancel_axes.jnl
  LISTing to file longax.dat
  PERMANENT data cleared from memory
@@ -1396,8 +1399,8 @@ ooooooooooooooooooooooooooooooooooooooooooo
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
-rm: cannot remove ‘input.txt’: No such file or directory
-ls: cannot access input.txt: No such file or directory
+rm: cannot remove 'input.txt': No such file or directory
+ls: cannot access 'input.txt': No such file or directory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -1406,7 +1409,7 @@ ooooooooooooooooooooooooooooooooooooooooooo
 ooooooooooooooooooooooooooooooooooooooooooo
  **ERROR: invalid command:  use RETURN= shape,size,grid,title,bad,t0,f0,units,dset,
             dsetnum,dsetpath,dsettitle,*size,*start,*end,
-            *units,*axis,nc_scale,nc_offset,user_scale,user_offset,
+            *units,*axis,*coord,nc_scale,nc_offset,user_scale,user_offset,
             calendar,dtype,xmod,tmod,status,isDepth,isReady,defined
           axy, return=xx
 MESSAGE/CONTINUE `axy, return=xx`
@@ -3800,6 +3803,7 @@ ooooooooooooooooooooooooooooooooooooooooooo
 *** Running ferret script: bn_dsg_e_x.jnl
 *** Running ferret script: bn_nco_append.jnl
  LISTing to file append_to_this.nc
+sh: 1: ncks: not found
 *** Running ferret script: bn_nobounds.jnl
  LISTing to file a.nc
  LISTing to file a.nc
@@ -3990,10 +3994,10 @@ Executed by script: *** GO bn_set_axis_name.jnl ***
            *** NOTE: netCDF bounds variable definition error
            *** NOTE: Bounds definition "lon_bnds" points to no existing axis
            *** NOTE: Ignoring BOUNDS attribute
-           *** NOTE: dataset does not accept REMOTE variable definitions
-           *** NOTE: dataset does not accept REMOTE variable definitions
-           *** NOTE: dataset does not accept REMOTE variable definitions
-           *** NOTE: dataset does not accept REMOTE variable definitions
+oc_open: server error retrieving url: code=500 message="Expression parsing failed for this URL. http://new-bock.pmel.noaa.gov/thredds/dodsC/las/woa05_annual/data_ferret.pmel.noaa.gov_pmel_thredds_dodsC_data_PMEL_WOA05nc_annual_t00an1.nc.jnl_expr_%7b%7d%7bletdeq1 T00AN11_new%3d7%7d.dds Now expressions found inside the curly brackets."           *** NOTE: dataset does not accept REMOTE variable definitions
+oc_open: server error retrieving url: code=500 message="Expression parsing failed for this URL. http://new-bock.pmel.noaa.gov/thredds/dodsC/las/woa05_annual/data_ferret.pmel.noaa.gov_pmel_thredds_dodsC_data_PMEL_WOA05nc_annual_t00an1.nc.jnl_expr_%7b%7d%7bletdeq1 T00AN11_new%3d7%7d.dds Now expressions found inside the curly brackets."           *** NOTE: dataset does not accept REMOTE variable definitions
+oc_open: server error retrieving url: code=500 message="Expression parsing failed for this URL. http://new-bock.pmel.noaa.gov/thredds/dodsC/las/woa05_annual/data_ferret.pmel.noaa.gov_pmel_thredds_dodsC_data_PMEL_WOA05nc_annual_t00an1.nc.jnl_expr_%7b%7d%7bletdeq1 T00AN11_new%3d7%7d.dds Now expressions found inside the curly brackets."           *** NOTE: dataset does not accept REMOTE variable definitions
+oc_open: server error retrieving url: code=500 message="Expression parsing failed for this URL. http://new-bock.pmel.noaa.gov/thredds/dodsC/las/woa05_annual/data_ferret.pmel.noaa.gov_pmel_thredds_dodsC_data_PMEL_WOA05nc_annual_t00an1.nc.jnl_expr_%7b%7d%7bletdeq1 T00AN11_new%3d7%7d.dds Now expressions found inside the curly brackets."           *** NOTE: dataset does not accept REMOTE variable definitions
            *** NOTE: netCDF bounds variable definition error
            *** NOTE: Bounds definition "time_bnds" points to no existing axis
            *** NOTE: Ignoring BOUNDS attribute
@@ -4006,12 +4010,12 @@ Executed by script: *** GO bn_set_axis_name.jnl ***
            *** NOTE: netCDF bounds variable definition error
            *** NOTE: Bounds definition "lon_bnds" points to no existing axis
            *** NOTE: Ignoring BOUNDS attribute
-           *** NOTE: dataset does not accept REMOTE variable definitions
-           *** NOTE: dataset does not accept REMOTE variable definitions
-           *** NOTE: dataset does not accept REMOTE variable definitions
-           *** NOTE: dataset does not accept REMOTE variable definitions
-           *** NOTE: dataset does not accept REMOTE variable definitions
-           *** NOTE: dataset does not accept REMOTE variable definitions
+oc_open: server error retrieving url: code=500 message="Expression parsing failed for this URL. http://new-bock.pmel.noaa.gov/thredds/dodsC/las/COADS-climatology/data_coads_climatology.jnl_expr_%7b%7d%7bletdeq1 SST1_new%3d7%7d.dds Now expressions found inside the curly brackets."           *** NOTE: dataset does not accept REMOTE variable definitions
+oc_open: server error retrieving url: code=500 message="Expression parsing failed for this URL. http://new-bock.pmel.noaa.gov/thredds/dodsC/las/COADS-climatology/data_coads_climatology.jnl_expr_%7b%7d%7bletdeq1 SST1_new%3d7%7d.dds Now expressions found inside the curly brackets."           *** NOTE: dataset does not accept REMOTE variable definitions
+oc_open: server error retrieving url: code=500 message="Expression parsing failed for this URL. http://new-bock.pmel.noaa.gov/thredds/dodsC/las/COADS-climatology/data_coads_climatology.jnl_expr_%7b%7d%7bletdeq1 SST1_new%3d7%7d.dds Now expressions found inside the curly brackets."           *** NOTE: dataset does not accept REMOTE variable definitions
+oc_open: server error retrieving url: code=500 message="Expression parsing failed for this URL. http://new-bock.pmel.noaa.gov/thredds/dodsC/las/COADS-climatology/data_coads_climatology.jnl_expr_%7b%7d%7bletdeq1 SST1_new%3d7%7d.dds Now expressions found inside the curly brackets."           *** NOTE: dataset does not accept REMOTE variable definitions
+oc_open: server error retrieving url: code=500 message="Expression parsing failed for this URL. http://new-bock.pmel.noaa.gov/thredds/dodsC/las/COADS-climatology/data_coads_climatology.jnl_expr_%7b%7d%7bletdeq1 SST1_new%3d7%7d.dds Now expressions found inside the curly brackets."           *** NOTE: dataset does not accept REMOTE variable definitions
+oc_open: server error retrieving url: code=500 message="Expression parsing failed for this URL. http://new-bock.pmel.noaa.gov/thredds/dodsC/las/COADS-climatology/data_coads_climatology.jnl_expr_%7b%7d%7bletdeq1 SST1_new%3d7%7d.dds Now expressions found inside the curly brackets."           *** NOTE: dataset does not accept REMOTE variable definitions
            *** NOTE: netCDF bounds variable definition error
            *** NOTE: Bounds definition "time_bnds" points to no existing axis
            *** NOTE: Ignoring BOUNDS attribute
@@ -4030,8 +4034,8 @@ Executed by script: *** GO bn_let_remote.jnl ***
  **ERROR: command syntax: /REMOTE variable definition must also specify /D=
 DEFINE VARIABLE/remote rvar = t00an1[d=1,z=1:100@ave]
 Executed by script: *** GO bn_let_remote.jnl ***
-           *** NOTE: dataset does not accept REMOTE variable definitions
-           *** NOTE: dataset does not accept REMOTE variable definitions
+oc_open: server error retrieving url: code=500 message="Expression parsing failed for this URL. http://new-bock.pmel.noaa.gov/thredds/dodsC/las/woa05_annual/data_ferret.pmel.noaa.gov_pmel_thredds_dodsC_data_PMEL_WOA05nc_annual_t00an1.nc.jnl_expr_%7b%7d%7bletdeq1 T00AN11_new%3d7%7d.dds Now expressions found inside the curly brackets."           *** NOTE: dataset does not accept REMOTE variable definitions
+oc_open: server error retrieving url: code=500 message="Expression parsing failed for this URL. http://new-bock.pmel.noaa.gov/thredds/dodsC/las/woa05_annual/data_ferret.pmel.noaa.gov_pmel_thredds_dodsC_data_PMEL_WOA05nc_annual_t00an1.nc.jnl_expr_%7b%7d%7bletdeq1 T00AN11_new%3d7%7d.dds Now expressions found inside the curly brackets."           *** NOTE: dataset does not accept REMOTE variable definitions
 *** Running ferret script: bn691_bug_fixes.jnl
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -4181,7 +4185,7 @@ Executed by script: *** GO err691_substring_arg ***
 list substring("hello",1,-3)
 Executed by script: *** GO err691_substring_arg ***
 *** Running ferret script: bn_append_dsg.jnl
-rm: cannot remove ‘test_save_dsg.nc’: No such file or directory
+rm: cannot remove 'test_save_dsg.nc': No such file or directory
 *** Running ferret script: bn_global_atts.jnl
  LISTing to file anew_global.nc
 *** Running ferret script: bn_conventions_history.jnl
@@ -4316,7 +4320,7 @@ ooooooooooooooooooooooooooooooooooooooooooo
  **ERROR: invalid command: cairoCFerBind_saveWindow: unrecognized format 'HDF'
 frame/format=hdf/file=a.hdf
 Executed by script: *** GO err693_frame_types ***
-rm: cannot remove ‘a.gif’: No such file or directory
+rm: cannot remove 'a.gif': No such file or directory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -4375,7 +4379,7 @@ ooooooooooooooooooooooooooooooooooooooooooo
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
-rm: cannot remove ‘WestCoastCarbon_9d9c_f562_77b5_5.nc’: No such file or directory
+rm: cannot remove 'WestCoastCarbon_9d9c_f562_77b5_5.nc': No such file or directory
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -4440,7 +4444,7 @@ Executed by script: *** GO bn_annotate.jnl ***
 def anno/nou/user/xpos=0/ypos=0 "My Lab"
 Executed by script: *** GO bn_annotate.jnl ***
 *** Running ferret script: bn_auxiliary.jnl
-rm: cannot remove ‘layerz_test_data.txt’: No such file or directory
+rm: cannot remove 'layerz_test_data.txt': No such file or directory
  LISTing to file layerz_test_data.txt
  **ERROR: variable unknown or not in data set: (data set ok ?): noexist
 SET VAR/layerz=depth noexist
@@ -4817,7 +4821,7 @@ Executed by script: *** GO bn_aggregate_f.jnl ***
 DEFINE DATA/AGGREGAT/F my_fmrc = XCAT(files,"tmp/irregular_start_time_fcst.nc")
 Executed by script: *** GO bn_aggregate_f.jnl ***
 *** Running ferret script: bn_aggregate_tef.jnl
-ls: cannot access tmp/f04_e3_t3_1v.nc: No such file or directory
+ls: cannot access 'tmp/f04_e3_t3_1v.nc': No such file or directory
  LISTing to file tmp/f01_e1_t1.nc
  LISTing to file tmp/f01_e1_t1.nc
  LISTing to file tmp/f01_e1_t1.nc
@@ -5353,9 +5357,9 @@ Executed by script: *** GO bn_delim_datetime.jnl ***
  LISTing to file a.nc
  LISTing to file a.nc
 *** Running ferret script: bn_spawn_fail.jnl
-ls: cannot access notafile.nowhere: No such file or directory
-rm: cannot remove ‘nothing.dat’: No such file or directory
-cp: cannot stat ‘nofile.dat’: No such file or directory
+ls: cannot access 'notafile.nowhere': No such file or directory
+rm: cannot remove 'nothing.dat': No such file or directory
+cp: cannot stat 'nofile.dat': No such file or directory
 *** Running ferret script: bn_ave_of_ave.jnl
 *** Running ferret script: bn_agg_member_syntax.jnl
  **ERROR: unknown data set: D=5.3
@@ -5578,7 +5582,7 @@ Replacing definition of axis TAX
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 *** Running ferret script: bn_dynamic_gather.jnl
-ls: cannot access tmp/test_dyn_mem.nc: No such file or directory
+ls: cannot access 'tmp/test_dyn_mem.nc': No such file or directory
  LISTing to file tmp/test_dyn_mem.nc
  LISTing to file tmp/test_dyn_mem.nc
  PERMANENT data cleared from memory
@@ -5773,7 +5777,7 @@ Replacing definition of axis TIME
 *** Running ferret script: bn_cache_management.jnl
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
-ls: cannot access tmp/test_auto_cache_20.nc: No such file or directory
+ls: cannot access 'tmp/test_auto_cache_20.nc': No such file or directory
  LISTing to file tmp/test_auto_cache_1.nc
  LISTing to file tmp/test_auto_cache_2.nc
  LISTing to file tmp/test_auto_cache_3.nc
@@ -6407,7 +6411,7 @@ Executed by script: *** GO bn_iso8601_time.jnl ***
 set axis/t0=2010-15-01 TIME1
 Executed by script: *** GO bn_iso8601_time.jnl ***
 *** Running ferret script: bn_agg_given_taxis.jnl
-/bin/ls: cannot access aggf/forecast_??.nc: No such file or directory
+/bin/ls: cannot access 'aggf/forecast_??.nc': No such file or directory
  LISTing to file aggf/forecast_01.nc
  LISTing to file aggf/forecast_02.nc
  LISTing to file aggf/forecast_03.nc
@@ -6988,6 +6992,44 @@ ooooooooooooooooooooooooooooooooooooooooooo
            *** NOTE: Using Trajectoryprofile data as Profile. Converting variables to profile dimension:
           trajectory
  LISTing to file fake_model_temp.nc
+*** Running ferret script: bn_dsg_compound.jnl
+           *** NOTE: PLOT/ALONG= with /Z=LO:HI colors the plot with AVE of profile data in that range
+           *** NOTE: PLOT/ALONG= /Z=LO:HI plots the AVE data in the Z- range on each profile
+*** Running ferret script: bn_dsg_plotalong.jnl
+           *** NOTE: PLOT/ALONG= with /Z=LO:HI colors the plot with AVE of profile data in that range
+           *** NOTE: PLOT/ALONG= with /T=LO:HI colors the plot with AVE of timeseries data in that range
+           *** NOTE: PLOT/ALONG= with /Z=LO:HI colors the plot with AVE of profile data in that range
+           *** NOTE: PLOT/ALONG= with /Z=LO:HI colors the plot with AVE of profile data in that range
+ **ERROR: invalid command: PLOT/ALONG=Y : Profile data can only be plotted along XY or Z
+plot/along=y sal
+Executed by script: *** GO bn_dsg_plotalong.jnl ***
+ **ERROR: invalid command: PLOT/ALONG=T : Profile data can only be plotted along XY or Z
+plot/along=t sal
+Executed by script: *** GO bn_dsg_plotalong.jnl ***
+ **ERROR: invalid command: PLOT/ALONG=Y : Timeseries data can only be plotted along XY or Z
+plot/along=y sst
+Executed by script: *** GO bn_dsg_plotalong.jnl ***
+ **ERROR: invalid command: PLOT/ALONG=Z : Timeseries data can only be plotted along XY or Z
+plot/along=z sst
+Executed by script: *** GO bn_dsg_plotalong.jnl ***
+ **ERROR: invalid command: PLOT/ALONG=Y : TrajectoryProfile data  can only be plotted along XY or Z
+plot/along=y temperature
+Executed by script: *** GO bn_dsg_plotalong.jnl ***
+ **ERROR: invalid command: PLOT/ALONG=T : TrajectoryProfile data  can only be plotted along XY or Z
+plot/along=t temperature
+Executed by script: *** GO bn_dsg_plotalong.jnl ***
+ **ERROR: invalid command: PLOT/ALONG=Y : Point data can only be plotted along XY
+plot/along=y sst
+Executed by script: *** GO bn_dsg_plotalong.jnl ***
+ **ERROR: invalid command: PLOT/ALONG=Z : Point data can only be plotted along XY
+plot/along=z sst
+Executed by script: *** GO bn_dsg_plotalong.jnl ***
+ **ERROR: invalid command: PLOT/ALONG=T : Point data can only be plotted along XY
+plot/along=t sst
+Executed by script: *** GO bn_dsg_plotalong.jnl ***
+*** Running ferret script: bn_dsg_return_coord.jnl
+ **TMAP ERR: non-existent or not on line
+             bn_dsg_return_coord.jnl (.jnl)
 *** Running ferret script: bn_gif.jnl
  **ERROR: dimensions improperly specified: specified data is not a line
            - its a 2D region: "plot/i=1:10/j=1:20/nolabel i+j"
@@ -7139,6 +7181,11 @@ ooooooooooooooooooooooooooooooooooooooooooo
 *** Running ferret script: bn_outline_poly.jnl
 *** Running ferret script: bn_contourcolor.jnl
 *** Running ferret script: bn_inf2missing.jnl
+ **ERROR: command syntax: stats_ppf(x[gx=0:1.0:0.01], "norm", {0,1})
+          unknown function "stats_ppf"
+plot stats_ppf(x[gx=0:1.0:0.01], "norm", {0,1})
+Command file, command group, or REPEAT execution aborted
+Executed by script: *** GO bn_inf2missing.jnl ***
 *** Running ferret script: bn_pointplots.jnl
  **ERROR: command syntax: highlight
           /HIGHLIGHT= only valid with named symbols
@@ -7169,30 +7216,30 @@ Executed by script: *** GO bn_setting_text.jnl ***
 set text/bold  nogroup
 Executed by script: *** GO bn_setting_text.jnl ***
 *** Running python script: testgetstrdata.py
->>> ... ... >>> >>> >>> 
+>>> >>> >>> >>> >>> >>> 
 *** Running python script: testferregion.py
->>> ... ... >>> >>> >>> >>> >>> 
+>>> >>> >>> >>> >>> >>> >>> >>> 
 *** Running python script: testferdset.py
->>> ... ... >>> >>> >>> 
+>>> >>> >>> >>> >>> >>> 
 *** Running python script: testfervar.py
->>> ... ... >>> >>> >>> Traceback (most recent call last):
+>>> >>> >>> >>> >>> >>> Traceback (most recent call last):
   File "<stdin>", line 1, in <module>
-  File "....../lib/python3.6/site-packages/pyferret/ferdset.py", line 230, in __delattr__
+  File "/home/ansley/my_pyferret/lib/python3.7/site-packages/pyferret/ferdset.py", line 230, in __delattr__
     self.__delitem__(name)
-  File "....../lib/python3.6/site-packages/pyferret/ferdset.py", line 165, in __delitem__
+  File "/home/ansley/my_pyferret/lib/python3.7/site-packages/pyferret/ferdset.py", line 165, in __delitem__
     value._removefromferret()
-  File "....../lib/python3.6/site-packages/pyferret/fervar.py", line 882, in _removefromferret
+  File "/home/ansley/my_pyferret/lib/python3.7/site-packages/pyferret/fervar.py", line 882, in _removefromferret
     raise NotImplementedError('%s is a file variable; close the dataset to remove' % fername)
 NotImplementedError: SST[d=coads_climatology.cdf] is a file variable; close the dataset to remove
 
 *** Running python script: testferaggdset.py
->>> ... ... >>> >>> >>>            *** NOTE: Variable "AIRT" excluded from aggregate: Not found in all member datasets
+>>> >>> >>> >>> >>> >>>            *** NOTE: Variable "AIRT" excluded from aggregate: Not found in all member datasets
 
 *** Running python script: testferaxis.py
->>> ... ... >>> >>> >>> >>> >>> 
+>>> >>> >>> >>> >>> >>> >>> >>> 
 *** Running python script: testfergrid.py
->>> ... ... >>> >>> >>> >>> >>> 
+>>> >>> >>> >>> >>> >>> >>> >>> 
 *** Running python script: testferpyvar.py
->>> ... ... >>> >>> >>> 
+>>> >>> >>> >>> >>> >>> 
 *** Running python script: testfermethods.py
->>> ... ... >>> >>> >>> 
+>>> >>> >>> >>> >>> >>> 

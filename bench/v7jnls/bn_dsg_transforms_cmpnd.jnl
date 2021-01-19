@@ -1,0 +1,18 @@
+! Transforms for compound dsg feature types trajectoryprofile or timeseriesprofile.
+!  DSG_ERDDAP_Tao5daySst.nc  timeseries example
+!  simple_traj_dsg.nc trajectories with a varialbe having gaps (can test timeseries ops too)
+!  profile_dsg.nc has gaps in the variable pot_temp_degc
+
+
+!!!!!!!!!!!!
+! NGD, NBD  
+
+use dsg_trajprofile_example.nc
+!  see also dsg_tserprofile_example.nc
+
+list/m=2:5 rowsize, temperature[z=@ngd] 
+
+let testvar = if temperature gt 2 then 1
+list/m=2:5 rowsize, testvar[z=@ngd] ,  testvar[z=@nbd]
+
+! See bn_dsg_transforms for other transforms to test.

@@ -331,6 +331,7 @@ bn_dsg_show_grid.jnl
 bn_dsg_no_data.jnl
 bn_dsg_orth_labels.jnl
 bn_dsg_fcn_of_instance.jnl
+bn_dsg_transforms_cmpnd.jnl
 
 bn751_bug_fixes.jnl
 bn_cdf_strlen.jnl

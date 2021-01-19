@@ -55,6 +55,9 @@
 
 * internal variable declarations
 	INTEGER line, dset, orient
+	
+* Initialize the result of the function
+       DSG_WHATS_IT = pdsg_not_dsg
 
 * the test of DSG-ness is line_dsg_dset points to dset on the E axis
 	line = grid_line(e_dim,grid)

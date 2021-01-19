@@ -169,13 +169,15 @@
 * For DSG dataset get number of features and obsdimlen
 
 	its_dsg = .TRUE.    
+	its_cmpnd = .FALSE.
+	is_cmpnd = .FALSE.
+
 	grid = cx_grid(cx)
 	color_by_station = DSG_WHATS_IT(grid) .EQ. pdsg_fs_dim
 
 	grid = dsg_xlate_grid(dset)
 
 	CALL TM_DSG_FACTS( grid, idim, obsdimlen, fline, its_dsg, its_cmpnd )
-
 	IF (its_cmpnd) THEN
 	   CALL TM_DSG_FTRSET_FACTS( grid, dset, orientation, 
      .                  nfeatures, nftrsets, is_dsg, is_cmpnd, status )
@@ -257,7 +259,7 @@
 
 	   DO i = 1, nfeatures
 	      cmpnd_index(i) = dsg_linemem(lm_index)%ptr(i) + 1
-	   ENDDO
+	   ENDDO 
 	ELSE
 	   DO i = 1, nfeatures
 	      cmpnd_index(i) = i

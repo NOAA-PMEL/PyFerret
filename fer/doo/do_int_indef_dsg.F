@@ -48,6 +48,7 @@
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
+#	include	"tmap_dset.parm"  ! with feature-type 
 	include	'ferret.parm'
 	include	'errmsg.parm'
 	include	'interp_stack.parm'
@@ -99,7 +100,14 @@
 
 * INTEGRATE
 
-	IF (idim.EQ.orientation .AND. orientation.LE.t_dim) THEN 
+* Handle z transforms for feature-type of trajectory-profile or timeseries-profile - within this routine
+* treat the data type as profile.
+
+	IF (orientation.EQ.pfeatureType_TrajectoryProfile .OR. 
+     .	      orientation.EQ.pfeatureType_TimeseriesProfile) orientation = pfeatureType_Profile
+
+* ****** PERFORM THE COMPUTATION *****
+	IF (idim .EQ. orientation) THEN
 
 * *** true ragged array processing:
 * Integrate independently along each feature

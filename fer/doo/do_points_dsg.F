@@ -50,6 +50,10 @@
 *                 over several chunks, so keep adding to the count in res(). 
 *                 Initialization and finalizing called separately from IS_TRANS
 * V76   1/20 *acm* Orientation of Point-type data set to e_dim
+*           1/21 *acm* Implement transform in z direction of trajectoryprofile or timeseriesprofile data.
+*                                   Note that the f-mask includes any subseting done for world coordinates, as well
+*                                   as any mask defined for profiles  (Defining a mask with SET DATA/FMASK=mask1_var )
+*                                   or for selecting trajectory or timeseries (Defining a mask with SET DATA/SMASK=mask2_var)
 
         IMPLICIT NONE
         include 'tmap_dims.parm'

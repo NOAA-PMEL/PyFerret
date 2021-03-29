@@ -46,6 +46,7 @@
 * V76   1/20 *acm* Orientation of Point-type data set to e_dim
 
         include 'tmap_dims.parm'
+#	include	"tmap_dset.parm"  ! with feature-type 
 	include	'ferret.parm'
 	include	'errmsg.parm'
 	include	'interp_stack.parm'
@@ -91,8 +92,14 @@
 	unit = un_convert( line_unit_code(iaxis) )
 	unit = 1. ! just testing
 
+* Handle z transforms for feature-type of trajectory-profile or timeseries-profile - within this routine
+* treat the data type as profile.
+
+	IF (orientation.EQ.pfeatureType_TrajectoryProfile .OR. 
+     .	      orientation.EQ.pfeatureType_TimeseriesProfile) orientation = pfeatureType_Profile
+
 * ****** PERFORM THE COMPUTATION *****
-	IF (idim.EQ.orientation .AND. orientation.LE.t_dim) THEN 
+	IF (idim .EQ. orientation) THEN
 
 * *** true ragged array processing:
 

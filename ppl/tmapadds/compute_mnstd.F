@@ -291,7 +291,7 @@ c Once more.
 	zero = 0.
 
 	IF (need_std) THEN
-	   IF ( .NOT. TM_FPEQ(zmean, zero) )  THEN
+	   IF ( .NOT. TM_FPEQ(DBLE(zmean), zero) )  THEN
 	      IF (TM_FPEQ_SNGL(zstd/zmean, zero))  GOTO 5010
 	   ELSE 
 	      x = MAX(ABS(zmin), ABS(zmax))

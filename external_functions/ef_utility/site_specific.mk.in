@@ -60,8 +60,8 @@ LD = $(shell which gfortran)
 ## =========================
 # PYTHON_EXE = python2.6
 # PYTHON_EXE = python2.7
-PYTHON_EXE = python3.6
-# PYTHON_EXE = python3.7
+# PYTHON_EXE = python3.6
+PYTHON_EXE = python3.7
 # PYTHON_EXE = python3.8
 
 ## =========================

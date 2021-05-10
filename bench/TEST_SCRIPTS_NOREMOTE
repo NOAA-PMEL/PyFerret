@@ -331,6 +331,7 @@ bn_dsg_show_grid.jnl
 bn_dsg_no_data.jnl
 bn_dsg_orth_labels.jnl
 bn_dsg_fcn_of_instance.jnl
+bn_dsg_transforms_cmpnd.jnl
 
 bn751_bug_fixes.jnl
 bn_cdf_strlen.jnl
@@ -362,3 +363,28 @@ bn_startupfile.jnl
 ! (not part of normal benchmark tests)
 !
 err700_decimate.jnl
+
+!
+! PyFerret-only Ferret scripts
+!
+bn_color_wire.jnl
+bn_outline_poly.jnl
+bn_contourcolor.jnl
+bn_inf2missing.jnl
+bn_pointplots.jnl
+bn_symbolpattern.jnl
+bn_symbolcolors.jnl
+bn_stats_histogram.jnl
+bn_setting_text.jnl
+!
+! PyFerret-only Python scripts
+!
+testgetstrdata.py
+testferregion.py
+testferdset.py
+testfervar.py
+testferaggdset.py
+testferaxis.py
+testfergrid.py
+testferpyvar.py
+testfermethods.py

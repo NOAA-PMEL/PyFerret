@@ -58,6 +58,7 @@
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
+#	include	"tmap_dset.parm"  ! with feature-type 
 	include	'ferret.parm'
 	include	'xcontext.cmn'
 	include	'xvariables.cmn'
@@ -89,9 +90,14 @@
 * get feature mask
         CALL MAKE_DSG_FEATURE_MASK(dset, res_cx, fmask, nfeatures)
 
-* ****** PERFORM THE COMPUTATION *****
+* Handle z transforms for feature-type of trajectory-profile or timeseries-profile - within this routine
+* treat the data type as profile.
 
-	IF (idim.EQ.orientation .AND. orientation.LE.t_dim) THEN 
+	IF (orientation.EQ.pfeatureType_TrajectoryProfile .OR. 
+     .	      orientation.EQ.pfeatureType_TimeseriesProfile) orientation = pfeatureType_Profile
+
+* ****** PERFORM THE COMPUTATION *****
+	IF (idim .EQ. orientation) THEN
 * *** true ragged array processing:
 * convolve independently along each feature
 *     Work with all data in the feature. WW coordinate masking etc  

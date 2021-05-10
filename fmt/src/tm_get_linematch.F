@@ -54,7 +54,7 @@
 
 * Include files
 #include "tmap_dset.parm"	
-	include 'tmap_dims.parm'	! 
+	include 'tmap_dims.parm'	
 #include "gt_lib.parm"
 
 * argument variables

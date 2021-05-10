@@ -427,8 +427,10 @@
 #endif
 #endif
 
+*  CHECK IF NUMBER OF LEVELS IS LARGER THAN SPEC_SIZE, clr_ct=0
+
 *	NOW READ IN THE LEVELS AND SET THEM
-10	read (70,'(a)',end=30,err=90) instr
+10	read (70,'(a)',end=30,err=90) instr 
 	do 15 i = 1,80
 	   if (instr(i:i) .ne. ' ') then
 	      j = i

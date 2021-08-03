@@ -1,0 +1,8 @@
+! bn764_bug_fixes.jnl
+! test various fixes that went into version 7.64
+
+GO bn_reset
+GO err763_din.jnl
+
+GO bn_reset
+GO err763_plot_vs_axlab.jnl  

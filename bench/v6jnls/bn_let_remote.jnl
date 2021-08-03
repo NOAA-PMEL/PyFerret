@@ -5,13 +5,17 @@
 ! 4/2017 Update thredds server urls. To find the right URL, go to the dataset
 !        in the NVODS server, and hit the "Export to Desktop Application"
 !        button. The .jnl address is the correct F-TDS URL.
+! 8/2021 Update thredds server urls again - see directions just above.
 
 ! See if the F-TDS is working and bail if not.
-let status = TEST_OPENDAP("http://ferret.pmel.noaa.gov/nvods/thredds/dodsC/las/COADS-climatology/data_coads_climatology.jnl")
+let status = TEST_OPENDAP("https://data.pmel.noaa.gov/nvods/thredds/dodsC/las/COADS-climatology/data_coads_climatology.jnl")
 load status
-if `status NE 0` then EXIT/SCRIPT
+if `status NE 0` then 
+   say The FTDS url's for bn_let_remote.jnl do not work.  Has the data server for the NVODS server changed or is the server down?
+   exit/script
+endif
 
-use "http://ferret.pmel.noaa.gov/nvods/thredds/dodsC/las/woa05_annual/data_ferret.pmel.noaa.gov_pmel_thredds_dodsC_data_PMEL_WOA05nc_annual_t00an1.nc.jnl"
+use "https://data.pmel.noaa.gov/nvods/thredds/dodsC/las/woa05_annual/data_https___data.pmel.noaa.gov_pmel_thredds_dodsC_data_PMEL_WOA05nc_annual_t00an1.nc.jnl"
 let/D=1/remote myvar = t00an1[k=1:5@sum]
 let/D=1/remote ave_z = t00an1[z=0:20@ave]
 sh var
@@ -31,8 +35,8 @@ can data/all; can var/all
 
 ! open another dataset, define more remote variables
 
-use "http://ferret.pmel.noaa.gov/nvods/thredds/dodsC/las/woa05_annual/data_ferret.pmel.noaa.gov_pmel_thredds_dodsC_data_PMEL_WOA05nc_annual_t00an1.nc.jnl"
-use "http://ferret.pmel.noaa.gov/nvods/thredds/dodsC/las/COADS-climatology/data_coads_climatology.jnl"
+use "https://data.pmel.noaa.gov/nvods/thredds/dodsC/las/woa05_annual/data_https___data.pmel.noaa.gov_pmel_thredds_dodsC_data_PMEL_WOA05nc_annual_t00an1.nc.jnl"
+use "https://data.pmel.noaa.gov/nvods/thredds/dodsC/las/COADS-climatology/data_coads_climatology.jnl"
 let/D=2/remote sstsum = sst[L=1:5@sum]
 let/D=2/remote airtsum = airt[L=1:5@sum]
 sh dat
@@ -48,7 +52,7 @@ list/y=-10/x=50:59 sstsum, airtsum, both
 can dat/all; can var/all
 
 ! make several remote definitions. They can be used together in an expression. 
-use "http://ferret.pmel.noaa.gov/nvods/thredds/dodsC/las/COADS-climatology/data_coads_climatology.jnl"
+use "https://data.pmel.noaa.gov/nvods/thredds/dodsC/las/COADS-climatology/data_coads_climatology.jnl"
 let/D=1/remote sstsum = sst[L=1:5@sum]
 let/D=1/remote airtsum = airt[L=1:5@sum]
 let/D=1/remote factor = 12
@@ -58,7 +62,7 @@ list/y=-5/x=130w:110w combo
 
 can dat/all; can var/all
 
-use "http://ferret.pmel.noaa.gov/nvods/thredds/dodsC/las/woa05_annual/data_ferret.pmel.noaa.gov_pmel_thredds_dodsC_data_PMEL_WOA05nc_annual_t00an1.nc.jnl"
+use "https://data.pmel.noaa.gov/nvods/thredds/dodsC/las/woa05_annual/data_https___data.pmel.noaa.gov_pmel_thredds_dodsC_data_PMEL_WOA05nc_annual_t00an1.nc.jnl"
 
 ! This is ok let/remote/D=
 let/D=1/remote myvar = t00an1[z=1:100@ave]

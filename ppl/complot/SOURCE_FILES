@@ -8,7 +8,6 @@ axis.F\
 axisl.F\
 baud.F\
 bell.F\
-check.F\
 chin.F\
 chout.F\
 circle.F\
@@ -23,8 +22,6 @@ gksmv_makedot.F\
 grid.F\
 hpabmv.F\
 igrinpt.F\
-line.F\
-line3.F\
 makedot.F\
 mark.F\
 markh.F\

@@ -46,6 +46,8 @@
 * plot_set_up.F
 * 9/2020 ACM
 * v763 *acm* 9/20 Fixing bug with PLOT/VS of single-valued data, negative longitudes.
+* V7.64  7/2021 *acm* for pyferret ticket #89: plot/vs command with /axes  after a plot/vs, lost the 
+*                  longitude-axis formatting
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -95,7 +97,7 @@
      .                  timeax_both, do_units, doing_ribbon_color,
      .                  x_is_time, y_is_time, its_traj, its_dsg, its_cmpnd,
      .                  expand_dsg_ok, color_dsg_id, user_hlim, dsg_as_time, 
-     .                  dsg_as_traj, do_traj, native_traj
+     .                  dsg_as_traj, do_traj, native_traj, set_up_axes
 
 	CHARACTER*2040	FULL_VAR_TITLE, KEY_STRING, plot_title
 	CHARACTER	INTERNAL_WHOI_DATE*14, VAR_UNITS*64,
@@ -170,6 +172,11 @@
 	   line_symbol = 1        ! doesn't matter what
 	   use_line = .FALSE.
 	ENDIF
+
+* Set up axis properties, if not an overlay or if this an overlay with the /AXES qualifier, 
+* in  order to draw the plot axes on the last plot
+
+	set_up_axes = overlay .AND.   (qual_given(slash_plot_axes) .GT. 0 ) 
 
 * ragged DSG data?  Get number of features and obsdimlen. If it's a 
 * Trajectory or Point dataset and they did "PLOT var", set that up.
@@ -648,11 +655,11 @@
 	   buff1 = VAR_UNITS(cx_x)
 	   IF (iunits .GE. 0) iunits = TM_UNIT_ID(buff1)
 
+	   IF ( .NOT.overlay .OR.  set_up_axes ) THEN
 
-	   IF (.NOT.overlay) THEN
-
-	      CALL AXIS_ENDS(indep_ax,indep_dim,grid1,ind_min,ind_max,
+	      IF ( .NOT.overlay ) CALL AXIS_ENDS(indep_ax,indep_dim,grid1,ind_min,ind_max, 
      .                       delta, indep_is_log, indep_axtyp, versus, status)
+
 	      IF ( status .NE. ferr_ok ) THEN
                  first = ind_min
                  last  = ind_max
@@ -667,7 +674,8 @@
               CALL GEOG_LABEL_VS (buff1, iunits, x_dim, axis_x_dir)
 
               IF (iunits .EQ. 4) THEN
-                 CALL GET_AXIS_FORMAT( ind_min, ind_max, delta, 
+		 IF (delta .EQ. unspecified_val8) delta = MAX(1., (ind_max-ind_min)/10.)  ! case of plot/over/axes; delta hasn't been set
+		 CALL GET_AXIS_FORMAT( ind_min, ind_max, delta, 
      .                  fmt, use_nice )
                  IF (use_nice) THEN
                     plot_axis(1) = 1
@@ -704,7 +712,7 @@
 		 plot_axis(1) = 4
 	      ELSE
                  CALL PPLCMD ( from, line, 0, 'XFOR 0', 1, 1 )	 
-              ENDIF	 
+              ENDIF	
 		  
               CALL PPLCMD ( from, line, 0, 'YFOR 0', 1, 1 ) ! for now, anyway	
 	      
@@ -910,8 +918,8 @@
 		 
 		 iunits = TM_UNIT_ID(buff1)
 
-	         IF (.NOT.overlay) THEN
-
+c	         IF ( .NOT.overlay .OR.  set_up_axes ) THEN
+	         IF ( .NOT.overlay  ) THEN
 * Does it have time units? If so draw a formatted time axis
                  y_is_time = .FALSE.
                  since_T0 = MAX( INDEX(buff1,'since'), INDEX(buff1,'SINCE') )
@@ -964,13 +972,11 @@
 * If the formatting has been turned off, resets iunits and flag mod_vs_x.
 
 		 CALL GEOG_LABEL_VS (buff1, iunits, y_dim, axis_y_dir)
-
                  IF (iunits .EQ. 4) THEN
 	            delta = unspecified_val8
 		    
 	            CALL AXIS_ENDS(dep_ax,dep_dim,grid1,dep_min,dep_max,
      .                      delta, dep_is_log, dep_axtyp, versus, status)
-
 	            CALL GET_AXIS_FORMAT( dep_min, dep_max, delta, 
      .                 fmt, use_nice )
 
@@ -1038,8 +1044,6 @@
                  ENDIF	
 	         ENDIF  ! not overlay
               ENDIF  ! set_axis
-
-
 
 * Compute the mean and standard dev for ribbon-color variable, 
 * needed for computing color levels. Results stored in PPLUS common.
@@ -1296,6 +1300,7 @@
 	      CALL AXIS_ENDS( dep_ax, the_taxis, grid, dep_min, dep_max, 
      .                        delta, dep_is_log, dep_axtyp, versus, status )
 
+
 	   ELSEIF ( all_1_dep ) THEN
 	      IF (only_val .EQ. bad_val4) val1 = 0.0	! 10/99
 	      delta = 1.
@@ -1414,6 +1419,8 @@
      .                  //buff1(:slen)//' lines with a single PLOT', *5000)
  5100	CALL ERRMSG( ferr_invalid_command, status, 
      .		     cmnd_buff(:len_cmnd)//' : vs what ?', *5000 )
+ 5110	CALL ERRMSG( ferr_invalid_command, status, 
+     .		     ' overlay when no existing plot', *5000 )
  5120	CALL ERRMSG( ferr_dim_underspec, status, 
      .			'overlay is on a different axis'//pCR//
      .			'"'//cmnd_buff(:len_cmnd)//'"', *5000 )

@@ -1,0 +1,34 @@
+! err763_plot_vs_axlab.jnl
+! 
+! See PyFerret ticket 89
+! 7/20/21
+!
+! some variables for the underlay plot and to mimic go fland
+
+use levitus_climatology
+let ocean = if temp[k=1] then 1 else 0
+let land = if ocean eq 0 then 1
+
+set view  upper
+shade/nolab/noax/nokey/lev=(5,10,1) ocean
+
+let/units=degrees_east xs = {110,130,150}
+let/units=degrees_north ys = {-40, -5, -60}
+
+! If we start with the plot/vs command (without /over) the bug doesn't happen
+! when the shade plot is drawn.
+
+plot/vs/over/line/thick/color=blue/nolab xs, ys
+
+! The axis labels for the longitude axis were not shown in units
+! of degrees-east but are just numbers 30, 60, ...
+
+set mode grat:dash
+shade/nolab/nokey/axes/over/pal=gray_light land
+
+! a similar thing happened and a similar fix, with one PLOT/VS overlaying another.
+set view lower
+plot/vs/line/thick/hlim=50:160/vlim=-90:0/noax xs, ys
+plot/vs/over/nolab/line/thick/color=blue/axes xs, ys-20
+
+frame/file=plot_vs_over_axes.png

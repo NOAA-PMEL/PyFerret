@@ -181,6 +181,8 @@
 *                 for curvi-coord plot with /SET
 * V740: 2/18 *acm* for issue 1860, change to call to Re-Orient; cos(lat) correction
 *                  in vector planes such as XZ
+* V7.63+  6/2021 *acm* for pyferret ticket #89: plot command with /axes  after a plot/vs, lost the 
+*                  longitude-axis formatting
 
 C replace includes with those from plot_set_up, 
 C plus those starting w/ xbox_bounds:
@@ -244,7 +246,7 @@ C plus those starting w/ xbox_bounds:
      .			timeax_both, 
      .			regrid_1, regrid_2, no_y_rng, edges_ok,
      .			REGULARLY_SPACED,
-     .                  irregular, use_cell, valid, vflag
+     .                  irregular, use_cell, valid, vflag, set_up_axes
 
 	INTEGER		TM_LENSTR1, CX_DIM_LEN, CGRID_SIZE,
      .			i, dim1, dim2, mvx, mvx_temp, mvy, mvy_temp,
@@ -607,8 +609,19 @@ C   set up memory for the flag grid
 
 	ENDIF
 
+* Set up axis properties, looking for lon/lat axis, if not an overlay or if this an 
+* overlay with the /AXES qualifier, to correctly label the plot axes on the last plot.
+* Don't do this if it's a time axis.
 
-	IF ( .NOT.overlay ) THEN
+	set_up_axes = overlay .AND. 
+     .                             (qual_given(slash_shad_axes) .GT. 0 .OR. 
+     .                              qual_given(slash_cont_axes) .GT. 0 .OR. 
+     .                              qual_given(slash_vect_axes) .GT. 0 ) 
+
+        tax = grid_line(t_dim, grid)
+        IF (tax .NE. 0) set_up_axes = .FALSE.
+
+	IF ( .NOT.overlay .OR.  set_up_axes ) THEN
 
 	   IF ( pxlim .GT. 0 ) THEN
 	      IF (.NOT.denig_xylim_msg_done) THEN
@@ -616,7 +629,7 @@ C   set up memory for the flag grid
 	         CALL WARN( 'Use /HLIMITS and /VLIMITS instead.')
 	         denig_xylim_msg_done = .TRUE.
 	      ENDIF
-              tax = grid_line(f_dim, grid)
+              tax = grid_line(t_dim, grid)
               IF (tax .EQ. 0) tax = grid_line(f_dim, grid)
               cal_id = TM_GET_CALENDAR_ID ( line_cal_name(tax) )
 	      CALL EQUAL_RANGE_T( cmnd_buff(qual_start(pxlim):qual_end(pxlim)),
@@ -658,6 +671,10 @@ C   set up memory for the flag grid
 	      delta = unspecified_val8
 	   ENDIF
 
+	   IF (set_up_axes) THEN
+	      xaxlo = haxlo
+	      xaxhi = haxhi
+	   ENDIF
 	   haxlo = xaxlo	! save limits so overlays
 	   haxhi = xaxhi	! will know them
 
@@ -740,6 +757,12 @@ C ACM added 8/2001 save cal id if vertical time axis
      .                        dim2, yaxlo, yaxhi )
               IF (yaxlo .GE. yaxhi) GOTO 5160
 	      delta = unspecified_val8
+	   ENDIF
+
+
+	   IF (set_up_axes) THEN
+	      yaxlo = vaxlo
+	      yaxhi = vaxhi
 	   ENDIF
 
 	   vaxlo = yaxlo	! save limits so overlays
@@ -1007,6 +1030,7 @@ C ACM added 8/2001 save cal id if vertical time axis
 	ENDIF
 
 	status = ferr_ok
+
 	RETURN
 
 * error exit

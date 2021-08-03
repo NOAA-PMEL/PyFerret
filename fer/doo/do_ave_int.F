@@ -61,6 +61,10 @@
 *		  incorrect when a chunk is one box long. Gave too large a box 
 *		  size, the length of the entire result axis, instead of the length
 *                 for just this chunk.
+* V7.64 *acm* 08/21 PyFerret issue 91 - @DIN within a single, partial grid box.
+*		  should return the value of the data weighted by the size of the partial
+		  grid box, instead returns as if the whole cell was given.
+
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
@@ -88,7 +92,7 @@
 
 * internal variable declarations:
 	LOGICAL	GEOG_COS_FACTOR, ITSA_TRUEMONTH_AXIS, TM_ITSA_DSG,
-     .          need_cos, integrate, point
+     .          need_cos, integrate, point, one_cell
 	INTEGER TM_DSG_DSET_FROM_GRID, TM_DSG_NFEATURES, 
      .          i, j, k, l, m, n, grid, pt, lo, hi, axis, dset, 
      .          nfeatures, maxobs, mr_list(2)
@@ -131,22 +135,31 @@
 	ELSE  ! not dsg
 
 * get and save grid box sizes (weights) just once for efficiency
-        
+* Point is true if the box size is zero or if the request is for a zero-length region.
+* Partial cell may lie entirely within the first grid cell.
+
 	DO i = lo, hi
 	   box(i)  = BOX_SIZE( i, grid, idim )
 	ENDDO
-	IF ( lo .EQ. hi ) THEN
+	one_cell =( lo .EQ. hi )
+	IF (one_cell) THEN
+	   IF (cx_lo_ww(idim,com_cx) .EQ. cx_hi_ww(idim,com_cx) ) box(lo) = 0.0
 	   point = box(lo) .EQ. 0.0
-	ELSE
+	ENDIF
 * 11/16 ... end boxes may be only partial cells
-	   IF (TM_WORLD(lo, grid, idim, box_lo_lim)
-     .       .LT. cx_lo_ww(idim,res_cx)                ) box(lo) = 
-     .			TM_WORLD(lo, grid, idim, box_hi_lim)
-     .		      - cx_lo_ww(idim,res_cx)
-           IF (TM_WORLD(hi, grid, idim, box_hi_lim)
-     .       .GT. cx_hi_ww(idim,res_cx)                ) box(hi) =
-     .			cx_hi_ww(idim,res_cx)
-     .		      - TM_WORLD(hi, grid, idim, box_lo_lim)
+	IF ( .NOT. point) THEN
+	   IF ( one_cell) THEN
+	      box(lo) = cx_hi_ww(idim,com_cx) - cx_lo_ww(idim,com_cx)
+	   ELSE
+	      IF (TM_WORLD(lo, grid, idim, box_lo_lim)
+     .          .LT. cx_lo_ww(idim,res_cx)                ) box(lo) = 
+     .			   TM_WORLD(lo, grid, idim, box_hi_lim)
+     .		         - cx_lo_ww(idim,res_cx)
+              IF (TM_WORLD(hi, grid, idim, box_hi_lim)
+     .          .GT. cx_hi_ww(idim,res_cx)                ) box(hi) =
+     .			   cx_hi_ww(idim,res_cx)
+     .		         - TM_WORLD(hi, grid, idim, box_lo_lim)
+           ENDIF
 	ENDIF
 
 * perform integrations on standard units if possible
@@ -181,7 +194,7 @@
 	   DO 210 l = cx_lo_s4(com_cx), cx_hi_s4(com_cx)
 	   DO 210 k = cx_lo_s3(com_cx), cx_hi_s3(com_cx)
               IF ( point ) THEN  ! 8/92
-                 IF ( com(lo,j,k,l,m,n) .EQ. bad_com ) THEN
+		 IF ( com(lo,j,k,l,m,n) .EQ. bad_com ) THEN
                     res(pt,j,k,l,m,n) = bad_res
                  ELSEIF ( integrate ) THEN
                     res(pt,j,k,l,m,n) = 0.0
@@ -200,8 +213,8 @@
  200	      CONTINUE
 	      res(pt,j,k,l,m,n) = res(pt,j,k,l,m,n) + dsum* cos_factor
 	      weights(pt,j,k,l,m,n) = weights(pt,j,k,l,m,n) + bsum
+210	   CONTINUE
 
- 210	   CONTINUE
 
 * ALONG Y AXIS
 	ELSEIF ( idim .EQ. y_dim ) THEN

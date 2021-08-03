@@ -1,0 +1,18 @@
+! err763_din
+! See pyferret issue # 91
+! 
+! Tests of @DIN when the region requested lies inside one grid cell
+! the results prevoiusly retuned 1.0 times the units for those steps
+
+set data coads_climatology  ! grid spacing is 2°
+let ones = 1 + 0*y[gy=SST]
+repeat/range=0:12/name=yy (let val = ones[y=0:`yy/3`@DIN]; say `val`)
+
+! or see it with a unit-less axis
+
+define axis/edges/y=0:30:1 yaxis
+let ones =  1 + 0*Y[GY=yaxis]
+repeat/range=0:5/name=yy (let val = ones[y=0:`yy/3`@DIN]; say `val`)
+
+repeat/range=0:8/name=yy (let val = ones[y=0:`yy/5`@DIN]; say `val`)
+

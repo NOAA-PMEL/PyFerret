@@ -63,7 +63,7 @@
 *                 for just this chunk.
 * V7.64 *acm* 08/21 PyFerret issue 91 - @DIN within a single, partial grid box.
 *		  should return the value of the data weighted by the size of the partial
-		  grid box, instead returns as if the whole cell was given.
+*		  grid box, instead returns as if the whole cell was given.
 
 
         IMPLICIT NONE

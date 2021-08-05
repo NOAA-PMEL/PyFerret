@@ -46,6 +46,8 @@
 * plot_set_up.F
 * 9/2020 ACM
 * v763 *acm* 9/20 Fixing bug with PLOT/VS of single-valued data, negative longitudes.
+* V7.64  7/2021 *acm* Add a little "padding" for the axis ends, so that the points do not lie exactly
+*                     on the axes.
 * V7.64  7/2021 *acm* for pyferret ticket #89: plot/vs command with /axes  after a plot/vs, lost the 
 *                  longitude-axis formatting
 
@@ -906,6 +908,7 @@
 		 ENDIF
 		 
 		 all_1_dep = NO_LINE_RANGE( dep_dat, nload, mr_bad_data(mv), val1 )
+		 
 		 IF (.NOT.all_1_dep .AND. .NOT.dep_is_log) THEN
 		    pad = (dep_max - dep_min)* 0.01
 		    dep_min = dep_min - pad

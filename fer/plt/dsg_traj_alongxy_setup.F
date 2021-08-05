@@ -1,4 +1,4 @@
-        SUBROUTINE DSG_TRAJ_ALONGXY_SETUP ( dset,
+    	SUBROUTINE DSG_TRAJ_ALONGXY_SETUP ( dset,
      .				overlay, no_labels, symbol, sym_size, color, 
      .				color1, use_line, do_dash, dashstyle, nokey,
      .				only_val, skipsym, mv, cx, indep_dat, dep_dat, status )

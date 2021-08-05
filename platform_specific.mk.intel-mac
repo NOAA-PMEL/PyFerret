@@ -104,6 +104,8 @@ endif
 	CFLAGS		= -fPIC $(MYDEFINES) $(MYINCLUDES)
 
 	FFLAGS		= -fPIC \
+			  -fallow-invalid-boz \
+			  -fallow-argument-mismatch \
 			  -fno-automatic \
 			  -fno-second-underscore \
 			  -fdollar-ok \
@@ -117,6 +119,8 @@ endif
 
 	PPLUS_FFLAGS	= -fPIC \
 			  -fno-automatic \
+			  -fallow-invalid-boz \
+			  -fallow-argument-mismatch \
 			  -fno-second-underscore \
 			  -fdollar-ok \
 			  -ffixed-line-length-132 \

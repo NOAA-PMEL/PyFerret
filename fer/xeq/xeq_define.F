@@ -2170,6 +2170,14 @@ c	ENDIF
 
 **************************************************************************
 * DEFINE VIEWPORT
+
+* main window opened yet ?
+	IF ( .NOT.pplus_started ) THEN
+	   CALL START_PPLUS(.TRUE.)
+*          this opens a window, so need to set physical_chg .TRUE. to resize it
+*           physical_chg = .TRUE.
+	ENDIF
+
  600	IF ( num_args .NE. 1 ) GOTO 5300
  
 	r4_unspec = unspecified_val4

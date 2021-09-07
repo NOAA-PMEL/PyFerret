@@ -164,6 +164,6 @@
 
 	DATA program_name	/ 'PyFerret' /
 	DATA len_program_name	/  8         /
-	DATA revision_level	/  7.63   /
+	DATA revision_level	/  7.64   /
 
 	END

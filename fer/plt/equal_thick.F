@@ -43,6 +43,7 @@
 * only a thickness of 1.0, 2.0, or 3.0 (or no "=value", which becomes
 * 2.0) is accepted.  In these cases, ipen = icolor, icolor-10, or icolor-20
 *
+* 9/15/2021 *ACM* clarify error message for /thick setting
 
         IMPLICIT NONE
 
@@ -164,7 +165,7 @@
  5030   risc_buff = strng
         CALL ERRMSG(ferr_out_of_range, istat, 
      .              risc_buff(:TM_LENSTR1(risc_buff))//
-     .              pCR//'When color is not specified, '//
+     .              pCR//'When color is not specified or for ribbon plot '//
      .              'only 1, 2, or 3 is acceptable',
      .              *5000)
 

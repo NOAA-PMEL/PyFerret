@@ -136,6 +136,7 @@
 * V76  1/20 *acm*  working with Point-type dsg data
 * V76  4/20 *acm*  New flag ribbon_on so that RIBBON/SET; PPL PLOT works correctly
 * v763 *acm* 9/20  Ribbon plots of id-variables in trajectory-profile, timeseries-profile data
+* v764+ *acm* 9/21  Fix implementation of /THICK for ribbon plots.
 
 	IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -498,7 +499,7 @@ CC       => Set values here instead.
 	IF ( ribbon_plot  ) THEN
 	   CALL RIBBON_PLOT_SET_UP (versus, num_uvars_in_cmnd, addgaps, 
      .	      dsg_as_traj, idir, thick, overlay, spectrum, status)
-	   color = thick
+	   ipen = thick
 
 	   IF (dsg_as_traj .AND. idir.EQ.x_dim .AND.
      .	       qual_given(slash_plot_line).EQ.0 ) use_line = .TRUE.

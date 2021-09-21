@@ -296,7 +296,7 @@ Re-defining viewport UM6
 plot/over/i=1:10/color=noexist i
 Executed by script: *** GO bn_plot.jnl ***
  **ERROR: value out of legal range: thick=4
-          When color is not specified, only 1, 2, or 3 is acceptable
+          When color is not specified or for ribbon plot only 1, 2, or 3 is acceptable
 plot/over/i=1:10/thick=4 i
 Executed by script: *** GO bn_plot.jnl ***
  **ERROR: value out of legal range: size=-1

@@ -1,3 +1,5 @@
+! land_detail_demo.jnl
+! Examples showing the lines drawn by the script land_detail.jnl
 
 SET WINDOW/SIZE=0.6
 CAN MODE logo
@@ -16,10 +18,22 @@ go land_detail black overlay 8 9 blue lightblue
 ! frame/file=land_detail_1.gif
 pause
 
-! Showing national boundaries and rivers. Access the detailed
-! topography/bathymetry data from Smith and Sandwell via OPeNDAP
+! Showing national boundaries and rivers. 
+! Access the detailed topography/bathymetry data in etopo5 if available
 
-use "http://ferret.pmel.noaa.gov/thredds/dodsC/data/PMEL/smith_sandwell_topo_v8_2.nc"
+CANCEL MODE verify
+SET MODE ignore
+SET REDIRECT/CLOBBER/FILE=error_file_demo.out STDERR
+CANCEL SYMBOL fer_last_error
+USE etopo5
+
+IF ($fer_last_error"0|*>1") THEN use etopo20
+CANCEL MODE ignore
+CANCEL REDIRECT
+sp rm error_file_demo.out
+SET MODE/LAST verify
+
+
 fill/lev=(0,10000,10000)/pal=tan/nokey/x=0:24/y=30:46 rose
 fill/over/nolab/lev=(-5000,-1000,500)(-1000,0,50)/key/pal=topo/x=0:24/y=30:46 rose
 go land_detail black overlay red green blue blue

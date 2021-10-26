@@ -132,8 +132,10 @@ PAUSE
 
 PAUSE
 !      *********************************************************
-use "http://eosdap.hdfgroup.org:8080/opendap/data/NASAFILES/hdf5/GSSTF.2b.2008.01.01.he5"
-show data/att 3
+! This datasetor URL is not currently active. 
+!!  use "http://eosdap.hdfgroup.org:8080/opendap/data/NASAFILES/hdf5/GSSTF.2b.2008.01.01.he5"
+!! show data 3
+
 
 
 ! Let's look at the wind-stress vectors
@@ -155,24 +157,26 @@ go fland
 PAUSE
 !      *********************************************************
 
-
-use "http://satdat1.gso.uri.edu/opendap/Pathfinder/Northwest_Atlantic/6km/raw/1995/1/f95018175608.hdf"
-
-! Performance greatly enhanced through use of strides
-shade/levels=50 dsp_band_1[i=1:1024:4, j=1:1024:4]
-
-! We can see Florida and the Carribean islands, but they are upside down. 
-! Ferret can use the netCDF library to address this, with the /ORDER qualifier.
-cancel data 4
-use/order=x-y "http://satdat1.gso.uri.edu/opendap/Pathfinder/Northwest_Atlantic/6km/raw/1995/1/f95018175608.hdf"
-
-! The coordinate axes are just index values, but the longitude/latitude ranges are 
-! defined in global attributes. We can redefine the x and y axes to represent 
-! longitude and latitude axes.
-
-define axis/x=`..dsp_nav_earth_leflon`:`..dsp_nav_earth_ritlon`/npoints=1024/units=degrees_east `DSP_BAND_1,return=xaxis`
-define axis/y=`..dsp_nav_earth_botlat`:`..dsp_nav_earth_toplat`/npoints=1024/units=degrees_north `DSP_BAND_1,return=yaxis`
-shade/levels=v dsp_band_1[i=1:1024:4, j=1:1024:4]
-go fland 05
-
-set mode/last ignore
+! This datasetor URL is not currentlyactive. 
+!! use "http://satdat1.gso.uri.edu/opendap/Pathfinder/Northwest_Atlantic/6km/raw/1995/1/f95018175608.hdf"
+!!
+!!
+!!! Performance greatly enhanced through use of strides
+!!shade/levels=50 dsp_band_1[i=1:1024:4, j=1:1024:4]
+!!
+!!! We can see Florida and the Carribean islands, but they are upside down. 
+!!! Ferret can use the netCDF library to address this, with the /ORDER qualifier.
+!!cancel data 4
+!!use/order=x-y "http://satdat1.gso.uri.edu/opendap/Pathfinder/Northwest_Atlantic/6km/raw/1995/1/f95018175608.hdf"
+!!
+!!! The coordinate axes are just index values, but the longitude/latitude ranges are 
+!!! defined in global attributes. We can redefine the x and y axes to represent 
+!!! longitude and latitude axes.
+!!
+!!define axis/x=`..dsp_nav_earth_leflon`:`..dsp_nav_earth_ritlon`/npoints=1024/units=degrees_east `DSP_BAND_1,return=xaxis`
+!!define axis/y=`..dsp_nav_earth_botlat`:`..dsp_nav_earth_toplat`/npoints=1024/units=degrees_north `DSP_BAND_1,return=yaxis`
+!!shade/levels=v dsp_band_1[i=1:1024:4, j=1:1024:4]
+!!go fland 05
+!!
+!!set mode/last ignore
+!!

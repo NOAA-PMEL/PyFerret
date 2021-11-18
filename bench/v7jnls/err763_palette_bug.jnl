@@ -1,0 +1,109 @@
+! err763_palette_bug.jnl
+! See PyFerret issue 98
+! Ansley Manke 11/11/2021
+!
+!  Set a color palette with /PALETTE in combination with /SET. The default palette
+!  not restored before making the next plot.
+
+! Define an example 2D variable to plot
+let var = i[i=1:5] + j[j=1:5]
+
+! This is correct:
+! After a /palette setting on one plot, the next one uses the default palette.
+! The script saves one image to compare, and goes on to test all plot types.
+
+set view ul
+shade/palette=purple_red var
+
+set view ur
+shade/title="Next plot reverts to current default palette" var
+
+! But if /SET used, the next plot used wrong palette.
+
+set view ll
+shade/set/palette=blue_orange/title="blue_orange palette with /SET" var
+ppl shakey,1,1,,0,-2 
+ppl shade
+
+set view lr
+shade/title="Next plot should revert to current default palette" var
+frame/file=err763_palette_bug.png
+
+! Similar tests using other plot commands that use color palettes.
+can view
+
+set view ul
+use simple_traj_dsg
+ribbon/set/palette=yellow_green_blue/thick=3/title="Ribbon plot with /SET/PAL=yellow_green_blue" sst
+ppl shakey,1,1,,0,-2 
+ppl ribbon
+
+set view ur
+shade/title="Next plot should revert to current default palette" var
+
+set view ll
+LET xtriangle = {0,.5,1}
+LET ytriangle = {0,1,0}
+LET xpts = 10*RANDU(j[j=1:20]+0)	! random X coordinates
+LET ypts = 10*RANDU(j[j=1:20]+1)	! random Y coordinates
+LET values = 10* j[j=1:20]		! value at each (x,y) point
+POLYGON/set/palette=cmocean_solar/title="cmocean_solar palette with /SET" xpts+xtriangle, ypts+ytriangle, values
+ppl shakey,1,1,,0,-2 
+ppl polygon
+
+
+set view lr
+shade/title="Next plot should revert to current default palette" var
+
+
+!!!!!!!!!!!!!!!!!!!!!  FILL plots
+palette default
+
+can view
+
+
+
+set view ul
+fill/palette=rainbow/title="/PALETTE=rainbow" var
+
+set view ur
+fill/title="Next plot should revert to current default palette" var
+
+! With /SET on first plot; second was wrong.
+set view ll
+fill/set/palette=cmocean_speed/title="cmocean_speed palette with /SET" var
+ppl shakey,1,1,,0,-2 
+ppl fill
+
+set view lr
+fill/title="Next plot should revert to current default palette" var
+
+
+! Now set an alternative palette for the remainder of the session (or until reset)
+can view
+
+PALETTE magma
+
+set view ul
+fill/palette=cmocean_phase/title="/PALETTE=cmocean_phase" var
+
+set view ur
+fill/title="After PALETTE magma setting, next plot uses current default palette" var
+
+! With /SET on first plot; second was wrong.
+set view ll
+fill/set/palette=cmocean_balance/title="cmocean_balance palette with /SET" var
+ppl shakey,1,1,,0,-2 
+ppl fill
+
+set view lr
+fill/title="Next plot should revert to current default palette" var
+
+cancel view
+
+palette    ! PALETTE with no argument, use current default palette setting (magma)
+
+fill/title="current default palette" var
+
+! Restore PyFerret's usual default palette
+PALETTE default

@@ -57,6 +57,8 @@
 * V697  *acm*  1/16 Ticket 2344: if there was a time-plot underlay, use the underlay's 
 *                   time scaling for time overlay plots. TAXUND restores the default.
 * V7.4+ *acm*  8/18 DSG-enabled Ferret: colorkey labels may be strings from the IDs
+* V764 11/21 *acm* For PyFerret issue 98, if PLOT/SET/PALETTE, save info so the color 
+*                 palette can be restored after the plot is completed. Initialize the flag here.
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -124,6 +126,7 @@ c	CALL PPLCMD ( from, line, 0, 'TXNMTC 0', 1, 1 )
 * set up the default spectrum
         CALL PPL_SHASET( 'RESET' )
         CALL PPL_SHASET( 'SPECTRUM=default' )
+	set_palette = .FALSE.
 
 * Set default (initial) number of color levels
 

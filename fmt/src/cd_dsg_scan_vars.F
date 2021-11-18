@@ -67,7 +67,9 @@
 * v7.6 *acm* 5/20 Issue 1876: can read string-typed data, write as char.
 * V7.6 *acm* 6/20 Issue 1980: When possible open invalid DSG datasets anyway with NOTES.
 * V7.61 *acm* 7/20 Adding logic for TrajectoryProfile and TimeseriesProfile datasets.
-* V7.61 *acm* 7/80 FOR NOW, initialize TrajectoryProfile and TimeseriesProfile as profile.
+* V7.61 *acm* 7/20 FOR NOW, initialize TrajectoryProfile and TimeseriesProfile as profile.
+* V7.64 *acm* 10/21 Fix bug: point-type datasets incorrectly required a Z coordinate variable
+*                                       but as for trajectory data, relax this requirement.
 
 * argument definitions:
 *       dset    - pointer to TMAP data set
@@ -232,13 +234,13 @@ c	ENDIF
 * When these are found, use units to nail down the direction.
 *
 * Check: need lon, lat, time for all feature types. Profiles need depth/height.
-* Can get away without z direction for trajectories or timeseries.
+* Can get away without z direction for trajectories or timeseries or point data
 
 	DO idim = 1, 4
 	   ax_att_var(idim) = int4_init
 	   ax_att_provisional(idim) = int4_init
 	   need_coord(idim) = .TRUE.
-	   IF ((orient.EQ.x_dim .OR. orient.EQ.t_dim) .AND. 
+	   IF ((orient.EQ.x_dim .OR. orient.EQ.t_dim.OR. orient.EQ.e_dim) .AND. 
      .          idim.EQ.z_dim ) need_coord(z_dim) = .FALSE.
 	ENDDO
 
@@ -734,7 +736,6 @@ c     .               vname(:vlen) )
 * axis of length npoints
 
 	         IF (dsg_feature_type(dset) .EQ. pfeatureType_Point) THEN
-
 
 * Don't need to allocate memory for the synthesized Obs axis
 * just use the basic-axis call in CD_DSG_SETUP_PTDATA (?)

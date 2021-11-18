@@ -32,3 +32,4 @@ plot/vs/line/thick/hlim=50:160/vlim=-90:0/noax xs, ys
 plot/vs/over/nolab/line/thick/color=blue/axes xs, ys-20
 
 frame/file=plot_vs_over_axes.png
+cancel mode grat

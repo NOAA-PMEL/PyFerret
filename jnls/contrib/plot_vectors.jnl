@@ -2,7 +2,7 @@
 
 !**************************************************************
 ! Description: plot over vectors 
-!http://ferret.wrc.noaa.gov/Ferret/Mail_Archives/fu_2000/msg00513.html
+! https://www.pmel.noaa.gov/maillists/tmap/ferret_users/fu_2000/msg00513.html
 ! Usage: go plot_vectors u v lon lat [skip] [fill]
 !                  
 !
@@ -55,7 +55,7 @@
 say " "
 say "This script is superseded by the script vect_cylin.jnl or vect_cylin_over.jnl"
 say "which is available in the FAST scripts package at "
-say "http://dods.ipsl.jussieu.fr/fast/fiches/f00/f00.html"
+say "https://github.com/PBrockmann/fast"
 say " "
 say "Or see the scripts poly_vectors.jnl and mp_poly_vectors.jnl for vectors"
 say "drawn as filled polygons"

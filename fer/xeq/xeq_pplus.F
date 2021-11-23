@@ -54,6 +54,8 @@
 * V6.86 *acm* 1/14 In above fix, let there be spaces before the file spec.
 * V7.4 *acm* 1/18 for issue 1854 if mem pointers for curvi coord data have
 *                 been temporarily reset, restore to prev values
+* V764 11/21 *acm* For PyFerret issue 98, if PLOT/SET/PALETTE, save info so the color 
+*                 palette can be restored after the plot is completed. Here restore the palette.
  
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -72,7 +74,7 @@
 	include 'gkscm1_inc.decl'
 	include 'GKSCM1.INC'	 ! wsid
         INCLUDE 'fgrdel.cmn'     ! windowdpix, windowdpiy
-
+	INCLUDE   'parampl5_dat.decl'
 
 * local variable declarations:
 	LOGICAL	ver_out, jnl_out
@@ -196,13 +198,19 @@
      .      ( INDEX(vbuff,'FILL')    .GT. 0 ) .OR.
      .      ( INDEX(vbuff,'PLOT')    .GT. 0 ) .OR.
      .      ( INDEX(vbuff,'POLY')    .GT. 0 ) .OR.
-     .      ( INDEX(vbuff,'WIRE')    .GT. 0 )    ) THEN 
+     .      ( INDEX(vbuff,'WIRE')    .GT. 0 )  .OR.
+     .      ( INDEX(vbuff,'RIBB')    .GT. 0 )   ) THEN 
 	   IF (iaxset .EQ. 1) THEN   ! If /AXES was used on prev. plot call, reset defaults
 	      CALL PPL_AXES_RESTORE
 	      CALL PPLCMD ( from, line, 0, 'AXSET,1,1,1,1', 1, 1 )
 	      CALL PPLCMD ( from, line, 0, 'AXLABP -1,-1', 1, 1)
 	      iaxset = 0
 	   ENDIF
+
+* Also restore color palette
+
+           IF ( set_palette ) CALL PPL_SHASET( 'SPECTRUM' )
+
 	ENDIF
 
 	IF (( INDEX(vbuff,'SHADE')   .GT. 0 ) .OR.
@@ -211,7 +219,10 @@
      .      ( INDEX(vbuff,'VECTOR')  .GT. 0 ) .OR.
      .      ( INDEX(vbuff,'POLY')    .GT. 0 ) .OR.
      .      ( INDEX(vbuff,'WIRE')    .GT. 0 )    ) THEN 
+
 	   CALL RESTORE_CURVI   
+
+
 	ENDIF     
 
 * check to see if ylen or yorg has been changed

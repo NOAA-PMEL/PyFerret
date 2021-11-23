@@ -68,6 +68,8 @@
 * V76  1/20 *acm* working with Point-type dsg data
 * V760 *acm* 3/20 Flag for case when constraints result in no features
 * v763 *acm* 9/20 Plots of id-variables in trajectory-profile, timeseries-profile data
+* V764 11/21 *acm* For PyFerret issue 98, if PLOT/SET/PALETTE, save info so the color 
+*                 palette can be restored after the plot is completed. New flag set_palette.
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -83,6 +85,7 @@
 	include 'xdset_info.cmn_text'
 	include 'xtm_grid.cmn_text'
 	include 'xtext_info.cmn'
+	include 'xplot_state.cmn'
 
 	
 * calling argument declarations:
@@ -91,7 +94,7 @@
 * internal variable declarations:
 	LOGICAL TM_ITSA_DSG_RAGGED, TM_ITSA_DSG, 
      .		plot_vs, typerr, its_dsg, its_cmpnd, its_traj, 
-     .		dsg_as_traj, dsg_as_time
+     .		dsg_as_traj, dsg_as_time, spect, setup
 	INTEGER	MR_DIM_LEN, CX_DIM_LEN, CGRID_SIZE, TM_DSG_NFEATURES,
      .		TM_DSG_DSET_FROM_GRID, DSG_WHATS_IT,
      .		idim, ndim, dim(nferdims), mr1, cx, ivar,
@@ -121,7 +124,6 @@
 	IF ( status .NE. ferr_ok ) GOTO 5100
 
 	numv = num_uvars_in_cmnd
-
 
 * ragged DSG data?
 * For a trajectory dataset, the variable may be on the instance axis 
@@ -185,6 +187,29 @@
 	      ENDIF
 	   ENDIF	   
 	ENDIF
+	
+* if the color palette was changed by a previous plot using /PALETTE= and /SET, reset it.
+
+	IF (set_palette ) CALL PPL_SHASET( 'SPECTRUM' )
+	set_palette = .FALSE.
+
+* If this command is a color plot using /PALETTE= and /SET, then set the flag set_palette
+* Don't worry about checking for valid settings here; any errors will be caught later.
+
+	spect = .FALSE.
+	setup = .FALSE.
+	IF (cmnd_num .EQ. cmnd_plot) THEN
+	   spect = qual_given(slash_plot_spectrum) .GT.0 
+	   setup = qual_given(slash_plot_set_up) .GT. 0
+
+	ELSEIF (cmnd_num .EQ. cmnd_contour .OR.  cmnd_num.EQ.cmnd_shade .OR. 
+     .                cmnd_num.EQ.cmnd_polygon) THEN
+	   spect = qual_given(slash_cont_spectrum) .GT.0 
+	   setup = qual_given(slash_cont_set_up) .GT.0 
+
+	ENDIF
+
+	IF ( spect .AND. setup) set_palette = .TRUE.
 
 * compute working storage
 	IF (cmnd_num .EQ. cmnd_polygon) THEN

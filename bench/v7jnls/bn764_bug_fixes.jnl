@@ -6,3 +6,6 @@ GO err763_din.jnl
 
 GO bn_reset
 GO err763_plot_vs_axlab.jnl  
+
+GO bn_reset
+GO err763_palette_bug.jnl 

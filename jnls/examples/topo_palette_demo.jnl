@@ -6,14 +6,28 @@
 ! Good levels for US elevation (in meters):
 ! (-6000,-1000,1000)(-1000,-100,100)(-100,100,10)(100,1000,100)(1000,6000,1000)
 
-use "http://ferret.pmel.noaa.gov/pmel/thredds/dodsC/data/PMEL/smith_sandwell_topo_v8_2.nc"
+ ! Access the detailed topography/bathymetry data in etopo5 if available
+
+CANCEL MODE verify
+SET MODE ignore
+SET REDIRECT/CLOBBER/FILE=error_file_demo.out STDERR
+CANCEL SYMBOL fer_last_error
+USE etopo5
+
+IF ($fer_last_error"0|*>1") THEN use etopo20
+CANCEL MODE ignore
+CANCEL REDIRECT
+sp rm error_file_demo.out
+SET MODE/LAST verify
+
+
 SET VAR/TITLE="Topography and Bathymetry" rose
 SET REGION/X=130E:160E/y=30S:0S
-shade/pal=topo/lev=(-9000,-1000,1000)(-1000,-100,100)(-100,100,10)(100,1000,100)(1000,4000,1000) rose
+FILL/PAL=topo/lev=(-9000,-1000,1000)(-1000,-100,100)(-100,100,10)(100,1000,100)(1000,4000,1000) rose
 
 ! A smaller region, choosing different levels, the colors
 ! used for each elevation are the same.
 SET REGION/X=134:144/Y=-18:-8
-SHADE/PAL=topo/LEV=(-2600,-100,50)(-100,100,5)(100,500,50) rose
+FILL/PAL=topo/LEV=(-2600,-100,50)(-100,100,5)(100,500,50) rose
 
-
+CANCEL DATA/ALL

@@ -71,6 +71,12 @@ conda create -n FERRET -c conda-forge pyferret ferret_datasets --yes
 (`FERRET` is the environment name where `pyferret` is installed.
 You can change that to any name you like, such as `PyFerret`.)
 
+A development version of `pyferret` is also available to install through Anaconda. This version is meant to allow users to test new features and bug fixes ahead of the next stable release. Execute the following command in place of previous one to install the development version alongside the default datasets into conda:
+```shell
+ conda create -n FERRET_DEV install -c conda-forge/label/pyferret_dev pyferret ferret_datasets --yes
+```
+(It is recommended to create two enironments, one for the test version of `pyferret` and one for the stable version. Hence, `FERRET` and `FERRET_DEV`)
+
 To start using PyFerret, execute the following command:
 ```shell
 conda activate FERRET

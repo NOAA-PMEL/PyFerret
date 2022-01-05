@@ -56,6 +56,8 @@
 *                 been temporarily reset, restore to prev values
 * V764 11/21 *acm* For PyFerret issue 98, if PLOT/SET/PALETTE, save info so the color 
 *                 palette can be restored after the plot is completed. Here restore the palette.
+* v765 *acm* 11/21 PyFerret Issue 99: Change the color of contour labels on CONTOUR/COLOR=
+*                  when using PyFerret fonts
  
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -75,10 +77,11 @@
 	include 'GKSCM1.INC'	 ! wsid
         INCLUDE 'fgrdel.cmn'     ! windowdpix, windowdpiy
 	INCLUDE   'parampl5_dat.decl'
+        include 'pyfonts.cmn'
 
 * local variable declarations:
 	LOGICAL	ver_out, jnl_out
-	INTEGER TM_LENSTR1, STR_UPCASE, i, slen, start, status
+	INTEGER TM_LENSTR1, STR_UPCASE, i, slen, start, igrp, status
         REAL temp_ylen, temp_yorg
 	CHARACTER*16 vbuff
 	CHARACTER TM_INQ_PATH*2048, fname*128, sfile*2048
@@ -221,7 +224,14 @@
      .      ( INDEX(vbuff,'WIRE')    .GT. 0 )    ) THEN 
 
 	   CALL RESTORE_CURVI   
+	   
+* If we auto-matched contour labels with contour color, unset that.
 
+	   IF (INDEX(vbuff,'CONTOUR') .GT. 0 .AND. contour_color_pyf) THEN
+	       igrp = 8  ! contour labels text-group
+	       pyf_set(igrp) = .FALSE.
+	       contour_color_pyf = .FALSE.
+	    ENDIF
 
 	ENDIF     
 

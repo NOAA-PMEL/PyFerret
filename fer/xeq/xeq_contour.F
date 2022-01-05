@@ -135,6 +135,8 @@
 * V74  1/18 *am* for issue #1854, extra argument to DISP_SET_UP
 * V741 *acm*  5/18 issue 1874: consistently apply /CONSET number of digits setting
 * v744 *acm* 11/18 Issue 1786: graticule lines & axes drawn if PLOT/OVER/AXES given
+* v765 *acm* 11/21 PyFerret Issue 99: Change the color of contour labels on CONTOUR/COLOR=
+*                  when using PyFerret fonts
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -153,6 +155,8 @@
         include 'CONT.INC'
         include 'gkscm1_inc.decl'
         include 'GKSCM1.INC'    ! wsid
+        include 'pyfonts.cmn'
+
 	
 * calling argument declarations:
 
@@ -165,8 +169,8 @@
      .		  ax1_work, ax2_work, loc, sigdig,
      .		  patt, i, nparm, num_it, 
      .		  s1, s2, it_start(4), it_end(4), iax(4), density,
-     .            loch, locv
-        INTEGER   STR_UPCASE, i1
+     .            loch, locv, igrp
+        INTEGER   STR_UPCASE, STR_SAME, i1
 	REAL	  vbuf, only_val, aspect, lab_size, lab_spacing
         REAL*4    dfltthick, opacity
 	PARAMETER (aspect = 0.0)			!kob 12/96
@@ -280,6 +284,35 @@
            CALL EQUAL_COLOR( cmnd_buff(qual_start(loc):qual_end(loc)),
      .                       icolor, dfltthick, status )
            IF ( status .NE. ferr_ok ) GOTO 5000
+
+* If we're using PyFerret fonts and no contour-specific font settings have been made, make the
+* contour label color match the contour-line color.
+
+           contour_color_pyf = .FALSE.
+
+           IF (STR_SAME(pyfnt_fontname, 'hershey') .NE. 0) THEN
+	       igrp = 8  ! contour labels text-group
+
+	       CALL EQUAL_STRING( cmnd_buff(qual_start(loc):qual_end(loc)),
+     .                        buff, status )
+	       IF (.NOT.pyf_set(igrp)) THEN
+	       
+	           CALL PARSE_PYFONT_COLOR (buff, pyf_red(igrp), 
+     .                        pyf_grn(igrp), pyf_blu(igrp), status)
+	           
+	           pyf_italic(igrp) = pyfnt_italic
+	           pyf_bold(igrp) = pyfnt_bold
+	           pyf_isiz(igrp) = pyfnt_isiz
+	           pyf_fontname(igrp) = pyfnt_fontname
+
+		   pyf_set(igrp) = .TRUE.
+
+		   contour_color_pyf = .TRUE.
+
+	       ENDIF
+		 
+           ENDIF
+
 	ELSE
 	   icolor = -1	! auto-select in DISP_SET_UP
 	ENDIF
@@ -648,6 +681,9 @@ c done in disp_set_up. If mode_nodata_lab is false then leave this off.
 * restore axes? (5/29/97  revised 3/2002 
 
         IF ( axes .or. noaxes ) CALL PPL_AXES_RESTORE
+     
+* If we auto-matched contour labels with contour color, unset that.
+        IF ( contour_color_pyf ) pyf_set(igrp) = .FALSE.
 
 * restore default key style?
         IF (changed_key ) CALL PPLCMD (from, line, 0, 'S_KEY 0', 1, 1 )

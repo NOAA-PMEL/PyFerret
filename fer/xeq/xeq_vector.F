@@ -116,6 +116,7 @@
 * PyFr *kms*  4/17 Remove SAVE_FRAME for HDF format since no longer supported
 * V74  1/18 *am* for issue #1854, extra argument to DISP_SET_UP
 * v744 *acm* 11/18 Issue 1786: graticule lines & axes drawn if PLOT/OVER/AXES given
+*       *acm* 3/22 Pyferret issue 51 Check the status flag after the call to SET_GRATICULES
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -326,6 +327,7 @@
         ENDIF
 
         CALL set_graticules(loch, locv, status)
+        IF ( status .NE. ferr_ok ) GOTO 5000
 
 * set up title and load the x component data into PPLUS
 

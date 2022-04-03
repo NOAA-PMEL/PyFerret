@@ -53,6 +53,8 @@
 * PyFr  *kms* 7/13 EQUAL_COLOR now returns a color ID, and EQUAL_THICK 
 *                  returns a pen ID from a color ID and a thickness.
 *                  Only standard lines accepted for graticules at this time.
+*       *acm* 3/22 Pyferret issue 51 Non-standard lines, either custom color 
+*                  settings or non-integer thicknessis an error not a warning.
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
@@ -75,10 +77,10 @@
      .      colorcode, tic1, ntic, itic, iflag, ncolors, pencode
 
         REAL*4 thickness
+        REAL val
 
         CHARACTER buff*1058
         CHARACTER msg*60
-
 
 ! Default, standard tics, no lines across plot.
 
@@ -115,6 +117,8 @@
         IF (loch .GT. 0) THEN
            CALL EQUAL_STRING(cmnd_buff(qual_start(loch):qual_end(loch)),
      .                       buff, status )
+
+	str_len = TM_LENSTR1(buff)
 
 * /HGRAT with no argument defaults to lines at large tic marks.
 
@@ -257,7 +261,19 @@
                  s2 = index2
               ELSE
                  s2 = s2 + s1 - 2
-              ENDIF 
+              ENDIF
+
+*    In the graticule setting, a non-integer THICK value not allowed
+*    Check this using EQUAL_VAL; a call to equal_thick may change an 
+*    existingsetting on a line-plot command
+
+	      CALL EQUAL_VAL( buff(s1:s2), val, status )
+	      IF (val .EQ. unspecified_val4) THEN
+	         ! ok
+	      ELSE
+	         IF (val .NE. INT(VAL) .OR. val.LT.1 .OR. val.GT.3) GOTO 5200
+	      ENDIF
+
 *             get the pen for the color and the thickness specified in buff
               CALL EQUAL_THICK(buff(s1:s2), thickness, hcolor(itic), 
      .                         pencode, status)
@@ -271,11 +287,7 @@
  
 *          At this time, only standard lines are accepted
            ncolors = mode_arg(pmode_linecolors,1)
-           IF ( (pencode .LT. 1) .OR. (pencode .GT. 3*ncolors) ) THEN
-              CALL WARN('Only standard line colors and thicknesses ' //
-     .                  'are accepted at this time.  Using black.')
-              pencode = 1
-           ENDIF
+           IF ( (pencode .LT. 1) .OR. (pencode .GT. 3*ncolors) ) GOTO 5200
 
 *          Assign the pen to use
            hcolor(itic) = pencode
@@ -295,6 +307,8 @@
            CALL EQUAL_STRING(cmnd_buff(qual_start(locv):qual_end(locv)),
      .                     buff, status )
 
+	str_len = TM_LENSTR1(buff)
+
 * /VGRAT with no argument defaults to lines at large tic marks.
 
            DO 115 ii = 1, 4
@@ -305,6 +319,7 @@
         IF ( buff .EQ. ' ' ) GOTO 5000  ! done
 
         str_len = TM_LENSTR1(buff)
+
         i1 = 1
         IF (buff(1:1) .EQ. '(') i1 = 2
         i2 = str_len
@@ -429,7 +444,6 @@
                  CALL WARN (msg)
               ENDIF
            ENDIF
-
            IF (thick) THEN
               s1 = INDEX(buff(index1:index2), 'THI') + index1 - 1
               s2 = INDEX(buff(s1:index2), ',') 
@@ -438,6 +452,18 @@
               ELSE
                  s2 = s2 + s1 - 2
               ENDIF 
+
+*    In the graticule setting, a non-integer THICK value not allowed
+*    Check this using EQUAL_VAL; a call to equal_thick may change an 
+*    existingsetting on a line-plot command
+
+	      CALL EQUAL_VAL( buff(s1:s2), val, status )
+	      IF (val .EQ. unspecified_val4) THEN
+	         ! ok
+	      ELSE
+	         IF (val .NE. INT(VAL) .OR. val.LT.1 .OR. val.GT.3) GOTO 5200
+	      ENDIF
+
 *             get the pen for the color and the thickness specified in buff
               CALL EQUAL_THICK(buff(s1:s2), thickness, vcolor(itic), 
      .                         pencode, status)
@@ -451,11 +477,7 @@
  
 *          At this time, only standard lines are accepted
            ncolors = mode_arg(pmode_linecolors,1)
-           IF ( (pencode .LT. 1) .OR. (pencode .GT. 3*ncolors) ) THEN
-              CALL WARN('Only standard line colors and thicknesses ' //
-     .                  'are accepted at this time.  Using black.')
-              pencode = 1
-           ENDIF
+           IF ( (pencode .LT. 1) .OR. (pencode .GT. 3*ncolors) ) GOTO 5200
 
 *          Assign the pen to use
            vcolor(itic) = pencode
@@ -472,4 +494,8 @@
  5000        RETURN
  5100        CALL ERRMSG( ferr_syntax, status,
      .                buff(:str_len)//' mismatched parentheses', *5000 )
+ 5200        CALL ERRMSG(ferr_syntax, status,
+     .                'For graticules only standard line colors ' //
+     .                'and thicknesses are accepted.', *5000 )
+
         END

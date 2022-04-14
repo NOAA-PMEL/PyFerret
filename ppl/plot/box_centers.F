@@ -47,6 +47,7 @@
 * V62  Fixing bug 1659, plotting with subspan modulo axis.
 * V73+ 1/18 *acm*  Changes for Issue 1009; precsision in time info sent to pplus for 2D plots
 *             scaling for axis coords and box edges
+* V766  4/22 *acm* For Issue 1009 the scaling of incoming val1 was incorrect
 
 	include 'ferret.parm'
 	include 'xbox_bounds.cmn'
@@ -59,7 +60,7 @@
 
 * internal variable declarations:
 	INTEGER	ISUBSCRIPT, i, idim, isub1, isub0
-	DOUBLE PRECISION TM_WORLD
+	DOUBLE PRECISION TM_WORLD, val
 
 * initialize
 	IF ( x_or_y .EQ. 'X' ) THEN
@@ -73,10 +74,13 @@
 	ENDIF
 
 * determine starting subscript
+	val1 = val1/factr - offst
+
 	isub1 = ISUBSCRIPT ( DBLE(val1), bb_grid, idim, round_dn )
 	isub0 = isub1 - 1
 
 * pass back box centers
+
 	DO i = 1, n
 	   val1 = SNGL( TM_WORLD (isub0+i,bb_grid,idim,box_middle) )
 	   centers(i) = (val1 + offst) * factr 

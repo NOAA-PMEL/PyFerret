@@ -89,10 +89,12 @@
 *                  DEGMINSEC=1 for Deg-Min axis labels, =2 for Deg-Min-Sec. Default = 1
 *                  /HALFSPAC adds a half space between the degree sign and E/W or N/S
 * V71 12/16 *acm* For ticket 2158: working with true monthly time axes.
-* V73+ 1/18 *acm*  Changes for Issue 1009; precsision in time info sent to pplus for 2D plots
+* V73+ 1/18 *acm*  Changes for Issue 1009; precision in time info sent to pplus for 2D plots
 *                  Set scaling for axis coords and box edges
 * V743 7/18 *acm* Issue 1888: The resetting of time for 1009 need not happen unless the 
 *                 time coordinates really need all that precision.
+* V766  4/22 *acm* For Issue 1009 restore the previous rescaling of time. The fixes for
+*                  1888 are more correctly made elsewhere.
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -159,8 +161,9 @@
 	use_nice = places .LE. 7
 	IF (idim.EQ.t_dim .OR.  idim.EQ.f_dim) THEN
   	   time_unit = line_tunit( grid_line(idim,grid) )
-	   frac = res_del/ ABS( (hi_val+lo_val)/2 )
-	   rescale_time = (time_unit.EQ.1 .AND. places.GT.7 .AND. frac.LT. 1.e-5)
+c	   frac = res_del/ ABS( (hi_val+lo_val)/2 )
+c	   rescale_time = (time_unit.EQ.1 .AND. places.GT.7 .AND. frac.LT. 1.e-5)
+	   rescale_time = (time_unit.EQ.1 .AND. places.GT.7)
 	ENDIF
 
 	IF ( use_nice ) THEN
@@ -210,11 +213,9 @@
 * scale and off if time requires a lot of precision
 
 	      IF (rescale_time) THEN
-	         IF (time_unit .EQ. 1) THEN 
-	            dt_min = 1
-	            tscale = 1/60.
-	         ENDIF
-	         toff = -1.*lo_val
+	         dt_min = 1
+		 tscale = 1/60.
+		 toff = -1. * lo_val
 	      ENDIF
 
 * ... TAXIS command
@@ -243,13 +244,15 @@
 	         WRITE ( ppl_buff, '(3(E14.7,1X))' ) x1, x2, dint
 	         CALL PPLCMD ( from, line, 0, 
      .                          x_or_y//'AXIS '//ppl_buff , 1, 1 )
-	      ENDIF
+     	      ENDIF
+
 
 	      WRITE ( ppl_buff, 3020 )	'W'//rbuff(1),
      .					'W'//rbuff(2),
      .					'W'//rbuff(3)
  3020	      FORMAT ('TIME ',A15,',',A15,',',A15)
 	      CALL PPLCMD ( from, line, 0, ppl_buff, 1, 1 )
+
 * ... save info for PLOT/VS/OVER
 	      saved_dt_min = dt_min
 	      saved_t1_date =  INTERNAL_WHOI_DATE(grid, idim, 1.0D0 )

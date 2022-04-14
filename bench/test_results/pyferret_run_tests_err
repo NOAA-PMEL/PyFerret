@@ -5257,8 +5257,8 @@ Replacing definition of axis TAX
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
-syntax error, unexpected $end, expecting SCAN_ATTR or SCAN_DATASET or SCAN_ERROR
-context: ^
+syntax error, unexpected WORD_WORD, expecting SCAN_ATTR or SCAN_DATASET or SCAN_ERROR
+context: <!DOCTYPE^ HTML PUBLIC "-//IETF//DTD HTML 2.0//EN"><html><head><title>503 Service Temporarily Unavailable</title></head><body><h1>Service Temporarily Unavailable</h1><p>The server is temporarily unable to service yourrequest due to maintenance downtime or capacityproblems. Please try again later.</p></body></html>
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -7002,6 +7002,30 @@ ooooooooooooooooooooooooooooooooooooooooooo
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
+ **ERROR: command syntax: For graticules only standard line colors and thicknesses are accepted.
+plot/y=0/grat=(dash, color=(50,50,50,50)) temp
+Executed by script: *** GO err765_graticule_settings.jnl ***
+FGD_GSPLI: null penobj
+FGD_GSPLI: null penobj
+FGD_GSPLI: null penobj
+FGD_GSPLI: null penobj
+FGD_GSPLI: null penobj
+FGD_GSPLI: null penobj
+ **ERROR: command syntax: For graticules only standard line colors and thicknesses are accepted.
+shade/grat=(dash, color=(50,50,50,50)) temp
+Executed by script: *** GO err765_graticule_settings.jnl ***
+ **ERROR: command syntax: For graticules only standard line colors and thicknesses are accepted.
+CONTOUR/FILL/grat=(thick=3.3) temp
+Executed by script: *** GO err765_graticule_settings.jnl ***
+ **ERROR: command syntax: For graticules only standard line colors and thicknesses are accepted.
+vector/i=1:40/j=1:30/grat=(color=(90,10,10))  j-20+(i-i),i-20+(j-j)
+Executed by script: *** GO err765_graticule_settings.jnl ***
+ **ERROR: command syntax: For graticules only standard line colors and thicknesses are accepted.
+POLYGON/thick/color=red/pal=blue/grat=(color=(50,50,50)) b,c
+Executed by script: *** GO err765_graticule_settings.jnl ***
 *** Running ferret script: bn_gif.jnl
  **ERROR: dimensions improperly specified: specified data is not a line
            - its a 2D region: "plot/i=1:10/j=1:20/nolabel i+j"

@@ -53,8 +53,9 @@
 * PyFr  *kms* 7/13 EQUAL_COLOR now returns a color ID, and EQUAL_THICK 
 *                  returns a pen ID from a color ID and a thickness.
 *                  Only standard lines accepted for graticules at this time.
-*       *acm* 3/22 Pyferret issue 51 Non-standard lines, either custom color 
-*                  settings or non-integer thicknessis an error not a warning.
+*       *acm* 3/22 Pyferret issue 51 Non-standard graticule lines, either 
+*                  custom color settings or non-integer thickness is not 
+*                  implemented. Make this an error not a warning.
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
@@ -117,8 +118,6 @@
         IF (loch .GT. 0) THEN
            CALL EQUAL_STRING(cmnd_buff(qual_start(loch):qual_end(loch)),
      .                       buff, status )
-
-	str_len = TM_LENSTR1(buff)
 
 * /HGRAT with no argument defaults to lines at large tic marks.
 
@@ -263,7 +262,8 @@
                  s2 = s2 + s1 - 2
               ENDIF
 
-*    In the graticule setting, a non-integer THICK value not allowed
+*    In the graticule setting, a value of THICK that's not 1,2, or 3,
+*    or /THICK with no argument, is not implemented.
 *    Check this using EQUAL_VAL; a call to equal_thick may change an 
 *    existingsetting on a line-plot command
 
@@ -306,8 +306,6 @@
         IF (locv .GT. 0) THEN
            CALL EQUAL_STRING(cmnd_buff(qual_start(locv):qual_end(locv)),
      .                     buff, status )
-
-	str_len = TM_LENSTR1(buff)
 
 * /VGRAT with no argument defaults to lines at large tic marks.
 
@@ -444,6 +442,7 @@
                  CALL WARN (msg)
               ENDIF
            ENDIF
+
            IF (thick) THEN
               s1 = INDEX(buff(index1:index2), 'THI') + index1 - 1
               s2 = INDEX(buff(s1:index2), ',') 
@@ -453,7 +452,8 @@
                  s2 = s2 + s1 - 2
               ENDIF 
 
-*    In the graticule setting, a non-integer THICK value not allowed
+*    In the graticule setting, a value of THICK that's not 1,2, or 3,
+*    or /THICK with no argument, is not implemented.
 *    Check this using EQUAL_VAL; a call to equal_thick may change an 
 *    existingsetting on a line-plot command
 

@@ -1,0 +1,24 @@
+!err765_graticule_settings.jnl
+! ACM 3/21/2022
+! PyFerret issue 51: Custom graticule lines are an error,
+! e.g. with color=(r,g,b,a) or thick= not 1,2, or 3
+! 
+
+use levitus_climatology.cdf
+
+! All plots are all intentional errors
+set mode ignore
+
+plot/y=0/grat=(dash, color=(50,50,50,50)) temp
+
+shade/grat=(dash, color=(50,50,50,50)) temp
+
+fill/grat=(thick=3.3) temp
+
+vector/i=1:40/j=1:30/grat=(color=(90,10,10))  j-20+(i-i),i-20+(j-j)
+
+let b = {1,2,1}
+let c = {2,1,0.5}
+POLYGON/thick/color=red/pal=blue/grat=(color=(50,50,50)) b,c
+
+set mode/last ignore

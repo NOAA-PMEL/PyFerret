@@ -373,6 +373,7 @@
         ENDIF
 
         CALL set_graticules(loch, locv, status)
+	IF ( status .NE. ferr_ok ) GOTO 5000
 
 * ... /DEGMINSEC[=1 or 2] Request deg/min or deg/min/sec axis labels
 	loc = qual_given( slash_cont_dms )

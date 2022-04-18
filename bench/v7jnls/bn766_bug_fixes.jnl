@@ -2,9 +2,5 @@
 ! test various fixes that went into version 7.66
 
 GO bn_reset
-GO err765_lineplot_tics.jnl 
-
-GO bn_reset
-GO err765_graticule_settings.jnl 
-
+GO err765_lineplot_tics.jnl
 

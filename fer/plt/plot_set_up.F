@@ -234,6 +234,7 @@
 * V762 *acm* 8/20 Add a second test for is this a trajectory ribbon plot.
 * v763 *acm* 9/20 Plots of id-variables in trajectory-profile, timeseries-profile data
 * v764 *acm* 8/21 Pull everything for PLOT/VS into its own setup routine, PLOT_VS_SET_UP.
+* V766 *acm* 1/22  Fix for issue 102, plots with too many tics.
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -335,7 +336,7 @@
 	IF ( mode_diagnostic ) CALL SPLIT_LIST(pttmode_ops, ttout_lun,
      .				'setting up plot', 15)
 
-	  
+
 * limits error check
         IF (nmv .GT. max_line_on_plot) GOTO 5050
 
@@ -723,7 +724,7 @@ c	      ul_dolab(t_dim) = .FALSE.  ! why was this added?
      .				status	)
 
 	      iaxis = CGRID_AXIS(dep_dim,cx)
-	   
+
 	   ENDIF
 
 	   IF ( status .NE. ferr_ok ) GOTO 5000
@@ -946,7 +947,7 @@ c	      ul_dolab(t_dim) = .FALSE.  ! why was this added?
 * ... independent axis
 
 	IF ( .NOT.overlay ) THEN
-	      
+
 	      delta = unspecified_val8
 
 	      IF ( pindeplim .GT. 0 ) THEN
@@ -960,7 +961,7 @@ c	      ul_dolab(t_dim) = .FALSE.  ! why was this added?
      .			indep_dim, ind_min, ind_max, delta,
      .			formatted, range_rqd, cal_id_1, status )
 	         IF ( status .NE. ferr_OK ) GOTO 5000
-		 
+
 *  Check for valid log axis before proceeding
 	         IF (indep_is_log) THEN
 	            CALL AXIS_ENDS  ( indep_ax, indep_dim, grid1,
@@ -1055,7 +1056,14 @@ c		       ind_max = indep_dat(1) + 240*3600
 * ... dependent axis scaling
 *  force axis scaling if the data has no range
 
-           IF (the_taxis .EQ. 0) the_taxis = dep_dim
+	   IF (the_taxis .EQ. 0) the_taxis = dep_dim
+
+* Fix for issue 102:
+* The direction of the dependent variable is really only applicable for VS plots, e.g.
+* lon vs lat or time vs something. For classic dependent variables, dep_dim can 
+* just be 2, data is a function of the independent variable.
+
+	      IF (.NOT.versus) the_taxis = y_dim
 
 	   IF ( pdeplim .GT. 0 ) THEN
 	      IF (pylim.GT.0 .AND. .NOT.denig_xylim_msg_done) THEN
@@ -1071,7 +1079,7 @@ c		       ind_max = indep_dat(1) + 240*3600
 		 IF (nok .EQ. 0) GOTO 5171
 	         dep_min = lo
 	         dep_max = hi
-	         
+
 	         CALL AXIS_ENDS( dep_ax, the_taxis, grid, dep_min, dep_max, 
      .                        delta, dep_is_log, dep_axtyp, versus, status )
 
@@ -1119,7 +1127,7 @@ c		       ind_max = indep_dat(1) + 240*3600
 	      CALL AXIS_ENDS( dep_ax, the_taxis, grid, dep_min, dep_max, 
      .                        delta, dep_is_log, dep_axtyp, versus, status )
      
-	   ENDIF
+	   ENDIF  ! pdeplim
 	   IF ( status .NE. ferr_OK ) THEN
 	      first = dep_min
 	      last  = dep_max

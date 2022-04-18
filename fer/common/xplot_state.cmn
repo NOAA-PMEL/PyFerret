@@ -22,6 +22,8 @@
 *                 scaling for axis coords and box edges, saved_bb_date needed for polygons
 * V764 11/21 *acm* For PyFerret issue 98, if PLOT/SET/PALETTE, save info so the state can
 *                 be restored after the plot is completed
+* v765 *acm* 11/21 PyFerret Issue 99: Change the color of contour labels on CONTOUR/COLOR=
+*                  when using PyFerret fonts
 
 	INTEGER		max_windows,
      .			max_viewport,
@@ -41,7 +43,8 @@
      .			v_logaxis,
      .                  no_plot_yet,
      .                  changed_key,
-     .                  set_palette
+     .                  set_palette,
+     .                  contour_color_pyf
 
 	INTEGER		vp_num,
      .			vp_seg0,
@@ -145,6 +148,7 @@
      .                  no_plot_yet,
      .                  changed_key,
      .                  set_palette,
+     .                  contour_color_pyf,
      .			saved_dt_min,
      .			saved_t1_date,
      .			saved_bb_date,

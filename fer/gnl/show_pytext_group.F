@@ -32,6 +32,9 @@
 *  CONTRACT, NEGLIGENCE OR OTHER TORTUOUS ACTION, ARISING OUT OF OR IN
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
+* *acm* 2/2022: Issue 106. In SHOW TEXT, if listing color by percent rgb, the 
+*                      Format for the numbers didn't allow listing 100% 
+
         IMPLICIT NONE
         include 'tmap_dims.parm'
         include 'ferret.parm'
@@ -67,7 +70,7 @@ c* ... Font
 	   v2 = pyf_grn(igrp)*100.
 	   v3 = pyf_blu(igrp)*100.
 	   WRITE (risc_buff, 2201) v1, v2, v3
- 2201	   FORMAT ('     /COLOR= (', 2(f4.1,','), f4.1,') (%RGB)')
+ 2201	   FORMAT ('     /COLOR= (', 2(f4.0,','), f4.0,') (%RGB)')
 	   len = TM_LENSTR1(risc_buff)
 	   CALL GET_COLOR_NAME (v1, v2, v3, name, len0)
 	   IF (len0 .GT. 0) risc_buff = '     /COLOR="'//name(:len0)//'"'

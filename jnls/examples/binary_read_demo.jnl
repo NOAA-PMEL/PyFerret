@@ -1,7 +1,8 @@
 set mode verify
 ! 
 !binary_read_demo.jnl (4/99) *js*
-!
+! Note The example datasets are in the jnls/examples directory as of 11/2021
+!            (The datasets are also in the benchmark directory)
 
 !Description: Demonstration of v5.0 binary read capabilities
 
@@ -85,15 +86,15 @@ file/format=stream/var=num,num1/grid=mygrid/type=i2 ($file)
 list num
 list num1
 
-!
-!Finally, we'll use a file of 24 INTEGER*2 followed by 24 REAL*8 numbers
-!and read it in using /type=i2,r8
-!
-message
-if ($isbig) then def sym file mixed.dat else def sym file mixedSwapped.dat
-file/format=stream/var=num,num1/grid=mygrid/type=i2,r8 ($file)
-list num
-list num1
+! ** These files not currently available
+! ** !Finally, we'll use a file of 24 INTEGER*2 followed by 24 REAL*8 numbers
+! ** !and read it in using /type=i2,r8
+! ** !
+! ** message
+! ** f ($isbig) then def sym file mixed.dat else def sym file mixedSwapped.dat
+! ** file/format=stream/var=num,num1/grid=mygrid/type=i2,r8 ($file)
+! ** list num
+! ** list num1
 
 
 canc sym file

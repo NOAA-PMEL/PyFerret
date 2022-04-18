@@ -83,6 +83,7 @@
 * PyFr *acm*  1/18 Issue an error on use of /PATTERN
 * v744 *acm* 11/18 Issue 1786: graticule lines & axes drawn if PLOT/OVER/AXES given
 * v751 *acm*  5/19 Issue 1937: POLY/MODULO mis-handled requested /LEVELS
+*       *acm* 3/22 Pyferret issue 51 Check the status flag after the call to SET_GRATICULES
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -292,7 +293,7 @@ CC       => Set values here instead.
         ENDIF
 
         CALL set_graticules(loch, locv, status)
-
+	IF ( status .NE. ferr_ok ) GOTO 5000
 	
 * default key
 

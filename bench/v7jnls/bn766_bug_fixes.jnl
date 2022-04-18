@@ -1,0 +1,6 @@
+! bn766_bug_fixes.jnl
+! test various fixes that went into version 7.66
+
+GO bn_reset
+GO err765_lineplot_tics.jnl
+

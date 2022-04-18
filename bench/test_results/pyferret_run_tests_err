@@ -5257,8 +5257,8 @@ Replacing definition of axis TAX
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
-syntax error, unexpected $end, expecting SCAN_ATTR or SCAN_DATASET or SCAN_ERROR
-context: ^
+syntax error, unexpected WORD_WORD, expecting SCAN_ATTR or SCAN_DATASET or SCAN_ERROR
+context: <!DOCTYPE^ HTML PUBLIC "-//IETF//DTD HTML 2.0//EN"><html><head><title>503 Service Temporarily Unavailable</title></head><body><h1>Service Temporarily Unavailable</h1><p>The server is temporarily unable to service yourrequest due to maintenance downtime or capacityproblems. Please try again later.</p></body></html>
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -6407,6 +6407,45 @@ Executed by script: *** GO bn_iso8601_time.jnl ***
 set axis/t0=2010-15-01 TIME1
 Executed by script: *** GO bn_iso8601_time.jnl ***
 *** Running ferret script: bn_agg_given_taxis.jnl
+/bin/ls: cannot access 'aggf/forecast_??.nc': No such file or directory
+ LISTing to file aggf/forecast_01.nc
+ LISTing to file aggf/forecast_02.nc
+ LISTing to file aggf/forecast_03.nc
+ LISTing to file aggf/forecast_04.nc
+ LISTing to file aggf/forecast_05.nc
+ LISTing to file aggf/forecast_06.nc
+ LISTing to file aggf/forecast_07.nc
+ LISTing to file aggf/forecast_08.nc
+ LISTing to file aggf/forecast_09.nc
+ LISTing to file aggf/forecast_10.nc
+ LISTing to file aggf/forecast_11.nc
+ LISTing to file aggf/forecast_12.nc
+ LISTing to file aggf/forecast_13.nc
+ LISTing to file aggf/forecast_14.nc
+ LISTing to file aggf/forecast_15.nc
+ LISTing to file aggf/forecast_16.nc
+ LISTing to file aggf/forecast_17.nc
+ LISTing to file aggf/forecast_18.nc
+ LISTing to file aggf/forecast_19.nc
+ LISTing to file aggf/forecast_20.nc
+ LISTing to file aggf/forecast_21.nc
+ LISTing to file aggf/forecast_22.nc
+ LISTing to file aggf/forecast_23.nc
+ LISTing to file aggf/forecast_24.nc
+ LISTing to file aggf/forecast_25.nc
+ LISTing to file aggf/forecast_26.nc
+ LISTing to file aggf/forecast_27.nc
+ LISTing to file aggf/forecast_28.nc
+ LISTing to file aggf/forecast_29.nc
+ LISTing to file aggf/forecast_30.nc
+ LISTing to file aggf/forecast_31.nc
+ LISTing to file aggf/forecast_32.nc
+ LISTing to file aggf/forecast_33.nc
+ LISTing to file aggf/forecast_34.nc
+ LISTing to file aggf/forecast_35.nc
+ LISTing to file aggf/forecast_36.nc
+ LISTing to file aggf/forecast_37.nc
+ LISTing to file aggf/forecast_38.nc
            *** NOTE: Time axis coordinates matched using @XACT
            *** NOTE: Time axis coordinates matched using @BIN
            *** NOTE: Time axis coordinates matched using @ASN
@@ -6992,6 +7031,13 @@ Executed by script: *** GO bn_dsg_plotalong.jnl ***
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
+*** Running ferret script: bn766_bug_fixes.jnl
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo

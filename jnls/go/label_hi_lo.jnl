@@ -1,6 +1,8 @@
 \cancel mode verify
 ! label_hi_lo
 ! *8/01 *acm* 
+! *10/21 *acm* The default precision in versions 7.6+ for evaluating constants
+*                             is too big; set the default precision of this script to 6.
 
 ! Description: overlay labels for local extrema with H and L or the
 !              values at those extrema
@@ -21,7 +23,7 @@
 !       hicolor  color of box around HI labels, or of letter H, default black
 !       locolor  color of box around LO labels, or of letter L, default black
 !       labsize  size of the mark or label (default 1.5) 
-!       precision number of significant figures for numeric lables (default not specified)
+!       precision number of significant figures for numeric lables (default 6)
 
 ! example:
 !       yes? USE coads_climatology
@@ -35,17 +37,17 @@
 !       yes? GO label_hi_lo.jnl slp mark 6 6 red blue
 
 ! check arguments
-QUERY/IGNORE $1%<Usage: GO label_hi_lo  var marktype xrng yrng xmin xmax ymin%
+QUERY/IGNORE $1%<Usage: GO label_hi_lo  var marktype xrng yrng hicolor locolor labsiz labprec%
 QUERY/IGNORE $2%<argument 2 is mark or label %
 QUERY/IGNORE $3%<argument 3 is x radius in data units%
 QUERY/IGNORE $4%<argument 4 is y radius in data units%
 QUERY/IGNORE $5%black|black|red|green|blue|lightblue|purple|*>black|%
 QUERY/IGNORE $6%black|black|red|green|blue|lightblue|purple|*>black|%
 QUERY/IGNORE $7%1.5%
-QUERY/IGNORE $8%-1%
+QUERY/IGNORE $8%6%
 
 LET/QUIET LHL_rsiz = $7%1.5% 
-LET/QUIET LHL_prec = $8%-1%
+LET/QUIET LHL_prec = $8%6%
 
 ! save region and grid information.  X and Y regions are cancelled below
 
@@ -81,7 +83,6 @@ CAN REGION/X/Y
 IF $2"|label>1|*>0|" THEN
 ! Mark the max's and mins with a rectangle, and the value of the extremum.
 ! Allow either violet or purple to be specified.   
-
 
 set mode verify
   LET/QUIET LHL_chsiz = LHL_rsiz / 20

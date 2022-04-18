@@ -1,0 +1,24 @@
+! err765_lineplot_tics
+!
+! PyFerret issue 102: The upper plot with /vlim=lo:hi or /hlim and with longitude 
+! on the independent axis got the dependent-variable tic-mark wrong, making 
+! way too many tics. The two plots on the left were incorrect.
+
+use navy_uw.nc
+
+! Define a function to plot. The bug is most obvious if the range on the vertical 
+! axis is large relative to the range on the horizontal axis. 
+
+let var = uwnd*1000
+
+set view ul
+plot/color=blue/vlim=-5000:0/y=10n/x=-30:-5/L=1 var
+set view ur
+plot/color=blue/vlim=-6000:0/x=-40/hlim=20:33/L=1 var
+
+set view ll
+plot/trans/color=red/y=10n/x=-30:-5/L=1/hlim=-4400:0 var
+set view lr
+plot/trans/color=red/x=-40/y=20:33/L=1 var
+
+frame/file=err765_lineplot_tics.png

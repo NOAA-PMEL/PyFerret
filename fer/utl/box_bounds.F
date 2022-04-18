@@ -49,6 +49,8 @@
 * V68  *acm* 1/12  ifdef double_p for double-precision ferret.
 * V73+ 1/18 *acm*  Changes for Issue 1009; precsision in time info sent to pplus for 2D plots
 *             scaling for axis coords and box edges
+* V766  4/22 *acm* For Issue 1009 the scaling of incoming val1 was incorrect
+
 
         IMPLICIT NONE
 	include 'ferret.parm'
@@ -76,7 +78,7 @@
 	   offst = bb_y_off
 	ENDIF
 
-	wval = DBLE(val1)* factr - offst
+	wval = DBLE(val1)/factr - offst
 
 * determine starting subscript
 	isub1 = ISUBSCRIPT ( DBLE(wval), bb_grid, idim, round_dn )
@@ -86,7 +88,6 @@
 	DO 100 i = 1, n
 	   wval =  TM_WORLD (isub0+i,bb_grid,idim,box_lo_lim)
 	   bounds(i) = (wval + offst) * factr 
-
  100	CONTINUE
 	wval = TM_WORLD (isub0+n,bb_grid,idim,box_hi_lim)
 	bounds(n+1)  = (wval + offst) * factr

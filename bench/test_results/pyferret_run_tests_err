@@ -7041,6 +7041,15 @@ ooooooooooooooooooooooooooooooooooooooooooo
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
+*** Running ferret script: bn_py_graticules.jnl
+ Using every   2th vector in the X direction
+           *** NOTE: /UNIT=MONTHS is ambiguous ... using 1/12 of 365.2425 days
+Replacing definition of axis TAX
+Replacing definition of axis TAX
+Replacing definition of axis TAX
 *** Running ferret script: bn_gif.jnl
  **ERROR: dimensions improperly specified: specified data is not a line
            - its a 2D region: "plot/i=1:10/j=1:20/nolabel i+j"

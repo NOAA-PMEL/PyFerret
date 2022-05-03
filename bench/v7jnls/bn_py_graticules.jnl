@@ -1,0 +1,149 @@
+! /GRAT, /HGRAT and /VGRAT to set graticule lines
+! Tests for using custom color and thickness available in PyFerret
+! in combination with graticule lines. See PyFerret issue #51
+!
+! ACM 4/28/2022
+
+IF ($program_name"0|PyFerret>0|Ferret>1") THEN EXIT/SCRIPT
+
+ppl axnmtc,2,2
+
+ ! GRAT on plot commands
+
+set view ul
+let a = sin(i/5) * cos(j/8)
+CONTOUR/color=(94,50,50)/grat=(color=(40,30,30))/i=1:100/j=1:80 a
+
+use coads_climatology
+set view ur
+SHADE/grat=(color=(100,100,100)) sst[L=1]
+
+set view ll
+VECTOR/color=(50,50,100)/thick=0.5/grat=(color=(50,100,50),thick=1.1,dash)/x=90:150/y=-60:-20 sst[l=1], sst[l=2]
+
+set view lr
+let b = {1,2,1} 
+let c = {2,1,0.5}
+POLYGON/thick/color=(100,0,0)/pal=blue/grat=(color=(50,50,50)) b,c
+
+frame/file=pygrat_1.png
+pause; cancel view
+
+! More complex GRAT arguments
+set view ul
+plot/color=(100,30,10)/thick/grat="large(thick),small(dash,color=(30,50,75))"/i=1:100 sin(i/5)
+
+set view ur
+contour/color=(60,0,100)/grat="large(color=(0,30,20),thick=3),small(color=(70,70,70))"/i=1:50/j=1:40 a
+
+set view ll
+fill/i=1:50/j=1:30/grat="large(line),small(dash,color=(100,60,70),thick)" i+j
+
+set view lr
+vector/color=(33,10,55)/i=1:50/j=1:30/grat="small(color=(70,70,70)),large(thick,color=(30,50,75))"  sst[l=1], sst[l=2]
+
+frame/file=pygrat_2.png
+pause; cancel view
+
+! /HGRAT and /VGRAT
+set view ul
+plot/vg=large(line,color=(100,0,0)),small(dash,color=(30,50,75))/i=1:100 sin(i/5)
+
+set view ur
+plot/hg=small(color=(100,0,0),dash),large(color=(30,50,75),line,thick)/i=1:100 sin(i/5)
+
+set view ll
+plot/hg=small(color=(100,0,0),dash,thick=1),large(color=(30,50,75),line,thick=3)/vg=large(line,color=(100,0,0)),small(dash,color=(30,50,75))/i=1:100 sin(i/5)
+
+frame/file=pygrat_3.png
+pause; cancel view
+
+! Log axes: VLOG and HLOG with large and small tics
+
+! set mode meta graticules.plt
+
+set view left
+def axis/z zlog=exp(k[k=1:10])
+let fcn = k[gz=zlog]
+plot/vlog/vlimits=1:100000/grat="large(color=(100,0,0)),small(color=(0,100,100))" fcn
+
+set view right
+def axis/z/depth dlog=exp(k[k=1:20])
+let fcn = k[gz=dlog]
+plot/vlog/vlimits=1:100000/hg="large(color=(100,0,0)),small(color=(0,100,100))" fcn
+
+frame/file=pygrat_4.png
+pause; cancel view
+
+! HLOG and VLOG
+
+def axis/x ddlog = exp(-1*(10-i[i=1:10]))
+let fcn = (i[gx=ddlog])^2
+plot/thick/hlog/vlog/grat="large(color=(100,0,0)),small=(color=(60,80,100)))" fcn
+
+! Time axes
+
+def axis/t=1-jan-1990:1-jan-1998:1/units=months tax
+
+let a = sin(t[gt=tax]/5)
+let b = sin(t[gt=tax]/100)
+
+set view upper
+plot/t=1-jan-1990:31-dec-1992/hg="large(thick,color=(10,10,75)),small(line,color=(0,100,100))"/vg="(thick,color=(10,10,75))" a
+
+set view lower
+def axis/t=1-jan-1990:1-mar-1990:1/units=days tax
+plot/hg="(line,color=(30,50,75))"/vg="large(line,color=(10,0,90)),small(line,color=(60,80,100))" a
+
+frame/file=pygrat_5.png
+pause; cancel view
+
+set view left
+plot/trans/vg="(line,color=(10,0,90))"/hg="large(line,color=(30,50,75)),small(line,color=(0,80,100))" a
+
+set view right
+plot/trans/vg="(line,color=(30,50,75))"/hg="large(line,color=(10,0,90)),small(line,color=(0,100,100))" a
+
+frame/file=pygrat_6.png
+pause; cancel view
+
+set view left
+def axis/t=1-jan-1800:1-jan-1990:1/units=years tax
+plot/color=red/thick/trans/grat="(line,color=(10,0,90))" a
+
+set view right
+def axis/t="1-jan-1990:01":"2-jan-1990:12:00":1/units=minutes tax
+plot/color=red/trans/thick/vg="(line,color=(30,50,75))"/hg="large(line,color=(30,50,75)),small(line,color=(90,90,20))" b
+
+frame/file=pygrat_6.png
+pause; cancel view
+
+! Tests for MODE GRATICULE  added in Ferret v5.7
+show mode graticule
+set mode graticule
+
+PLOT/color=(30,50,75)/i=1:100 cos(i/5)
+
+set view ul
+
+set mode graticule:color=(100,0,0)
+PLOT/color=(30,50,75)/thick=3/i=1:100 cos(i/5)
+
+set view ur
+set mode graticule:(thick,color=(0,50,50))
+PLOT/color=(90,30,15)/thick=3/i=1:100 cos(i/5)
+
+set view ll
+set mode graticule:(dash,color=(60,80,0),thick)
+
+PLOT/color=(90,30,15)/thick=3/i=1:100 cos(i/5)
+
+
+frame/file=pygrat_7.png
+pause; cancel view
+
+
+can mode graticule
+
+pplus/reset   ! restore tics etc
+

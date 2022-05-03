@@ -354,6 +354,8 @@ bn_dsg_return_coord.jnl
 
 bn764_bug_fixes.jnl
 bn766_bug_fixes.jnl
+
+bn_py_graticules.jnl
 !
 ! bn_gif, bn_all_ef, and bn_startupfile at end
 !

@@ -56,6 +56,11 @@
 *       *acm* 3/22 Pyferret issue 51 Non-standard graticule lines, either 
 *                  custom color settings or non-integer thickness is not 
 *                  implemented. Make this an error not a warning.
+* 4/22 *acm*  PyFerret issue #51: Allow for defining up to 4 more colors/pens to use in 
+*                    graticule lines; vertical and horizontal, and possibly different styles
+*                    for large and small tics. Custom colors/lines have been limited to 1, 
+*                    so custom-color line plots with custom-color grats were not implemented.
+*                    extrapen is 0 (for original pen); 1, 2, 3, 4 (graticule pens)
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
@@ -66,6 +71,7 @@
         include 'xprog_state.cmn'
         include 'axis_inc.decl'
         include 'AXIS.INC'
+        INCLUDE 'fgrdel.cmn'
 
 * calling argument declarations:
         INTEGER loch, locv, status
@@ -127,7 +133,7 @@
 
         ENDIF
 
-        IF ( buff .EQ. ' ' ) GOTO 4999
+        IF ( buff .EQ. ' ' ) GOTO 4998
 
         str_len = TM_LENSTR1(buff)
         i1 = 1
@@ -218,6 +224,7 @@
 
            hcolor(itic) = 1
            thickness = 1.0   ! default to a thin black line 
+	   extrapen = extrapen + 1
 
            IF (colr) THEN
               s1 = INDEX(buff(index1:index2), 'COL') + index1 - 1
@@ -233,7 +240,7 @@
 *             a closed parenthesis ends the color specification
               s3 = INDEX(buff(s1:s2),'(')
               IF ( s3 .GT. 0 ) THEN
-                 s2 = INDEX(buff(s1:index2), ')')
+                 s2 = INDEX(buff(s1:index2+1), ')')
                  IF (s2 .EQ. 0) THEN
                     GOTO 5100
                  ELSE
@@ -264,19 +271,15 @@
 
 *    In the graticule setting, a value of THICK that's not 1,2, or 3,
 *    or /THICK with no argument, is not implemented.
-*    Check this using EQUAL_VAL; a call to equal_thick may change an 
+*    Check this using EQUAL_VAL; a call to EQUAL_THICK may change an 
 *    existingsetting on a line-plot command
 
 	      CALL EQUAL_VAL( buff(s1:s2), val, status )
-	      IF (val .EQ. unspecified_val4) THEN
-	         ! ok
-	      ELSE
-	         IF (val .NE. INT(VAL) .OR. val.LT.1 .OR. val.GT.3) GOTO 5200
-	      ENDIF
 
 *             get the pen for the color and the thickness specified in buff
               CALL EQUAL_THICK(buff(s1:s2), thickness, hcolor(itic), 
      .                         pencode, status)
+     
               IF ( status .NE. ferr_ok ) GOTO 5000
            ELSE
 *             get the pen for the color and the default thickness
@@ -284,10 +287,6 @@
      .                         pencode, status)
               IF ( status .NE. ferr_ok ) GOTO 5000
            ENDIF
- 
-*          At this time, only standard lines are accepted
-           ncolors = mode_arg(pmode_linecolors,1)
-           IF ( (pencode .LT. 1) .OR. (pencode .GT. 3*ncolors) ) GOTO 5200
 
 *          Assign the pen to use
            hcolor(itic) = pencode
@@ -298,7 +297,7 @@
         ENDDO  ! back to to small htics, if requested.
 
 * 
- 4999   CONTINUE
+ 4998   CONTINUE
 
 *  /VGRAT
 
@@ -309,12 +308,12 @@
 
 * /VGRAT with no argument defaults to lines at large tic marks.
 
-           DO 115 ii = 1, 4
+           DO ii = 1, 4
              vgrat(ii,1) = -1.
-115        CONTINUE
+	   ENDDO
 
         ENDIF
-        IF ( buff .EQ. ' ' ) GOTO 5000  ! done
+        IF ( buff .EQ. ' ' ) GOTO 4999  ! done
 
         str_len = TM_LENSTR1(buff)
 
@@ -408,6 +407,7 @@
 
            vcolor(itic) = 1
            thickness = 1.0   ! default to thin black line
+	   extrapen = extrapen + 1
 
            IF (colr) THEN
               s1 = INDEX(buff(index1:index2), 'COL') + index1 - 1
@@ -423,7 +423,7 @@
 *             a closed parenthesis ends the color specification
               s3 = INDEX(buff(s1:s2),'(')
               IF ( s3 .GT. 0 ) THEN
-                 s2 = INDEX(buff(s1:index2), ')')
+                 s2 = INDEX(buff(s1:index2+1), ')')
                  IF (s2 .EQ. 0) THEN
                     GOTO 5100
                  ELSE
@@ -452,32 +452,17 @@
                  s2 = s2 + s1 - 2
               ENDIF 
 
-*    In the graticule setting, a value of THICK that's not 1,2, or 3,
-*    or /THICK with no argument, is not implemented.
-*    Check this using EQUAL_VAL; a call to equal_thick may change an 
-*    existingsetting on a line-plot command
-
-	      CALL EQUAL_VAL( buff(s1:s2), val, status )
-	      IF (val .EQ. unspecified_val4) THEN
-	         ! ok
-	      ELSE
-	         IF (val .NE. INT(VAL) .OR. val.LT.1 .OR. val.GT.3) GOTO 5200
-	      ENDIF
-
 *             get the pen for the color and the thickness specified in buff
               CALL EQUAL_THICK(buff(s1:s2), thickness, vcolor(itic), 
      .                         pencode, status)
               IF ( status .NE. ferr_ok ) GOTO 5000
+
            ELSE
 *             get the pen for the color and the default thickness
               CALL EQUAL_THICK(' ', thickness, vcolor(itic), 
      .                         pencode, status)
               IF ( status .NE. ferr_ok ) GOTO 5000
            ENDIF
- 
-*          At this time, only standard lines are accepted
-           ncolors = mode_arg(pmode_linecolors,1)
-           IF ( (pencode .LT. 1) .OR. (pencode .GT. 3*ncolors) ) GOTO 5200
 
 *          Assign the pen to use
            vcolor(itic) = pencode
@@ -488,14 +473,14 @@
         ENDDO  ! back to to small htics, if requested.
 
 * success
+
+ 4999	CONTINUE
+
         RETURN
 
 * error exit
- 5000        RETURN
- 5100        CALL ERRMSG( ferr_syntax, status,
+ 5000	RETURN
+ 5100	CALL ERRMSG( ferr_syntax, status,
      .                buff(:str_len)//' mismatched parentheses', *5000 )
- 5200        CALL ERRMSG(ferr_syntax, status,
-     .                'For graticules only standard line colors ' //
-     .                'and thicknesses are accepted.', *5000 )
 
         END

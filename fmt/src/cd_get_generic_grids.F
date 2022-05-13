@@ -80,6 +80,10 @@
 *  v744 11/2011   *acm* Issue 1906: Get info for second calendar in T-F grid
 *  v76   5/2020   *acm* USE/ORDER= when grids in files have different dimensions
 *                       Analyze largest grid first
+*  v7.66 5/2022   *acm* see issue 1046, 1962: If there are dimensions w/o coordinate
+*                 variables, or without helpful attributes, check if a variable using 
+*                 the dimension is a 2-D longitude or latitude coordinate variable. 
+*                 If so then its dimensions are in the X and Y direction.5/11/2022
 
 * argument definitions:
 *       dset        - TMAP data set pointer
@@ -104,6 +108,7 @@
 	external xio_data
 	include 'xtm_grid.cmn_text'
 	include 'xdset_info.cd_equiv'
+	include 'xunits.cmn_text'
 
 * argument declarations
 	LOGICAL  reversed(max_lines:line_ceiling)
@@ -123,12 +128,12 @@
       PARAMETER (do_warn = .TRUE. )
       PARAMETER (centers = .TRUE. )
       INTEGER TM_LENSTR1, TM_FIND_GRID_SLOT, STR_CASE_BLIND_COMPARE,
-     .        STR_SAME, igrid, iaxis, grid_cnt, istat, idim,
+     .        STR_SAME, TM_UNIT_ID, igrid, iaxis, grid_cnt, idim,
      .        ivar, vartyp, nvdims, vdims(8), nvatts, vlen, idim2,
      .        tmvar, tmpgrid, npts, dim, tmplines(nferdims), ndim,
      .	      grid_dims(nferdims), trans(nferdims), indices(nferdims),
      .        i, maxlen, attlen,attoutflag, all_outflag, axid, iaxis6,
-     .        attid, eax, cfrole_dim, blen, max_dims, big_var
+     .        attid, eax, cfrole_dim, blen, max_dims, big_var, units
 	
       REAL    tmp
       CHARACTER name*128, vname*128, linunits*24, 
@@ -139,6 +144,7 @@
 
 * initialize
 	native_tax = mpsnorm
+	maxlen = 128
 
 * initialize temporary grid name pointer
 	num_tmp_grids = 0
@@ -150,21 +156,55 @@
 
 	cfrole_dim = 0 
 
+* Do the variables have coordinate variables?  If they are just dimensions,
+* first thing is to look for 2-D coordinate variables, whose dimensions are
+* in the X and Y direction.
+
+
 * How many dimensions do the varibles have? Make a grid for the first one
 * encountered that has the highest number of dimensions first.
 
 	max_dims = 0
 	big_var = 0
 	
-	DO tmvar = 1,maxvars
+	DO tmvar = 1, maxvars
            IF ( ds_var_setnum(tmvar) .NE. dset ) CYCLE
            ivar = cd_varid(tmvar)
            CALL CD_GET_VAR_INFO(dset, ivar, vname, vartyp, nvdims,
-     .                 vdims, nvatts, coordvar, all_outflag, istat)
+     .                 vdims, nvatts, coordvar, all_outflag, status)
 	   IF (nvdims .GT. max_dims) big_var = ivar
 	   max_dims = MAX(max_dims, nvdims)
+
+* Is this a 2D coordinate var whose dimensions are NOT coord vars? 
+* Check units. IF longitude or latitude then the coordinates are X,Y
+
+	   IF (nvdims .EQ. 2) THEN  
+
+	      vlen = TM_LENSTR1(vname)
+	      got_it = NC_GET_ATTRIB( dset, ivar, 'units', do_warn,
+     .                        vname(:vlen), maxlen, attlen, attoutflag, 
+     .                        linunits, tmp)
+	      IF (got_it) THEN
+	         units = TM_UNIT_ID( linunits )
+	         IF (units .EQ. pun_degrees) THEN
+		    DO idim = 1, 2
+		       CALL CD_GET_DS_DIMS (dset, idim, name, npts, status)
+		       IF (status .NE. merr_ok) GOTO  5100
+		       CALL CD_GET_VAR_ID (dset, name, axid, status)
+		       IF (status .EQ. atom_not_found) THEN
+		          CALL TM_MAKE_BASIC_AXIS( name, 1.0D0, 1.0D0, npts,
+     .                                 iaxis, status )
+		          IF ( status .NE. merr_ok ) GOTO 5900
+		          line_direction(iaxis) = 'XX'
+		          IF (idim .EQ. 2) line_direction(iaxis) = 'YY'
+		       ENDIF
+		    ENDDO
+	         ENDIF
+	      ENDIF
+	   ENDIF
+
 	ENDDO 
-	
+
 	big_done = .FALSE.
 
         DO 25 tmvar = 1,maxvars
@@ -177,10 +217,10 @@
 
 * get the vital statistics for this variable
            CALL CD_GET_VAR_INFO(dset, ivar, vname, vartyp, nvdims,
-     .                 vdims, nvatts, coordvar, all_outflag, istat)
+     .                 vdims, nvatts, coordvar, all_outflag, status)
 
-           IF (istat.NE.merr_ok) CALL TM_ERRMSG
-     .     ( istat+pcdferr,status,'CD_GET_GENERIC_GRIDS',cdfid,ivar,
+           IF (status.NE.merr_ok) CALL TM_ERRMSG
+     .     ( status+pcdferr,status,'CD_GET_GENERIC_GRIDS',cdfid,ivar,
      .       no_errstring, no_errstring, *5900 )
            vlen = TM_LENSTR1(vname)
 
@@ -234,7 +274,7 @@
            ivar = cd_varid(tmvar)
 
 * does it point explicitly to a parent grid ?
-          maxlen = 24   !linenamlen
+          
           got_it = NC_GET_ATTRIB( dset, ivar, 'parent_grid',
      .                       .NOT.do_warn, ' ', maxlen, attlen, 
      .                       attoutflag, name, tmp )
@@ -242,10 +282,10 @@
 
 * get the vital statistics for this variable
            CALL CD_GET_VAR_INFO(dset, ivar, vname, vartyp, nvdims,
-     .                 vdims, nvatts, coordvar, all_outflag, istat)
+     .                 vdims, nvatts, coordvar, all_outflag, status)
 
-           IF (istat.NE.merr_ok) CALL TM_ERRMSG
-     .     ( istat+pcdferr,status,'CD_GET_GENERIC_GRIDS',cdfid,ivar,
+           IF (status.NE.merr_ok) CALL TM_ERRMSG
+     .     ( status+pcdferr,status,'CD_GET_GENERIC_GRIDS',cdfid,ivar,
      .       no_errstring, no_errstring, *5900 )
            vlen = TM_LENSTR1(vname)
 
@@ -272,16 +312,19 @@
            DO 200 idim = 1, nvdims
 
 * ... get name of dimension
-              CALL CD_GET_DS_DIMS( dset, vdims(idim), name, npts, istat )
-              IF (istat.NE.merr_ok) CALL TM_ERRMSG
-     .     ( istat+pcdferr,status,'CD_GET_GENERIC_GRIDS',cdfid,ivar,
+              CALL CD_GET_DS_DIMS( dset, vdims(idim), name, npts, status )
+              IF (status.NE.merr_ok) CALL TM_ERRMSG
+     .     ( status+pcdferr,status,'CD_GET_GENERIC_GRIDS',cdfid,ivar,
      .       vname(:vlen), 'cant get dimensions', *5900 )
  
 * ... locate the axis by that name (processed in CD_GET_AXES)
 	      iaxis = 0
  100	      CALL TM_NEXT_TMP_LINE(iaxis, *120)  ! 120 if no more
-	         istat = STR_CASE_BLIND_COMPARE(name, line_name(iaxis))
-	         IF ( istat .EQ. str_eq ) GOTO 150  ! got a match
+	         status = STR_CASE_BLIND_COMPARE(name, line_name(iaxis))
+	         IF ( status .EQ. str_eq ) THEN  ! got a match
+		    IF (line_direction(iaxis) .EQ. 'NA') GOTO 130  ! axis defined but dont have its direction
+		    GOTO 150
+		 ENDIF
 	      GOTO 100
 
 * ... axis doesn't exist - perhaps it is a dimension with no variable defn
@@ -289,14 +332,15 @@
 *  either way -- not an error condition if we need to synthesize an axis ...
  120	      CALL TM_MAKE_BASIC_AXIS( name, 1.0D0, 1.0D0, npts,
      .                                 iaxis, status )
-              IF ( status .NE. merr_ok ) GOTO 5900
+	      IF ( status .NE. merr_ok ) GOTO 5900
 
 * Are there attributes that tell us the direction?  If so apply them.
 * for the user's convenience, an invalid T axis is still in the T direction.
 * The routine will get and use basic info about the units.
 
 * axis ID
-	      CALL CD_GET_VAR_ID (dset, name, axid, status)
+  130	      CALL CD_GET_VAR_ID (dset, name, axid, status)
+	      
 	      linunits = char_init24
 	      IF (idim .EQ. cfrole_dim) THEN
 	         line_direction(iaxis) = 'EE'
@@ -451,5 +495,8 @@
 
 * error exit
  5900	RETURN
+ 5100   CALL TM_ERRMSG
+     .     ( status+pcdferr,status,'CD_GET_GENERIC_GRIDS',cdfid,ivar,
+     .       vname(:vlen), 'cant get dimensions', *5900 )
 
 	END

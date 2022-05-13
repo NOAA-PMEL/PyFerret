@@ -53,7 +53,9 @@
 *                 cleaning up unnecessary space and processing time.
 * V751 12/19 *acm* Issue 1962: When can't get consistent grids, give some coaching and
 *                 declare it an error.
-*  v76   5/2020   *acm* USE/ORDER= when grids in files have different dimensions               
+*  v76   5/2020   *acm* USE/ORDER= when grids in files have different dimensions
+*  v7.65 5/2022   *acm* Issue 1988, still some inconsistencies; files that should
+*                 be useable but can't be initialized.
 
 * argument definitions:
 *      dset        - TMAP data set pointer
@@ -194,7 +196,7 @@
       DO 220 i = 1, disordered
          iorder = iorder + 1
          iaxis = INT(axes_out_of_order(iorder))
-	 IF (iaxis.EQ.iaxis_last .OR. iaxis.EQ.0) GOTO 220
+	 IF (iaxis.EQ.iaxis_last .OR. iaxis.EQ.0) CYCLE  ! out of loop 220
          iaxis_last = iaxis
 
 C Axis marked with a direction but is in inconsistent position in grids?
@@ -241,14 +243,13 @@ c Find the grid which contains this axis and has the most dimensions.
                   ENDIF
   150          CONTINUE
 
-               IF (igrid2 .NE. 0) THEN
+	       IF (igrid2 .NE. 0) THEN
                   i1 = MIN(ipos1, ipos2)
                   i2 = MAX(ipos1, ipos2)
                   shift_ok = .FALSE.
                   DO 160 idim = i1, i2
-                         iax = grid_line(idim,igrid2)
-
-                         IF (grid_line(idim,igrid2) .LE. 0 .OR.
+                     iax = grid_line(idim,igrid2)
+                     IF (grid_line(idim,igrid2) .LE. 0 .OR.
      .                       line_direction(iax) .EQ. 'NA') 
      .                       shift_ok = .TRUE.
   160             CONTINUE
@@ -257,17 +258,11 @@ c Find the grid which contains this axis and has the most dimensions.
                         grid_save(idim) = grid_line(idim,igrid2)
   170                CONTINUE
 
-                     grid_line(ipos1,igrid2) = grid_line(ipos1,igrid1)
+		     grid_line(ipos1,igrid2) = grid_line(ipos1,igrid1)
                      line_use_dir(grid_line(ipos1,igrid1)) = ipos1
-                     grid_line(ipos2,igrid2) = mpsnorm
+                     grid_line(ipos2,igrid2) = grid_save(ipos1)
 
-                     DO 180 idim = ipos2+1, nferdims
-                        IF (grid_save(idim-1).NE.mpsnorm) THEN
-                           grid_line(idim-1,igrid2) = grid_save(idim)
-			   need_iterate = .TRUE.
-			ENDIF
-  180                CONTINUE
-
+		     need_iterate = .TRUE.
                      reordered = reordered + 1
                   ELSE
                      vlen = TM_LENSTR1(line_name(iaxis)) 
@@ -286,7 +281,6 @@ c Find the grid which contains this axis and has the most dimensions.
 
           ENDIF
   220 CONTINUE ! disordered
-
       iter = iter + 1
       IF (iter .LT. 10) GOTO 1000
 * Here loop back if need_iterate is true.
@@ -294,10 +288,11 @@ c Find the grid which contains this axis and has the most dimensions.
 * Reset ds_grid_start and ds_grid_end
 
  2000 CONTINUE 
+
       IF (reordered .GT. 0) THEN
 * * * * loop through each variable in this TMAP data set * * *
       DO 250 tmvar = 1,maxvars
-         IF ( ds_var_setnum(tmvar) .NE. dset ) GOTO 250
+         IF ( ds_var_setnum(tmvar) .NE. dset ) CYCLE ! loop 250
          igrid = ds_grid_number(tmvar)
 
 ! save a copy of the grid

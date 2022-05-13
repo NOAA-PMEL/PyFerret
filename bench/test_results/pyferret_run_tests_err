@@ -7044,6 +7044,15 @@ ooooooooooooooooooooooooooooooooooooooooooo
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
+           *** NOTE: Unspecified or unsupported ordering of axes in variable Tinz_d: T axis is in dimension # 5
+           *** NOTE: Check the dimensions: can USE/ORDER= be applied?
+           *** NOTE: The default ordering will be used
+           *** NOTE: Axis X_GRID_T marked as YY
+           *** NOTE: but it has different directions in grids.
+ **ERROR: inconsistent data grids: File needs axis attributes on coordinate variables indicating correct directions
+SET DAT/FORM=CDF notok.nc
+Command file, command group, or REPEAT execution aborted
+Executed by script: *** GO err765_ordering.jnl ***
 *** Running ferret script: bn_py_graticules.jnl
  Using every   2th vector in the X direction
            *** NOTE: /UNIT=MONTHS is ambiguous ... using 1/12 of 365.2425 days

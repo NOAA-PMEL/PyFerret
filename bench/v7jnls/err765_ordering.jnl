@@ -26,16 +26,20 @@ cancel data/all
 
 ! Similarly the WRF file has dimensions but not coord. variables.
 ! Previously this resulted in 
-!    *** Note: Could not adjust grid for variable FNM. 
+! *** Note: Could not adjust grid for variable FNM. 
 ! ** ERROR: Inconsistent data grids: File needs axis attributes
 
 use as_wrf.nc
 show data
+show grid p
 
 cancel data/all
 
 ! A new capability looks for 2-D latitude or longitude coordinate variables 
-! and assigns their dimensions to be in the X and Y directions
+! and assigns their dimensions to be in the X and Y directions. Previously
+! this also resulted in the same grid errors as as_wrf.nc
 
 use notok.nc
 show data
+
+sh grid bounds_lat_grid_t

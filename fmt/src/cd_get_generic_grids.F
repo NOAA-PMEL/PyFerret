@@ -188,7 +188,7 @@
 	         units = TM_UNIT_ID( linunits )
 	         IF (units .EQ. pun_degrees) THEN
 		    DO idim = 1, 2
-		       CALL CD_GET_DS_DIMS (dset, idim, name, npts, status)
+		       CALL CD_GET_DS_DIMS (dset, vdims(idim), name, npts, status)
 		       IF (status .NE. merr_ok) GOTO  5100
 		       CALL CD_GET_VAR_ID (dset, name, axid, status)
 		       IF (status .EQ. atom_not_found) THEN

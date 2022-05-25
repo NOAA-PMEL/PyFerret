@@ -50,6 +50,8 @@
 *                     on the axes.
 * V7.64  7/2021 *acm* for pyferret ticket #89: plot/vs command with /axes  after a plot/vs, lost the 
 *                  longitude-axis formatting
+* V766  5/22 *acm* Update the 1099/1888 changes for a PLOT/VS overlay plot on a time plot
+*                  that has rescaled time.
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -110,7 +112,8 @@
      .                  cal_name*32, cal_name_new*32, val_buff*45, fmt*4,
      .			whoimin*14, whoimax*14, 
      .			whoimin_axlo*14, whoimax_axhi*14
-	INTEGER		TM_LENSTR1, CX_DIM_LEN, CGRID_SIZE, CGRID_AXIS, 
+	INTEGER*8	CGRID_SIZE8, gsize
+	INTEGER		TM_LENSTR1, CX_DIM_LEN, CGRID_AXIS, 
      .			TM_DSG_DSET_FROM_GRID, TM_DSG_NFEATURES, TM_DSG_NF2FEATURES,
      .			mv, cx, slen, ito, indep_lab, dep_lab, nline_in_mem,
      .			indep_dim, npts, dep_dim, npts2, ndv, var1,
@@ -340,15 +343,21 @@
 
 * determine PLOT+ memory required
         plot_mem_used = 0
-        DO 10 ipl = 1, numv
- 10     plot_mem_used = plot_mem_used
-     .		      + 2*step_inc*CGRID_SIZE( cx_list(ipl) )
+        DO ipl = 1, numv
+	   gsize = CGRID_SIZE8( cx_list(ipl) )
+	   IF (plot_mem_used + 2*step_inc*gsize .GT. 
+     .         arbitrary_large_int4) GOTO 5300
+	   plot_mem_used = plot_mem_used + 2*step_inc*gsize 
+	ENDDO
+
 
 * check for improper data supplied
 	IF ( num_uvars_in_cmnd .LT. 2 ) GOTO 5100
 
 * length of plot array
-	npts = CGRID_SIZE( cx )	! (redundantly calc'd below) 5/90
+        gsize = CGRID_SIZE8(cx)
+	IF (gsize .GT. arbitrary_large_int4) GOTO 5300
+	npts = gsize	! (redundantly calc'd below) 5/90
 
 * Overlay plots, keep the setting of IAUTOT that was set on the underlay plot.
 
@@ -451,7 +460,8 @@
 	   expand_dsg_ok = .TRUE.
 	   IF (its_dsg) THEN  ! Get the size of the second variable and decide whether to expand to obs axis.
 
-	      npts2 = CGRID_SIZE( cx_list(var1) )
+	      gsize = CGRID_SIZE8( cx_list(var1) )
+	      npts2 = gsize
 
 	      expand_dsg_ok = (npts.NE.nftrsets .AND.
      .	          (npts.NE.nfeatures .OR. npts2.NE.nfeatures) )
@@ -1229,6 +1239,11 @@ c	         IF ( .NOT.overlay .OR.  set_up_axes ) THEN
 	   IF (doing_ribbon_color) icode = 2
 	   IF (y_is_time .AND. doing_ribbon_color) icode = 7
 
+* Did we rescale a time axis in axis_format?  If so need to change time units.
+* dt_min only matters if we're overlaying on a time axis
+
+	   IF (iunits.GE.0 .AND. rescale_time) dt_min = 1./60.
+
 	   IF ( flip ) THEN
 	      CALL PPLLDX_envelope(icode,dep_dat,indep_dat,nload,
      .                             t1_date, tref, dt_min, plot_mem_used)
@@ -1339,7 +1354,6 @@ c	         IF ( .NOT.overlay .OR.  set_up_axes ) THEN
      .                        delta, dep_is_log, dep_axtyp, versus, status )
 	      ENDIF
 
-     
 	   ENDIF
 	   IF ( status .NE. ferr_OK ) THEN
 	      first = dep_min
@@ -1487,4 +1501,9 @@ c	         IF ( .NOT.overlay .OR.  set_up_axes ) THEN
      .		'Plot trajectoryProfile data as trajectory, '//
      .          'only for a single variable',
      .		*5000 )
+     
+ 5300   CALL ERRMSG( ferr_out_of_range, status,
+     .     'data too large to plot'//pCR//
+     .      cmnd_buff(:len_cmnd), *5100 )
+
 	END

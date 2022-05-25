@@ -24,6 +24,8 @@
 *                 be restored after the plot is completed
 * v765 *acm* 11/21 PyFerret Issue 99: Change the color of contour labels on CONTOUR/COLOR=
 *                  when using PyFerret fonts
+* V766  5/22 *acm* Update the 1099/1888 changes for a PLOT/VS overlay plot on a time plot
+*                  that has rescaled time.
 
 	INTEGER		max_windows,
      .			max_viewport,
@@ -44,7 +46,8 @@
      .                  no_plot_yet,
      .                  changed_key,
      .                  set_palette,
-     .                  contour_color_pyf
+     .                  contour_color_pyf,
+     .                  rescale_time
 
 	INTEGER		vp_num,
      .			vp_seg0,
@@ -149,6 +152,7 @@
      .                  changed_key,
      .                  set_palette,
      .                  contour_color_pyf,
+     .                  rescale_time,
      .			saved_dt_min,
      .			saved_t1_date,
      .			saved_bb_date,

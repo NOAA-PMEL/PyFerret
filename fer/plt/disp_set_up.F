@@ -183,6 +183,8 @@
 *                  in vector planes such as XZ
 * V7.63+  6/2021 *acm* for pyferret ticket #89: plot command with /axes  after a plot/vs, lost the 
 *                  longitude-axis formatting
+* V766  5/22 *acm* Update the 1099/1888 changes for a PLOT/VS overlay plot on a time plot
+*                  that has rescaled time.
 
 C replace includes with those from plot_set_up, 
 C plus those starting w/ xbox_bounds:
@@ -241,14 +243,14 @@ C plus those starting w/ xbox_bounds:
         CHARACTER*1     axdir(6)
 
 	LOGICAL		NO_GRID_RANGE, GEOG_LABEL, TM_FPEQ, ITS_FMRC, 
-     .			ITSA_TRUEMONTH_AXIS,
+     .			ITSA_TRUEMONTH_AXIS,REGULARLY_SPACED,
      .			user_title, time_axis, time_axis_dim1, time_axis_dim2, 
      .			timeax_both, 
-     .			regrid_1, regrid_2, no_y_rng, edges_ok,
-     .			REGULARLY_SPACED,
+     .			regrid_1, regrid_2, no_y_rng, edges_ok, time_rescaled,
      .                  irregular, use_cell, valid, vflag, set_up_axes
 
-	INTEGER		TM_LENSTR1, CX_DIM_LEN, CGRID_SIZE,
+	INTEGER*8	CGRID_SIZE8, gsize
+	INTEGER		TM_LENSTR1, CX_DIM_LEN,
      .			i, dim1, dim2, mvx, mvx_temp, mvy, mvy_temp,
      .			ctx, cty, plot_mem_used, nvars,
      .			lo1, lo2, hi1, hi2, size1, size2, size,
@@ -288,7 +290,6 @@ C plus those starting w/ xbox_bounds:
 	bb_x_off  = 0.
 	bb_y_fac  = 1.
 	bb_y_off  = 0.
-
 	IF ( vector ) THEN
 	   mvy	  = mr_list( 2 )
 	   cty	  = cx_list  ( 2 )
@@ -305,6 +306,7 @@ C plus those starting w/ xbox_bounds:
 	ENDIF
 	ptitl = qual_given( slash_title )
 	user_title = ptitl .GT. 0
+	time_rescaled = .FALSE.
 
 * get 4D shape of data region to load (already oversized)
 	dim1 = plot_axis(1)
@@ -316,12 +318,19 @@ C plus those starting w/ xbox_bounds:
 	size  = size1 * size2
 
 
-* determine PLOT+ memory required 
+* determine PLOT+ memory required.
 
-        plot_mem_used = CGRID_SIZE( cx_list(1) ) + size1 + size2
+        gsize = CGRID_SIZE8( cx_list(1) ) + size1 + size2
+	IF (gsize .LT. arbitrary_large_int4) THEN
+	   plot_mem_used = gsize
+	   IF (vector .AND. gsize*2 .GT. arbitrary_large_int4) GOTO 5730
+	ELSE
+	   GOTO 5730
+	ENDIF
+	
+
         IF ( vector ) 
      .        plot_mem_used = plot_mem_used * 2
-
 	flows     = qual_given( slash_vect_flowline  ).GT.0
 
 !  For flowlines, more PLOT+ memory needed; based on density parameter and
@@ -693,6 +702,7 @@ C   set up memory for the flag grid
      .			     no_labels, xtra_xlab, bb_x_fac, bb_x_off)
 
            time_axis_dim1 = time_axis
+	   IF (rescale_time) time_rescaled = .TRUE.
 
 * second axis
 
@@ -780,6 +790,9 @@ C ACM added 8/2001 save cal id if vertical time axis
      .                       curvilinear, cx_ypos,
      .                       time_axis,timeax_both,ystyle,
      .			     no_labels, xtra_ylab, bb_y_fac, bb_y_off)
+     
+	   IF (rescale_time) time_rescaled = .TRUE.
+
 
 *   When not an overlay, set the axis type to log or reverse log
 	   IF (is_logx .OR. is_logy) THEN
@@ -788,6 +801,10 @@ C ACM added 8/2001 save cal id if vertical time axis
  3006         FORMAT ('axtype,', I2, ',', I2)
 	      CALL PPLCMD ( from, line, 0, buff2, 1, 1)
 	   ENDIF
+
+* the horiz or vert axis needed time rescaling. If a plot is overlaid on this,
+* we may need to know this
+	   IF (time_rescaled) rescale_time = .TRUE.  
 
         ELSE   ! .NOT.overlay
 
@@ -1078,5 +1095,8 @@ C ACM added 8/2001 save cal id if vertical time axis
      .      cmnd_buff(:len_cmnd), *5100 )
  5720   CALL ERRMSG( ferr_out_of_range, status,
      .     err_string//pCR//cmnd_buff(:len_cmnd), *5100 )
+ 5730   CALL ERRMSG( ferr_out_of_range, status,
+     .     'data too large to plot'//pCR//
+     .      cmnd_buff(:len_cmnd), *5100 )
 
 	END

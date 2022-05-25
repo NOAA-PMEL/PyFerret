@@ -183,7 +183,7 @@
 *                  in vector planes such as XZ
 * V7.63+  6/2021 *acm* for pyferret ticket #89: plot command with /axes  after a plot/vs, lost the 
 *                  longitude-axis formatting
-* V766  5/22 *acm* Update the 1099/1888 changes for a PLOT/VS overlay plot on a time plot
+* V766  5/22 *acm* Update the 1009/1888 changes for a PLOT/VS overlay plot on a time plot
 *                  that has rescaled time.
 
 C replace includes with those from plot_set_up, 

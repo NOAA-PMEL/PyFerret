@@ -88,28 +88,6 @@
 * V7    *acm* 6/16 Ticket 2434: command qualifiers /DEGMINSEC= /HALFSPAC
 *                  DEGMINSEC=1 for Deg-Min axis labels, =2 for Deg-Min-Sec. Default = 1
 *                  /HALFSPAC adds a half space between the degree sign and E/W or N/S
-* V71 12/16 *acm* For ticket 2158: working with true monthly time axes.
-* V73+ 1/18 *acm*  Changes for Issue 1009; precision in time info sent to pplus for 2D plots
-*                  Set scaling for axis coords and box edges
-* V743 7/18 *acm* Issue 1888: The resetting of time for 1009 need not happen unless the 
-*                 time coordinates really need all that precision.
-* V766  4/22 *acm* For Issue 1009 restore the previous rescaling of time. The fixes for
-*                  1888 are more correctly made elsewhere.
-* V766  5/22 *acm* Update the 1099/1888 changes for a PLOT/VS overlay plot on a time plot
-*                  that has rescaled time.
-
-        IMPLICIT NONE
-	include 'tmap_dims.parm'
-	include 'ferret.parm'
-        include 'plot_setup.parm'
-	include 'xtm_grid.cmn_text'
-	external xgt_grid_data
-        include 'xunits.cmn_text'
-	include 'xdset_info.cmn_text'
-	external xdset_info_data
-	include 'xplot_setup.cmn'
-	include 'xplot_state.cmn'
-        INCLUDE 'labcom_inc.decl'
         INCLUDE 'LABCOM.INC'    ! hxlab, hylab
 * needed to position the imposed labels
 	include 'axis_inc.decl'		! axis lengths

@@ -50,7 +50,7 @@
 *                     on the axes.
 * V7.64  7/2021 *acm* for pyferret ticket #89: plot/vs command with /axes  after a plot/vs, lost the 
 *                  longitude-axis formatting
-* V766  5/22 *acm* Update the 1099/1888 changes for a PLOT/VS overlay plot on a time plot
+* V766  5/22 *acm* Update the 1009/1888 changes for a PLOT/VS overlay plot on a time plot
 *                  that has rescaled time.
 
         IMPLICIT NONE

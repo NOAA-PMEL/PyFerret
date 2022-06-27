@@ -105,6 +105,8 @@
 *                    for large and small tics. Custom colors/lines have been limited to 1, 
 *                    so custom-color line plots with custom-color grats were not implemented.
 *                    extrapen is 0 (for original pen); 1, 2, 3, 4 (graticule pens)
+* V766  5/22 *acm* Update the 1009/1888 changes for a PLOT/VS overlay plot on a time plot
+*                  that has rescaled time.
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -286,6 +288,7 @@
 	h_logaxis = .FALSE.
 	v_logaxis = .FALSE.
         no_plot_yet = .FALSE.
+        rescale_time = .FALSE.
 
         DO 200 idim = 1, nferdims
  200    ul_dolab(idim) = .TRUE.

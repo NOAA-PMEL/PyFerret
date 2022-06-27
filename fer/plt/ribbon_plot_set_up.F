@@ -45,6 +45,7 @@
 * V74+ 4/18 *acm*  Call RIBBON_PLOTKEY_SETUP to handle setting up the color key 
 * V7.5+ *acm*  4/18 PLOT/VS plots from DSG data that are not native-trajectory plots
 * V751 7/19 *acm*  DSG-enabled Ferret: change to call of CHECK_PLOT_TRAJ
+* v767 6/22 *acm* Remove unused declaration CGRID_SIZE
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -67,7 +68,7 @@
 
 * internal variable declarations:
 	LOGICAL TM_HAS_STRING,  do_key, its_traj, dsg_as_traj
-	INTEGER	MR_DIM_LEN, CX_DIM_LEN, CGRID_SIZE, TM_DSG_NFEATURES,
+	INTEGER	MR_DIM_LEN, CX_DIM_LEN, TM_DSG_NFEATURES,
      .		TM_LENSTR1, TM_LENSTR, STR_SAME,
      .          nvs, loc, cx, grid, slen, nfeatures, idir
 	REAL	val

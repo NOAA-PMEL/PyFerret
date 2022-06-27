@@ -45,6 +45,7 @@
 *		  previously a part of DO_AVE_INT
 * V72  *acm* 6/17 Ticket 2539: Do not set res to bad-value for ave, din.
 *                 Weights of zero or non-zero mark whether data is found.
+* v767 6/22 *acm* See issue 112: The total size could need INTEGER*8
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
@@ -59,7 +60,8 @@
 !	external xgt_grid_data
 
 * calling argument declarations:
-	INTEGER	trans, size, res_mr
+	INTEGER*8 size
+	INTEGER	trans, res_mr
 	REAL    res(size), weights(size)
 
 * internal variable declarations:

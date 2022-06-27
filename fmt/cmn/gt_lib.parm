@@ -23,6 +23,8 @@
 *                  as in ferret.parm
 * V74+  4/18 *acm* Add no_dim to parameters for direction numbers
 * V74+  4/18 *acm* Add no_var to parameters for variable numbers
+* V767  6/22 *acm* Issue 112: git Add arbitrary_large_int4, arbitrary_small_int4
+*                  as in ferret.parm
 
 * Function return codes
 	INTEGER*4	str_match, atom_not_found
@@ -44,12 +46,15 @@
 	REAL*8		  unspecified_val8,
      .			  arbitrary_large_val8,
      .			  arbitrary_small_val8
-	INTEGER		  unspecified_int4, no_var
+	INTEGER		  unspecified_int4, no_var, 
+     .			  arbitrary_large_int4, arbitrary_small_int4
 	PARAMETER	( unspecified_val8	= -2E34)
 	PARAMETER	( unspecified_int4	= -999)
 	PARAMETER	( no_var		=    0)
 	PARAMETER	( arbitrary_large_val8	=  1.7976931348623157D+308)  ! DBL_MAX
 	PARAMETER	( arbitrary_small_val8	= (-arbitrary_large_val8) )
+	PARAMETER	( arbitrary_large_int4	=  2147483647)     ! INT_MAX
+	PARAMETER	( arbitrary_small_int4	= (-2147483647-1)) ! INT_MIN
 
 * pre-defined grids:.....
 * define "lines" (1 dimensional components of which grids are assembled)

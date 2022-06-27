@@ -102,6 +102,7 @@
 /* *acm* 12/18        Issue 1049: Issue a NOTE if a dimension-named variable is non-numeric so can't 
                       be an axis  */
 /* *acm*  6/19        Don't write a note about string-valued coordinate variables  */
+/* *acm*  6/22        issue 112: detect and report dimension too large for 4-byte integer indexing  */
 
 #include <Python.h> /* make sure Python.h is first */
 #include <stddef.h>             /* size_t, ptrdiff_t; gfortran on linux rh5*/
@@ -854,11 +855,13 @@ int FORTRAN(ncf_add_dset)( int *ncid, int *setnum, char name[], char path[] )
     ncatt att;    /* attribute */
     ncvar var;    /* variable */
     int bad_file_attr = 243;    /* matches merr_badfileatt in tmap_errors.parm*/
+    int too_big_dim = 254;    /* matches merr_dimtoolarge in tmap_errors.parm*/
     int return_val=FERR_OK;
     size_t len;
     char **strarray;
     char *strptr;
     int idx;
+	long big_size = 2147483647; /* max integer */
 
     ncf_init_dataset(&nc);
     strcpy(nc.fername, name);
@@ -877,6 +880,10 @@ int FORTRAN(ncf_add_dset)( int *ncid, int *setnum, char name[], char path[] )
     if ( nc.ndims > 0 ) {
         for (i = 0; i < nc.ndims; i++) {
             nc_status = nc_inq_dim(*ncid, i, fdims.name, &fdims.size);
+			if (fdims.size >= big_size)
+			{  fprintf(stderr, "ERROR: Dimension %s is too large.\n", fdims.name);
+			   return too_big_dim;
+			}
             if ( nc_status != NC_NOERR )
                 return nc_status;
             strcpy (nc.dims[i].name, fdims.name);

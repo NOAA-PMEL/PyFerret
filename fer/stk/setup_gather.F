@@ -96,12 +96,12 @@
      .		ax_splittable(nferdims),
      .		ax_compressed(nferdims),
      .		its_dsg
-	INTEGER	POTENT_SIZE, CGRID_UVAR_SIZE, CGRID_SIZE_MAX,
+	INTEGER	POTENT_SIZE, CGRID_UVAR_SIZE,
      .		i, i1, i2, dset, var, cat, big_cx, split_ax, ax_trans,
      .		frag, lo_ss, hi_ss, trans, nbuffers, ax1, ax2,
      .		split_ax_len, ncomp, nsplittable,
      .		n_dfrnt_xforms, ax_len(nferdims)
-	INTEGER*8 available_mem, set_aside_mem, free_mem,
+	INTEGER*8 CGRID_SIZE_MAX, available_mem, set_aside_mem, free_mem,
      .		deferred_essential_mem, min_mem_used, res_size, src_size,
      .		ax_min_mem(nferdims)
 	REAL	rsrc_size, reduction_factor_needed

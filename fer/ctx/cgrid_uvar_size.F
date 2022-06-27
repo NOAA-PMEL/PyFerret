@@ -1,4 +1,4 @@
-	INTEGER FUNCTION CGRID_UVAR_SIZE ( cx )
+	INTEGER*8 FUNCTION CGRID_UVAR_SIZE ( cx )
 
 *
 *
@@ -44,6 +44,7 @@
 * is only 1
 
 * V702: *sh* 3/17
+* v767 6/22 *acm* See issue 112: Make this an integer*8 routine.
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -51,7 +52,8 @@
 	include 'xcontext.cmn'
 	include 'xvariables.cmn'
 
-	INTEGER	CGRID_SIZE, CX_DIM_LEN, cx, uvar, idim, isize, dimsize
+	INTEGER	CX_DIM_LEN, cx, uvar, idim, dimsize
+	INTEGER*8 CGRID_SIZE8, isize
 
 
 	IF ( cx_category(cx) .EQ. cat_user_var ) THEN
@@ -67,7 +69,7 @@
 	   ENDDO
 	   CGRID_UVAR_SIZE = isize
 	ELSE
-	   CGRID_UVAR_SIZE = CGRID_SIZE(cx)
+	   CGRID_UVAR_SIZE = CGRID_SIZE8(cx)
 	ENDIF
 
 	RETURN

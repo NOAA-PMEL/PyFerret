@@ -56,6 +56,8 @@
 * V71   2/17 *acm* ticket 2507, further fix for when several variables have the same grid.
 * V72 8/17 *acm*   For trac enhancement #767 -- dynamic coordinate storage
 * V74 1/18 *acm*   Issue 1853 correctly handle aggregations of one timestep
+* v767 6/22 *acm* See issue 112: Detect whether T dimension becomes too 
+*                 large for 4-byte integer indexing
 
         IMPLICIT NONE
         include 'tmap_errors.parm'
@@ -113,7 +115,7 @@
      .		tt, delta, highest_tstep, dfirst_delta, 
      .		depsilon, start, tunit, hdel, tstep, tedge, tn, 
      .		memb_sort(nagfiles), axwwlen, bc_to_t0, secsperyear, 
-     .		secs2start, timefac
+     .		secs2start, timefac, steps_total
 	CHARACTER LEFINT*20, lname*20, vname*64, bname*12, units_str*128,
      .		  calendar_str*128, agg_t0_str*20, file_t0_str*20
 
@@ -188,6 +190,9 @@
 	   memb_tstep_start(ifile) = GET_LINE_COORD (linemem(iline)%ptr, 1)
 	   memb_tstep_end  (ifile) = GET_LINE_COORD (linemem(iline)%ptr, nsteps)
 
+	   steps_total = nsteps
+	   IF (steps_total .GT. arbitrary_large_int4) GOTO 5500
+
 	      DO ifile = 2, nagfiles
 * ... first read the length of the time axis from the file to be aggregated
 	         CALL CD_QUIK_NCOPEN (dset_num, memb_filename(ifile),
@@ -205,6 +210,9 @@
      .				          file_unit_code, file_t0_str,
      .					  agg_unit_code,  agg_t0_str, status )
 	         memb_nsteps(ifile) = nsteps
+
+		 steps_total = steps_total + nsteps
+		 IF (steps_total .GT. arbitrary_large_int4) GOTO 5500
 
 * grab a temporary dynamic axis slot for it
 	         CALL TM_ALLO_TMP_LINE(iline, status)
@@ -530,5 +538,8 @@ C check for overlap???
 	CALL ERRMSG( ferr_grid_definition, status,
      .   'Time bounds do not enclose time step coordinate at L='
      .		//lname(:blen)//' of file '//memb_filename(ifile), *5000 )
+ 5500   CALL ERRMSG(ferr_grid_definition, status,
+     .     'Aggregated dimension too long for 4-byte integer indexing: '
+     .		//'Long dimensions not implemented', *5000)
 
 	END

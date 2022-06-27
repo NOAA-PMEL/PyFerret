@@ -74,6 +74,7 @@
 * v6.931 acm 11/14 Delete ALL the stat* symbols that may be left over from 
 *                  a previous evaluation. STAT/BRIEF does not reset them all.
 * V720 *acm*  3/17 Ticket 2512: Add STAT/PRECICISION=
+* v767 6/22 *acm* See issue 112: The total size could need INTEGER*8
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -95,7 +96,8 @@
 	REAL    dat( m1lox:m1hix,m1loy:m1hiy,m1loz:m1hiz,m1lot:m1hit,m1loe:m1hie,m1lof:m1hif )
 
 * internal variable declarations:
-	INTEGER	TM_LENSTR1, CGRID_SIZE, GET_MAX_STRING_LEN,
+	INTEGER*8 CGRID_SIZE8
+	INTEGER	TM_LENSTR1, GET_MAX_STRING_LEN,
      .		i, j, k, l, m, n, nbad, ngood, ntot, idim,
      .		len_line, len_set_name, grid, slen, i1, i2, nok, 
      .		listdims, nfig, max_dig
@@ -103,7 +105,7 @@
 	REAL*8	sum, sum2, xmean, zmean, x, xdelta, variance_c, diff
 
 	CHARACTER*255	VAR_TITLE, VAR_TITLE_MOD, vname_buff
-	CHARACTER	TM_FMT*48, LEFINT*20, AX_TITLE*32, CX_SIZE_STR*24,
+	CHARACTER	TM_FMT*48, LEFINT*20, LEFINT8*20, AX_TITLE*32, CX_SIZE_STR*24,
      .			line_buff*130, title*32, bl13*13, symbuff*30
 	PARAMETER (bl13 = '             ' )
 
@@ -166,7 +168,7 @@
 * string variables
 	IF ( mr_type(mv) .EQ. ptype_string ) THEN
 	   rbuff(1) = LEFINT(GET_MAX_STRING_LEN(cx,mv,dat), slen) 
-	   rbuff(2) = LEFINT(CGRID_SIZE(cx), slen)
+	   rbuff(2) = LEFINT8(CGRID_SIZE8(cx), slen)
 	   rbuff(3) = CX_SIZE_STR(cx,listdims,len_line)
 	   CALL SPLIT_LIST(pttmode_explct, lun,
      .			' Total # of strings: '//

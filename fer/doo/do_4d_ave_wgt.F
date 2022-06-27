@@ -45,6 +45,7 @@
 * 7/2014
 
 * V692 7/14 *acm* new transform @WGT, ticket 2180
+* v767 6/22 *acm* See issue 112: Use the INTEGER*8 routine CGRID_SIZE8
 
         IMPLICIT NONE
         include 'tmap_dims.parm'

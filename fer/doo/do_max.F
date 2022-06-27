@@ -50,9 +50,10 @@
 * V702 *sh* 11/16 this routine now performs accumulation only.  Initialization
 *                 and finalizing called separately from IS_TRANS
 * V71  *acm* 12/16 Send extra-buffer space that was allocated for the 
-*                 accumulation/finalization, to store counts. To distinguish 
+*                 accumulation/finalization, to store counts. To qdistinguish 
 *                 all-missing data with a value of zero, from a zero max.
 * V720 *sh*  5/17 Support for @MAX on a DSG variable
+* v767 6/22 *acm* See issue 112: Use the INTEGER*8 routine CGRID_SIZE8
 
 !DSGTBD: other compressing transforms remain to be implemented
 !        this should serve as a basic example
@@ -71,8 +72,10 @@
 
 * internal variable declarations:
 	LOGICAL TM_ITSA_DSG
-        INTEGER CGRID_SIZE, TM_DSG_DSET_FROM_GRID, TM_DSG_NFEATURES,
-     .		size, grid, dset, nfeatures, maxobs, mr_list(2)
+	
+	INTEGER*8 CGRID_SIZE8, size
+        INTEGER TM_DSG_DSET_FROM_GRID, TM_DSG_NFEATURES,
+     .		grid, dset, nfeatures, maxobs, mr_list(2)
 	REAL	little_val, big_val
 
 * initialize
@@ -81,7 +84,7 @@
 * Get size of result array to locate buffer area just beyond end of result
 * This is the accumulation area for transforms like @AVE
 * e.g. @AVE needs to accumulate 2 quantities: values and weights
-	size = CGRID_SIZE(res_cx)
+	size = CGRID_SIZE8(res_cx)
 
 	IF (TM_ITSA_DSG(grid)) THEN 
 * DSG ragged array

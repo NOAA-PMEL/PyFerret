@@ -45,6 +45,7 @@
 *
 * V510: 8/99 *sh*
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
+* v767 6/22 *acm* See issue 112: Use the INTEGER*8 routine CGRID_SIZE8
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -66,11 +67,10 @@
 
 * internal variable declarations:
 	LOGICAL TM_ITSA_DSG
-	INTEGER CGRID_SIZE
 	INTEGER n, dims(nferdims), ndim, hold_isp, cx_holder,
      .		min_ss, max_ss, res_grid,
      .		mr_sorted_indices, mr_index_map, axis, nvalid
-	INTEGER*8 n8
+	INTEGER*8 CGRID_SIZE8, n8
 
 * --- end of introductory code ---
 
@@ -86,8 +86,7 @@
 	IF (ndim .GT. 1) GOTO 5010
 
 * create memory managed work arrays for the sorted_indices and index_map
-	n = CGRID_SIZE(cx_indices)
-	n8 = n     ! promote to INTEGER*8
+	n8 = CGRID_SIZE8(cx_indices)
 	CALL GET_WORK_MR(n8,mr_sorted_indices, status)
 	IF ( status .NE. ferr_ok ) GOTO 5000
 	CALL GET_WORK_MR(n8,mr_index_map, status)

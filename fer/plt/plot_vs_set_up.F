@@ -52,6 +52,10 @@
 *                  longitude-axis formatting
 * V766  5/22 *acm* Update the 1009/1888 changes for a PLOT/VS overlay plot on a time plot
 *                  that has rescaled time.
+* v767 6/22 *acm* See issue 112: Detect whether axis is too large for 4-byte integer indexing -
+*		  Data would be too large to plot
+* v767 6/22 *acm* Issue 113: Differences between PLOT/SYM/LINE=n and PLOT/SYM/LINE/COLOR=c/THICK=t 
+*		  when overlaying multiple lines 
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -1261,7 +1265,8 @@ c	         IF ( .NOT.overlay .OR.  set_up_axes ) THEN
 	   nload_all = MAX(nload, nload_all)
  200	CONTINUE
 
-        nline_on = nline_on + color1 - 1
+* Fix for issue 113. IF /COLOR= then color1 is negative
+        nline_on = nline_on + MAX(1,color1) - 1
 
 * axis scaling and formatting
 * ... independent axis

@@ -103,6 +103,8 @@
 * V74  3/18 *acm For issue #1199 disallow SPAWN in secure mode
 * V75+ 4/19 *acm For DSG grids, call a routine to compute the *SEQUENCE fcns
 * V75+ 4/19 *acm For RESHAPE to DSG grid, set the result context correctly
+* v767 6/22 *acm* See issue 112: Detect whether 1-D grid that's the result of
+*		  XSEQUENCE etc is not too large for 4-byte integer indexing
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
@@ -144,8 +146,9 @@
 * internal variable declarations:
 
 	LOGICAL IS_SECURE, TM_ITSA_DSG
-	INTEGER CX_DIM_LEN,  CGRID_SIZE, TM_DSG_NFEATURES, TM_LENSTR1,
-     .		count, size, icom, idim, ii,
+	INTEGER*8 CGRID_SIZE8, count, size
+	INTEGER CX_DIM_LEN, TM_DSG_NFEATURES, TM_LENSTR1,
+     .		icom, idim, ii,
      .		cx1, cx2, cx3,
      .           i,   j,   k,   l,   m,   n,
      .           i1,  j1,  k1,  l1,  m1,  n1,
@@ -160,7 +163,6 @@
      .          ind(nferdims),  grid, nfeatures, nres
         INTEGER klo, khi, ndx_lo, ioff, ilen
         INTEGER coded_pointer, uvar, item, start, end   ! for TIMES2
-        INTEGER*8 i8_size
 	REAL    bad_res, bad1, bad2, bad3,
      .          zval, frac
         REAL*8  TM_WORLD
@@ -245,6 +247,10 @@
 	     RETURN
 	  ENDIF
 
+* Check that the result 1-D grid will not be too large to index
+	  size = CGRID_SIZE8 (cx1)
+	  IF (size .GT. arbitrary_large_int4) GOTO 5400
+
           i2 = m10lox
 	  DO 1110 n = cx_lo_s6(cx1), cx_hi_s6(cx1)
 	  DO 1110 m = cx_lo_s5(cx1), cx_hi_s5(cx1)
@@ -323,7 +329,7 @@
 * monthly data and recasting it as a 12 month Z axis by a yearly axis
  1300   DO 1310 idim = 1, nferdims
  1310	   ind(idim) = cx_lo_ss(cx1,idim)
-	size = CGRID_SIZE(cx1)
+	size = CGRID_SIZE8(cx1)
 	count = 0	! total points xferred - used to prevent grid overflow
 
 	IF (typr .EQ. pfcn_rtn_float) THEN
@@ -410,8 +416,8 @@
 	ENDIF
  
 * ... allocate a work array for a single profile of Z depths
-        i8_size = m2hiz-m2loz+1
-	CALL GET_DYN_WORK_SPACE( i8_size, status )
+        size = m2hiz-m2loz+1
+	CALL GET_DYN_WORK_SPACE( size, status )
         IF ( status .NE. ferr_ok ) GOTO 5000
 
 
@@ -461,14 +467,10 @@
 !               ndx_lo = 0    ! no guess for location of first depth
                 ndx_lo = 1    ! fixes bug where if zval equals 1st point in axis
                               ! we got no match.
-	        DO 1410 k = mr_lo_s3(mres), mr_hi_s3(mres)
+		DO 1410 k = mr_lo_s3(mres), mr_hi_s3(mres)
 
 * ... next Z axis value (com3) to locate
-#ifdef double_p
                    zval = TM_WORLD(k,cx_grid(cx3),z_dim,box_middle)
-#else
-                   zval = SNGL(TM_WORLD(k,cx_grid(cx3),z_dim,box_middle))
-#endif
 * ... search the Z field (com2) for the index just below this value
 * ... note that ndx_lo is always referenced to a starting index of 1
                    CALL HUNT_R4(workmem(plegacy_work_buffer)%ptr,
@@ -510,6 +512,10 @@
      .                          bad1, bad_res, nres)
 	     RETURN
 	  ENDIF
+
+* Check that the result 1-D grid will not be too large to index
+	  size = CGRID_SIZE8 (cx1)
+	  IF (size .GT. arbitrary_large_int4) GOTO 5400
 
 	  j2 = m10loy
 
@@ -554,6 +560,10 @@
 	     RETURN
 	  ENDIF
 
+* Check that the result 1-D grid will not be too large to index
+	  size = CGRID_SIZE8 (cx1)
+	  IF (size .GT. arbitrary_large_int4) GOTO 5400
+
 	  k2 = m10loz
 	  DO 1610 n = cx_lo_s6(cx1), cx_hi_s6(cx1)
 	  DO 1610 m = cx_lo_s5(cx1), cx_hi_s5(cx1)
@@ -595,6 +605,10 @@
      .                          bad1, bad_res, nres)
 	     RETURN
 	  ENDIF
+
+* Check that the result 1-D grid will not be too large to index
+	  size = CGRID_SIZE8 (cx1)
+	  IF (size .GT. arbitrary_large_int4) GOTO 5400
 
 	  l2 = m10lot
 	  DO 1710 n = cx_lo_s6(cx1), cx_hi_s6(cx1)
@@ -638,6 +652,10 @@
 	     RETURN
 	  ENDIF
 
+* Check that the result 1-D grid will not be too large to index
+	  size = CGRID_SIZE8 (cx1)
+	  IF (size .GT. arbitrary_large_int4) GOTO 5400
+
 	  m2 = m10loe
 	  DO 1810 n = cx_lo_s6(cx1), cx_hi_s6(cx1)
 	  DO 1810 m = cx_lo_s5(cx1), cx_hi_s5(cx1)
@@ -679,6 +697,10 @@
      .                          bad1, bad_res, nres)
 	     RETURN
 	  ENDIF
+
+* Check that the result 1-D grid will not be too large to index
+	  size = CGRID_SIZE8 (cx1)
+	  IF (size .GT. arbitrary_large_int4) GOTO 5400
 
 	  n2 = m10lof
 	  DO 1910 n = cx_lo_s6(cx1), cx_hi_s6(cx1)
@@ -774,7 +796,7 @@
 
 * ... get the command string to be executed
 
-	IF (CGRID_SIZE(cx1) .NE. 1) CALL ERRMSG(ferr_invalid_command,
+	IF (CGRID_SIZE8(cx1) .NE. 1) CALL ERRMSG(ferr_invalid_command,
      .      status, 'SPAWN can only execute a single command', *5000)
         buff = GET_STRING_ELEMENT(m1lox, m1hix, m1loy, m1hiy,
      .              m1loz, m1hiz, m1lot, m1hit, m1loe, m1hie,
@@ -1125,6 +1147,12 @@
      .   'SPAWN not allowed in secure mode', *5000 )
 
  5300	CALL ERRMSG(ferr_invalid_command, status,
+     .   fcn_name(:TM_LENSTR1(fcn_name)) //' '//
+     .   buff(:TM_LENSTR1(buff)), *5000 )
+
+
+ 5400   CALL ERRMSG(ferr_grid_definition, status,
+     .     'Result 1-d grid too large for 4-byte integer indexing: ',
      .   fcn_name(:TM_LENSTR1(fcn_name)) //' '//
      .   buff(:TM_LENSTR1(buff)), *5000 )
 

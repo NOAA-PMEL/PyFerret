@@ -235,6 +235,10 @@
 * v763 *acm* 9/20 Plots of id-variables in trajectory-profile, timeseries-profile data
 * v764 *acm* 8/21 Pull everything for PLOT/VS into its own setup routine, PLOT_VS_SET_UP.
 * V766 *acm* 1/22  Fix for issue 102, plots with too many tics.
+* v767 6/22 *acm* See issue 112: Detect whether axis is too large for 4-byte integer indexing -
+*		  Data would be too large to plot
+* v767 6/22 *acm* Issue 113: Differences between PLOT/SYM/LINE=n and PLOT/SYM/LINE/COLOR=c/THICK=t 
+*		  when overlaying multiple lines 
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -297,7 +301,8 @@
      .                  cal_name*32, cal_name_new*32, val_buff*45, fmt*4,
      .			whoimin*14, whoimax*14, 
      .			whoimin_axlo*14, whoimax_axhi*14
-	INTEGER		TM_LENSTR1, CX_DIM_LEN, CGRID_SIZE, CGRID_AXIS, 
+	INTEGER*8	CGRID_SIZE8, gsize
+	INTEGER		TM_LENSTR1, CX_DIM_LEN, CGRID_AXIS, 
      .			TM_DSG_DSET_FROM_GRID, TM_DSG_NFEATURES,
      .			mv, cx, slen, ito, indep_lab, dep_lab, nline_in_mem,
      .			indep_dim, npts, dep_dim, npts2, ndv, var1,
@@ -512,9 +517,12 @@
 
 * determine PLOT+ memory required
         plot_mem_used = 0
-        DO 10 ipl = 1, numv
- 10     plot_mem_used = plot_mem_used
-     .		      + 2*step_inc*CGRID_SIZE( cx_list(ipl) )
+        DO ipl = 1, numv
+	   gsize = CGRID_SIZE8( cx_list(ipl) )
+	   IF (plot_mem_used + 2*step_inc*gsize .GT. 
+     .         arbitrary_large_int4) GOTO 5300
+	   plot_mem_used = plot_mem_used + 2*step_inc*gsize 
+	ENDDO
 
 * check for improper data supplied
 	IF ( overlay ) THEN
@@ -941,7 +949,8 @@ c	      ul_dolab(t_dim) = .FALSE.  ! why was this added?
 	   nload_all = MAX(nload, nload_all)
  200	CONTINUE
 
-        nline_on = nline_on + color1 - 1
+* Fix for issue 113. IF /COLOR= then color1 is negative
+        nline_on = nline_on + MAX(1,color1) - 1
 
 * axis scaling and formatting
 * ... independent axis
@@ -1286,4 +1295,9 @@ c		       ind_max = indep_dat(1) + 240*3600
      .		'Plot trajectoryProfile data as trajectory, '//
      .          'only for a single variable',
      .		*5000 )
+
+ 5300   CALL ERRMSG( ferr_out_of_range, status,
+     .     'data too large to plot'//pCR//
+     .      cmnd_buff(:len_cmnd), *5100 )
+
 	END

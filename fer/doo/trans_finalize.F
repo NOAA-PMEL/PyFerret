@@ -41,6 +41,7 @@
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 *
 * V702 11/16 *sh* for enhancement ticket 2428: split/gather on compressed axes
+* v767 6/22 *acm* See issue 112: The total size could need INTEGER*8
 
 
         IMPLICIT NONE
@@ -57,12 +58,11 @@
 
 * internal variable declarations:
 	INTEGER	trans
-	INTEGER CGRID_SIZE, size
-
+	INTEGER*8 CGRID_SIZE8, size
 
 * initiailize
 	trans = cx_trans( idim, res_cx )
-	size = CGRID_SIZE(res_cx)
+	size = CGRID_SIZE8(res_cx)
 
 	IF ( trans .EQ. trans_average
      .  .OR. trans .EQ. trans_4d_ave   
@@ -109,5 +109,4 @@
 	ENDIF
 
 	RETURN
-
 	END

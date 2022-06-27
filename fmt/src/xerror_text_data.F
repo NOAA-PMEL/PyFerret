@@ -58,6 +58,8 @@
 *                 e.g. calendars (For ticket 2332)
 * v741 6/18 *acm* New merr_dsg_grid and merr_invalid, reporting DSG grid errors
 * v741 7/18 *acm* New merr_dsg_struc, reporting DSG attribute errors
+* v767 6/22 *acm* See issue 112: New merr_dimtoolarge, reporting dimension too 
+*                 large for 4-byte integer indexing
 
 	include 'tmap_errors.parm'		! parameter definitions
 	include 'xerror_text.cmn_text'	! common declaration
@@ -171,4 +173,6 @@
      .		/'Corrupted CF-DSG structure or attributes          '/
      .	msg_regular(merr_invalid - pregular )
      .		/'Invalid command                        '/
+     .	msg_regular(merr_dimtoolarge - pregular )
+     .		/'Dimension too large for 4-byte integer indexing   '/
 	END

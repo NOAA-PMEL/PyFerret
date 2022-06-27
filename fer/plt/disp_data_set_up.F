@@ -70,6 +70,8 @@
 * v763 *acm* 9/20 Plots of id-variables in trajectory-profile, timeseries-profile data
 * V764 11/21 *acm* For PyFerret issue 98, if PLOT/SET/PALETTE, save info so the color 
 *                 palette can be restored after the plot is completed. New flag set_palette.
+* v767 6/22 *acm* See issue 112: Detect whether axis is too large for 4-byte integer indexing
+*		  For /VS plot, data would be too large to plot
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -95,12 +97,12 @@
 	LOGICAL TM_ITSA_DSG_RAGGED, TM_ITSA_DSG, 
      .		plot_vs, typerr, its_dsg, its_cmpnd, its_traj, 
      .		dsg_as_traj, dsg_as_time, spect, setup
-	INTEGER	MR_DIM_LEN, CX_DIM_LEN, CGRID_SIZE, TM_DSG_NFEATURES,
+	INTEGER	MR_DIM_LEN, CX_DIM_LEN, TM_DSG_NFEATURES,
      .		TM_DSG_DSET_FROM_GRID, DSG_WHATS_IT,
      .		idim, ndim, dim(nferdims), mr1, cx, ivar,
      .		factor, loc, grid, dset, nfeatures, obsdimlen, 
      .		fline, dtyp, numv, along_dim
-	INTEGER*8 i8_ax_len
+	INTEGER*8 CGRID_SIZE8, i8_ax_len
 	REAL	big_val, little_val
 	CHARACTER buff*4, buff1*1
 
@@ -228,7 +230,6 @@
 * ... allocate memory used for axes
 *     make them each equal to MAX in case /TRANSPOSE or mulit-dim PLOT/VS
 * (2/99: loop over all arguments to find largest requirement)
-* ?? why is CGRID_SIZE needed ... could get very large ??
 	   i8_ax_len = 1
 	   DO 200 ivar = 1, numv
 	      mr1 = is_mr( ivar )
@@ -239,7 +240,8 @@
      .			    factor*CX_DIM_LEN(dim(1), is_cx(ivar)),
      .			    factor*CX_DIM_LEN(dim(2), is_cx(ivar)) )
 	      IF (plot_vs) i8_ax_len = MAX( i8_ax_len,
-     .		            CGRID_SIZE(is_cx(ivar))  )
+     .		            CGRID_SIZE8(is_cx(ivar))  )
+	      IF (i8_ax_len .GT. arbitrary_large_int4) GOTO 5030
  200	   CONTINUE
 
 * trajectory plot from DSG trajectory file needs obs-length 
@@ -264,6 +266,10 @@
 * error exits - release the memory used for axis buffers
  5010	CALL FREE_WS_DYNMEM( ax1_work )
  5020	CALL UNPROTECT_CMND_DATA	! added 2/99
+ 5030   CALL ERRMSG( ferr_out_of_range, status,
+     .     'data too large to plot'//pCR//
+     .      cmnd_buff(:len_cmnd), *5100 )
+
  5100	RETURN
 
  5200	CONTINUE

@@ -45,6 +45,7 @@
 
 * v6.66 ACM 11/10
 *        2/12 *kms* Add E and F dimensions (use nferdims in tmap_dims.parm)
+* v767 6/22 *acm* See issue 112: Use the INTEGER*8 routine CGRID_SIZE8
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
@@ -58,14 +59,15 @@
 	REAL	arg, com(*), res(*), boxes(*)
 
 * internal variable declarations:
-	INTEGER	CX_DIM_LEN, CGRID_SIZE, size
+	INTEGER*8 CGRID_SIZE8, size
+	INTEGER	CX_DIM_LEN
 
 * diagnostic mode output: " doing --> VAR_NAME[x=lo:hi@TRN:n,D=#]"
 	IF ( mode_diagnostic ) 	CALL DIAG_OP
      .				( 'doing', isact_class_trans, res_cx, idim )
 
 * get size of result array to locate buffer area just beyond
-	size = CGRID_SIZE(res_cx)
+	size = CGRID_SIZE8(res_cx)
 
 * pass the transform to be performed
 	CALL DO_4D_TRANS(   trans_4d_sum,

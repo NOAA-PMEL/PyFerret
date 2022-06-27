@@ -48,6 +48,10 @@
 *
 * V695+ *sh* 10/15 - new, hack-built from MC_INIT_DSET
 * V698 *sh*   2/16 - member files may be disordered
+* v767 6/22 *acm* See issue 112: Detect whether T dimension becomes too 
+*                 large for 4-byte integer indexing
+
+
 
 * arguments:
 *	dset_num	 - number assigned to this data set (input)
@@ -97,7 +101,7 @@
      .			istep, i, nrecperstep, epos, first_file,
      .			stp_cnt, min_pos, max_pos,istat,
      .			lline, file_reclen
-	REAL*8		file_trange
+	REAL*8		file_trange, steps_total
 
 * simulate reading of step records - one per file to be aggregated
 	istep = 0
@@ -110,6 +114,8 @@
 	s_delta	      = 0	! used to determine if regular time steps
 
 * * * * * * top of stepfile loop * * * * *
+
+	steps_total = 0
 	DO i = 1, nagfiles
 	  istep = memb_order(i)
 
@@ -156,6 +162,9 @@
 	    sf_regtimes(stp_cnt) = .FALSE.
 	  ENDIF
 
+	  steps_total = steps_total + memb_nsteps(istep)
+	  IF (steps_total .GT. arbitrary_large_int4) GOTO 5500
+
 * time-independent fields are read from the first file in the member list
 	  IF (i .EQ. 1) mc_init_stepfile(dset_num) = stp_cnt
 
@@ -183,4 +192,8 @@
  9900	status = ferr_TMAP_error
  5000	RETURN
  5100	CALL ERRMSG( ferr_internal, status, 'init_t_agg_mc_dset', *5000)
+ 5500   CALL ERRMSG(ferr_grid_definition, status,
+     .     'Aggregated dimension too long for 4-byte integer indexing: '
+     .		//'Long dimensions not implemented', *5000)
+
 	END

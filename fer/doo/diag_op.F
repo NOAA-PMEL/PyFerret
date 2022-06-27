@@ -67,7 +67,7 @@
 * V702 *sh* 11/16 report gathering on compressed axis
 * V702  sh   1/17 Output total_mem along with gather diagnostics
 *                 Increase field sizes for long axes
-
+* v767 6/22 *acm* See issue 112: Use the INTEGER*8 routine CGRID_SIZE8
 
 * calling argument declarations:
         IMPLICIT NONE
@@ -76,9 +76,8 @@
 
 * internal variable declarations:
 	LOGICAL	FOUR_D_GRID
-	INTEGER	TM_LENSTR1, CGRID_SIZE,
-     .		slen, clen, ii, i, listdims, chunk_size
-	INTEGER*8 available_mem
+	INTEGER	TM_LENSTR1, slen, clen, ii, i, listdims
+	INTEGER*8 CGRID_SIZE8, available_mem, chunk_size
 	CHARACTER*3   ALG_TRANS_CODE
 	CHARACTER*128 VAR_CODE,  var
 	CHARACTER*150 VAR_TRANS, out_buff
@@ -132,7 +131,7 @@
 
 * SPLITTING/GATHERING
 	ELSEIF( act_class .EQ. isact_class_gather ) THEN
-	   chunk_size = CGRID_SIZE(cx)
+	   chunk_size = CGRID_SIZE8(cx)
 	   available_mem = max_mem_allowed-(permanent_mem+essential_mem)
 	   WRITE ( risc_buff, 3030 ) doing, var(1:slen),
      .                  ww_dim_name( idim ),
@@ -145,7 +144,7 @@
 
 * COMPRESSED AXIS SPLITTING/GATHERING
 	ELSEIF( act_class .EQ. isact_class_cmp_gather_dummy ) THEN
-	   chunk_size = CGRID_SIZE(cx)
+	   chunk_size = CGRID_SIZE8(cx)
 	   available_mem = max_mem_allowed-(permanent_mem+essential_mem)
 	   WRITE ( risc_buff, 3031 ) doing, var(1:slen),
      .                  ww_dim_name( idim ),

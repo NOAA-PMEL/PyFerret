@@ -45,6 +45,8 @@
 * V71 12/16 *acm* Ticket 2158: working with true monthly time axes. fmrc axis is
 *                 not defined as true month.
 * V72 6/17 *acm* For trac enhancement #767 -- dynamic coordinate storage
+* v767 6/22 *acm* See issue 112: Detect whether dimension becomes too 
+*                 large for 4-byte integer indexing
 
 * include files
         include 'netcdf.inc'
@@ -86,7 +88,7 @@ c        include 'calendar.cmn'
      .          outflag, next_line_storage, pre_exist,
      .          maxlen, attlen, attoutflag, cal_id, since_T0, slen, vlen,
      .          units, istat, nlag, nleadtimes, indx
-        REAL    val
+        REAL    val, testindex
 
 
 * initialize things
@@ -203,7 +205,10 @@ c string as the units.  i.e., "days_since_event".
       line_regular(axcalt)   = .TRUE.
       line_start(axcalt)     = tstart
       line_delta(axcalt)     = delta
-      line_dim(axcalt)       = NINT((tend - tstart + delta)/delta)
+
+      testindex = (tend - tstart + delta)/delta
+      IF (testindex .GT. arbitrary_large_int4) GOTO 5500
+      line_dim(axcalt)       = NINT(testindex)
       line_subsc1 (axcalt)   = unspecified_int4
 
 * Save the axis name (upper case)
@@ -223,7 +228,10 @@ c string as the units.  i.e., "days_since_event".
       line_regular(axcalf)   = .TRUE.
       line_start(axcalf)     = tstart - 0.5 * delta
       line_delta(axcalf)     = delta
-      line_dim(axcalf)       = nF * fevery
+      
+      testindex = nF * fevery
+      IF (testindex .GT. arbitrary_large_int4) GOTO 5500
+      line_dim(axcalf)       = testindex
 
 * inherit time units from the calendar time axis just created
       line_cal_name(axcalf)  = line_cal_name(axcalt)
@@ -241,6 +249,8 @@ c string as the units.  i.e., "days_since_event".
       line_regular(iline)    = .TRUE.
       line_start(iline)      = tstart - 0.5 * delta
       line_delta(iline)      = delta * fevery
+      testindex              = FLOAT(nF)
+      IF (testindex .GT. arbitrary_large_int4) GOTO 5500
       line_dim(iline)        = nF
 
 * inherit time units from the calendar time axis just created
@@ -313,6 +323,10 @@ c string as the units.  i.e., "days_since_event".
 
  5400   CALL TM_ERRMSG(merr_notimeinfo, status, 'CD_MAKE_FMRC_AXES',
      .     no_descfile, no_stepfile, 'unrecognizable time encoding',
+     .     no_errstring, *5000)
+
+ 5500   CALL TM_ERRMSG(merr_dimtoolarge, status, 'CD_MAKE_FMRC_AXES',
+     .     no_descfile, no_stepfile, 'Long dimensions not implemented',
      .     no_errstring, *5000)
         RETURN
         END

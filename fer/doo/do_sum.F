@@ -53,6 +53,7 @@
 * V71  *acm* 12/16 Send extra-buffer space that was allocated for the 
 *                 accumulation/finalization, to store counts. To distinguish 
 *                all-missin data with a value of zero, from all-zero sums.
+* v767 6/22 *acm* See issue 112: Use the INTEGER*8 routine CGRID_SIZE8
 
         IMPLICIT NONE
 	include	'errmsg.parm'
@@ -68,15 +69,16 @@
 
 * internal variable declarations:
 	LOGICAL TM_ITSA_DSG
-	INTEGER CGRID_SIZE, TM_DSG_DSET_FROM_GRID, TM_DSG_NFEATURES,
-     .		size, grid, dset, nfeatures, maxobs, mr_list(2)
+	INTEGER*8 CGRID_SIZE8, size
+	INTEGER TM_DSG_DSET_FROM_GRID, TM_DSG_NFEATURES,
+     .		grid, dset, nfeatures, maxobs, mr_list(2)
 	REAL	little_val, big_val
 
 * Get size of result array to locate buffer area just beyond
 * Pass extra-buffer portion of res array to accumulate counts
 * - to distinguish between an all-missing and an all-zero sum.
 
-	size = CGRID_SIZE(res_cx)
+	size = CGRID_SIZE8(res_cx)
 	
 	grid = cx_grid(res_cx)
 

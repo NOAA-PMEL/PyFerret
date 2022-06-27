@@ -28,6 +28,8 @@
 *                 If given w/o  extension.agg, merr_use_agg is set.
 * v741 6/18 *acm* New merr_dsg_grid and merr_invalid, reporting DSG grid errors
 * v741 7/18 *acm* New merr_dsg_struc, reporting DSG attribute errors
+* v767 6/22 *acm* See issue 112: New merr_dimtoolarge, reporting dimension too 
+*                 large for 4-byte integer indexing
 
 * internally used PARAMETERS:
 	INTEGER		num_special,num_regular,pspecial,pregular,
@@ -35,7 +37,7 @@
      .	                pcdferr, pcdferrmax, nf_interrupt
 	CHARACTER*1	no_errstring
 	PARAMETER      (num_special	= 3,
-     .			num_regular	= 53,
+     .			num_regular	= 54,
      .			pspecial	= 2,	! avoid 0,1 as too special
      .			pregular	= 200,
      .			pcdferr		= 1000,
@@ -74,7 +76,8 @@
      .                  merr_attalready, merr_badfileatt, merr_nc_open,
      .                  merr_remote_open, merr_chunk_spec, merr_read_interrupt,
      .                  merr_time_string, merr_axis_att, merr_use_agg,
-     .                  merr_dsg_grid, merr_dsg_struc, merr_invalid
+     .                  merr_dsg_grid, merr_dsg_struc, merr_invalid, 
+     .                  merr_dimtoolarge
 
 	PARAMETER      (merr_notsupport	= 1 + pregular,
      .			merr_filpos	= 1 + merr_notsupport,
@@ -129,4 +132,5 @@
      .                  merr_use_agg     = 1 + merr_axis_att,
      .                  merr_dsg_grid    = 1 + merr_use_agg,
      .                  merr_dsg_struc   = 1 + merr_dsg_grid,
-     .                  merr_invalid     = 1 + merr_dsg_struc)
+     .                  merr_invalid     = 1 + merr_dsg_struc,
+     .                  merr_dimtoolarge = 1 + merr_invalid)

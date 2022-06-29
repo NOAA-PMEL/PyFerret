@@ -100,6 +100,13 @@
 *                   prev. plots, also LABKEY. Delete them
 * V7.4+ *acm*  8/18 DSG-enabled Ferret: colorkey labels may be strings from the IDs
 * V7.4+ *acm*  9/18 All moveable labels should be reset
+* 4/22 *acm*  PyFerret issue #51: Allow for defining up to 4 more colors/pens to use in 
+*                    graticule lines; vertical and horizontal, and possibly different styles
+*                    for large and small tics. Custom colors/lines have been limited to 1, 
+*                    so custom-color line plots with custom-color grats were not implemented.
+*                    extrapen is 0 (for original pen); 1, 2, 3, 4 (graticule pens)
+* V766  5/22 *acm* Update the 1009/1888 changes for a PLOT/VS overlay plot on a time plot
+*                  that has rescaled time.
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -113,6 +120,7 @@
         include 'AXIS.INC'
 	include 'xbox_bounds.cmn'
         include 'pyfonts.cmn'
+        INCLUDE 'fgrdel.cmn'
 
 * calling argument declarations:
 	LOGICAL no_labels
@@ -156,6 +164,10 @@
 	DO i = 1, 50
 	   CALL PPLCMD ( from, line, 0, 'RLABS '//LEFINT(i,slen) , 1, 1)
 	ENDDO
+
+* Initialize extra-pen. 
+
+	extrapen = 0
 
 * if the axis min and max symbols already exist then delete them
 
@@ -276,6 +288,7 @@
 	h_logaxis = .FALSE.
 	v_logaxis = .FALSE.
         no_plot_yet = .FALSE.
+        rescale_time = .FALSE.
 
         DO 200 idim = 1, nferdims
  200    ul_dolab(idim) = .TRUE.

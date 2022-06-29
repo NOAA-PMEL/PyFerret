@@ -48,6 +48,7 @@
 *        2/12 *kms* Add E and F dimensions (use nferdims in tmap_dims.parm)
 * V702 *sh* 11/16 mods for trac #2428 - calculation in gathered fragments
 *                 pass address of buffer area, where weights are accumulated
+* v767 6/22 *acm* See issue 112: Use the INTEGER*8 routine CGRID_SIZE8
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
@@ -63,8 +64,7 @@
 
 * internal variable declarations:
 	LOGICAL stddev
-	INTEGER CGRID_SIZE, size
-
+	INTEGER*8 CGRID_SIZE8, size
 
 	stddev = .FALSE.
 
@@ -74,7 +74,7 @@
      .				( 'doing', isact_class_trans, res_cx, idim )
 
 * get size of result array to locate buffer areas just beyond
-	size = CGRID_SIZE(res_cx)
+	size = CGRID_SIZE8(res_cx)
 
 	CALL DO_VAR_SUB( idim,
      .			 cx_lo_ss(com_cx,idim), cx_hi_ss(com_cx,idim),

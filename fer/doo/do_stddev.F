@@ -48,6 +48,7 @@
 *        2/12 *kms* Add E and F dimensions (use nferdims in tmap_dims.parm)
 * V702 *sh* 11/16 mods for trac #2428 - calculation in gathered fragments
 *                 pass address of buffer area, where weights are accumulated
+* v767 6/22 *acm* See issue 112: Use the INTEGER*8 routine CGRID_SIZE8
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
@@ -65,8 +66,9 @@
 
 * internal variable declarations:
 	LOGICAL TM_ITSA_DSG, stddev
-	INTEGER CGRID_SIZE, TM_DSG_DSET_FROM_GRID, TM_DSG_NFEATURES,
-     .		size, grid, dset, nfeatures, maxobs, orientation, mr_list(2)
+	INTEGER*8 CGRID_SIZE8, size
+	INTEGER TM_DSG_DSET_FROM_GRID, TM_DSG_NFEATURES,
+     .		grid, dset, nfeatures, maxobs, orientation, mr_list(2)
 	REAL	little_val, big_val
 
 
@@ -77,7 +79,7 @@
      .				( 'doing', isact_class_trans, res_cx, idim )
 
 * get size of result array to locate buffer areas just beyond
-	size = CGRID_SIZE(res_cx)
+	size = CGRID_SIZE8(res_cx)
 	
 	grid = mr_grid( com_mr )
 

@@ -1,4 +1,4 @@
-	INTEGER FUNCTION CGRID_SIZE_MAX ( cx )
+	INTEGER*8 FUNCTION CGRID_SIZE_MAX ( cx )
 
 *
 *
@@ -52,6 +52,7 @@
 *       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
 * V685 *acm*  6/13 Increase nominal length of abstract axis
 * v74   *acm* 3/18 Introduce parameter abstractax_len replacing 99999999
+* v767 6/22 *acm* See issue 112: grid size is possibly too large for INTEGER*4
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -62,7 +63,8 @@
 	INTEGER	cx
 
 * internal variable declarations:
-	INTEGER	CX_DIM_LEN, CAXIS_LEN, CGRID_AXIS, idim, i6d, axlen
+	INTEGER	CX_DIM_LEN, CAXIS_LEN, CGRID_AXIS, idim, axlen
+	INTEGER*8 i6d
 
 * to accomodate the ABSTRACT axis
 * (inefficient -- "mline_abstract" should be saved by DEFINE_SPECIAL_GRIDS)

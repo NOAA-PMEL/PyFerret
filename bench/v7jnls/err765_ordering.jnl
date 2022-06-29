@@ -1,0 +1,45 @@
+! err765_ordering.jnl 
+!  See tickets 1046, 1962, 1988, finding correct grid order for 
+!  datasets w/ dimensions but no matching coordinate variables or
+!  when the algorithm yields inconsistent directions for dimensions.
+!
+! This file has dimensions (time, nc, nkice, nj, ni)  where nkice should be in 
+! the Z direction and nc in the E direction. So it is inconsistent with the
+! Ferret grid model. New handling of NOTE's makes the problem plainer, and 
+! USE/ORDER=   will open the file correctly
+
+use misordered_5d.nc
+
+! default ordering has put Time in the E direction
+show data
+show grid tinz_d
+
+! USE/ORDER can do the correct initialization
+cancel data/all
+
+! Now Time is in the T direction
+use/order=xyzet data/misordered_5d.nc
+sh data
+show grid tinz_d
+
+cancel data/all
+
+! Similarly the WRF file has dimensions but not coord. variables.
+! Previously this resulted in 
+! *** Note: Could not adjust grid for variable FNM. 
+! ** ERROR: Inconsistent data grids: File needs axis attributes
+
+use as_wrf.nc
+show data
+show grid p
+
+cancel data/all
+
+! A new capability looks for 2-D latitude or longitude coordinate variables 
+! and assigns their dimensions to be in the X and Y directions. Previously
+! this also resulted in the same grid errors as as_wrf.nc
+
+use notok.nc
+show data
+
+sh grid bounds_lat_grid_t

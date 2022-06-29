@@ -42,6 +42,7 @@
 *
 * V71 *acm* 12/16 this routine performs the finalization step that was
 *		  previously a part of DO_SUM, DO_MIN, DO_MAX, DO_NGOOD, etc.
+* v767 6/22 *acm* See issue 112: The total size could need INTEGER*8
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
@@ -50,7 +51,8 @@
 	include	'xvariables.cmn'
 
 * calling argument declarations:
-	INTEGER	trans, size, res_mr
+	INTEGER*8 size
+	INTEGER	trans, res_mr
 	REAL    res(size), counts(size)
 
 * internal variable declarations:

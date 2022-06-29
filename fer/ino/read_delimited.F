@@ -52,6 +52,7 @@
 * V702 *acm*11/16  handling read errors in date/time reading
 * V702: *sh* 1/17 - bug fix: mr_protected must *end* at mr_not_in_use (=0)
 *		  - for trac enhancement #2369 -- dynamic memory management 
+* v767 6/22 *acm* See issue 112: Detect whether axis is too large for 4-byte integer indexing
 
         IMPLICIT NONE
 	include	'tmap_errors.parm'
@@ -73,6 +74,7 @@
 	INTEGER	cx, mr, status
 
 * internal variable declarations:
+	INTEGER*8	CGRID_SIZE8, i8
 	INTEGER 	CGRID_SIZE, CX_DIM_LEN, TM_LENSTR1,
      .			idim, ask_var, category, dset, grid, ivar,
      .			fvar, nvar, the_var, nleft, nsize,
@@ -156,7 +158,11 @@
  400	CONTINUE
 
 * point to asked-for variable and create dummy entries for the rest
- 500	rec_to_read = CGRID_SIZE(cxlist(the_var))
+ 500	i8 = CGRID_SIZE8(cxlist(the_var))
+ 
+	IF (i8 .GT. arbitrary_large_int4) GOTO 5300
+
+	rec_to_read = i8
 	mr = mrlist( the_var )
 	
 * diagnostic output
@@ -268,8 +274,10 @@
  1100	DO 5010 nleft = 1, nvar20-1	! delete all initialized so far
  5010	CALL DELETE_VARIABLE(mrlist(nleft))
         CALL RELEASE_DYN_WORK_SPACE
-
  5500	RETURN
+ 5300   CALL ERRMSG( ferr_out_of_range, status,
+     .     'data too large to read'//pCR//
+     .      cmnd_buff(:len_cmnd), *5500 )
  5600	CALL ERRMSG( ferr_limits, status,
      .		ww_dim_name(idim)//' axis of '//VAR_CODE(cat_file_var,ask_var),
      .		*5500 )

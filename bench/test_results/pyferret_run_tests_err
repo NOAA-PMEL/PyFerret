@@ -691,14 +691,10 @@ Executed by script: *** GO bn_odd_variable_name.jnl ***
 *** Running ferret script: bn_test_stream.jnl
  LISTing to file permutedBinaryTest.dat
  LISTing to file junk.dat
- **ERROR: request exceeds memory setting
+ **ERROR: value out of legal range: data too large to read
+          load num
 load num
 Executed by script: *** GO bn_test_stream.jnl ***
-    To fulfill this request would exceed the current SET MEMORY/MAX= limit of 500Mb
-    At the moment that the memory limit was reached
-    memory was committed as follows:
-        - to objects used in computation: 0 (0%)
-    The size of the requested object was: 192 Gb (38400%)
 Replacing definition of axis YAX
 Replacing definition of axis ZAX
 Replacing definition of axis TAX
@@ -3744,10 +3740,6 @@ ooooooooooooooooooooooooooooooooooooooooooo
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
-           *** NOTE: the use of "SET MODE METAFILE" is deprecated;
-           *** NOTE: instead use "FRAME /FILE=... /FORMAT=..."
-           *** NOTE: the use of "SET MODE METAFILE" is deprecated;
-           *** NOTE: instead use "FRAME /FILE=... /FORMAT=..."
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -7041,6 +7033,18 @@ ooooooooooooooooooooooooooooooooooooooooooo
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
+           *** NOTE: Unspecified or unsupported ordering of axes in variable Tinz_d: T axis is in dimension # 5
+           *** NOTE: Check the dimensions: can USE/ORDER= be applied?
+           *** NOTE: The default ordering will be used
+*** Running ferret script: bn_py_graticules.jnl
+ Using every   2th vector in the X direction
+           *** NOTE: /UNIT=MONTHS is ambiguous ... using 1/12 of 365.2425 days
+Replacing definition of axis TAX
+Replacing definition of axis TAX
+Replacing definition of axis TAX
 *** Running ferret script: bn_gif.jnl
  **ERROR: dimensions improperly specified: specified data is not a line
            - its a 2D region: "plot/i=1:10/j=1:20/nolabel i+j"

@@ -3,17 +3,12 @@
 !
 ! ticket 1990: axis tic labels for higher precison data
 ! had just 2 digits, and didnt capture the data range.
-
-set mode meta axticlabel.plt
+!  6/2022 dont use mode meta
 
 let/title="tic labels on dependent axis" var = {\
 1.715,1.7136,1.711,1.7083,1.7056,1.703,1.7003,1.6976,1.695,1.6923,\
 1.6897,1.687,1.6843,1.6817,1.679,1.6765,1.676,1.676}
 
 plot/line/sym/title="Vert axis labels should be 1.675 thru 1.715" var
-cancel mode meta
+frame/file=axticlabel.gif
 
-! rename the metafile. Else we get weird contents in axticlabel.plt 
-! once the whole benchmark suite has finished. (why?)
-set mode meta metafile.plt
-cancel mode meta

@@ -1,6 +1,11 @@
 *
-* Create a temporary color object for the given window
+* Create a 2nd or 3rd color object for the given window
 *
+* 4/22 *acm*  PyFerret issue #51: Allow for defining up to 4 more colors/pens to use in 
+*                    graticule lines; vertical and horizontal, and possibly different styles
+*                    for large and small tics. Custom colors/lines have been limited to 1, 
+*                    so custom-color line plots with custom-color grats were not implemented.
+*                  extrapen is 0 (for original pen) 1, 2, 3, 4 (graticule pens)
 
         SUBROUTINE FGD_CREATE_TEMP_COLOR(windowid, icolor, 
      .                 redfrac, greenfrac, bluefrac, opaquefrac)
@@ -55,7 +60,15 @@
             RETURN
         ENDIF
 
-        icolor = maxcolorobjs - 1
+	! for now?
+        IF ( extrapen .GT. 4 ) THEN
+            errstr = 'FGD_CREATE_TEMP_COLOR: may only create 4 additional colors...'
+            errstrlen = TM_LENSTR(errstr)
+            CALL SPLIT_LIST(pttmode_help, err_lun, errstr, errstrlen)
+            RETURN
+        ENDIF
+
+        icolor = maxcolorobjs - extrapen - 1
         CALL FGD_GSCR(windowid, icolor,
      .                redfrac, greenfrac, bluefrac, opaquefrac)
 

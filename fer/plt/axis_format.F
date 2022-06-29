@@ -96,6 +96,8 @@
 * V766  4/22 *acm* For Issue 1009 restore the previous rescaling of time. The fixes for
 *                  1888 are more correctly made elsewhere.
 
+
+
         IMPLICIT NONE
 	include 'tmap_dims.parm'
 	include 'ferret.parm'
@@ -130,7 +132,7 @@
 
 * internal variable declarations:
 	LOGICAL		GEOG_LABEL, GEOG_VAR,ITSA_TRUEMONTH_AXIS,
-     .			use_nice, special, rescale_time
+     .			use_nice, special
 	INTEGER		TM_LENSTR1, TM_LENSTR, dlen, places, ndec, dummy
 	CHARACTER	AX_TITLE*32, WHOI_DATE*14, VAR_TITLE*128,
      .			INTERNAL_WHOI_DATE*14,
@@ -144,7 +146,6 @@
 
 * initiailize
 	tstyle = ' '
-	rescale_time = .FALSE.
 	tscale = 1.0
 	toff = 0.0
 
@@ -160,9 +161,8 @@
 * frac - Will time precision be accurate enough to resolve this delta value?
 	use_nice = places .LE. 7
 	IF (idim.EQ.t_dim .OR.  idim.EQ.f_dim) THEN
+	   rescale_time = .FALSE.
   	   time_unit = line_tunit( grid_line(idim,grid) )
-c	   frac = res_del/ ABS( (hi_val+lo_val)/2 )
-c	   rescale_time = (time_unit.EQ.1 .AND. places.GT.7 .AND. frac.LT. 1.e-5)
 	   rescale_time = (time_unit.EQ.1 .AND. places.GT.7)
 	ENDIF
 

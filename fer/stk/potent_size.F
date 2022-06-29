@@ -1,4 +1,4 @@
-	INTEGER FUNCTION POTENT_SIZE ( cx )
+	INTEGER*8 FUNCTION POTENT_SIZE ( cx )
 
 *
 *
@@ -46,6 +46,8 @@
 * V200:  6/8/89
 *	8/29/89 - special treatment of interpolation
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
+*       *acm* 5/22 Issue 112: POTENT_SIZE fcn must be integer*8 to represent total 
+*                  size of large grids
  
         IMPLICIT NONE
         include 'tmap_dims.parm'
@@ -56,7 +58,8 @@
 	INTEGER	cx
 
 * internal variable declarations:
-	INTEGER	CGRID_SIZE, idim, status
+	INTEGER	idim, status
+	INTEGER*8 CGRID_SIZE8
 
 * make a copy of the context in a scratch buffer
 	CALL TRANSFER_CONTEXT( cx, cx_buff )
@@ -75,7 +78,8 @@
  100	CONTINUE
 
 * now, what's the size of the result ?
-	POTENT_SIZE = CGRID_SIZE( cx_buff )
+
+	POTENT_SIZE = CGRID_SIZE8( cx_buff )
 
 	RETURN
 	END

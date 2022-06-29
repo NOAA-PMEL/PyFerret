@@ -46,6 +46,8 @@
 * revision 0.1 - 7/20/87 - kludge introduction of 1D grids for XY averages
 * V200:  5/18/89 - 4D symmetrical
 *       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
+* v767 6/22 *acm* See issue 112: Unexpected error: this routine called
+*		  when the grid is too large for integer*4 indexing
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -53,13 +55,24 @@
 	include 'xcontext.cmn'
 
 	INTEGER	CX_DIM_LEN, cx
+	INTEGER*8 CGRID_SIZE8, gsize  
+	INTEGER tsize
 
-	CGRID_SIZE = CX_DIM_LEN( 1, cx )
+	gsize = CGRID_SIZE8( cx )
+	IF (gsize .GT. arbitrary_large_int4) THEN
+	   CALL WARN ('CGRID_SIZE: Overflow in computing size of grid')
+	   CALL WARN ('Internal Error: Exiting')
+	   STOP
+	ENDIF
+
+	tsize = CX_DIM_LEN( 1, cx )
      .		   * CX_DIM_LEN( 2, cx )
      .		   * CX_DIM_LEN( 3, cx )
      .		   * CX_DIM_LEN( 4, cx )
      .		   * CX_DIM_LEN( 5, cx )
      .		   * CX_DIM_LEN( 6, cx )
+
+	CGRID_SIZE = tsize
 
 	RETURN
 	END

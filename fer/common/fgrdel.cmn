@@ -6,6 +6,9 @@
 * of color, brush, font, pen and symbol objects is per
 * window object.  These objects from one window cannot
 * be shared with another window.
+*
+* 4/22 *acm*  PyFerret issue #51: add extrapen, for keeping track of 
+*             pens defined for pyferret-style custom graticule lines
 
         INTEGER maxwindowobjs,
      .          maxcolorobjs,
@@ -98,6 +101,10 @@
 * used for drawing lines.
         INTEGER activepen
 
+* The number of additional custom pens defined beyond the default one,
+* currently used only for drawing graticule lines.
+        INTEGER extrapen
+
 * The ID number of the "active" symbol as well as the size to draw
 * that symbol used for drawing markers for the active window.  The
 * color used is that of the "active" pen.
@@ -161,7 +168,7 @@
      .         activesymsiz, 
      .
      .         activewindow, activetransform, activebrush, 
-     .         activepen, activesymbol, lastbrushcolor,
+     .         activepen, extrapen, activesymbol, lastbrushcolor,
      .         lastbstylen, brushcolor, pencolor, 
      .         activesymhighlight,
      .

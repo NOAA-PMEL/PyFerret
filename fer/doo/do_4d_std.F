@@ -47,6 +47,7 @@
 * V702 *sh* 11/16 mods for trac #2428 - calculation in gathered fragments
 *                 pass address of buffer area, where the components needed to
 *                 finalize the 1-pass weighted variance calculation are accumulated 
+* v767 6/22 *acm* See issue 112: Use the INTEGER*8 routine CGRID_SIZE8
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
@@ -60,14 +61,14 @@
 	REAL	arg, com(*), res(*), boxes(*)
 
 * internal variable declarations:
-	INTEGER	CGRID_SIZE, size
+	INTEGER*8 CGRID_SIZE8, size
 
 * diagnostic mode output: " doing --> VAR_NAME[x=lo:hi@TRN:n,D=#]"
 	IF ( mode_diagnostic ) 	CALL DIAG_OP
      .				( 'doing', isact_class_trans, res_cx, idim )
 
 * get size of result array to locate buffer area just beyond
-	size = CGRID_SIZE(res_cx)
+	size = CGRID_SIZE8(res_cx)
 
 * pass the transform to be performed
 	CALL DO_4D_TRANS(   trans_4d_std,

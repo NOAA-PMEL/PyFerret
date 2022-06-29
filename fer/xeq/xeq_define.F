@@ -271,6 +271,8 @@
 * v7441*acm* 12/18 Issue 1910: Allow dates in commands to be in ISO 8601 form, yyyy-mm-dd
 * V7.6 *acm*  6/20 For DSG data if there's a feature-mask applied to the dataset and the
 *                  uer redefines the mask variable, verify and set the new mask.
+* v767 6/22 *acm* See issue 112: Detect whether axis length is too large for 
+*                 4-byte integer indexing
 
         IMPLICIT NONE
 	include	'tmap_errors.parm'
@@ -451,7 +453,7 @@
      .		  bc_to_t0, start, new_ww, delta, end, secs2start,
      .            micro_adj, axwwlen, rmod_len, secsperyear, small, 
      .            new_att_modulo_len, madj, firs_coord, last_coord, timefac, 
-     .            vlo, vhi, idel
+     .            vlo, vhi, idel, steps_total
 	CHARACTER TM_FMT*48, TM_CLEAN_FILENAME*512,SECS_TO_DATE_OUT*11,
      .            reg_name*24, buff1*128, buff2*512, buff3*512, 
      .            buffsym*120, cal_name*32, buff*512,
@@ -1045,7 +1047,7 @@ c	IF ( .NOT.TM_LEGAL_NAME( buff3 ) ) GOTO 5100
 
 	   IF ( line_modulo(iline) ) its_modulo = .TRUE.
 
-	ENDIF
+	ENDIF ! end of /LIKE=
 
 * orientation must be uniquely defined
 
@@ -1177,7 +1179,7 @@ c	IF ( .NOT.TM_LEGAL_NAME( buff3 ) ) GOTO 5100
 	      truemonth_noted = .TRUE.
 	   ENDIF
 
-	ENDIF
+	ENDIF  ! end of /MONTHLY
 
 * *acm* other calendar names* /CALENDAR = GREGORIAN, PROLEPTIC_GREGORIAN, 
 *        NOLEAP, JULIAN, 360_DAY, ALL_LEAP
@@ -1613,7 +1615,7 @@ C /units=months  is 1/12 of the length of the year
  550	         CONTINUE
               ENDIF
 
-	   ENDIF
+	   ENDIF  ! end of irreg
 
 * ... check to see if it was regularly spaced after all
  560	   IF ( its_reg ) THEN
@@ -1679,12 +1681,19 @@ C /units=months  is 1/12 of the length of the year
 	       end   = end   - delta/2.0
 	     ENDIF
 
+	     steps_total = (end - start) / delta
+	     IF (steps_total .GT. arbitrary_large_int4) GOTO 5850
+
 	   ELSE
 	     IF ( npoints .EQ. unspecified_int4 ) THEN
 	       delta = cx_delta (orient,mods_cx)
 	       IF ( delta.EQ.unspecified_val8 .OR. delta.LE.0.D0) GOTO 5520
 	       IF ( .NOT.its_calendar ) THEN
-	          npoints = INT(( (end - start) / delta ) + 1.9999)
+	       
+	          steps_total = 1.9999 + (end - start) / delta
+	          IF (steps_total .GT. arbitrary_large_int4) GOTO 5850
+
+	          npoints = INT(steps_total)
                   small = MIN(1.e-9, delta)
 		  IF (start + delta* (npoints-1) - 0.5*delta .GT. end+small) 
      .              npoints = npoints-1
@@ -1694,6 +1703,9 @@ C /units=months  is 1/12 of the length of the year
 	       delta = 1.D0
 	     ELSE
 	       delta = (end - start) / (npoints-1)
+	       steps_total = (end - start) / delta
+	       IF (steps_total .GT. arbitrary_large_int4) GOTO 5850
+
 	       IF (its_calendar) delta = -1 * delta/un_convert(iunit)
 	       IF ( delta .LE. 0.0D0 ) GOTO 5520
 	     ENDIF
@@ -1828,7 +1840,9 @@ C /units=months  is 1/12 of the length of the year
 	   IF (.NOT.irreg  .AND. its_calendar ) THEN
 	      line_direction(iline) = 'FI'
 	      bc_to_t0 = SECS_FROM_BC( line_t0(iline), cal_id, status)
-	      line_dim  (iline) = (start-end) / (line_tunit(iline)*delta) + 1.9999
+	      steps_total = (start-end) / (line_tunit(iline)*delta) + 1.9999
+	      IF (steps_total .GT. arbitrary_large_int4) GOTO 5850
+	      line_dim  (iline) = steps_total
 	      line_start(iline) = (-line_start(iline)-bc_to_t0)/line_tunit(iline)
 
 	   ENDIF
@@ -1838,7 +1852,10 @@ C /units=months  is 1/12 of the length of the year
 	ELSEIF (.NOT.irreg  .AND. its_calendar ) THEN
 	   line_direction(iline) = 'TI'
 	   bc_to_t0 = SECS_FROM_BC( line_t0(iline), cal_id, status)
-	   line_dim  (iline) = (start-end) / (line_tunit(iline)*delta) + 1.9999
+	   steps_total = (start-end) / (line_tunit(iline)*delta) + 1.9999
+	   IF (steps_total .GT. arbitrary_large_int4) GOTO 5850
+	   line_dim  (iline) = steps_total
+
 	   line_start(iline) = (-line_start(iline)-bc_to_t0)/line_tunit(iline)
 
 * ... time axis specified as time step values with T0 given
@@ -1854,8 +1871,10 @@ C /units=months  is 1/12 of the length of the year
 	IF (true_month .AND. .NOT.its_calendar) THEN
 	    line_start(iline) = cx_lo_ww(orient,mods_cx) - delta/2
 	    line_direction(iline) = 'TI'
-	    line_dim(iline) = 1 + 
+	    steps_total = 1 + 
      .       ( cx_hi_ww(orient,mods_cx) - cx_lo_ww(orient,mods_cx) )/ delta
+	    IF (steps_total .GT. arbitrary_large_int4) GOTO 5850
+	    line_dim(iline) = steps_total
 	ENDIF
 
 * automatic longitude modulo
@@ -3171,6 +3190,10 @@ c ?? if nlab=0, use next avail slot?
      .   '. Day does not exist in all months.', *5000 )
 5840	CALL ERRMSG( ferr_grid_definition, status,
      .   'DEFINE AXIS/MONTHLY must use calendar-time definition', *5000 )
+5850   CALL ERRMSG(ferr_grid_definition, status,
+     .     'Axis too long for 4-byte integer indexing: '
+     .		//'Long dimensions not implemented', *5000)
+
 5900	CALL ERRMSG( ferr_invalid_command, status,
      .		'DEFINE what name.attribute?', *5000 )
 5920    slen = TM_LENSTR1(varname)
@@ -3228,7 +3251,6 @@ c ?? if nlab=0, use next avail slot?
  6400   CALL ERRMSG( ferr_grid_definition, status,
      .	    '"DEFINE DATA/AGGREGATE agname =" requires a list of names',
      .          *5000 )
-
  6500  slen = TM_LENSTR1(varname)
        CALL ERRMSG (ferr_internal, status,
      . 'Error defining attribute on variable '//varname(:slen), *5000)

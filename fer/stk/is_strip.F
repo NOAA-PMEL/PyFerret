@@ -86,6 +86,7 @@
 * V76  *acm* 3/20 Implementing regridding to point-type DSG data
 * V761 *acm* 7/20 Issue 1981:in ISUBSCR_CX distinguish rounding for single 
 *                 point vs range of points
+*      *acm* 5/22 remove declaration of unused fcns
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -107,15 +108,12 @@
 * RETURN 1 - goes back to strip off any remaining transformations
 
 * internal variable declarations:
-	LOGICAL	ITSA_MODULO_REGRID, TM_ITS_SUBSPAN_MODULO,
-     .		ITSA_MODULO_AXIS, TM_SAME_GRID_DEF,
+	LOGICAL	ITSA_MODULO_REGRID, TM_ITS_SUBSPAN_MODULO, ITSA_MODULO_AXIS,
      .		SCALAR_GRID_LINE, TM_ITSA_DSG, ITSA_REGRID_FROM_DSG,
      .		itsa_uvar, modulo_dest_regrid, allatonce, attoutflag, 
      .		got_it, its_dsg
-	INTEGER	CGRID_SIZE_MAX, CAXIS_LEN, CAXIS_MODLEN, CX_DIM_LEN, 
-     .		AUX_AXIS_FROM_ARG, CGRID_AXIS, POTENT_SIZE, 
-     .		ISUBSCR_CX, TM_AXES_REVERSED, CGRID_SIZE, MODULO_PARITY,
-     .		STR_SAME, TM_LENSTR1, KNOWN_GRID, 
+	INTEGER	CAXIS_LEN, CAXIS_MODLEN, AUX_AXIS_FROM_ARG, CGRID_AXIS, ISUBSCR_CX, 
+     .		TM_AXES_REVERSED, MODULO_PARITY, TM_LENSTR1, KNOWN_GRID, 
      .		TM_DSG_DSET_FROM_GRID, TM_DSG_OBS_GRID, TM_DSG_ORIENTATION,
      .		nrev, reversed(nferdims), idel,
      .		trans, grid, dset, lo_off, hi_off, aclass,

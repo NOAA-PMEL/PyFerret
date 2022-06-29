@@ -52,6 +52,7 @@
 *		user to coach this routine on the ordering of the axes
 * V674 2/12 *acm* 6D Ferret: use nferdims rather than 4 for dimension indexing
 * V751 8/19 *acm* Issue 1947: Add coaching about the USE/ORDER= qualifier
+*      5/22 *acm* In the coaching, say what the ordering problem is
 
         include 'tmap_dims.parm'
 #include "tmap_dset.parm"
@@ -59,6 +60,7 @@
         include 'xtm_grid.cmn_text'
         include 'xio.cmn_text'
         include 'xrisc_buff.cmn'
+	include 'xtext_info.cmn' ! with ww_dim_name
 
         INTEGER tt  ! nice short name
         EQUIVALENCE (tt,lunit_errors)
@@ -73,6 +75,7 @@
       INTEGER TM_AXIS_DIRECTION, idim, lasdim, vlen, mdim, nuser,
      .	      ax1, firm_dim, orient, i, ii, perm(nferdims), 
      .	      new1, reorder(nferdims), imin, imax
+      CHARACTER*28 errtxt
 
 * initialize
       DO 10 idim = 1, nferdims
@@ -145,38 +148,6 @@
 	      DO 70 idim = 1, mdim
  70	      order(idim) = perm(idim)
 	      ax1 = mdim + 1
-
-!* this block of logic abandoned as making Ferret "too intellligent"
-!* because it has imperfection. For example /ORDER=TXYZ given for a
-!* firmly XYT grid maps to "XYZ" because Ferret identifies the "X" axis
-!* as "firm" first off
-!
-!*     Step 1: find the first axis of the grid whose orientation is
-!*     known with high certainty. Try to map this to a user-given axis
-!	      DO 76 firm_dim = 1, mdim
-!	         IF (TM_FIRM_AXIS_ORIENT(lines_n(firm_dim), orient)) THEN
-!*     ... check that this orientation is in the users list
-!	            DO 72 idim = 1, nuser 
-!	               IF (orient .EQ. ABS(perm(idim))) THEN
-!*     ... check that this orientation is possible to work with
-!*         e.g.  /ORDER=YXT with lines_n(1) of 2D grid matching "T" is bad
-!*	                or with lines_n(2) of 2D grid matching "Y" is bad
-!	                  IF ( (nuser-idim).GE.(mdim-firm_dim)
-!     .			 .AND.  idim .GE. firm_dim ) GOTO 80
-!	               ENDIF
-! 72		    CONTINUE
-!	         ENDIF
-! 76	      CONTINUE
-!*     ... nothing firmly known. Just start from first axis
-!	      firm_dim = 1
-!	      idim = 1
-!*     Step 2: map the orientations to the left and right of firm_dim
-! 80	      order(firm_dim) = perm(idim)
-!	      DO 84 i = firm_dim-1,1,-1
-! 84	      order(i) = perm(idim-(firm_dim-i))
-!	      DO 86 i = firm_dim+1,mdim
-! 86	      order(i) = perm(idim-(firm_dim-i))
-!	      ax1 = mdim + 1
 
 	   ENDIF
 	ENDIF
@@ -252,28 +223,13 @@
       DO 310 idim = 1, nferdims
 	 DO 300 i = 1, idim-1
             IF ( order(i) .NE. 0
-     .     .AND. ABS(order(i)) .EQ. ABS(order(idim)) ) GOTO 500
+     .     .AND. ABS(order(i)) .EQ. ABS(order(idim)) ) THEN
+               WRITE (errtxt, 1000) ww_dim_name(i), idim
+1000	       FORMAT (': ', A1, ' axis is in dimension #', i2)
+               GOTO 500
+            ENDIF
  300	 CONTINUE
  310  CONTINUE
-
-
-* remap the lines_n array to match TMAP nferdims-dimensional ordering instead of
-* netCDF file ordering. For example, change an XYT grid from current
-* line1, line2, line4, unspecified to line1, line2, unspecified, line4
-!	i = mdim
-!	DO 410 idim = nferdims, 1, -1
-!* ... is this axis present in the grid
-!	   present = .FALSE.
-!	   DO 400 ii = 1, nferdims
-!	      IF (ABS(order(ii)) .EQ. idim) present = .TRUE.
-! 400	   CONTINUE
-!	   IF (present) THEN
-!	      lines_n(idim) = lines_n(i)
-!	      i = i - 1
-!	   ELSE
-!	      lines_n(idim) = unspecified_int4
-!	   ENDIF
-! 410	CONTINUE
 
 * success
       RETURN
@@ -291,7 +247,7 @@
       risc_buff = vname
       vlen = LEN(vname)
       CALL TM_NOTE( 'Unspecified or unsupported ordering of axes in variable '
-     .               //risc_buff(:vlen), tt )
+     .               //risc_buff(:vlen)//errtxt, tt )
       CALL TM_NOTE( 'Check the dimensions: can USE/ORDER= be applied?', tt )
       CALL TM_NOTE( 'The default ordering will be used', tt )
 

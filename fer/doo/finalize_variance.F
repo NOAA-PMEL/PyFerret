@@ -43,6 +43,7 @@
 *
 * V702 *sh* 11/16 this routine performs the finalization step that was
 *		  previously a part of DO_VAR_SUB
+* v767 6/22 *acm* See issue 112: The total size could need INTEGER*8
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
@@ -57,7 +58,8 @@
 !	external xgt_grid_data
 
 * calling argument declarations:
-	INTEGER	trans, size, res_mr
+	INTEGER*8 size
+	INTEGER	trans, res_mr
 	REAL    res(size), wsum(size), s(size)
 
 * internal variable declarations:

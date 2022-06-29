@@ -2,6 +2,11 @@
 * Create a temporary pen and symbol object (dot) 
 * for the default window using the given color
 *
+* 4/22 *acm*  PyFerret issue #51: Allow for defining up to 4 more colors/pens to use in 
+*                    graticule lines; vertical and horizontal, and possibly different styles
+*                    for large and small tics. Custom colors/lines have been limited to 1, 
+*                    so custom-color line plots with custom-color grats were not implemented.
+*                  extrapen is 0 (for original pen) 1, 2, 3, 4 (graticule pens)
 
         SUBROUTINE FGD_CREATE_TEMP_PEN(windowid, 
      .                        ipen, icolor, thickness)
@@ -46,7 +51,8 @@
             RETURN
         ENDIF
 
-        ipen = maxpenobjs
+        ipen = maxpenobjs - extrapen
+
 *       linestyle = 1 is a solid line
         CALL FGD_GSPLR(windowid, ipen, 1, thickness, icolor)
 

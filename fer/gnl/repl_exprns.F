@@ -134,6 +134,7 @@
 * V745  4/19 *acm* ticket 1916, special handling getting context for RETURN= outputs
 * V751  6/19 *acm* ticket 1929, don't chop off str_len when testing for reformatting at the end
 * V7.63 9/20 *acm* add `var,RETURN=*coord` to get coordinate variables for DSG datasets
+*       5/22 *acm* See issue 112: to allow for large grids, call CGRID_SIZE8 on RETURN=size
 
         IMPLICIT NONE
 #include "netcdf.inc"
@@ -176,9 +177,10 @@
      .            i1ss, inss, grid, ucode, dotidx, shorterlen,
      .            hi_cx, item, itype, start, len_name, var_status, 
      .            siz, ifeature
+	INTEGER*8 CGRID_SIZE8, i8
 	REAL	  result, val, aval
 	REAL*8 TM_WORLD, TM_WW_AXLEN, ww
-	CHARACTER TM_FMT*48, LEFINT*16, VAR_TITLE*(max_len),
+	CHARACTER TM_FMT*48, LEFINT*16, LEFINT8*16, VAR_TITLE*(max_len),
      .		  VAR_UNITS*(max_len), GET_STRING_ELEMENT*(max_len), 
      .		  VAR_CODE*1024,
      .		  repl*(max_len), bad_str*(max_len), return_errmsg*256,
@@ -962,19 +964,8 @@
 	   ELSEIF ( repl .EQ. "SIZE"  .AND. 
      .              INDEX(cmnd(istart:iend),'.') .EQ. 0) THEN
 
-	      i2 = CGRID_SIZE ( cx )
-	      repl = LEFINT(i2, str_len)
-
-* The above overflows integer storage? Compute as a real.
-	      IF (i2 .LT. 0) THEN  
-	         result = 1.
-	         DO idim = 1, nferdims
-	            i2 = CX_DIM_LEN(idim, cx)
-		    result = result * i2
-	         ENDDO
-		 repl = TM_FMT( result, use_digits, 22, str_len )
-
-	      ENDIF
+	      i8 = CGRID_SIZE8 ( cx )
+	      repl = LEFINT8(i8, str_len)
 
 * ... RETURN=BAD
 	   ELSEIF ( repl .EQ. "BAD" ) THEN
@@ -1277,7 +1268,7 @@ c		    ENDIF
 * ... make sure the result is a single, valid value
 	   
 	   is_dsg = .FALSE.
-	   IF ( CGRID_SIZE(cx) .NE. 1 ) THEN
+	   IF ( CGRID_SIZE8(cx) .NE. 1 ) THEN
 
 *    For DSG grids the requested region may be just in the WW context in E
 	      is_dsg = TM_ITSA_DSG( cx_grid(cx) )

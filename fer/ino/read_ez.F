@@ -64,6 +64,7 @@
 * V685 *acm* 1/13  Ticket 2030: if we run out of  issue a new message
 * V702: *sh* 1/17 - bug fix: mr_protected must *end* at mr_not_in_use (=0)
 *		  - for trac enhancement #2369 -- dynamic memory management 
+* v767 6/22 *acm* See issue 112: Detect whether axis is too large for 4-byte integer indexing
 
         IMPLICIT NONE
 	include	'tmap_errors.parm'
@@ -83,7 +84,8 @@
 	INTEGER	cx, mr, status
 
 * internal variable declarations:
-	INTEGER 	CGRID_SIZE, CX_DIM_LEN,
+	INTEGER*8 	CGRID_SIZE8, gsize 
+	INTEGER 	CX_DIM_LEN,
      .			idim, ask_var, category, data_set, grid, ivar,
      .			fvar, nvar20, the_var, nleft, nsize,
      .			cx0, cx1, cx20(20), mr20(20), nread,
@@ -154,7 +156,9 @@
  200	   CONTINUE
 
 * read only what will fit into smallest grid
-	   rec1 = CGRID_SIZE(cx_stack_ptr) / nrepeat
+
+	   gsize = CGRID_SIZE8(cx_stack_ptr) 
+	   IF (gsize/nrepeat .LT. arbitrary_large_int4) rec1 = gsize/ nrepeat
 	   rec_to_read = MIN( rec_to_read, rec1 )
 	   IF (rec_to_read .LE. 0 ) GOTO 5650
 
@@ -225,7 +229,9 @@
 	      ELSEIF( ndim .EQ. 2 ) THEN
 	         nsize = CX_DIM_LEN(fst_dim,cx1)
 	      ELSE
-	         nsize =  CGRID_SIZE(cx1) / CX_DIM_LEN(las_dim,cx1)
+		 gsize = CGRID_SIZE8(cx1) 
+		 IF (gsize .GT. arbitrary_large_int4) GOTO 5660
+		 nsize =  gsize / CX_DIM_LEN(las_dim,cx1)
 	      ENDIF
 * ... last dim (each var) is
 *     (total values read)/(prod. of all axis lengths except last)
@@ -285,6 +291,8 @@
      .		*5500 )
  5650	CALL ERRMSG( ferr_limits, status,
      .		'/COLUMNS is impossibly large', *5500 )
+ 5660	CALL ERRMSG( ferr_limits, status,
+     .		'/COLUMNS is impossibly large or total size too large', *5500 )
  5700	CALL ERRMSG( ferr_TMAP_error, status, ' ', *4900 )
  6000	CALL ERRMSG( ferr_internal, status, 'READ_EZ ??', *4900 )
 	END	

@@ -49,7 +49,9 @@
 *
 * 8/08 *acm* See Bug 1483
 *      *kms*  3/12 modified to actually use the maximum absolute error
-*
+* V767 *acm*  6/22 PyFerret issue 116. A correction to diffeps when it
+*                  is "small" was incorrect.
+
 
 * calling arguments:
         REAL eps, a, b
@@ -60,8 +62,6 @@
 * determine the maximum relative error
         abmin = MIN( ABS(a), ABS(b) )
         diffeps = abmin * ABS(eps)
-* if close to zero, set the maximum absolute error
-        IF ( diffeps .LT. ABS(eps) ) diffeps = ABS(eps)
 
         TM_FPEQ_EPS = ( ABS(a-b) .LE. diffeps )
 

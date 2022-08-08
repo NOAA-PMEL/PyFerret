@@ -53,12 +53,13 @@ C**
 *                  comparison must be done with TM_FPEQ. This was the cause of bug 1707.
 * V68  *acm* 1/12  changes for double-precision ferret, single-precision pplus
 * V741 *acm* 6/18  issue 1877, extra unwanted level was added
+* V767 *acm* 6/22 Cosmetic changes, looking into PyFerret issue 116
 
 	INCLUDE 'CMRDL.INC'
 
 	DIMENSION VAL(4),INTIF(4)
 	LOGICAL TM_FPEQ_EPS_SNGL
-	REAL top, eps
+	REAL top
 
 	LWGH=0
 	IF(INDEX(LABEL(:IST),'DEL').NE.0)LWGH=5
@@ -78,12 +79,12 @@ C**
 		 NL = INT((VAL(2)-VAL(1))/VAL(3))+1
 		 top = VAL(1)+(NL-1)*VAL(3)
 
-*  If the top level given and computed top level differ by
-* 1% or less don't add another level
+* Add another level if neeeded: do not add iI=f the top level given and 
+* computed top level differ by1% or less
 
-		 eps = 0.01* (val(2) - val(1))  
-		 IF ( (top .LT. VAL(2)) .AND. 
-     .                (.NOT.TM_FPEQ_EPS_SNGL(0.01, val(2), top)) ) NL = NL + 1 
+		 IF (top .LT. VAL(2)) THEN 
+		    IF ( .NOT.TM_FPEQ_EPS_SNGL(0.01, val(2), top) ) NL = NL + 1 
+	         ENDIF
 	      ELSE
 		 NL=2
 	      ENDIF

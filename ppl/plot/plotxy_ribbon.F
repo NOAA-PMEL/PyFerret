@@ -73,6 +73,7 @@ C
 * V73  3/18 *kms*  For clarity, append MD to makedot.cmn values IPT, XDOT, 
 *                  and YDOT; make MDOT (99) a makedot.cmn parameter DOTSYMIM
 * V762  8/20 *acm* Don't draw outside plot edges when doing modulo correction.
+* V765  9/22 *acm* Issue 118: Restore mark size to default after possible PLOT/SIZE=
 
         include         'xinterrupt.cmn' ! 1/89 *sh*
         include         'ppl_in_ferret.cmn'
@@ -460,6 +461,11 @@ C     CHECK POINTS FOR OUT OF RANGE   (CM)
         CALL MAKEDOTFLUSH
 
         CALL COLOR(1)
+	
+* Ensure mark size is the default
+	HMARK(I) = 0.08
+	CALL MARKH(HMARK(I))
+
 *       DO THE KEY
 C     Generate a color/gray scale key.
 C     Restore standard key style afterward (do this here, to 

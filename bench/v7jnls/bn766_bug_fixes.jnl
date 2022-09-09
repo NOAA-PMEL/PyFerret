@@ -7,3 +7,6 @@ GO err765_lineplot_tics.jnl
 GO bn_reset
 GO err765_ordering.jnl
 
+GO bn_reset
+GO err765_vector_dots.jnl
+

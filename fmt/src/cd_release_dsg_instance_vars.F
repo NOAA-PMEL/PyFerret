@@ -42,7 +42,7 @@
 * v720 4/2017 *sh*
 * V74+ 7/18 *acm* Handle case of rowsize variable that we have synthesized 
 *                 when there's not one in the file. 
-
+* V765 9/22 *acm* Corrections when checking whether to free mask variables
 
 * include files
         include 'netcdf.inc'
@@ -63,13 +63,13 @@
 * otherwise it's a valid single-feature dataset.
 
         ivar = dsg_row_size_var(dset)
-        IF (ivar .NE. int4_init .AND. ivar.GT.0) THEN
+	IF (ivar .NE. int4_init .AND. ivar.GT.0) THEN
            IF (dsg_loaded_lm(ivar) .NE. int4_init) CALL TM_FREE_LM_DYNMEM(dsg_loaded_lm(ivar))
            dsg_row_size_var(dset) = int4_init
            dsg_loaded_lm(ivar)    = int4_init
         ENDIF
 
-        DO idim = 1, 4
+	DO idim = 1, 4
           ivar = dsg_coord_var(idim,dset)
           IF (ivar .NE. int4_init) THEN
              IF (dsg_loaded_lm(ivar) .NE. int4_init) CALL TM_FREE_LM_DYNMEM(dsg_loaded_lm(ivar))
@@ -97,14 +97,15 @@
         ENDIF
 
 * was a feature-mask set? deallocate that.
-	IF (dsg_msk_lm(dset) .NE. unspecified_int4) THEN
+
+	IF (dsg_msk_lm(dset).NE.unspecified_int4 .AND. dsg_msk_lm(dset).NE.int4_init) THEN
 	   CALL FREE_LINE_DYNMEM( dsg_msk_lm(dset) )
 	   CALL TM_DEALLO_DYN_LINE( dsg_msk_lm(dset) )
-	   dsg_msk_lm(dset) = unspecified_int4
+	   dsg_msk_lm(dset) = int4_init
 	ENDIF
 
 * was a trajectory- or station-mask set? deallocate that.
-	IF (dsg_mask_ftrset_lm(dset) .NE. unspecified_int4) THEN
+	IF (dsg_mask_ftrset_lm(dset).NE.unspecified_int4 .AND. dsg_mask_ftrset_lm(dset).NE.int4_init) THEN
 	   CALL FREE_LINE_DYNMEM( dsg_mask_ftrset_lm(dset) )
 	   CALL TM_DEALLO_DYN_LINE( dsg_mask_ftrset_lm(dset) )
 	   dsg_mask_ftrset_lm(dset) = int4_init
@@ -116,6 +117,7 @@
         dsg_user_direction = int4_init
 
 * always successful completion
+
         RETURN
 
         END

@@ -1151,8 +1151,9 @@
      .   buff(:TM_LENSTR1(buff)), *5000 )
 
 
- 5400   CALL ERRMSG(ferr_grid_definition, status,
-     .     'Result 1-d grid too large for 4-byte integer indexing: ',
+ 5400   CONTINUE
+	CALL ERRMSG(ferr_grid_definition, status,
+     .     'Result 1-d grid too large for 4-byte integer indexing: '//
      .   fcn_name(:TM_LENSTR1(fcn_name)) //' '//
      .   buff(:TM_LENSTR1(buff)), *5000 )
 

@@ -1,91 +1,3 @@
-	SUBROUTINE RDHDSV(LN,IRQ,H,IACT,ILOC)
-*
-*
-*  This software was developed by the Thermal Modeling and Analysis
-*  Project(TMAP) of the National Oceanographic and Atmospheric
-*  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
-*  hereafter referred to as NOAA/PMEL/TMAP.
-*
-*  Access and use of this software shall impose the following
-*  obligations and understandings on the user. The user is granted the
-*  right, without any fee or cost, to use, copy, modify, alter, enhance
-*  and distribute this software, and any derivative works thereof, and
-*  its supporting documentation for any purpose whatsoever, provided
-*  that this entire notice appears in all copies of the software,
-*  derivative works and supporting documentation.  Further, the user
-*  agrees to credit NOAA/PMEL/TMAP in any publications that result from
-*  the use of this software or in any product that includes this
-*  software. The names TMAP, NOAA and/or PMEL, however, may not be used
-*  in any advertising or publicity to endorse or promote any products
-*  or commercial entity unless specific written permission is obtained
-*  from NOAA/PMEL/TMAP. The user also understands that NOAA/PMEL/TMAP
-*  is not obligated to provide the user with any support, consulting,
-*  training or assistance of any kind with regard to the use, operation
-*  and performance of this software nor to provide the user with any
-*  updates, revisions, new versions or "bug fixes".
-*
-*  THIS SOFTWARE IS PROVIDED BY NOAA/PMEL/TMAP "AS IS" AND ANY EXPRESS
-*  OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-*  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
-*  ARE DISCLAIMED. IN NO EVENT SHALL NOAA/PMEL/TMAP BE LIABLE FOR ANY SPECIAL,
-*  INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER
-*  RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF
-*  CONTRACT, NEGLIGENCE OR OTHER TORTUOUS ACTION, ARISING OUT OF OR IN
-*  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
-*
-*
-C**    @(#)dsf.F	1.1    3/10/88
-C**
-C**
-C***********************************************************************
-C**
-C**                 PLOT+ Scientific Graphics System
-C**
-C***********************************************************************
-C**
-C**
-	dimension H(*)
-#ifdef unix
-	INCLUDE 'DSFCOM.DAT'
-#else
-        INCLUDE 'pplinc:DSFCOM.DAT'
-#endif
-        CALL CHKDSF(LN,0,I)
-	IF(INXT(I).LT.0)THEN
-	IACT=0
-	DLEN(I)=0
-	RETURN
-	ENDIF
-C	READ HEADER
-	TEMP=INXT(I)
-	READ(LN,REC=INXT(I))(BUF(J,I),J=1,128)
-C
-C	CHECK WHICH TYPE OF HEADER IT IS
-C
-	IF(IBUF(4,I).GT.0)THEN
-	DLEN(I)=IBUF(4,I)
-	ELSE
-	DLEN(I)=LBUF(13,I)
-	ENDIF
-	HLEN(I)=IBUF(3,I)
-	IBKWD(I)=IBUF(2,I)
-	IFRWD(I)=IBUF(1,I)
-	IACT=MIN0(HLEN(I)-16,IRQ)
-	INXT(I)=INXT(I)+1
-C	MOVE HEADER
-	IHD(I)=1
-	IMV=MIN0(IACT,112)
-	DO 20 J=1,IMV
-20	H(J+ILOC-1)=BUF(J+16,I)
-C	READ THE REST
-	DO 30 J=IMV+1,IACT,128
-	IMV2=MIN0(127,IACT-J)
-	READ(LN,REC=INXT(I))(H(K+ILOC-1),K=J,J+IMV2)
-30	INXT(I)=INXT(I)+1
-	INXT(I)=TEMP+(HLEN(I)-1)/128+1
-	RETURN
-	END
-
 	SUBROUTINE RDDDSV(LN,IRQ,DAT,IACT,ILOC)
 	dimension DAT(*)
 #ifdef unix
@@ -220,135 +132,7 @@ C	POSITION FILE AND READ FILE NAME AND POINTER
 400	INXT(I)=-1
 	RETURN
 	END
-	SUBROUTINE WRDDSF(LN,ILEN,DAT)
-	DIMENSION DAT(*)
-#ifdef unix
-	INCLUDE 'DSFCOM.DAT'
-#else
-        INCLUDE 'pplinc:DSFCOM.DAT'
-#endif
-	CALL CHKDSF(LN,1,I)
-	IF(IHD(I).NE.1)STOP 'NO HEADER'
-	IF(DLEN(I).EQ.0)THEN
-	DMIN(I)=1.E35
-	DMAX(I)=-DMIN(I)
-	DMEAN(I)=0.
-	ENDIF
-	DO 40 K=1,ILEN
-	IF(DAT(K).GE.1.E35)GOTO 40
-	IF(DMIN(I).GT.DAT(K))DMIN(I)=DAT(K)
-	IF(DMAX(I).LT.DAT(K))DMAX(I)=DAT(K)
-	DMEAN(I)=DMEAN(I)+DAT(K)
-40	CONTINUE
-	DLEN(I)=DLEN(I)+ILEN
-	K=1
-	IF(IBP(I).NE.1)THEN
-C	PARTIAL BUFFER EXISTS
-	KS=0
-	IF(IBP(I)+ILEN.LE.128)GOTO 50
-	K=130-IBP(I)
-	DO 10 J=IBP(I),128
-10	BUF(J,I)=DAT(J-IBP(I)+1)
-	WRITE(LN,REC=INXT(I))(BUF(J,I),J=1,128)
-	IBP(I)=1
-	INXT(I)=INXT(I)+1
-	ENDIF
-C	WRITE OUT FULL BUFFERS
-	KS=((ILEN-K+1)/128)*128+K-1
-	DO 20 J=K,KS,128
-	WRITE(LN,REC=INXT(I))(DAT(JJ),JJ=J,J+127)
-20	INXT(I)=INXT(I)+1
-C	FILL PARTIAL BUFFER
-50	KS=KS+1
-	IF(KS.GT.ILEN)RETURN
-	DO 30 J=KS,ILEN
-30	BUF(J-KS+IBP(I),I)=DAT(J)
-	IBP(I)=ILEN-KS+IBP(I)+1
-	RETURN
-	END
-	SUBROUTINE RDDDSF(LN,IRQ,DAT,IACT)
-	DIMENSION DAT(*)
-#ifdef unix
-	INCLUDE 'DSFCOM.DAT'
-#else
-        INCLUDE 'pplinc:DSFCOM.DAT'
-#endif
-	CALL CHKDSF(LN,0,I)
-	IF(DLEN(I).LE.0)THEN
-	IACT=0
-	RETURN
-	ENDIF
-C	READ DATA
-	IACT=MIN0(IRQ,DLEN(I))
-	DLEN(I)=DLEN(I)-IACT
-	J=1
-	IF(IBP(I).EQ.1)GOTO 10
-C COPY PARTIAL BUFFER
-	IMV=MIN0(128,IACT+IBP(I)-1)
-	DO 20 J=IBP(I),IMV
-20	DAT(J-IBP(I)+1)=BUF(J,I)
-	J=IMV-IBP(I)+2
-	IBP(I)=IMV+1
-	IF(IBP(I).LE.128)GOTO 40
-10	KS=((IACT-J+1)/128)*128+J-1
-	DO 30 K=J,KS,128
-	READ(LN,REC=INXT(I))(DAT(JJ),JJ=K,K+127)
-30	INXT(I)=INXT(I)+1
-	IF(KS.EQ.IACT)THEN
-	IBP(I)=1
-	ELSE
-	READ(LN,REC=INXT(I))(BUF(J,I),J=1,128)
-	INXT(I)=INXT(I)+1
-C	MOVE THE REST
-	DO 50 J=KS+1,IACT
-50	DAT(J)=BUF(J-KS,I)
-	IBP(I)=IACT-KS+1
-	ENDIF
-40	RETURN
-	END
-	SUBROUTINE WRHDSV(LN,ILEN,H,ILOC)
-	CHARACTER DTE*10,TME*10,FDTE*24
-	dimension H(*)
-#ifdef unix
-	INCLUDE 'DSFCOM.DAT'
-#else
-        INCLUDE 'pplinc:DSFCOM.DAT'
-#endif
-	CALL CHKDSF(LN,1,I)
-C	POSITION FILE TO END
-11	IF(INXT(I).LT.0)GOTO 20
-	READ(LN,REC=INXT(I))(BUF(J,I),J=1,128)
-	IBKWD(I)=INXT(I)
-	INXT(I)=IBUF(1,I)
-	GOTO 11
-20	INXT(I)=-INXT(I)
-	IHD(I)=1
-	HDPT(I)=INXT(I)
-C	FIRST BUFFER
-	DLEN(I)=0
-	HLEN(I)=ILEN+16
-	IBUF(2,I)=IBKWD(I)
-	IBUF(3,I)=HLEN(I)
-#ifdef unix
-	CALL FDATE(FDTE)
-	DTE=FDTE(5:11)//FDTE(23:24)
-	TME=FDTE(12:19)
-#else
-	call date(dte)
-	call time(tme)
-#endif
-	READ(DTE,999)(IBUF(J,I),J=5,9)
-	READ(TME,999)(IBUF(J,I),J=10,14)
-999	FORMAT(5A2)
-	DO 30 K=1,112
-30	BUF(16+K,I)=H(K+ILOC-1)
-	WRITE(LN,REC=INXT(I))(BUF(J,I),J=1,128)
-	INXT(I)=INXT(I)+1
-	DO 40 K=113,ILEN,128
-	WRITE(LN,REC=INXT(I))(H(J+ILOC-1),J=K,K+127)
-40	INXT(I)=INXT(I)+1
-	RETURN
-	END
+
 	SUBROUTINE CHKDSF(LN,JRW,I)
 #ifdef unix
 	INCLUDE 'DSFCOM.DAT'
@@ -362,23 +146,7 @@ C	FIRST BUFFER
 11	IF(JRW.EQ.IRW(I))RETURN
 12	STOP 'DSF LN OR R/W'
 	END
-C *kob* 04/07/96 passed in character strings had to be declared 
-C                with "*(*)" for the linux port 
-	SUBROUTINE RWDDSF(NME)
-	CHARACTER NME*(*)
-#ifdef unix
-	INCLUDE 'DSFCOM.DAT'
-#else
-        INCLUDE 'pplinc:DSFCOM.DAT'
-#endif
-	DO 10 I=1,4
-	IF(NME.EQ.NAME(I))GOTO 11
-10	CONTINUE
-	RETURN
-11	INXT(I)=1
-	IKEY(I)=0
-	RETURN
-	END
+
 	SUBROUTINE CLSDSF(LN)
 #ifdef unix
 	INCLUDE 'DSFCOM.DAT'
@@ -432,95 +200,7 @@ C
 	LUN(I)=0
 	RETURN
 	END
-	SUBROUTINE WRHDSF(LN,ILEN,H)
-	CHARACTER DTE*10,TME*10,FDTE*24
-	DIMENSION H(*)
-#ifdef unix
-	INCLUDE 'DSFCOM.DAT'
-#else
-        INCLUDE 'pplinc:DSFCOM.DAT'
-#endif
-	CALL CHKDSF(LN,1,I)
-C	POSITION FILE TO END
-11	IF(INXT(I).LT.0)GOTO 20
-	READ(LN,REC=INXT(I))(BUF(J,I),J=1,128)
-	IBKWD(I)=INXT(I)
-	INXT(I)=IBUF(1,I)
-	GOTO 11
-20	INXT(I)=-INXT(I)
-	IHD(I)=1
-	HDPT(I)=INXT(I)
-C	FIRST BUFFER
-	DLEN(I)=0
-	HLEN(I)=ILEN+16
-	IBUF(2,I)=IBKWD(I)
-	IBUF(3,I)=HLEN(I)
-#ifdef unix
-	CALL FDATE(FDTE)
-	DTE=FDTE(5:11)//FDTE(23:24)
-	TME=FDTE(12:19)
-#else
-	call date(dte)
-	call time(tme)
-#endif
-	READ(DTE,999)(IBUF(J,I),J=5,9)
-	READ(TME,999)(IBUF(J,I),J=10,14)
-999	FORMAT(5A2)
-	DO 30 K=1,112
-30	BUF(16+K,I)=H(K)
-	WRITE(LN,REC=INXT(I))(BUF(J,I),J=1,128)
-	INXT(I)=INXT(I)+1
-	DO 40 K=113,ILEN,128
-	WRITE(LN,REC=INXT(I))(H(J),J=K,K+127)
-40	INXT(I)=INXT(I)+1
-	RETURN
-	END
-	SUBROUTINE WRDDSV(LN,ILEN,DAT,ILOC)
-	dimension DAT(*)
-#ifdef unix
-	INCLUDE 'DSFCOM.DAT'
-#else
-        INCLUDE 'pplinc:DSFCOM.DAT'
-#endif
-	CALL CHKDSF(LN,1,I)
-	IF(IHD(I).NE.1)STOP 'NO HEADER'
-	IF(DLEN(I).EQ.0)THEN
-	DMIN(I)=1.E35
-	DMAX(I)=-DMIN(I)
-	DMEAN(I)=0.
-	ENDIF
-	DO 40 K=1,ILEN
-	IF(DAT(K+ILOC-1).GE.1.E35)GOTO 40
-	IF(DMIN(I).GT.DAT(K+ILOC-1))DMIN(I)=DAT(K+ILOC-1)
-	IF(DMAX(I).LT.DAT(K+ILOC-1))DMAX(I)=DAT(K+ILOC-1)
-	DMEAN(I)=DMEAN(I)+DAT(K+ILOC-1)
-40	CONTINUE
-	DLEN(I)=DLEN(I)+ILEN
-	K=1
-	IF(IBP(I).NE.1)THEN
-C	PARTIAL BUFFER EXISTS
-	KS=0
-	IF(IBP(I)+ILEN.LE.128)GOTO 50
-	K=130-IBP(I)
-	DO 10 J=IBP(I),128
-10	BUF(J,I)=DAT(J-IBP(I)+ILOC)
-	WRITE(LN,REC=INXT(I))(BUF(J,I),J=1,128)
-	IBP(I)=1
-	INXT(I)=INXT(I)+1
-	ENDIF
-C	WRITE OUT FULL BUFFERS
-	KS=((ILEN-K+1)/128)*128+K-1
-	DO 20 J=K,KS,128
-	WRITE(LN,REC=INXT(I))(DAT(JJ+ILOC-1),JJ=J,J+127)
-20	INXT(I)=INXT(I)+1
-C	FILL PARTIAL BUFFER
-50	KS=KS+1
-	IF(KS.GT.ILEN)RETURN
-	DO 30 J=KS,ILEN
-30	BUF(J-KS+IBP(I),I)=DAT(J+ILOC-1)
-	IBP(I)=ILEN-KS+IBP(I)+1
-	RETURN
-	END
+
 	SUBROUTINE RDHDSF(LN,IRQ,H,IACT)
 	DIMENSION H(*)
 #ifdef unix
@@ -563,6 +243,7 @@ C	READ THE REST
 	INXT(I)=TEMP+(HLEN(I)-1)/128+1
 	RETURN
 	END
+
 
 	BLOCK DATA DSFCOM_INIT
 #ifdef unix

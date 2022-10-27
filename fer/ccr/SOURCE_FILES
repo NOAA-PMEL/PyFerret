@@ -46,6 +46,5 @@ save_c_string.c\
 set_nan.c\
 set_null_c_string.c\
 set_null_c_string_array.c\
-text_to_utf8.c\
 write_dods.c\
 xfer_c_ptrs.c

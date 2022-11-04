@@ -96,6 +96,9 @@ c	end rsx-11m
 c
 	dimension imnew(1000),kksav(500)
  
+ 	print *, 'subroutine zgrid in pplus'
+	return
+
 	itmax=100 
 	eps=.002 
 	big=.9e35 

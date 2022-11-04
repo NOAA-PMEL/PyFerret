@@ -70,6 +70,7 @@
 * V554: 2/04 *acm*  default year length is 365.2425 days
 * V570 *acm* 5/04  Add the calendar ALL_LEAP = 366_DAY, and units for the corresp. month.
 * V71 12/16 *acm* Ticket 2158: working with true monthly time axes.
+** 10/2022 *acm* Code cleanup: lengths of strings not to overflow length of character variable
 
 * local variable declarations
 !	INTEGER	i
@@ -116,7 +117,7 @@
      .		un_name(-15)	/ 'mon_julian'/
      .          un_name(-16)    / 'mon_alleap'/
 
-     .		un_name(-17)	/ 'tmon_gregorian'/
+     .		un_name(-17)	/ 'tmon_gregori'/
      .		un_name(-18)	/ 'tmon_noleap'/
      .		un_name(-19)	/ 'tmon_360'/
      .		un_name(-20)	/ 'tmon_julian'/

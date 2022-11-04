@@ -1,3 +1,4 @@
+* 10/2022 *acm* Code cleanup: remove comment after # include statement
 	SUBROUTINE DO_INT_INDEF_DSG (idim, dset, nfeatures, 
      .					   com, com_mr, com_cx,
      .					   res, res_mr, res_cx,
@@ -48,7 +49,7 @@
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
-#	include	"tmap_dset.parm"  ! with feature-type 
+#	include	"tmap_dset.parm" 
 	include	'ferret.parm'
 	include	'errmsg.parm'
 	include	'interp_stack.parm'

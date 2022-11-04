@@ -73,8 +73,9 @@ C              when making encapsulated postscript from postscript.
 C *acm* 10/14  Ticket 2203: on the 64-bit machines, the \\ for backspace
 C              should be \ .
 C *kms* 06-2017 - change from PLOTFONTS to FER_FONTS
-C *acm* 07-2017 - ticket 2556 Look for FER_FONTS if not defined also check PLOTFONTS 
-C
+C *acm* 07-2017 - ticket 2556 Look for FER_FONTS if not defined also check PLOTFONTS C
+** 10/2022 *acm* Code cleanup: lengths of strings not to overflow length of character variable
+
 C	CALL SYMBEL(X,Y,DEGRES,HEIGHT,NCHAR,STRING)
 C
 C	THIS SUBROUTINE DRAWS A STRING OF CHARACTERS.
@@ -128,11 +129,8 @@ C
 
 C
 	DATA DNUM,DNME/35*'@@',35*'@@'/
-#ifdef unix
-	DATA KSUB,KSUPER,KBKSP,KCALL/'_','^','\\','@'/
-#else
 	DATA KSUB,KSUPER,KBKSP,KCALL/'_','^','\','@'/
-#endif
+
 	DATA KIF,IFN/'SR','SG','@@','@@','01','12','@@','@@'/
 	DATA PENS/'1','2','3','4','5','6','7','8','9','A',
      *	'B','C','D','E','F','G'/
@@ -450,14 +448,16 @@ C
 C
 C	    CLEAR ALL FONTS FROM THE BUFFERS
 C
-	    DO 1002 II=1,4
+	    DO II=1,4
 	    IOFF(II)=12000
 	    IFLEN(II)=0
 	    KIF(II)='@@'
 	    IFN(II)='@@'
 	    ITYPE(II)=0
 	    BASE(II)=-9.
-1002	    RAST(II)=1.
+	    RAST(II)=1.
+	    ENDDO
+
 	    IOFF(1)=0
 	    GOTO 169
         ELSE IF(ICOM(1:1).EQ.'C')THEN

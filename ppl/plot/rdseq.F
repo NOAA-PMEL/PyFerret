@@ -75,6 +75,7 @@ C                with "*(*)" for the linux port
 	INTEGER PBUF
 	DATA YES,NO/'YES','NO'/
 C
+	print *, 'SUBROUTINE RDSEQ'
 	SYM='*PPL$EOF'
 	CALL PUTSYM(SYM,NO,2,IER)
 C

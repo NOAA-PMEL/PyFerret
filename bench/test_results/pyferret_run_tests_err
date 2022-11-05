@@ -2211,7 +2211,9 @@ Executed by script: *** GO bn_cdf_errmsg.jnl ***
              Data set: http://ferret.pmel.noaa.gov/pmel/thredds/dodsC/data/PMEL/COADS/coads_nothing.cdf
 SET DAT/FORM=CDF "http://ferret.pmel.noaa.gov/pmel/thredds/dodsC/data/PMEL/COADS/coads_nothing.cdf"
 Executed by script: *** GO bn_cdf_errmsg.jnl ***
+Error:curl error: Couldn't resolve host name
 curl error details: 
+Warning:oc_open: Could not read url
  **Internet Data error
              NetCDF: I/O failure (OPeNDAP/netCDF Error code -68)
              Data set: http://noserver/a/nofile.cdf
@@ -2491,7 +2493,9 @@ ooooooooooooooooooooooooooooooooooooooooooo
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
 *** Running ferret script: bn_test_opendap.jnl
+Error:curl error: Couldn't resolve host name
 curl error details: 
+Warning:oc_open: Could not read url
 *** Running ferret script: bn611_bug_fixes.jnl
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
@@ -7039,6 +7043,17 @@ ooooooooooooooooooooooooooooooooooooooooooo
            *** NOTE: Unspecified or unsupported ordering of axes in variable Tinz_d: T axis is in dimension # 5
            *** NOTE: Check the dimensions: can USE/ORDER= be applied?
            *** NOTE: The default ordering will be used
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
+ Using every   2th vector in the Y direction
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
+Replacing definition of axis TAX
+*** Running ferret script: bn_scat2grid_bin_fcns.jnl
+           *** NOTE: Units on axis "AX003" are not recognized: na
+           *** NOTE: They will not be convertible:
 *** Running ferret script: bn_py_graticules.jnl
  Using every   2th vector in the X direction
            *** NOTE: /UNIT=MONTHS is ambiguous ... using 1/12 of 365.2425 days
@@ -7239,11 +7254,11 @@ Executed by script: *** GO bn_setting_text.jnl ***
 *** Running python script: testfervar.py
 >>> >>> >>> >>> >>> >>> Traceback (most recent call last):
   File "<stdin>", line 1, in <module>
-  File "....../lib/python3.7/site-packages/pyferret/ferdset.py", line 230, in __delattr__
+  File "....../lib/python3.9/site-packages/pyferret/ferdset.py", line 230, in __delattr__
     self.__delitem__(name)
-  File "....../lib/python3.7/site-packages/pyferret/ferdset.py", line 165, in __delitem__
+  File "....../lib/python3.9/site-packages/pyferret/ferdset.py", line 165, in __delitem__
     value._removefromferret()
-  File "....../lib/python3.7/site-packages/pyferret/fervar.py", line 882, in _removefromferret
+  File "....../lib/python3.9/site-packages/pyferret/fervar.py", line 882, in _removefromferret
     raise NotImplementedError('%s is a file variable; close the dataset to remove' % fername)
 NotImplementedError: SST[d=coads_climatology.cdf] is a file variable; close the dataset to remove
 

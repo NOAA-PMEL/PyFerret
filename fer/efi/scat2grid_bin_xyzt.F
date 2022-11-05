@@ -37,6 +37,7 @@
 
 * Ansley Manke
 * March 2016 from scat2grid_bin_XYZ.
+* 11/2022 fix issue 128 copy/paste bugs...
 
 * In this subroutine we provide information about
 * the function.  The user configurable information
@@ -272,7 +273,7 @@
      .                           counts)
 
 *  arg_1  xpts  \
-*  arg_2  ypts  / Scattered x,y,t triples to be gridded.
+*  arg_2  ypts  / Scattered x,y,z,t  to be gridded.
 *  arg_3  zpts /
 *  arg_4  tpts/
 *  arg_5  variable, /
@@ -412,8 +413,8 @@
          lo_ss = arg_lo_ss(idx,ARG3)
          hi_ss = arg_hi_ss(idx,ARG3)
          IF ( lo_ss .NE. ef_unspecified_int4 ) THEN
-            IF ( ntpts .NE. 0 ) THEN
-               nzpts = ntpts * (hi_ss - lo_ss + 1)
+            IF ( nzpts .NE. 0 ) THEN
+               nzpts = nzpts * (hi_ss - lo_ss + 1)
             ELSE
                nzpts = hi_ss - lo_ss + 1
             ENDIF
@@ -435,8 +436,8 @@
 
       nscat = 0
       DO 80 idx = X_AXIS, F_AXIS
-         lo_ss = arg_lo_ss(idx,ARG4)
-         hi_ss = arg_hi_ss(idx,ARG4)
+         lo_ss = arg_lo_ss(idx,ARG5)
+         hi_ss = arg_hi_ss(idx,ARG5)
          IF ( lo_ss .NE. ef_unspecified_int4 ) THEN
             IF ( nscat .NE. 0 ) THEN
                nscat = nscat * (hi_ss - lo_ss + 1)

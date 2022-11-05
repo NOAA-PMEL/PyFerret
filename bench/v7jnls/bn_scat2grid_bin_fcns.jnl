@@ -1,0 +1,55 @@
+! bn_scat2grid_bin_fcns.jnl
+! test scat2grid_bin_xyzt, scat2grid_bin_xyz, scat2grid_bin_xyt
+!
+! The script makes 2 calls to each function. Issue 128 reported that
+! scat2grid_bin_xyzt worked once in a session, but failed on subsequent calls.
+
+use bottle_subset.nc
+show data
+
+! Define axes for result grid
+
+define axis/x=180W:134W:1 x_ax
+define axis/y=55n:62n:1 y_ax
+define axis/z=0:100:20 z_ax
+define axis/t="1-jan-2016":"31-jan-2017":1/t0="1-jan-1900"/units=day t_ax
+
+let xpts = longitude
+let ypts = latitude
+let zpts = pressure
+
+let x_bin = x[gx=x_ax]
+let y_bin = y[gy=y_ax]
+let z_bin = z[gz=z_ax]
+let t_bin = t[gt=t_ax]
+
+let/like=temperature temp_bin = scat2grid_bin_xyzt (xpts, ypts, zpts, time, temperature, x_bin, y_bin, z_bin, t_bin )
+stat temp_bin
+
+let/like=salinity sal_bin = scat2grid_bin_xyzt (xpts, ypts, zpts, time, salinity, x_bin, y_bin, z_bin, t_bin )
+stat sal_bin
+
+! SCAT2GRID_BIN_XYZ
+
+let/like=temperature temp_bin = scat2grid_bin_xyz (xpts, ypts, zpts, temperature, x_bin, y_bin, z_bin )
+stat temp_bin
+
+let/like=salinity sal_bin = scat2grid_bin_xyz (xpts, ypts, zpts, salinity, x_bin, y_bin, z_bin )
+stat sal_bin
+
+! SCAT2GRID_BIN_XYT
+
+let/like=temperature temp_bin = scat2grid_bin_xyt (xpts, ypts, time, temperature, x_bin, y_bin, t_bin )
+stat temp_bin
+
+let/like=salinity sal_bin = scat2grid_bin_xyt (xpts, ypts, time, salinity, x_bin, y_bin, t_bin )
+stat sal_bin
+
+
+! SCAT2GRID_BIN_XY
+
+let/like=temperature temp_bin = scat2grid_bin_xy (xpts, ypts, temperature, x_bin, y_bin )
+stat temp_bin
+
+let/like=salinity sal_bin = scat2grid_bin_xy (xpts, ypts, salinity, x_bin, y_bin )
+stat sal_bin

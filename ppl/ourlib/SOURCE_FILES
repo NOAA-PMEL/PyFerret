@@ -1,5 +1,4 @@
 SRCS_F = \
-dsf.F\
 lnblk.F\
 lstb5.F\
 mttime.F\

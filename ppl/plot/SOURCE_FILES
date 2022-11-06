@@ -40,9 +40,6 @@ pplldc.F\
 pplldx.F\
 ppllist.F\
 prmtiv.F\
-rdseq.F\
-readsq.F\
-redsf.F\
 save.F\
 savezg.F\
 scale2.F\

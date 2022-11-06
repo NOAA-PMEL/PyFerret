@@ -74,6 +74,7 @@ c
 #endif
 	character ev1*5,ev2*5
 c
+	print *, ' routine epicvar'
 	itflg=0
 	ieflg=1
 c

@@ -141,6 +141,9 @@ C              do not make small tics by default.
 *                  DEGMINSEC=1 for Deg-Min axis labels, =2 for Deg-Min-Sec. Default = 1
 *                  /HALFSPAC adds a half space between the degree sign and E/W or N/S
 * V741 *acm*  5/18 issue 1874: consistently apply /CONSET number of digits setting
+*	*acm* 11/2022 Code cleanup. Issue messages and remove code for unused PPLUS commands:
+*		   READSEQ, RD, SAVE, GET, ENTER, MUTLPLT, TAXUND, PLTYPE (can only be GKS)
+*		   TEKNME, ECHO
 
 c	fromi	command file or device (/dev/tty or TT: for terminal)
 c	linei	input line for parameters
@@ -368,11 +371,7 @@ C
 	    LINE=' '
 	    IS=0
 	ENDIF
-#ifdef unix
         TERMF=FROM.EQ.'/dev/tty'
-#else
-        TERMF=FROM.EQ.'TT:'
-#endif
 	CMDLEV=0
 	CALL ATSTRT(FROM,LINE,IS,IER)
 C
@@ -499,7 +498,6 @@ C       More brain dead mods:
            GOTO 10
         ENDIF
 	CALL PLTYPE(ICODE)
-	CALL TKTYPE(TEKMOD)
 	GOTO 10
 600	CONTINUE ! unused
 C     SIZE
@@ -515,8 +513,12 @@ C     SMOOTH
 	CALL SMOOTH(pplmem,NX,NY,NX,NY,IFIX(P(1)))
 	GOTO 10
 C     TKTYPE
-1000	TEKMOD=IFIX(P(1))
-	CALL TKTYPE(TEKMOD)
+1000	CONTINUE
+
+	print *, 'PPLUS TKTYPE command '//icom(:TM_LENSTR1(icom))
+         err_msg = 'PPLUS Command not supported '//icom(:TM_LENSTR1(icom))
+         CALL ERRMSG (ferr_not_implemented, status, err_msg, *9999)
+
 	GOTO 10
 C     XLAB
 1100	XLAB=LABEL
@@ -669,69 +671,20 @@ C	DO 4001 I=1,M
 C4001	IF(IFLG(I).EQ.1)A(I)=P(I)
 C	GOTO 10
 C     SAVE
-4200	IF(N.EQ.0)GOTO 10
-#ifdef unix
-        temp=label
-#else
-	CALL WLDFLE('SY:.PPL_SAVE',LABEL,TEMP,ISTAT,IFLAG)
-#endif
-	OPEN(UNIT=LMULT,FILE=TEMP,STATUS='NEW',
-     *	FORM='UNFORMATTED')
-C
-C	SAVE THE FOLLOWING COMMON BLOCKS:
-C
-C	HD
-C	MPLOT   (IMULT)
-C	PPLDAT  (IBASE AND PBUF)
-C	SWITCH  (DEFLTS AND FLAG)
-C	SYSTEM
-C	XYLABP
-C
-	WRITE(LMULT)IPTS,IMULT,IBASE,PBUF,DEFLTS,FLAG,ECHOF,DEBUGF,
-     *	BATCHF,ERRORF,DONEF,MEMBUF,LOGITF,QUIETF,LOGCMF,XLABS,YLABS,
-     *	RLABS,LTYPE,XLLABS,YLLABS,LLTYPE,RHLABS,USRLBS
-C
-	CALL SAVE(LMULT)
-	CLOSE(LMULT)
+4200	CONTINUE
+
+	print *, 'PPLUS SAVE command '//icom(:TM_LENSTR1(icom))
+         err_msg = 'PPLUS Command not supported '//icom(:TM_LENSTR1(icom))
+         CALL ERRMSG (ferr_not_implemented, status, err_msg, *9999)
+
 	GOTO 10
 C	GET
-4300	IF(N.EQ.0)GOTO 10
-#ifdef unix
-        temp=label
-#else
-        CALL WLDFLE('SY:.PPL_SAVE',LABEL,TEMP,ISTAT,IFLAG)
-#endif
-	OPEN(UNIT=LMULT,FILE=TEMP,STATUS='OLD',
-     *	FORM='UNFORMATTED',ERR=4301)
-	IF(IMULT.EQ.1)THEN
-	    XM=HEIGHT
-	    YM=WIDTH
-	ENDIF
-C
-C	GET THE FOLLOWING COMMON BLOCKS:
-C
-C	HD
-C	MPLOT   (IMULT)
-C	PPLDAT  (IBASE AND PBUF)
-C	SWITCH  (DEFLTS AND FLAG)
-C	SYSTEM
-C	XYLABP
-C
-	READ(LMULT)IPTS,IMULT,IBASE,PBUF,DEFLTS,FLAG,ECHOF,DEBUGF,
-     *	BATCHF,ERRORF,DONEF,MEMBUF,LOGITF,QUIETF,LOGCMF,XLABS,YLABS,
-     *	RLABS,LTYPE,XLLABS,YLLABS,LLTYPE,RHLABS,USRLBS
-C
-	CALL GET(LMULT)
-	CLOSE(LMULT)
-	IF(IMULT.EQ.1)THEN
-	    HEIGHT=XM
-	    WIDTH=YM
-	ENDIF
-c!	CALL BAUD(IR)
-	CALL PLTYPE(ICODE)
-	CALL TKTYPE(TEKMOD)
-	GOTO 10
-4301	IF(.NOT.QUIETF)WRITE(LTTOUT,'(1X,A30,'' NOT FOUND'')')LABEL
+4300	CONTINUE
+
+	 print *, 'GET  '//icom(:TM_LENSTR1(icom))
+         err_msg = 'PSAVEPLUS Command not supported '//icom(:TM_LENSTR1(icom))
+         CALL ERRMSG (ferr_not_implemented, status, err_msg, *9999)
+
 	GOTO 10
 
 
@@ -1166,30 +1119,30 @@ C	DFLTFNT
 	    CONPRE=DTE(4:)
 	    GOTO 10
 C	GRID
-8800	    IF(N.EQ.0)CAY=ABS(CAY)
-	    CALL UPPER(LABEL,2048)
-	    IF(LABEL(1:1).EQ.'L')CAY=-ABS(CAY)
-	    GOTO 10
+8800	CONTINUE 
+
+	print *, 'PPLUS GRID command '//icom(:TM_LENSTR1(icom))
+         err_msg = 'PPLUS Command not supported '//icom(:TM_LENSTR1(icom))
+         CALL ERRMSG (ferr_not_implemented, status, err_msg, *9999)
+
 C	TEKNME
-8900	    IF(N.EQ.0)THEN
-#ifdef unix
-                TEMP='/dev/tty'
-#else
-		TEMP='TT:'
-#endif
-	    ELSE
-		TEMP=LABEL
-	    ENDIF
-	    CALL TEKNME(TEMP)
-	    SYM='*PPL$TEKNME'
-	    ISYM=LNBLK(TEMP,2048)
-	    CALL PUTSYM(SYM,TEMP,ISYM,IER)
-	    GOTO 10
+8900	CONTINUE
+
+	print *, 'PPLUS TEKNME command '//icom(:TM_LENSTR1(icom))
+         err_msg = 'PPLUS Command not supported '//icom(:TM_LENSTR1(icom))
+         CALL ERRMSG (ferr_not_implemented, status, err_msg, *9999)
+
 C	ECHO
-9000	    ECHOF=LABON
-	    GOTO 10
+9000	CONTINUE
+
+	print *, 'PPLUS ECHO command '//icom(:TM_LENSTR1(icom))
+         err_msg = 'PPLUS Command not supported '//icom(:TM_LENSTR1(icom))
+         CALL ERRMSG (ferr_not_implemented, status, err_msg, *9999)
+
 C	TIME
-9200	    IF(N.EQ.0)THEN
+9200	CONTINUE
+
+	IF(N.EQ.0)THEN
 		IAUTOT=1
 		GOTO 10
 	    ENDIF
@@ -1362,11 +1315,8 @@ c-------------------------------------------------------------------------------
 
 
 C	TXTYPE
-9300	    CALL UPPER(LABEL,2048)
-	IF (itflg .EQ. 2) GOTO 9330
+9300	CONTINUE	
 
-	
-C
 C	IF NO FIRST PARAMETER SKIP PROCESSING
 C
 	    IF(M.GE.1.AND.IFLG(1).EQ.0)GOTO 9301
@@ -1566,7 +1516,12 @@ C	EVAR
 	    CALL EPICVAR
 	    GOTO 10
 C	DEBUG
-9910	    DEBUGF=LABON
+9910	    CONTINUE
+
+	print *, 'PPLUS DEBUG command '//icom(:TM_LENSTR1(icom))
+         err_msg = 'PPLUS Command not supported '//icom(:TM_LENSTR1(icom))
+         CALL ERRMSG
+
 	    GOTO 10
 C	RESET
 9920	    LABEL='PPL$RESET'
@@ -1604,17 +1559,11 @@ C	CLSPLT
 	    GOTO 10
 C	RENAMPL
 9960	    CONTINUE
-*	Close and rename the metafile; reopen.
-            IF ( save_on_exit .AND. imgname_sent ) THEN
-                CALL FGD_SAVE_WINDOW(meta_file)
-            ENDIF
-            strr = LABEL
-            CALL RENAME(strr, meta_file)
-*           *kms* Mark that the graphics are to be saved
-*                 and clear the active window
-            save_on_exit = .TRUE.
-            imgname_sent = .FALSE.
-            CALL OPEN_METAFILE
+
+	print *, 'PPLUS RENAMPL command '//icom(:TM_LENSTR1(icom))
+         err_msg = 'PPLUS Command not supported '//icom(:TM_LENSTR1(icom))
+         CALL ERRMSG
+
 	    GOTO 10
 C	SHRINKY
 9970	    CONTINUE
@@ -1668,9 +1617,6 @@ C     CONTOUR
 	endif
 	if(iflg2)cangle=p(2)
 1401	continue
-#ifndef unix
-	IF(LOGITF)CALL LOGGER('PPLCONT')
-#endif
 	GOTO 6001
 C     PLOT
 1500	MAKEP='PLOT'
@@ -1679,10 +1625,12 @@ C     Ribbon PLOT
 1550	MAKEP='RIBPLOT'
 	GOTO 6002
 C     READSEQ & RD
-1600	CALL OPENF(FILE,IERR)
-	IF(IERR.NE.0)GOTO 10
-	CALL RDSEQ(pplmem,pplmem_nsize,PBUF,IBASE,FILE)
-	GOTO 10
+1600	CONTINUE
+
+	print *, 'PPLUS READSEQ or RD command '//icom(:TM_LENSTR1(icom))
+         err_msg = 'PPLUS Command not supported '//icom(:TM_LENSTR1(icom))
+         CALL ERRMSG (ferr_not_implemented, status, err_msg, *9999)
+
 C     LIST
 2900	CALL LIST(LTTOUT,pplmem,pplmem_nsize,LABEL)
 	GOTO 10
@@ -1722,32 +1670,22 @@ C	VIEW
 	endif
 	GOTO 1401
 C	ENTER
-3500	IF(.NOT.QUIETF)WRITE(LTTOUT,'('' ENTER X,Y OR "END"'')')
-	JTYPE=1
-	YMIN=1.E38
-	XMIN=YMIN
-	XMAX=-XMIN
-	YMAX=XMAX
-	LINEN=LINEN+1
-	CALL STPRMP('enter>',6)
-	DO 3501 I=0,pplmem_nsize-1
-3503	    CALL GETCMD(STRING,ISLEN,ICOM,P,IFLG,M,LABEL,N,LBSTRT)
-	    IF(ICOM.EQ.'END')GOTO 3502
-	    pplmem(IBASE+I)=P(1)
-	    pplmem(pplmem_nsize/2+IBASE+I)=P(2)
-	    IF(P(1).GT.XMAX)XMAX=P(1)
-	    IF(P(1).LT.XMIN)XMIN=P(1)
-	    IF(P(2).GT.YMAX)YMAX=P(2)
-	    IF(P(2).LT.YMIN)YMIN=P(2)
-3501	CONTINUE
-3502	LLENG(LINEN)=I
-	NX=I
-	NY=1
-	CALL RDSEQ2(pplmem,pplmem_nsize,PBUF,IBASE,FILE)
-	CALL STPRMP('ppl+>',5)
+3500	CONTINUE
+
+	print *, 'PPLUS ENTER command '//icom(:TM_LENSTR1(icom))
+         err_msg = 'PPLUS Command not supported '//icom(:TM_LENSTR1(icom))
+         CALL ERRMSG (ferr_not_implemented, status, err_msg, *9999)
+
 	GOTO 10
 C     MULTPLT
-4900	CALL MULT
+4900	CONTINUE
+cc 4900	CALL MULT
+
+	print *, 'PPLUS MULTPLT command '//icom(:TM_LENSTR1(icom))
+
+         err_msg = 'PPLUS Command not supported '//icom(:TM_LENSTR1(icom))
+         CALL ERRMSG (ferr_not_implemented, status, err_msg, *9999)
+
 	GOTO 10
 C     PLOTV
 5300	MAKEP='PLOTV'
@@ -1757,9 +1695,7 @@ C	PLOTUV
 5700	MAKEP='PLOTUV'
 	GOTO 5301
 6002	CONTINUE
-#ifndef unix
-	IF(LOGITF)CALL LOGGER('PPLPLOT')
-#endif
+
 	IF(PBUF.EQ.0)THEN
 	    IF(.NOT.QUIETF)WRITE(LTTOUT,'('' BUFF EMPTY'')')
 	    GOTO 10
@@ -1774,12 +1710,7 @@ C	PLOTUV
 	ELSE
 	    CALL MPLOT(pplmem,pplmem_nsize)
 	    IF(IMCNT.LT.MNX*MNY)GOTO 10
-#ifdef unix
             rewind(lmult)
-#else
-	    OPEN(LMULT,FILE=MULTFL,STATUS='OLD',
-     *	    FORM='UNFORMATTED')
-#endif
 	    DO 6003 IMCNT=1,MNX*MNY
 		READ(LMULT,END=6004)IPTS,MXBOT,MYLEF
 		READ(LMULT,END=6004)XLABS,YLABS,RLABS,LTYPE,XLLABS,
@@ -1793,11 +1724,9 @@ C	PLOTUV
 		IF(IZTYP.NE.0)CALL GETZG(LMULT)
 		CALL PLTIT(pplmem,pplmem_nsize)
 6003	    CONTINUE
-cc#ifdef unix
+
  6004         CLOSE(LMULT)
-cc#else
-cc6004	    CLOSE(LMULT,DISP='DELETE')
-cc#endif
+
 c
 c	show mult file is closed by clearing the file name
 c
@@ -1961,11 +1890,7 @@ C  calendar
 	if (cal_status .ne. merr_ok) GOTO 2999
 	goto 10
 
-#ifdef unix
 9180    continue
-#else
-9180    call pixmap                                             
-#endif
         goto 10                                                    
 9190	call aline (pplmem,pplmem_nsize)
 	goto 10
@@ -1992,113 +1917,5 @@ c Calendar errors
  9176	FORMAT('Calendar "',a, '" is invalid.')
         CALL errmsg (ferr_unknown_arg, status, err_msg, *9999)
 
-
 	END
-	SUBROUTINE OPENF(FILE,IER)
-c  If format is EPIC:
-c  Opens EPIC file on unit=11 if label is not blank.
-c  Returns logical variable lepic in COMMON/COMEPL/ as true or false
-c  to indicate whether this is an EPIC file or simply a pointer file.
-c
-c  Programmed by N Soreide, Jun 85.
-c  Modified for pointer file, Oct 85.
-c  Patched up Feb 88
-c
-	character line*132
 
-*       Declarations added 9.6.88 J Davison          
-        integer ier,isym,lnblk,i,ix                  
-                                                     
-        external lnblk                               
-*       End declarations 9.6.88                      
-
-c
-c
-c  Get EPIC (RIM) file with data file names
-c
-	include 'comepl_inc.decl'
-	include 'COMEPL.INC'
-	include 'epiclun_inc.decl'
-	include 'EPICLUN.INC'
-	include 'data_inc.decl'
-	include 'DATA.INC'
-	include 'cmrd_inc.decl'
-	include 'CMRD.INC'
-	include 'cmrdl_inc.decl'
-	include 'CMRDL.INC'
-	include 'lunits_inc.decl'
-	include 'LUNITS.INC'
-	include 'system_inc.decl'
-	include 'SYSTEM.INC'
-
-	CHARACTER FILE*(*),SYM*120
-	IER=0
-	IF(N.EQ.0)THEN
-	    IF(FILE.EQ.' ')THEN
-		IF(.NOT.QUIETF)WRITE(LTTOUT,999)
-999		FORMAT(' NO FILE')
-		IER=1
-	    ELSE IF(IFORM(1:3).EQ.'EPI')THEN
-		CLOSE(LUN1)
-	    ENDIF
-	ELSE
-	    SYM='*PPL$INPUT_FILE'
-	    ISYM=LNBLK(LABEL,2048)
-	    CALL PUTSYM(SYM,LABEL,ISYM,IER)
-	    CLOSE(LUNN)
-#ifdef unix
-            FILE=LABEL
-#else
-	    I=INDEX(LABEL,':')
-	    IF(I.LE.0)THEN
-		FILE='SY:'
-		FILE(4:)=LABEL
-	    ELSE
-		FILE=LABEL
-	    ENDIF
-#endif
-	    IF(IFORM(1:3).EQ.'EPI')THEN
-C
-c  		Open EPIC file to read data file names
-c
-	    CLOSE(LUN1)
-	    CLOSE(LUN11)
-#ifdef unix
-            open (unit=LUN11, form='formatted', status='old',
-     1      file=FILE,err=100 )
-#else
-open (unit=LUN11, form='formatted', status='old',
-     1	    readonly,file=FILE,err=100 )
-#endif
-c
-c  Check whether this is EPIC file or other pointer file.
-c
-	    read (LUN11, 102) line
-102	    format (a)
-	    ix = index (line(1:132), 'EPIC')
-	    if (ix .ne. 0 .or. line(1:1).eq. ' ')then
-		lepic = .true.
-	    else
-		lepic = .false.
-	    endif
-	    rewind (LUN11)
-	ELSE IF(IFORM(1:3).NE.'UNF')THEN
-#ifdef unix
-            OPEN(UNIT=LUNN,FILE=FILE,STATUS='OLD',ERR=100)
-        ELSE
-            OPEN(UNIT=LUNN,FILE=FILE,STATUS='OLD',ERR=100,
-     *      FORM='UNFORMATTED')
-#else
-	    OPEN(UNIT=LUNN,FILE=FILE,STATUS='OLD',ERR=100,READONLY)
-	ELSE
-     	    OPEN(UNIT=LUNN,FILE=FILE,STATUS='OLD',ERR=100,READONLY,
-     *	    FORM='UNFORMATTED')
-#endif
-	ENDIF
-	ENDIF
-	RETURN
-100	IER=2
-	IF(.NOT.QUIETF)WRITE(LTTOUT,998)FILE
-998	FORMAT(1X,A30,' NOT FOUND')
-	RETURN
-	END

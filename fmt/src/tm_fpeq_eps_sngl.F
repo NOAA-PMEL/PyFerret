@@ -48,7 +48,8 @@
 *
 * 9/2016 *acm* from TM_FPEQ_EPS
 * Single-precision version of TM_FPEQ_EPS, to be called from PPLUS.
-
+* V767 *acm*  6/22 PyFerret issue 116. A correction to diffeps when it
+*                  is "small" was incorrect.
 
 * calling arguments:
 	REAL*4 eps, a, b
@@ -59,9 +60,6 @@
 * determine the maximum relative error
         abmin = MIN( ABS(a), ABS(b) )
         diffeps = abmin * ABS(eps)
-
-* if close to zero, set the maximum absolute error
-        IF ( diffeps .LT. ABS(eps) ) diffeps = ABS(eps)
 
         TM_FPEQ_EPS_SNGL = ( ABS(a-b) .LE. diffeps )
 

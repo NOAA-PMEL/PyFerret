@@ -1,0 +1,22 @@
+! err763_vector_dots.jnl
+! PyFerret issue 118
+
+use gtbc011
+set reg/k=1/l=1/y=0:20
+
+! Define vector field that's all zero north of 15 deg
+let yy = y[gy=u]
+let uu = if yy gt 15 then 0 else u
+let vv = if yy gt 15 then 0 else v
+
+! A plot underlay
+shade/palette=yellow_light/nokey u
+
+! Any plot with a /size= previously caused zero-length 
+! vectors to be drawn with a large dot
+
+plot/vs/over/thick/color=red/siz=.5/nolab {200.6}, {8}
+vector/over/thick/color=black uu,vv
+
+
+frame/file=vector_dots.png

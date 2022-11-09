@@ -83,7 +83,7 @@
 	CHARACTER symbuff30*30, title*32
 
       INTEGER TM_LENSTR1, STR_SAME, i, ier, ilen, slen, nc, nl, ist
-      LOGICAL TM_FPEQ_EPS_SNGL, reglevs
+      LOGICAL TM_FPEQ_EPS_SNGL, TM_FPEQ_SNGL, reglevs
 
 * Lowest and highest Z level
 
@@ -141,21 +141,34 @@
 
       ELSE
 
-
          dz = zlevels(2) - zlevels(1)
-      
          IF (nlevels .EQ. 1) THEN
             buff = 'none'
          ELSE IF (nlevels .EQ. 2) THEN
             buff = TM_FMT_SNGL_TRIM(dz, -2, 10, slen)
+
          ELSE
+
             reglevs = .TRUE.
-            DO 100 i=3,nlevels
-               diff = ABS( zlevels(i)-zlevels(i-1) )
-               reglevs = TM_FPEQ_EPS_SNGL(eps, diff, dz)
-	       IF (.NOT.reglevs) GOTO 110
-  100       CONTINUE
-  110       IF (reglevs) THEN
+            IF (log10(eps) .LT. -6.) THEN  ! Tiny numbers, use TM_FPEQ_SNGL
+ 
+               DO i=3,nlevels
+                  diff = ABS( zlevels(i)-zlevels(i-1) )
+                  reglevs = TM_FPEQ_SNGL(diff, dz)
+	          IF (.NOT.reglevs) EXIT
+               ENDDO
+
+            ELSE
+      
+               DO i=3,nlevels
+                  diff = ABS( zlevels(i)-zlevels(i-1) )
+                  reglevs = TM_FPEQ_EPS_SNGL(eps, diff, dz)
+	          IF (.NOT.reglevs) EXIT
+               ENDDO
+
+            ENDIF
+
+	    IF (reglevs) THEN
                buff = TM_FMT_SNGL_TRIM(dz, -2, 10, slen)
             ELSE
                buff = 'irregular'

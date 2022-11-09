@@ -11,14 +11,22 @@
 ! advanced script that keeps track of how many times we've been called
 ! so far.
 !
-! go legend line# title [location]
+! go legend line# title [location] [size]
 ! 
 ! where location is one of ul, ur, ll or lr
 ! default location is ul
+! Size is in plot inches, default 0.12
 
-query/ignore $1%<usage: go legend line# title [location: ul* ur ll lr]%
-query/ignore $2%<usage: go legend line# title [location: ul* ur ll lr]%
+query/ignore $1%<usage: go legend line# title [location: ul* ur ll lr] [label_size]%
+query/ignore $2%<usage: go legend line# title [location: ul* ur ll lr] [label_size]%
 query/ignore $3%1|ul>1|ur>2|ll>3|lr>4|<location must be ul, ur, ll or lr%
+
+let legend_labsize = $4%0.12%
+IF `legend_labsize le 0` then 
+  say **ERROR legend.jnl Argument 4 size must be positive `legend_labsize,p=4`
+  exit/prompt
+endif
+ppl hlabs,$1,`legend_labsize`
 
 if `$3%1|ul>1|ur>2|ll>3|lr>4|% eq 1` then     ! left top
 
@@ -43,5 +51,6 @@ else                                          ! right bottom
 endif
 
 say label `$1`: "$2"
+cancdel variable legend_labsize
 
 set mode /last verify

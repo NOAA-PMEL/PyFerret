@@ -41,6 +41,7 @@
 *                    input is a simple 1-D time series.
 * V5.53  *acm*  6/03 Correct the frequency axis:  why was there a factor of
 *                     1.001 in freqn = 1.001*yquist?
+* V7.65 *acm*  10/22 Fix for issue 126: incorrect frequency axis
 *
 *
 * This function computes fft amplitude spectrum for each time series.  Result
@@ -167,9 +168,9 @@
       INTEGER arg_lo_ss(6,EF_MAX_ARGS),
      .        arg_hi_ss(6,EF_MAX_ARGS),
      .        arg_incr (6,EF_MAX_ARGS)
-      INTEGER arg, nd
+      INTEGER arg, nd, i
       CHARACTER outunits*32
-      REAL boxsize(1)
+      REAL boxsize(1), yquist, freq1, freqn, half
       CHARACTER ax_name(6)*16, ax_units(6)*16
       LOGICAL backward(6), modulo(6), regular(6)
       
@@ -194,29 +195,29 @@
 
 C  The FFT code returns frequencies W(k) for k=1 to N/2, with N/2 rounded down
 
-c      nfreq = nd/2
-c      yquist = 1./(2.*boxsize(1))		! Nyquist frequency
-c
-c      freq1 = 1.* yquist/ float(nfreq)
-c!      freqn = 1.001*yquist  !  WHY THE 1.001???
-c      freqn = yquist
-c
-cC  Set label for the frequency axis CYC/units.
-c
-c      outunits = 'CYC/' // ax_units(T_AXIS)
-c
-c      CALL ef_set_custom_axis (id, T_AXIS, freq1, freqn, freq1, 
-c     .                         outunits, NO)
+C Fix for issue 126: ef_set_freq_axis was incorrect and is not needed
+C now that real numbers are double precision
+C The FFT code returns frequencies W(k) for k=1 to N/2, with N/2 rounded down
+C The fundamental frequency freq1 based on 1/N with no rounding.
 
+      half = FLOAT(nd)/2.
+      yquist = 1./(2.*boxsize(1))		! Nyquist frequency
 
-C Use ef_set_freq_axis (if we could let freq1, freqn be double precision
-C in the ef_set_custom_axis call, that would be equivalent.)
-C
+      freq1 = yquist/ half
+      freqn = yquist
+
+      DO i = 1, nd
+	if (float(i)* freq1 .GT. freqn) exit
+      ENDDO
+      IF (i .GT. half) freqn = float(i-1)* freq1
+
 C  Set label for the frequency axis CYC/units.
 
       outunits = 'CYC/' // ax_units(T_AXIS)
 
-      CALL ef_set_freq_axis (id, T_AXIS, nd, boxsize(1), outunits, NO)
+      CALL ef_set_custom_axis (id, T_AXIS, freq1, freqn, freq1, 
+     .                         outunits, NO)\
+
 
 *                                                                      ^
 *                                                                      |

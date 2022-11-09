@@ -37,6 +37,7 @@
 * Ansley Manke
 * April 2010
 * Ferret V665 10/2010 Change loop structure to make this more efficient.
+* 11/2022 with issue 128, just a bit of cleanup
 
 * In this subroutine we provide information about
 * the function.  The user configurable information
@@ -183,7 +184,7 @@
       INTEGER arg_lo_ss(6,EF_MAX_ARGS),
      .        arg_hi_ss(6,EF_MAX_ARGS),
      .        arg_incr (6,EF_MAX_ARGS)
-      INTEGER nxout, nyout, ntout, nx2, ny2, nt2
+      INTEGER nxout, nyout, ntout, nx, ny, nt
 
       CALL ef_get_arg_subscripts_6d(id, arg_lo_ss, arg_hi_ss, arg_incr)
 
@@ -191,39 +192,39 @@
       nyout = 1 + arg_hi_ss(Y_AXIS,ARG6) - arg_lo_ss(Y_AXIS,ARG6)
       ntout = 1 + arg_hi_ss(T_AXIS,ARG7) - arg_lo_ss(T_AXIS,ARG7)
 
-      nx2 = nxout * 2
-      ny2 = nyout * 2
-      nt2 = ntout * 2
+      nx = nxout 
+      ny = nyout 
+      nt = ntout
 
 * xaxlo  output x axis
       CALL ef_set_work_array_dims_6d(id, 1,
      .                                1, 1, 1, 1, 1, 1,
-     .                              nx2, 1, 1, 1, 1, 1)
+     .                              nx, 1, 1, 1, 1, 1)
 
 * xaxhi  output x axis
       CALL ef_set_work_array_dims_6d(id, 2,
      .                                1, 1, 1, 1, 1, 1,
-     .                              nx2, 1, 1, 1, 1, 1)
+     .                              nx, 1, 1, 1, 1, 1)
 
 * yaxlo  output y axis
       CALL ef_set_work_array_dims_6d(id, 3,
      .                                1, 1, 1, 1, 1, 1,
-     .                              ny2, 1, 1, 1, 1, 1)
+     .                              ny, 1, 1, 1, 1, 1)
 
 * yaxhi  output y axis
       CALL ef_set_work_array_dims_6d(id, 4,
      .                                1, 1, 1, 1, 1, 1,
-     .                              ny2, 1, 1, 1, 1, 1)
+     .                              ny, 1, 1, 1, 1, 1)
 
 * taxlo  output t axis
       CALL ef_set_work_array_dims_6d(id, 5,
      .                                1, 1, 1, 1, 1, 1,
-     .                              nt2, 1, 1, 1, 1, 1)
+     .                              nt, 1, 1, 1, 1, 1)
 
 * taxhi  output t axis
       CALL ef_set_work_array_dims_6d(id, 6,
      .                                1, 1, 1, 1, 1, 1,
-     .                              nt2, 1, 1, 1, 1, 1)
+     .                              nt, 1, 1, 1, 1, 1)
 
 *                                                                      ^
 *                                                                      |
@@ -276,12 +277,12 @@
 
 * Ignore the unused final dimensions in the work arrays since
 * Fortran is column major
-      REAL*8 xaxlo(wrk1lox:wrk1hix/2)
-      REAL*8 xaxhi(wrk2lox:wrk2hix/2)
-      REAL*8 yaxlo(wrk3lox:wrk3hix/2)
-      REAL*8 yaxhi(wrk4lox:wrk4hix/2)
-      REAL*8 taxlo(wrk5lox:wrk5hix/2)
-      REAL*8 taxhi(wrk6lox:wrk6hix/2)
+      REAL*8 xaxlo(wrk1lox:wrk1hix)
+      REAL*8 xaxhi(wrk2lox:wrk2hix)
+      REAL*8 yaxlo(wrk3lox:wrk3hix)
+      REAL*8 yaxhi(wrk4lox:wrk4hix)
+      REAL*8 taxlo(wrk5lox:wrk5hix)
+      REAL*8 taxhi(wrk6lox:wrk6hix)
 
 * After initialization, the 'res_' arrays contain indexing information
 * for the result axes.  The 'arg_' arrays will contain the indexing

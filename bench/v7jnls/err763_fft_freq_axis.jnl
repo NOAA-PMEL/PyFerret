@@ -1,0 +1,47 @@
+! err763_fft_freq_axis.jnl
+! 
+! Issue 126: frequency axis returned by FFTA when
+! the time axis has an odd number of points. See
+! https://www.pmel.noaa.gov/maillist/prec=8s/tmap/ferret_users/fu_2019/msg01191.html
+
+
+! Define a time axis with 100 timesteps
+
+let nt = 100
+define axis/t=1:`nt`:1/units=minutes tax
+
+! Define a function of time on this axis
+
+let tvals = t[gt=tax]
+
+let pi = 4 * atan(1.0)
+let fr1 = 1.0 / nt ! fundamental freq in cycles/minute
+let w1  = 2*pi*fr1 ! fundamental freq in rad/minute
+let mode1 = cos(w1 * tvals)
+let mode2 = cos(4*w1 * tvals)
+let ft = mode1 + mode2
+let amp = ffta(ft)
+
+! The first coordinate on the frequency axis returned by ffta
+! should equal fr1, the fundamental cycle.
+
+list/prec=8 fr1
+list/prec=8 2*fr1
+
+list/prec=8/L=1:6 amp, t[gt=amp]
+
+
+! Redefine the time axis with 101 timesteps. The frequency axis
+! should be based on the fundamental frequency of 1/101
+
+let nt = 101
+define axis/t=1:`nt`:1/units=minutes tax
+
+ 
+! The frequency axis coordinates were the same as those of the 100-point axis.
+ 
+list/prec=8 fr1
+list/prec=8 2*fr1
+
+list/prec=8/L=1:6 amp, t[gt=amp]
+

@@ -35,7 +35,8 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE.
 *
 * Ansley Manke
-* March 2016 from scat2grid_bin_XYZ.
+* March 2016 from scat2grid_bin_XYT.
+* 11/2022 fix issue 128 copy/paste bugs...
 
 * In this subroutine we provide information about
 * the function.  The user configurable information
@@ -293,9 +294,9 @@
       INTEGER res_lo_ss(6),
      .        res_hi_ss(6),
      .        res_incr (6)
-      INTEGER arg_lo_ss(7,EF_MAX_ARGS),
-     .        arg_hi_ss(7,EF_MAX_ARGS),
-     .        arg_incr (7,EF_MAX_ARGS)
+      INTEGER arg_lo_ss(6,EF_MAX_ARGS),
+     .        arg_hi_ss(6,EF_MAX_ARGS),
+     .        arg_incr (6,EF_MAX_ARGS)
 
       REAL bad_flag(EF_MAX_ARGS), bad_flag_result
 
@@ -361,7 +362,7 @@
          ENDIF
   20  CONTINUE
 
-      nZPTS = 0
+      nzpts = 0
       DO 40 idx = X_AXIS, F_AXIS
          lo_ss = arg_lo_ss(idx,ARG3)
          hi_ss = arg_hi_ss(idx,ARG3)

@@ -77,6 +77,8 @@ C**
 *                 and 4-arg plot commands. 
 * Patrick's example with vector drawn across branch cut.
 * V697 *acm* 2/16 Set the symbol PPL_VECLEN even if the plot is not labeled.  
+* V765  9/22 *acm*     Issue 118: zero-length vectors drawn with a dot. Make sure
+*                      the mark size for "mark 1" is the default value
 
 C	ARRAY X HOLD 2 GRIDS, U(X) IN THE FIRST
 C	NX BY NY GRID AND V(Y) IN THE SECOND
@@ -160,10 +162,17 @@ c	use average vector length for scale if auto
 c
 	    IC=0
 	    ZAVE=0.0
-	    DO 10 I=1,NX,VSKPX
-	    DO 10 J=1,NY,VSKPY
+	    DO I=1,NX,VSKPX
+	    DO J=1,NY,VSKPY
 	    XX2=U(I,J)
 	    YY2=V(I,J)
+
+c  Zero-length vectors are plotted with a dot. Make sure the hmark setting
+c  is the default
+	
+	HMARK(1) = 0.08
+	CALL MARKH(HMARK(1))
+
 C
 C	TEST FOR MISSING DATA
 C
@@ -177,6 +186,8 @@ C
 	    ZAVE=ZAVE+ZZ
 	    IC=IC+1
 10	    CONTINUE
+	    ENDDO
+	    ENDDO
 	    IF(IC.EQ.0)IC=1
 *	    Mod to handle field of length 0 vectors *jd* 12.92
 	    IF (zave .eq. 0.0) THEN 
@@ -208,8 +219,8 @@ C
 
  90	CONTINUE
 
-	DO 100 I=1,NX,VSKPX
-	DO 100 J=1,NY,VSKPY
+	DO I=1,NX,VSKPX
+	DO J=1,NY,VSKPY
 	IF (i.eq.52 .AND. j.eq.76) THEN
 	   slen = 1
 	ENDIF
@@ -402,6 +413,8 @@ C
         ENDIF
 
 100	CONTINUE
+	ENDDO
+	ENDDO
 	IF (interrupted) goto 3333 ! *jd* 8.3.92
 
 C Go back to do modulo replications if curvilinear and /MODULO

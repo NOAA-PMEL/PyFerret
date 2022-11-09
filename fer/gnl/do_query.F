@@ -58,6 +58,8 @@
 *      *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
 * V761 *acm* 7/20 Issue 1981:in ISUBSCR_CX distinguish rounding for single 
 *                 point vs range of points
+* 10/2022 *acm* Code cleanup: remove references to obsolete gui interface
+
         IMPLICIT NONE
         include 'tmap_dims.parm'
 #        include "tmap_dset.parm"
@@ -65,8 +67,6 @@
         external xdset_info_data
         include 'xtm_grid.cmn_text'
         external xgt_grid_data
-        include 'xalt_messages.cmn_text'
-        external xalt_messages_data
 	include	'ferret.parm'
 	include 'errmsg.parm'
 	include 'gfdl_vms.parm'
@@ -75,7 +75,6 @@
 	include 'xtext_info.cmn'
 	include 'xcontext.cmn'
 	include 'xalgebra.cmn'
-	include 'xgui.cmn'
 	include 'xrisc.cmn'          ! 12/94 SPLIT_LIST buffer
 
 * calling argument declarations
@@ -110,31 +109,13 @@
 * STATUS
 * error status of last command
  100	CONTINUE
-	   IF ( gui_status .EQ. ferr_ok ) THEN
-	      WRITE (risc_buff, fmt ) 0, queries(query), tag
-	      CALL SPLIT_LIST(pttmode_explct, chout, risc_buff, 0)
-
-	   ELSE
-	      WRITE (risc_buff, fmt ) 1, queries(query), tag
-	      CALL SPLIT_LIST(pttmode_explct, chout, risc_buff, 0)
-	      risc_buff = ' '
-	      WRITE (risc_buff, '(I4)') gui_status
-	      CALL SPLIT_LIST(pttmode_explct, chout, risc_buff, 0)
-	   ENDIF
-	   gui_status = ferr_ok   ! clear it
+	WRITE (risc_buff, fmt ) 0, queries(query), tag
+	CALL SPLIT_LIST(pttmode_explct, chout, risc_buff, 0)
 	GOTO 4999
 
 * MESSAGE
 * messages from last command
  200	CONTINUE
-	   WRITE (risc_buff, fmt ) alt_nlines, queries(query), tag
-	   CALL SPLIT_LIST(pttmode_explct, chout, risc_buff, 0)
-	   DO 210 i = 1, alt_nlines
-	      risc_buff = ' '
- 	      WRITE (risc_buff,'(A)') alt_text(i)(1:TM_LENSTR1(alt_text(i)))
-	      CALL SPLIT_LIST(pttmode_explct, chout, risc_buff, 0)
- 210	   CONTINUE
-	   alt_nlines = 0   ! clear messages
 	GOTO 4999
 
 * DSET

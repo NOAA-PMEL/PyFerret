@@ -58,13 +58,13 @@
 *                  into the subroutine CANCEL_WINDOW_NUM.
 * PyFr *kms*  7/13 Do not call START_PPLUS; if it is not started,
 *                  there are no windows open.
+** 10/2022 *acm* Code cleanup: remove references to obsolete gui interface
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
 	include 'errmsg.parm'
 	include 'xprog_state.cmn'
 	include 'xplot_state.cmn'
-	include 'xgui.cmn'
 	include	'pltcom_dat.decl'	! with sizing data, etc.
 	include	'PLTCOM.DAT'	! with sizing data, etc.
 	include	'gkscm1_inc.decl'	! with gks common
@@ -136,7 +136,6 @@
 	include 'errmsg.parm'
 	include 'xprog_state.cmn'
 	include 'xplot_state.cmn'
-	include 'xgui.cmn'
 	include	'pltcom_dat.decl'	! with sizing data, etc.
 	include	'PLTCOM.DAT'	! with sizing data, etc.
 	include	'gkscm1_inc.decl'	! with gks common

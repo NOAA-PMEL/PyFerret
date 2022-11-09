@@ -120,17 +120,15 @@
 * V685 *acm* 11/13 Issue an ERROR not a NOTE if USER command is tried.
 * V695 *acm*  6/16 New ANNOTATE command.
 * V702 *sh*   2/17 dynamic memory management - no return for SET MEMORY
+** 10/2022 *acm* Code cleanup: remove references to obsolete gui interface
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
-	include 'xalt_messages.cmn_text'
 	include 'ferret.parm'
 	include 'errmsg.parm'
-	include 'gui.parm'
 	include 'command.parm'
 	include 'xprog_state.cmn'
 	include 'xvariables.cmn'
-	include 'xgui.cmn'
 	include 'xplot_state.cmn'
 
 * EXTERNAL references to force the LINKER to look for BLOCK DATA SUBROUTINES
@@ -149,7 +147,6 @@
      .		XVARIABLES_DATA,
      .		XFR_GRID_DATA,
      .		XGKS_DEVICES_DATA,
-     .		XGUI_DATA,
      .		XREVISION_DATA
 
         EXTERNAL XGT_GRID_DATA      ! 2/93
@@ -178,8 +175,7 @@
 
 * local variable declarations:
 	INTEGER	TM_LENSTR1,
-     .		cmnd_stack_level, reconfig, status, i, gui_action,
-     .		insert_pt
+     .		cmnd_stack_level, reconfig, status, i, insert_pt
 
 * local parameter declarations
 	INTEGER		slash_msg_continue
@@ -257,77 +253,25 @@ c	DO 2 i = 1, 200
 	GOTO 300
 
 * finished a single command
- 300	gui_action = factn_no_action	! default
-	IF (    (cmnd_num    .EQ. cmnd_set
-     .	   .AND. subcmnd_num .EQ. subcmnd_set_data)
-     . .OR.     (cmnd_num    .EQ. cmnd_cancel
-     .	   .AND. subcmnd_num .EQ. subcmnd_canc_data) ) THEN
-* ... need to synchronize data sets with GUI
-	   gui_action = factn_synch_set_data
-	ELSEIF ( cmnd_num    .EQ. cmnd_message
-     .	   .AND. qual_given(slash_msg_continue) .EQ. 0 ) THEN
-	   gui_action = factn_pause
-	ELSE
-* ... need to synchronize output window creation/destruction with GUI
-* ... creation may be from any (initial) plot command or from SET WINDOW
-	   DO 302 i = 1, max_windows
-	      IF ( wn_open(i) .NEQV. gui_window_reported(i) ) THEN
-	         gui_action = factn_synch_window
-	         rtn_flags(frtn_idata1)  = i
-	         IF (wn_open(i)) THEN 
-	            rtn_flags(frtn_idata2)  = 1   ! 1 means "creation"
-	            gui_window_reported(i) = .TRUE.
-	         ELSE
-	            rtn_flags(frtn_idata2)  = -1  ! -1 means "destruction"
-	            gui_window_reported(i) = .FALSE.
-	         ENDIF
-	      ENDIF	         
- 302	   CONTINUE
-	ENDIF
+ 300	CONTINUE
 
-* ... prepare error buffer to pass back to calling (GUI?) program
-	IF ( mode_gui .AND. gui_status .NE. ferr_ok ) THEN
-	   gui_action = factn_display_error
-	   insert_pt = 1
-	   DO 310 i = 1, alt_nlines
-	      nerrlines = i
-	      CALL CSTRING_INSERT(alt_text(i), TM_LENSTR1(alt_text(i)),
-     .				  rtn_chars, nchars, insert_pt )
-	      IF ( insert_pt .GT. nchars ) GOTO 320
- 310	   CONTINUE
-	ELSE
-	   nerrlines = 0
-	ENDIF
- 320	alt_nlines = 0
+* ... prepare error buffer to pass back to calling program
+	nerrlines = 0
 	CALL CLEANUP_LAST_CMND( cmnd_stack_level )
-	IF ( .NOT.mode_gui ) THEN
-           IF ( one_cmnd_mode .AND. (cmnd_stack_level .EQ. 0) ) THEN
-              GOTO 450
-           ENDIF
-	   GOTO 5
-	ELSEIF ( cmnd_stack_level .GT. 0 ) THEN
-	   rtn_flags(frtn_control) = fctrl_in_ferret  ! command not yet finished
-	   rtn_flags(frtn_status)  = gui_status
-	   rtn_flags(frtn_action)  = gui_action
-	   RETURN
-	ELSE
-	   rtn_flags(frtn_control) = fctrl_back_to_gui
-	   rtn_flags(frtn_status)  = gui_status
-	   rtn_flags(frtn_action)  = gui_action
-	   RETURN
-	ENDIF
+        IF ( one_cmnd_mode .AND. (cmnd_stack_level .EQ. 0) ) GOTO 450
+	GOTO 5
 	   
 * exit the dispatch loop - if from PyFerret, return control to python
 *                          if from Ferret, just re-enter the dispatch loop
- 450    rtn_flags(frtn_control) = fctrl_in_ferret
-        rtn_flags(frtn_status) = gui_status
-        rtn_flags(frtn_action) = factn_no_action
+ 450    rtn_flags(1) = 2  ! fctrl_in_ferret   = 2
+        rtn_flags(2) = ferr_ok
+        rtn_flags(3) = 0  ! factn_no_action = 0
         RETURN
 
 * exit the program
- 500	rtn_flags(frtn_control) = fctrl_back_to_gui
-	rtn_flags(frtn_status)  = gui_status
-	rtn_flags(frtn_action)  = factn_exit
+ 500	rtn_flags(1) = 2  ! fctrl_in_ferret   = 2
+	rtn_flags(2) = ferr_ok
+	rtn_flags(3) = 2  ! factn_exit = 2
 	RETURN
 
 	END

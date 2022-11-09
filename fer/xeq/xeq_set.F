@@ -226,6 +226,7 @@
 * V745 *acm*  5/20  added mode_dsg to control turning off all DSG ops
 * V761 *acm*  9/20  Set an /SMASK for stations on a timeseriesProfile dataset or
 *                  trajectories on a trajectoryProfile one.
+** 10/2022 *acm* Code cleanup: remove references to obsolete gui interface
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -237,7 +238,6 @@
         include 'xdiag_ctrl.cmn_text'
         include 'xtm_grid.cmn_text'
         external xgt_grid_data
-        include 'xalt_messages.cmn_text'
 	include	'ferret.parm'
 	include	'slash.parm'
 	include 'errmsg.parm'

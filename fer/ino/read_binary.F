@@ -53,6 +53,8 @@
 *		  - for trac enhancement #2369 -- dynamic memory management 
 *                 (it appears that dynamic work space is allocated but never used)
 * v767 6/22 *acm* See issue 112: Detect whether grid is too large for 4-byte integer indexing
+** 10/2022 *acm* Code cleanup: remove references to obsolete gui interface
+*                TM_SPLIT_MESSAGE replaced by SPLIT_LIST
 
         IMPLICIT NONE
 	include	'tmap_errors.parm'
@@ -274,7 +276,7 @@
      .		*5500 )
  6000	CALL BR_GET_ERROR(cerrmsg)
 	CALL TM_CTOF_STRNG(cerrmsg, ferrmsg, 255)
-	CALL TM_SPLIT_MESSAGE(err_lun, ' **ERROR: '//ferrmsg(1:LEN(ferrmsg)))
+	CALL SPLIT_LIST(0, err_lun, ' **ERROR: '//ferrmsg(1:LEN(ferrmsg)), 0)
         CALL ERRMSG( ferr_TMAP_error, status, ' ', *4900 )
 	END	
 

@@ -144,6 +144,7 @@ C              do not make small tics by default.
 *	*acm* 11/2022 Code cleanup. Issue messages and remove code for unused PPLUS commands:
 *		   READSEQ, RD, SAVE, GET, ENTER, MUTLPLT, TAXUND, PLTYPE (can only be GKS)
 *		   TEKNME, ECHO
+* 10/2022 *acm* Code cleanup: remove references to obsolete gui interface
 
 c	fromi	command file or device (/dev/tty or TT: for terminal)
 c	linei	input line for parameters
@@ -1509,16 +1510,15 @@ C	AUTOLAB
 	    IF(LABON)IGTLAB=1
 	    GOTO 10
 C	EVAR
-9900	    CALL UPPER(LABEL,2048)
-	    LSOFFS=SOFFS
-	    LSTIME=STIME
-	    LSNEXT=SNEXT
-	    CALL EPICVAR
+9900	    CONTINUE
+         print *, 'PPLUS EVAR or EPICVAR command '//icom(:TM_LENSTR1(icom))
+         err_msg = 'PPLUS Command not supported '//icom(:TM_LENSTR1(icom))
+         CALL ERRMSG (ferr_not_implemented, status, err_msg, *9999)
 	    GOTO 10
 C	DEBUG
 9910	    CONTINUE
 
-	print *, 'PPLUS DEBUG command '//icom(:TM_LENSTR1(icom))
+         print *, 'PPLUS DEBUG command '//icom(:TM_LENSTR1(icom))
          err_msg = 'PPLUS Command not supported '//icom(:TM_LENSTR1(icom))
          CALL ERRMSG
 

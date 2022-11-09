@@ -61,7 +61,6 @@ list_multi_sub.F\
 load_dsg_maskvar.F\
 load_dsg_mask_ftrset_var.F\
 mem_to_bytes.F\
-mouse_command.F\
 name_equal_string.F\
 name_equal_string_lc.F\
 name_equal_string_vatt.F\

@@ -109,6 +109,7 @@
 * V7+  6/16 *acm* Ticket 2446: Include the script name in warnings about 
 *                 unclosed IF blocks
 * V75+ 4/19 *acm* Issue 1927 (and 228!) initialize qual_given before parsing.
+** 10/2022 *acm* Code cleanup: remove references to obsolete gui interface
 *          
 
         IMPLICIT NONE
@@ -151,10 +152,8 @@
 	include 'xcontrol.cmn'
 	include 'xinterrupt.cmn'
 	include 'xcontext.cmn'
-	include 'xgui.cmn'
 
 * initialize
-	gui_status = ferr_ok	! start w/ a clean bill o' health
 	error_count = 0
 	max_context = max_noframe_context  ! 2/2014
 	len_cmnd_copy = 0
@@ -199,13 +198,7 @@
 
 ************** OPERATOR AS SOURCE OF COMMAND LINE ****************************
 
- 100	IF (mode_gui) THEN
-
-* operator using mouse input device
-	   CALL MOUSE_COMMAND (cmnd_buff)
-	   cmnd_len_w_cmnt = TM_LENSTR( cmnd_buff )
-
-	ELSE
+ 100	CONTINUE
 
 * operator sitting at his keyboard
 !	   WRITE (ttout_lun,3000) prompt(1:prompt_len)
@@ -227,8 +220,6 @@
            INTERRUPTED = .FALSE.
            cmnd_len_w_cmnt = TM_LENSTR( cmnd_buff )
            error_count = 0      ! in case comment or blank line returns here
-
-	ENDIF
 
 * echo command line to journal file
 
@@ -278,14 +269,9 @@
 	   ENDIF
 	ENDIF
 	CALL POP_CS
-	IF ( csp.EQ.0 .AND. mode_gui ) THEN		! GUI code ...
-	   gui_status = ferr_ok	! a clean bill o' health at GO termination
-	   RETURN 1
-	ELSE
 *          Consider an update of the graphics
            CALL FGD_CONSIDER_UPDATE(.FALSE.)
 	   GOTO 20
-	ENDIF
 
 *************** COMMAND STACK AS SOURCE OF COMMAND LINE ***********************
 

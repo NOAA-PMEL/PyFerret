@@ -51,6 +51,7 @@
 *	calls back into Ferret lib to SPLIT_LIST
 *	WRITE_MULTI is a Ferret lib routine that has the functionality we need.
 *	But it calls TM_SPLIT_MESSAGE. By calling it here we add to the mess 
+** 10/2022 *acm* Code cleanup: remove references to obsolete gui interface
 
 * calling argument declarations:
         INTEGER lunit
@@ -59,21 +60,13 @@
 * internal variable declarations:
 	INTEGER		TM_LENSTR1, slen
 
-	include 'xalt_messages.cmn_text'
 	include 'xrisc_buff.cmn'
 
 * string length
 	slen = TM_LENSTR1( string )
-
-* do it
-	IF ( alt_messages ) THEN
-	   CALL TM_ALTERNATE_NOTE( string, lunit )
-	ELSE
-c	   WRITE ( lunit, 3000 ) string(:slen)
-c 3000	   FORMAT ( ' *** NOTE: ',A )
-	   risc_buff = string
-	   CALL WRITE_MULTI(lunit, ' *** NOTE: '//risc_buff)
-	ENDIF
+	
+	risc_buff = string
+	CALL WRITE_MULTI(lunit, ' *** NOTE: '//risc_buff)
 
 	RETURN
 	END

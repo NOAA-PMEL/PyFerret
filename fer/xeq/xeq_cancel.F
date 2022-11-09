@@ -168,6 +168,7 @@
 * V745 *acm*  5/20  added mode_dsg to control turning off all DSG ops
 * V7.6 *acm*  6/20 Set a second attribute __feature_mask_var when defining a 
 *                  mask variable, used if we go and redefine the mask variable.
+** 10/2022 *acm* Code cleanup: remove references to obsolete gui interface
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -606,12 +607,6 @@
 	              mode_state(mode,1) = .TRUE. 
 		      date_fmt_out = mode_arg(pmode_datefmt, 1)
 
-* ... mode pplgui - close reply pipe
-                 ELSEIF ( mode .EQ. pmode_gui ) THEN
-	            alt_messages = .FALSE.
-		    CONTINUE
-!	            CALL GUI_PIPE_CLOSE( status )
-!		    IF ( status .NE. ferr_ok ) GOTO 5000
 
                  ELSEIF ( mode .EQ. pmode_6d_lab ) THEN
 	            CALL WARN( 'MODE 6D_lab is deprecated. '//

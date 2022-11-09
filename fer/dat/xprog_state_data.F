@@ -132,6 +132,8 @@
 * V751 6/19 *acm* TM_FMT rewrite: formatting of lon/lat coordinate strings set to match previous
 * V745 *acm*  5/20  added mode_dsg to control turning off all DSG ops
 ** 10/2022 *acm* Code cleanup: lengths of strings not to overflow length of character variable
+** 10/2022 *acm* Code cleanup: remove remnants of gui interface, so mode_gui is unused.
+*                also get rid of mode_gks (always TRUE) and mode_wait (always FALSE) ?
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
@@ -158,11 +160,7 @@
      .		ttout_lun	/ 6	/,	! Unix standard output
      .		list_lun	/ 6	/,	! same as ttout to start
      .		jrnl_lun	/ 20	/,
-#ifdef STDERR_UNIT_SEVEN
-     .		err_lun		/ 7	/,	! HP Unix standard error
-#else
      .		err_lun		/ 0	/,	! Unix standard error
-#endif
      .		cmnd_lun	/ 21	/
 
 * for SET REDIRECT
@@ -267,7 +265,7 @@
      .		mode_name ( pmode_xwindows    )	/ 'REFRESH'      /,
      .		mode_name ( pmode_metafile    )	/ 'METAFILE'     /,
      .		mode_name ( pmode_ppllist     )	/ 'PPLLIST'      /,
-     .		mode_name ( pmode_gui         )	/ 'GUI'          /,
+     .		mode_name ( pmode_gui         )	/ pmode_unused   /,
      .		mode_name ( pmode_logo        )	/ 'LOGO'         /,
      .		mode_name ( pmode_labels      )	/ 'LABELS'       /,
      .		mode_name ( pmode_grat        )	/ 'GRATICULE'    /,
@@ -370,10 +368,6 @@
 * for LIST
 	DATA	list_format_given / .FALSE. /
 	DATA	list_format	  / '(5(1PG12.5))' /
-!	DATA	list_redirected	  / .FALSE. /   ! unused
-!	DATA	list_dsf	  / .FALSE. /	! equiv to list_fmt_type
-!	DATA	list_TMAP	  / .FALSE. /	! unused
-!	DATA	list_unformatted  / .FALSE. /   ! unused
 	DATA	list_fmt_type     / plist_default /
 	DATA	list_append	  / .FALSE. /
 	DATA	list_heading	  / .TRUE.  /

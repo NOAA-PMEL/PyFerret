@@ -11,7 +11,6 @@ xgfdl_error_text_data.F\
 xgfdl_masks_data.F\
 xgks_devices_data.F\
 xgrid_chg_fcns_data.F\
-xgui_data.F\
 xonedim_data.F\
 xplot_setup_data.F\
 xplot_state_data.F\

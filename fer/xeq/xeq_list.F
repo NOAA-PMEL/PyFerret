@@ -168,6 +168,7 @@
 * v751 *acm*  8/19 Issue 1946, allow for user-set string dimension length, SAVE/STRLEN
 * v751 *acm*  8/19 SAVE/APPEND to dsg datasets
 * v76  *acm* 11/19 New LIST/NOCOORDS to write dimensions only not coord vars. 
+** 10/2022 *acm* Code cleanup: remove references to obsolete gui interface
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -291,9 +292,6 @@
      1	        'This command is not allowed.', 0)
 	   return
 	ENDIF
-
-* in GUI mode you cannot use LIST/FORMAT without /FILE
-	IF ( mode_gui.AND.list_format_given.AND.list_to_tty ) GOTO 5070
 
 	IF ( do_stream .AND. list_at_eof ) CALL ERRMSG
      .		( ferr_not_implemented, status,

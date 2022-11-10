@@ -20,7 +20,6 @@ gksmv_makedot.F\
 grid.F\
 hpabmv.F\
 igrinpt.F\
-line.F\
 makedot.F\
 mark.F\
 markh.F\

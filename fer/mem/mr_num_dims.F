@@ -43,6 +43,8 @@
 *
 * revision 0.0 - 8/11/87
 *        2/12 *kms* Add E and F dimensions (use nferdims in tmap_dims.parm)
+*     11/2022 *acm* Code cleanup: renamed the file to match the routine name 
+*                   (was mvar_num_dims.F)
 
         IMPLICIT NONE
         include 'tmap_dims.parm'

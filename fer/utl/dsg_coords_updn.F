@@ -40,6 +40,8 @@
 
 * NOAA/PMEL, Seattle, WA - Science Data Integration Group
 * V751 8/19 *acm* 
+*     11/2022 *acm* Code cleanup: renamed the file to match the routine name 
+*                   (was dsg_coord_updn.F)
 
         IMPLICIT NONE
 	include 'ferret.parm'

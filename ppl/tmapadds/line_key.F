@@ -44,6 +44,7 @@
 *                   the middle of the line the key of a line-plot  
 * V73  3/18 *kms*  For clarity, append MD to makedot.cmn values IPT, XDOT, 
 *                  and YDOT; make MDOT (99) a makedot.cmn parameter DOTSYMIM
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. Remove commented-out code
 
         IMPLICIT NONE
 
@@ -55,7 +56,6 @@
 	include 'parampl5_dat.decl'
 	include 'PARAMPL5.DAT'
 
-CCCCC	VIRTUAL X(NXS)		(*jd* 12.96 for linux port) 
 	dimension X(NXS)     
 
 	real 		cs,sn,xt,yt,oldx(4)
@@ -114,7 +114,6 @@ C	KTYPE = 1 -XY  0 -Z  2-VECTOR
 	IY=NXS/2
 	CS=COS(VANG*.01745329252)
 	SN=SIN(VANG*.01745329252)
-!	ZT=YF/XF
 	ICNT=1
 
 	old_swait = swait
@@ -151,7 +150,8 @@ C	KTYPE = 1 -XY  0 -Z  2-VECTOR
 	DO 60 J=1,NPT
 	   CALL TRANS(1,X(J),X(IY+J),XT,YT)
 	   CALL PLOT(XT,YT,1,0)
-60      CALL MARK(IM)
+           CALL MARK(IM)
+60	CONTINUE	
 	IF (ITYPE(a_line).EQ.2.OR.ITYPE(a_line).EQ.5) 
      .	CALL MARK(IMARK(a_line))
 
@@ -163,17 +163,8 @@ C	KTYPE = 1 -XY  0 -Z  2-VECTOR
 
 	swait = old_swait
 
-!	CALL SCALE(XF,YF,XORG,YORG,XLO,YLO)
-C
 	CALL WINDOW(0.,0.,0.,0.)
-C
-!	IF(ITFLG.EQ.1)THEN
-!	    XHI=XTI
-!	    XLO=XTL
-!	ELSE IF(ITFLG.EQ.-1)THEN
-!	    YHI=XTI
-!	    YLO=XTL
-!	ENDIF
+
 
         CALL PPLGFLUSH
         CALL MAKEDOTFLUSH

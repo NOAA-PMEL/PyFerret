@@ -79,6 +79,7 @@ C**
 * V697 *acm* 12/15 Fix ticket 2326: single level plus (inf) and/or (-inf)
 * V741 *acm*  5/18 issue 1874: If they sent in a single level to contour, 
 *                 label contour lines with that value, without rounding off
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 
 	DIMENSION VAL(4),INTIF(4)
         INTEGER ntop
@@ -117,8 +118,9 @@ C
 	ENDIF
 	PRSE=LABEL(IST:ISTP)
 	DO 11 I=1,4
-	VAL(I)=0.0
-11	INTIF(I)=0
+	  VAL(I)=0.0
+	  INTIF(I)=0
+11	CONTINUE
 	CALL LEVPRS(PRSE,VAL,INTIF,IER,IPOS)
 	IERR=LBSTRT+IREL+IST+IPOS-2
 	IF(IER.NE.0)THEN

@@ -57,6 +57,7 @@
 * V68   *acm* 4/11 change how flag meta_batch is computed (different Makefile)
 * PyFr *kms*  7/13 No need to delete segments when clearing the whole window
 *                  in PyFerret; FGD_GCLRWK deletes them all in PyFerret
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax.
 
 	include 'xplot_state.cmn'		! viewport info
 	include 'gkscm1_inc.decl'	! with wsid
@@ -82,7 +83,8 @@
 
 * clear viewport only - delete segments
 	   DO 200 iseg = vp_seg0(vp_num)+1 , vp_segn(vp_num)
- 200	   CALL FGD_GDSG( iseg ) 
+ 	      CALL FGD_GDSG( iseg ) 
+ 200	   CONTINUE
 * immediate update of screen to reflect deleted segments
 	   CALL FGD_GUWK( wsid, 1 )
 	ENDIF

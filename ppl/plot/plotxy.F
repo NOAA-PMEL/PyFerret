@@ -70,6 +70,7 @@ C
 *                  and YDOT; make MDOT (99) a makedot.cmn parameter DOTSYMIM
 * V762  8/20 *acm* Don't draw outside plot edges when doing modulo correction.
 * V765  9/22 *acm* Issue 118: Restore mark size to default after possible PLOT/SIZE=
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax.
 ****************** NO? If we do this then symbols in a line-key are wrong size *****
 
         include         'xinterrupt.cmn' ! 1/89 *sh*
@@ -167,7 +168,8 @@ C
 95	    CONTINUE
 	    IBASE=IBASE2+LLENG(I+1)
 	    IBASE1=IBASE1+LLENG(I+1)+LLENG(I)
-90	  IBASE2=IBASE+LLENG(I+2)
+	  IBASE2=IBASE+LLENG(I+2)
+90	  CONTINUE
 	  GOTO 51
 	END IF
 
@@ -248,7 +250,8 @@ C     DO NOT CHECK POINTS FOR MISSING DATA
 	      DO 60 J=IBASE+1,IBASE+LLENG(I)
 	        CALL TRANS(I,X(J),X(IY+J),XT,YT)
 	        CALL PLOT(XT,YT,1,0)
-60            CALL MARK(IM)
+	        CALL MARK(IM)
+60	      CONTINUE
 	    ELSE
 C     CHECK POINTS FOR OUT OF RANGE   (CM)
 	      DO 70 J=IBASE+1,IBASE+LLENG(I)
@@ -358,7 +361,8 @@ C     CHECK POINTS FOR OUT OF RANGE   (CM)
 	  END IF
 
 	if (interrupted) go to 51 !*jd* 8.3.92
-50	IBASE=IBASE+LLENG(I)
+	IBASE=IBASE+LLENG(I)
+50	CONTINUE
 
 ******** END OF LOOP OVER LINES STORED
 
@@ -366,12 +370,6 @@ C     CHECK POINTS FOR OUT OF RANGE   (CM)
  51	CONTINUE
         CALL PPLGFLUSH
         CALL MAKEDOTFLUSH
-
-cc* Ensure mark sizes are the default
-cc	DO I=1,nl
-cc	   HMARK(I) = 0.08
-cc	   CALL MARKH(HMARK(I))
-cc	ENDDO
 
         CALL COLOR(IPEN(0))
 	RETURN

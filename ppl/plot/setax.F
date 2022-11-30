@@ -54,6 +54,7 @@
 * V695  *acm*  9/15 Changes for hour:min labeling on time axes
 * V697  *acm*  1/16 Ticket 2344: if there was a time-plot underlay, will use the underlay's 
 *                   time scaling for time overlay plots.
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax.
 
 	REAL*8		DIFF, dtd
         real            x,rxax,rxmon,rxchr,thi,xti,xtl
@@ -345,7 +346,8 @@ C CONTOUR DATA
 			IF(YT.GT.XMX)XMX=YT
 40		    CONTINUE
 		    IBASEX=IBASEX+LLENG(I)
-30		IBASEY=IBASEY+LLENG(I)
+		    IBASEY=IBASEY+LLENG(I)
+30		CONTINUE
 		IF(VECTR)THEN
 		    IF(ABS(XMX).GT.ABS(XMN))THEN
 			XMN=-ABS(XMX)

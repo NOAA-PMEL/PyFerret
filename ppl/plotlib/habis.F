@@ -43,12 +43,9 @@ C**                 PLOT+ Scientific Graphics System
 C**
 C***********************************************************************
 C**
-** 10/2022 *acm* Code cleanup: Unclear if anything beyond clsdev is ever
-**               called, but fix the possible infinite loop at the READ for INS
 C**
 	INCLUDE 'PLTCOM.DAT'
 	INCLUDE 'SYSTEM.INC'
-
 	CHARACTER INS*1
 C
 C     THIS ROUTINE IS OUR ALTERNATIVE TO PLOTEND.
@@ -69,12 +66,9 @@ C
 	    CALL CHOUT(BEL,1)
 	    CALL CHDMP
 	    IF(PTYPE.GE.3)THEN
-		OPEN(99,FILE='TT:',STATUS='UNKNOWN')
-		do k = 1, 5
- 99		   if (k .gt. 5) exit
- 		   READ(99,'(A1)',ERR=99,END=100)INS
-100		   IN=ICHAR(INS)
-		enddo
+		OPEN(99,FILE='/dev/tty',STATUS='UNKNOWN')
+ 99		READ(99,'(A1)',ERR=99,END=100)INS
+100		IN=ICHAR(INS)
 	    ELSE
 		CALL CHIN(IN,1,0)
 	    ENDIF

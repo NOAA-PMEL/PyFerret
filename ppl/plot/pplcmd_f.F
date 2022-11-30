@@ -144,7 +144,9 @@ C              do not make small tics by default.
 *	*acm* 11/2022 Code cleanup. Issue messages and remove code for unused PPLUS commands:
 *		   READSEQ, RD, SAVE, GET, ENTER, MUTLPLT, TAXUND, PLTYPE (can only be GKS)
 *		   TEKNME, ECHO
-* 10/2022 *acm* Code cleanup: remove references to obsolete gui interface
+* 11/2022 *acm* Code cleanup: remove references to obsolete gui interface
+* 11/2022 *acm* Code cleanup: Use the variable from common CMXGE rather than 1.e35
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax.
 
 c	fromi	command file or device (/dev/tty or TT: for terminal)
 c	linei	input line for parameters
@@ -367,7 +369,8 @@ C
 	    M=IBFDIM
 	    M=MIN0(M,BUFSZE)
 	    DO 30 I=1,M
-30	    CMDBUF(I)=COMBUF(I)
+	      CMDBUF(I)=COMBUF(I)
+30	    CONTINUE
 	    FROM='$$MEMBUF$$'
 	    LINE=' '
 	    IS=0
@@ -595,23 +598,12 @@ C     NLINES
 	IF(M.GE.10.AND.IFLG(10).NE.0)IPEN(I)=IFIX(P(10))
 	GOTO 10
 
-!	All references to X2 deleted for 1.4 version of PPLCMD
-!	N=M
-!	IF(M.GE.10)N=9
-!	DO 2201 J=4,N
-!	    IF(J.LT.6)THEN
-!		K=J-3
-!	    ELSE
-!		K=J-1
-!	    ENDIF
-!	    IF(IFLG(J).NE.0)X2(I,K)=P(J)
-!2201	CONTINUE
-
 C     LABS
 2300	IF(P(1).EQ.0..OR.M.EQ.0)THEN
 	    DO 2301 I=1,NLABS
 		LLTYPE(I)=0
-2301	    RHLABS(I)=-1.0
+		RHLABS(I)=-1.0
+2301	    CONTINUE
 	    NLAB=0
 	ELSE
 	    I=IFIX(P(1))
@@ -622,7 +614,7 @@ C     LABS
 		YLABS(I)=P(3)
 		IF(M.GE.4.AND.IFLG(4).NE.0)LTYPE(I)=P(4)
 	    ELSE
-		XLABS(I)=1.E35
+		XLABS(I)=cmxge
 	    ENDIF
 	    IF(NLAB.LT.I)NLAB=I
 	END IF
@@ -640,7 +632,8 @@ C     CLINE
 	    IF(IFLG(I).NE.0)LWGT(I)=IFIX(P(I))
 2701	CONTINUE
 	DO 2702 I=M+1,NLEV
-2702	LWGT(I)=1
+	  LWGT(I)=1
+2702	CONTINUE
 	GOTO 10
 C     CONSET
 2800	IF(IFLG1)HGT=P(1)
@@ -668,9 +661,7 @@ C     CROSS
 	GOTO 10
 C     PARAM
 4000	GOTO 10
-C	DO 4001 I=1,M
-C4001	IF(IFLG(I).EQ.1)A(I)=P(I)
-C	GOTO 10
+
 C     SAVE
 4200	CONTINUE
 
@@ -925,9 +916,8 @@ C	PEN
 	IF(M.LT.2.OR.IFLG(2).EQ.0)GOTO 10
 	IF(I.LT.1)I=0
 	IPEN(I)=IFIX(P(2))
-C       Do not change pen 0 to pen 19 anymore - KMS
-C       if (ipen(i) .eq. 0) ipen(i) = 19  !JD 10.16.92 [post atc] for 'PEN N,0'
 6201	GOTO 10
+
 C	AXLEN
 6300	IF(IFLG1)XLEN=P(1)
 	IF(IFLG2)YLEN=P(2)
@@ -992,7 +982,8 @@ C	RLABS
 	GO TO 10
 C	AXSET
 7500	DO 7501 I=1,M
-7501	    IF(IFLG(I).NE.0) IAXON(I)=P(I)
+	    IF(IFLG(I).NE.0) IAXON(I)=P(I)
+7501	CONTINUE
 	    GOTO 10
 C	'BLANK COMMAND'
 7600	    CONTINUE
@@ -1725,7 +1716,7 @@ C	PLOTUV
 		CALL PLTIT(pplmem,pplmem_nsize)
 6003	    CONTINUE
 
- 6004         CLOSE(LMULT)
+6004	    CLOSE(LMULT)
 
 c
 c	show mult file is closed by clearing the file name

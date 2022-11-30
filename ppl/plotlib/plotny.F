@@ -55,70 +55,94 @@ c     oceanography/emr   december 1969.
 c     dotted line routine improved july/74 
 c 
 	common/rotcon/xk,yk,snthta,csthta
-#ifdef unix
 	include 'DASHZZ.INC'
-#else
-	include 'pplinc:dashzz.inc'
-#endif
 c	data dashln/.02/ , spacln/.04/ , dslab/5.0/
+
 	totlng=dashln+spacln 
 	xb=xp*csthta-yp*snthta+xk
 	yb=yp*csthta+xp*snthta+yk
-	if(ics-3)5,10,5 
-5	if(itype-2)10,20,30 
+
+	if(ics .eq. 3)then
+	   call plot(xb,yb,3-ics,0) 
+	   go to 100 
+	endif
+
+	if(itype .lt. 2) then
 c 
 c     ordinary line   itype=0 or 1. 
 c 
-10	call plot(xb,yb,3-ics,0) 
-	go to 100 
+	   call plot(xb,yb,3-ics,0) 
+	   go to 100 
+
+	else if (itype .eq. 2) then
 c 
 c     heavy line   itype=2 
 c 
-20	dx=xb-xa 
-	dy=yb-ya 
-	ds=sqrt(dx*dx+dy*dy)+.001 
-	dxd=dx*.01/ds 
-	dyd=dy*.01/ds 
-	call plot(xb,yb,1,0) 
-	call plot(xb+dyd,yb-dxd,1,0) 
-	call plot(xa+dyd,ya-dxd,1,0) 
-	call plot(xa-dyd,ya+dxd,1,0) 
-	call plot(xb-dyd,yb+dxd,1,0) 
-	call plot(xb,yb,1,0) 
-	go to 100 
+	   dx=xb-xa 
+	   dy=yb-ya 
+	   ds=sqrt(dx*dx+dy*dy)+.001 
+	   dxd=dx*.01/ds 
+	   dyd=dy*.01/ds 
+	   call plot(xb,yb,1,0) 
+	   call plot(xb+dyd,yb-dxd,1,0) 
+	   call plot(xa+dyd,ya-dxd,1,0) 
+	   call plot(xa-dyd,ya+dxd,1,0) 
+	   call plot(xb-dyd,yb+dxd,1,0) 
+	   call plot(xb,yb,1,0) 
+	   go to 100 
+
+	else
+
 c 
 c     dotted line   itype=3 
 c 
-30	sx=xb-xa 
-	sy=yb-ya 
-	sabsq=sx**2+sy**2 
-	if(sabsq.eq.0.) go to 100 
-	sab=sqrt(sabsq) 
-	cose=sx/sab 
-	sine=sy/sab 
-	if(stlng.lt.dashln) go to 35 
-	x=xa-(stlng-dashln)*cose 
-	y=ya-(stlng-dashln)*sine 
-	go to 50 
-35	x=xa-stlng*cose 
-	y=ya-stlng*sine 
-40	x=x+dashln*cose 
-	y=y+dashln*sine 
-	ssq=(x-xa)**2+(y-ya)**2 
-	if(ssq.lt.sabsq) go to 45 
-	call plot(xb,yb,1,0) 
-	stlng=dashln-(sqrt(ssq)-sab) 
-	go to 100 
-45	call plot(x,y,1,0) 
-50	x=x+spacln*cose 
-	y=y+spacln*sine 
-	ssq=(x-xa)**2+(y-ya)**2 
-	if(ssq.lt.sabsq) go to 55 
-	call plot(xb,yb,0,0) 
-	stlng=totlng-(sqrt(ssq)-sab) 
-	go to 100 
-55	call plot(x,y,0,0) 
-	go to 40 
+30	   sx=xb-xa 
+	   sy=yb-ya 
+	   sabsq=sx**2+sy**2 
+	   if(sabsq.eq.0.) go to 100 
+
+	   sab=sqrt(sabsq) 
+	   cose=sx/sab 
+	   sine=sy/sab 
+	   if(stlng.ge.dashln) then 
+	      x=xa-(stlng-dashln)*cose 
+	      y=ya-(stlng-dashln)*sine 
+	      go to 50 
+	   endif
+
+	   x=xa-stlng*cose 
+	   y=ya-stlng*sine 
+
+40	   continue
+
+	   x=x+dashln*cose 
+	   y=y+dashln*sine 
+	   ssq=(x-xa)**2+(y-ya)**2 
+
+	   if(ssq.ge.sabsq) then 
+	      call plot(xb,yb,1,0) 
+	      stlng=dashln-(sqrt(ssq)-sab) 
+	      go to 100 
+	   endif
+
+	   call plot(x,y,1,0) 
+
+50	   continue
+
+	   x=x+spacln*cose 
+	   y=y+spacln*sine 
+	   ssq=(x-xa)**2+(y-ya)**2 
+	   if(ssq.ge.sabsq) then
+	      call plot(xb,yb,0,0) 
+	      stlng=totlng-(sqrt(ssq)-sab) 
+	      go to 100 
+	   endif
+
+	   call plot(x,y,0,0) 
+	   go to 40 
+
+	endif
+
 c 
 c     save point a for next time 
 c 

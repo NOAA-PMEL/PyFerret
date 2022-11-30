@@ -35,6 +35,7 @@
 *
 *
 C**    @(#)datlst.F	1.1    3/10/88
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 C**
 C**
 C***********************************************************************
@@ -45,17 +46,12 @@ C***********************************************************************
 C**
 C**
 	DIMENSION X(NSIZE)
-#ifdef unix
+
 	INCLUDE 'PARAMPL5.DAT'
 	INCLUDE 'LINES.INC'
 	INCLUDE 'HD.INC'
 	INCLUDE 'CMRD.INC'
-#else
-	INCLUDE 'pplinc:PARAMPL5.DAT'
-	INCLUDE 'pplinc:LINES.INC'
-	INCLUDE 'pplinc:HD.INC'
-	INCLUDE 'pplinc:CMRD.INC'
-#endif
+
 	IY=NSIZE/2
 	NXL=1 
 	NYL=1 
@@ -98,7 +94,8 @@ C**
 	    IF(M.GE.2.AND.IFLG(2).EQ.1)NXH=IFIX(P(2)) 
 	    IF(M.GE.4.AND.IFLG(4).EQ.1)NYH=IFIX(P(4)) 
 	    DO 300 J=1,NYL-1 
-300	    IBASE=IBASE+LLENG(J) 
+	      IBASE=IBASE+LLENG(J) 
+300	    CONTINUE
 	    DO 200 J=NYL,NYH 
 	    WRITE(LLUN,9997)J,LLENG(J) 
 9997	    FORMAT(//9X,'LINE=',I4,'  LENGTH=',I6) 

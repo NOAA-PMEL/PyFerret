@@ -90,6 +90,7 @@
 * V74  *acm*  2/2018 Issue # 1861, handling missing- and _FillValue with scale and offset
 * V74  *acm*  7/2018 Issue # 1882, save/append with bounds and irreg data
 * V751 *acm* 11/19 *acm* new qualifier SAVE/NOCOORDS
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 
 * argument definitions:
 *     cdfid   - netCDF id number for already opened CDF file
@@ -397,15 +398,20 @@ c               slab_max(idim) = hi(idim)
             npts = 1
 	    workmem(wrkspc)%ptr(npts) = missflag
 ! 1/17 *sh* note that recdim is not excluded from this look
-            DO 240 i = 1, MAX(count(1),1)
-            DO 240 j = 1, MAX(count(2),1)
-            DO 240 k = 1, MAX(count(3),1)
-            DO 240 l = 1, MAX(count(4),1)
-            DO 240 m = 1, MAX(count(5),1)
-            DO 240 n = 1, MAX(count(6),1)
+            DO i = 1, MAX(count(1),1)
+            DO j = 1, MAX(count(2),1)
+            DO k = 1, MAX(count(3),1)
+            DO l = 1, MAX(count(4),1)
+            DO m = 1, MAX(count(5),1)
+            DO n = 1, MAX(count(6),1)
                workmem(wrkspc)%ptr(npts) = missflag
                npts = npts + 1
- 240        CONTINUE
+            ENDDO
+            ENDDO
+            ENDDO
+            ENDDO
+            ENDDO
+            ENDDO
 
             CALL CD_WRITE_VAR_SUB( cdfid, varid, vartyp, dims, start,
      .             count, vdims(1), workmem(wrkspc)%ptr, cdfstat )

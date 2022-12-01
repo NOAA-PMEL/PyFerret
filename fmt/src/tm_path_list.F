@@ -80,6 +80,7 @@
 * v5.42 10/02 *kob* - Increase size of temp_fname to 512
 * V6.04  7/07 *acm* - increase size of dataset names to 1024. 
 * V701  7/16 *kms*  - increase size of dataset names to 2048
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 
 
 * calling argument declarations:
@@ -138,7 +139,7 @@
       do 5 i=1,flen
          if (fname(i:i) .EQ. '.')
      .        dot = i
- 5              continue
+ 5    continue
               
 * set the tilde buff to be either ".~nnn~" or blank. Also reset filename
 * length so that it doesn't include the ".~nnn~"
@@ -209,9 +210,10 @@
 
 * find start of next path text (non-blank)
  100  IF ( end .ge. plen - 2 ) GOTO 1000   ! possible path list truncation
-*      DO 101 start = end+1, plen            10/91
-      DO 101 start = end+2, plen
- 101  IF ( path_list(start:start) .NE. EnvSeparator ) GOTO 110
+      DO start = end+2, plen
+        IF ( path_list(start:start) .NE. EnvSeparator ) GOTO 110
+      ENDDO
+
 * no more paths
       GOTO 1000
 

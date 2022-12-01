@@ -44,6 +44,7 @@
 *      *sh* 5/00 - set line_keep_flag everywhere to FALSE
 * V570 *acm*5/04 - remove line_has_edges flag; never used.
 * V720 *sh* 4/17 - initialize malloc'ed line memory 
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax.
 
 * Include files
 	include 'tmap_dims.parm'
@@ -69,12 +70,14 @@
 
 * no "dynamic" grids (above max_grids) are "used" (yet)
 	DO 100 i = 1, max_dyn_grids
- 100	grid_use_cnt(i) = 0
+ 	   grid_use_cnt(i) = 0
+ 100	CONTINUE
 
 * all the "dynamic" grids (eq to or above max_grids) in the "free" linked list
 	grid_free_ptr = max_grids+1
 	DO 200 i = max_grids+1, max_dyn_grids
- 200	grid_flink(i) = i+1
+ 	   grid_flink(i) = i+1
+ 200	CONTINUE
 	grid_flink(max_dyn_grids) = 0	! end of chain
 
 ***** LINES *****
@@ -97,7 +100,8 @@
 * all the "dynamic" lines (eq to or above max_lines) in the "free" linked list
 	line_free_ptr = max_lines+1
 	DO 400 i = max_lines+1, max_dyn_lines
- 400	line_flink(i) = i+1
+ 	   line_flink(i) = i+1
+ 400	CONTINUE
 	line_flink(max_dyn_lines) = 0	! end of chain
 
 * initialize the malloc-created line memory

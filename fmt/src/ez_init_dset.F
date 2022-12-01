@@ -85,15 +85,12 @@
 *                  an EZ dataset, keep those names on output, etc.
 * V72   6/17 *acm* Ticket 2540, inconsistencies in skipping over variables defined
 *                  in a Delimited-file read as name and type "-".
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 
 	CHARACTER*4	ez_rev
 	CHARACTER*1	tab
 	PARAMETER 	(ez_rev = '1.11')
-#ifdef NO_INTRINSIC_IN_PARAMETER
-	PARAMETER     ( tab = o'011' )
-#else
 	PARAMETER     ( tab = CHAR(9))
-#endif
 
 *
 * Arguments:
@@ -145,17 +142,13 @@
 	    ds_des_name(dset) = filename
 * Parse input line to obtain just filename without directory or extension
             epos = LEN(filename)
-#ifdef unix
+
 * Unix: find final pathname slash
             DO 77 bpos = epos, 1, -1
- 77         IF ( filename(bpos:bpos) .EQ. PathSeparator ) GOTO 78
+              IF ( filename(bpos:bpos) .EQ. PathSeparator ) GOTO 78
+ 77         CONTINUE
             bpos = 0    ! no slash
  78         bpos = bpos + 1
-#else
-* VMS: find the "]" separating the directory from the filename
-	    bpos = INDEX(filename,']') + 1
-! changed 3/11/91	    epos = bpos + INDEX(filename(bpos:),'.') - 2
-#endif
 	    ds_name(dset) = filename(bpos:epos)
 	    GOTO 110
 	  ENDIF
@@ -181,7 +174,8 @@
 	ds_ntegrate_tstep(dset)	= 1
 	ds_time_run(dset)	= ' '
 	DO 120 ncnt = 1,num_aux
-  120	ds_aux_modnum(ncnt,dset)= ' '
+  	   ds_aux_modnum(ncnt,dset)= ' '
+  120	CONTINUE
 	ds_parm_name(1,dset)	= 'FORMAT'
 	ds_parm_text(1,dset)	= 'FREE'
 	DO 130 ncnt = 2,num_parm
@@ -256,7 +250,8 @@
 	     IF (num_types .EQ. 1) THEN
 	       IF (vars_gvn) THEN
 	         DO 535 i = 2, num_names
- 535	         field_type(i) = field_type(1)
+ 	            field_type(i) = field_type(1)
+ 535	         CONTINUE
 	         num_types = num_names
 	       ELSE
 *                ... analyze file for just to get number of fields
@@ -294,10 +289,12 @@
 	   ENDIF
 	   IF (vars_gvn) THEN
 	      DO 540 i = 1, num_names
- 540	      IF (var_names(i).EQ.'-') field_type(i) = FTYP_MISSING
+ 	         IF (var_names(i).EQ.'-') field_type(i) = FTYP_MISSING
+ 540	      CONTINUE
 	      IF (num_names .GT. num_types) THEN
 	        DO 545 i = num_types+1, num_names
- 545		field_type(i) = FTYP_MISSING
+ 		   field_type(i) = FTYP_MISSING
+ 545	        CONTINUE
 	      ENDIF
 	   ELSE
 *             ... synthesize names for fields
@@ -318,7 +315,8 @@
 	      var_names(1) = 'V1'
 	   ENDIF
 	   DO 560 i = 1, num_names
- 560	   field_type(i) = int4_init
+ 	      field_type(i) = int4_init
+ 560	   ENDDO
 	ENDIF
 
 * Loop through all variable names
@@ -345,7 +343,8 @@
 	  ds_missing_flag(nvar)	= -1.E34
 	  ds_bad_flag(nvar)	= -1.E34
 	  DO 160 jcnt = 1,nferdims
-  160	  ds_ordering(jcnt,nvar)     = jcnt
+  	     ds_ordering(jcnt,nvar)     = jcnt
+  160	  CONTINUE
 	  ds_precision(nvar)	= 'SINGLE'
 	  ds_aux_set_num(nvar)	= 0
 * Other calculated or derived data pertaining to variables

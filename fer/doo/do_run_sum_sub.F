@@ -46,6 +46,7 @@
 *
 * V230:  1/27/92 - based on DO_INT_INDEF_SUB
 *        2/12 *kms* Add E and F dimensions (use nferdims in tmap_dims.parm)
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
@@ -86,124 +87,159 @@
 * SUM
 * ALONG X AXIS
 	IF ( idim .EQ. x_dim ) THEN
-	   DO 210 n = cx_lo_s6(com_cx), cx_hi_s6(com_cx)
-	   DO 210 m = cx_lo_s5(com_cx), cx_hi_s5(com_cx)
-	   DO 210 l = cx_lo_s4(com_cx), cx_hi_s4(com_cx)
-	   DO 210 k = cx_lo_s3(com_cx), cx_hi_s3(com_cx)
-	   DO 210 j = cx_lo_s2(com_cx), cx_hi_s2(com_cx)
+	   DO n = cx_lo_s6(com_cx), cx_hi_s6(com_cx)
+	   DO m = cx_lo_s5(com_cx), cx_hi_s5(com_cx)
+	   DO l = cx_lo_s4(com_cx), cx_hi_s4(com_cx)
+	   DO k = cx_lo_s3(com_cx), cx_hi_s3(com_cx)
+	   DO j = cx_lo_s2(com_cx), cx_hi_s2(com_cx)
 	      dsum = 0.0D0
-	      DO 205 i = cx_lo_s1(com_cx), cx_hi_s1(com_cx)
+	      DO i = cx_lo_s1(com_cx), cx_hi_s1(com_cx)
 	         IF ( com(i,j,k,l,m,n) .EQ. bad_com ) THEN
 * ... reject all data after a bad point
-	            DO 200 ii = i, hi
- 200	            res(ii,j,k,l,m,n) = bad_res
-	            GOTO 210
+	            DO ii = i, hi
+	               res(ii,j,k,l,m,n) = bad_res
+	            ENDDO
+	            CYCLE
 	         ENDIF
 	         dsum = dsum + com(i,j,k,l,m,n)
 	         res(i,j,k,l,m,n) = dsum
- 205	      CONTINUE
- 210	   CONTINUE
+	      ENDDO
+
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
 
 * ALONG Y AXIS
 	ELSEIF ( idim .EQ. y_dim ) THEN
-	   DO 310 n = cx_lo_s6(com_cx), cx_hi_s6(com_cx)
-	   DO 310 m = cx_lo_s5(com_cx), cx_hi_s5(com_cx)
-	   DO 310 l = cx_lo_s4(com_cx), cx_hi_s4(com_cx)
-	   DO 310 k = cx_lo_s3(com_cx), cx_hi_s3(com_cx)
-	   DO 310 i = cx_lo_s1(com_cx), cx_hi_s1(com_cx)
+	   DO n = cx_lo_s6(com_cx), cx_hi_s6(com_cx)
+	   DO m = cx_lo_s5(com_cx), cx_hi_s5(com_cx)
+	   DO l = cx_lo_s4(com_cx), cx_hi_s4(com_cx)
+	   DO k = cx_lo_s3(com_cx), cx_hi_s3(com_cx)
+	   DO i = cx_lo_s1(com_cx), cx_hi_s1(com_cx)
 	      dsum = 0.0D0
-	      DO 305 j = cx_lo_s2(com_cx), cx_hi_s2(com_cx)
+	      DO j = cx_lo_s2(com_cx), cx_hi_s2(com_cx)
 	         IF ( com(i,j,k,l,m,n) .EQ. bad_com ) THEN
 * ... reject all data after a bad point
-	            DO 300 jj = j, hi
- 300	            res(i,jj,k,l,m,n) = bad_res
-	            GOTO 310
+	            DO jj = j, hi
+	               res(i,jj,k,l,m,n) = bad_res
+	            ENDDO
+	            CYCLE
 	         ENDIF
 	         dsum = dsum + com(i,j,k,l,m,n)
 	         res(i,j,k,l,m,n) = dsum
- 305	      CONTINUE
- 310	   CONTINUE
+	      ENDDO
+
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
 
 * ALONG Z AXIS
 	ELSEIF ( idim .EQ. z_dim ) THEN
-	   DO 410 n = cx_lo_s6(com_cx), cx_hi_s6(com_cx)
-	   DO 410 m = cx_lo_s5(com_cx), cx_hi_s5(com_cx)
-	   DO 410 l = cx_lo_s4(com_cx), cx_hi_s4(com_cx)
-	   DO 410 j = cx_lo_s2(com_cx), cx_hi_s2(com_cx)
-	   DO 410 i = cx_lo_s1(com_cx), cx_hi_s1(com_cx)
+	   DO n = cx_lo_s6(com_cx), cx_hi_s6(com_cx)
+	   DO m = cx_lo_s5(com_cx), cx_hi_s5(com_cx)
+	   DO l = cx_lo_s4(com_cx), cx_hi_s4(com_cx)
+	   DO j = cx_lo_s2(com_cx), cx_hi_s2(com_cx)
+	   DO i = cx_lo_s1(com_cx), cx_hi_s1(com_cx)
 	      dsum = 0.0D0
-	      DO 405 k = cx_lo_s3(com_cx), cx_hi_s3(com_cx)
+	      DO k = cx_lo_s3(com_cx), cx_hi_s3(com_cx)
 	         IF ( com(i,j,k,l,m,n) .EQ. bad_com ) THEN
 * ... reject all data after a bad point
-	            DO 400 kk = k, hi
- 400	            res(i,j,kk,l,m,n) = bad_res
-	            GOTO 410
+	            DO kk = k, hi
+	               res(i,j,kk,l,m,n) = bad_res
+	            ENDDO
+	            CYCLE
 	         ENDIF
 	         dsum = dsum + com(i,j,k,l,m,n)
 	         res(i,j,k,l,m,n) = dsum
- 405	      CONTINUE
- 410	   CONTINUE
+	      ENDDO
+
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
 
 * ALONG T AXIS
 	ELSEIF ( idim .EQ. t_dim ) THEN
-	   DO 510 n = cx_lo_s6(com_cx), cx_hi_s6(com_cx)
-	   DO 510 m = cx_lo_s5(com_cx), cx_hi_s5(com_cx)
-	   DO 510 k = cx_lo_s3(com_cx), cx_hi_s3(com_cx)
-	   DO 510 j = cx_lo_s2(com_cx), cx_hi_s2(com_cx)
-	   DO 510 i = cx_lo_s1(com_cx), cx_hi_s1(com_cx)
+	   DO n = cx_lo_s6(com_cx), cx_hi_s6(com_cx)
+	   DO m = cx_lo_s5(com_cx), cx_hi_s5(com_cx)
+	   DO k = cx_lo_s3(com_cx), cx_hi_s3(com_cx)
+	   DO j = cx_lo_s2(com_cx), cx_hi_s2(com_cx)
+	   DO i = cx_lo_s1(com_cx), cx_hi_s1(com_cx)
 	      dsum = 0.0D0
-	      DO 505 l = cx_lo_s4(com_cx), cx_hi_s4(com_cx)
+	      DO l = cx_lo_s4(com_cx), cx_hi_s4(com_cx)
 	         IF ( com(i,j,k,l,m,n) .EQ. bad_com ) THEN
 * ... reject all data after a bad point
-	            DO 500 ll = l, hi
- 500	            res(i,j,k,ll,m,n) = bad_res
-	            GOTO 510
+	            DO ll = l, hi
+	               res(i,j,k,ll,m,n) = bad_res
+	            ENDDO
+	            CYCLE
 	         ENDIF
 	         dsum = dsum + com(i,j,k,l,m,n)
 	         res(i,j,k,l,m,n) = dsum
- 505	      CONTINUE
- 510	   CONTINUE
+	      ENDDO
+
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
 
 * ALONG E AXIS
 	ELSEIF ( idim .EQ. e_dim ) THEN
-	   DO 610 n = cx_lo_s6(com_cx), cx_hi_s6(com_cx)
-	   DO 610 l = cx_lo_s4(com_cx), cx_hi_s4(com_cx)
-	   DO 610 k = cx_lo_s3(com_cx), cx_hi_s3(com_cx)
-	   DO 610 j = cx_lo_s2(com_cx), cx_hi_s2(com_cx)
-	   DO 610 i = cx_lo_s1(com_cx), cx_hi_s1(com_cx)
+	   DO n = cx_lo_s6(com_cx), cx_hi_s6(com_cx)
+	   DO l = cx_lo_s4(com_cx), cx_hi_s4(com_cx)
+	   DO k = cx_lo_s3(com_cx), cx_hi_s3(com_cx)
+	   DO j = cx_lo_s2(com_cx), cx_hi_s2(com_cx)
+	   DO i = cx_lo_s1(com_cx), cx_hi_s1(com_cx)
 	      dsum = 0.0D0
-	      DO 605 m = cx_lo_s5(com_cx), cx_hi_s5(com_cx)
+	      DO m = cx_lo_s5(com_cx), cx_hi_s5(com_cx)
 	         IF ( com(i,j,k,l,m,n) .EQ. bad_com ) THEN
 * ... reject all data after a bad point
-	            DO 600 mm = m, hi
- 600	            res(i,j,k,l,mm,n) = bad_res
-	            GOTO 610
+	            DO mm = m, hi
+	               res(i,j,k,l,mm,n) = bad_res
+	            ENDDO
+	            CYCLE
 	         ENDIF
 	         dsum = dsum + com(i,j,k,l,m,n)
 	         res(i,j,k,l,m,n) = dsum
- 605	      CONTINUE
- 610	   CONTINUE
+	      ENDDO
+
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
 
 * ALONG F AXIS
 	ELSEIF ( idim .EQ. f_dim ) THEN
-	   DO 710 m = cx_lo_s5(com_cx), cx_hi_s5(com_cx)
-	   DO 710 l = cx_lo_s4(com_cx), cx_hi_s4(com_cx)
-	   DO 710 k = cx_lo_s3(com_cx), cx_hi_s3(com_cx)
-	   DO 710 j = cx_lo_s2(com_cx), cx_hi_s2(com_cx)
-	   DO 710 i = cx_lo_s1(com_cx), cx_hi_s1(com_cx)
+	   DO m = cx_lo_s5(com_cx), cx_hi_s5(com_cx)
+	   DO l = cx_lo_s4(com_cx), cx_hi_s4(com_cx)
+	   DO k = cx_lo_s3(com_cx), cx_hi_s3(com_cx)
+	   DO j = cx_lo_s2(com_cx), cx_hi_s2(com_cx)
+	   DO i = cx_lo_s1(com_cx), cx_hi_s1(com_cx)
 	      dsum = 0.0D0
-	      DO 705 n = cx_lo_s6(com_cx), cx_hi_s6(com_cx)
+	      DO n = cx_lo_s6(com_cx), cx_hi_s6(com_cx)
 	         IF ( com(i,j,k,l,m,n) .EQ. bad_com ) THEN
 * ... reject all data after a bad point
-	            DO 700 nn = n, hi
- 700	            res(i,j,k,l,m,nn) = bad_res
-	            GOTO 710
+	            DO nn = n, hi
+	               res(i,j,k,l,m,nn) = bad_res
+	            ENDDO
+	            CYCLE
 	         ENDIF
 	         dsum = dsum + com(i,j,k,l,m,n)
 	         res(i,j,k,l,m,n) = dsum
- 705	      CONTINUE
- 710	   CONTINUE
+	      ENDDO
 
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
 	ENDIF
 
 	RETURN

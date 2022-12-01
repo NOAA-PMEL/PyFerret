@@ -47,6 +47,7 @@
 * V230:  7/22/92 - added overlay argument to ADDL_CX_DOC
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 * V685+ *acm* 12/13 For 6D Ferret, the array coming in as flags is longer for extra dimensions
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -67,12 +68,14 @@
            
 * make a fresh copy of cx_plot and key_doc to keep current with the plot labels
 	CALL TRANSFER_CONTEXT( cx_plot, cx_buff )
-	DO 100 i = 0, 10
- 100	flags(i) = key_doc(i)
+	DO i = 0, 10
+ 	   flags(i) = key_doc(i)
+ 	ENDDO
 
 * merge the additional contexts
-	DO 200 i = 1, ncx
- 200	CALL ADDL_CX_DOC( cx_buff, ov_cx(i), overlay, flags )
+	DO i = 1, ncx
+ 	   CALL ADDL_CX_DOC( cx_buff, ov_cx(i), overlay, flags )
+ 	ENDDO
 
 	RETURN
 	END

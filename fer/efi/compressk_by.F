@@ -39,6 +39,7 @@
 *
 *   7/ 9/2004 *acm* Bug fix: before end of loop 400 the wrong indices were 
 *                   incremented. Also add disclaimer
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 * 
 *  Compress argument 1 along axis K by the mask given in argument 2
 *  Argument 2 may be multidimensional
@@ -228,13 +229,9 @@
 
 * pre-fill the entire output result with missing value flags
 *  (since each K-sequence in mask may have different number of valid pts)
-      DO 10 n=res_lo_ss(F_AXIS), res_hi_ss(F_AXIS)
-      DO 10 m=res_lo_ss(E_AXIS), res_hi_ss(E_AXIS)
-      DO 10 l=res_lo_ss(T_AXIS), res_hi_ss(T_AXIS)
-      DO 10 k=klo, res_hi_ss(Z_AXIS)
-      DO 10 j=res_lo_ss(Y_AXIS), res_hi_ss(Y_AXIS)
-      DO 10 i=res_lo_ss(X_AXIS), res_hi_ss(X_AXIS)
- 10      result(i,j,k,l,m,n) = bad_flag_result
+* pre-fill the entire output result with missing value flags
+*  (since each I-sequence in mask may have different number of valid pts)
+      result = bad_flag_result
 
 * fill in the points as specified by the mask
       n1 = arg_lo_ss(F_AXIS,ARG1)

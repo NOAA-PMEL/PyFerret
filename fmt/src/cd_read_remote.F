@@ -45,6 +45,7 @@
 *
 * written 2/2013 by Ansley Manke PMEL/TMAP, from TM_CHOOSE_READ and CD_READ
 * V751 *acm* 6/19 Remove unused declarations
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 
 * include files
         include 'netcdf.inc'
@@ -188,7 +189,8 @@
            IF ( dim_lo(idim) .NE. use_lo(idim)
      .     .OR. dim_hi(idim) .NE. use_hi(idim) ) THEN
               DO 50 idim2 = idim+1, nferdims
- 50           IF ( dim_lo(idim2) .NE. dim_hi(idim2) ) GOTO 5400
+                 IF ( dim_lo(idim2) .NE. dim_hi(idim2) ) GOTO 5400
+ 50	      CONTINUE
            ENDIF
  60     CONTINUE
 
@@ -216,7 +218,8 @@
 
 * compute the map vector (for strides, reversals, and permutations)
 	DO 210 idim = 1, nferdims
- 210	imap(idim) = 0
+ 	   imap(idim) = 0
+ 210	CONTINUE
 * for netCDF V3 the imap array is set up in number of array elements, not bytes
 	imap(trans(1)) = 1
 

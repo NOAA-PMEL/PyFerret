@@ -53,6 +53,7 @@
 * V200:  5/18/89 - complete re-write from GET_CONTEXT_PLANE
 *       *acm* 3/12 cleanup ifdefs and unnecessary include files
 *       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 
         IMPLICIT NONE
 	include	'tmap_dims.parm'
@@ -72,25 +73,26 @@
 
 * initialize
 	ndim = 0
-	DO 10 idim = 1, nferdims
- 10	clen(idim) = CX_DIM_LEN( idim, cx )
+	DO idim = 1, nferdims
+ 	   clen(idim) = CX_DIM_LEN( idim, cx )
+ 	ENDDO
 
 * find the axes with a range of values
-	DO 100 idim = 1, nferdims
+	DO idim = 1, nferdims
 	   IF ( clen(idim) .GT. 1 ) THEN
 	      ndim = ndim + 1
 	      dim(ndim) = idim
 	   ENDIF
- 100	CONTINUE
+ 	ENDDO
 
 * find the axes where the context is a single point
 	ii = ndim
-	DO 200 idim = 1, nferdims
+	DO idim = 1, nferdims
 	   IF ( clen(idim) .EQ. 1 ) THEN
 	      ii = ii + 1
 	      dim(ii) = idim
 	   ENDIF
- 200	CONTINUE
+ 	ENDDO
 
 	RETURN	   
 	END

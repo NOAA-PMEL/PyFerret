@@ -52,6 +52,7 @@
 * Note:  this routine could be made simpler and faster by arranging single
 *        inner loops that looped "loop=1,edge" looking at index-loop and
 *        index+loop to find the first valid point(s)
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
@@ -132,51 +133,55 @@
      .				com, com_mr, com_cx,
      .				res, res_mr, res_cx)
 
-	ELSE  !! not dsg
+	   GOTO 5000
+	ENDIF
 
 * compute limits within which calculation is straightforward
-	DO 10 ii = 1, nferdims
+	DO ii = 1, nferdims
 	   lo_sub(ii) = cx_lo_ss(res_cx,ii)
 	   hi_sub(ii) = cx_hi_ss(res_cx,ii)
- 10	CONTINUE
+	ENDDO
 	lo_edge = MAX( lo_sub(idim)-edge, cx_lo_ss(com_cx, idim) )
 	hi_edge = MIN( hi_sub(idim)+edge, cx_hi_ss(com_cx, idim) )
 
 * FILL ALONG X AXIS
 	IF ( idim .EQ. x_dim ) THEN
-	   DO 110 n = lo_s6, hi_s6
-	   DO 110 m = lo_s5, hi_s5
-	   DO 110 l = lo_s4, hi_s4
-	   DO 110 k = lo_s3, hi_s3
-	   DO 110 j = lo_s2, hi_s2
+	   DO n = lo_s6, hi_s6
+	   DO m = lo_s5, hi_s5
+	   DO l = lo_s4, hi_s4
+	   DO k = lo_s3, hi_s3
+	   DO j = lo_s2, hi_s2
+
            lo_pos = no_point
            hi_pos = no_point
-           DO 101 i = lo_edge, lo_s1
+           DO i = lo_edge, lo_s1
               IF ( com(i,j,k,l,m,n) .NE. bad_res ) THEN
                  lo_val = com(i,j,k,l,m,n)
                  lo_pos = i
               ENDIF
- 101       CONTINUE
-	   DO 110 i = lo_s1, hi_s1
+	   ENDDO
+
+	   DO i = lo_s1, hi_s1
 	      IF ( com(i,j,k,l,m,n) .NE. bad_res ) THEN
 	         res(i,j,k,l,m,n) = com(i,j,k,l,m,n)
                  lo_val = com(i,j,k,l,m,n)
                  lo_pos = i
-	         GOTO 110
+	         CYCLE
 	      ENDIF
 * ... look forward for next valid point
               IF ( hi_pos .LT. i ) THEN
-                 DO 104 ii = i+1, hi_edge
+                 DO ii = i+1, hi_edge
                     IF ( com(ii,j,k,l,m,n) .NE. bad_res ) THEN
                        hi_pos = ii
                        hi_val = com(ii,j,k,l,m,n)
                        GOTO 108
                     ENDIF
- 104             CONTINUE
-                 hi_pos = no_point
+                    hi_pos = no_point
+		 ENDDO
               ENDIF
 * ... choose closest valid point
- 108          IF ( has_mod_void ) THEN
+ 108          CONTINUE
+              IF ( has_mod_void ) THEN
 *    ... forbid crossing a subspan modulo void point
 	         IF (lo_pos.NE.no_point) THEN
 	           IF (i/npts .NE. lo_pos/npts) lo_pos=no_point
@@ -207,39 +212,47 @@
 	         IF (MOD(i,npts) .EQ. 0)
      .              res(i,j,k,l,m,n) = com(i,j,k,l,m,n)
 	      ENDIF
- 110	   CONTINUE
+
+ 	   ENDDO
+ 	   ENDDO
+ 	   ENDDO
+ 	   ENDDO
+ 	   ENDDO
+ 	   ENDDO
 
 * FILL ALONG Y AXIS
 	ELSEIF ( idim .EQ. y_dim ) THEN
-	   DO 210 n = lo_s6, hi_s6
-	   DO 210 m = lo_s5, hi_s5
-	   DO 210 l = lo_s4, hi_s4
-	   DO 210 k = lo_s3, hi_s3
-	   DO 210 i = lo_s1, hi_s1
+	   DO n = lo_s6, hi_s6
+	   DO m = lo_s5, hi_s5
+	   DO l = lo_s4, hi_s4
+	   DO k = lo_s3, hi_s3
+	   DO i = lo_s1, hi_s1
            lo_pos = no_point
            hi_pos = no_point
-           DO 201 j = lo_edge, lo_s2
+
+           DO j = lo_edge, lo_s2
               IF ( com(i,j,k,l,m,n) .NE. bad_res ) THEN
                  lo_val = com(i,j,k,l,m,n)
                  lo_pos = j
               ENDIF
- 201       CONTINUE
-	   DO 210 j = lo_s2, hi_s2
+           ENDDO
+
+	   DO j = lo_s2, hi_s2
 	      IF ( com(i,j,k,l,m,n) .NE. bad_res ) THEN
 	         res(i,j,k,l,m,n) = com(i,j,k,l,m,n)
                  lo_val = com(i,j,k,l,m,n)
                  lo_pos = j
-	         GOTO 210
+	         CYCLE
 	      ENDIF
 * ... look forward for next valid point
               IF ( hi_pos .LT. j ) THEN
-                 DO 204 jj = j+1, hi_edge
+                 DO jj = j+1, hi_edge
                     IF ( com(i,jj,k,l,m,n) .NE. bad_res ) THEN
                        hi_pos = jj
                        hi_val = com(i,jj,k,l,m,n)
                        GOTO 208
                     ENDIF
- 204             CONTINUE
+                 ENDDO 
                  hi_pos = no_point
               ENDIF
 * ... choose closest valid point
@@ -274,39 +287,45 @@
 	         IF (MOD(j,npts) .EQ. 0)
      .              res(i,j,k,l,m,n) = com(i,j,k,l,m,n)
 	      ENDIF
- 210	   CONTINUE
+
+ 	   ENDDO
+ 	   ENDDO
+ 	   ENDDO
+ 	   ENDDO
+ 	   ENDDO
+ 	   ENDDO
 
 * FILL ALONG Z AXIS
 	ELSEIF ( idim .EQ. z_dim ) THEN
-	   DO 310 n = lo_s6, hi_s6
-	   DO 310 m = lo_s5, hi_s5
-	   DO 310 l = lo_s4, hi_s4
-	   DO 310 j = lo_s2, hi_s2
-	   DO 310 i = lo_s1, hi_s1
+	   DO n = lo_s6, hi_s6
+	   DO m = lo_s5, hi_s5
+	   DO l = lo_s4, hi_s4
+	   DO j = lo_s2, hi_s2
+	   DO i = lo_s1, hi_s1
            lo_pos = no_point
            hi_pos = no_point
-           DO 301 k = lo_edge, lo_s3
+           DO k = lo_edge, lo_s3
               IF ( com(i,j,k,l,m,n) .NE. bad_res ) THEN
                  lo_val = com(i,j,k,l,m,n)
                  lo_pos = k
               ENDIF
- 301       CONTINUE
-	   DO 310 k = lo_s3, hi_s3
+           ENDDO
+	   DO k = lo_s3, hi_s3
 	      IF ( com(i,j,k,l,m,n) .NE. bad_res ) THEN
 	         res(i,j,k,l,m,n) = com(i,j,k,l,m,n)
                  lo_val = com(i,j,k,l,m,n)
                  lo_pos = k
-	         GOTO 310
+	         CYCLE
               ENDIF
 * ... look forward for next valid point
               IF ( hi_pos .LT. k ) THEN
-                 DO 304 kk = k+1, hi_edge
+                 DO kk = k+1, hi_edge
                     IF ( com(i,j,kk,l,m,n) .NE. bad_res ) THEN
                        hi_pos = kk
                        hi_val = com(i,j,kk,l,m,n)
                        GOTO 308
                     ENDIF
- 304             CONTINUE
+                 ENDDO
                  hi_pos = no_point
               ENDIF
 * ... choose closest valid point
@@ -341,40 +360,46 @@
 	         IF (MOD(k,npts) .EQ. 0)
      .              res(i,j,k,l,m,n) = com(i,j,k,l,m,n)
 	      ENDIF
- 310	   CONTINUE
+
+ 	   ENDDO
+ 	   ENDDO
+ 	   ENDDO
+ 	   ENDDO
+ 	   ENDDO
+ 	   ENDDO
 
 * FILL ALONG T AXIS
 	ELSEIF ( idim .EQ. t_dim ) THEN
-	   DO 410 n = lo_s6, hi_s6
-	   DO 410 m = lo_s5, hi_s5
-	   DO 410 k = lo_s3, hi_s3
-	   DO 410 j = lo_s2, hi_s2
-	   DO 410 i = lo_s1, hi_s1
+	   DO n = lo_s6, hi_s6
+	   DO m = lo_s5, hi_s5
+	   DO k = lo_s3, hi_s3
+	   DO j = lo_s2, hi_s2
+	   DO i = lo_s1, hi_s1
            lo_pos = no_point
            hi_pos = no_point
-           DO 401 l = lo_edge, lo_s4
+           DO l = lo_edge, lo_s4
               IF ( com(i,j,k,l,m,n) .NE. bad_res ) THEN
                  lo_val = com(i,j,k,l,m,n)
                  lo_pos = l
               ENDIF
- 401       CONTINUE
-	   DO 410 l = lo_s4, hi_s4
+           ENDDO
+	   DO l = lo_s4, hi_s4
 	      IF ( com(i,j,k,l,m,n) .NE. bad_res ) THEN
 	         res(i,j,k,l,m,n) = com(i,j,k,l,m,n)
                  lo_val = com(i,j,k,l,m,n)
                  lo_pos = l
-	         GOTO 410
+	         CYCLE
 	      ENDIF
               IF ( hi_pos .LT. l ) THEN
 * ... look forward for next valid point
-                 DO 404 ll = l+1, hi_edge
+                 DO ll = l+1, hi_edge
                     IF ( com(i,j,k,ll,m,n) .NE. bad_res ) THEN
                        hi_pos = ll
                        hi_val = com(i,j,k,ll,m,n)
                        GOTO 408
                     ENDIF
- 404             CONTINUE
                  hi_pos = no_point
+                 ENDDO
               ENDIF
 * ... choose closest valid point
  408          IF ( has_mod_void ) THEN
@@ -408,40 +433,45 @@
 	         IF (MOD(l,npts) .EQ. 0)
      .              res(i,j,k,l,m,n) = com(i,j,k,l,m,n)
 	      ENDIF
- 410	   CONTINUE
 
+ 	   ENDDO
+ 	   ENDDO
+ 	   ENDDO
+ 	   ENDDO
+ 	   ENDDO
+ 	   ENDDO
 
 * FILL ALONG E AXIS
 	ELSEIF ( idim .EQ. e_dim ) THEN
-	   DO 510 n = lo_s6, hi_s6
-	   DO 510 l = lo_s4, hi_s4
-	   DO 510 k = lo_s3, hi_s3
-	   DO 510 j = lo_s2, hi_s2
-	   DO 510 i = lo_s1, hi_s1
+	   DO n = lo_s6, hi_s6
+	   DO l = lo_s4, hi_s4
+	   DO k = lo_s3, hi_s3
+	   DO j = lo_s2, hi_s2
+	   DO i = lo_s1, hi_s1
            lo_pos = no_point
            hi_pos = no_point
-           DO 501 m = lo_edge, lo_s5
+           DO m = lo_edge, lo_s5
               IF ( com(i,j,k,l,m,n) .NE. bad_res ) THEN
                  lo_val = com(i,j,k,l,m,n)
                  lo_pos = m
               ENDIF
- 501       CONTINUE
-	   DO 510 m = lo_s5, hi_s5
+           ENDDO
+	   DO m = lo_s5, hi_s5
 	      IF ( com(i,j,k,l,m,n) .NE. bad_res ) THEN
 	         res(i,j,k,l,m,n) = com(i,j,k,l,m,n)
                  lo_val = com(i,j,k,l,m,n)
                  lo_pos = m
-	         GOTO 510
+	         CYCLE
 	      ENDIF
               IF ( hi_pos .LT. m ) THEN
 * ... Look forward for next valid point
-                 DO 504 mm = m+1, hi_edge
+                 DO mm = m+1, hi_edge
                     IF ( com(i,j,k,l,mm,n) .NE. bad_res ) THEN
                        hi_pos = mm
                        hi_val = com(i,j,k,l,mm,n)
                        GOTO 508
                     ENDIF
- 504             CONTINUE
+                 ENDDO
                  hi_pos = no_point
               ENDIF
 * ... choose closest valid point
@@ -476,39 +506,45 @@
 	         IF (MOD(m,npts) .EQ. 0)
      .              res(i,j,k,l,m,n) = com(i,j,k,l,m,n)
 	      ENDIF
- 510	   CONTINUE
+
+ 	   ENDDO
+ 	   ENDDO
+ 	   ENDDO
+ 	   ENDDO
+ 	   ENDDO
+ 	   ENDDO
 
 * FILL ALONG F AXIS
 	ELSEIF ( idim .EQ. f_dim ) THEN
-	   DO 610 m = lo_s5, hi_s5
-	   DO 610 l = lo_s4, hi_s4
-	   DO 610 k = lo_s3, hi_s3
-	   DO 610 j = lo_s2, hi_s2
-	   DO 610 i = lo_s1, hi_s1
+	   DO m = lo_s5, hi_s5
+	   DO l = lo_s4, hi_s4
+	   DO k = lo_s3, hi_s3
+	   DO j = lo_s2, hi_s2
+	   DO i = lo_s1, hi_s1
            lo_pos = no_point
            hi_pos = no_point
-           DO 601 n = lo_edge, lo_s6
+           DO n = lo_edge, lo_s6
               IF ( com(i,j,k,l,m,n) .NE. bad_res ) THEN
                  lo_val = com(i,j,k,l,m,n)
                  lo_pos =n
               ENDIF
- 601       CONTINUE
-	   DO 610 n = lo_s6, hi_s6
+           ENDDO
+	   DO n = lo_s6, hi_s6
 	      IF ( com(i,j,k,l,m,n) .NE. bad_res ) THEN
 	         res(i,j,k,l,m,n) = com(i,j,k,l,m,n)
                  lo_val = com(i,j,k,l,m,n)
                  lo_pos = n
-	         GOTO 610
+	         CYCLE
 	      ENDIF
               IF ( hi_pos .LT. n ) THEN
 * ... Look forward for next valid point
-                 DO 604 nn = n+1, hi_edge
+                 DO nn = n+1, hi_edge
                     IF ( com(i,j,k,l,m,nn) .NE. bad_res ) THEN
                        hi_pos = nn
                        hi_val = com(i,j,k,l,m,nn)
                        GOTO 608
                     ENDIF
- 604             CONTINUE
+                 ENDDO
                  hi_pos = no_point
               ENDIF
 * ... choose closest valid point
@@ -543,14 +579,18 @@
 	         IF (MOD(n,npts) .EQ. 0)
      .              res(i,j,k,l,m,n) = com(i,j,k,l,m,n)
 	      ENDIF
- 610	   CONTINUE
+
+ 	   ENDDO
+ 	   ENDDO
+ 	   ENDDO
+ 	   ENDDO
+ 	   ENDDO
+ 	   ENDDO
 
 	ENDIF
-        
-	ENDIF  !!  IF (TM_ITSA_DSG(grid))
 
 * always success
-	DO_FILL_NEAR = ferr_ok
+ 5000	DO_FILL_NEAR = ferr_ok
 	
 	RETURN
 

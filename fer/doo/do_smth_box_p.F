@@ -43,6 +43,7 @@
 
 * programmer - Ansley Manke
 * From do_smth_box
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
@@ -72,8 +73,9 @@
 	weight = 1. / FLOAT(wlen)
 	even = MOD(wlen,2) .EQ. 0
 	IF (even) wlen = wlen + 1
-	DO 100 i = 1, wlen
- 100	wt(i) = weight
+	DO i = 1, wlen
+	   wt(i) = weight
+ 	ENDDO
 	IF ( even) THEN
 	   wt(1)    = weight * 0.5
 	   wt(wlen) = weight * 0.5

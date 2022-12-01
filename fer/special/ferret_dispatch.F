@@ -166,11 +166,7 @@
 #ifdef NEED_BYTE
         BYTE       command(*), rtn_chars(nchars)
 #else
-#   ifdef ultrix
-        BYTE       command(*), rtn_chars(nchars)	! 9/95 Ultrix, only
-#   else
         INTEGER*1  command(*), rtn_chars(nchars)
-#   endif
 #endif
 
 * local variable declarations:
@@ -183,10 +179,10 @@
 
 * transfer the c-style string into a FORTRAN string
 	cmnd_buff = ' '
-c	DO 2 i = 1, 200
-	DO 2 i = 1, cmnd_buff_len
+	DO i = 1, cmnd_buff_len
 	   IF ( command(i) .EQ. 0 ) GOTO 5
- 2	cmnd_buff(i:i) = CHAR( command(i) )
+ 	cmnd_buff(i:i) = CHAR( command(i) )
+	ENDDO
 
  5	CALL GET_FER_COMMAND(  cmnd_buff, status, *300 )
 

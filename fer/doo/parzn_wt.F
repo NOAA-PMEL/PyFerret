@@ -42,6 +42,7 @@
 * written for VAX computer under VMS operating system
 
 * for Unix/RISC port 9/91 - based on BINOM_WT
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 
         IMPLICIT NONE
 
@@ -56,8 +57,9 @@
 * based on Numerical Recipes, W.H.Press, et. al. p.425
         c1 = (wlen + 1) / 2.
         c2 = (wlen - 1) / 2.
-	DO 100 i = 0, wlen-1
- 100	wt(i) = 1.0 - ABS( (i-c2)/c1 )
+	DO i = 0, wlen-1
+	   wt(i) = 1.0 - ABS( (i-c2)/c1 )
+ 	ENDDO
 
 * normalize to 1
         CALL NORMALIZE( wt, wlen )

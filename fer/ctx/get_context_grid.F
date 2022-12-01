@@ -153,6 +153,7 @@
 * V720  5/17 *sh* added support for DSG grids 
 * V74+  5/18 *acm* issue 1868: gridding transforms that will grid to same axis
 * V76  1/20 *acm* working with Point-type dsg data
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 
 
         IMPLICIT NONE
@@ -306,7 +307,7 @@
 
 * regridding implied through delta values or special transformations?
 	has_impl_axis = .FALSE.
-	DO 10 idim = 1, nferdims
+	DO idim = 1, nferdims
 	   IF (cx_delta(idim,cx) .NE. unspecified_val8) THEN
 * ... make sure the specified delta makes sense (this test moved 1/96)
 	      IF ( cx_delta(idim,cx) .NE. unspecified_val8
@@ -314,7 +315,7 @@
      .	     .AND. cx_delta(idim,cx) .LE. 0.0D0		) GOTO 5200
 	      has_impl_axis = .TRUE.
 	   ENDIF
- 10	CONTINUE
+	ENDDO
 	IF ( has_impl_axis ) THEN
 
 * ... we need an implicit grid to hold the axes so make it if we don't have one
@@ -457,15 +458,16 @@
 	   ENDIF
 	   impl_grid = cx_impl_grid(cx)
 * ... any axis that wasn't given by the user comes from the source grid
-	   DO 50 idim = 1, nferdims
+	   DO idim = 1, nferdims
 	      IF ( grid_line(idim,impl_grid).EQ.unspecified_int4 )
      .		   grid_line(idim,impl_grid) = grid_line(idim,base_grid)
- 50	   CONTINUE
+	   ENDDO
 	   use_grid = impl_grid
 
 * increment the use count of dynamic axes that are in-use by the temporary grid
-	   DO 60 idim = 1, nferdims
- 60	   CALL TM_USE_LINE(grid_line(idim,impl_grid))
+	   DO idim = 1, nferdims
+ 	      CALL TM_USE_LINE(grid_line(idim,impl_grid))
+ 	   ENDDO
 	ENDIF
 
 * 9/95 check for incompatibilities in grid geometry -- requiring implicit grid
@@ -499,7 +501,8 @@
 
 	ELSE
 
-	   DO 70 idim = 1, nferdims
+	   DO idim = 1, nferdims
+
 	      IF (  (grid_line(idim,std_grid).EQ.mnormal)
      .       .NEQV. (grid_line(idim,use_grid).EQ.mnormal) )   THEN
 * ... allocate and initialize some work space if we don't already have it
@@ -519,7 +522,8 @@
 	         grid_line(idim,impl_grid) = grid_line(idim,std_grid)
 	         CALL TM_USE_LINE(grid_line(idim,impl_grid))
 	      ENDIF
- 70	   CONTINUE
+
+	   ENDDO
 
 	ENDIF
 

@@ -41,9 +41,9 @@
 
 * programmer - steve hankin
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
-
 * V533: *sh* 7/01 - based upon DO_SHIFT
 *        2/12 *kms* Add E and F dimensions (use nferdims in tmap_dims.parm)
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
@@ -85,10 +85,10 @@
 	shf = INT(arg)
 
 * compute limits within which calculation is possible
-	DO 10 ii = 1, nferdims
+	DO ii = 1, nferdims
 	   lo_sub(ii) = cx_lo_ss(res_cx,ii)
 	   hi_sub(ii) = cx_hi_ss(res_cx,ii)
- 10	CONTINUE
+	ENDDO
 	lo_sub(idim) = cx_lo_ss(com_cx,idim) - shf
 	hi_sub(idim) = cx_hi_ss(com_cx,idim) - shf
         IF ( lo_sub(idim) .LT. cx_lo_ss(res_cx,idim) ) 
@@ -98,63 +98,99 @@
 
 * SHIFT ALONG X
 	IF ( idim .EQ. x_dim ) THEN
-	   DO 100 n = lo_s6, hi_s6
-	   DO 100 m = lo_s5, hi_s5
-	   DO 100 l = lo_s4, hi_s4
-	   DO 100 k = lo_s3, hi_s3
-	   DO 100 j = lo_s2, hi_s2
-	   DO 100 i = lo_s1, hi_s1
- 100	   CALL COPY_C_STRING( com(i+shf,j,k,l,m,n), res(i,j,k,l,m,n) )
+	   DO n = lo_s6, hi_s6
+	   DO m = lo_s5, hi_s5
+	   DO l = lo_s4, hi_s4
+	   DO k = lo_s3, hi_s3
+	   DO j = lo_s2, hi_s2
+	   DO i = lo_s1, hi_s1
+	      CALL COPY_C_STRING( com(i+shf,j,k,l,m,n), res(i,j,k,l,m,n) )
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
 
 * SHIFT ALONG Y
 	ELSEIF ( idim .EQ. y_dim ) THEN
-	   DO 200 n = lo_s6, hi_s6
-	   DO 200 m = lo_s5, hi_s5
-	   DO 200 l = lo_s4, hi_s4
-	   DO 200 k = lo_s3, hi_s3
-	   DO 200 j = lo_s2, hi_s2
-	   DO 200 i = lo_s1, hi_s1
- 200	   CALL COPY_C_STRING( com(i,j+shf,k,l,m,n), res(i,j,k,l,m,n) )
+	   DO n = lo_s6, hi_s6
+	   DO m = lo_s5, hi_s5
+	   DO l = lo_s4, hi_s4
+	   DO k = lo_s3, hi_s3
+	   DO j = lo_s2, hi_s2
+	   DO i = lo_s1, hi_s1
+	      CALL COPY_C_STRING( com(i,j+shf,k,l,m,n), res(i,j,k,l,m,n) )
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
 
 * SHIFT ALONG Z
 	ELSEIF ( idim .EQ. z_dim ) THEN
-	   DO 300 n = lo_s6, hi_s6
-	   DO 300 m = lo_s5, hi_s5
-	   DO 300 l = lo_s4, hi_s4
-	   DO 300 k = lo_s3, hi_s3
-	   DO 300 j = lo_s2, hi_s2
-	   DO 300 i = lo_s1, hi_s1
- 300	   CALL COPY_C_STRING( com(i,j,k+shf,l,m,n), res(i,j,k,l,m,n) )
+	   DO n = lo_s6, hi_s6
+	   DO m = lo_s5, hi_s5
+	   DO l = lo_s4, hi_s4
+	   DO k = lo_s3, hi_s3
+	   DO j = lo_s2, hi_s2
+	   DO i = lo_s1, hi_s1
+	      CALL COPY_C_STRING( com(i,j,k+shf,l,m,n), res(i,j,k,l,m,n) )
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
 
 * SHIFT ALONG T
 	ELSEIF ( idim .EQ. t_dim ) THEN
-	   DO 400 n = lo_s6, hi_s6
-	   DO 400 m = lo_s5, hi_s5
-	   DO 400 l = lo_s4, hi_s4
-	   DO 400 k = lo_s3, hi_s3
-	   DO 400 j = lo_s2, hi_s2
-	   DO 400 i = lo_s1, hi_s1
- 400	   CALL COPY_C_STRING( com(i,j,k,l+shf,m,n), res(i,j,k,l,m,n) )
+	   DO n = lo_s6, hi_s6
+	   DO m = lo_s5, hi_s5
+	   DO l = lo_s4, hi_s4
+	   DO k = lo_s3, hi_s3
+	   DO j = lo_s2, hi_s2
+	   DO i = lo_s1, hi_s1
+	      CALL COPY_C_STRING( com(i,j,k,l+shf,m,n), res(i,j,k,l,m,n) )
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
  
 * SHIFT ALONG E
 	ELSEIF ( idim .EQ. e_dim ) THEN
-	   DO 500 n = lo_s6, hi_s6
-	   DO 500 m = lo_s5, hi_s5
-	   DO 500 l = lo_s4, hi_s4
-	   DO 500 k = lo_s3, hi_s3
-	   DO 500 j = lo_s2, hi_s2
-	   DO 500 i = lo_s1, hi_s1
- 500	   CALL COPY_C_STRING( com(i,j,k,l,m+shf,n), res(i,j,k,l,m,n) )
+	   DO n = lo_s6, hi_s6
+	   DO m = lo_s5, hi_s5
+	   DO l = lo_s4, hi_s4
+	   DO k = lo_s3, hi_s3
+	   DO j = lo_s2, hi_s2
+	   DO i = lo_s1, hi_s1
+	      CALL COPY_C_STRING( com(i,j,k,l,m+shf,n), res(i,j,k,l,m,n) )
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
 
 * SHIFT ALONG F
 	ELSEIF ( idim .EQ. f_dim ) THEN
-	   DO 600 n = lo_s6, hi_s6
-	   DO 600 m = lo_s5, hi_s5
-	   DO 600 l = lo_s4, hi_s4
-	   DO 600 k = lo_s3, hi_s3
-	   DO 600 j = lo_s2, hi_s2
-	   DO 600 i = lo_s1, hi_s1
- 600	   CALL COPY_C_STRING( com(i,j,k,l,m,n+shf), res(i,j,k,l,m,n) )
+	   DO n = lo_s6, hi_s6
+	   DO m = lo_s5, hi_s5
+	   DO l = lo_s4, hi_s4
+	   DO k = lo_s3, hi_s3
+	   DO j = lo_s2, hi_s2
+	   DO i = lo_s1, hi_s1
+	      CALL COPY_C_STRING( com(i,j,k,l,m,n+shf), res(i,j,k,l,m,n) )
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
 
 	ENDIF
 

@@ -84,6 +84,7 @@
 *                 variables, or without helpful attributes, check if a variable using 
 *                 the dimension is a 2-D longitude or latitude coordinate variable. 
 *                 If so then its dimensions are in the X and Y direction.5/11/2022
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 
 * argument definitions:
 *       dset        - TMAP data set pointer
@@ -148,9 +149,9 @@
 
 * initialize temporary grid name pointer
 	num_tmp_grids = 0
-	DO 5 i = max_grids, grid_ceiling
- 5	   tmp_nam_ptr(i) = 0
-
+	DO i = max_grids, grid_ceiling
+ 	   tmp_nam_ptr(i) = 0
+	ENDDO
 * * * * loop through each variable in this TMAP data set * * *
 * Check for cf_role attribute. If present, its grid is in the E direction.
 
@@ -460,8 +461,8 @@
 	   igrid = 0
  300	   CALL TM_NEXT_TMP_GRID( igrid, *320)
 	      grid_cnt = tmp_nam_ptr(igrid)
-              DO 310 idim = 1, nferdims
-                 IF ( temp_axnams(idim,tmpgrid )
+	      DO 310 idim = 1, nferdims
+		 IF ( temp_axnams(idim,tmpgrid )
      .          .NE.  temp_axnams(idim,grid_cnt) ) GOTO 300
  310          CONTINUE
 * ... not unique - exact match with one that already exists
@@ -482,7 +483,8 @@
 * basic defaults
           grid_rotation(igrid) = 0.0
           DO 340 idim = 1, nferdims
- 340      grid_out_prod(idim,igrid) = .TRUE.
+            grid_out_prod(idim,igrid) = .TRUE.
+ 340      CONTINUE
 
 * save a pointer to this grid for the TMAP variable
  350      ds_grid_number(tmvar) = igrid

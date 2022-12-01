@@ -44,6 +44,7 @@
 * revision 0.00 - 03/04/87
 * 2/03 *kob* - g77 port - g77 won't allow intrinsic functions in PARAMETER
 *                         statements.  use an character constant instead
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 
 *
 * calling argument declarations:
@@ -52,11 +53,8 @@
 
 * internal parameter declarations:
 	CHARACTER*1	tab
-#ifdef NO_INTRINSIC_IN_PARAMETER
-	PARAMETER     ( tab = o'011' )
-#else
 	PARAMETER     ( tab = CHAR(9))
-#endif
+
 
 * internal variable declarations:
 	INTEGER	i_in, i_out, str_len, str_end
@@ -66,9 +64,9 @@
 	str_end = MIN( str_len, end )
 
 * transfer all characters until "start" to output string
-	DO 10 i_in = 1, start
- 10	out_string( i_in:i_in ) = in_string( i_in:i_in )
-
+	DO i_in = 1, start
+ 	   out_string( i_in:i_in ) = in_string( i_in:i_in )
+	ENDDO
 * pack the indicated region
 	i_out = start
 
@@ -92,8 +90,9 @@
 	len_out = i_out - 1
 
 * blank out old shifted characters at right hand end
-	DO 300 i_out = i_out, str_len
- 300	out_string(i_out:i_out) = ' '
+	DO i_out = i_out, str_len
+ 	   out_string(i_out:i_out) = ' '
+	ENDDO
 
 	RETURN
 	END

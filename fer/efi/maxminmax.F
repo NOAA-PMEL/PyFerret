@@ -28,7 +28,7 @@ C Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 C USA.
 C-------------------------------------------------------------
 
-CC THIS ROUTINE FINDS RELATIVE MINIMUMS AND MAXIMUMS.  A RELATIVE MINIMUM
+C THIS ROUTINE FINDS RELATIVE MINIMUMS AND MAXIMUMS.  A RELATIVE MINIMUM
 C (OR MAXIMUM) IS DEFINED TO BE THE LOWEST (OR HIGHEST) POINT WITHIN
 C A CERTAIN NEIGHBORHOOD OF THE POINT.  THE NEIGHBORHOOD USED HERE
 C IS + OR - MN IN THE X DIRECTION AND + OR - NM IN THE Y DIRECTION.
@@ -44,6 +44,11 @@ c	- return maxes.  For n = 1, nzmax:
 c	    zmaxlist(1,n) = i index of zmax point
 c	    zmaxlist(2,n) = j index of zmax point
 c	    zmaxlist(3,n) = z value at zmax point
+* 11/2022 *acm* Code cleanup: 
+*              - Fix loops with DO termination statement which is not 
+*                  END DO or CONTINUE, and loops that share termination statements
+*              - Rework arithmetic IF statements 
+*              - GOTO statements remain. Overall organization of the routine unchanged.
 C
       IMPLICIT NONE
       integer	L, MM, NN, m, n, nm1, mm1, jp, im, mn, ip, is, it, ii,
@@ -77,120 +82,153 @@ C
          IP = -1
          GO TO 126
 C
-C CONTROL RETURNS TO STATEMENT 10 AS LONG AS THE FUNCTION IS INCREASING
+C CONTROL RETURNS TO STATEMENT 10 (101?) AS LONG AS THE FUNCTION IS INCREASING
 C ALONG THE LINE - WE SEEK A POSSIBLE MAXIMUM
 C
+
   101    IP = IP+1
          AA = AN
          IF (IP .EQ. MM1) GO TO 104
          AN = Z(IP+1,JP)
          IF (AN.EQ.badz) GO TO 125
-         IF (AA-AN) 102,103,104
-  102    IM = IM+1
-         GO TO 101
+         IF (AA .LT. AN) THEN
+	    IM = IM+1
+	    GO TO 101
+	 ELSE IF (AA .EQ. AN) THEN
+	    GOTO 103
+	 ELSE
+	    GOTO 104
+	 ENDIF
   103    IM = 0
-         GO TO 101
+	 GO TO 101
+
 C
 C FUNCTION DECREASED - TEST FOR MAXIMUM ON LINE
 C
-  104    IF (IM .GE. MN) GO TO 106
-         IS = max(1,IP-MN)
-         IT = IP-IM-1
-         IF (IS .GT. IT) GO TO 106
-         DO 105 II=IS,IT
-            IF (AA .LE. Z(II,JP)) GO TO 112
-  105    CONTINUE
-  106    IS = IP+2
+
+  104    CONTINUE
+
+	 IF (IM .LT. MN) THEN
+            IS = max(1,IP-MN)
+            IT = IP-IM-1
+            IF (IS .LE. IT) THEN
+               DO II=IS,IT
+                  IF (AA .LE. Z(II,JP)) GO TO 112
+               ENDDO
+	    ENDIF
+	 ENDIF
+
+	 IS = IP+2
          IT = min(M,IP+MN)
-         IF (IS .GT. IT) GO TO 109
-         DO 108 II=IS,IT
-            IF (Z(II,JP).NE.badz) GO TO 107
-            IP = II-1
-            GO TO 125
-  107       IF (AA .LE. Z(II,JP)) GO TO 112
-  108    CONTINUE
+         IF (IS .LE. IT) THEN
+            DO II=IS,IT
+               IF (Z(II,JP).EQ.badz) THEN
+                 IP = II-1
+                 GO TO 125
+	       ENDIF
+               IF (AA .LE. Z(II,JP)) GO TO 112
+            ENDDO
+
+	 ENDIF
 C
 C WE HAVE MAXIMUM ON LINE - DO TWO-DIMENSIONAL TEST FOR MAXIMUM OF FIELD
 C
-  109    JS = max(1,JP-NM)
+	 JS = max(1,JP-NM)
          JT = min(N,JP+NM)
          IS = max(1,IP-MN)
          IT = min(M,IP+MN)
-         DO 111 JK=JS,JT
-            IF (JK .EQ. JP) GO TO 111
-            DO 110 IK=IS,IT
+         DO JK=JS,JT
+            IF (JK .EQ. JP) CYCLE
+            DO IK=IS,IT
                IF (Z(IK,JK).GE.AA .OR. (Z(IK,JK).EQ.badz)) GO TO 112
-  110       CONTINUE
-  111    CONTINUE
+            ENDDO
+	 ENDDO
 
 	 nzmax = nzmax + 1
 	 zmaxlist(1,nzmax) = float(ip)
 	 zmaxlist(2,nzmax) = float(jp)
 	 zmaxlist(3,nzmax) = z(ip,jp)
 
-  112    IM = 1
-         IF (IP-MM1) 113,127,127
+  112    CONTINUE
+
+	 IM = 1
+         IF (IP .GE. MM1) GOTO 127
 C
-C CONTROL RETURNS TO STATEMENT 20 AS LONG AS THE FUNCTION IS DECREASING
+C CONTROL RETURNS TO STATEMENT 20 (113?) AS LONG AS THE FUNCTION IS DECREASING
 C ALONG THE LINE - WE SEEK A POSSIBLE MINIMUM
 C
-  113    IP = IP+1
+  113    CONTINUE
+
+	 IP = IP+1
          AA = AN
          IF (IP .EQ. MM1) GO TO 116
          AN = Z(IP+1,JP)
          IF (AN.EQ.badz) GO TO 125
-         IF (AA-AN) 116,115,114
-  114    IM = IM+1
-         GO TO 113
-  115    IM = 0
+         IF (AA .LT. AN) GOTO 116
+	 IF (AA .EQ. AN) IM = 0
+	 IF (AA .GT. AN) IM = IM+1
          GO TO 113
 C
 C FUNCTION INCREASED - TEST FOR MINIMUM ON LINE
 C
-  116    IF (IM .GE. MN) GO TO 118
-         IS = max(1,IP-MN)
-         IT = IP-IM-1
-         IF (IS .GT. IT) GO TO 118
-         DO 117 II=IS,IT
-            IF (AA .GE. Z(II,JP)) GO TO 124
-  117    CONTINUE
-  118    IS = IP+2
+  116    CONTINUE
+
+	 IF (IM .LT. MN) THEN
+            IS = max(1,IP-MN)
+            IT = IP-IM-1
+            IF (IS .LE. IT) THEN
+               DO II=IS,IT
+                  IF (AA .GE. Z(II,JP)) GO TO 124
+               ENDDO
+	    ENDIF
+	 ENDIF
+
+         IS = IP+2
          IT = min(M,IP+MN)
          IF (IS .GT. IT) GO TO 121
-         DO 120 II=IS,IT
-            IF (Z(II,JP).NE.badz) GO TO 119
-            IP = II-1
-            GO TO 125
-  119       IF (AA .GE. Z(II,JP)) GO TO 124
-  120    CONTINUE
+         DO II=IS,IT
+            IF (Z(II,JP).EQ.badz) THEN
+               IP = II-1
+               GO TO 125
+	    ENDIF
+            IF (AA .GE. Z(II,JP)) GO TO 124
+         ENDDO
 C
 C WE HAVE MINIMUM ON LINE - DO TWO-DIMENSIONAL TEST FOR MINIMUM OF FIELD
 C
-  121    JS = max(1,JP-NM)
+  121    CONTINUE
+	 JS = max(1,JP-NM)
          JT = min(N,JP+NM)
          IS = max(1,IP-MN)
          IT = min(M,IP+MN)
-         DO 123 JK=JS,JT
-            IF (JK .EQ. JP) GO TO 123
-            DO 122 IK=IS,IT
+         DO JK=JS,JT
+            IF (JK .EQ. JP) CYCLE
+            DO IK=IS,IT
                IF (Z(IK,JK).LE.AA .OR. (Z(IK,JK).EQ.badz)) GO TO 124
-  122       CONTINUE
-  123    CONTINUE
+            ENDDO
+         ENDDO
 C
-  124    IM = 1
-         IF (IP-MM1) 101,127,127
+  124    CONTINUE
+	 IM = 1
+         IF (IP .LT. MM1) GOTO 101
+	 GOTO 127
 C
 C SKIP SPECIAL VALUES ON LINE
 C
-  125    IM = 0
-  126    IP = IP+1
+  125    CONTINUE
+         IM = 0
+
+  126    CONTINUE
+         IP = IP+1
          IF (IP .GE. MM1) GO TO 127
          IF (Z(IP+1,JP).EQ.badz) GO TO 125
          IM = IM+1
          IF (IM .LE. MN) GO TO 126
          IM = 1
          AN = Z(IP+1,JP)
-         IF (Z(IP,JP)-AN) 101,103,113
+         IF (Z(IP,JP) .LT. AN) GOTO 101
+         IF (Z(IP,JP) .EQ. AN) GOTO 103
+         IF (Z(IP,JP) .GT. AN) GOTO 113
 C
   127 CONTINUE
 C

@@ -53,6 +53,7 @@
 * V65  *acm* 1/10  Make sure parameters values are consistent with 
 *                              whats in netcdf.inc from netcdf4.
 * V65  *acm* 2/10- all warnings and notes to std error not std out
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 
 * argument declarations:
 	INTEGER cdfid, status
@@ -101,8 +102,9 @@
              DO 110 i1000 = dfr_lo(iax), dfr_hi(iax), 1000
                hilim = MIN((i1000-1)+1000, dfr_hi(iax))
                DO 100 i = i1000, hilim
- 100           buff(i-i1000+1) = TM_WORLD(i, dfr_grid(iax), 
+                  buff(i-i1000+1) = TM_WORLD(i, dfr_grid(iax), 
      .			              dfr_idim(iax), box_loc)
+ 100           CONTINUE
                cdfstat = NF_PUT_VARA_DOUBLE (cdfid, dfr_cdaxis(iax), 
      .		       i1000-dfr_lo(iax)+1, hilim-i1000+1, buff)
                IF (cdfstat .NE. NF_NOERR) GOTO 5010

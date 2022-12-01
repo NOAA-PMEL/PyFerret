@@ -77,6 +77,7 @@
 * V600  4/06 *acm* - additional declarations found by Solaris compiler
 * 6/06 - Fix to Andrew*s correction for XY integ., bug1348
 *        2/12 *kms* Add E and F dimensions (use nferdims in tmap_dims.parm)
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
@@ -160,18 +161,18 @@
 
 
 * loop over Z, T, E, and F ranges of 6-D data
-	DO 100 n = cx_lo_s6(cx_lims), cx_hi_s6(cx_lims)
-	DO 100 m = cx_lo_s5(cx_lims), cx_hi_s5(cx_lims)
-	DO 100 l = cx_lo_s4(cx_lims), cx_hi_s4(cx_lims)
-	DO 100 k = cx_lo_s3(cx_lims), cx_hi_s3(cx_lims)
+	DO n = cx_lo_s6(cx_lims), cx_hi_s6(cx_lims)
+	DO m = cx_lo_s5(cx_lims), cx_hi_s5(cx_lims)
+	DO l = cx_lo_s4(cx_lims), cx_hi_s4(cx_lims)
+	DO k = cx_lo_s3(cx_lims), cx_hi_s3(cx_lims)
 
 * loop through the each destination grid box
-	DO 60 jdst = jdst_lo,jdst_hi
+	DO jdst = jdst_lo,jdst_hi
 	jsrc_lo = j21(jdst)
 	jsrc_hi = j21(jdst+1)
 	ydst_lo = TWORLD(jdst, dst_grid, dim2, box_lo_lim )
 	ydst_hi = TWORLD(jdst, dst_grid, dim2, box_hi_lim )
-	DO 60 idst = idst_lo,idst_hi
+	DO idst = idst_lo,idst_hi
 	   isrc_lo = i21(idst)
 	   isrc_hi = i21(idst+1)
 
@@ -183,7 +184,7 @@
      .    .OR.     jsrc_hi .EQ. unspecified_int4)
      .            .AND. .NOT. ok_negj111 ) ) THEN
 	      dst(idst,jdst,k,l,m,n) = bad_dst
-	      goto 60
+	      CYCLE
 	   ENDIF
 
 	   xdst_lo = TWORLD(idst, dst_grid, dim1, box_lo_lim )
@@ -198,7 +199,7 @@
 
 	   sum  = 0.0
 	   area = 0.0
-	   DO 51 jsrc = jsrc_lo, jsrc_hi
+	   DO jsrc = jsrc_lo, jsrc_hi
 	   cos_fact = 1.0
 	   IF ( need_cos ) THEN
 
@@ -218,10 +219,10 @@ C And also ticket 1348.
 	   ysrc_hi = MIN( TWORLD(jsrc,src_grid,dim2,box_hi_lim), ydst_hi)
 	   ydist   = AXIS_DISTANCE( ysrc_lo, ysrc_hi, dim2, src_grid )
 
-	   DO 50 isrc = isrc_lo, isrc_hi
+	   DO isrc = isrc_lo, isrc_hi
 
 * ... ignore missing source data
-	      IF ( src(isrc,jsrc,k,l,m,n) .EQ. bad_src ) GOTO 50
+	      IF ( src(isrc,jsrc,k,l,m,n) .EQ. bad_src ) CYCLE
 
 	      xsrc_lo = MAX( TWORLD(isrc,src_grid,dim1,box_lo_lim), xdst_lo )
 	      xsrc_hi = MIN( TWORLD(isrc,src_grid,dim1,box_hi_lim), xdst_hi )
@@ -235,18 +236,24 @@ C And also ticket 1348.
 	         sum   = sum  + darea * src(isrc,jsrc,k,l,m,n)
               ENDIF
 
- 50	      CONTINUE
- 51	   CONTINUE
+	      ENDDO ! isrc
+	   ENDDO    ! jsrc
+
 * ... divide by area to get average
+
 	   IF ( area .GT. 0.0 ) THEN
 	      dst(idst,jdst,k,l,m,n) = sum / area
 	   ELSE
 	      dst(idst,jdst,k,l,m,n) = bad_dst
 	   ENDIF
 
- 60	CONTINUE
+	ENDDO  ! Close loops over idst, jdst
+	ENDDO
 
- 100	CONTINUE
+	ENDDO  ! Close loops over Z, T, E, and F
+	ENDDO
+	ENDDO
+	ENDDO
 
 	RETURN
 	END

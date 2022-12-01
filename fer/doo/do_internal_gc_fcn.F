@@ -105,6 +105,7 @@
 * V75+ 4/19 *acm For RESHAPE to DSG grid, set the result context correctly
 * v767 6/22 *acm* See issue 112: Detect whether 1-D grid that's the result of
 *		  XSEQUENCE etc is not too large for 4-byte integer indexing
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
@@ -209,14 +210,15 @@
 	bad_res = mr_bad_data( mres )
 
 * compute the delta increment for each axis of each component
-	DO 10 icom = 1, num_com
-	DO 10 idim = 1, nferdims
+	DO icom = 1, num_com
+	DO idim = 1, nferdims
 	   IF ( CX_DIM_LEN(idim,com_cx(icom)) .EQ. 1 ) THEN
 	      inc(idim,icom) = 0
 	   ELSE
 	      inc(idim,icom) = 1
 	   ENDIF
- 10	CONTINUE
+	ENDDO
+	ENDDO
 
 * Is the first argument a variable in a DSG grid? If so the *SEQUENCE 
 * functions will apply any masking needed.
@@ -227,9 +229,11 @@
 * compute the starting subscript for each axis of each component
 * (pre-decrement by 1 delta for looping ahead)
 * NOTE: 
-	DO 20 icom = 1, num_com
-	DO 20 idim = 1, nferdims
- 20	lo(idim,icom) = cx_lo_ss(com_cx(icom),idim) - inc(idim,icom)
+	DO icom = 1, num_com
+	DO idim = 1, nferdims
+ 	   lo(idim,icom) = cx_lo_ss(com_cx(icom),idim) - inc(idim,icom)
+	ENDDO
+	ENDDO
 
 * select the function
 	GOTO ( 1100,1200,1300,1400,1500,1600,1700,1800,1900,2000,
@@ -252,12 +256,12 @@
 	  IF (size .GT. arbitrary_large_int4) GOTO 5400
 
           i2 = m10lox
-	  DO 1110 n = cx_lo_s6(cx1), cx_hi_s6(cx1)
-	  DO 1110 m = cx_lo_s5(cx1), cx_hi_s5(cx1)
-	  DO 1110 l = cx_lo_s4(cx1), cx_hi_s4(cx1)
-	  DO 1110 k = cx_lo_s3(cx1), cx_hi_s3(cx1)
-	  DO 1110 j = cx_lo_s2(cx1), cx_hi_s2(cx1)
-	  DO 1110 i = cx_lo_s1(cx1), cx_hi_s1(cx1)
+	  DO n = cx_lo_s6(cx1), cx_hi_s6(cx1)
+	  DO m = cx_lo_s5(cx1), cx_hi_s5(cx1)
+	  DO l = cx_lo_s4(cx1), cx_hi_s4(cx1)
+	  DO k = cx_lo_s3(cx1), cx_hi_s3(cx1)
+	  DO j = cx_lo_s2(cx1), cx_hi_s2(cx1)
+	  DO i = cx_lo_s1(cx1), cx_hi_s1(cx1)
 	     IF ( com1(1,i,j,k,l,m,n) .EQ. bad1 ) THEN
 	        res(1,i2,m10loy,m10loz,m10lot,m10loe,m10lof)
      .             = bad_res
@@ -266,19 +270,29 @@
      .             = com1(1,i,j,k,l,m,n)
 	     ENDIF
 	     i2 = i2 + 1
- 1110     CONTINUE
+	  ENDDO
+	  ENDDO
+	  ENDDO
+	  ENDDO
+	  ENDDO
+	  ENDDO
         ELSE
           i2 = m10lox
-	  DO 1160 n = cx_lo_s6(cx1), cx_hi_s6(cx1)
-	  DO 1160 m = cx_lo_s5(cx1), cx_hi_s5(cx1)
-	  DO 1160 l = cx_lo_s4(cx1), cx_hi_s4(cx1)
-	  DO 1160 k = cx_lo_s3(cx1), cx_hi_s3(cx1)
-	  DO 1160 j = cx_lo_s2(cx1), cx_hi_s2(cx1)
-	  DO 1160 i = cx_lo_s1(cx1), cx_hi_s1(cx1)
+	  DO n = cx_lo_s6(cx1), cx_hi_s6(cx1)
+	  DO m = cx_lo_s5(cx1), cx_hi_s5(cx1)
+	  DO l = cx_lo_s4(cx1), cx_hi_s4(cx1)
+	  DO k = cx_lo_s3(cx1), cx_hi_s3(cx1)
+	  DO j = cx_lo_s2(cx1), cx_hi_s2(cx1)
+	  DO i = cx_lo_s1(cx1), cx_hi_s1(cx1)
 	     CALL COPY_C_STRING(com1(1,i,j,k,l,m,n),
      .                 res(1,i2,m10loy,m10loz,m10lot,m10loe,m10lof))
 	     i2 = i2 + 1
- 1160	  CONTINUE
+	  ENDDO
+	  ENDDO
+	  ENDDO
+	  ENDDO
+	  ENDDO
+	  ENDDO
         ENDIF
 	RETURN
 
@@ -303,18 +317,23 @@
      .          'You said: '//uvar_text(uvar)(start:end)
 * ... compute result from arg 2
 **** WARNING: This assumes com2 and res dimensions start and end at the same values ****
-	   DO 1205 n = mr_lo_s6(mres), mr_hi_s6(mres)
-	   DO 1205 m = mr_lo_s5(mres), mr_hi_s5(mres)
-	   DO 1205 l = mr_lo_s4(mres), mr_hi_s4(mres)
-	   DO 1205 k = mr_lo_s3(mres), mr_hi_s3(mres)
-	   DO 1205 j = mr_lo_s2(mres), mr_hi_s2(mres)
-	   DO 1205 i = mr_lo_s1(mres), mr_hi_s1(mres)
+	   DO n = mr_lo_s6(mres), mr_hi_s6(mres)
+	   DO m = mr_lo_s5(mres), mr_hi_s5(mres)
+	   DO l = mr_lo_s4(mres), mr_hi_s4(mres)
+	   DO k = mr_lo_s3(mres), mr_hi_s3(mres)
+	   DO j = mr_lo_s2(mres), mr_hi_s2(mres)
+	   DO i = mr_lo_s1(mres), mr_hi_s1(mres)
 	      IF ( com2(1,i,j,k,l,m,n) .EQ. bad2 ) THEN
 	         res(1,i,j,k,l,m,n) = bad_res
 	      ELSE
 	         res(1,i,j,k,l,m,n) = com2(1,i,j,k,l,m,n) * 2.0
 	      ENDIF
- 1205      CONTINUE
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
         ELSE
 * ... for future grids of strings
            STOP 'illegal string argument encoding'
@@ -327,19 +346,20 @@
 * "RESHAPE" - reshape argument 1 into the grid of arg 2. Start output
 * at the i,j,k,l,m,n point given in arg 2. It is commonly useful for taking
 * monthly data and recasting it as a 12 month Z axis by a yearly axis
- 1300   DO 1310 idim = 1, nferdims
- 1310	   ind(idim) = cx_lo_ss(cx1,idim)
+ 1300   DO idim = 1, nferdims
+ 	   ind(idim) = cx_lo_ss(cx1,idim)
+	ENDDO
 	size = CGRID_SIZE8(cx1)
 	count = 0	! total points xferred - used to prevent grid overflow
 
 	IF (typr .EQ. pfcn_rtn_float) THEN
 
-	  DO 1350 n = mr_lo_s6(mres), mr_hi_s6(mres)
-	  DO 1350 m = mr_lo_s5(mres), mr_hi_s5(mres)
-	  DO 1350 l = mr_lo_s4(mres), mr_hi_s4(mres)
-	  DO 1350 k = mr_lo_s3(mres), mr_hi_s3(mres)
-	  DO 1350 j = mr_lo_s2(mres), mr_hi_s2(mres)
-	  DO 1350 i = mr_lo_s1(mres), mr_hi_s1(mres)
+	  DO n = mr_lo_s6(mres), mr_hi_s6(mres)
+	  DO m = mr_lo_s5(mres), mr_hi_s5(mres)
+	  DO l = mr_lo_s4(mres), mr_hi_s4(mres)
+	  DO k = mr_lo_s3(mres), mr_hi_s3(mres)
+	  DO j = mr_lo_s2(mres), mr_hi_s2(mres)
+	  DO i = mr_lo_s1(mres), mr_hi_s1(mres)
 
 	     count = count + 1
 	     IF ( count .GT. size ) THEN
@@ -353,25 +373,30 @@
 	     ENDIF
 
 * ... increment the subscripts of the input argument
-	     DO 1320 idim = 1, nferdims
+	     DO idim = 1, nferdims
 	        IF (ind(idim) .LT. cx_hi_ss(cx1,idim) ) THEN
 	           ind(idim) = ind(idim) + 1
-	           GOTO 1350
+	           EXIT
 	        ELSE
 	           ind(idim) =  cx_lo_ss(cx1,idim)
 	        ENDIF
- 1320	     CONTINUE
+	     ENDDO
 
- 1350	  CONTINUE
+	  ENDDO
+	  ENDDO
+	  ENDDO
+	  ENDDO
+	  ENDDO
+	  ENDDO
 
         ELSE
 
-	  DO 1390 n = mr_lo_s6(mres), mr_hi_s6(mres)
-	  DO 1390 m = mr_lo_s5(mres), mr_hi_s5(mres)
-	  DO 1390 l = mr_lo_s4(mres), mr_hi_s4(mres)
-	  DO 1390 k = mr_lo_s3(mres), mr_hi_s3(mres)
-	  DO 1390 j = mr_lo_s2(mres), mr_hi_s2(mres)
-	  DO 1390 i = mr_lo_s1(mres), mr_hi_s1(mres)
+	  DO n = mr_lo_s6(mres), mr_hi_s6(mres)
+	  DO m = mr_lo_s5(mres), mr_hi_s5(mres)
+	  DO l = mr_lo_s4(mres), mr_hi_s4(mres)
+	  DO k = mr_lo_s3(mres), mr_hi_s3(mres)
+	  DO j = mr_lo_s2(mres), mr_hi_s2(mres)
+	  DO i = mr_lo_s1(mres), mr_hi_s1(mres)
 
 	     count = count + 1
 	     CALL COPY_C_STRING(
@@ -379,16 +404,21 @@
      .              res(1,i,j,k,l,m,n) )
 
 * ... increment the subscripts of the input argument
-	     DO 1360 idim = 1, nferdims
+	     DO idim = 1, nferdims
 	        IF (ind(idim) .LT. cx_hi_ss(cx1,idim) ) THEN
 	           ind(idim) = ind(idim) + 1
-	           GOTO 1390
+	           EXIT
 	        ELSE
 	           ind(idim) =  cx_lo_ss(cx1,idim)
 	        ENDIF
- 1360	     CONTINUE
+	     ENDDO
 
- 1390	  CONTINUE
+	  ENDDO
+	  ENDDO
+	  ENDDO
+	  ENDDO
+	  ENDDO
+	  ENDDO
 
         ENDIF
 
@@ -424,27 +454,27 @@
 * ... loop over the X,Y,T,E,F range of the input fields
 	n1 = sn1
 	n2 = sn2
-	DO 1450 n = mr_lo_s6(mres), mr_hi_s6(mres)
+	DO n = mr_lo_s6(mres), mr_hi_s6(mres)
 	 n1 = n1 + dn1
 	 n2 = n2 + dn2
 	 m1 = sm1
 	 m2 = sm2
-	 DO 1450 m = mr_lo_s5(mres), mr_hi_s5(mres)
+	 DO m = mr_lo_s5(mres), mr_hi_s5(mres)
 	  m1 = m1 + dm1
 	  m2 = m2 + dm2
 	  l1 = sl1
 	  l2 = sl2
-	  DO 1450 l = mr_lo_s4(mres), mr_hi_s4(mres)
+	  DO l = mr_lo_s4(mres), mr_hi_s4(mres)
 	   l1 = l1 + dl1
 	   l2 = l2 + dl2
 	   j1 = sj1
 	   j2 = sj2
-	   DO 1450 j = mr_lo_s2(mres), mr_hi_s2(mres)
+	   DO j = mr_lo_s2(mres), mr_hi_s2(mres)
 	    j1 = j1 + dj1
 	    j2 = j2 + dj2
 	    i1 = si1
 	    i2 = si2
-	    DO 1450 i = mr_lo_s1(mres), mr_hi_s1(mres)
+	    DO i = mr_lo_s1(mres), mr_hi_s1(mres)
 	     i1 = i1 + di1
 	     i2 = i2 + di2
 
@@ -458,16 +488,16 @@
              IF ( klo .LT. 1 ) THEN
 
 * ... no valid data in component 2 at this location
-	        DO 1405 k = mr_lo_s3(mres), mr_hi_s3(mres)
- 1405              res(1,i,j,k,l,m,n) = bad_res
-
+	        DO k = mr_lo_s3(mres), mr_hi_s3(mres)
+		   res(1,i,j,k,l,m,n) = bad_res
+	        ENDDO
              ELSE
 
 * loop over the desired output Z-axis points
 !               ndx_lo = 0    ! no guess for location of first depth
                 ndx_lo = 1    ! fixes bug where if zval equals 1st point in axis
                               ! we got no match.
-		DO 1410 k = mr_lo_s3(mres), mr_hi_s3(mres)
+		DO k = mr_lo_s3(mres), mr_hi_s3(mres)
 
 * ... next Z axis value (com3) to locate
                    zval = TM_WORLD(k,cx_grid(cx3),z_dim,box_middle)
@@ -493,11 +523,16 @@
      .                   frac  * com1(1,i1,j1,sk1+ndx_lo,  l1,m1,n1)
      .              + (1-frac) * com1(1,i1,j1,sk1+ndx_lo+1,l1,m1,n1)
                    ENDIF
- 1410           CONTINUE
+		ENDDO
 
              ENDIF
 
- 1450	CONTINUE
+	    ENDDO
+	   ENDDO
+	  ENDDO
+	 ENDDO
+	ENDDO
+
         CALL RELEASE_DYN_WORK_SPACE
         RETURN
 
@@ -519,12 +554,12 @@
 
 	  j2 = m10loy
 
-	  DO 1510 n = cx_lo_s6(cx1), cx_hi_s6(cx1)
-	  DO 1510 m = cx_lo_s5(cx1), cx_hi_s5(cx1)
-	  DO 1510 l = cx_lo_s4(cx1), cx_hi_s4(cx1)
-	  DO 1510 k = cx_lo_s3(cx1), cx_hi_s3(cx1)
-	  DO 1510 j = cx_lo_s2(cx1), cx_hi_s2(cx1)
-	  DO 1510 i = cx_lo_s1(cx1), cx_hi_s1(cx1)
+	  DO n = cx_lo_s6(cx1), cx_hi_s6(cx1)
+	  DO m = cx_lo_s5(cx1), cx_hi_s5(cx1)
+	  DO l = cx_lo_s4(cx1), cx_hi_s4(cx1)
+	  DO k = cx_lo_s3(cx1), cx_hi_s3(cx1)
+	  DO j = cx_lo_s2(cx1), cx_hi_s2(cx1)
+	  DO i = cx_lo_s1(cx1), cx_hi_s1(cx1)
 	     IF ( com1(1,i,j,k,l,m,n) .EQ. bad1 ) THEN
 	        res(1,m10lox,j2,m10loz,m10lot,m10loe,m10lof)
      .             = bad_res
@@ -533,19 +568,29 @@
      .             = com1(1,i,j,k,l,m,n)
 	     ENDIF
 	     j2 = j2 + 1
- 1510	  CONTINUE
+	  ENDDO
+	  ENDDO
+	  ENDDO
+	  ENDDO
+	  ENDDO
+	  ENDDO
         ELSE
 	  j2 = m10loy
-	  DO 1560 n = cx_lo_s6(cx1), cx_hi_s6(cx1)
-	  DO 1560 m = cx_lo_s5(cx1), cx_hi_s5(cx1)
-	  DO 1560 l = cx_lo_s4(cx1), cx_hi_s4(cx1)
-	  DO 1560 k = cx_lo_s3(cx1), cx_hi_s3(cx1)
-	  DO 1560 j = cx_lo_s2(cx1), cx_hi_s2(cx1)
-	  DO 1560 i = cx_lo_s1(cx1), cx_hi_s1(cx1)
+	  DO n = cx_lo_s6(cx1), cx_hi_s6(cx1)
+	  DO m = cx_lo_s5(cx1), cx_hi_s5(cx1)
+	  DO l = cx_lo_s4(cx1), cx_hi_s4(cx1)
+	  DO k = cx_lo_s3(cx1), cx_hi_s3(cx1)
+	  DO j = cx_lo_s2(cx1), cx_hi_s2(cx1)
+	  DO i = cx_lo_s1(cx1), cx_hi_s1(cx1)
 	     CALL COPY_C_STRING(com1(1,i,j,k,l,m,n),
      .                 res(1,m10lox,j2,m10loz,m10lot,m10loe,m10lof))
 	     j2 = j2 + 1
- 1560	  CONTINUE
+	  ENDDO
+	  ENDDO
+	  ENDDO
+	  ENDDO
+	  ENDDO
+	  ENDDO
         ENDIF
 	RETURN
 
@@ -565,12 +610,12 @@
 	  IF (size .GT. arbitrary_large_int4) GOTO 5400
 
 	  k2 = m10loz
-	  DO 1610 n = cx_lo_s6(cx1), cx_hi_s6(cx1)
-	  DO 1610 m = cx_lo_s5(cx1), cx_hi_s5(cx1)
-	  DO 1610 l = cx_lo_s4(cx1), cx_hi_s4(cx1)
-	  DO 1610 k = cx_lo_s3(cx1), cx_hi_s3(cx1)
-	  DO 1610 j = cx_lo_s2(cx1), cx_hi_s2(cx1)
-	  DO 1610 i = cx_lo_s1(cx1), cx_hi_s1(cx1)
+	  DO n = cx_lo_s6(cx1), cx_hi_s6(cx1)
+	  DO m = cx_lo_s5(cx1), cx_hi_s5(cx1)
+	  DO l = cx_lo_s4(cx1), cx_hi_s4(cx1)
+	  DO k = cx_lo_s3(cx1), cx_hi_s3(cx1)
+	  DO j = cx_lo_s2(cx1), cx_hi_s2(cx1)
+	  DO i = cx_lo_s1(cx1), cx_hi_s1(cx1)
 	     IF ( com1(1,i,j,k,l,m,n) .EQ. bad1 ) THEN
 	        res(1,m10lox,m10loy,k2,m10lot,m10loe,m10lof)
      .             = bad_res
@@ -579,19 +624,29 @@
      .             = com1(1,i,j,k,l,m,n)
 	     ENDIF
 	     k2 = k2 + 1
- 1610	  CONTINUE
+	  ENDDO
+	  ENDDO
+	  ENDDO
+	  ENDDO
+	  ENDDO
+	  ENDDO
         ELSE
 	  k2 = m10loz
-	  DO 1660 n = cx_lo_s6(cx1), cx_hi_s6(cx1)
-	  DO 1660 m = cx_lo_s5(cx1), cx_hi_s5(cx1)
-	  DO 1660 l = cx_lo_s4(cx1), cx_hi_s4(cx1)
-	  DO 1660 k = cx_lo_s3(cx1), cx_hi_s3(cx1)
-	  DO 1660 j = cx_lo_s2(cx1), cx_hi_s2(cx1)
-	  DO 1660 i = cx_lo_s1(cx1), cx_hi_s1(cx1)
+	  DO n = cx_lo_s6(cx1), cx_hi_s6(cx1)
+	  DO m = cx_lo_s5(cx1), cx_hi_s5(cx1)
+	  DO l = cx_lo_s4(cx1), cx_hi_s4(cx1)
+	  DO k = cx_lo_s3(cx1), cx_hi_s3(cx1)
+	  DO j = cx_lo_s2(cx1), cx_hi_s2(cx1)
+	  DO i = cx_lo_s1(cx1), cx_hi_s1(cx1)
 	     CALL COPY_C_STRING(com1(1,i,j,k,l,m,n),
      .                 res(1,m10lox,m10loy,k2,m10lot,m10loe,m10lof))
 	     k2 = k2 + 1
- 1660	  CONTINUE
+	  ENDDO
+	  ENDDO
+	  ENDDO
+	  ENDDO
+	  ENDDO
+	  ENDDO
         ENDIF
 	RETURN
 
@@ -611,12 +666,12 @@
 	  IF (size .GT. arbitrary_large_int4) GOTO 5400
 
 	  l2 = m10lot
-	  DO 1710 n = cx_lo_s6(cx1), cx_hi_s6(cx1)
-	  DO 1710 m = cx_lo_s5(cx1), cx_hi_s5(cx1)
-	  DO 1710 l = cx_lo_s4(cx1), cx_hi_s4(cx1)
-	  DO 1710 k = cx_lo_s3(cx1), cx_hi_s3(cx1)
-	  DO 1710 j = cx_lo_s2(cx1), cx_hi_s2(cx1)
-	  DO 1710 i = cx_lo_s1(cx1), cx_hi_s1(cx1)
+	  DO n = cx_lo_s6(cx1), cx_hi_s6(cx1)
+	  DO m = cx_lo_s5(cx1), cx_hi_s5(cx1)
+	  DO l = cx_lo_s4(cx1), cx_hi_s4(cx1)
+	  DO k = cx_lo_s3(cx1), cx_hi_s3(cx1)
+	  DO j = cx_lo_s2(cx1), cx_hi_s2(cx1)
+	  DO i = cx_lo_s1(cx1), cx_hi_s1(cx1)
 	     IF ( com1(1,i,j,k,l,m,n) .EQ. bad1 ) THEN
 	        res(1,m10lox,m10loy,m10loz,l2,m10loe,m10lof)
      .             = bad_res
@@ -625,19 +680,29 @@
      .             = com1(1,i,j,k,l,m,n)
 	     ENDIF
 	     l2 = l2 + 1
- 1710	  CONTINUE
+	  ENDDO
+	  ENDDO
+	  ENDDO
+	  ENDDO
+	  ENDDO
+	  ENDDO
         ELSE
 	  l2 = m10lot
-	  DO 1760 n = cx_lo_s6(cx1), cx_hi_s6(cx1)
-	  DO 1760 m = cx_lo_s5(cx1), cx_hi_s5(cx1)
-	  DO 1760 l = cx_lo_s4(cx1), cx_hi_s4(cx1)
-	  DO 1760 k = cx_lo_s3(cx1), cx_hi_s3(cx1)
-	  DO 1760 j = cx_lo_s2(cx1), cx_hi_s2(cx1)
-	  DO 1760 i = cx_lo_s1(cx1), cx_hi_s1(cx1)
+	  DO n = cx_lo_s6(cx1), cx_hi_s6(cx1)
+	  DO m = cx_lo_s5(cx1), cx_hi_s5(cx1)
+	  DO l = cx_lo_s4(cx1), cx_hi_s4(cx1)
+	  DO k = cx_lo_s3(cx1), cx_hi_s3(cx1)
+	  DO j = cx_lo_s2(cx1), cx_hi_s2(cx1)
+	  DO i = cx_lo_s1(cx1), cx_hi_s1(cx1)
 	     CALL COPY_C_STRING(com1(1,i,j,k,l,m,n),
      .                 res(1,m10lox,m10loy,m10loz,l2,m10loe,m10lof))
 	     l2 = l2 + 1
- 1760	  CONTINUE
+	  ENDDO
+	  ENDDO
+	  ENDDO
+	  ENDDO
+	  ENDDO
+	  ENDDO
         ENDIF
 	RETURN
 
@@ -657,12 +722,12 @@
 	  IF (size .GT. arbitrary_large_int4) GOTO 5400
 
 	  m2 = m10loe
-	  DO 1810 n = cx_lo_s6(cx1), cx_hi_s6(cx1)
-	  DO 1810 m = cx_lo_s5(cx1), cx_hi_s5(cx1)
-	  DO 1810 l = cx_lo_s4(cx1), cx_hi_s4(cx1)
-	  DO 1810 k = cx_lo_s3(cx1), cx_hi_s3(cx1)
-	  DO 1810 j = cx_lo_s2(cx1), cx_hi_s2(cx1)
-	  DO 1810 i = cx_lo_s1(cx1), cx_hi_s1(cx1)
+	  DO n = cx_lo_s6(cx1), cx_hi_s6(cx1)
+	  DO m = cx_lo_s5(cx1), cx_hi_s5(cx1)
+	  DO l = cx_lo_s4(cx1), cx_hi_s4(cx1)
+	  DO k = cx_lo_s3(cx1), cx_hi_s3(cx1)
+	  DO j = cx_lo_s2(cx1), cx_hi_s2(cx1)
+	  DO i = cx_lo_s1(cx1), cx_hi_s1(cx1)
 	     IF ( com1(1,i,j,k,l,m,n) .EQ. bad1 ) THEN
 	        res(1,m10lox,m10loy,m10loz,m10lot,m2,m10lof)
      .             = bad_res
@@ -671,19 +736,29 @@
      .             = com1(1,i,j,k,l,m,n)
 	     ENDIF
 	     m2 = m2 + 1
- 1810	  CONTINUE
+	  ENDDO
+	  ENDDO
+	  ENDDO
+	  ENDDO
+	  ENDDO
+	  ENDDO
         ELSE
 	  m2 = m10loe
-	  DO 1860 n = cx_lo_s6(cx1), cx_hi_s6(cx1)
-	  DO 1860 m = cx_lo_s5(cx1), cx_hi_s5(cx1)
-	  DO 1860 l = cx_lo_s4(cx1), cx_hi_s4(cx1)
-	  DO 1860 k = cx_lo_s3(cx1), cx_hi_s3(cx1)
-	  DO 1860 j = cx_lo_s2(cx1), cx_hi_s2(cx1)
-	  DO 1860 i = cx_lo_s1(cx1), cx_hi_s1(cx1)
+	  DO n = cx_lo_s6(cx1), cx_hi_s6(cx1)
+	  DO m = cx_lo_s5(cx1), cx_hi_s5(cx1)
+	  DO l = cx_lo_s4(cx1), cx_hi_s4(cx1)
+	  DO k = cx_lo_s3(cx1), cx_hi_s3(cx1)
+	  DO j = cx_lo_s2(cx1), cx_hi_s2(cx1)
+	  DO i = cx_lo_s1(cx1), cx_hi_s1(cx1)
 	     CALL COPY_C_STRING(com1(1,i,j,k,l,m,n),
      .                 res(1,m10lox,m10loy,m10loz,m10lot,m2,m10lof))
 	     m2 = m2 + 1
- 1860	  CONTINUE
+	  ENDDO
+	  ENDDO
+	  ENDDO
+	  ENDDO
+	  ENDDO
+	  ENDDO
         ENDIF
 	RETURN
 
@@ -703,12 +778,12 @@
 	  IF (size .GT. arbitrary_large_int4) GOTO 5400
 
 	  n2 = m10lof
-	  DO 1910 n = cx_lo_s6(cx1), cx_hi_s6(cx1)
-	  DO 1910 m = cx_lo_s5(cx1), cx_hi_s5(cx1)
-	  DO 1910 l = cx_lo_s4(cx1), cx_hi_s4(cx1)
-	  DO 1910 k = cx_lo_s3(cx1), cx_hi_s3(cx1)
-	  DO 1910 j = cx_lo_s2(cx1), cx_hi_s2(cx1)
-	  DO 1910 i = cx_lo_s1(cx1), cx_hi_s1(cx1)
+	  DO n = cx_lo_s6(cx1), cx_hi_s6(cx1)
+	  DO m = cx_lo_s5(cx1), cx_hi_s5(cx1)
+	  DO l = cx_lo_s4(cx1), cx_hi_s4(cx1)
+	  DO k = cx_lo_s3(cx1), cx_hi_s3(cx1)
+	  DO j = cx_lo_s2(cx1), cx_hi_s2(cx1)
+	  DO i = cx_lo_s1(cx1), cx_hi_s1(cx1)
 	     IF ( com1(1,i,j,k,l,m,n) .EQ. bad1 ) THEN
 	        res(1,m10lox,m10loy,m10loz,m10lot,m10loe,n2)
      .             = bad_res
@@ -717,19 +792,29 @@
      .             = com1(1,i,j,k,l,m,n)
 	     ENDIF
 	     n2 = n2 + 1
- 1910	  CONTINUE
+	  ENDDO
+	  ENDDO
+	  ENDDO
+	  ENDDO
+	  ENDDO
+	  ENDDO
         ELSE
 	  n2 = m10lof
-	  DO 1960 n = cx_lo_s6(cx1), cx_hi_s6(cx1)
-	  DO 1960 m = cx_lo_s5(cx1), cx_hi_s5(cx1)
-	  DO 1960 l = cx_lo_s4(cx1), cx_hi_s4(cx1)
-	  DO 1960 k = cx_lo_s3(cx1), cx_hi_s3(cx1)
-	  DO 1960 j = cx_lo_s2(cx1), cx_hi_s2(cx1)
-	  DO 1960 i = cx_lo_s1(cx1), cx_hi_s1(cx1)
+	  DO n = cx_lo_s6(cx1), cx_hi_s6(cx1)
+	  DO m = cx_lo_s5(cx1), cx_hi_s5(cx1)
+	  DO l = cx_lo_s4(cx1), cx_hi_s4(cx1)
+	  DO k = cx_lo_s3(cx1), cx_hi_s3(cx1)
+	  DO j = cx_lo_s2(cx1), cx_hi_s2(cx1)
+	  DO i = cx_lo_s1(cx1), cx_hi_s1(cx1)
 	     CALL COPY_C_STRING(com1(1,i,j,k,l,m,n),
      .                 res(1,m10lox,m10loy,m10loz,m10lot,m10loe,n2))
 	     n2 = n2 + 1
- 1960	  CONTINUE
+	  ENDDO
+	  ENDDO
+	  ENDDO
+	  ENDDO
+	  ENDDO
+	  ENDDO
         ENDIF
 	RETURN
 
@@ -761,29 +846,39 @@
 
 	IF (typr .EQ. pfcn_rtn_float) THEN
 **** WARNING: This assumes com2 and res dimensions start and end at the same values ****
-	  DO 2510 n = cx_lo_s6(cx2), cx_hi_s6(cx2)
-	  DO 2510 m = cx_lo_s5(cx2), cx_hi_s5(cx2)
-	  DO 2510 l = cx_lo_s4(cx2), cx_hi_s4(cx2)
-	  DO 2510 k = cx_lo_s3(cx2), cx_hi_s3(cx2)
-	  DO 2510 j = cx_lo_s2(cx2), cx_hi_s2(cx2)
-	  DO 2510 i = cx_lo_s1(cx2), cx_hi_s1(cx2)
+	  DO n = cx_lo_s6(cx2), cx_hi_s6(cx2)
+	  DO m = cx_lo_s5(cx2), cx_hi_s5(cx2)
+	  DO l = cx_lo_s4(cx2), cx_hi_s4(cx2)
+	  DO k = cx_lo_s3(cx2), cx_hi_s3(cx2)
+	  DO j = cx_lo_s2(cx2), cx_hi_s2(cx2)
+	  DO i = cx_lo_s1(cx2), cx_hi_s1(cx2)
 	     IF ( com2(1,i,j,k,l,m,n) .EQ. bad2 ) THEN
 	        res(1,i,j,k,l,m,n) = bad_res
 	     ELSE
 	        res(1,i,j,k,l,m,n) = com2(1,i,j,k,l,m,n)
 	     ENDIF
- 2510	  CONTINUE
+	  ENDDO
+	  ENDDO
+	  ENDDO
+	  ENDDO
+	  ENDDO
+	  ENDDO
         ELSE
 **** WARNING: This assumes com2 and res dimensions start and end at the same values ****
-	  DO 2560 n = cx_lo_s6(cx2), cx_hi_s6(cx2)
-	  DO 2560 m = cx_lo_s5(cx2), cx_hi_s5(cx2)
-	  DO 2560 l = cx_lo_s4(cx2), cx_hi_s4(cx2)
-	  DO 2560 k = cx_lo_s3(cx2), cx_hi_s3(cx2)
-	  DO 2560 j = cx_lo_s2(cx2), cx_hi_s2(cx2)
-	  DO 2560 i = cx_lo_s1(cx2), cx_hi_s1(cx2)
+	  DO n = cx_lo_s6(cx2), cx_hi_s6(cx2)
+	  DO m = cx_lo_s5(cx2), cx_hi_s5(cx2)
+	  DO l = cx_lo_s4(cx2), cx_hi_s4(cx2)
+	  DO k = cx_lo_s3(cx2), cx_hi_s3(cx2)
+	  DO j = cx_lo_s2(cx2), cx_hi_s2(cx2)
+	  DO i = cx_lo_s1(cx2), cx_hi_s1(cx2)
 	     CALL COPY_C_STRING(com2(1,i,j,k,l,m,n),
      .                           res(1,i,j,k,l,m,n))
- 2560	  CONTINUE
+	  ENDDO
+	  ENDDO
+	  ENDDO
+	  ENDDO
+	  ENDDO
+	  ENDDO
         ENDIF
 	RETURN
 
@@ -813,89 +908,104 @@
  2700	CONTINUE
 	n1 = sn1
 	n2 = sn2
-	DO 2750 n = mr_lo_s6(mres), mr_hi_s6(mres)
+	DO n = mr_lo_s6(mres), mr_hi_s6(mres)
 	 n1 = n1 + dn1
 	 n2 = n2 + dn2
 	 m1 = sm1
 	 m2 = sm2
-	 DO 2750 m = mr_lo_s5(mres), mr_hi_s5(mres)
+	 DO m = mr_lo_s5(mres), mr_hi_s5(mres)
 	  m1 = m1 + dm1
 	  m2 = m2 + dm2
 	  l1 = sl1
 	  l2 = sl2
-	  DO 2750 l = mr_lo_s4(mres), mr_hi_s4(mres)
+	  DO l = mr_lo_s4(mres), mr_hi_s4(mres)
 	   l1 = l1 + dl1
 	   l2 = l2 + dl2
 	   k1 = sk1
 	   k2 = sk2
-	   DO 2750 k = mr_lo_s3(mres), mr_hi_s3(mres)
+	   DO k = mr_lo_s3(mres), mr_hi_s3(mres)
 	    k1 = k1 + dk1
 	    k2 = k2 + dk2
 	    j1 = sj1
 	    j2 = sj2
-	    DO 2750 j = mr_lo_s2(mres), mr_hi_s2(mres)
+	    DO j = mr_lo_s2(mres), mr_hi_s2(mres)
 	     j1 = j1 + dj1
 	     j2 = j2 + dj2
 	     i1 = si1
 	     i2 = si2
-	     DO 2750 i = mr_lo_s1(mres), mr_hi_s1(mres)
+	     DO i = mr_lo_s1(mres), mr_hi_s1(mres)
 	      i1 = i1 + di1
 	      i2 = i2 + di2
               CALL C_STRCMP(com1(1,i1,j1,k1,l1,m1,n1),
      .                      com2(1,i2,j2,k2,l2,m2,n2), ii)
               res(1,i,j,k,l,m,n) = ii
- 2750   CONTINUE
+	     ENDDO
+	    ENDDO
+	   ENDDO
+	  ENDDO
+	 ENDDO
+	ENDDO
         RETURN
 
 
 * *kob* 3/02 STRLEN function
  2800	CONTINUE
 	n1 = sn1
-	DO 2850 n = mr_lo_s6(mres), mr_hi_s6(mres)
+	DO n = mr_lo_s6(mres), mr_hi_s6(mres)
 	 n1 = n1 + dn1
 	 m1 = sm1
-	 DO 2850 m = mr_lo_s5(mres), mr_hi_s5(mres)
+	 DO m = mr_lo_s5(mres), mr_hi_s5(mres)
 	  m1 = m1 + dm1
 	  l1 = sl1
-	  DO 2850 l = mr_lo_s4(mres), mr_hi_s4(mres)
+	  DO l = mr_lo_s4(mres), mr_hi_s4(mres)
 	   l1 = l1 + dl1
 	   k1 = sk1
-	   DO 2850 k = mr_lo_s3(mres), mr_hi_s3(mres)
+	   DO k = mr_lo_s3(mres), mr_hi_s3(mres)
 	    k1 = k1 + dk1
 	    j1 = sj1
-	    DO 2850 j = mr_lo_s2(mres), mr_hi_s2(mres)
+	    DO j = mr_lo_s2(mres), mr_hi_s2(mres)
 	     j1 = j1 + dj1
 	     i1 = si1
-	     DO 2850 i = mr_lo_s1(mres), mr_hi_s1(mres)
+	     DO i = mr_lo_s1(mres), mr_hi_s1(mres)
 	      i1 = i1 + di1
               CALL C_STRLEN(com1(1,i1,j1,k1,l1,m1,n1), ii)
               res(1,i,j,k,l,m,n) = ii
- 2850   CONTINUE
+	     ENDDO
+	    ENDDO
+	   ENDDO
+	  ENDDO
+	 ENDDO
+	ENDDO
         RETURN
 
 * *kob* 3/02 UPCASE function
  2900	CONTINUE
 	n1 = sn1
-	DO 2950 n = mr_lo_s6(mres), mr_hi_s6(mres)
+	DO n = mr_lo_s6(mres), mr_hi_s6(mres)
 	 n1 = n1 + dn1
 	 m1 = sm1
-	 DO 2950 m = mr_lo_s5(mres), mr_hi_s5(mres)
+	 DO m = mr_lo_s5(mres), mr_hi_s5(mres)
 	  m1 = m1 + dm1
 	  l1 = sl1
-	  DO 2950 l = mr_lo_s4(mres), mr_hi_s4(mres)
+	  DO l = mr_lo_s4(mres), mr_hi_s4(mres)
 	   l1 = l1 + dl1
 	   k1 = sk1
-	   DO 2950 k = mr_lo_s3(mres), mr_hi_s3(mres)
+	   DO k = mr_lo_s3(mres), mr_hi_s3(mres)
 	    k1 = k1 + dk1
 	    j1 = sj1
-	    DO 2950 j = mr_lo_s2(mres), mr_hi_s2(mres)
+	    DO j = mr_lo_s2(mres), mr_hi_s2(mres)
 	     j1 = j1 + dj1
 	     i1 = si1
-	     DO 2950 i = mr_lo_s1(mres), mr_hi_s1(mres)
+	     DO i = mr_lo_s1(mres), mr_hi_s1(mres)
 	      i1 = i1 + di1
               CALL C_UPCASE(com1(1,i1,j1,k1,l1,m1,n1),
      .                      res(1,i,j,k,l,m,n))
- 2950   CONTINUE
+	     ENDDO
+	    ENDDO
+	   ENDDO
+	  ENDDO
+	 ENDDO
+	ENDDO
         RETURN
 
 
@@ -903,70 +1013,75 @@
  3000	CONTINUE
 	n1 = sn1
 	n2 = sn2
-	DO 3050 n = mr_lo_s6(mres), mr_hi_s6(mres)
+	DO n = mr_lo_s6(mres), mr_hi_s6(mres)
 	 n1 = n1 + dn1
 	 n2 = n2 + dn2
 	 m1 = sm1
 	 m2 = sm2
-	 DO 3050 m = mr_lo_s5(mres), mr_hi_s5(mres)
+	 DO m = mr_lo_s5(mres), mr_hi_s5(mres)
 	  m1 = m1 + dm1
 	  m2 = m2 + dm2
 	  l1 = sl1
 	  l2 = sl2
-	  DO 3050 l = mr_lo_s4(mres), mr_hi_s4(mres)
+	  DO l = mr_lo_s4(mres), mr_hi_s4(mres)
 	   l1 = l1 + dl1
 	   l2 = l2 + dl2
 	   k1 = sk1
 	   k2 = sk2
-	   DO 3050 k = mr_lo_s3(mres), mr_hi_s3(mres)
+	   DO k = mr_lo_s3(mres), mr_hi_s3(mres)
 	    k1 = k1 + dk1
 	    k2 = k2 + dk2
 	    j1 = sj1
 	    j2 = sj2
-	    DO 3050 j = mr_lo_s2(mres), mr_hi_s2(mres)
+	    DO j = mr_lo_s2(mres), mr_hi_s2(mres)
 	     j1 = j1 + dj1
 	     j2 = j2 + dj2
 	     i1 = si1
 	     i2 = si2
-	     DO 3050 i = mr_lo_s1(mres), mr_hi_s1(mres)
+	     DO i = mr_lo_s1(mres), mr_hi_s1(mres)
 	      i1 = i1 + di1
 	      i2 = i2 + di2
               CALL C_STRINDEX(com1(1,i1,j1,k1,l1,m1,n1),
      .                        com2(1,i2,j2,k2,l2,m2,n2), ii)
               res(1,i,j,k,l,m,n) = ii
- 3050   CONTINUE
+	     ENDDO
+	    ENDDO
+	   ENDDO
+	  ENDDO
+	 ENDDO
+	ENDDO
         RETURN
 
 * *kob* 3/02 STRRINDEX function
  3100	CONTINUE
 	n1 = sn1
 	n2 = sn2
-	DO 3150 n = mr_lo_s6(mres), mr_hi_s6(mres)
+	DO n = mr_lo_s6(mres), mr_hi_s6(mres)
 	 n1 = n1 + dn1
 	 n2 = n2 + dn2
 	 m1 = sm1
 	 m2 = sm2
-	 DO 3150 m = mr_lo_s5(mres), mr_hi_s5(mres)
+	 DO m = mr_lo_s5(mres), mr_hi_s5(mres)
 	  m1 = m1 + dm1
 	  m2 = m2 + dm2
 	  l1 = sl1
 	  l2 = sl2
-	  DO 3150 l = mr_lo_s4(mres), mr_hi_s4(mres)
+	  DO l = mr_lo_s4(mres), mr_hi_s4(mres)
 	   l1 = l1 + dl1
 	   l2 = l2 + dl2
 	   k1 = sk1
 	   k2 = sk2
-	   DO 3150 k = mr_lo_s3(mres), mr_hi_s3(mres)
+	   DO k = mr_lo_s3(mres), mr_hi_s3(mres)
 	    k1 = k1 + dk1
 	    k2 = k2 + dk2
 	    j1 = sj1
 	    j2 = sj2
-	    DO 3150 j = mr_lo_s2(mres), mr_hi_s2(mres)
+	    DO j = mr_lo_s2(mres), mr_hi_s2(mres)
 	     j1 = j1 + dj1
 	     j2 = j2 + dj2
 	     i1 = si1
 	     i2 = si2
-	     DO 3150 i = mr_lo_s1(mres), mr_hi_s1(mres)
+	     DO i = mr_lo_s1(mres), mr_hi_s1(mres)
 	      i1 = i1 + di1
 	      i2 = i2 + di2
               CALL C_STRLEN(com2(1,i2,j2,k2,l2,m2,n2), ii)
@@ -978,70 +1093,85 @@
      .                            com2(1,i2,j2,k2,l2,m2,n2), ii)
                  res(1,i,j,k,l,m,n) = ii
               ENDIF
- 3150   CONTINUE
+	     ENDDO
+	    ENDDO
+	   ENDDO
+	  ENDDO
+	 ENDDO
+	ENDDO
         RETURN
 
 * *kob* 3/02 DNCASE function
  3200	CONTINUE
 	n1 = sn1
-	DO 3250 n = mr_lo_s6(mres), mr_hi_s6(mres)
+	DO n = mr_lo_s6(mres), mr_hi_s6(mres)
 	 n1 = n1 + dn1
 	 m1 = sm1
-	 DO 3250 m = mr_lo_s5(mres), mr_hi_s5(mres)
+	 DO m = mr_lo_s5(mres), mr_hi_s5(mres)
 	  m1 = m1 + dm1
 	  l1 = sl1
-	  DO 3250 l = mr_lo_s4(mres), mr_hi_s4(mres)
+	  DO l = mr_lo_s4(mres), mr_hi_s4(mres)
 	   l1 = l1 + dl1
 	   k1 = sk1
-	   DO 3250 k = mr_lo_s3(mres), mr_hi_s3(mres)
+	   DO k = mr_lo_s3(mres), mr_hi_s3(mres)
 	    k1 = k1 + dk1
 	    j1 = sj1
-	    DO 3250 j = mr_lo_s2(mres), mr_hi_s2(mres)
+	    DO j = mr_lo_s2(mres), mr_hi_s2(mres)
 	     j1 = j1 + dj1
 	     i1 = si1
-	     DO 3250 i = mr_lo_s1(mres), mr_hi_s1(mres)
+	     DO i = mr_lo_s1(mres), mr_hi_s1(mres)
 	      i1 = i1 + di1
               CALL C_DNCASE(com1(1,i1,j1,k1,l1,m1,n1),
      .                      res(1,i,j,k,l,m,n))
- 3250   CONTINUE
+	     ENDDO
+	    ENDDO
+	   ENDDO
+	  ENDDO
+	 ENDDO
+	ENDDO
         RETURN
 
  3300	CONTINUE
 * *kob* STRCAT function 3/02
 	n1 = sn1
 	n2 = sn2
-	DO 3350 n = mr_lo_s6(mres), mr_hi_s6(mres)
+	DO n = mr_lo_s6(mres), mr_hi_s6(mres)
 	 n1 = n1 + dn1
 	 n2 = n2 + dn2
 	 m1 = sm1
 	 m2 = sm2
-	 DO 3350 m = mr_lo_s5(mres), mr_hi_s5(mres)
+	 DO m = mr_lo_s5(mres), mr_hi_s5(mres)
 	  m1 = m1 + dm1
 	  m2 = m2 + dm2
 	  l1 = sl1
 	  l2 = sl2
-	  DO 3350 l = mr_lo_s4(mres), mr_hi_s4(mres)
+	  DO l = mr_lo_s4(mres), mr_hi_s4(mres)
 	   l1 = l1 + dl1
 	   l2 = l2 + dl2
 	   k1 = sk1
 	   k2 = sk2
-	   DO 3350 k = mr_lo_s3(mres), mr_hi_s3(mres)
+	   DO k = mr_lo_s3(mres), mr_hi_s3(mres)
 	    k1 = k1 + dk1
 	    k2 = k2 + dk2
 	    j1 = sj1
 	    j2 = sj2
-	    DO 3350 j = mr_lo_s2(mres), mr_hi_s2(mres)
+	    DO j = mr_lo_s2(mres), mr_hi_s2(mres)
 	     j1 = j1 + dj1
 	     j2 = j2 + dj2
 	     i1 = si1
 	     i2 = si2
-	     DO 3350 i = mr_lo_s1(mres), mr_hi_s1(mres)
+	     DO i = mr_lo_s1(mres), mr_hi_s1(mres)
 	      i1 = i1 + di1
 	      i2 = i2 + di2
               CALL C_STRCAT(com1(1,i1,j1,k1,l1,m1,n1),
      .                      com2(1,i2,j2,k2,l2,m2,n2),
      .                      res(1,i,j,k,l,m,n))
- 3350   CONTINUE
+	     ENDDO
+	    ENDDO
+	   ENDDO
+	  ENDDO
+	 ENDDO
+	ENDDO
         RETURN
 
  3400	CONTINUE
@@ -1049,42 +1179,42 @@
 	n1 = sn1
 	n2 = sn2
 	n3 = sn3
-	DO 3450 n = mr_lo_s6(mres), mr_hi_s6(mres)
+	DO n = mr_lo_s6(mres), mr_hi_s6(mres)
 	 n1 = n1 + dn1
 	 n2 = n2 + dn2
 	 n3 = n3 + dn3
 	 m1 = sm1
 	 m2 = sm2
 	 m3 = sm3
-	 DO 3450 m = mr_lo_s5(mres), mr_hi_s5(mres)
+	 DO m = mr_lo_s5(mres), mr_hi_s5(mres)
 	  m1 = m1 + dm1
 	  m2 = m2 + dm2
 	  m3 = m3 + dm3
 	  l1 = sl1
 	  l2 = sl2
 	  l3 = sl3
-	  DO 3450 l = mr_lo_s4(mres), mr_hi_s4(mres)
+	  DO l = mr_lo_s4(mres), mr_hi_s4(mres)
 	   l1 = l1 + dl1
 	   l2 = l2 + dl2
 	   l3 = l3 + dl3
 	   k1 = sk1
 	   k2 = sk2
 	   k3 = sk3
-	   DO 3450 k = mr_lo_s3(mres), mr_hi_s3(mres)
+	   DO k = mr_lo_s3(mres), mr_hi_s3(mres)
 	    k1 = k1 + dk1
 	    k2 = k2 + dk2
 	    k3 = k3 + dk3
 	    j1 = sj1
 	    j2 = sj2
 	    j3 = sj3
-	    DO 3450 j = mr_lo_s2(mres), mr_hi_s2(mres)
+	    DO j = mr_lo_s2(mres), mr_hi_s2(mres)
 	     j1 = j1 + dj1
 	     j2 = j2 + dj2
 	     j3 = j3 + dj3
 	     i1 = si1
 	     i2 = si2
 	     i3 = si3
-	     DO 3450 i = mr_lo_s1(mres), mr_hi_s1(mres)
+	     DO i = mr_lo_s1(mres), mr_hi_s1(mres)
 	      i1 = i1 + di1
 	      i2 = i2 + di2
 	      i3 = i3 + di3
@@ -1102,32 +1232,42 @@
 	      ENDIF
               CALL C_SUBSTR(com1(1,i1,j1,k1,l1,m1,n1),
      .                      ioff, ilen, res(1,i,j,k,l,m,n))
- 3450   CONTINUE
+	     ENDDO
+	    ENDDO
+	   ENDDO
+	  ENDDO
+	 ENDDO
+	ENDDO
         RETURN
 
 * *kob* 5/02 STRFLOAT function
  3500	CONTINUE
 	n1 = sn1
-	DO 3550 n = mr_lo_s6(mres), mr_hi_s6(mres)
+	DO n = mr_lo_s6(mres), mr_hi_s6(mres)
 	 n1 = n1 + dn1
 	 m1 = sm1
-	 DO 3550 m = mr_lo_s5(mres), mr_hi_s5(mres)
+	 DO m = mr_lo_s5(mres), mr_hi_s5(mres)
 	  m1 = m1 + dm1
 	  l1 = sl1
-	  DO 3550 l = mr_lo_s4(mres), mr_hi_s4(mres)
+	  DO l = mr_lo_s4(mres), mr_hi_s4(mres)
 	   l1 = l1 + dl1
 	   k1 = sk1
-	   DO 3550 k = mr_lo_s3(mres), mr_hi_s3(mres)
+	   DO k = mr_lo_s3(mres), mr_hi_s3(mres)
 	    k1 = k1 + dk1
 	    j1 = sj1
-	    DO 3550 j = mr_lo_s2(mres), mr_hi_s2(mres)
+	    DO j = mr_lo_s2(mres), mr_hi_s2(mres)
 	     j1 = j1 + dj1
 	     i1 = si1
-	     DO 3550 i = mr_lo_s1(mres), mr_hi_s1(mres)
+	     DO i = mr_lo_s1(mres), mr_hi_s1(mres)
 	      i1 = i1 + di1
               CALL C_STRFLOAT(com1(1,i1,j1,k1,l1,m1,n1),
      .                        res(1,i,j,k,l,m,n), bad_res)
- 3550   CONTINUE
+	     ENDDO
+	    ENDDO
+	   ENDDO
+	  ENDDO
+	 ENDDO
+	ENDDO
         RETURN
 
 

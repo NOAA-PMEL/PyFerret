@@ -50,6 +50,7 @@
 *        2/12 *kms* Add E and F dimensions (use nferdims in tmap_dims.parm)
 * V698 *acm* 5/16 Fix ticket 2366, the logic that tests for crossing the 
 *                  modulo subspan void point was incorrect
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -132,7 +133,8 @@
      .				res, res_mr, res_cx,
      .				coords )
 
-	ELSE  !! not dsg
+	   GOTO 5000
+	ENDIF
 
 * limits of the component data provided
 	lo_com = cx_lo_ss(com_cx, idim)
@@ -158,10 +160,10 @@
 	ENDIF
 
 * save the desired result region
-	DO 10 ii = 1, nferdims
+	DO ii = 1, nferdims
 	   lo_sub(ii) = cx_lo_ss(res_cx,ii)
 	   hi_sub(ii) = cx_hi_ss(res_cx,ii)
- 10	CONTINUE
+	ENDDO
 
 * get and save grid box coordinates just once for efficiency
 	coord_lo_ss = MAX( lo_sub(idim)-edge, lo_com )
@@ -181,15 +183,15 @@
 
 * FILL ALONG X AXIS
 	IF ( idim .EQ. x_dim ) THEN
-	   DO 110 n = lo_s6, hi_s6
-	   DO 110 m = lo_s5, hi_s5
-	   DO 110 l = lo_s4, hi_s4
-	   DO 110 k = lo_s3, hi_s3
-	   DO 110 j = lo_s2, hi_s2
+	   DO n = lo_s6, hi_s6
+	   DO m = lo_s5, hi_s5
+	   DO l = lo_s4, hi_s4
+	   DO k = lo_s3, hi_s3
+	   DO j = lo_s2, hi_s2
            no_lo_val = .TRUE.
            next_hi_ss = no_point
 * ... find the closest off-scale low interpolation point in case we need it
-           DO 101 i = lo_s1, lo_edge, -1
+           DO i = lo_s1, lo_edge, -1
 	      modulo = modulo_axis .AND. i.LT.coord_lo_ss
 	      IF ( modulo ) THEN
 	         look = MOD(i+axdim-coord_lo_ss,axdim) + coord_lo_ss
@@ -205,27 +207,27 @@
 	            lo_coord = lo_coord - axlen
 	         ENDIF
                  no_lo_val = .FALSE.
-	         GOTO 102
+	         EXIT
               ENDIF
- 101       CONTINUE
+           ENDDO
 * ... process the requested line in X
- 102	   DO 110 i = lo_s1, hi_s1
+ 	   DO i = lo_s1, hi_s1
 	      IF ( com(i,j,k,l,m,n) .NE. bad_res ) THEN
 	         res(i,j,k,l,m,n) = com(i,j,k,l,m,n)
                  lo_val = com(i,j,k,l,m,n)
 	         lo_index = i
 	         lo_coord = coords(i-pos0)
                  no_lo_val = .FALSE.
-	         GOTO 110
+	         CYCLE
 	      ENDIF
 * ... need to fill a point
               IF (no_lo_val) THEN
 * ... no lower valid point
                  res(i,j,k,l,m,n) = bad_res
-	         GOTO 110
+	         CYCLE
               ELSEIF ( next_hi_ss .LT. i ) THEN
 * ... look forward from current position for next valid point
-                 DO 104 ii = i+1, hi_edge
+                 DO ii = i+1, hi_edge
 	            modulo = modulo_axis .AND. ii.GT.coord_hi_ss
 	            IF ( modulo ) THEN
 	               look = MOD(ii+axdim-coord_lo_ss,axdim) + coord_lo_ss
@@ -243,10 +245,10 @@
 	               ENDIF
                        GOTO 108
                     ENDIF
- 104             CONTINUE
+                 ENDDO
 * ... no higher valid point
                  res(i,j,k,l,m,n) = bad_res
-                 GOTO 110
+                 CYCLE
               ENDIF
 * ... fill in interpolating value
  108	      coord    = coords(i-pos0)
@@ -262,19 +264,25 @@
                     res(i,j,k,l,m,n) = bad_res
 	         ENDIF
 	      ENDIF
- 110	   CONTINUE
+
+ 	   ENDDO
+ 	   ENDDO
+ 	   ENDDO
+ 	   ENDDO
+ 	   ENDDO
+ 	   ENDDO
 
 * FILL ALONG Y AXIS
 	ELSEIF ( idim .EQ. y_dim ) THEN
-	   DO 210 n = lo_s6, hi_s6
-	   DO 210 m = lo_s5, hi_s5
-	   DO 210 l = lo_s4, hi_s4
-	   DO 210 k = lo_s3, hi_s3
-	   DO 210 i = lo_s1, hi_s1
+	   DO n = lo_s6, hi_s6
+	   DO m = lo_s5, hi_s5
+	   DO l = lo_s4, hi_s4
+	   DO k = lo_s3, hi_s3
+	   DO i = lo_s1, hi_s1
            no_lo_val = .TRUE.
            next_hi_ss = no_point
 * ... find the closest off-scale low interpolation point in case we need it
-           DO 201 j = lo_s2, lo_edge, -1
+           DO j = lo_s2, lo_edge, -1
 	      modulo = modulo_axis .AND. j.LT.coord_lo_ss
               IF ( modulo ) THEN
                  look = MOD(j+axdim-coord_lo_ss,axdim) + coord_lo_ss
@@ -290,27 +298,28 @@
 	            lo_coord = lo_coord - axlen
 	         ENDIF
                  no_lo_val = .FALSE.
-                 GOTO 202
+                 EXIT
               ENDIF
- 201       CONTINUE
+	   ENDDO
+
 * ... process the requested line in Y
- 202	   DO 210 j = lo_s2, hi_s2
+	   DO j = lo_s2, hi_s2
 	      IF ( com(i,j,k,l,m,n) .NE. bad_res ) THEN
 	         res(i,j,k,l,m,n) = com(i,j,k,l,m,n)
                  lo_val = com(i,j,k,l,m,n)
 	         lo_index = j
                  lo_coord = coords(j-pos0)
                  no_lo_val = .FALSE.
-	         GOTO 210
+	         CYCLE
 	      ENDIF
 * ... need to fill a point
               IF (no_lo_val) THEN
 * ... no lower valid point
                  res(i,j,k,l,m,n) = bad_res
-                 GOTO 210
+                 CYCLE
               ELSEIF ( next_hi_ss .LT. j ) THEN
 * ... look forward from current position for next valid point
-                 DO 204 jj = j+1, hi_edge
+                 DO jj = j+1, hi_edge
                     modulo = modulo_axis .AND. jj.GT.coord_hi_ss
                     IF ( modulo ) THEN
 		       look = MOD(jj+axdim-coord_lo_ss,axdim)+coord_lo_ss
@@ -328,10 +337,10 @@
 	               ENDIF
                        GOTO 208
                     ENDIF
- 204             CONTINUE
+                 ENDDO
 * ... no higher valid point
                  res(i,j,k,l,m,n) = bad_res
-                 GOTO 210
+                 CYCLE
               ENDIF
 * ... fill in interpolating value
  208          coord    = coords(j-pos0)
@@ -344,19 +353,24 @@
      .	             .OR. (MOD(j,axdim) .EQ. 0) )
      .            res(i,j,k,l,m,n) = bad_res
 	      ENDIF
- 210	   CONTINUE
+ 	   ENDDO
+ 	   ENDDO
+ 	   ENDDO
+ 	   ENDDO
+ 	   ENDDO
+ 	   ENDDO
 
 * FILL ALONG Z AXIS
 	ELSEIF ( idim .EQ. z_dim ) THEN
-	   DO 310 n = lo_s6, hi_s6
-	   DO 310 m = lo_s5, hi_s5
-	   DO 310 l = lo_s4, hi_s4
-	   DO 310 j = lo_s2, hi_s2
-	   DO 310 i = lo_s1, hi_s1
+	   DO n = lo_s6, hi_s6
+	   DO m = lo_s5, hi_s5
+	   DO l = lo_s4, hi_s4
+	   DO j = lo_s2, hi_s2
+	   DO i = lo_s1, hi_s1
            no_lo_val = .TRUE.
            next_hi_ss = no_point
 * ... find the closest off-scale low interpolation point in case we need it
-           DO 301 k = lo_s3, lo_edge, -1
+           DO k = lo_s3, lo_edge, -1
               modulo = modulo_axis .AND. k.LT.coord_lo_ss
               IF ( modulo ) THEN
                  look = MOD(k+axdim-coord_lo_ss,axdim) + coord_lo_ss
@@ -372,27 +386,27 @@
 	            lo_coord = lo_coord - axlen
 	         ENDIF
                  no_lo_val = .FALSE.
-	         GOTO 302
+	         EXIT
               ENDIF
- 301       CONTINUE
+           ENDDO
 * ... process the requested line in Z
- 302	   DO 310 k = lo_s3, hi_s3
+	   DO k = lo_s3, hi_s3
 	      IF ( com(i,j,k,l,m,n) .NE. bad_res ) THEN
 	         res(i,j,k,l,m,n) = com(i,j,k,l,m,n)
                  lo_val = com(i,j,k,l,m,n)
 	         lo_index = k
                  lo_coord = coords(k-pos0)
                  no_lo_val = .FALSE.
-	         GOTO 310
+	         CYCLE
               ENDIF
 * ... need to fill a point
               IF (no_lo_val) THEN
 * ... no lower valid point
                  res(i,j,k,l,m,n) = bad_res
-                 GOTO 310
+                 CYCLE
               ELSEIF ( next_hi_ss .LT. k ) THEN
 * ... look forward from current position for next valid point
-                 DO 304 kk = k+1, hi_edge
+                 DO kk = k+1, hi_edge
                     modulo = modulo_axis .AND. kk.GT.coord_hi_ss
                     IF ( modulo ) THEN
 		       look = MOD(kk+axdim-coord_lo_ss,axdim) + coord_lo_ss
@@ -410,10 +424,10 @@
 	               ENDIF
                        GOTO 308
                     ENDIF
- 304             CONTINUE
+                 ENDDO
 * ... no higher valid point
                  res(i,j,k,l,m,n) = bad_res
-                 GOTO 310
+                 CYCLE
               ENDIF
 * ... fill in interpolating value
  308          coord    = coords(k-pos0)
@@ -426,19 +440,24 @@
      .	             .OR. (MOD(k,axdim) .EQ. 0) )
      .            res(i,j,k,l,m,n) = bad_res
 	      ENDIF
- 310	   CONTINUE
+ 	   ENDDO
+ 	   ENDDO
+ 	   ENDDO
+ 	   ENDDO
+ 	   ENDDO
+ 	   ENDDO
 
 * FILL ALONG T AXIS
 	ELSEIF ( idim .EQ. t_dim ) THEN
-	   DO 410 n = lo_s6, hi_s6
-	   DO 410 m = lo_s5, hi_s5
-	   DO 410 k = lo_s3, hi_s3
-	   DO 410 j = lo_s2, hi_s2
-	   DO 410 i = lo_s1, hi_s1
+	   DO n = lo_s6, hi_s6
+	   DO m = lo_s5, hi_s5
+	   DO k = lo_s3, hi_s3
+	   DO j = lo_s2, hi_s2
+	   DO i = lo_s1, hi_s1
            no_lo_val = .TRUE.
            next_hi_ss = no_point
 * ... find the closest off-scale low interpolation point in case we need it
-           DO 401 l = lo_s4, lo_edge, -1
+           DO l = lo_s4, lo_edge, -1
               modulo = modulo_axis .AND. l.LT.coord_lo_ss
               IF ( modulo ) THEN
                  look = MOD(l+axdim-coord_lo_ss,axdim) + coord_lo_ss
@@ -454,27 +473,27 @@
 	            lo_coord = lo_coord - axlen
 	         ENDIF
                  no_lo_val = .FALSE.
-	         GOTO 402
+	         EXIT
               ENDIF
- 401       CONTINUE
+           ENDDO
 * ... process the requested line in T
- 402	   DO 410 l = lo_s4, hi_s4
+ 	   DO l = lo_s4, hi_s4
 	      IF ( com(i,j,k,l,m,n) .NE. bad_res ) THEN
 	         res(i,j,k,l,m,n) = com(i,j,k,l,m,n)
                  lo_val = com(i,j,k,l,m,n)
 	         lo_index = l
                  lo_coord = coords(l-pos0)	! fixed 8/95
                  no_lo_val = .FALSE.
-	         GOTO 410
+	         CYCLE
 	      ENDIF
 * ... need to fill a point
               IF (no_lo_val) THEN
 * ... no lower valid point
                  res(i,j,k,l,m,n) = bad_res
-                 GOTO 410
+                 CYCLE
               ELSEIF ( next_hi_ss .LT. l ) THEN
 * ... look forward from current position for next valid point
-                 DO 404 ll = l+1, hi_edge
+                 DO ll = l+1, hi_edge
                     modulo = modulo_axis .AND. ll.GT.coord_hi_ss
                     IF ( modulo ) THEN
 		       look = MOD(ll+axdim-coord_lo_ss,axdim) + coord_lo_ss
@@ -492,10 +511,10 @@
 	               ENDIF
                        GOTO 408
                     ENDIF
- 404             CONTINUE
+                 ENDDO
 * ... no higher valid point
                  res(i,j,k,l,m,n) = bad_res
-                 GOTO 410
+                 CYCLE
               ENDIF
 * ... fill in interpolating value
  408          coord    = coords(l-pos0)
@@ -508,19 +527,24 @@
      .	             .OR. (MOD(l,axdim) .EQ. 0) )
      .            res(i,j,k,l,m,n) = bad_res
 	      ENDIF
- 410	   CONTINUE
+ 	   ENDDO
+ 	   ENDDO
+ 	   ENDDO
+ 	   ENDDO
+ 	   ENDDO
+ 	   ENDDO
 
 * FILL ALONG E AXIS
 	ELSEIF ( idim .EQ. e_dim ) THEN
-	   DO 510 n = lo_s6, hi_s6
-	   DO 510 l = lo_s4, hi_s4
-	   DO 510 k = lo_s3, hi_s3
-	   DO 510 j = lo_s2, hi_s2
-	   DO 510 i = lo_s1, hi_s1
+	   DO n = lo_s6, hi_s6
+	   DO l = lo_s4, hi_s4
+	   DO k = lo_s3, hi_s3
+	   DO j = lo_s2, hi_s2
+	   DO i = lo_s1, hi_s1
            no_lo_val = .TRUE.
            next_hi_ss = no_point
 * ... find the closest off-scale low interpolation point in case we need it
-           DO 501 m = lo_s5, lo_edge, -1
+           DO m = lo_s5, lo_edge, -1
               modulo = modulo_axis .AND. n.LT.coord_lo_ss
               IF ( modulo ) THEN
                  look = MOD(m+axdim-coord_lo_ss,axdim) + coord_lo_ss
@@ -536,27 +560,27 @@
 	            lo_coord = lo_coord - axlen
 	         ENDIF
                  no_lo_val = .FALSE.
-	         GOTO 502
+	         EXIT
               ENDIF
- 501       CONTINUE
+           ENDDO
 * ... process the requested line in E
- 502	   DO 510 m = lo_s5, hi_s5
+ 	   DO m = lo_s5, hi_s5
 	      IF ( com(i,j,k,l,m,n) .NE. bad_res ) THEN
 	         res(i,j,k,l,m,n) = com(i,j,k,l,m,n)
                  lo_val = com(i,j,k,l,m,n)
 	         lo_index = m
                  lo_coord = coords(m-pos0)	! fixed 8/95
                  no_lo_val = .FALSE.
-	         GOTO 510
+	         CYCLE
 	      ENDIF
 * ... need to fill a point
               IF (no_lo_val) THEN
 * ... no lower valid point
                  res(i,j,k,l,m,n) = bad_res
-                 GOTO 510
+                 CYCLE
               ELSEIF ( next_hi_ss .LT. m ) THEN
 * ... look forward from current position for next valid point
-                 DO 504 mm = m+1, hi_edge
+                 DO mm = m+1, hi_edge
                     modulo = modulo_axis .AND. mm.GT.coord_hi_ss
                     IF ( modulo ) THEN
 		       look = MOD(mm+axdim-coord_lo_ss,axdim) + coord_lo_ss
@@ -574,10 +598,10 @@
 	               ENDIF
                        GOTO 508
                     ENDIF
- 504             CONTINUE
+                 ENDDO
 * ... no higher valid point
                  res(i,j,k,l,m,n) = bad_res
-                 GOTO 510
+                 CYCLE
               ENDIF
 * ... fill in interpolating value
  508          coord    = coords(m-pos0)
@@ -590,19 +614,24 @@
      .	             .OR. (MOD(m,axdim) .EQ. 0) )
      .            res(i,j,k,l,m,n) = bad_res
 	      ENDIF
- 510	   CONTINUE
+ 	   ENDDO
+ 	   ENDDO
+ 	   ENDDO
+ 	   ENDDO
+ 	   ENDDO
+ 	   ENDDO
 
 * FILL ALONG F AXIS
 	ELSEIF ( idim .EQ. f_dim ) THEN
-	   DO 610 m = lo_s5, hi_s5
-	   DO 610 l = lo_s4, hi_s4
-	   DO 610 k = lo_s3, hi_s3
-	   DO 610 j = lo_s2, hi_s2
-	   DO 610 i = lo_s1, hi_s1
+	   DO m = lo_s5, hi_s5
+	   DO l = lo_s4, hi_s4
+	   DO k = lo_s3, hi_s3
+	   DO j = lo_s2, hi_s2
+	   DO i = lo_s1, hi_s1
            no_lo_val = .TRUE.
            next_hi_ss = no_point
 * ... find the closest off-scale low interpolation point in case we need it
-           DO 601 n = lo_s6, lo_edge, -1
+           DO n = lo_s6, lo_edge, -1
               modulo = modulo_axis .AND. n.LT.coord_lo_ss
               IF ( modulo ) THEN
                  look = MOD(n+axdim-coord_lo_ss,axdim) + coord_lo_ss
@@ -618,27 +647,27 @@
 	            lo_coord = lo_coord - axlen
 	         ENDIF
                  no_lo_val = .FALSE.
-	         GOTO 602
+	         EXIT
               ENDIF
- 601       CONTINUE
+           ENDDO
 * ... process the requested line in E
- 602	   DO 610 n = lo_s6, hi_s6
+ 	   DO n = lo_s6, hi_s6
 	      IF ( com(i,j,k,l,m,n) .NE. bad_res ) THEN
 	         res(i,j,k,l,m,n) = com(i,j,k,l,m,n)
                  lo_val = com(i,j,k,l,m,n)
 	         lo_index = n
                  lo_coord = coords(n-pos0)	! fixed 8/95
                  no_lo_val = .FALSE.
-	         GOTO 610
+	         CYCLE
 	      ENDIF
 * ... need to fill a point
               IF (no_lo_val) THEN
 * ... no lower valid point
                  res(i,j,k,l,m,n) = bad_res
-                 GOTO 610
+                 CYCLE
               ELSEIF ( next_hi_ss .LT. n ) THEN
 * ... look forward from current position for next valid point
-                 DO 604 nn = n+1, hi_edge
+                 DO nn = n+1, hi_edge
                     modulo = modulo_axis .AND. nn.GT.coord_hi_ss
                     IF ( modulo ) THEN
 		       look = MOD(nn+axdim-coord_lo_ss,axdim) + coord_lo_ss
@@ -656,10 +685,10 @@
 	               ENDIF
                        GOTO 608
                     ENDIF
- 604             CONTINUE
+                 ENDDO
 * ... no higher valid point
                  res(i,j,k,l,m,n) = bad_res
-                 GOTO 610
+                 CYCLE
               ENDIF
 * ... fill in interpolating value
  608          coord    = coords(n-pos0)
@@ -672,16 +701,18 @@
      .	             .OR. (MOD(n,axdim) .EQ. 0) )
      .            res(i,j,k,l,m,n) = bad_res
 	      ENDIF
- 610	   CONTINUE
 
+ 	   ENDDO
+ 	   ENDDO
+ 	   ENDDO
+ 	   ENDDO
+ 	   ENDDO
+ 	   ENDDO
 
-
-        ENDIF  ! 
-
-        ENDIF  !!  IF (TM_ITSA_DSG(grid))
+        ENDIF  
 
 * always success
-	DO_FILL_INTERP = ferr_ok
+ 5000	DO_FILL_INTERP = ferr_ok
 	RETURN
 
 	END

@@ -47,6 +47,7 @@
 *
 * V692 7/14 *acm* new transform @WGT, ticket 2180
 * V71 12/16 *acm* For ticket 2158: working with true monthly time axes.
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
@@ -96,8 +97,9 @@
         ELSE
 	   box(lo) = TM_WORLD(lo, grid, idim, box_hi_lim)
      .		   - cx_lo_ww(idim,res_cx)
-	   DO 100 i = lo+1, hi-1
- 100	   box(i)  = BOX_SIZE( i, grid, idim )
+	   DO i = lo+1, hi-1
+	      box(i)  = BOX_SIZE( i, grid, idim )
+ 	   ENDDO
 	   box(hi) = cx_hi_ww(idim,res_cx)
      .		   - TM_WORLD(hi, grid, idim, box_lo_lim)
         ENDIF
@@ -107,8 +109,9 @@
 	unit = un_convert( line_unit_code(axis) )
 	IF (ITSA_TRUEMONTH_AXIS(axis)) unit = un_convert(pun_day)
 	IF (unit .NE. 1.) THEN
-	   DO 110 i = lo, hi
- 110       box(i) = box(i) * unit
+	   DO i = lo, hi
+	      box(i) = box(i) * unit
+ 	   ENDDO
         ENDIF
 
 * Compute weights
@@ -118,128 +121,148 @@
 	   cos_factor = 1.
 	   need_cos = GEOG_COS_FACTOR( idim, grid )
      .                .AND. cx_lo_s2(com_cx).NE.unspecified_int4
-	   DO 210 j = cx_lo_s2(com_cx), cx_hi_s2(com_cx)
-	   IF ( need_cos ) THEN
-#ifdef double_p
-	      cos_factor = COS( deg2rad *       
+	   DO j = cx_lo_s2(com_cx), cx_hi_s2(com_cx)
+	      IF ( need_cos ) THEN
+	         cos_factor = COS( deg2rad *       
      .             TM_WORLD(j, grid, y_dim, box_middle) ) 
-              ybxlo = deg2rad* 
+                 ybxlo = deg2rad* 
      .             TM_WORLD(j,grid,y_dim,box_lo_lim)
-              ybxhi = deg2rad* 
+                 ybxhi = deg2rad* 
      .             TM_WORLD(j,grid,y_dim,box_hi_lim)
-#else
-	      cos_factor = COS( deg2rad *       
-     .             SNGL( TM_WORLD(j, grid, y_dim, box_middle) ) ) 
-              ybxlo = deg2rad* 
-     .             SNGL( TM_WORLD(j,grid,y_dim,box_lo_lim) )
-              ybxhi = deg2rad* 
-     .             SNGL( TM_WORLD(j,grid,y_dim,box_hi_lim) )
-#endif
-              yh = ABS(ybxhi - ybxlo)
-	      cos_factor = ABS( SIN(ybxhi) - SIN(ybxlo) )/ yh
-
-	      
-	      ! cos(yc) * abs(sin(yh/2))/(yh/2) 
+                 yh = ABS(ybxhi - ybxlo)
+	         cos_factor = ABS( SIN(ybxhi) - SIN(ybxlo) )/ yh
  
-	      cos_factor = COS( deg2rad*
+	         cos_factor = COS( deg2rad*
      .               TM_WORLD(j, grid, y_dim, box_middle) )* 
      .               ABS(SIN(yh/2)/(yh/2) )
-	   ENDIF
+	      ENDIF
 	   
-	   DO 210 n = cx_lo_s6(com_cx), cx_hi_s6(com_cx)
-	   DO 210 m = cx_lo_s5(com_cx), cx_hi_s5(com_cx)
-	   DO 210 l = cx_lo_s4(com_cx), cx_hi_s4(com_cx)
-	   DO 210 k = cx_lo_s3(com_cx), cx_hi_s3(com_cx)
-	   IF ( point ) THEN  
-	      res(i,j,k,l,m,n) = 0.
-	   ELSE
-	      DO 200 i = cx_lo_s1(com_cx), cx_hi_s1(com_cx)
+	   DO n = cx_lo_s6(com_cx), cx_hi_s6(com_cx)
+	   DO m = cx_lo_s5(com_cx), cx_hi_s5(com_cx)
+	   DO l = cx_lo_s4(com_cx), cx_hi_s4(com_cx)
+	   DO k = cx_lo_s3(com_cx), cx_hi_s3(com_cx)
+	      IF ( point ) THEN  
+	         res(i,j,k,l,m,n) = 0.
+	      ELSE
+	         DO i = cx_lo_s1(com_cx), cx_hi_s1(com_cx)
 	          res(i,j,k,l,m,n) = box(i)* cos_factor
- 200	      CONTINUE
-	   ENDIF
- 210	   CONTINUE
+	         ENDDO
+	      ENDIF
+
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
+
+	   ENDDO
+
 
 * ALONG Y AXIS
 	ELSEIF ( idim .EQ. y_dim ) THEN
-	   DO 310 n = cx_lo_s6(com_cx), cx_hi_s6(com_cx)
-	   DO 310 m = cx_lo_s5(com_cx), cx_hi_s5(com_cx)
-	   DO 310 l = cx_lo_s4(com_cx), cx_hi_s4(com_cx)
-	   DO 310 k = cx_lo_s3(com_cx), cx_hi_s3(com_cx)
-	   DO 310 i = cx_lo_s1(com_cx), cx_hi_s1(com_cx)
-	   IF ( point ) THEN
-	      res(i,j,k,l,m,n) = 0.
-	   ELSE
-	      DO 300 j = cx_lo_s2(com_cx), cx_hi_s2(com_cx)
-	         res(i,j,k,l,m,n) = box(j)
- 300	      CONTINUE
-	   ENDIF
- 310	   CONTINUE
+	   DO n = cx_lo_s6(com_cx), cx_hi_s6(com_cx)
+	   DO m = cx_lo_s5(com_cx), cx_hi_s5(com_cx)
+	   DO l = cx_lo_s4(com_cx), cx_hi_s4(com_cx)
+	   DO k = cx_lo_s3(com_cx), cx_hi_s3(com_cx)
+	   DO i = cx_lo_s1(com_cx), cx_hi_s1(com_cx)
+	      IF ( point ) THEN
+	         res(i,j,k,l,m,n) = 0.
+	      ELSE
+	         DO j = cx_lo_s2(com_cx), cx_hi_s2(com_cx)
+	            res(i,j,k,l,m,n) = box(j)
+		 ENDDO
+	      ENDIF
+
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
 
 * ALONG Z AXIS
 	ELSEIF ( idim .EQ. z_dim ) THEN
-	   DO 410 n = cx_lo_s6(com_cx), cx_hi_s6(com_cx)
-	   DO 410 m = cx_lo_s5(com_cx), cx_hi_s5(com_cx)
-	   DO 410 l = cx_lo_s4(com_cx), cx_hi_s4(com_cx)
-	   DO 410 j = cx_lo_s2(com_cx), cx_hi_s2(com_cx)
-	   DO 410 i = cx_lo_s1(com_cx), cx_hi_s1(com_cx)
+	   DO n = cx_lo_s6(com_cx), cx_hi_s6(com_cx)
+	   DO m = cx_lo_s5(com_cx), cx_hi_s5(com_cx)
+	   DO l = cx_lo_s4(com_cx), cx_hi_s4(com_cx)
+	   DO j = cx_lo_s2(com_cx), cx_hi_s2(com_cx)
+	   DO i = cx_lo_s1(com_cx), cx_hi_s1(com_cx)
               IF ( point ) THEN 
-	      res(i,j,k,l,m,n) = 0.
-	   ELSE
-	      DO 400 k = cx_lo_s3(com_cx), cx_hi_s3(com_cx)
-	         res(i,j,k,l,m,n) = box(k)
- 400	      CONTINUE
-           ENDIF
- 410	   CONTINUE
+	         res(i,j,k,l,m,n) = 0.
+	      ELSE
+	         DO k = cx_lo_s3(com_cx), cx_hi_s3(com_cx)
+	            res(i,j,k,l,m,n) = box(k)
+		 ENDDO
+              ENDIF
+
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
 
 * ALONG T AXIS
 	ELSEIF ( idim .EQ. t_dim ) THEN
-	   DO 510 n = cx_lo_s6(com_cx), cx_hi_s6(com_cx)
-	   DO 510 m = cx_lo_s5(com_cx), cx_hi_s5(com_cx)
-	   DO 510 k = cx_lo_s3(com_cx), cx_hi_s3(com_cx)
-	   DO 510 j = cx_lo_s2(com_cx), cx_hi_s2(com_cx)
-	   DO 510 i = cx_lo_s1(com_cx), cx_hi_s1(com_cx)
+	   DO n = cx_lo_s6(com_cx), cx_hi_s6(com_cx)
+	   DO m = cx_lo_s5(com_cx), cx_hi_s5(com_cx)
+	   DO k = cx_lo_s3(com_cx), cx_hi_s3(com_cx)
+	   DO j = cx_lo_s2(com_cx), cx_hi_s2(com_cx)
+	   DO i = cx_lo_s1(com_cx), cx_hi_s1(com_cx)
               IF ( point ) THEN
 	      res(i,j,k,l,m,n) = 0.
 	   ELSE
-	      DO 500 l = cx_lo_s4(com_cx), cx_hi_s4(com_cx)
+	      DO l = cx_lo_s4(com_cx), cx_hi_s4(com_cx)
 	         res(i,j,k,l,m,n) = box(l)
- 500	      CONTINUE   
+	      ENDDO   
 	   ENDIF
- 510	   CONTINUE
 
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
 
 * ALONG E AXIS
 	ELSEIF ( idim .EQ. e_dim ) THEN
-	   DO 610 n = cx_lo_s6(com_cx), cx_hi_s6(com_cx)
-	   DO 610 l = cx_lo_s4(com_cx), cx_hi_s4(com_cx)
-	   DO 610 k = cx_lo_s3(com_cx), cx_hi_s3(com_cx)
-	   DO 610 j = cx_lo_s2(com_cx), cx_hi_s2(com_cx)
-	   DO 610 i = cx_lo_s1(com_cx), cx_hi_s1(com_cx)
+	   DO n = cx_lo_s6(com_cx), cx_hi_s6(com_cx)
+	   DO l = cx_lo_s4(com_cx), cx_hi_s4(com_cx)
+	   DO k = cx_lo_s3(com_cx), cx_hi_s3(com_cx)
+	   DO j = cx_lo_s2(com_cx), cx_hi_s2(com_cx)
+	   DO i = cx_lo_s1(com_cx), cx_hi_s1(com_cx)
               IF ( point ) THEN
-	      res(i,j,k,l,m,n) = 0.
-	   ELSE
-	      DO 600 m = cx_lo_s5(com_cx), cx_hi_s5(com_cx)
+	         res(i,j,k,l,m,n) = 0.
+	      ELSE
+	      DO m = cx_lo_s5(com_cx), cx_hi_s5(com_cx)
 	         res(i,j,k,l,m,n) = box(m)
- 600	      CONTINUE
+	      ENDDO
            ENDIF
- 610	   CONTINUE
+
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
 
 
 * ALONG F AXIS
+
 	ELSEIF ( idim .EQ. f_dim ) THEN
-	   DO 710 m = cx_lo_s5(com_cx), cx_hi_s5(com_cx)
-	   DO 710 l = cx_lo_s4(com_cx), cx_hi_s4(com_cx)
-	   DO 710 k = cx_lo_s3(com_cx), cx_hi_s3(com_cx)
-	   DO 710 j = cx_lo_s2(com_cx), cx_hi_s2(com_cx)
-	   DO 710 i = cx_lo_s1(com_cx), cx_hi_s1(com_cx)
+	   DO m = cx_lo_s5(com_cx), cx_hi_s5(com_cx)
+	   DO l = cx_lo_s4(com_cx), cx_hi_s4(com_cx)
+	   DO k = cx_lo_s3(com_cx), cx_hi_s3(com_cx)
+	   DO j = cx_lo_s2(com_cx), cx_hi_s2(com_cx)
+	   DO i = cx_lo_s1(com_cx), cx_hi_s1(com_cx)
               IF ( point ) THEN
 	      res(i,j,k,l,m,n) = 0.
 	   ELSE
-	      DO 700 n = cx_lo_s6(com_cx), cx_hi_s6(com_cx)
+	      DO n = cx_lo_s6(com_cx), cx_hi_s6(com_cx)
 	         res(i,j,k,l,m,n) = box(n)
- 700	      CONTINUE
+	      ENDDO
 	   ENDIF
- 710	   CONTINUE
+
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
 
 	ENDIF
 

@@ -75,6 +75,7 @@
 *                  define the @NRST regridding.
 *        2/12 *kms* Add E and F dimensions (use nferdims in tmap_dims.parm)
 *       *acm* 4/12 6D Ferret: time axis may be in t or f direction. 
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
@@ -132,19 +133,19 @@
 * convert linear interp subscript points to nearest subscript pointer
 * ... determine the closer of the surrounding coefficients
         found1 = .FALSE.
-	DO 10 i = dst_lo, dst_hi
+	DO i = dst_lo, dst_hi
 	   IF ( ss12(i) .NE. unspecified_int4 .OR. 
      .          ss12(i) .EQ. unspecified_int4 .AND. ok_neg111) THEN
 	      IF (coef(i) .GE. 0.5) ss12(i) =  ss12(i) + 1
 	      found1 = .TRUE.
 	   ENDIF
- 10	CONTINUE
+	ENDDO
 	
 * ... If there is just one source point, all of the data is "nearest". 
 	IF (src_lo .EQ. src_hi) THEN
-	   DO 20 i = dst_lo, dst_hi
+	   DO i = dst_lo, dst_hi
 	      ss12(i) = src_lo
- 20        CONTINUE
+	   ENDDO
 	ENDIF
 
 * ... . See if the axes overlap - if so can define the subscripts for the transform.
@@ -161,180 +162,239 @@
 
            xmin = TM_WORLD( src_lo, src_grd, axis, box_middle )
            xmax = TM_WORLD( src_hi, src_grd, axis, box_middle )
-	   DO 30 i = dst_lo, dst_hi
+	   DO i = dst_lo, dst_hi
 	      ii = i
               xdst = TDEST_WORLD( i, dst_grd, axis, box_middle )
 	      IF (xdst .LT. xmin) ss12(i) = src_lo
 	      IF (xdst .GT. xmax) ss12(i) = src_hi
- 30        CONTINUE
+	   ENDDO
 	ENDIF
 
         IF ( .NOT. ok_neg111 ) THEN
 * ... fill upper end of subscript list with highest available source ss
            found1 = .FALSE.
-           DO 40 i = dst_lo, dst_hi
+           DO i = dst_lo, dst_hi
               IF ( ss12(i) .NE. unspecified_int4 ) THEN
                  found1 = .TRUE.
               ELSEIF ( found1 ) THEN
                  ss12(i) = src_hi
               ENDIF
- 40        CONTINUE
+	   ENDDO
 * ... fill lower end of subscript list with lowest available source ss
            found1 = .FALSE.
-           DO 50 i = dst_hi, dst_lo, -1
+           DO i = dst_hi, dst_lo, -1
               IF ( ss12(i) .NE. unspecified_int4 ) THEN
                  found1 = .TRUE.
               ELSEIF ( found1 ) THEN
                  ss12(i) = src_lo
               ENDIF
- 50        CONTINUE
+	   ENDDO
         ENDIF
 
 * transfer THE map-able DATA TO dst_grd
 	IF ( axis .EQ. x_dim ) THEN
-	   DO 110 i = dst_lo, dst_hi
+	   DO i = dst_lo, dst_hi
 
 	      ss = ss12(i)
 
 	      IF ( ss .NE. unspecified_int4 .OR. 
      .             ss .EQ. unspecified_int4 .AND. ok_neg111) THEN
-	         DO 100 n = cx_lo_s6(cx_lims), cx_hi_s6(cx_lims)
-	         DO 100 m = cx_lo_s5(cx_lims), cx_hi_s5(cx_lims)
-	         DO 100 l = cx_lo_s4(cx_lims), cx_hi_s4(cx_lims)
-	         DO 100 k = cx_lo_s3(cx_lims), cx_hi_s3(cx_lims)
-	         DO 100 j = cx_lo_s2(cx_lims), cx_hi_s2(cx_lims)
- 100		 dst(i,j,k,l,m,n) = src(ss,j,k,l,m,n)
+	         DO n = cx_lo_s6(cx_lims), cx_hi_s6(cx_lims)
+	         DO m = cx_lo_s5(cx_lims), cx_hi_s5(cx_lims)
+	         DO l = cx_lo_s4(cx_lims), cx_hi_s4(cx_lims)
+	         DO k = cx_lo_s3(cx_lims), cx_hi_s3(cx_lims)
+	         DO j = cx_lo_s2(cx_lims), cx_hi_s2(cx_lims)
+		    dst(i,j,k,l,m,n) = src(ss,j,k,l,m,n)
+		 ENDDO
+		 ENDDO
+		 ENDDO
+		 ENDDO
+		 ENDDO
 	      ELSE
-	         DO 102 n = cx_lo_s6(cx_lims), cx_hi_s6(cx_lims)
-	         DO 102 m = cx_lo_s5(cx_lims), cx_hi_s5(cx_lims)
-	         DO 102 l = cx_lo_s4(cx_lims), cx_hi_s4(cx_lims)
-	         DO 102 k = cx_lo_s3(cx_lims), cx_hi_s3(cx_lims)
-	         DO 102 j = cx_lo_s2(cx_lims), cx_hi_s2(cx_lims)
- 102		 dst(i,j,k,l,m,n) = bad_dst
+	         DO n = cx_lo_s6(cx_lims), cx_hi_s6(cx_lims)
+	         DO m = cx_lo_s5(cx_lims), cx_hi_s5(cx_lims)
+	         DO l = cx_lo_s4(cx_lims), cx_hi_s4(cx_lims)
+	         DO k = cx_lo_s3(cx_lims), cx_hi_s3(cx_lims)
+	         DO j = cx_lo_s2(cx_lims), cx_hi_s2(cx_lims)
+		    dst(i,j,k,l,m,n) = bad_dst
+		 ENDDO
+		 ENDDO
+		 ENDDO
+		 ENDDO
+		 ENDDO
 	      ENDIF
 
- 110	   CONTINUE
+	   ENDDO
 
 	ELSEIF ( axis .EQ. y_dim ) THEN
-	   DO 210 j = dst_lo, dst_hi
+	   DO j = dst_lo, dst_hi
 
 	      ss = ss12(j)
 
 	      IF ( ss .NE. unspecified_int4 .OR. 
      .             ss .EQ. unspecified_int4 .AND. ok_neg111) THEN
-	         DO 200 n = cx_lo_s6(cx_lims), cx_hi_s6(cx_lims)
-	         DO 200 m = cx_lo_s5(cx_lims), cx_hi_s5(cx_lims)
-	         DO 200 l = cx_lo_s4(cx_lims), cx_hi_s4(cx_lims)
-	         DO 200 k = cx_lo_s3(cx_lims), cx_hi_s3(cx_lims)
-	         DO 200 i = cx_lo_s1(cx_lims), cx_hi_s1(cx_lims)
- 200	         dst(i,j,k,l,m,n) = src(i,ss,k,l,m,n)
+	         DO n = cx_lo_s6(cx_lims), cx_hi_s6(cx_lims)
+	         DO m = cx_lo_s5(cx_lims), cx_hi_s5(cx_lims)
+	         DO l = cx_lo_s4(cx_lims), cx_hi_s4(cx_lims)
+	         DO k = cx_lo_s3(cx_lims), cx_hi_s3(cx_lims)
+	         DO i = cx_lo_s1(cx_lims), cx_hi_s1(cx_lims)
+	            dst(i,j,k,l,m,n) = src(i,ss,k,l,m,n)
+		 ENDDO
+		 ENDDO
+		 ENDDO
+		 ENDDO
+		 ENDDO
 	      ELSE
-	         DO 202 n = cx_lo_s6(cx_lims), cx_hi_s6(cx_lims)
-	         DO 202 m = cx_lo_s5(cx_lims), cx_hi_s5(cx_lims)
-	         DO 202 l = cx_lo_s4(cx_lims), cx_hi_s4(cx_lims)
-	         DO 202 k = cx_lo_s3(cx_lims), cx_hi_s3(cx_lims)
-	         DO 202 i = cx_lo_s1(cx_lims), cx_hi_s1(cx_lims)
- 202		 dst(i,j,k,l,m,n) = bad_dst
+	         DO n = cx_lo_s6(cx_lims), cx_hi_s6(cx_lims)
+	         DO m = cx_lo_s5(cx_lims), cx_hi_s5(cx_lims)
+	         DO l = cx_lo_s4(cx_lims), cx_hi_s4(cx_lims)
+	         DO k = cx_lo_s3(cx_lims), cx_hi_s3(cx_lims)
+	         DO i = cx_lo_s1(cx_lims), cx_hi_s1(cx_lims)
+		    dst(i,j,k,l,m,n) = bad_dst
+		 ENDDO
+		 ENDDO
+		 ENDDO
+		 ENDDO
+		 ENDDO
 	      ENDIF
 
- 210	   CONTINUE
+	   ENDDO
 
 	ELSEIF ( axis .EQ. z_dim ) THEN
-	   DO 310 k = dst_lo, dst_hi
+	   DO k = dst_lo, dst_hi
 
 	      ss = ss12(k)
 
 	      IF ( ss .NE. unspecified_int4 .OR. 
      .             ss .EQ. unspecified_int4 .AND. ok_neg111) THEN
-	         DO 300 n = cx_lo_s6(cx_lims), cx_hi_s6(cx_lims)
-	         DO 300 m = cx_lo_s5(cx_lims), cx_hi_s5(cx_lims)
-	         DO 300 l = cx_lo_s4(cx_lims), cx_hi_s4(cx_lims)
-	         DO 300 j = cx_lo_s2(cx_lims), cx_hi_s2(cx_lims)
-	         DO 300 i = cx_lo_s1(cx_lims), cx_hi_s1(cx_lims)
- 300	         dst(i,j,k,l,m,n) = src(i,j,ss,l,m,n)
+	         DO n = cx_lo_s6(cx_lims), cx_hi_s6(cx_lims)
+	         DO m = cx_lo_s5(cx_lims), cx_hi_s5(cx_lims)
+	         DO l = cx_lo_s4(cx_lims), cx_hi_s4(cx_lims)
+	         DO j = cx_lo_s2(cx_lims), cx_hi_s2(cx_lims)
+	         DO i = cx_lo_s1(cx_lims), cx_hi_s1(cx_lims)
+	            dst(i,j,k,l,m,n) = src(i,j,ss,l,m,n)
+		 ENDDO
+		 ENDDO
+		 ENDDO
+		 ENDDO
+		 ENDDO
 	      ELSE
-	         DO 302 n = cx_lo_s6(cx_lims), cx_hi_s6(cx_lims)
-	         DO 302 m = cx_lo_s5(cx_lims), cx_hi_s5(cx_lims)
-	         DO 302 l = cx_lo_s4(cx_lims), cx_hi_s4(cx_lims)
-	         DO 302 j = cx_lo_s2(cx_lims), cx_hi_s2(cx_lims)
-	         DO 302 i = cx_lo_s1(cx_lims), cx_hi_s1(cx_lims)
- 302		 dst(i,j,k,l,m,n) = bad_dst
+	         DO n = cx_lo_s6(cx_lims), cx_hi_s6(cx_lims)
+	         DO m = cx_lo_s5(cx_lims), cx_hi_s5(cx_lims)
+	         DO l = cx_lo_s4(cx_lims), cx_hi_s4(cx_lims)
+	         DO j = cx_lo_s2(cx_lims), cx_hi_s2(cx_lims)
+	         DO i = cx_lo_s1(cx_lims), cx_hi_s1(cx_lims)
+		    dst(i,j,k,l,m,n) = bad_dst
+		 ENDDO
+		 ENDDO
+		 ENDDO
+		 ENDDO
+		 ENDDO
 	      ENDIF
 
- 310	   CONTINUE
+	   ENDDO
 
 	ELSEIF ( axis .EQ. t_dim ) THEN
-	   DO 410 l = dst_lo, dst_hi
+	   DO l = dst_lo, dst_hi
 
 	      ss = ss12(l)
 
 	      IF ( ss .NE. unspecified_int4 .OR. 
      .             ss .EQ. unspecified_int4 .AND. ok_neg111) THEN
-	         DO 400 n = cx_lo_s6(cx_lims), cx_hi_s6(cx_lims)
-	         DO 400 m = cx_lo_s5(cx_lims), cx_hi_s5(cx_lims)
-	         DO 400 k = cx_lo_s3(cx_lims), cx_hi_s3(cx_lims)
-	         DO 400 j = cx_lo_s2(cx_lims), cx_hi_s2(cx_lims)
-	         DO 400 i = cx_lo_s1(cx_lims), cx_hi_s1(cx_lims)
- 400	         dst(i,j,k,l,m,n) = src(i,j,k,ss,m,n)
+	         DO n = cx_lo_s6(cx_lims), cx_hi_s6(cx_lims)
+	         DO m = cx_lo_s5(cx_lims), cx_hi_s5(cx_lims)
+	         DO k = cx_lo_s3(cx_lims), cx_hi_s3(cx_lims)
+	         DO j = cx_lo_s2(cx_lims), cx_hi_s2(cx_lims)
+	         DO i = cx_lo_s1(cx_lims), cx_hi_s1(cx_lims)
+	            dst(i,j,k,l,m,n) = src(i,j,k,ss,m,n)
+		 ENDDO
+		 ENDDO
+		 ENDDO
+		 ENDDO
+		 ENDDO
 	      ELSE
-	         DO 402 n = cx_lo_s6(cx_lims), cx_hi_s6(cx_lims)
-	         DO 402 m = cx_lo_s5(cx_lims), cx_hi_s5(cx_lims)
-	         DO 402 k = cx_lo_s3(cx_lims), cx_hi_s3(cx_lims)
-	         DO 402 j = cx_lo_s2(cx_lims), cx_hi_s2(cx_lims)
-	         DO 402 i = cx_lo_s1(cx_lims), cx_hi_s1(cx_lims)
- 402		 dst(i,j,k,l,m,n) = bad_dst
+	         DO n = cx_lo_s6(cx_lims), cx_hi_s6(cx_lims)
+	         DO m = cx_lo_s5(cx_lims), cx_hi_s5(cx_lims)
+	         DO k = cx_lo_s3(cx_lims), cx_hi_s3(cx_lims)
+	         DO j = cx_lo_s2(cx_lims), cx_hi_s2(cx_lims)
+	         DO i = cx_lo_s1(cx_lims), cx_hi_s1(cx_lims)
+		    dst(i,j,k,l,m,n) = bad_dst
+		 ENDDO
+		 ENDDO
+		 ENDDO
+		 ENDDO
+		 ENDDO
 	      ENDIF
 
- 410	   CONTINUE
+	   ENDDO
 
 	ELSEIF ( axis .EQ. e_dim ) THEN
-	   DO 510 m = dst_lo, dst_hi
+	   DO m = dst_lo, dst_hi
 
 	      ss = ss12(m)
 
 	      IF ( ss .NE. unspecified_int4 .OR. 
      .             ss .EQ. unspecified_int4 .AND. ok_neg111) THEN
-	         DO 500 n = cx_lo_s6(cx_lims), cx_hi_s6(cx_lims)
-	         DO 500 l = cx_lo_s4(cx_lims), cx_hi_s4(cx_lims)
-	         DO 500 k = cx_lo_s3(cx_lims), cx_hi_s3(cx_lims)
-	         DO 500 j = cx_lo_s2(cx_lims), cx_hi_s2(cx_lims)
-	         DO 500 i = cx_lo_s1(cx_lims), cx_hi_s1(cx_lims)
- 500	         dst(i,j,k,l,m,n) = src(i,j,k,l,ss,n)
+	         DO n = cx_lo_s6(cx_lims), cx_hi_s6(cx_lims)
+	         DO l = cx_lo_s4(cx_lims), cx_hi_s4(cx_lims)
+	         DO k = cx_lo_s3(cx_lims), cx_hi_s3(cx_lims)
+	         DO j = cx_lo_s2(cx_lims), cx_hi_s2(cx_lims)
+	         DO i = cx_lo_s1(cx_lims), cx_hi_s1(cx_lims)
+	            dst(i,j,k,l,m,n) = src(i,j,k,l,ss,n)
+		 ENDDO
+		 ENDDO
+		 ENDDO
+		 ENDDO
+		 ENDDO
 	      ELSE
-	         DO 502 n = cx_lo_s6(cx_lims), cx_hi_s6(cx_lims)
-	         DO 502 l = cx_lo_s4(cx_lims), cx_hi_s4(cx_lims)
-	         DO 502 k = cx_lo_s3(cx_lims), cx_hi_s3(cx_lims)
-	         DO 502 j = cx_lo_s2(cx_lims), cx_hi_s2(cx_lims)
-	         DO 502 i = cx_lo_s1(cx_lims), cx_hi_s1(cx_lims)
- 502		 dst(i,j,k,l,m,n) = bad_dst
+	         DO n = cx_lo_s6(cx_lims), cx_hi_s6(cx_lims)
+	         DO l = cx_lo_s4(cx_lims), cx_hi_s4(cx_lims)
+	         DO k = cx_lo_s3(cx_lims), cx_hi_s3(cx_lims)
+	         DO j = cx_lo_s2(cx_lims), cx_hi_s2(cx_lims)
+	         DO i = cx_lo_s1(cx_lims), cx_hi_s1(cx_lims)
+		    dst(i,j,k,l,m,n) = bad_dst
+		 ENDDO
+		 ENDDO
+		 ENDDO
+		 ENDDO
+		 ENDDO
 	      ENDIF
 
- 510	   CONTINUE
+	   ENDDO
 
 	ELSEIF ( axis .EQ. f_dim ) THEN
-	   DO 610 n = dst_lo, dst_hi
+	   DO n = dst_lo, dst_hi
 
 	      ss = ss12(n)
 
 	      IF ( ss .NE. unspecified_int4 .OR. 
      .             ss .EQ. unspecified_int4 .AND. ok_neg111) THEN
-	         DO 600 m = cx_lo_s5(cx_lims), cx_hi_s5(cx_lims)
-	         DO 600 l = cx_lo_s4(cx_lims), cx_hi_s4(cx_lims)
-	         DO 600 k = cx_lo_s3(cx_lims), cx_hi_s3(cx_lims)
-	         DO 600 j = cx_lo_s2(cx_lims), cx_hi_s2(cx_lims)
-	         DO 600 i = cx_lo_s1(cx_lims), cx_hi_s1(cx_lims)
- 600	         dst(i,j,k,l,m,n) = src(i,j,k,l,m,ss)
+	         DO m = cx_lo_s5(cx_lims), cx_hi_s5(cx_lims)
+	         DO l = cx_lo_s4(cx_lims), cx_hi_s4(cx_lims)
+	         DO k = cx_lo_s3(cx_lims), cx_hi_s3(cx_lims)
+	         DO j = cx_lo_s2(cx_lims), cx_hi_s2(cx_lims)
+	         DO i = cx_lo_s1(cx_lims), cx_hi_s1(cx_lims)
+	            dst(i,j,k,l,m,n) = src(i,j,k,l,m,ss)
+		 ENDDO
+		 ENDDO
+		 ENDDO
+		 ENDDO
+		 ENDDO
 	      ELSE
-	         DO 602 m = cx_lo_s5(cx_lims), cx_hi_s5(cx_lims)
-	         DO 602 l = cx_lo_s4(cx_lims), cx_hi_s4(cx_lims)
-	         DO 602 k = cx_lo_s3(cx_lims), cx_hi_s3(cx_lims)
-	         DO 602 j = cx_lo_s2(cx_lims), cx_hi_s2(cx_lims)
-	         DO 602 i = cx_lo_s1(cx_lims), cx_hi_s1(cx_lims)
- 602		 dst(i,j,k,l,m,n) = bad_dst
+	         DO m = cx_lo_s5(cx_lims), cx_hi_s5(cx_lims)
+	         DO l = cx_lo_s4(cx_lims), cx_hi_s4(cx_lims)
+	         DO k = cx_lo_s3(cx_lims), cx_hi_s3(cx_lims)
+	         DO j = cx_lo_s2(cx_lims), cx_hi_s2(cx_lims)
+	         DO i = cx_lo_s1(cx_lims), cx_hi_s1(cx_lims)
+		    dst(i,j,k,l,m,n) = bad_dst
+		 ENDDO
+		 ENDDO
+		 ENDDO
+		 ENDDO
+		 ENDDO
 	      ENDIF
 
- 610	   CONTINUE
-
+	   ENDDO
 
 	ENDIF
 

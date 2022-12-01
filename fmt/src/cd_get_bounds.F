@@ -59,6 +59,7 @@
 *                  linked with OPeNDAP library.
 * V674 2/12 *acm* 6D Ferret: use nferdims rather than 4 for dimension indexing
 * TODO: initially leave this as 4D -- what to do with old files that have 4 slab min/max?
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 
 * argument definitions:
 *	cdfid   - id of currently open CDF file
@@ -80,7 +81,6 @@
 ! Declare netcdf function names. 
 ! The ones without trailing underscore are declared in netcdf.inc
 #include "netcdf_declareUnderscore.inc"
-
 
 * argument declarations:
 	INTEGER	 cdfid, ivar, lo(nferdims), hi(nferdims), tmrecdim, status
@@ -127,11 +127,13 @@
         got_lo = CD_GET_ATTVAL( cdfid, ivar, 'slab_min_index',
      .           do_warn,vname(:vlen),r4_lo,nferdims,vbacklo )
         IF ( got_lo ) THEN
-          DO 100 idim = 1, 4
- 100      lo(idim) = r4_lo(idim) !fp->int
+          DO idim = 1, 4
+             lo(idim) = r4_lo(idim) !fp->int
+          ENDDO
 	  IF (nferdims .GT. 4) THEN
-          DO 110 idim = 5, nferdims
- 110         lo(idim) = unspecified_int4
+             DO idim = 5, nferdims
+                lo(idim) = unspecified_int4
+             ENDDO
 	  ENDIF
         ENDIF
 
@@ -140,11 +142,13 @@
      .           do_warn,vname(:vlen),r4_hi, nferdims, vbackhi )
 
         IF ( got_hi ) THEN
-          DO 200 idim = 1, 4
- 200      hi(idim) = r4_hi(idim) !fp->int
+          DO idim = 1, 4
+             hi(idim) = r4_hi(idim) !fp->int
+          ENDDO
 	  IF (nferdims .GT. 4) THEN
-             DO 220 idim = 5, nferdims
- 220         hi(idim) = unspecified_int4
+             DO idim = 5, nferdims
+               hi(idim) = unspecified_int4
+            ENDDO
 	  ENDIF
         ENDIF
 
@@ -156,12 +160,12 @@
 
 * the record dimension of the variable may have a flag, only
 * if so substitute the full size of the record dimension
-        DO 300 idim = 1, 4
+        DO idim = 1, 4
            IF ( hi(idim) .EQ. pcdf_recdim ) THEN
               IF ( tmrecdim .NE. 0 ) GOTO 5100
               tmrecdim = idim
            ENDIF
- 300    CONTINUE
+        ENDDO
         IF ( tmrecdim .NE. 0 ) THEN
 	   cdfstat = NF_INQ_DIM( cdfid, recdim, buff, npts )
 	   lo(tmrecdim) = 1

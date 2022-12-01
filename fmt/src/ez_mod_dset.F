@@ -51,6 +51,7 @@
 * V674 2/12 *acm* 6D Ferret: use nferdims rather than 4 for dimension indexing
 * V685+ 12/13 *acm* 6D Ferret: passed-in array had fixed dimensino of 4
 * V701  7/16 *kms* Compare ds_name to char_init2048 instead of char_init1024
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 
 * Arguments:
 *	dset	- data set number
@@ -110,7 +111,8 @@
 * Defining skip header records?
 	IF (skip .NE. int4_init) THEN
 	  DO 200 scnt = 1,maxstepfiles
-  200	  IF (sf_setnum(scnt) .EQ. dset) sf_skip(scnt) = skip
+  	     IF (sf_setnum(scnt) .EQ. dset) sf_skip(scnt) = skip
+  200	  CONTINUE
 	ENDIF
 	status = merr_ok
 	GOTO 9990

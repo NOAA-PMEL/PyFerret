@@ -69,6 +69,7 @@
 *       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
 *       *acm* 3/12 removing use of old GT and TS data formats (routine 
 *	           GT_GET_TIME_AXIS is still used for MC datasets).
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 
 * CALLING ARGUMENTS
 *	dnum - the data set fow which a time axis is desired
@@ -83,7 +84,7 @@
 	include 'xdset_info.cmn_text'
 	external xdset_info_data
 	include 'xtm_grid.cmn_text'
-		include 'xstep_files.cmn_text'
+	include 'xstep_files.cmn_text'
 	external xstep_files_data
 
 *

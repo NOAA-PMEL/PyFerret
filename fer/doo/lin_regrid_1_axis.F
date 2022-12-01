@@ -68,6 +68,7 @@
 *                  it as a valid index from its use as the bad flag.
 * V68  *acm* 1/12  changes for double-precision ferret.
 *        2/12 *kms* Add E and F dimensions (use nferdims in tmap_dims.parm)
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
@@ -123,7 +124,7 @@
 
 * CONVERT THE DATA TO dst_grd
 	IF ( axis .EQ. x_dim ) THEN
-	   DO 110 i = dst_lo, dst_hi
+	   DO i = dst_lo, dst_hi
 
 * interpolation coefficients
 	      ss = ss12(i)
@@ -132,48 +133,50 @@
 
 * special case: exact overlap of source and dest points
 	      IF ( TM_FPEQ(c1, 1.0) ) THEN
-	         DO 100 n = cx_lo_s6(cx_lims), cx_hi_s6(cx_lims)
-	         DO 100 m = cx_lo_s5(cx_lims), cx_hi_s5(cx_lims)
-	         DO 100 l = cx_lo_s4(cx_lims), cx_hi_s4(cx_lims)
-	         DO 100 k = cx_lo_s3(cx_lims), cx_hi_s3(cx_lims)
-	         DO 100 j = cx_lo_s2(cx_lims), cx_hi_s2(cx_lims)
- 100	         dst(i,j,k,l,m,n) = src(ss,j,k,l,m,n)
-	         GOTO 110
-	      ELSEIF ( ss .EQ. unspecified_int4 .AND. 
-     .                 .NOT. ok_neg111 ) THEN
-* ... this should never happen in FERRET 2.00+
-	         DO 102 n = cx_lo_s6(cx_lims), cx_hi_s6(cx_lims)
-	         DO 102 m = cx_lo_s5(cx_lims), cx_hi_s5(cx_lims)
-	         DO 102 l = cx_lo_s4(cx_lims), cx_hi_s4(cx_lims)
-	         DO 102 k = cx_lo_s3(cx_lims), cx_hi_s3(cx_lims)
-	         DO 102 j = cx_lo_s2(cx_lims), cx_hi_s2(cx_lims)
- 102		 dst(i,j,k,l,m,n) = bad_dst
-	         GOTO 110
-	      ENDIF
+	         DO n = cx_lo_s6(cx_lims), cx_hi_s6(cx_lims)
+	         DO m = cx_lo_s5(cx_lims), cx_hi_s5(cx_lims)
+	         DO l = cx_lo_s4(cx_lims), cx_hi_s4(cx_lims)
+	         DO k = cx_lo_s3(cx_lims), cx_hi_s3(cx_lims)
+	         DO j = cx_lo_s2(cx_lims), cx_hi_s2(cx_lims)
+	            dst(i,j,k,l,m,n) = src(ss,j,k,l,m,n)
+	         ENDDO
+	         ENDDO
+	         ENDDO
+	         ENDDO
+	         ENDDO
+
+	      ELSE
 
 * regular interpolation
-	      DO 105 n = cx_lo_s6(cx_lims), cx_hi_s6(cx_lims)
-	      DO 105 m = cx_lo_s5(cx_lims), cx_hi_s5(cx_lims)
-	      DO 105 l = cx_lo_s4(cx_lims), cx_hi_s4(cx_lims)
-	      DO 105 k = cx_lo_s3(cx_lims), cx_hi_s3(cx_lims)
-	      DO 105 j = cx_lo_s2(cx_lims), cx_hi_s2(cx_lims)
+	         DO n = cx_lo_s6(cx_lims), cx_hi_s6(cx_lims)
+	         DO m = cx_lo_s5(cx_lims), cx_hi_s5(cx_lims)
+	         DO l = cx_lo_s4(cx_lims), cx_hi_s4(cx_lims)
+	         DO k = cx_lo_s3(cx_lims), cx_hi_s3(cx_lims)
+	         DO j = cx_lo_s2(cx_lims), cx_hi_s2(cx_lims)
 
 * surrounding source data points
-	         z1 = src(ss  ,j,k,l,m,n)
-	         z2 = src(ss+1,j,k,l,m,n)
+	            z1 = src(ss  ,j,k,l,m,n)
+	            z2 = src(ss+1,j,k,l,m,n)
 
 * interpolate
-	         IF (z1 .EQ. bad_src .OR. z2 .EQ. bad_src ) THEN
-		    dst(i,j,k,l,m,n) = bad_dst
-	         ELSE
-	            dst(i,j,k,l,m,n) = c1*z1 + c2*z2
-	         ENDIF
+	            IF (z1 .EQ. bad_src .OR. z2 .EQ. bad_src ) THEN
+		       dst(i,j,k,l,m,n) = bad_dst
+	            ELSE
+	               dst(i,j,k,l,m,n) = c1*z1 + c2*z2
+	            ENDIF
 
- 105	      CONTINUE
- 110	   CONTINUE
+	         ENDDO
+	         ENDDO
+	         ENDDO
+	         ENDDO
+	         ENDDO
+
+	      ENDIF
+
+ 	   ENDDO
 
 	ELSEIF ( axis .EQ. y_dim ) THEN
-	   DO 210 j = dst_lo, dst_hi
+	   DO j = dst_lo, dst_hi
 
 * interpolation coefficients
 	      ss = ss12(j)
@@ -182,48 +185,48 @@
 
 * special case: exact overlap of source and dest points
 	      IF ( TM_FPEQ(c1, 1.0) ) THEN
-	         DO 200 n = cx_lo_s6(cx_lims), cx_hi_s6(cx_lims)
-	         DO 200 m = cx_lo_s5(cx_lims), cx_hi_s5(cx_lims)
-	         DO 200 l = cx_lo_s4(cx_lims), cx_hi_s4(cx_lims)
-	         DO 200 k = cx_lo_s3(cx_lims), cx_hi_s3(cx_lims)
-	         DO 200 i = cx_lo_s1(cx_lims), cx_hi_s1(cx_lims)
- 200	         dst(i,j,k,l,m,n) = src(i,ss,k,l,m,n)
-	         GOTO 210
-	      ELSEIF ( ss .EQ. unspecified_int4 .AND. 
-     .                 .NOT. ok_neg111 ) THEN
-* ... this should never happen in FERRET 2.00+
-	         DO 202 n = cx_lo_s6(cx_lims), cx_hi_s6(cx_lims)
-	         DO 202 m = cx_lo_s5(cx_lims), cx_hi_s5(cx_lims)
-	         DO 202 l = cx_lo_s4(cx_lims), cx_hi_s4(cx_lims)
-	         DO 202 k = cx_lo_s3(cx_lims), cx_hi_s3(cx_lims)
-	         DO 202 i = cx_lo_s1(cx_lims), cx_hi_s1(cx_lims)
- 202		 dst(i,j,k,l,m,n) = bad_dst
-	         GOTO 210
-	      ENDIF
+	         DO n = cx_lo_s6(cx_lims), cx_hi_s6(cx_lims)
+	         DO m = cx_lo_s5(cx_lims), cx_hi_s5(cx_lims)
+	         DO l = cx_lo_s4(cx_lims), cx_hi_s4(cx_lims)
+	         DO k = cx_lo_s3(cx_lims), cx_hi_s3(cx_lims)
+	         DO i = cx_lo_s1(cx_lims), cx_hi_s1(cx_lims)
+	            dst(i,j,k,l,m,n) = src(i,ss,k,l,m,n)
+	         ENDDO
+	         ENDDO
+	         ENDDO
+	         ENDDO
+	         ENDDO
+	      ELSE
 
 * regular interpolation
-	      DO 205 n = cx_lo_s6(cx_lims), cx_hi_s6(cx_lims)
-	      DO 205 m = cx_lo_s5(cx_lims), cx_hi_s5(cx_lims)
-	      DO 205 l = cx_lo_s4(cx_lims), cx_hi_s4(cx_lims)
-	      DO 205 k = cx_lo_s3(cx_lims), cx_hi_s3(cx_lims)
-	      DO 205 i = cx_lo_s1(cx_lims), cx_hi_s1(cx_lims)
+	         DO n = cx_lo_s6(cx_lims), cx_hi_s6(cx_lims)
+	         DO m = cx_lo_s5(cx_lims), cx_hi_s5(cx_lims)
+	         DO l = cx_lo_s4(cx_lims), cx_hi_s4(cx_lims)
+	         DO k = cx_lo_s3(cx_lims), cx_hi_s3(cx_lims)
+	         DO i = cx_lo_s1(cx_lims), cx_hi_s1(cx_lims)
 
 * surrounding source data points
-	         z1 = src(i,ss  ,k,l,m,n)
-	         z2 = src(i,ss+1,k,l,m,n)
+	            z1 = src(i,ss  ,k,l,m,n)
+	            z2 = src(i,ss+1,k,l,m,n)
 
 * interpolate
-	         IF (z1 .EQ. bad_src .OR. z2 .EQ. bad_src ) THEN
-		    dst(i,j,k,l,m,n) = bad_dst
-	         ELSE
-	            dst(i,j,k,l,m,n) = c1*z1 + c2*z2
-	         ENDIF
+	            IF (z1 .EQ. bad_src .OR. z2 .EQ. bad_src ) THEN
+		       dst(i,j,k,l,m,n) = bad_dst
+	            ELSE
+	               dst(i,j,k,l,m,n) = c1*z1 + c2*z2
+	            ENDIF
+		 ENDDO
+		 ENDDO
+		 ENDDO
+		 ENDDO
+		 ENDDO
 
- 205	      CONTINUE
- 210	   CONTINUE
+	      ENDIF
+
+	   ENDDO
 
 	ELSEIF ( axis .EQ. z_dim ) THEN
-	   DO 310 k = dst_lo, dst_hi
+	   DO k = dst_lo, dst_hi
 
 * interpolation coefficients
 	      ss = ss12(k)
@@ -232,48 +235,49 @@
 
 * special case: exact overlap of source and dest points
 	      IF ( TM_FPEQ(c1, 1.0) ) THEN
-	         DO 300 n = cx_lo_s6(cx_lims), cx_hi_s6(cx_lims)
-	         DO 300 m = cx_lo_s5(cx_lims), cx_hi_s5(cx_lims)
-	         DO 300 l = cx_lo_s4(cx_lims), cx_hi_s4(cx_lims)
-	         DO 300 j = cx_lo_s2(cx_lims), cx_hi_s2(cx_lims)
-	         DO 300 i = cx_lo_s1(cx_lims), cx_hi_s1(cx_lims)
- 300	         dst(i,j,k,l,m,n) = src(i,j,ss,l,m,n)
-	         GOTO 310
-	      ELSEIF ( ss .EQ. unspecified_int4 .AND. 
-     .                 .NOT. ok_neg111 ) THEN
-* ... this should never happen in FERRET 2.00+
-	         DO 302 n = cx_lo_s6(cx_lims), cx_hi_s6(cx_lims)
-	         DO 302 m = cx_lo_s5(cx_lims), cx_hi_s5(cx_lims)
-	         DO 302 l = cx_lo_s4(cx_lims), cx_hi_s4(cx_lims)
-	         DO 302 j = cx_lo_s2(cx_lims), cx_hi_s2(cx_lims)
-	         DO 302 i = cx_lo_s1(cx_lims), cx_hi_s1(cx_lims)
- 302		 dst(i,j,k,l,m,n) = bad_dst
-	         GOTO 310
-	      ENDIF
+	         DO n = cx_lo_s6(cx_lims), cx_hi_s6(cx_lims)
+	         DO m = cx_lo_s5(cx_lims), cx_hi_s5(cx_lims)
+	         DO l = cx_lo_s4(cx_lims), cx_hi_s4(cx_lims)
+	         DO j = cx_lo_s2(cx_lims), cx_hi_s2(cx_lims)
+	         DO i = cx_lo_s1(cx_lims), cx_hi_s1(cx_lims)
+	            dst(i,j,k,l,m,n) = src(i,j,ss,l,m,n)
+	         ENDDO
+	         ENDDO
+	         ENDDO
+	         ENDDO
+	         ENDDO
+	      ELSE
 
 * regular interpolation
-	      DO 305 n = cx_lo_s6(cx_lims), cx_hi_s6(cx_lims)
-	      DO 305 m = cx_lo_s5(cx_lims), cx_hi_s5(cx_lims)
-	      DO 305 l = cx_lo_s4(cx_lims), cx_hi_s4(cx_lims)
-	      DO 305 j = cx_lo_s2(cx_lims), cx_hi_s2(cx_lims)
-	      DO 305 i = cx_lo_s1(cx_lims), cx_hi_s1(cx_lims)
+	         DO n = cx_lo_s6(cx_lims), cx_hi_s6(cx_lims)
+	         DO m = cx_lo_s5(cx_lims), cx_hi_s5(cx_lims)
+	         DO l = cx_lo_s4(cx_lims), cx_hi_s4(cx_lims)
+	         DO j = cx_lo_s2(cx_lims), cx_hi_s2(cx_lims)
+	         DO i = cx_lo_s1(cx_lims), cx_hi_s1(cx_lims)
 
 * surrounding source data points
-	         z1 = src(i,j,ss  ,l,m,n)
-	         z2 = src(i,j,ss+1,l,m,n)
+	            z1 = src(i,j,ss  ,l,m,n)
+	            z2 = src(i,j,ss+1,l,m,n)
 
 * interpolate
-	         IF (z1 .EQ. bad_src .OR. z2 .EQ. bad_src ) THEN
-		    dst(i,j,k,l,m,n) = bad_dst
-	         ELSE
-	            dst(i,j,k,l,m,n) = c1*z1 + c2*z2
-	         ENDIF
+	            IF (z1 .EQ. bad_src .OR. z2 .EQ. bad_src ) THEN
+		       dst(i,j,k,l,m,n) = bad_dst
+	            ELSE
+	               dst(i,j,k,l,m,n) = c1*z1 + c2*z2
+	            ENDIF
 
- 305	      CONTINUE
- 310	   CONTINUE
+	         ENDDO
+	         ENDDO
+	         ENDDO
+	         ENDDO
+	         ENDDO
+ 
+	      ENDIF
+
+	   ENDDO
 
 	ELSEIF ( axis .EQ. t_dim ) THEN
-	   DO 410 l = dst_lo, dst_hi
+	   DO l = dst_lo, dst_hi
 
 * interpolation coefficients
 	      ss = ss12(l)
@@ -282,48 +286,48 @@
 
 * special case: exact overlap of source and dest points
 	      IF ( TM_FPEQ(c1, 1.0) ) THEN
-	         DO 400 n = cx_lo_s6(cx_lims), cx_hi_s6(cx_lims)
-	         DO 400 m = cx_lo_s5(cx_lims), cx_hi_s5(cx_lims)
-	         DO 400 k = cx_lo_s3(cx_lims), cx_hi_s3(cx_lims)
-	         DO 400 j = cx_lo_s2(cx_lims), cx_hi_s2(cx_lims)
-	         DO 400 i = cx_lo_s1(cx_lims), cx_hi_s1(cx_lims)
- 400	         dst(i,j,k,l,m,n) = src(i,j,k,ss,m,n)
-	         GOTO 410
-	      ELSEIF ( ss .EQ. unspecified_int4 .AND. 
-     .                 .NOT. ok_neg111 ) THEN
-* ... this should never happen in FERRET 2.00+
-	         DO 402 n = cx_lo_s6(cx_lims), cx_hi_s6(cx_lims)
-	         DO 402 m = cx_lo_s5(cx_lims), cx_hi_s5(cx_lims)
-	         DO 402 k = cx_lo_s3(cx_lims), cx_hi_s3(cx_lims)
-	         DO 402 j = cx_lo_s2(cx_lims), cx_hi_s2(cx_lims)
-	         DO 402 i = cx_lo_s1(cx_lims), cx_hi_s1(cx_lims)
- 402		 dst(i,j,k,l,m,n) = bad_dst
-	         GOTO 410
-	      ENDIF
+	         DO n = cx_lo_s6(cx_lims), cx_hi_s6(cx_lims)
+	         DO m = cx_lo_s5(cx_lims), cx_hi_s5(cx_lims)
+	         DO k = cx_lo_s3(cx_lims), cx_hi_s3(cx_lims)
+	         DO j = cx_lo_s2(cx_lims), cx_hi_s2(cx_lims)
+	         DO i = cx_lo_s1(cx_lims), cx_hi_s1(cx_lims)
+	            dst(i,j,k,l,m,n) = src(i,j,k,ss,m,n)
+	         ENDDO
+	         ENDDO
+	         ENDDO
+	         ENDDO
+	         ENDDO
+	      ELSE
 
 * regular interpolation
-	      DO 405 n = cx_lo_s6(cx_lims), cx_hi_s6(cx_lims)
-	      DO 405 m = cx_lo_s5(cx_lims), cx_hi_s5(cx_lims)
-	      DO 405 k = cx_lo_s3(cx_lims), cx_hi_s3(cx_lims)
-	      DO 405 j = cx_lo_s2(cx_lims), cx_hi_s2(cx_lims)
-	      DO 405 i = cx_lo_s1(cx_lims), cx_hi_s1(cx_lims)
+	         DO n = cx_lo_s6(cx_lims), cx_hi_s6(cx_lims)
+	         DO m = cx_lo_s5(cx_lims), cx_hi_s5(cx_lims)
+	         DO k = cx_lo_s3(cx_lims), cx_hi_s3(cx_lims)
+	         DO j = cx_lo_s2(cx_lims), cx_hi_s2(cx_lims)
+	         DO i = cx_lo_s1(cx_lims), cx_hi_s1(cx_lims)
 
 * surrounding source data points
-	         z1 = src(i,j,k,ss,  m,n)
-	         z2 = src(i,j,k,ss+1,m,n)
+	            z1 = src(i,j,k,ss,  m,n)
+	            z2 = src(i,j,k,ss+1,m,n)
 
 * interpolate
-	         IF (z1 .EQ. bad_src .OR. z2 .EQ. bad_src ) THEN
-		    dst(i,j,k,l,m,n) = bad_dst
-	         ELSE
-	            dst(i,j,k,l,m,n) = c1*z1 + c2*z2
-	         ENDIF
+	            IF (z1 .EQ. bad_src .OR. z2 .EQ. bad_src ) THEN
+		       dst(i,j,k,l,m,n) = bad_dst
+	            ELSE
+	               dst(i,j,k,l,m,n) = c1*z1 + c2*z2
+	            ENDIF
 
- 405	      CONTINUE
- 410	   CONTINUE
+	         ENDDO
+	         ENDDO
+	         ENDDO
+	         ENDDO
+	         ENDDO
+
+	      ENDIF
+	   ENDDO
 
 	ELSEIF ( axis .EQ. e_dim ) THEN
-	   DO 510 m = dst_lo, dst_hi
+	   DO m = dst_lo, dst_hi
 
 * interpolation coefficients
 	      ss = ss12(m)
@@ -332,48 +336,48 @@
 
 * special case: exact overlap of source and dest points
 	      IF ( TM_FPEQ(c1, 1.0) ) THEN
-	         DO 500 n = cx_lo_s6(cx_lims), cx_hi_s6(cx_lims)
-	         DO 500 l = cx_lo_s4(cx_lims), cx_hi_s4(cx_lims)
-	         DO 500 k = cx_lo_s3(cx_lims), cx_hi_s3(cx_lims)
-	         DO 500 j = cx_lo_s2(cx_lims), cx_hi_s2(cx_lims)
-	         DO 500 i = cx_lo_s1(cx_lims), cx_hi_s1(cx_lims)
- 500	         dst(i,j,k,l,m,n) = src(i,j,k,l,ss,n)
-	         GOTO 510
-	      ELSEIF ( ss .EQ. unspecified_int4 .AND. 
-     .                 .NOT. ok_neg111 ) THEN
-* ... this should never happen in FERRET 2.00+
-	         DO 502 n = cx_lo_s6(cx_lims), cx_hi_s6(cx_lims)
-	         DO 502 l = cx_lo_s4(cx_lims), cx_hi_s4(cx_lims)
-	         DO 502 k = cx_lo_s3(cx_lims), cx_hi_s3(cx_lims)
-	         DO 502 j = cx_lo_s2(cx_lims), cx_hi_s2(cx_lims)
-	         DO 502 i = cx_lo_s1(cx_lims), cx_hi_s1(cx_lims)
- 502		 dst(i,j,k,l,m,n) = bad_dst
-	         GOTO 510
-	      ENDIF
+	         DO n = cx_lo_s6(cx_lims), cx_hi_s6(cx_lims)
+	         DO l = cx_lo_s4(cx_lims), cx_hi_s4(cx_lims)
+	         DO k = cx_lo_s3(cx_lims), cx_hi_s3(cx_lims)
+	         DO j = cx_lo_s2(cx_lims), cx_hi_s2(cx_lims)
+	         DO i = cx_lo_s1(cx_lims), cx_hi_s1(cx_lims)
+	            dst(i,j,k,l,m,n) = src(i,j,k,l,ss,n)
+	         ENDDO
+	         ENDDO
+	         ENDDO
+	         ENDDO
+	         ENDDO
+	      ELSE
 
 * regular interpolation
-	      DO 505 n = cx_lo_s6(cx_lims), cx_hi_s6(cx_lims)
-	      DO 505 l = cx_lo_s4(cx_lims), cx_hi_s4(cx_lims)
-	      DO 505 k = cx_lo_s3(cx_lims), cx_hi_s3(cx_lims)
-	      DO 505 j = cx_lo_s2(cx_lims), cx_hi_s2(cx_lims)
-	      DO 505 i = cx_lo_s1(cx_lims), cx_hi_s1(cx_lims)
+	         DO n = cx_lo_s6(cx_lims), cx_hi_s6(cx_lims)
+	         DO l = cx_lo_s4(cx_lims), cx_hi_s4(cx_lims)
+	         DO k = cx_lo_s3(cx_lims), cx_hi_s3(cx_lims)
+	         DO j = cx_lo_s2(cx_lims), cx_hi_s2(cx_lims)
+	         DO i = cx_lo_s1(cx_lims), cx_hi_s1(cx_lims)
 
 * surrounding source data points
-	         z1 = src(i,j,k,l,ss  ,n)
-	         z2 = src(i,j,k,l,ss+1,n)
+	            z1 = src(i,j,k,l,ss  ,n)
+	            z2 = src(i,j,k,l,ss+1,n)
 
 * interpolate
-	         IF (z1 .EQ. bad_src .OR. z2 .EQ. bad_src ) THEN
-		    dst(i,j,k,l,m,n) = bad_dst
-	         ELSE
-	            dst(i,j,k,l,m,n) = c1*z1 + c2*z2
-	         ENDIF
+	            IF (z1 .EQ. bad_src .OR. z2 .EQ. bad_src ) THEN
+		       dst(i,j,k,l,m,n) = bad_dst
+	            ELSE
+	              dst(i,j,k,l,m,n) = c1*z1 + c2*z2
+	            ENDIF
 
- 505	      CONTINUE
- 510	   CONTINUE
+	         ENDDO
+	         ENDDO
+	         ENDDO
+	         ENDDO
+	         ENDDO
+
+	      ENDIF
+	   ENDDO
 
 	ELSEIF ( axis .EQ. f_dim ) THEN
-	   DO 610 n = dst_lo, dst_hi
+	   DO n = dst_lo, dst_hi
 
 * interpolation coefficients
 	      ss = ss12(n)
@@ -382,45 +386,45 @@
 
 * special case: exact overlap of source and dest points
 	      IF ( TM_FPEQ(c1, 1.0) ) THEN
-	         DO 600 m = cx_lo_s5(cx_lims), cx_hi_s5(cx_lims)
-	         DO 600 l = cx_lo_s4(cx_lims), cx_hi_s4(cx_lims)
-	         DO 600 k = cx_lo_s3(cx_lims), cx_hi_s3(cx_lims)
-	         DO 600 j = cx_lo_s2(cx_lims), cx_hi_s2(cx_lims)
-	         DO 600 i = cx_lo_s1(cx_lims), cx_hi_s1(cx_lims)
- 600	         dst(i,j,k,l,m,n) = src(i,j,k,l,m,ss)
-	         GOTO 610
-	      ELSEIF ( ss .EQ. unspecified_int4 .AND. 
-     .                 .NOT. ok_neg111 ) THEN
-* ... this should never happen in FERRET 2.00+
-	         DO 602 m = cx_lo_s5(cx_lims), cx_hi_s5(cx_lims)
-	         DO 602 l = cx_lo_s4(cx_lims), cx_hi_s4(cx_lims)
-	         DO 602 k = cx_lo_s3(cx_lims), cx_hi_s3(cx_lims)
-	         DO 602 j = cx_lo_s2(cx_lims), cx_hi_s2(cx_lims)
-	         DO 602 i = cx_lo_s1(cx_lims), cx_hi_s1(cx_lims)
- 602		 dst(i,j,k,l,m,n) = bad_dst
-	         GOTO 610
-	      ENDIF
+	         DO m = cx_lo_s5(cx_lims), cx_hi_s5(cx_lims)
+	         DO l = cx_lo_s4(cx_lims), cx_hi_s4(cx_lims)
+	         DO k = cx_lo_s3(cx_lims), cx_hi_s3(cx_lims)
+	         DO j = cx_lo_s2(cx_lims), cx_hi_s2(cx_lims)
+	         DO i = cx_lo_s1(cx_lims), cx_hi_s1(cx_lims)
+	            dst(i,j,k,l,m,n) = src(i,j,k,l,m,ss)
+	         ENDDO
+	         ENDDO
+	         ENDDO
+	         ENDDO
+	         ENDDO
+	      ELSE
 
 * regular interpolation
-	      DO 605 m = cx_lo_s5(cx_lims), cx_hi_s5(cx_lims)
-	      DO 605 l = cx_lo_s4(cx_lims), cx_hi_s4(cx_lims)
-	      DO 605 k = cx_lo_s3(cx_lims), cx_hi_s3(cx_lims)
-	      DO 605 j = cx_lo_s2(cx_lims), cx_hi_s2(cx_lims)
-	      DO 605 i = cx_lo_s1(cx_lims), cx_hi_s1(cx_lims)
+	         DO m = cx_lo_s5(cx_lims), cx_hi_s5(cx_lims)
+	         DO l = cx_lo_s4(cx_lims), cx_hi_s4(cx_lims)
+	         DO k = cx_lo_s3(cx_lims), cx_hi_s3(cx_lims)
+	         DO j = cx_lo_s2(cx_lims), cx_hi_s2(cx_lims)
+	         DO i = cx_lo_s1(cx_lims), cx_hi_s1(cx_lims)
 
 * surrounding source data points
-	         z1 = src(i,j,k,l,m,ss  )
-	         z2 = src(i,j,k,l,m,ss+1)
+	            z1 = src(i,j,k,l,m,ss  )
+	            z2 = src(i,j,k,l,m,ss+1)
 
 * interpolate
-	         IF (z1 .EQ. bad_src .OR. z2 .EQ. bad_src ) THEN
-		    dst(i,j,k,l,m,n) = bad_dst
-	         ELSE
-	            dst(i,j,k,l,m,n) = c1*z1 + c2*z2
-	         ENDIF
+	            IF (z1 .EQ. bad_src .OR. z2 .EQ. bad_src ) THEN
+		       dst(i,j,k,l,m,n) = bad_dst
+	            ELSE
+	               dst(i,j,k,l,m,n) = c1*z1 + c2*z2
+	            ENDIF
 
- 605	      CONTINUE
- 610	   CONTINUE
+	         ENDDO
+	         ENDDO
+	         ENDDO
+	         ENDDO
+	         ENDDO
+
+	      ENDIF
+	   ENDDO
 
 	ENDIF
 

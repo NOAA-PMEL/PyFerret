@@ -51,21 +51,16 @@
 * rev 0.0 -   5/6/91
 *  Sun Port 1/30/92 -kob-  added ifdef sun because uses BYTE where DECstation uses
 *                          INTEGER*1
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. Clean up obsolete ifdefs
 *calling arguments:
 * fstrng - CHARACTER string (passed by descriptor)
 * cstrng - BYTE (INTEREG*1) string (passed by pointer)
 * clen   - length of passed Hollerith array
 
-#ifdef unix
 * calling argument declarations:
         INTEGER clen
         CHARACTER*(*) fstrng
-
-#ifdef sun
-        BYTE      cstrng(clen)
-#else
 	INTEGER*1 cstrng(clen)
-#endif
 
 * internal variable declarations:
 	INTEGER	i, flen
@@ -75,21 +70,21 @@
 
 * copy from CHARACTER to null-terminated Hollerith
         IF ( clen .GT. flen ) THEN
-           DO 100 i = 1, flen
- 100       cstrng(i) = ICHAR( fstrng(i:i) )
+           DO i = 1, flen
+              cstrng(i) = ICHAR( fstrng(i:i) )
+           ENDDO
            cstrng(flen+1) = 0
 
         ELSE
 * ... may be prematurely truncated ...
-           DO 200 i = 1, clen-1
- 200       cstrng(i) = ICHAR( fstrng(i:i) )
+           DO i = 1, clen-1
+              cstrng(i) = ICHAR( fstrng(i:i) )
+ 	   ENDDO
            cstrng(clen) = 0
 
         ENDIF
 
 	RETURN
-#else
-        STOP 'TM_FTOC_STRNG is for Unix systems, only'
-#endif
+
 	END
 

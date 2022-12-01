@@ -53,6 +53,7 @@
 * V530:  8/00 *sh* - transfer data type, too
 *       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
 * V685 3/13 *sh* support for aux var regridding: var[gz(depth)=zax]
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 
 	IMPLICIT NONE
 
@@ -63,16 +64,17 @@
 	INTEGER	source, dest, idim, i
 
 * all contexts contain axis region information
-	DO 100 idim = 1, nferdims
- 100	CALL TRANSFER_AXIS( idim, source, dest )
+	DO idim = 1, nferdims
+	   CALL TRANSFER_AXIS( idim, source, dest )
+	ENDDO
 
 * that's all that pre-defined contexts have
 	IF ( source .LE. 0 .OR. dest .LE. 0 ) RETURN
 
-	DO 200 idim = 1, nferdims
+	DO idim = 1, nferdims
 	   cx_delta   ( idim, dest ) = cx_delta   ( idim, source )
 	   cx_regrid_trans(idim,dest)=cx_regrid_trans(idim,source)
- 200	CONTINUE	
+	ENDDO
 
 	cx_data_set( dest ) = cx_data_set( source )
 	cx_dset_gvn( dest ) = cx_dset_gvn( source )
@@ -92,11 +94,11 @@
 
 * transfer aux var info
 	cx_naux( dest ) = cx_naux( source )
-	DO 300 i = 1, nferdims
+	DO i = 1, nferdims
 	   cx_aux_arg_start(i, dest) = cx_aux_arg_start(i, source)
 	   cx_aux_arg_end  (i, dest) = cx_aux_arg_end  (i, source)
 	   cx_aux_stat     (i, dest) = cx_aux_stat     (i, source)
- 300	CONTINUE
+	ENDDO
 
 
 	RETURN

@@ -61,7 +61,7 @@
 	CHARACTER*1	blank, comma, tab
 	PARAMETER      (blank = ' ',
      .                  comma = ',',
-     .                	tab = 	'	')
+     .                	tab = CHAR(9))
 	INTEGER*4	ilen, pos, start
 *
 * Initialize

@@ -74,6 +74,7 @@
 * V720  *acm* 2/17 ticket 2511 Dynamic grids on user-defined variables
 * V720 *sh* 5/17 DSG pseudo-variables -- depend on grid, not axis
 * V74+ 7/18 *acm* When rowsize variable was synthesized, it's marked with a negative var-id
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 
         IMPLICIT NONE
 	include	'ferret.parm'
@@ -228,10 +229,10 @@
 	      ENDIF
 	   ENDIF
 	   impl_grid = cx_impl_grid(pvar_cx)
-	   DO 50 idim = 1, nferdims
+	   DO idim = 1, nferdims
 	      IF ( grid_line(idim,impl_grid).EQ.unspecified_int4 )
      .		   grid_line(idim,impl_grid) = grid_line(idim,base_grid)
- 50	   CONTINUE
+	   ENDDO
 	ENDIF
 
 * if a dynamic axis was requested create it with the named grid or axis
@@ -312,8 +313,9 @@
 
 	IF ( cx_has_impl_grid(pvar_cx) ) THEN
 * increment the use count of dynamic axes that are in-use by the temporary grid
-	   DO 25 idim = 1, nferdims
- 25	   CALL TM_USE_LINE(grid_line(idim,impl_grid))
+	   DO idim = 1, nferdims
+	      CALL TM_USE_LINE(grid_line(idim,impl_grid))
+	   ENDDO
 
 * catalog the temporary grid as a dynamic grid checking for existing like grid
 * ... catalog it or reuse a previously cataloged version
@@ -360,7 +362,7 @@
 	CALL GET_CONTEXT_BAD_FLAG( pvar_cx )
 
 * flesh out context removing all axes except those explicitly given
-	DO 100 idim = 1, nferdims
+	DO idim = 1, nferdims
 	   IF ( idim .NE. pvdim .AND. .NOT.its_dsg) THEN
 	      CALL DEL_CX_DIM( idim, pvar_cx )
 	   ELSE
@@ -368,7 +370,7 @@
 	      IF ( status .NE. ferr_ok ) GOTO 5000
 	      CALL FLESH_OUT_AXIS( idim, pvar_cx, status ) 	! ignore status
 	   ENDIF
- 100	CONTINUE
+	ENDDO
 
 * relinquish the stack space used for the modifications
  500	CALL STACK_PTR_DN ( cx_stack_ptr, cx_stack_ptr_base, status )

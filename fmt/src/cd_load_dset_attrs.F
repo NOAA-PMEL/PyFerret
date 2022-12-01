@@ -59,6 +59,7 @@
 * V76  1/20 *acm* Orientation of Point-type data set to e_dim
 * V745 *acm*  5/20  added mode_dsg to control turning off all DSG ops
 * V7.6 *acm* 6/20 Issue 1980: When possible open invalid DSG datasets anyway with NOTES.
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 
 * argument definitions:
 *       dset    - pointer to TMAP data set
@@ -109,8 +110,9 @@
 		ds_t0time(dset)		= ' '
 		ds_ntegrate_tstep(dset)	= 1
 		ds_time_run(dset)	= ' '
-		DO 120 i = 1,num_aux
-  120		cd_what_isit(i,dset)= ' '
+		DO i = 1,num_aux
+  		   cd_what_isit(i,dset)= ' '
+  		ENDDO
 	ENDIF
 
 * time axis
@@ -297,9 +299,9 @@ c		    ENDIF
 c commented out diagnostic write statements
 c	  write(6,*) 'sf_setnum......',sf_setnum(1)
 c	  write(6,*) 'set_not_open...',set_not_open
-          DO 190 istep = 1,maxstepfiles
+          DO istep = 1,maxstepfiles
             IF (sf_setnum(istep) .EQ. set_not_open) GOTO 200
- 190      CONTINUE
+	  ENDDO
 * No room left for new stepfiles
           GOTO 5200
 

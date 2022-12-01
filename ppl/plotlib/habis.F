@@ -35,6 +35,8 @@
 *
 *
 C**    @(#)habis.F	1.1    3/10/88
+* 11/2022 *acm* Code cleanup: Remove ref to pause, bell, etc. Not used
+*               by modern code.
 C**
 C**
 C***********************************************************************
@@ -60,19 +62,7 @@ C                = 1 FOR A HARD COPY
 C
 	CALL ALPHAS
 	CALL PAGE
-	IF(IHDCPY.EQ.1) CALL HDCOPY(IPLOT)
-	IF(IPAUSE.EQ.1.AND.(PTYPE.EQ.1.OR.IABS(PTYPE).GE.2)) THEN
-	    CALL CHOUT(BEL,1)
-	    CALL CHOUT(BEL,1)
-	    CALL CHDMP
-	    IF(PTYPE.GE.3)THEN
-		OPEN(99,FILE='/dev/tty',STATUS='UNKNOWN')
- 99		READ(99,'(A1)',ERR=99,END=100)INS
-100		IN=ICHAR(INS)
-	    ELSE
-		CALL CHIN(IN,1,0)
-	    ENDIF
-	ENDIF
+
 	call clsdev(termf,sover)
 	RETURN
 	END

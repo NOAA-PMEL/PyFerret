@@ -3,6 +3,7 @@
 * 
 *  Ansley Manke (from expndi_by_z)
 *  8/24/2011
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 * 
 * Create a variable with profile ID, where argument 1 is the length
 * of the variable to be put into an XZ structure from it with the 
@@ -202,7 +203,8 @@
          DO 50 j=res_lo_ss(Y_AXIS), res_hi_ss(Y_AXIS)
             DO 40 k=res_lo_ss(Z_AXIS), res_hi_ss(Z_AXIS)
                DO 30 i=res_lo_ss(X_AXIS), res_hi_ss(X_AXIS)
- 30            result(i,j,k,l) = bad_flag_result
+                  result(i,j,k,l) = bad_flag_result
+ 30            CONTINUE
  40         CONTINUE
  50      CONTINUE
  60   CONTINUE

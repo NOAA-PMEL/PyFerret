@@ -75,6 +75,7 @@
 *                  a previous evaluation. STAT/BRIEF does not reset them all.
 * V720 *acm*  3/17 Ticket 2512: Add STAT/PRECICISION=
 * v767 6/22 *acm* See issue 112: The total size could need INTEGER*8
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -180,12 +181,12 @@
 
 * pass 1: compute mean 
         IF (mode_6d_lab) THEN
-	   DO 200 n = cx_lo_s6(cx), cx_hi_s6(cx)
-	   DO 200 m = cx_lo_s5(cx), cx_hi_s5(cx)
-	   DO 200 l = cx_lo_s4(cx), cx_hi_s4(cx)
-	   DO 200 k = cx_lo_s3(cx), cx_hi_s3(cx)
-	   DO 200 j = cx_lo_s2(cx), cx_hi_s2(cx)
-	   DO 200 i = cx_lo_s1(cx), cx_hi_s1(cx)
+	   DO n = cx_lo_s6(cx), cx_hi_s6(cx)
+	   DO m = cx_lo_s5(cx), cx_hi_s5(cx)
+	   DO l = cx_lo_s4(cx), cx_hi_s4(cx)
+	   DO k = cx_lo_s3(cx), cx_hi_s3(cx)
+	   DO j = cx_lo_s2(cx), cx_hi_s2(cx)
+	   DO i = cx_lo_s1(cx), cx_hi_s1(cx)
 
 	      datum = dat(i,j,k,l,m,n)
 
@@ -198,7 +199,12 @@
 	         large = MAX( large, datum )
                  sum   = sum + datum
 	      ENDIF
- 200	   CONTINUE
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
 	ELSE 
 * If the data is 4D, and the user has canceled mode_6d_lab, just 
 * compute and list the 4D result.
@@ -207,11 +213,10 @@
      .	       cx_lo_s5(cx) .NE. unspecified_int4) GOTO 5100
 	   m = unspecified_int4
 	   n = unspecified_int4
-	   DO 210 m = cx_lo_s5(cx), cx_hi_s5(cx)
-	   DO 210 l = cx_lo_s4(cx), cx_hi_s4(cx)
-	   DO 210 k = cx_lo_s3(cx), cx_hi_s3(cx)
-	   DO 210 j = cx_lo_s2(cx), cx_hi_s2(cx)
-	   DO 210 i = cx_lo_s1(cx), cx_hi_s1(cx)
+	   DO l = cx_lo_s4(cx), cx_hi_s4(cx)
+	   DO k = cx_lo_s3(cx), cx_hi_s3(cx)
+	   DO j = cx_lo_s2(cx), cx_hi_s2(cx)
+	   DO i = cx_lo_s1(cx), cx_hi_s1(cx)
 
 	      datum = dat(i,j,k,l,m,n)
 
@@ -224,7 +229,10 @@
 	         large = MAX( large, datum )
                  sum   = sum + datum
 	      ENDIF
- 210	   CONTINUE
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
 	ENDIF
 
         IF ( ngood .GT. 0 ) mean = sum / FLOAT(ngood)
@@ -244,12 +252,12 @@
            zmean = mean
 
            IF (mode_6d_lab) THEN
-	      DO 300 n = cx_lo_s6(cx), cx_hi_s6(cx)
-	      DO 300 m = cx_lo_s5(cx), cx_hi_s5(cx)
-	      DO 300 l = cx_lo_s4(cx), cx_hi_s4(cx)
-	      DO 300 k = cx_lo_s3(cx), cx_hi_s3(cx)
-	      DO 300 j = cx_lo_s2(cx), cx_hi_s2(cx)
-	      DO 300 i = cx_lo_s1(cx), cx_hi_s1(cx)
+	      DO n = cx_lo_s6(cx), cx_hi_s6(cx)
+	      DO m = cx_lo_s5(cx), cx_hi_s5(cx)
+	      DO l = cx_lo_s4(cx), cx_hi_s4(cx)
+	      DO k = cx_lo_s3(cx), cx_hi_s3(cx)
+	      DO j = cx_lo_s2(cx), cx_hi_s2(cx)
+	      DO i = cx_lo_s1(cx), cx_hi_s1(cx)
 
 	         x = dat(i,j,k,l,m,n)
 	         IF ( x .NE. bad ) THEN
@@ -259,15 +267,21 @@
                     xmean = xmean + xdelta/FLOAT(nok)
                     sum2 = sum2 + xdelta*(x - xmean)  ! This expression uses the new value of mean
  	         ENDIF
-
- 300	      CONTINUE
+	      ENDDO
+	      ENDDO
+	      ENDDO
+	      ENDDO
+	      ENDDO
+	      ENDDO
            ELSE  ! 4D result
-	      DO 310 n = cx_lo_s6(cx), cx_hi_s6(cx)
-	      DO 310 m = cx_lo_s5(cx), cx_hi_s5(cx)
-	      DO 310 l = cx_lo_s4(cx), cx_hi_s4(cx)
-	      DO 310 k = cx_lo_s3(cx), cx_hi_s3(cx)
-	      DO 310 j = cx_lo_s2(cx), cx_hi_s2(cx)
-	      DO 310 i = cx_lo_s1(cx), cx_hi_s1(cx)
+	      IF (cx_lo_s6(cx) .NE. unspecified_int4 .OR.
+     .	          cx_lo_s5(cx) .NE. unspecified_int4) GOTO 5100
+	      m = unspecified_int4
+	      n = unspecified_int4
+	      DO l = cx_lo_s4(cx), cx_hi_s4(cx)
+	      DO k = cx_lo_s3(cx), cx_hi_s3(cx)
+	      DO j = cx_lo_s2(cx), cx_hi_s2(cx)
+	      DO i = cx_lo_s1(cx), cx_hi_s1(cx)
 
 	         x = dat(i,j,k,l,m,n)
 	         IF ( x .NE. bad ) THEN
@@ -277,8 +291,10 @@
                     xmean = xmean + xdelta/FLOAT(nok)
                     sum2 = sum2 + xdelta*(x - xmean)  ! This expression uses the new value of mean
  	         ENDIF
-
- 310	      CONTINUE 
+	      ENDDO
+	      ENDDO
+	      ENDDO
+	      ENDDO
            ENDIF
 
            variance_c = sum2/FLOAT(nok - 1)

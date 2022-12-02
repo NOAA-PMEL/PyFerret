@@ -3,6 +3,7 @@
 * 
 *  Ansley Manke (from expndi_by_z_counts)
 *  4/2014
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 * 
 * Expand argument 1 by creating a 2D XE structure from it with the 
 * separation between X rows given by the lengths specified in 
@@ -152,33 +153,31 @@
 
 * sum of counts in arg 2 must be length of x-dimension of arg1
 
-      do 20 i2 = arg_lo_ss(X_AXIS,ARG2), arg_hi_ss(X_AXIS,ARG2)
-      do 20 j2 = arg_lo_ss(Y_AXIS,ARG2), arg_hi_ss(Y_AXIS,ARG2)
-      do 20 k2 = arg_lo_ss(Z_AXIS,ARG2), arg_hi_ss(Z_AXIS,ARG2)
-      do 20 L2 = arg_lo_ss(T_AXIS,ARG2), arg_hi_ss(T_AXIS,ARG2)
-      do 20 n2 = arg_lo_ss(F_AXIS,ARG2), arg_hi_ss(F_AXIS,ARG2)
+      do i2 = arg_lo_ss(X_AXIS,ARG2), arg_hi_ss(X_AXIS,ARG2)
+      do j2 = arg_lo_ss(Y_AXIS,ARG2), arg_hi_ss(Y_AXIS,ARG2)
+      do k2 = arg_lo_ss(Z_AXIS,ARG2), arg_hi_ss(Z_AXIS,ARG2)
+      do L2 = arg_lo_ss(T_AXIS,ARG2), arg_hi_ss(T_AXIS,ARG2)
+      do n2 = arg_lo_ss(F_AXIS,ARG2), arg_hi_ss(F_AXIS,ARG2)
          isum = 0
-         DO 10 m2 = arg_lo_ss(E_AXIS,ARG2), arg_hi_ss(E_AXIS,ARG2)
+         DO m2 = arg_lo_ss(E_AXIS,ARG2), arg_hi_ss(E_AXIS,ARG2)
             IF  (arg_2(i2,j2,k2,l2,m2,n2) .EQ. bad_flag(ARG2) .OR. 
      .           INT(arg_2(i2,j2,k2,l2,m2,n2)) .LT. 0)
      .          CALL EF_BAIL_OUT(id, 'arg 2 must be non-missing counts GE zero')
             isum = isum + INT(arg_2(i2,j2,k2,l2,m2,n2))
- 10   CONTINUE
+         ENDDO
          IF (isum .NE. (arg_hi_ss(X_AXIS,ARG1)-arg_lo_ss(X_AXIS,ARG1)+1) )
      .       CALL EF_BAIL_OUT(id, 
      .         'arg 2 values (counts) must sum to x-dimension length of of arg1 ')
- 20   CONTINUE
+      ENDDO
+      ENDDO
+      ENDDO
+      ENDDO
+      ENDDO
 
 * pre-fill the entire output result with missing value flags
 *  (since length of each profile may have different number of pts)
-      DO 50 n=res_lo_ss(F_AXIS), res_hi_ss(F_AXIS)
-      DO 50 m=res_lo_ss(E_AXIS), res_hi_ss(E_AXIS)
-      DO 50 l=res_lo_ss(T_AXIS), res_hi_ss(T_AXIS)
-      DO 50 j=res_lo_ss(Y_AXIS), res_hi_ss(Y_AXIS)
-      DO 50 k=res_lo_ss(Z_AXIS), res_hi_ss(Z_AXIS)
-      DO 50 i=res_lo_ss(X_AXIS), res_hi_ss(X_AXIS)
-         result(i,j,k,l,m,n) = bad_flag_result
- 50   CONTINUE
+      result = bad_flag_result
+
 
 * fill in the points as specified by the counts
 

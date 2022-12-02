@@ -161,6 +161,7 @@
 * V698+ *acm* 2/16 Ticket 2362: Change /D= qualifier to /DATASET=
 * V751  *acm* 5/19 Ticket 1931; don't try to translate the delta value in LO:HI:DEL
 *                  from a formatted string.  It's just a number.
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 
 * specifiers may give coordinate in subscript units (/I,/J,/K,/L) or
 * may give coordinate in "world" units (/X,/Y,/Z,/T)
@@ -394,18 +395,20 @@
 * ... is it a region specifier (single character) ?
                  single_char = .TRUE.
 	         naxes = 1
-                 DO 54 suborval = 1,2
-	         DO 54 idim     = 1,nferdims
+                 DO suborval = 1,2
+	         DO idim     = 1,nferdims
 	            IF ( letter.EQ.region_qual(idim,suborval) ) GOTO 200
- 54              CONTINUE
+	         ENDDO
+		 ENDDO
                  GOTO 100     ! not a region specifier
               ELSE                                    ! 8/92
                  single_char = .FALSE.
                  letter2 = UPPER_CASE(letter2)
-                 DO 60 suborval = 1,2
-	         DO 60 idim     = 1,nferdims
+                 DO suborval = 1,2
+	         DO idim     = 1,nferdims
 	            IF ( letter2.EQ.region_qual(idim,suborval) ) GOTO 100
- 60 	         CONTINUE
+	         ENDDO
+		 ENDDO
                  GOTO 190   ! ... not a recognized qualifier
               ENDIF
 	   ENDIF
@@ -570,10 +573,11 @@ c	      next_char = istart + naxes - 1
 	      next_char = next_char + 1
 	      IF ( next_char-istart .GT. naxes ) GOTO 500
               letter2 = UPPER_CASE( text_buff(next_char:next_char) )
-              DO 107 suborval = 1,2
-	      DO 107 idim     = 1,nferdims
+              DO suborval = 1,2
+	      DO idim     = 1,nferdims
 	         IF ( letter2.EQ.region_qual(idim,suborval) ) GOTO 109
- 107	      CONTINUE
+	      ENDDO
+	      ENDDO
               GOTO 190   ! ... not a recognized qualifier
  109	      CONTINUE
 	   ENDIF
@@ -847,10 +851,11 @@ c	            axis = TM_GET_LINENUM( name(:nend) )
 	         itrans = pauxrgrd_pwlave
 	      ENDIF
               IF ( single_char ) THEN   ! apply transform to all axes
-                 DO 184 idim = 1, nferdims
- 184             IF ( cx_regrid_trans(idim,mods_cx)
-     .           .EQ. unspecified_int4 ) cx_regrid_trans(idim,mods_cx)
-     .                                 = itrans
+                 DO idim = 1, nferdims
+                    IF ( cx_regrid_trans(idim,mods_cx)
+     .                   .EQ. unspecified_int4 ) 
+     .                     cx_regrid_trans(idim,mods_cx)= itrans
+		 ENDDO
               ELSE                      ! apply transform to specified axis
                  cx_regrid_trans( idim, mods_cx ) = itrans
               ENDIF

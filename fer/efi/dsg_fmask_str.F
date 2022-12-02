@@ -36,6 +36,7 @@
 *
 * Ansley Manke
 * Aug 2018
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 *
 * This function defines a mask on the long, observations axis for variables
 * in a Discrete Sampling Geometries ragged-array dataset.  The mask is based
@@ -167,62 +168,78 @@ c     .                              YES, NO, NO, NO, NO, NO)
       sum = 0
       nr = 0
 
-      DO 100 i2 = arg_lo_ss(X_AXIS,ARG2), arg_hi_ss(X_AXIS,ARG2)
-      DO 100 j2 = arg_lo_ss(Y_AXIS,ARG2), arg_hi_ss(Y_AXIS,ARG2)
-      DO 100 k2 = arg_lo_ss(Z_AXIS,ARG2), arg_hi_ss(Z_AXIS,ARG2)
-      DO 100 l2 = arg_lo_ss(T_AXIS,ARG2), arg_hi_ss(T_AXIS,ARG2)
-      DO 100 m2 = arg_lo_ss(E_AXIS,ARG2), arg_hi_ss(E_AXIS,ARG2)
-      DO 100 n2 = arg_lo_ss(F_AXIS,ARG2), arg_hi_ss(F_AXIS,ARG2)
+      DO i2 = arg_lo_ss(X_AXIS,ARG2), arg_hi_ss(X_AXIS,ARG2)
+      DO j2 = arg_lo_ss(Y_AXIS,ARG2), arg_hi_ss(Y_AXIS,ARG2)
+      DO k2 = arg_lo_ss(Z_AXIS,ARG2), arg_hi_ss(Z_AXIS,ARG2)
+      DO l2 = arg_lo_ss(T_AXIS,ARG2), arg_hi_ss(T_AXIS,ARG2)
+      DO m2 = arg_lo_ss(E_AXIS,ARG2), arg_hi_ss(E_AXIS,ARG2)
+      DO n2 = arg_lo_ss(F_AXIS,ARG2), arg_hi_ss(F_AXIS,ARG2)
 	 IF ( rowsize(i2,j2,k2,l2,m2,n2) .NE. bad_flag(ARG2)) THEN
 	    sum = sum + rowsize(i2,j2,k2,l2,m2,n2)
 	    nr = nr + 1
 	 ELSE
 	    GOTO 9100
 	 ENDIF
-  100 CONTINUE
+      ENDDO
+      ENDDO
+      ENDDO
+      ENDDO
+      ENDDO
+      ENDDO
+
       IF (sum .NE. nobs) GOTO 9200
 
       nf = 0
-      DO 200 i3 = arg_lo_ss(X_AXIS,ARG3), arg_hi_ss(X_AXIS,ARG3)
-      DO 200 j3 = arg_lo_ss(Y_AXIS,ARG3), arg_hi_ss(Y_AXIS,ARG3)
-      DO 200 k3 = arg_lo_ss(Z_AXIS,ARG3), arg_hi_ss(Z_AXIS,ARG3)
-      DO 200 l3 = arg_lo_ss(T_AXIS,ARG3), arg_hi_ss(T_AXIS,ARG3)
-      DO 200 m3 = arg_lo_ss(E_AXIS,ARG3), arg_hi_ss(E_AXIS,ARG3)
-      DO 200 n3 = arg_lo_ss(F_AXIS,ARG3), arg_hi_ss(F_AXIS,ARG3)
+      DO i3 = arg_lo_ss(X_AXIS,ARG3), arg_hi_ss(X_AXIS,ARG3)
+      DO j3 = arg_lo_ss(Y_AXIS,ARG3), arg_hi_ss(Y_AXIS,ARG3)
+      DO k3 = arg_lo_ss(Z_AXIS,ARG3), arg_hi_ss(Z_AXIS,ARG3)
+      DO l3 = arg_lo_ss(T_AXIS,ARG3), arg_hi_ss(T_AXIS,ARG3)
+      DO m3 = arg_lo_ss(E_AXIS,ARG3), arg_hi_ss(E_AXIS,ARG3)
+      DO n3 = arg_lo_ss(F_AXIS,ARG3), arg_hi_ss(F_AXIS,ARG3)
          nf = nf + 1
-  200 CONTINUE
+      ENDDO
+      ENDDO
+      ENDDO
+      ENDDO
+      ENDDO
+      ENDDO
+
       IF (nf .NE. nr) GOTO 9300
 
-
 * Initialize the result
-      DO 300 n = res_lo_ss(F_AXIS), res_hi_ss(F_AXIS)
-      DO 300 m = res_lo_ss(E_AXIS), res_hi_ss(E_AXIS)
-      DO 300 l = res_lo_ss(T_AXIS), res_hi_ss(T_AXIS)
-      DO 300 k = res_lo_ss(Z_AXIS), res_hi_ss(Z_AXIS)
-      DO 300 j = res_lo_ss(Y_AXIS), res_hi_ss(Y_AXIS)
-      DO 300 i = res_lo_ss(X_AXIS), res_hi_ss(X_AXIS)
+      DO n = res_lo_ss(F_AXIS), res_hi_ss(F_AXIS)
+      DO m = res_lo_ss(E_AXIS), res_hi_ss(E_AXIS)
+      DO l = res_lo_ss(T_AXIS), res_hi_ss(T_AXIS)
+      DO k = res_lo_ss(Z_AXIS), res_hi_ss(Z_AXIS)
+      DO j = res_lo_ss(Y_AXIS), res_hi_ss(Y_AXIS)
+      DO i = res_lo_ss(X_AXIS), res_hi_ss(X_AXIS)
          result(i,j,k,l,m,n) = bad_flag_result
-  300 CONTINUE
+      ENDDO
+      ENDDO
+      ENDDO
+      ENDDO
+      ENDDO
+      ENDDO
       
 * Compute the mask: 1 for all values in features that match the test
 
-      DO 500 i4 = arg_lo_ss(X_AXIS,ARG4), arg_hi_ss(X_AXIS,ARG4)
-      DO 500 j4 = arg_lo_ss(Y_AXIS,ARG4), arg_hi_ss(Y_AXIS,ARG4)
-      DO 500 k4 = arg_lo_ss(Z_AXIS,ARG4), arg_hi_ss(Z_AXIS,ARG4)
-      DO 500 l4 = arg_lo_ss(T_AXIS,ARG4), arg_hi_ss(T_AXIS,ARG4)
-      DO 500 m4 = arg_lo_ss(E_AXIS,ARG4), arg_hi_ss(E_AXIS,ARG4)
-      DO 500 n4 = arg_lo_ss(F_AXIS,ARG4), arg_hi_ss(F_AXIS,ARG4)
+      DO i4 = arg_lo_ss(X_AXIS,ARG4), arg_hi_ss(X_AXIS,ARG4)
+      DO j4 = arg_lo_ss(Y_AXIS,ARG4), arg_hi_ss(Y_AXIS,ARG4)
+      DO k4 = arg_lo_ss(Z_AXIS,ARG4), arg_hi_ss(Z_AXIS,ARG4)
+      DO l4 = arg_lo_ss(T_AXIS,ARG4), arg_hi_ss(T_AXIS,ARG4)
+      DO m4 = arg_lo_ss(E_AXIS,ARG4), arg_hi_ss(E_AXIS,ARG4)
+      DO n4 = arg_lo_ss(F_AXIS,ARG4), arg_hi_ss(F_AXIS,ARG4)
          
 	 CALL EF_GET_STRING_ARG_ELEMENT_6D (id, ARG4, subset,
      .                    i4, j4, k4, l4, m4, n4, slen, test)
 
 	 nr = 0
-         DO 400 i3 = arg_lo_ss(X_AXIS,ARG3), arg_hi_ss(X_AXIS,ARG3)
-         DO 400 j3 = arg_lo_ss(Y_AXIS,ARG3), arg_hi_ss(Y_AXIS,ARG3)
-         DO 400 k3 = arg_lo_ss(Z_AXIS,ARG3), arg_hi_ss(Z_AXIS,ARG3)
-         DO 400 l3 = arg_lo_ss(T_AXIS,ARG3), arg_hi_ss(T_AXIS,ARG3)
-         DO 400 m3 = arg_lo_ss(E_AXIS,ARG3), arg_hi_ss(E_AXIS,ARG3)
-         DO 400 n3 = arg_lo_ss(F_AXIS,ARG3), arg_hi_ss(F_AXIS,ARG3)
+         DO i3 = arg_lo_ss(X_AXIS,ARG3), arg_hi_ss(X_AXIS,ARG3)
+         DO j3 = arg_lo_ss(Y_AXIS,ARG3), arg_hi_ss(Y_AXIS,ARG3)
+         DO k3 = arg_lo_ss(Z_AXIS,ARG3), arg_hi_ss(Z_AXIS,ARG3)
+         DO l3 = arg_lo_ss(T_AXIS,ARG3), arg_hi_ss(T_AXIS,ARG3)
+         DO m3 = arg_lo_ss(E_AXIS,ARG3), arg_hi_ss(E_AXIS,ARG3)
+         DO n3 = arg_lo_ss(F_AXIS,ARG3), arg_hi_ss(F_AXIS,ARG3)
              nr = nr + 1
              CALL EF_GET_STRING_ARG_ELEMENT_6D(id, ARG3, fvar,
      .                    i3, j3, k3, l3, m3, n3, slen, fstring)
@@ -231,10 +248,20 @@ c     .                              YES, NO, NO, NO, NO, NO)
 		CALL PUT_ROW_MASK_SUB (result, ilo, ihi)
 		GOTO 444
              ENDIF
-  400    CONTINUE
+         ENDDO
+         ENDDO
+         ENDDO
+         ENDDO
+         ENDDO
+         ENDDO
 
   444	 CONTINUE
-  500 CONTINUE
+      ENDDO
+      ENDDO
+      ENDDO
+      ENDDO
+      ENDDO
+      ENDDO
 
       RETURN
 

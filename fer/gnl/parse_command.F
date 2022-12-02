@@ -149,6 +149,7 @@
 *                  being used (so /T for /TITLE isn't misinterpreted elsewhere).
 * V76   4/20 *acm* ticket 756. If the whole command is a symbol, evaluate it and
 *                  start the parsing over.
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 
 * command, subcommand and qualifiers will be identified by number in
 *	 COMMON/XCOMMAND.  Arguments will be returned as positions in
@@ -1109,8 +1110,9 @@ c           IF (known_qualifier .AND. len_test.LT.len_mchars .AND. len_mchars.GT
 	   cmnd_buff(out:out) = cmnd_buff(in:in)
 	   cmnd_len = out
 * ... cover over characters exposed at line end
-	   DO 910 out = out+1,in+1
- 910	   cmnd_buff(out:out) = ' '
+	   DO out = out+1,in+1
+	      cmnd_buff(out:out) = ' '
+ 	   ENDDO
 	ENDIF
 
 * successful completion

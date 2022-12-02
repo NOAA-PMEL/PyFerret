@@ -44,6 +44,7 @@
 *              increased max string length compared from 20 to 128;
 *              add check for string lengths .GT. 0;
 *              and add E and F dimensions
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 
 *
 *
@@ -193,24 +194,24 @@
 C  Check for strings matching arg2
 C  Assumes result and arg_1 have same array dimension limits
 
-      DO 300 n=res_lo_ss(F_AXIS), res_hi_ss(F_AXIS)
-      DO 300 m=res_lo_ss(E_AXIS), res_hi_ss(E_AXIS)
-      DO 300 l=res_lo_ss(T_AXIS), res_hi_ss(T_AXIS)
-      DO 300 k=res_lo_ss(Z_AXIS), res_hi_ss(Z_AXIS)
-      DO 300 j=res_lo_ss(Y_AXIS), res_hi_ss(Y_AXIS)
-      DO 300 i=res_lo_ss(X_AXIS), res_hi_ss(X_AXIS)
+      DO n=res_lo_ss(F_AXIS), res_hi_ss(F_AXIS)
+      DO m=res_lo_ss(E_AXIS), res_hi_ss(E_AXIS)
+      DO l=res_lo_ss(T_AXIS), res_hi_ss(T_AXIS)
+      DO k=res_lo_ss(Z_AXIS), res_hi_ss(Z_AXIS)
+      DO j=res_lo_ss(Y_AXIS), res_hi_ss(Y_AXIS)
+      DO i=res_lo_ss(X_AXIS), res_hi_ss(X_AXIS)
 
          arg = 1
          CALL ef_get_string_arg_element_6d(id, arg, arg_1, 
      .                      i, j, k, l, m, n, slen1, text1)
 
          ndx = 1
-         DO 100 n2=arg_lo_ss(F_AXIS,ARG2), arg_hi_ss(F_AXIS,ARG2)
-         DO 100 m2=arg_lo_ss(E_AXIS,ARG2), arg_hi_ss(E_AXIS,ARG2)
-         DO 100 l2=arg_lo_ss(T_AXIS,ARG2), arg_hi_ss(T_AXIS,ARG2)
-         DO 100 k2=arg_lo_ss(Z_AXIS,ARG2), arg_hi_ss(Z_AXIS,ARG2)
-         DO 100 j2=arg_lo_ss(Y_AXIS,ARG2), arg_hi_ss(Y_AXIS,ARG2)
-         DO 100 i2=arg_lo_ss(X_AXIS,ARG2), arg_hi_ss(X_AXIS,ARG2)
+         DO n2=arg_lo_ss(F_AXIS,ARG2), arg_hi_ss(F_AXIS,ARG2)
+         DO m2=arg_lo_ss(E_AXIS,ARG2), arg_hi_ss(E_AXIS,ARG2)
+         DO l2=arg_lo_ss(T_AXIS,ARG2), arg_hi_ss(T_AXIS,ARG2)
+         DO k2=arg_lo_ss(Z_AXIS,ARG2), arg_hi_ss(Z_AXIS,ARG2)
+         DO j2=arg_lo_ss(Y_AXIS,ARG2), arg_hi_ss(Y_AXIS,ARG2)
+         DO i2=arg_lo_ss(X_AXIS,ARG2), arg_hi_ss(X_AXIS,ARG2)
             arg = 2
             CALL ef_get_string_arg_element_6d(id, arg, arg_2, 
      .                         i2, j2, k2, l2, m2, n2, slen2, text2)
@@ -225,14 +226,24 @@ C  Assumes result and arg_1 have same array dimension limits
                ENDIF
             ENDIF
             ndx = ndx + 1
- 100     CONTINUE
+         ENDDO
+         ENDDO
+         ENDDO
+         ENDDO
+         ENDDO
+         ENDDO
 
 C        If we got here it was not found
          result(i,j,k,l,m,n) = bad_flag_result
 
  200     CONTINUE
 
- 300  CONTINUE
+      ENDDO
+      ENDDO
+      ENDDO
+      ENDDO
+      ENDDO
+      ENDDO
  
       RETURN
       END

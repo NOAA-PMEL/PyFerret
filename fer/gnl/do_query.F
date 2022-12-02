@@ -59,6 +59,7 @@
 * V761 *acm* 7/20 Issue 1981:in ISUBSCR_CX distinguish rounding for single 
 *                 point vs range of points
 * 10/2022 *acm* Code cleanup: remove references to obsolete gui interface
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
@@ -123,19 +124,20 @@
  300	CONTINUE
 *   ... count data sets
  	   n = 0
-	   DO 310 i = 1,  maxdsets
- 310	   IF ( ds_name(i) .NE. char_init2048) n = n + 1
+	   DO i = 1,  maxdsets
+	      IF ( ds_name(i) .NE. char_init2048) n = n + 1
+ 	   ENDDO
 *   ... list 'em
 	   WRITE (risc_buff, fmt ) n, queries(query), tag
 	   CALL SPLIT_LIST(pttmode_explct, chout, risc_buff, 0)
-	   DO 320 i = 1,  maxdsets
+	   DO i = 1,  maxdsets
 	      IF (ds_name(i).NE.char_init2048) THEN
 	         WRITE (risc_buff,'(A)')
      .			ds_name(i)(1:TM_LENSTR1(ds_name(i)))
 	         CALL SPLIT_LIST(pttmode_explct, chout, risc_buff, 0)
 	         risc_buff = ' '
 	      ENDIF
- 320	   CONTINUE
+ 	   ENDDO
 	GOTO 4999
 
 * VARIABLE dset
@@ -147,17 +149,17 @@
 	IF ( dset .EQ. unspecified_int4 ) GOTO 5910
 * ... pass1 to count variables in data set
 	n = 0
-	DO 410 var = 1, maxvars
-	   IF ( ds_var_setnum(var) .NE. dset ) GOTO 410
-	   IF ( ds_var_code(var) .EQ. '-' ) GOTO 410
+	DO var = 1, maxvars
+	   IF ( ds_var_setnum(var) .NE. dset ) CYCLE
+	   IF ( ds_var_code(var) .EQ. '-' ) CYCLE
 	   n = n + 1
- 410	CONTINUE
+ 	ENDDO
 	WRITE (risc_buff, fmt ) n, queries(query), tag
 	CALL SPLIT_LIST(pttmode_explct, chout, risc_buff, 0)
 * ... pass 2 to output variable names
-	DO 420 var = 1, maxvars
-           IF ( ds_var_setnum(var) .NE. dset ) GOTO 420
-           IF ( ds_var_code(var) .EQ. '-' ) GOTO 420
+	DO var = 1, maxvars
+           IF ( ds_var_setnum(var) .NE. dset ) CYCLE
+           IF ( ds_var_code(var) .EQ. '-' ) CYCLE
 *           WRITE (risc_buff,'(A)')
 *     .			ds_var_code(var)(1:TM_LENSTR1(ds_var_code(var)))
            CALL string_array_get_strlen1(ds_var_code_head, var, ds_var_len)
@@ -166,7 +168,7 @@
 
 	   CALL SPLIT_LIST(pttmode_explct, chout, risc_buff, 0)
 	   risc_buff = ' '
- 420    CONTINUE
+ 	ENDDO
 	GOTO 4999
 
 * GRID dset variable
@@ -190,7 +192,7 @@
      .			grid_name(grid)(1:TM_LENSTR1(grid_name(grid)))
 	CALL SPLIT_LIST(pttmode_explct, chout, risc_buff, 0)
 * ... return the names of the axes and an inner/outer flag
-	DO 510 dim = 1, nferdims
+	DO dim = 1, nferdims
 	   axis = grid_line( dim, grid )
 	   IF ( axis .EQ. munknown ) THEN
 	      CALL SPLIT_LIST(pttmode_explct, chout, 'UNKNOWN O', 9)
@@ -200,7 +202,7 @@
 	      CALL SPLIT_LIST(pttmode_explct, chout,
      .					line_name(axis)//' O', 0)
 	   ENDIF
- 510    CONTINUE
+ 	ENDDO
 	GOTO 4999
 
 * AXIS  axname
@@ -221,17 +223,17 @@
  800	CONTINUE
 * ... count the number of transforms
 	n = 0
-	DO 810 i = 4, num_transforms
+	DO i = 4, num_transforms
 	   IF ( i .EQ. 11 .OR. i .EQ. 12 
-     .	   .OR. alg_trans_num( i ) .EQ. unspecified_int4 ) GOTO 810
-	   n = n + 1	
- 810	CONTINUE
+     .	   .OR. alg_trans_num( i ) .EQ. unspecified_int4 ) CYCLE
+	   n = n + 1
+	ENDDO
 	WRITE (risc_buff, fmt ) n, queries(query), tag
 	CALL SPLIT_LIST(pttmode_explct, chout, risc_buff, 0)
 * ... each transform: XXX dflt_arg_or_* Compress_or_Span  "title"
-	DO 820 i = 4, num_transforms
+	DO i = 4, num_transforms
 	   IF ( i .EQ. 11 .OR. i .EQ. 12 
-     .	   .OR. alg_trans_num( i ) .EQ. unspecified_int4 ) GOTO 820
+     .	   .OR. alg_trans_num( i ) .EQ. unspecified_int4 ) CYCLE
 	   risc_buff = ' '
 	   IF ( alg_trans_has_arg(i) ) THEN
 	      buff1 = TM_FMT( alg_trans_dflt_arg(i), 3, 5, slen ) 
@@ -254,7 +256,7 @@
      .			buff2,
      .			alg_trans_title(i)(:TM_LENSTR1(alg_trans_title(i)))
 	   CALL SPLIT_LIST(pttmode_explct, chout, risc_buff, 0)
- 820	CONTINUE
+	ENDDO
  3800	FORMAT(A3,1X,A,1X,A1,' "',A,'"')
 	GOTO 4999
 
@@ -300,8 +302,8 @@
 * name of current data set
  1900	CONTINUE
 	done = .FALSE.
-	DO 1910 dset = 1, maxdsets
-           IF ( ds_name(dset) .EQ. char_init2048) GOTO 1910
+	DO dset = 1, maxdsets
+           IF ( ds_name(dset) .EQ. char_init2048) CYCLE
 	   IF ( dset .EQ. cx_data_set(cx_last) ) THEN
 	      WRITE (risc_buff, fmt ) 1, queries(query), tag
 	      CALL SPLIT_LIST(pttmode_explct, chout, risc_buff, 0)
@@ -312,7 +314,7 @@
 	      risc_buff = ' '
 	      done = .TRUE.
 	   ENDIF
- 1910	CONTINUE
+	ENDDO
 	IF ( .NOT.done ) THEN
 	   WRITE (risc_buff, fmt ) 0, queries(query), tag
 	   CALL SPLIT_LIST(pttmode_explct, chout, risc_buff, 0)
@@ -343,7 +345,7 @@
 	CALL SPLIT_LIST(pttmode_explct, chout, risc_buff, 0)
 	risc_buff = ' '
 * ... return the subscript span along each axis
-	DO 2010 dim = 1, nferdims
+	DO dim = 1, nferdims
 	   axis = grid_line( dim, grid )
 	   IF ( axis .EQ. munknown
      .     .OR. axis .EQ. mnormal ) THEN
@@ -364,7 +366,7 @@
 	      CALL SPLIT_LIST(pttmode_explct, chout, risc_buff, 0)
 	   ENDIF
 	   risc_buff = ' '
- 2010    CONTINUE
+	ENDDO
  3200	FORMAT(2I6,2(1PG14.5),2(1x,A))
 	GOTO 4999
 
@@ -373,11 +375,11 @@
 	IF ( num_args .NE. 3 ) GOTO 5210
 	grid = TM_GET_GRIDNUM( cmnd_buff(arg_start(2):arg_end(2)) )
 	IF ( grid .EQ. unspecified_int4 ) GOTO 5930
-	DO 2110 dim = 1, nferdims
+	DO dim = 1, nferdims
 	  istat = STR_CASE_BLIND_COMPARE( ww_dim_name(dim),
      .				cmnd_buff(arg_start(3):arg_end(3)) )
 	  IF ( istat .EQ. vms_str_success ) GOTO 2120
- 2110	CONTINUE
+	ENDDO
 	GOTO 5210
  2120	axis = grid_line( dim, grid )
 	WRITE (risc_buff, fmt ) 1, queries(query), tag
@@ -427,23 +429,23 @@
 	IF ( num_args .NE. 3 ) GOTO 5220
 	grid = TM_GET_GRIDNUM( cmnd_buff(arg_start(2):arg_end(2)) )
 	IF ( grid .EQ. unspecified_int4 ) GOTO 5930
-	DO 2210 dim = 1, nferdims
+	DO dim = 1, nferdims
 	  istat = STR_CASE_BLIND_COMPARE( ww_dim_name(dim),
      .					 cmnd_buff(arg_start(3):arg_end(3)) )
 	  IF ( istat .EQ. vms_str_success ) GOTO 2220
- 2210	CONTINUE
+	ENDDO
 	GOTO 5220
  2220	CALL GRID_SUBSCRIPT_EXTREMES( dummy, n, grid, dim )
 	WRITE (risc_buff, fmt ) n+1, queries(query), tag
 	CALL SPLIT_LIST(pttmode_explct, chout, risc_buff, 0)
 	risc_buff = ' '
 * for each record write the coordinate and the lower box bound
-	DO 2230 i = 1, n
+	DO i = 1, n
 	   WRITE (risc_buff, '(2(1PG14.5))' ) TWORLD(i, grid, dim, box_middle),
      .				   TWORLD(i, grid, dim, box_lo_lim)
 	   CALL SPLIT_LIST(pttmode_explct, chout, risc_buff, 0)
 	   risc_buff = ' '
- 2230	CONTINUE
+	ENDDO
 	WRITE (risc_buff, '(2(1PG14.5))' ) -999.D0, TWORLD(n, grid, 
      .                             dim, box_hi_lim)
 	CALL SPLIT_LIST(pttmode_explct, chout, risc_buff, 0)
@@ -458,22 +460,22 @@
 	IF ( num_args .NE. 5 ) GOTO 5230
 	grid = TM_GET_GRIDNUM( cmnd_buff(arg_start(2):arg_end(2)) )
 	IF ( grid .EQ. unspecified_int4 ) GOTO 5930
-	DO 2310 dim = 1, nferdims ! match orientation against X,Y,Z,T,E,F
+	DO dim = 1, nferdims ! match orientation against X,Y,Z,T,E,F
 	  istat = STR_CASE_BLIND_COMPARE( ww_dim_name(dim),
      .				cmnd_buff(arg_start(3):arg_end(3)) )
 	  IF ( istat .EQ. vms_str_success ) THEN
 	     ww_given = .TRUE.
 	     GOTO 2320
 	  ENDIF
- 2310	CONTINUE
-	DO 2315 dim = 1, nferdims ! match orientation against I,J,K,L,M,N
+	ENDDO
+	DO dim = 1, nferdims ! match orientation against I,J,K,L,M,N
 	  istat = STR_CASE_BLIND_COMPARE( ss_dim_name(dim),
      .				cmnd_buff(arg_start(3):arg_end(3)) )
 	  IF ( istat .EQ. vms_str_success ) THEN
 	     ww_given = .FALSE.
              GOTO 2320
           ENDIF
- 2315	CONTINUE
+	ENDDO
 	GOTO 5230
 #ifdef MANDATORY_FORMAT_WIDTHS
 * no fixed field width works but "*" may cause problems too
@@ -515,22 +517,22 @@
 	IF ( num_args .NE. 5 ) GOTO 5240
 	grid = TM_GET_GRIDNUM( cmnd_buff(arg_start(2):arg_end(2)) )
 	IF ( grid .EQ. unspecified_int4 ) GOTO 5930
-	DO 2410 dim = 1, nferdims   ! match orientation against X,Y,Z,T
+	DO dim = 1, nferdims   ! match orientation against X,Y,Z,T
 	  istat = STR_CASE_BLIND_COMPARE( ww_dim_name(dim),
      .				cmnd_buff(arg_start(3):arg_end(3)) )
 	  IF ( istat .EQ. vms_str_success ) THEN
 	      ww_given = .TRUE.
 	      GOTO 2420
 	  ENDIF
- 2410	CONTINUE
-	DO 2415 dim = 1, nferdims     ! match orientation against I,J,K,L,M,N
+	ENDDO
+	DO dim = 1, nferdims     ! match orientation against I,J,K,L,M,N
 	  istat = STR_CASE_BLIND_COMPARE( ss_dim_name(dim),
      .				cmnd_buff(arg_start(3):arg_end(3)) )
 	  IF ( istat .EQ. vms_str_success ) THEN
 	      ww_given = .FALSE.
 	      GOTO 2420
 	  ENDIF
- 2415	CONTINUE
+	ENDDO
 	GOTO 5240
 #ifdef MANDATORY_FORMAT_WIDTHS
 * no fixed field width works but "*" may cause problems too

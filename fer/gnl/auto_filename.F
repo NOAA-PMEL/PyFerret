@@ -60,6 +60,7 @@
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 * V745 *acm* 12/18  added plist_dsg for CF-DSG format.  
 *                   Also change .cdf extension to .nc
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -90,24 +91,25 @@
 	IF ( minus .EQ. 0 ) THEN
 	   include_dset  = .TRUE.
 	   include_vcode = .TRUE.
-	   DO 10 idim = 1, nferdims
- 10	   include_axis( idim ) = .TRUE.
+	   DO idim = 1, nferdims
+	      include_axis( idim ) = .TRUE.
+ 	   ENDDO
 	ELSE
 	   mp = minus + 1
 	   include_dset  = INDEX(coding(mp:), 'D' ) .EQ. 0
 	   include_vcode = INDEX(coding(mp:), 'V' ) .EQ. 0
-	   DO 20 idim = 1, nferdims
+	   DO idim = 1, nferdims
 	   include_axis( idim ) = 
      .			INDEX(coding(mp:), ww_dim_name(idim) ) .EQ. 0
      .		  .AND. INDEX(coding(mp:), ss_dim_name(idim) ) .EQ. 0
- 20	   CONTINUE
+	   ENDDO
 	ENDIF
 
 * don't include information on axes that are irrelevant
-	DO 30 idim = 1, nferdims
+	DO idim = 1, nferdims
 	  IF ( cx_lo_ww(idim,cx) .EQ. unspecified_val8 )
      .						include_axis(idim) = .FALSE.
- 30	CONTINUE
+	ENDDO
 
 * special lead-in characters (so DIR listings are neat)
         IF ( list_fmt_type .EQ. plist_unformatted ) THEN
@@ -154,14 +156,14 @@
 	   risc_buff( flen:flen ) = '.'
 
 * all relevant axis limits
-	   DO 100 idim = 1, nferdims
+	   DO idim = 1, nferdims
 	      IF ( include_axis( idim ) 
      .	  .   AND. cx_lo_ss( cx, idim ) .NE. unspecified_int4 ) THEN
 	         risc_buff( flen+1:) = LEGAL_CHARS(
      .		   CX_DIM_STR(idim,cx,':',no_decims,slen), leg_len )
 	         flen = flen + leg_len
 	      ENDIF
- 100	   CONTINUE
+	   ENDDO
         ENDIF
 
 * pass result back - overwrite garbage from "LEGAL_CHARS" with blanks

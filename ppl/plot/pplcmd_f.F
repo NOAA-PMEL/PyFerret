@@ -147,6 +147,7 @@ C              do not make small tics by default.
 * 11/2022 *acm* Code cleanup: remove references to obsolete gui interface
 * 11/2022 *acm* Code cleanup: Use the variable from common CMXGE rather than 1.e35
 * 11/2022 *acm* Code cleanup: Modernize DO-loop syntax.
+* 11/2022 *acm* Code cleanup: Remove and issue note for long-obsolete PPLUS commands
 
 c	fromi	command file or device (/dev/tty or TT: for terminal)
 c	linei	input line for parameters
@@ -481,13 +482,10 @@ C
      . ICOM(:7)
       GOTO 10
 C     AUTO
-100	IF(LABON)THEN
-	    IPAUSE=0
-	    IHDCPY=1
-	ELSE
-	    IPAUSE=1
-	    IHDCPY=0
-	END IF
+100	CONTINUE
+         err_msg = 'PPLUS Command not supported '//icom(:TM_LENSTR1(icom))
+         CALL ERRMSG (ferr_not_implemented, status, err_msg, *9999)
+
 	GOTO 10
 C     BAUD
 200	CONTINUE  ! unused
@@ -519,7 +517,6 @@ C     SMOOTH
 C     TKTYPE
 1000	CONTINUE
 
-	print *, 'PPLUS TKTYPE command '//icom(:TM_LENSTR1(icom))
          err_msg = 'PPLUS Command not supported '//icom(:TM_LENSTR1(icom))
          CALL ERRMSG (ferr_not_implemented, status, err_msg, *9999)
 
@@ -665,7 +662,6 @@ C     PARAM
 C     SAVE
 4200	CONTINUE
 
-	print *, 'PPLUS SAVE command '//icom(:TM_LENSTR1(icom))
          err_msg = 'PPLUS Command not supported '//icom(:TM_LENSTR1(icom))
          CALL ERRMSG (ferr_not_implemented, status, err_msg, *9999)
 
@@ -673,8 +669,7 @@ C     SAVE
 C	GET
 4300	CONTINUE
 
-	 print *, 'GET  '//icom(:TM_LENSTR1(icom))
-         err_msg = 'PSAVEPLUS Command not supported '//icom(:TM_LENSTR1(icom))
+         err_msg = 'PPLUS Command not supported '//icom(:TM_LENSTR1(icom))
          CALL ERRMSG (ferr_not_implemented, status, err_msg, *9999)
 
 	GOTO 10
@@ -1113,21 +1108,18 @@ C	DFLTFNT
 C	GRID
 8800	CONTINUE 
 
-	print *, 'PPLUS GRID command '//icom(:TM_LENSTR1(icom))
          err_msg = 'PPLUS Command not supported '//icom(:TM_LENSTR1(icom))
          CALL ERRMSG (ferr_not_implemented, status, err_msg, *9999)
 
 C	TEKNME
 8900	CONTINUE
 
-	print *, 'PPLUS TEKNME command '//icom(:TM_LENSTR1(icom))
          err_msg = 'PPLUS Command not supported '//icom(:TM_LENSTR1(icom))
          CALL ERRMSG (ferr_not_implemented, status, err_msg, *9999)
 
 C	ECHO
 9000	CONTINUE
 
-	print *, 'PPLUS ECHO command '//icom(:TM_LENSTR1(icom))
          err_msg = 'PPLUS Command not supported '//icom(:TM_LENSTR1(icom))
          CALL ERRMSG (ferr_not_implemented, status, err_msg, *9999)
 
@@ -1502,14 +1494,13 @@ C	AUTOLAB
 	    GOTO 10
 C	EVAR
 9900	    CONTINUE
-         print *, 'PPLUS EVAR or EPICVAR command '//icom(:TM_LENSTR1(icom))
+
          err_msg = 'PPLUS Command not supported '//icom(:TM_LENSTR1(icom))
          CALL ERRMSG (ferr_not_implemented, status, err_msg, *9999)
 	    GOTO 10
 C	DEBUG
 9910	    CONTINUE
 
-         print *, 'PPLUS DEBUG command '//icom(:TM_LENSTR1(icom))
          err_msg = 'PPLUS Command not supported '//icom(:TM_LENSTR1(icom))
          CALL ERRMSG
 
@@ -1551,7 +1542,6 @@ C	CLSPLT
 C	RENAMPL
 9960	    CONTINUE
 
-	print *, 'PPLUS RENAMPL command '//icom(:TM_LENSTR1(icom))
          err_msg = 'PPLUS Command not supported '//icom(:TM_LENSTR1(icom))
          CALL ERRMSG
 
@@ -1618,7 +1608,6 @@ C     Ribbon PLOT
 C     READSEQ & RD
 1600	CONTINUE
 
-	print *, 'PPLUS READSEQ or RD command '//icom(:TM_LENSTR1(icom))
          err_msg = 'PPLUS Command not supported '//icom(:TM_LENSTR1(icom))
          CALL ERRMSG (ferr_not_implemented, status, err_msg, *9999)
 
@@ -1663,7 +1652,6 @@ C	VIEW
 C	ENTER
 3500	CONTINUE
 
-	print *, 'PPLUS ENTER command '//icom(:TM_LENSTR1(icom))
          err_msg = 'PPLUS Command not supported '//icom(:TM_LENSTR1(icom))
          CALL ERRMSG (ferr_not_implemented, status, err_msg, *9999)
 
@@ -1671,8 +1659,6 @@ C	ENTER
 C     MULTPLT
 4900	CONTINUE
 cc 4900	CALL MULT
-
-	print *, 'PPLUS MULTPLT command '//icom(:TM_LENSTR1(icom))
 
          err_msg = 'PPLUS Command not supported '//icom(:TM_LENSTR1(icom))
          CALL ERRMSG (ferr_not_implemented, status, err_msg, *9999)

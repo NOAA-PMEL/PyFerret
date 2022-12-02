@@ -2,6 +2,7 @@
 * expnd_by_len_str.F
 *
 * Ansley Manke 08/2013
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 *
 * This function takes a string variable and a set of lengths
 * and returns the variable with element 1 repeated len1 times,
@@ -224,12 +225,12 @@
       m = res_lo_ss(E_AXIS)
       n = res_lo_ss(F_AXIS)
 
-      DO 200 n1 = arg_lo_ss(F_AXIS,ARG1), arg_hi_ss(F_AXIS,ARG1)
-      DO 200 m1 = arg_lo_ss(E_AXIS,ARG1), arg_hi_ss(E_AXIS,ARG1)
-      DO 200 l1 = arg_lo_ss(T_AXIS,ARG1), arg_hi_ss(T_AXIS,ARG1)
-      DO 200 k1 = arg_lo_ss(Z_AXIS,ARG1), arg_hi_ss(Z_AXIS,ARG1)
-      DO 200 j1 = arg_lo_ss(Y_AXIS,ARG1), arg_hi_ss(Y_AXIS,ARG1)
-      DO 200 i1 = arg_lo_ss(X_AXIS,ARG1), arg_hi_ss(X_AXIS,ARG1)
+      DO n1 = arg_lo_ss(F_AXIS,ARG1), arg_hi_ss(F_AXIS,ARG1)
+      DO m1 = arg_lo_ss(E_AXIS,ARG1), arg_hi_ss(E_AXIS,ARG1)
+      DO l1 = arg_lo_ss(T_AXIS,ARG1), arg_hi_ss(T_AXIS,ARG1)
+      DO k1 = arg_lo_ss(Z_AXIS,ARG1), arg_hi_ss(Z_AXIS,ARG1)
+      DO j1 = arg_lo_ss(Y_AXIS,ARG1), arg_hi_ss(Y_AXIS,ARG1)
+      DO i1 = arg_lo_ss(X_AXIS,ARG1), arg_hi_ss(X_AXIS,ARG1)
          IF ( arg_2(i2,j2,k2,l2,m2,n2) .NE. bad_flag(2) ) THEN
 	    
             CALL ef_get_string_arg_element_6d(id, ARG1, arg_1, 
@@ -237,10 +238,10 @@
 
             count = INT(arg_2(i2,j2,k2,l2,m2,n2))    ! number to replicate
 
-            DO 100 indx = 1, count
+            DO indx = 1, count
                CALL EF_PUT_STRING(buff, slen, result(1,i,j,k,l,m,n))
                i = i + 1
- 100        CONTINUE
+            ENDDO
 
          ENDIF  ! arg_2 bad
 
@@ -250,10 +251,15 @@
       l2 = l2 + arg_incr(T_AXIS,ARG2)
       m2 = m2 + arg_incr(E_AXIS,ARG2)
       n2 = n2 + arg_incr(F_AXIS,ARG2)
- 200  CONTINUE
 
- 300  CONTINUE
-      
+      ENDDO
+      ENDDO
+      ENDDO
+      ENDDO
+      ENDDO
+      ENDDO
+
+
 *                                                                      ^
 *                                                                      |
 *                                            USER CONFIGURABLE PORTION |

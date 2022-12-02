@@ -74,6 +74,7 @@
 * 9/06 *acm* 6.01  fixing bug 1439 long symbol values; change length of symval to 2048
 *       *acm* 3/12 cleanup ifdefs and unnecessary include files
 * V686 *acm* 11/13 Allow symbol names to be up to 120 characters long
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 
         IMPLICIT NONE
 * calling argument declarations:
@@ -168,9 +169,10 @@
 	   DO 170 i = coach_start, epos-1
 	      IF ( c1 .EQ.  buffer(i:i) ) THEN
 * ... make sure there is only white space filling out the parens
-	        DO 160 i2 = i+1, epos-1
- 160	        IF ( buffer(i2:i2) .NE. ' '
-     .	      .AND.  buffer(i2:i2) .NE. tab ) GOTO 5300
+	        DO i2 = i+1, epos-1
+		   IF ( buffer(i2:i2) .NE. ' '.AND.  
+     .	                buffer(i2:i2) .NE. tab ) GOTO 5300
+     	        ENDDO
 	        coach_end = i-1
 	        GOTO 171
 	      ENDIF

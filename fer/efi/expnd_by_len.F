@@ -2,6 +2,7 @@
 * expnd_by_len.F
 *
 * Ansley Manke 12/2011
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 *
 * This function takes a variable and a set of lengths
 * and returns the variable with element 1 repeated len1 times,
@@ -214,12 +215,12 @@
       m = res_lo_ss(E_AXIS)
       n = res_lo_ss(F_AXIS)
 
-      DO 200 n1 = arg_lo_ss(F_AXIS,ARG1), arg_hi_ss(F_AXIS,ARG1)
-      DO 200 m1 = arg_lo_ss(E_AXIS,ARG1), arg_hi_ss(E_AXIS,ARG1)
-      DO 200 l1 = arg_lo_ss(T_AXIS,ARG1), arg_hi_ss(T_AXIS,ARG1)
-      DO 200 k1 = arg_lo_ss(Z_AXIS,ARG1), arg_hi_ss(Z_AXIS,ARG1)
-      DO 200 j1 = arg_lo_ss(Y_AXIS,ARG1), arg_hi_ss(Y_AXIS,ARG1)
-      DO 200 i1 = arg_lo_ss(X_AXIS,ARG1), arg_hi_ss(X_AXIS,ARG1)
+      DO n1 = arg_lo_ss(F_AXIS,ARG1), arg_hi_ss(F_AXIS,ARG1)
+      DO m1 = arg_lo_ss(E_AXIS,ARG1), arg_hi_ss(E_AXIS,ARG1)
+      DO l1 = arg_lo_ss(T_AXIS,ARG1), arg_hi_ss(T_AXIS,ARG1)
+      DO k1 = arg_lo_ss(Z_AXIS,ARG1), arg_hi_ss(Z_AXIS,ARG1)
+      DO j1 = arg_lo_ss(Y_AXIS,ARG1), arg_hi_ss(Y_AXIS,ARG1)
+      DO i1 = arg_lo_ss(X_AXIS,ARG1), arg_hi_ss(X_AXIS,ARG1)
          IF ( arg_2(i2,j2,k2,l2,m2,n2) .NE. bad_flag(2) ) THEN
 
             val = arg_1(i1,j1,k1,l1,m1,n1)
@@ -228,10 +229,10 @@
 
             count = INT(arg_2(i2,j2,k2,l2,m2,n2))    ! number to replicate
 
-            DO 100 indx = 1, count
+            DO indx = 1, count
                result(i,j,k,l,m,n) = val
                i = i + 1
- 100        CONTINUE
+            ENDDO
 
          ENDIF  ! arg_2 bad
 
@@ -241,9 +242,14 @@
       l2 = l2 + arg_incr(T_AXIS,ARG2)
       m2 = m2 + arg_incr(E_AXIS,ARG2)
       n2 = n2 + arg_incr(F_AXIS,ARG2)
- 200  CONTINUE
 
- 300  CONTINUE
+      ENDDO
+      ENDDO
+      ENDDO
+      ENDDO
+      ENDDO
+      ENDDO
+
       
 *                                                                      ^
 *                                                                      |

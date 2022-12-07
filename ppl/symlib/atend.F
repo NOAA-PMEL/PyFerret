@@ -61,6 +61,8 @@ C**		15-JUN-86	by Donald W. Denbo
 C**		  changes for memory buffer added
 C**
 C*** V686 *acm* 11/13 Allow symbol names to be up to 120 characters long
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
+*                             Remove obsolete ifdefs
 
 	include 'SYSTEM.INC'
 	include 'CMDCOM.INC'
@@ -89,25 +91,21 @@ C
 	WHLEV=CMWHLV(CMDLEV)
 	SKIPIF=.FALSE.
 	SKIPWH=.FALSE.
-	DO 10 I=1,WHLEV
-10	WHLINE(I)=CMWHLN(CMDLEV,I)
+	DO I=1,WHLEV
+	   WHLINE(I)=CMWHLN(CMDLEV,I)
+	ENDDO
 	CMDFIL=CMFILE(CMDLEV)
 	LINCNT=CMLINE(CMDLEV)
 	ECHOF=CMECHO(CMDLEV)
 	DEBUGF=CMDEBG(CMDLEV)
 	QUIETF=CMQUIE(CMDLEV)
 	LOGCMF=CMLOG(CMDLEV)
-#ifdef unix
+
 	IF(CMDFIL.EQ.'/dev/tty')THEN
-#else
-	if(cmdfil.eq.'TT:')then
-#endif
 	    TERMF=.TRUE.
 	    IF(.NOT.QUIETF)WRITE(LTTOUT,997)
 997	    FORMAT(' Control returned to keyboard')
-#ifdef unix
 	    OPEN(CMDLUN,FILE=CMDFIL,STATUS='OLD')
-#endif
 	ELSE IF(CMDFIL.EQ.'$$MEMBUF$$')THEN
 	    TERMF=.FALSE.
 	    MEMBUF=.TRUE.
@@ -115,15 +113,12 @@ C
 C
 C	OPEN OLD COMMAND FILE AND SKIP TO CORRECT LINE
 C
-#ifdef unix
 	    OPEN(CMDLUN,FILE=CMDFIL,STATUS='OLD')
-#else
-	    open(cmdlun,file=cmdfil,readonly,status='old')
-#endif
-	    DO 100 I=1,LINCNT
-	    READ(CMDLUN,998)
+
 998	    FORMAT(1X)
-100	    CONTINUE
+	    DO I=1,LINCNT
+	       READ(CMDLUN,998)
+	    ENDDO
 	ENDIF
 	ISYM=LNBLK(CMDFIL,80)
 	SYM='*PPL$COMMAND_FILE'

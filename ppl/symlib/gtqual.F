@@ -64,9 +64,9 @@ C**		2-AUG-86	by Donald W. Denbo
 C**	    Modified:
 C**
 C**
-C       Mod *JD* 3.22.91 to permit use of / in command qualifiers for unix.
-C       Not a complete fix as will screw up unix paths elsewhere in PPL
 C* v552 *acm* 3/03 Longer strings: changes for multi-line labels
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
+*                             Remove obsolete ifdefs
 
 	INCLUDE 'SWITCH.INC'
 
@@ -77,35 +77,25 @@ C	SET DEFULTS
 C
 	IER=0
 	IDONE=LNBLK(LINE,2048)
-C       Mod to allow Ferret to work in Unix as is -- using "/" for
-C       qualifiers -- test mode only J Davison 3.22.91  3 ifdefs commented out
-C*JD*#ifdef unix
-C	ILEN = INDEX(LINE,':')-1
-C#else
+
 	ilen = index(line,'/')-1
-C#endif
+
 	IF(ILEN.LE.0)ILEN=IDONE
-	DO 10 I=1,NFLAGS
-10	FLAG(I)=DEFLTS(I)
+	DO I=1,NFLAGS
+	   FLAG(I)=DEFLTS(I)
+	ENDDO
 C
 C	PARSE LINE
 C
 	N=0
 	IS=1
-C*JD*#ifdef  unix
-C20	ISLSH = INDEX(LINE(IS:),':')+IS-1
-C#else
 20	islsh = index(line(is:),'/')+is-1
-C#endif
+
 	IF(ISLSH.GE.IS)THEN
 C
 C	QUALIFIER FOUND
 C
-C*JD*#ifdef unix
-C	    IEND = INDEX(LINE(ISLSH+1:),':')+ISLSH
-C#else
 	    iend = index(line(islsh+1:),'/')+islsh
-C#endif
 	    IF(IEND.LE.ISLSH)IEND=IDONE+1
 	    TEST=LINE(ISLSH+1:ISLSH+2).NE.'NO'
 	    IF(TEST)THEN

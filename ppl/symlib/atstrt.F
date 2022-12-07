@@ -71,6 +71,8 @@ C *kob* 04/07/96 passed in character strings had to be declared
 C                with "*(*)" for the linux port 
 C v552 *acm* 3/03 Longer strings: changes for multi-line labels
 * V686 *acm* 11/13 Allow symbol names to be up to 120 characters long
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
+*                             Remove obsolete ifdefs
 
 	INCLUDE 'CMDCOM.INC'
 	INCLUDE 'SYMKEY.INC'
@@ -103,8 +105,9 @@ C v552 *acm* 3/03 Longer strings: changes for multi-line labels
 	CMLOG(CMDLEV-1)=LOGCMF
 	CMIFLV(CMDLEV-1)=IFLEV
 	CMWHLV(CMDLEV-1)=WHLEV
-	DO 20 I=1,WHLEV
-20	CMWHLN(CMDLEV-1,I)=WHLINE(I)
+	DO I=1,WHLEV
+	   CMWHLN(CMDLEV-1,I)=WHLINE(I)
+	ENDDO
 	IFLEV=0
 	WHLEV=0
 	DEBUGF=SDEBUG
@@ -117,11 +120,7 @@ C v552 *acm* 3/03 Longer strings: changes for multi-line labels
 	SYM='*PPL$COMMAND_FILE'
 	CALL PUTSYM(SYM,FILE,ISYM,IER)
 	IF(.NOT.MEMBUF)THEN
-#ifdef unix
 	    OPEN(CMDLUN,FILE=FILE,STATUS='OLD',ERR=1000)
-#else
-	    OPEN(CMDLUN,FILE=FILE,STATUS='OLD',readonly,ERR=1000)
-#endif
 	ENDIF
 C
 C	PROCESS COMMAND LINE
@@ -155,9 +154,9 @@ C
 	    CALL PUTSYM(TO,LINE,ISPC-1,IER)
 	    TEMP=LINE(ISPC+1:)
 	    IL=IL-ISPC
-	    DO 10 I=1,IL
-	    IF(TEMP(I:I).NE.' ')GOTO 11
-10	    CONTINUE
+	    DO I=1,IL
+	       IF(TEMP(I:I).NE.' ')GOTO 11
+	    ENDDO
 	    RETURN
 11	    LINE=TEMP(I:)
 	    ICNT=ICNT+1

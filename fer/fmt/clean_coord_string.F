@@ -46,6 +46,7 @@
 *       *acm* 3/12 cleanup ifdefs and unnecessary include files
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 *       *acm* 4/12 6D Ferret: time axis may be in t or f direction. 
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -70,9 +71,9 @@
 
 	   IF ( string(9:9) .EQ. ' ' ) THEN
 * wipe out time on climatological dates
-	      DO 100 i = 7, slen
+	      DO i = 7, slen
 	        string(i:i) = ' '
- 100	      CONTINUE
+	      ENDDO
 	   ELSE
 	     string(12:12) = ':'
 	   ENDIF
@@ -81,10 +82,12 @@
 * FIX LONGITUDES
 	   i0 = INDEX( string, '(' )      ! e.g."19E(379)"
 	   IF ( i0 .GT. 0 ) THEN
-	      DO 200 i = i0+1, slen-1     ! --> "379(379)"
- 200	      string(i-i0:i-i0) = string(i:i)
-	      DO 210 i = slen-i0, slen    ! --> "379     "
- 210	      string(i:i) = ' '
+	      DO i = i0+1, slen-1     ! --> "379(379)"
+		 string(i-i0:i-i0) = string(i:i)
+	      ENDDO
+	      DO i = slen-i0, slen    ! --> "379     "
+		 string(i:i) = ' '
+	      ENDDO
 	      slen = slen-i0
 	      string(slen:slen) = 'E'     ! --> "379E"
 	   ENDIF

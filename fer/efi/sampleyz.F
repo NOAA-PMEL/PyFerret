@@ -39,6 +39,7 @@
 * 11-Jan-06 *acm* declare ylo, yhi, zlo, zhi as integer not real
 *
 * V68   3/12 Fix arg description.
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 
 * This function samples 4-d data at y and z pts indicated by args 2 and 3
 * 
@@ -346,12 +347,12 @@ C Validate argument dimensions
 
       ndimy = 0
       ndimz = 0
-      DO 10 i = X_AXIS,F_AXIS
+      DO i = X_AXIS,F_AXIS
          IF ( arg_hi_ss(i,ARG2) .GT. arg_lo_ss(i,ARG2) ) 
      .      ndimy = ndimy + 1
          IF ( arg_hi_ss(i,ARG3) .GT. arg_lo_ss(i,ARG3) ) 
      .      ndimz= ndimz + 1
-   10 CONTINUE
+      ENDDO
 
       IF ( (ny .NE. nz) .OR. (ndimy .GT. 1) .OR. (ndimz .GT.1) ) THEN
          err_msg =
@@ -405,19 +406,23 @@ C Validate argument dimensions
 * Z-axis is normal to the results
       k = res_lo_ss(Z_AXIS)
 
-      DO 700 j = res_lo_ss(Y_AXIS), res_hi_ss(Y_AXIS)
+      DO j = res_lo_ss(Y_AXIS), res_hi_ss(Y_AXIS)
 
          ypt = arg_2(i2,j2,k2,l2,m2,n2)
          zpt = arg_3(i3,j3,k3,l3,m3,n3)
 
          IF ( ypt .EQ. bad_flag(ARG2) .OR.
      .        zpt .EQ. bad_flag(ARG3) ) THEN
-            DO 30 n = res_lo_ss(F_AXIS), res_hi_ss(F_AXIS)
-            DO 30 m = res_lo_ss(E_AXIS), res_hi_ss(E_AXIS)
-            DO 30 l = res_lo_ss(T_AXIS), res_hi_ss(T_AXIS)
-            DO 30 i = res_lo_ss(X_AXIS), res_hi_ss(X_AXIS)
+            DO n = res_lo_ss(F_AXIS), res_hi_ss(F_AXIS)
+            DO m = res_lo_ss(E_AXIS), res_hi_ss(E_AXIS)
+            DO l = res_lo_ss(T_AXIS), res_hi_ss(T_AXIS)
+            DO i = res_lo_ss(X_AXIS), res_hi_ss(X_AXIS)
                result(i,j,k,l,m,n) = bad_flag_result
-   30       CONTINUE
+            ENDDO
+            ENDDO
+            ENDDO
+            ENDDO
+
 *           Go to the next pair of coordinates
             GOTO 690
          ENDIF
@@ -436,14 +441,14 @@ C Validate argument dimensions
          jbot = ef_unspecified_int4
          jmatch = ef_unspecified_int4
 
-         DO 210 j1 = arg_lo_ss(Y_AXIS,ARG1), arg_hi_ss(Y_AXIS,ARG1)
+         DO j1 = arg_lo_ss(Y_AXIS,ARG1), arg_hi_ss(Y_AXIS,ARG1)
             IF ( TM_FPEQ(ypt, yaxdat(j1)) ) THEN
                jmatch = j1
                GOTO 220
             ELSE IF ( ypt .GT. yaxdat(j1) ) THEN
                jbot = j1
             ENDIF
-  210    CONTINUE
+	 ENDDO
 
 * Check that ypt is not beyond the upper end of the Y-axis range.
          IF ( ypt .GT. yaxdat(yhi) ) THEN
@@ -457,12 +462,16 @@ C Validate argument dimensions
             jtop = jbot + 1
          ELSE
 *           ypt outside the grid
-            DO 230 n = res_lo_ss(F_AXIS), res_hi_ss(F_AXIS)
-            DO 230 m = res_lo_ss(E_AXIS), res_hi_ss(E_AXIS)
-            DO 230 l = res_lo_ss(T_AXIS), res_hi_ss(T_AXIS)
-            DO 230 i = res_lo_ss(X_AXIS), res_hi_ss(X_AXIS)
+            DO n = res_lo_ss(F_AXIS), res_hi_ss(F_AXIS)
+            DO m = res_lo_ss(E_AXIS), res_hi_ss(E_AXIS)
+            DO l = res_lo_ss(T_AXIS), res_hi_ss(T_AXIS)
+            DO i = res_lo_ss(X_AXIS), res_hi_ss(X_AXIS)
                result(i,j,k,l,m,n) = bad_flag_result
-  230       CONTINUE
+            ENDDO
+            ENDDO
+            ENDDO
+            ENDDO
+
 *           Go to the next pair of coordinates
             GOTO 690
          ENDIF
@@ -489,14 +498,14 @@ C Validate argument dimensions
          kbot = ef_unspecified_int4
          kmatch = ef_unspecified_int4
 
-         DO 310 k1 = arg_lo_ss(Z_AXIS,ARG1), arg_hi_ss(Z_AXIS,ARG1)
+         DO k1 = arg_lo_ss(Z_AXIS,ARG1), arg_hi_ss(Z_AXIS,ARG1)
             IF ( TM_FPEQ(zpt, zaxdat(k1)) ) THEN
                kmatch = k1
                GOTO 320
             ELSE IF ( zpt .GT. zaxdat(k1) ) THEN
                kbot = k1
             ENDIF
-  310    CONTINUE
+         ENDDO
 
 * Check that zpt is not beyond the upper end of the Z-axis range.
          IF ( zpt .GT. zaxdat(zhi) ) THEN
@@ -510,12 +519,15 @@ C Validate argument dimensions
             ktop = kbot + 1
          ELSE
 *           zpt outside the grid
-            DO 330 n = res_lo_ss(F_AXIS), res_hi_ss(F_AXIS)
-            DO 330 m = res_lo_ss(E_AXIS), res_hi_ss(E_AXIS)
-            DO 330 l = res_lo_ss(T_AXIS), res_hi_ss(T_AXIS)
-            DO 330 i = res_lo_ss(X_AXIS), res_hi_ss(X_AXIS)
+            DO n = res_lo_ss(F_AXIS), res_hi_ss(F_AXIS)
+            DO m = res_lo_ss(E_AXIS), res_hi_ss(E_AXIS)
+            DO l = res_lo_ss(T_AXIS), res_hi_ss(T_AXIS)
+            DO i = res_lo_ss(X_AXIS), res_hi_ss(X_AXIS)
                result(i,j,k,l,m,n) = bad_flag_result
-  330       CONTINUE
+            ENDDO
+            ENDDO
+            ENDDO
+            ENDDO
 *           Go to the next pair of coordinates
             GOTO 690
          ENDIF
@@ -529,16 +541,16 @@ C Validate argument dimensions
          ENDIF
 
          n1 = arg_lo_ss(F_AXIS,ARG1)
-         DO 600 n = res_lo_ss(F_AXIS), res_hi_ss(F_AXIS)
+         DO n = res_lo_ss(F_AXIS), res_hi_ss(F_AXIS)
 
          m1 = arg_lo_ss(E_AXIS,ARG1)
-         DO 500 m = res_lo_ss(E_AXIS), res_hi_ss(E_AXIS)
+         DO m = res_lo_ss(E_AXIS), res_hi_ss(E_AXIS)
 
          l1 = arg_lo_ss(T_AXIS,ARG1)
-         DO 400 l = res_lo_ss(T_AXIS), res_hi_ss(T_AXIS)
+         DO l = res_lo_ss(T_AXIS), res_hi_ss(T_AXIS)
 
             i1 = arg_lo_ss(X_AXIS,ARG1)
-            DO 100 i = res_lo_ss(X_AXIS), res_hi_ss(X_AXIS)
+            DO i = res_lo_ss(X_AXIS), res_hi_ss(X_AXIS)
 
 *  First interpolate in y, getting values of the fcn at (y,kbot) and (y,ktop)
                fbb = arg_1(i1,jbot,kbot,l1,m1,n1)
@@ -565,16 +577,16 @@ C Validate argument dimensions
                ENDIF
 
                i1 = i1 + arg_incr(X_AXIS,ARG1)
- 100        CONTINUE
+            ENDDO
 
             l1 = l1 + arg_incr(T_AXIS,ARG1)
- 400     CONTINUE
+         ENDDO
 
             m1 = m1 + arg_incr(E_AXIS,ARG1)
- 500     CONTINUE
+         ENDDO
 
             n1 = n1 + arg_incr(F_AXIS,ARG1)
- 600     CONTINUE
+         ENDDO
 
 * Only one of the ARG2 and one of ARG3 actually increments
  690     i2 = i2 + arg_incr(X_AXIS,ARG2)
@@ -591,7 +603,7 @@ C Validate argument dimensions
          m3 = m3 + arg_incr(E_AXIS,ARG3)
          n3 = n3 + arg_incr(F_AXIS,ARG3)
 
- 700  CONTINUE
+      ENDDO ! j loop
 
       RETURN
 

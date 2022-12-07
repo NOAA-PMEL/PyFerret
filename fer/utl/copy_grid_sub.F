@@ -47,6 +47,7 @@
 *
 * V200: 10/12/89
 *       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 
         IMPLICIT NONE
 	include 'ferret.parm'
@@ -65,29 +66,40 @@
 
 * --- end of introductory code ---
 
-	DO 100 n = dlof, dhif
-	DO 100 m = dloe, dhie
-	DO 100 l = dlot, dhit
-	DO 100 k = dloz, dhiz
-	DO 100 j = dloy, dhiy
-	DO 100 i = dlox, dhix
+	DO n = dlof, dhif
+	DO m = dloe, dhie
+	DO l = dlot, dhit
+	DO k = dloz, dhiz
+	DO j = dloy, dhiy
+	DO i = dlox, dhix
 
 	   dst(i,j,k,l,m,n) = src(i,j,k,l,m,n)
 
- 100	CONTINUE
+	ENDDO
+	ENDDO
+	ENDDO
+	ENDDO
+	ENDDO
+	ENDDO
 
 * check for differing bad data flags in an efficient way ...
 	IF ( bad_src .NE. bad_dst ) THEN
-	   DO 200 n = dlof, dhif
-	   DO 200 m = dloe, dhie
-	   DO 200 l = dlot, dhit
-	   DO 200 k = dloz, dhiz
-	   DO 200 j = dloy, dhiy
-	   DO 200 i = dlox, dhix
+	   DO n = dlof, dhif
+	   DO m = dloe, dhie
+	   DO l = dlot, dhit
+	   DO k = dloz, dhiz
+	   DO j = dloy, dhiy
+	   DO i = dlox, dhix
 
 	      IF ( src(i,j,k,l,m,n) .EQ. bad_src ) dst(i,j,k,l,m,n) = bad_dst
 
- 200	   CONTINUE
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
+
 	ENDIF
 
 	RETURN

@@ -48,6 +48,7 @@
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 
 *v695+ 3/15 *sh* from AUX_REGRID_LIMS_1D_Z
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 
 	IMPLICIT NONE
 
@@ -108,12 +109,12 @@
 * that has a clear order.   NOTE:  This test can give wrong answers on
 * pathological fields with differing order columns
 	
-	DO 110 n = ss_lo(6),ss_hi(6)
-	DO 110 m = ss_lo(5),ss_hi(5)
-	DO 110 l = ss_lo(4),ss_hi(4)
-	DO 110 k = ss_lo(3),ss_hi(3)
-	DO 110 j = ss_lo(2),ss_hi(2)
-	DO 110 i = ss_lo(1),ss_hi(1)
+	DO n = ss_lo(6),ss_hi(6)
+	DO m = ss_lo(5),ss_hi(5)
+	DO l = ss_lo(4),ss_hi(4)
+	DO k = ss_lo(3),ss_hi(3)
+	DO j = ss_lo(2),ss_hi(2)
+	DO i = ss_lo(1),ss_hi(1)
 
 * ... get a column of data
 	   CALL EXTRACT_ARG1_LINE( aux, the_axis, axloss, axhiss,
@@ -125,7 +126,7 @@
            DO ss = axloss, axhiss
 	      v = line(ss)
 	      IF (v .EQ. bad_aux) THEN
-	         GO TO 110
+	         CYCLE
 	      ELSEIF (looking_for_first) THEN
 	         v1 = v
 	         looking_for_first = .FALSE.
@@ -146,7 +147,12 @@
 	    GOTO 130
 	   ENDIF
 
- 110	CONTINUE
+	ENDDO
+	ENDDO
+	ENDDO
+	ENDDO
+	ENDDO
+	ENDDO
 
 ***** determine the minimal index limits needed to do the regrid *****
 * SINGLE AXIS CODE ONLY (GET_CONTEXT_MODS setup to dis-allow multiple args for now)
@@ -187,12 +193,12 @@
 
 * find the smallest index range in the aux array that contains all of the aux
 * values lying within the axmin to axmax value range on the destination axis 
-	DO 290 n = ss_lo(6),ss_hi(6)
-	DO 290 m = ss_lo(5),ss_hi(5)
-	DO 290 l = ss_lo(4),ss_hi(4)
-	DO 290 k = ss_lo(3),ss_hi(3)
-	DO 290 j = ss_lo(2),ss_hi(2)
-	DO 290 i = ss_lo(1),ss_hi(1)
+	DO n = ss_lo(6),ss_hi(6)
+	DO m = ss_lo(5),ss_hi(5)
+	DO l = ss_lo(4),ss_hi(4)
+	DO k = ss_lo(3),ss_hi(3)
+	DO j = ss_lo(2),ss_hi(2)
+	DO i = ss_lo(1),ss_hi(1)
 
 * get a column of data
 	   CALL EXTRACT_ARG1_LINE( aux, the_axis, axloss, axhiss,
@@ -230,7 +236,14 @@
 	      ENDIF
 	   ENDDO
 
- 290    CONTINUE
+ 290       CONTINUE
+
+	ENDDO
+	ENDDO
+	ENDDO
+	ENDDO
+	ENDDO
+	ENDDO
 
 * for decreasing-ordered aux array swap the lo/hi limits just found
 	IF (.NOT.increasing) THEN

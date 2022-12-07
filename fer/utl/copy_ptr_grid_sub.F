@@ -45,6 +45,7 @@
 *
 * V533: 6/01 *sh*
 *       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 
         IMPLICIT NONE
 	include 'ferret.parm'
@@ -62,16 +63,21 @@
 
 * --- end of introductory code ---
 
-	DO 100 n = dlof, dhif
-	DO 100 m = dloe, dhie
-	DO 100 l = dlot, dhit
-	DO 100 k = dloz, dhiz
-	DO 100 j = dloy, dhiy
-	DO 100 i = dlox, dhix
+	DO n = dlof, dhif
+	DO m = dloe, dhie
+	DO l = dlot, dhit
+	DO k = dloz, dhiz
+	DO j = dloy, dhiy
+	DO i = dlox, dhix
 
 	   CALL COPY_C_STRING( src(i,j,k,l,m,n), dst(i,j,k,l,m,n))
 
- 100	CONTINUE
+	ENDDO
+	ENDDO
+	ENDDO
+	ENDDO
+	ENDDO
+	ENDDO
 
 	RETURN
 	END 

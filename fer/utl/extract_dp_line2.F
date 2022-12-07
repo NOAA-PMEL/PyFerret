@@ -47,6 +47,7 @@
 
 * 5/15 NOTE: the newer routine EXTRACT_ARG2_LINE can probably replace this
 *      and is more appropriately sensitive to argument idim
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 
 
         IMPLICIT NONE
@@ -67,17 +68,22 @@
 
 * extract the line
 	iout = 0
-	DO 200 n = cx_lo_s6(cx), cx_hi_s6(cx)
-	DO 200 m = cx_lo_s5(cx), cx_hi_s5(cx)
-	DO 200 l = cx_lo_s4(cx), cx_hi_s4(cx)
-	DO 200 k = cx_lo_s3(cx), cx_hi_s3(cx)
-	DO 200 j = cx_lo_s2(cx), cx_hi_s2(cx)
-	DO 200 i = cx_lo_s1(cx), cx_hi_s1(cx)
+	DO n = cx_lo_s6(cx), cx_hi_s6(cx)
+	DO m = cx_lo_s5(cx), cx_hi_s5(cx)
+	DO l = cx_lo_s4(cx), cx_hi_s4(cx)
+	DO k = cx_lo_s3(cx), cx_hi_s3(cx)
+	DO j = cx_lo_s2(cx), cx_hi_s2(cx)
+	DO i = cx_lo_s1(cx), cx_hi_s1(cx)
 
 	   iout = iout + 1
 	   dp_line( iout ) = grid_data( i,j,k,l,m,n )
 
- 200	CONTINUE
+	ENDDO
+	ENDDO
+	ENDDO
+	ENDDO
+	ENDDO
+	ENDDO
 
 	RETURN
 	END

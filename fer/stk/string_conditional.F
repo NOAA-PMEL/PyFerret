@@ -50,6 +50,7 @@
 *		   (String expressions with IFV are identical to behavior with IF.)
 *       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
 * V751 11/19 *acm* fix copy-paste bug in ELSE
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -96,59 +97,63 @@
         bad1 = mr_bad_data ( mr1 )
 
 * compute the delta increment for each axis of each component
-	DO 2 icom = 1, num_com
-	DO 2 idim = 1, nferdims
-	   IF ( CX_DIM_LEN(idim,com_cx(icom)) .EQ. 1 ) THEN
-	      inc(idim,icom) = 0
-	   ELSE
-	      inc(idim,icom) = 1
-	   ENDIF
- 2	CONTINUE
+	DO icom = 1, num_com
+	   DO idim = 1, nferdims
+	      IF ( CX_DIM_LEN(idim,com_cx(icom)) .EQ. 1 ) THEN
+	         inc(idim,icom) = 0
+	      ELSE
+	         inc(idim,icom) = 1
+	      ENDIF
+	   ENDDO
+	ENDDO
 
 * compute the starting subscript for each axis of each component
 * (pre-decrement by 1 delta for looping ahead)
-	DO 4 icom = 1, num_com
-	DO 4 idim = 1, nferdims
- 4	lo(idim,icom) = cx_lo_ss(com_cx(icom),idim) - inc(idim,icom)
+	DO icom = 1, num_com
+	   DO idim = 1, nferdims
+	      lo(idim,icom) = cx_lo_ss(com_cx(icom),idim) - inc(idim,icom)
+	   ENDDO
+	ENDDO
 
 * operator number (1 thru 3 OK)
         op = operation
         IF (op .EQ. 5) op = 3  ! IFV works as for IF
         IF (op.LT.1 .OR. op.GT.3) STOP 'STR OP?'
 
-        GOTO (100,200,300) op
+        IF (op .LT. 3) THEN
 
- 100	CONTINUE
+
 * "THEN" - comes from IF (condition) THEN (choice)   ... no "ELSE" given
 * component 1 is the condition.  component 2 is the choice
- 200	n1 = sn1
+
+ 	n1 = sn1
 	n2 = sn2
-	DO 210 n = mr_lo_s6(mres), mr_hi_s6(mres)
+	DO n = mr_lo_s6(mres), mr_hi_s6(mres)
 	 n1 = n1 + dn1
 	 n2 = n2 + dn2
 	 m1 = sm1
 	 m2 = sm2
-	  DO 210 m = mr_lo_s5(mres), mr_hi_s5(mres)
+	  DO m = mr_lo_s5(mres), mr_hi_s5(mres)
 	  m1 = m1 + dm1
 	  m2 = m2 + dm2
 	  l1 = sl1
 	  l2 = sl2
-	  DO 210 l = mr_lo_s4(mres), mr_hi_s4(mres)
+	  DO l = mr_lo_s4(mres), mr_hi_s4(mres)
 	  l1 = l1 + dl1
 	  l2 = l2 + dl2
 	  k1 = sk1
 	  k2 = sk2
-	   DO 210 k = mr_lo_s3(mres), mr_hi_s3(mres)
+	   DO k = mr_lo_s3(mres), mr_hi_s3(mres)
 	   k1 = k1 + dk1
 	   k2 = k2 + dk2
 	   j1 = sj1
 	   j2 = sj2
-	    DO 210 j = mr_lo_s2(mres), mr_hi_s2(mres)
+	    DO j = mr_lo_s2(mres), mr_hi_s2(mres)
 	    j1 = j1 + dj1
 	    j2 = j2 + dj2
 	    i1 = si1
 	    i2 = si2
-	     DO 210 i = mr_lo_s1(mres), mr_hi_s1(mres)
+	     DO i = mr_lo_s1(mres), mr_hi_s1(mres)
 	     i1 = i1 + di1
 	     i2 = i2 + di2
 
@@ -159,50 +164,56 @@
               CALL SET_NULL_C_STRING(res(i,j,k,l,m,n))
            ENDIF
 
- 210	CONTINUE
-	RETURN
+	     ENDDO
+	    ENDDO
+	   ENDDO
+	  ENDDO
+	 ENDDO
+	ENDDO
+
+        ELSE !  op is 3 for ELSE 
 
 * "ELSE" - comes from IF (condition) THEN (choice1) ELSE (choice2)
 * component 1 is the condition.  components 2 and 3 are the choices
- 300	n1 = sn1
+ 	n1 = sn1
 	n2 = sn2
 	n3 = sn3
-	DO 310 n = mr_lo_s6(mres), mr_hi_s6(mres)
+	DO n = mr_lo_s6(mres), mr_hi_s6(mres)
 	n1 = n1 + dn1
 	n2 = n2 + dn2
 	n3 = n3 + dn3
 	m1 = sm1
 	m2 = sm2
 	m3 = sm3
-	 DO 310 m = mr_lo_s5(mres), mr_hi_s5(mres)
+	 DO m = mr_lo_s5(mres), mr_hi_s5(mres)
 	 m1 = m1 + dm1
 	 m2 = m2 + dm2
 	 m3 = m3 + dm3
 	  l1 = sl1
 	  l2 = sl2
 	  l3 = sl3
-	  DO 310 l = mr_lo_s4(mres), mr_hi_s4(mres)
+	  DO l = mr_lo_s4(mres), mr_hi_s4(mres)
 	  l1 = l1 + dl1
 	  l2 = l2 + dl2
 	  l3 = l3 + dl3
 	  k1 = sk1
 	  k2 = sk2
 	  k3 = sk3
-	   DO 310 k = mr_lo_s3(mres), mr_hi_s3(mres)
+	   DO k = mr_lo_s3(mres), mr_hi_s3(mres)
 	   k1 = k1 + dk1
 	   k2 = k2 + dk2
 	   k3 = k3 + dk3
 	   j1 = sj1
 	   j2 = sj2
 	   j3 = sj3
-	    DO 310 j = mr_lo_s2(mres), mr_hi_s2(mres)
+	    DO j = mr_lo_s2(mres), mr_hi_s2(mres)
 	    j1 = j1 + dj1
 	    j2 = j2 + dj2
 	    j3 = j3 + dj3
 	    i1 = si1
 	    i2 = si2
 	    i3 = si3
-	     DO 310 i = mr_lo_s1(mres), mr_hi_s1(mres)
+	     DO i = mr_lo_s1(mres), mr_hi_s1(mres)
 	     i1 = i1 + di1
 	     i2 = i2 + di2
 	     i3 = i3 + di3
@@ -214,7 +225,15 @@
               CALL COPY_C_STRING(com3(i3,j3,k3,l3,m3,n3), res(i,j,k,l,m,n))
            ENDIF
 
- 310	CONTINUE
+	     ENDDO
+	    ENDDO
+	   ENDDO
+	  ENDDO
+	 ENDDO
+	ENDDO
+
+	ENDIF
+
 	RETURN
 
         END

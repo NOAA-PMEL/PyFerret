@@ -107,6 +107,7 @@
 *                    extrapen is 0 (for original pen); 1, 2, 3, 4 (graticule pens)
 * V766  5/22 *acm* Update the 1009/1888 changes for a PLOT/VS overlay plot on a time plot
 *                  that has rescaled time.
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -290,8 +291,9 @@
         no_plot_yet = .FALSE.
         rescale_time = .FALSE.
 
-        DO 200 idim = 1, nferdims
- 200    ul_dolab(idim) = .TRUE.
+        DO idim = 1, nferdims
+           ul_dolab(idim) = .TRUE.
+ 	ENDDO
 
 * set up full context of plot (possibly multiple variables to plot)
 	CALL GRP_CX_DOC( cx_list, ncx, cx_plot, key_doc )

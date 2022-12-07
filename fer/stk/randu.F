@@ -37,8 +37,11 @@
 *
 * modified by steve hankin to contain explicit declarations
 * and renamed RANDU from "UNI" in its original version from CMLIB
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
+
         IMPLICIT NONE
 	INTEGER	JD,MDIG,I1MACH,M1,M2,JSEED,K0,K1,J0,J1,I,J,K
+
 
 C***BEGIN PROLOGUE  UNI
 C***DATE WRITTEN   810915
@@ -127,11 +130,12 @@ C          BE SURE THAT MDIG AT LEAST 16...
       K1 = 9069/M2
       J0 = MOD(JSEED,M2)
       J1 = JSEED/M2
-      DO 2 I=1,17
+      DO I=1,17
         JSEED = J0*K0
         J1 = MOD(JSEED/M2+J0*K1+J1*K0,M2/2)
         J0 = MOD(JSEED,M2)
-    2   M(I) = J0+M2*J1
+        M(I) = J0+M2*J1
+      ENDDO
       I=5
       J=17
 C  BEGIN MAIN LOOP HERE

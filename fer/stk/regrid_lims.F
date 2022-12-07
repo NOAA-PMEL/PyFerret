@@ -77,6 +77,7 @@
 * V671  6/11 *acm*  New 2D linear xy regridding, fixing ticket 1862
 *       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
 * V74+  5/18 *acm* issue 1868: gridding transforms that will grid to same axis
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -171,14 +172,14 @@
 	   naxis = 2
 	   axis_list(2) = y_dim
 	ELSEIF ( may_have_strides ) THEN
-	  DO 100 idim = axis, nferdims
+	  DO idim = axis, nferdims
 	    dst_axis = grid_line(idim,dst_grid)
 	    var_axis = grid_line(idim,var_grid)
 	    
 	   IF (dst_axis.EQ.var_axis .AND. 
      .      REGRID_TO_SELF (cx_regrid_trans(axis,src_cx) )) GOTO 110
 
-	    IF (dst_axis.EQ.var_axis) GOTO 100
+	    IF (dst_axis.EQ.var_axis) CYCLE
 	    IF (cx_regrid_trans(idim,dst_cx).EQ.prgrd_xact_pts
      .     .OR. cx_regrid_trans(idim,dst_cx).EQ.prgrd_exact) THEN
 	      IF ( line_class(dst_axis) .EQ. pline_class_stride ) THEN
@@ -190,7 +191,7 @@
 	    ELSE
 	      GOTO 110		! abort
 	    ENDIF
- 100	  CONTINUE
+	  ENDDO
 	  has_strides = .TRUE.  ! all axes meet the conditions
  110	  IF (.NOT.has_strides) naxis = 1
 	ENDIF
@@ -198,9 +199,10 @@
 * will there be more axes to regrid after this/these?
 	next_axis = axis_list(naxis) + 1
 	last_axis = .TRUE.
-	DO 200 idim = next_axis, nferdims
- 200	IF ( grid_line(idim,dst_grid) .NE. grid_line(idim,var_grid) )
+	DO idim = next_axis, nferdims
+ 	   IF ( grid_line(idim,dst_grid) .NE. grid_line(idim,var_grid) )
      .							last_axis = .FALSE.
+     	ENDDO
 	IF (.NOT.last_axis) has_strides = .FALSE.  ! (can never happen)
 
 * if its the last axis then the source data will be on its defining grid
@@ -229,11 +231,11 @@
 	cx_grid( src_cx ) = src_grid
 
 * get limits to request
-	DO 300 idim = 1, naxis
+	DO idim = 1, naxis
 	   CALL RQST_REGRID( dst_cx, src_cx, axis_list(idim),
      .			     has_strides, status )
 	   IF ( status .NE. ferr_ok ) GOTO 5000
- 300	CONTINUE
+	ENDDO
 
 * if doing strides then we may decide to abort
 * 1) if it turns out to be a modulo stride operation (e.g. I=1:720:11 on
@@ -242,7 +244,8 @@
 * 2) if the complete source data is already in cache don't reread w/ strides
 	IF (has_strides) THEN
 	   unacceptable_modulo = .FALSE.
-	   DO 400 i = 1, naxis
+
+	   DO i = 1, naxis
 	      idim = axis_list(i)
 	      axlen = CAXIS_MODLEN(idim, src_cx)
 	      IF (CX_DIM_LEN(idim,src_cx) .GT. axlen) THEN
@@ -252,7 +255,8 @@
 	         unacceptable_modulo = unacceptable_modulo
      .				 .OR.  fraction .NE. INT(fraction)
 	      ENDIF
- 400	   CONTINUE
+	   ENDDO
+
 ! THE COMMENTED OUT CODE BELOW CAN BE USED TO TURN ON LOGIC THAT WILL REUSE
 ! CACHED (NON_STRIDES) DATA RATHER THAN REREADING USING STRIDES. IT IS
 ! COMMENTED OUT AS NOT ENTIRELY DESIRABLE: 1) IT CREATES MULTIPLE CODE PATHS

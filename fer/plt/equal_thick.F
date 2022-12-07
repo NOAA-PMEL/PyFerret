@@ -44,6 +44,7 @@
 * 2.0) is accepted.  In these cases, ipen = icolor, icolor-10, or icolor-20
 *
 * 9/15/2021 *ACM* clarify error message for /thick setting
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 
         IMPLICIT NONE
 
@@ -89,8 +90,9 @@
 *          "/thick=" - syntax error
            GOTO 5010
         ENDIF
-        DO 100 strt = equal_pos+1, slen
- 100       IF ( strng(strt:strt) .NE. ' ' ) GOTO 110
+        DO strt = equal_pos+1, slen
+           IF ( strng(strt:strt) .NE. ' ' ) GOTO 110
+ 	ENDDO
 *       should never get here because of earlier checks
         GOTO 5010
 

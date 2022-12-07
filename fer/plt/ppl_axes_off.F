@@ -40,6 +40,7 @@
 
 * V450:  
 *       *acm* 3/12 cleanup ifdefs and unnecessary include files
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 
         IMPLICIT NONE
 	include 'plot_setup.parm'
@@ -59,8 +60,9 @@
 	COMMON /XAXIS_STATE/ save_iaxon
 
 * save current axis state
-	DO 10 i = 1, 4
- 10	save_iaxon(i) = iaxon(i)
+	DO i = 1, 4
+	   save_iaxon(i) = iaxon(i)
+ 	ENDDO
 
 * turn all 4 axes off
 	CALL PPLCMD ( from, line, 0, 'AXSET 0,0,0,0', 1, 1 )

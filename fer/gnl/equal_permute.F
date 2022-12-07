@@ -131,7 +131,8 @@
 	            IF (ndim .EQ. pmax) GOTO 5100
 *   ... check for duplicates
 	            DO 210 i = 1, ndim
- 210		    IF ( idim .EQ. ABS(perm(i)) ) GOTO 5100
+ 		       IF ( idim .EQ. ABS(perm(i)) ) GOTO 5100
+ 210		    CONTINUE
 *  ... save the axis
 	            ndim = ndim + 1
 	            perm(ndim) = idim * rev

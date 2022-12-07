@@ -183,19 +183,19 @@
 
       n1 = arg_lo_ss(F_AXIS,ARG1)
       n2 = arg_lo_ss(F_AXIS,ARG2)
-      DO 400 n=res_lo_ss(F_AXIS), res_hi_ss(F_AXIS)
+      DO n=res_lo_ss(F_AXIS), res_hi_ss(F_AXIS)
 
       l1 = arg_lo_ss(T_AXIS,ARG1)
       l2 = arg_lo_ss(T_AXIS,ARG2)
-      DO 400 l=res_lo_ss(T_AXIS), res_hi_ss(T_AXIS)
+      DO l=res_lo_ss(T_AXIS), res_hi_ss(T_AXIS)
 
       k1 = arg_lo_ss(Z_AXIS,ARG1)
       k2 = arg_lo_ss(Z_AXIS,ARG2)
-      DO 400 k=res_lo_ss(Z_AXIS), res_hi_ss(Z_AXIS)
+      DO k=res_lo_ss(Z_AXIS), res_hi_ss(Z_AXIS)
 
       j1 = arg_lo_ss(Y_AXIS,ARG1)
       j2 = arg_lo_ss(Y_AXIS,ARG2)
-      DO 400 j=res_lo_ss(Y_AXIS), res_hi_ss(Y_AXIS)
+      DO j=res_lo_ss(Y_AXIS), res_hi_ss(Y_AXIS)
 
          i1 = arg_lo_ss(X_AXIS,ARG1)
          i2 = arg_lo_ss(X_AXIS,ARG2)
@@ -204,14 +204,14 @@
          m2 = arg_lo_ss(E_AXIS,ARG2)
  
             i1 = 1
-            DO 200 mout=arg_lo_ss(E_AXIS,ARG2),arg_hi_ss(E_AXIS,ARG2)
-               DO 100 iout = 1, NINT(arg_2(i2,j2,k2,l2,mout,n1))
+            DO mout=arg_lo_ss(E_AXIS,ARG2),arg_hi_ss(E_AXIS,ARG2)
+               DO iout = 1, NINT(arg_2(i2,j2,k2,l2,mout,n1))
                  IF ( arg_1(i1,j1,k1,l1,m1,n1) .NE. bad_flag(1) )
      .             result(iout,j,k,l,mout,n) = arg_1(i1,j1,k1,l1,m1,n1)
 
                   i1 = i1 + 1
- 100           CONTINUE
- 200        CONTINUE
+               ENDDO
+            ENDDO
 
          j1 = j1 + arg_incr(Y_AXIS,ARG1)
          j2 = j2 + arg_incr(Y_AXIS,ARG2)
@@ -221,7 +221,11 @@
          l2 = l2 + arg_incr(T_AXIS,ARG2)
          n1 = n1 + arg_incr(F_AXIS,ARG1)
          n2 = n2 + arg_incr(F_AXIS,ARG2)
- 400  CONTINUE
+
+      ENDDO
+      ENDDO
+      ENDDO
+      ENDDO
       
          
 *                                                                      ^

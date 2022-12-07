@@ -48,6 +48,7 @@
 * V530 *acm* 1/23/01 replace shell sort with HEAPSORT for even 
 *	better performance.
 *       *acm* 3/12 cleanup ifdefs and unnecessary include files
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 
         IMPLICIT NONE
 	include 'errmsg.parm'
@@ -60,30 +61,30 @@
 	INTEGER i
 
 * initialize
-	DO 10 i = 1,n
- 10	indices(i) = i
+	DO i = 1,n
+	   indices(i) = i
+ 	ENDDO
 
 * replace indices that are out of range with missing value flags
-	DO 20 i = 1, n
+	DO i = 1, n
 	  IF (list(i) .GT. valid_max
      .   .OR. list(i) .LT. valid_min ) list(i) = bad_flag_in
- 20	CONTINUE
+ 	ENDDO
 
-* shell sort
-c	CALL SHELLR(list,indices,bad_flag_in,n)
+* sort
 	CALL HEAP2(list, indices, bad_flag_in, n)
 
 * count valid points
- 300	nvalid = n
-	DO 400 i = 1,n
+	nvalid = n
+	DO i = 1,n
 	   IF ( list(i) .EQ. bad_flag_in ) nvalid = nvalid - 1
- 400	CONTINUE
+ 	ENDDO
 
 * reconcile bad flags and count valid points
 	IF ( bad_flag_in .NE. bad_flag_out ) THEN
-	   DO 500 i = 1,n
+	   DO i = 1,n
 	      IF ( list(i).EQ.bad_flag_in ) list(i) = bad_flag_out
- 500	   CONTINUE
+ 	   ENDDO
 	ENDIF
 
 	RETURN

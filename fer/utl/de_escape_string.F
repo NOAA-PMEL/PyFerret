@@ -46,6 +46,7 @@
 * Unix/RISC port - 2/13/91 - .AND. always produces a logical result
 
 * V510: 3/00 *sh*
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 
         IMPLICIT NONE
 * calling argument declarations
@@ -77,8 +78,9 @@
 	ENDIF
 
 !   blank out any remaining characters
- 50	DO 100 iin = iout, slen
- 100	string(iin:iin) = " " 
+ 50	DO iin = iout, slen
+	   string(iin:iin) = " " 
+ 	ENDDO
 	slen = MAX(iout-1, 1)	! new string length
 	RETURN
 

@@ -123,6 +123,7 @@
 * V720: 6/17 *acm* Fix ticket 2547: the grid and type of uvars are stored, but the
 *                  information may be collected on different passes through this routine.
 * V74+  5/18 *acm* issue 1868: gridding transforms that will grid to same axis
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 
         IMPLICIT NONE
 * calling argument declarations:
@@ -362,7 +363,7 @@
 	   CALL STACK_PTR_UP( cx_stack_ptr, max_context, status )
 	   IF ( status .NE. ferr_ok ) GOTO 5000
 	   aux_cx = cx_stack_ptr
-	   DO 330 iaux = 1, cx_naux(hi_cx)
+	   DO iaux = 1, cx_naux(hi_cx)
 	      CALL GET_AUX_VAR_CONTEXT( hi_cx, aux_cx, iaux, status )
 	      IF ( status .NE. ferr_ok ) GOTO 5000
 	      IF ( cx_grid( aux_cx ) .EQ. unspecified_int4 ) THEN
@@ -370,7 +371,7 @@
 	         cx_stack_ptr = cx_stack_ptr - 1
 	         GOTO 900   ! go get this aux var grid
 	      ENDIF
- 330	   CONTINUE
+	   ENDDO
 *  ... return now to normal grid determination for the variable being regridded
 	   cx_stack_ptr = cx_stack_ptr - 1
 	ENDIF
@@ -385,10 +386,10 @@
 	IF ( cx_category(hi_cx) .EQ. cat_user_var ) THEN
 * ... 12/95: inherit the pseudo-variable flag from any component that has it
 	   var = cx_variable(hi_cx)
-	   DO 350 idim = 1, nferdims
+	   DO idim = 1, nferdims
 	      IF (uvar_mod_pseudo(idim,var))
      .			uvar_mod_pseudo(idim,uvar) = .TRUE.
- 350	   CONTINUE
+	   ENDDO
 	   uv_grd = KNOWN_GRID( cx_data_set(hi_cx), cat_user_var, var )
 	   IF ( uv_grd .EQ. unspecified_int4 ) THEN
 	      GOTO 900	! uvar grid not known --> get it
@@ -418,11 +419,11 @@
            IF (dot .GT. bracket) THEN
               dsloc = MAX(INDEX(name, 'd='), INDEX(name, 'D=') )
               IF (dsloc .GT. 0) THEN 
-                 DO 360 i = dsloc+1, len_name
-                    IF (name(i:i) .EQ. ',') GOTO 370
-                    IF (name(i:i) .EQ. ']') GOTO 370
- 360             CONTINUE
- 370             CONTINUE
+                 DO i = dsloc+1, len_name
+                    IF (name(i:i) .EQ. ',') EXIT
+                    IF (name(i:i) .EQ. ']') EXIT
+		 ENDDO
+
                  endbracket = INDEX(name, ']')
                  newname = name(1:bracket)//'d='//name(dsloc+2:i-1)//']'//name(endbracket+1:len_name)
                  len_name = TM_LENSTR1(newname)
@@ -697,9 +698,9 @@ c	cx_hi_ss(hi_cx, x_dim) = attlen !!
  1000	CONTINUE
 * for grid-changing vars all of the arguments contextx are still on the stack 
 	IF ( its_gc ) THEN
-	   DO 1010 i = 1, nitem - 1
+	   DO i = 1, nitem - 1
 	      cx_stack_ptr = cx_stack_ptr - 1
- 1010	   CONTINUE
+	   ENDDO
 	ENDIF
 * have any variables been encountered ?
 * is this a completely abstract expression like X+Y*2 ?
@@ -780,8 +781,9 @@ c	cx_hi_ss(hi_cx, x_dim) = attlen !!
  2000	IF ( need_another_pass ) THEN 
 * ... uvar_grid and data set info are NOT re-initialized
 	   IF ( pass_number .GT. 1 ) GOTO 9000	! caught in a loop ...
-	   DO 1110 i = 1, nferdims
- 1110	   uvar_given(i,uvar) = uvlim_irrelevant
+	   DO i = 1, nferdims
+	      uvar_given(i,uvar) = uvlim_irrelevant
+ 	   ENDDO
 
 * 6/16 comment as we switch to LIST-based management of uvar grids:
 * ... the following commented-out SAVE_UVAR_GRID call was initially inserted
@@ -812,9 +814,9 @@ c	cx_hi_ss(hi_cx, x_dim) = attlen !!
 * ... release the use-count hold that the temporary grid has on the axes
 *	since it will be re-asserted on the second pass
 *	We need to retain the grid, itself, because it is used on pass 2
-	   DO 1120 i = 1, nferdims
+	   DO i = 1, nferdims
 	      CALL TM_DEALLO_DYN_LINE(grid_line(i,grid))
- 1120	   CONTINUE
+	   ENDDO
 	   IF ( mode_diagnostic ) THEN
 	      CALL DIAG_OP('dealloc ',isact_class_impl_grid,gnum,0)
 	      CALL DIAGNOSTIC_OUT( 'pass #2', lo_cx, point_to_cx )

@@ -43,6 +43,7 @@
 
 * V533 *sh* 7/01 - based upon OPERATE.F
 *       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -82,49 +83,52 @@
      .	(inc(1,2),di2),(inc(2,2),dj2),(inc(3,2),dk2),(inc(4,2),dl2),(inc(5,2),dm2),(inc(6,2),dn2)
 
 * compute the delta increment for each axis of each component
-	DO 2 icom = 1, num_com
-	DO 2 idim = 1, nferdims
-	   IF ( CX_DIM_LEN(idim,com_cx(icom)) .EQ. 1 ) THEN
-	      inc(idim,icom) = 0
-	   ELSE
-	      inc(idim,icom) = 1
-	   ENDIF
- 2	CONTINUE
+	DO icom = 1, num_com
+	   DO idim = 1, nferdims
+	      IF ( CX_DIM_LEN(idim,com_cx(icom)) .EQ. 1 ) THEN
+	         inc(idim,icom) = 0
+	      ELSE
+	         inc(idim,icom) = 1
+	      ENDIF
+	   ENDDO
+	ENDDO
 
 * compute the starting subscript for each axis of each component
 * (pre-decrement by 1 delta for looping ahead)
-	DO 4 icom = 1, num_com
-	DO 4 idim = 1, nferdims
- 4	lo(idim,icom) = cx_lo_ss(com_cx(icom),idim) - inc(idim,icom)
+	DO icom = 1, num_com
+	   DO idim = 1, nferdims
+ 	      lo(idim,icom) = cx_lo_ss(com_cx(icom),idim) - inc(idim,icom)
+	   ENDDO
+	ENDDO
 
 	n1 = sn1
 	n2 = sn2
-	DO 200 n = mr_lo_s6(mres), mr_hi_s6(mres)
+	DO n = mr_lo_s6(mres), mr_hi_s6(mres)
 	 n1 = n1 + dn1
 	 n2 = n2 + dn2
 	 m1 = sm1
 	 m2 = sm2
-	  DO 200 m = mr_lo_s5(mres), mr_hi_s5(mres)
+	  DO m = mr_lo_s5(mres), mr_hi_s5(mres)
 	  m1 = m1 + dm1
 	  m2 = m2 + dm2
 	  l1 = sl1
 	  l2 = sl2
-	  DO 200 l = mr_lo_s4(mres), mr_hi_s4(mres)
+	  DO l = mr_lo_s4(mres), mr_hi_s4(mres)
 	  l1 = l1 + dl1
 	  l2 = l2 + dl2
 	  k1 = sk1
 	  k2 = sk2
-	   DO 200 k = mr_lo_s3(mres), mr_hi_s3(mres)
+	   DO k = mr_lo_s3(mres), mr_hi_s3(mres)
 	   k1 = k1 + dk1
 	   k2 = k2 + dk2
 	   j1 = sj1
 	   j2 = sj2
-	    DO 200 j = mr_lo_s2(mres), mr_hi_s2(mres)
+	    DO j = mr_lo_s2(mres), mr_hi_s2(mres)
 	    j1 = j1 + dj1
 	    j2 = j2 + dj2
 	    i1 = si1
 	    i2 = si2
-	     DO 200 i = mr_lo_s1(mres), mr_hi_s1(mres)
+	     DO i = mr_lo_s1(mres), mr_hi_s1(mres)
 	     i1 = i1 + di1
 	     i2 = i2 + di2
 
@@ -132,7 +136,12 @@
      .                     com2(i2,j2,k2,l2,m2,n2),
      .                     res(i,j,k,l,m,n)      )
 
- 200	CONTINUE
+	     ENDDO
+	    ENDDO
+	   ENDDO
+	  ENDDO
+	 ENDDO
+	ENDDO
 
 	RETURN
         END

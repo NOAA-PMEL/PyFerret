@@ -74,6 +74,7 @@
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 * V698  *acm* 5/16 Ticket 1845, 2404 fix; adjusting plot-axis ends for subspan 
 *		   modulo axes (as in axis_intervals.F for 2D plots).
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
@@ -105,8 +106,9 @@
 * memory variable (mr)
 	IF ( curvilinear ) THEN
 * ... axis of index values (other command line args provide true coordinates)
-	   DO 100 i = lo_ss, hi_ss
- 100	   axis(i) = i
+	   DO i = lo_ss, hi_ss
+	      axis(i) = i
+ 	   ENDDO
 	ELSE
 	   CALL MAKE_AXIS( grid, idim, lo_ss, hi_ss, axis(lo_ss) )
 	ENDIF
@@ -139,7 +141,7 @@
         void_at_end  = is_subspan .AND. (hi_ss.EQ.line_dim(iaxis)+1 )
 
         IF (irregular .OR. is_subspan) THEN
-	   DO 200 i = lo_cx+1, hi_cx-1
+	   DO i = lo_cx+1, hi_cx-1
 * ... test within precision limits that may be visible in a plot
 
 	      IF (ABS((axis(i+1)-axis(i))/d_regrid - 1.0) .GT. 3.E-6) THEN
@@ -147,7 +149,7 @@
 		   regrid = .TRUE.
 
 	      ENDIF
- 200	   CONTINUE
+	   ENDDO
 	ENDIF
 
 * regridding parameters

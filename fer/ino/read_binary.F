@@ -55,6 +55,7 @@
 * v767 6/22 *acm* See issue 112: Detect whether grid is too large for 4-byte integer indexing
 ** 10/2022 *acm* Code cleanup: remove references to obsolete gui interface
 *                TM_SPLIT_MESSAGE replaced by SPLIT_LIST
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 
         IMPLICIT NONE
 	include	'tmap_errors.parm'
@@ -234,7 +235,7 @@
 * the data region obtained may be inadequate for the request
 * ("cx" is request, "cx1" is available)
 	cx1 = cx20(the_var)
-	DO 900 idim = 1, nferdims
+	DO idim = 1, nferdims
 	   IF ( cx_hi_ss(cx,idim) .GT. cx_hi_ss(cx1,idim) ) THEN
 	      IF ( cx_hi_ss(cx_last,idim) .NE. unspecified_int4
      .	     .OR.  cx_given(idim,cx) ) THEN
@@ -249,7 +250,7 @@
 	         cx_hi_ww(idim,cx) = cx_hi_ww(idim,cx1)
 	      ENDIF
 	   ENDIF
- 900	CONTINUE
+	ENDDO
 
 * successful completion
 	cx_stack_ptr = cx0
@@ -264,8 +265,9 @@
            CALL WARN (ferrmsg)
 	ENDIF
  1000   FORMAT ('Binary file reading: Insufficient memory reading variable ', i4)
-	DO 5010 nleft = 1, nvar20-1	! delete all except last
- 5010	CALL DELETE_VARIABLE(mr20(nleft))
+	DO nleft = 1, nvar20-1	! delete all except last
+ 	   CALL DELETE_VARIABLE(mr20(nleft))
+ 	ENDDO
 	CALL BR_CLOSE()
  5500	RETURN
  5300   CALL ERRMSG( ferr_out_of_range, status,

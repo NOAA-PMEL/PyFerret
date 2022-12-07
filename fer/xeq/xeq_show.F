@@ -362,9 +362,9 @@
 * command given with /ALL ?
 	risc_buff = ' '
 	slash_all = .FALSE.
-	DO 10 iqual = 1, num_qualifiers
-	IF ( qualifier_list( iqual ) .EQ. 1 ) slash_all = .TRUE.
- 10	CONTINUE
+	DO iqual = 1, num_qualifiers
+	   IF ( qualifier_list( iqual ) .EQ. 1 ) slash_all = .TRUE.
+	ENDDO
 	limited_show = subcmnd_num .NE. 1 .OR. .NOT. slash_all
 
 * if the user entered a blank-separated list insteas of comma-separated
@@ -391,7 +391,7 @@
      .  ' OPEN  ACTIVE  ANTIALIAS  QUALITY  DISPLAY  THICKEN  TEXTPROM', 
      .  61)
  201    FORMAT(I4,6X,A1,7X,A3,5X,A6,5X,A3,6X,F4.2,5X,F4.2)
-	DO 210 i = 1, max_windows
+	DO i = 1, max_windows
 	   IF ( wn_open(i) ) THEN
 	      nothing = .FALSE.
 	      IF ( wn_active(i) ) THEN
@@ -426,7 +426,7 @@
               CALL SPLIT_LIST(pttmode_explct, show_lun, risc_buff, 0)
               risc_buff = ' '
 	   ENDIF
- 210	CONTINUE
+	ENDDO
 	IF ( nothing ) CALL SPLIT_LIST(pttmode_explct, show_lun,
      .		'   no windows open', 0) 
 	IF ( limited_show ) RETURN
@@ -437,7 +437,7 @@
 	IF ( num_args .EQ. 0 .OR. slash_all ) CALL SHOW_REGION( cx_last )
 * show requested regions
 	IF ( num_items .GE. 1 ) THEN
-	   DO 320 i = 1, num_items
+	   DO i = 1, num_items
 	      IF ( interrupted ) CALL ERRMSG
      .			( ferr_interrupt, status, ' ', *5000 )
 	      arg = cmnd_buff( item_start(i):item_end(i) )
@@ -445,13 +445,13 @@
 	      IF ( cx .EQ. unspecified_int4 ) CALL ERRMSG
      .				( ferr_unknown_arg, status, arg, *5000 )
 	      CALL SHOW_REGION( cx )
- 320	   CONTINUE
+	   ENDDO
 	ELSEIF ( slash_all ) THEN
 * show all user-defined and pre-defined regions
-	   DO 330 cx = 0, min_context, -1
+	   DO cx = 0, min_context, -1
 	      IF ( cx_name( cx ) .NE. unspecified_name4 )
      .			CALL SHOW_REGION( cx )
- 330	   CONTINUE
+	   ENDDO
 	ENDIF
 	IF ( limited_show ) RETURN
 
@@ -508,15 +508,15 @@
 	risc_buff = ' '
 	IF ( num_args .GT. 0 ) THEN
 
-	   DO 420 i = 1, num_items
+	   DO i = 1, num_items
 * show the named line(s)
 	      i1 = STR_UPCASE(name,cmnd_buff(item_start(i):item_end(i)))
 *  ... first show the static lines
-	      DO 410 line = 1, max_lines
+	      DO line = 1, max_lines
 	         IF ( interrupted ) CALL ERRMSG
      .			( ferr_interrupt, status, ' ', *5000 )
-	         IF ( line_name(line) .EQ. char_init16 ) GOTO 410
-	         IF ( line_name(line)(1:1) .EQ. '(' ) GOTO 410
+	         IF ( line_name(line) .EQ. char_init16 ) CYCLE
+	         IF ( line_name(line)(1:1) .EQ. '(' ) CYCLE
 	         IF (MATCH_TEMPLATE(line_name(line),name)) THEN
                    IF (sxml) THEN
                       IF (firstxml) THEN
@@ -529,17 +529,17 @@
 
                    ELSE
                       CALL SHOW_LINE( line, .NOT.brief )
-	              DO 405 i2 = 1, nferdims
+	              DO i2 = 1, nferdims
 	                IF (qual_given( slash_show_grid_x0+i2).GT.0
      .                 .OR. qual_given( slash_show_grid_i0+i2).GT.0)THEN
                          grid_line(i2,tmp_grid) = line
                          CALL SHOW_LINE_COORDS( tmp_grid, mods_cx, i2 )
                         ENDIF
- 405                  CONTINUE
+	              ENDDO
                    ENDIF
 
                  ENDIF
- 410	      CONTINUE
+	      ENDDO
 *  ... then show the dynamic lines
               line = 0
  414          CALL TM_NEXT_DYN_LINE( line, *416)
@@ -558,19 +558,19 @@
 
                    ELSE
                       CALL SHOW_LINE( line, .NOT.brief )
-	              DO 412 i2 = 1, nferdims
+	              DO i2 = 1, nferdims
 	                IF (qual_given( slash_show_grid_x0+i2).GT.0
      .              .OR. qual_given( slash_show_grid_i0+i2).GT.0) THEN
                          grid_line(i2,tmp_grid) = line
                          CALL SHOW_LINE_COORDS( tmp_grid, mods_cx, i2 )
                        ENDIF
- 412                 CONTINUE
+	              ENDDO
                    ENDIF
 
                  ENDIF
 	         GOTO 414
  416          CONTINUE
- 420	   CONTINUE
+	   ENDDO
 	ELSE
 
 * show all the defined axes
@@ -578,10 +578,10 @@
            num_predefined_axes = TM_GET_LINENUM('EZ')
            num_clim_1 = TM_GET_LINENUM('MONTH_IRREG')
            num_clim_n = TM_GET_LINENUM('ABSTRACT') - 1
-	   DO 450 line = 1, max_lines
+	   DO line = 1, max_lines
 	      IF ( interrupted ) CALL ERRMSG
      .			( ferr_interrupt, status, ' ', *5000 )
-	      IF ( line_name(line) .EQ. char_init16) GOTO 450
+	      IF ( line_name(line) .EQ. char_init16) CYCLE
               IF (.NOT.sxml) THEN
                  CALL SHOW_LINE( line, brief )
               ENDIF
@@ -598,7 +598,7 @@ c     .           (line.GE.num_clim_1 .AND. line.LE.num_clim_n) )
                  CALL SHOW_LINE_XML( show_lun, line)
               ENDIF
 
- 450	   CONTINUE
+	   ENDDO
 *  ... then show the dynamic lines
            line = 0
  460       CALL TM_NEXT_DYN_LINE( line, *470)
@@ -639,7 +639,7 @@ c     .           (line.GE.num_clim_1 .AND. line.LE.num_clim_n) )
 	   WRITE ( risc_buff, '(8X,A)' ) 'current output expression(s):'
 	   CALL SPLIT_LIST(pttmode_explct, show_lun, risc_buff, 0)
 	   risc_buff = ' '
-	   DO 510 i = 1, num_uvars_in_cmnd
+	   DO i = 1, num_uvars_in_cmnd
 	      iuvar = UVAR_NUMBER( EXPR_NAME(i) )
 	      IF ( iuvar .NE. unspecified_int4 ) THEN
 	         WRITE (risc_buff,'(8X,A)')
@@ -647,7 +647,7 @@ c     .           (line.GE.num_clim_1 .AND. line.LE.num_clim_n) )
 	         CALL SPLIT_LIST(pttmode_explct, show_lun, risc_buff, 0)
 	         risc_buff = ' '
 	      ENDIF
- 510	   CONTINUE
+	   ENDDO
 	ENDIF
 	IF ( limited_show ) RETURN
 
@@ -734,12 +734,12 @@ c     .           (line.GE.num_clim_1 .AND. line.LE.num_clim_n) )
 * show this mode ?
 	   IF ( .NOT. slash_all ) THEN
               len_mchars = TM_LENSTR(mode_name(mode)(:4))
-	      DO 810 i = 1, num_items
+	      DO i = 1, num_items
 	         name = cmnd_buff( item_start(i):item_end(i) )
                  len_test = TM_LENSTR(name)
 	         IF ( MATCH4( name, len_test,
      .             mode_name( mode),len_mchars )) GOTO 820
- 810	      CONTINUE
+	      ENDDO
 	      GOTO 850	! no match
 	   ENDIF
  820	   show_str = '      '//mode_name( mode )
@@ -1016,15 +1016,16 @@ c                    ENDIF ! status from GET_SAVED_UVAR_AUX_INFO
 * ... we need to save a private copy of the index list, else it gets corrupted
 *       by a call to delete_list_get_undel in INIT_DEPENDENCIES
               saved_num_indices = num_indices
-              DO 1007 i = 1, saved_num_indices
- 1007         saved_index_list(i) = deleted_list_result(i)
-              DO 1008 i = 1, saved_num_indices
+              DO i = 1, saved_num_indices
+		 saved_index_list(i) = deleted_list_result(i)
+ 	      ENDDO
+              DO i = 1, saved_num_indices
                  CALL CRAWL_DEPENDENCIES
      .                          ( 
      .                          uvar_name_code(saved_index_list(i)), 
      .                          base_cx, status )
                  IF (status .NE. ferr_ok) GOTO 5050
- 1008         CONTINUE
+	      ENDDO
 	   ELSE
 *       SHOW VAR/TREE  expr1, expr2, ...
 *  ... multiplicity of items is handled by BREAK_UP_EXPR in CRAWL_DEPENDENCIES
@@ -1125,19 +1126,18 @@ c                    ENDIF ! status from GET_SAVED_UVAR_AUX_INFO
                     ENDIF
 	         ELSE
 * ... show ALL user variables matching this name (or name template 4/96)
-*	            DO 1015 ivar = 1, max_uvar
-*	               IF (uvar_num_items(ivar).EQ.uvar_deleted) GOTO 1015
+
                     CALL deleted_list_get_undel(uvar_num_items_head,
      .                                         deleted_list_result(1),
      .                                         max_uvar, num_indices )
-                    DO 1012, i2 = 1, max_uvar
+                    DO i2 = 1, max_uvar
                       save_deleted_list_result(i2) = 
      .                       deleted_list_result(i2)
- 1012	            CONTINUE
-                    DO 1015 j = 1, num_indices
+		    ENDDO
+                    DO j = 1, num_indices
                        ivar = save_deleted_list_result(j)
 	               IF ( uvar_parent(ivar).NE.0
-     .		      .AND. .NOT.mode_diagnostic   ) GOTO 1015     ! 7/97
+     .		      .AND. .NOT.mode_diagnostic   ) CYCLE
 !	               IF (MATCH_NAME(arg,uvar_name_code(ivar)))
 
                        IF (MATCH_TEMPLATE(uvar_name_code(ivar),arg))THEN
@@ -1149,25 +1149,23 @@ c                    ENDIF ! status from GET_SAVED_UVAR_AUX_INFO
      .				(show_lun, ivar, show_str,' ',.TRUE.)
                          ENDIF
                       ENDIF
- 1015	            CONTINUE
+                    ENDDO
 	         ENDIF
  1020	      CONTINUE
 	   ELSEIF (rqst_dset .NE. unspecified_int4) THEN
 * ... show user variables belonging to the specified data set
-*	      DO 1030 i = 1, max_uvar
-*	         IF (uvar_num_items(i) .EQ. uvar_deleted  ) GOTO 1030
               CALL deleted_list_get_undel(uvar_num_items_head,
      .                                    deleted_list_result(1),
      .                                    max_uvar, num_indices )
-              DO 1022, i2 = 1, max_uvar
+              DO i2 = 1, max_uvar
                 save_deleted_list_result(i2) = deleted_list_result(i2)
- 1022         CONTINUE
-              DO 1030 j = 1, num_indices
+              ENDDO
+              DO j = 1, num_indices
                  i = save_deleted_list_result(j)
-	         IF (uvar_name_code(i)(1:3) .EQ. 'EX#'    ) GOTO 1030
-	         IF ( rqst_dset .NE. uvar_dset(i)	  ) GOTO 1030
+	         IF (uvar_name_code(i)(1:3) .EQ. 'EX#'    ) CYCLE
+	         IF ( rqst_dset .NE. uvar_dset(i)	  ) CYCLE
 	         IF ( uvar_parent(i).NE.0
-     .		 .AND. .NOT.mode_diagnostic		  ) GOTO 1030  ! 7/97
+     .		 .AND. .NOT.mode_diagnostic		  ) CYCLE
                  IF (sxml) THEN
                     CALL SHOW_1_UVAR_XML 
      .                      (show_lun,i,show_str,firstxml)
@@ -1175,34 +1173,34 @@ c                    ENDIF ! status from GET_SAVED_UVAR_AUX_INFO
                     CALL SHOW_1_UVAR
      .                 (show_lun,i,show_str,'     ',.TRUE.)
                  ENDIF
- 1030	      CONTINUE
+	      ENDDO
 	   ELSE
 * ... show ALL user variables of every stripe
 * ... 8/95 sorted by data set
 	      IF (.NOT. sxml) CALL SPLIT_LIST(pttmode_explct, show_lun,
      .			' Created by DEFINE VARIABLE:', 0)
 * ... locate the highest data set number in use
-	      DO 1035 i1 = maxdsets, 1, -1
-	         IF ( ds_name(i1) .NE. char_init2048) GOTO 1040
- 1035	      CONTINUE
- 1040	      DO 1060 dset = 1, i1
+	      DO i1 = maxdsets, 1, -1
+	         IF ( ds_name(i1) .NE. char_init2048) EXIT
+	      ENDDO
+
 * ... loop through the currently initialized data sets
-*	         DO 1050 i = 1, max_uvar
-*	            IF (uvar_num_items(i) .EQ. uvar_deleted  ) GOTO 1050
+	      DO dset = 1, i1
+
                  CALL deleted_list_get_undel(uvar_num_items_head,
      .                                      deleted_list_result(1),
      .                                      max_uvar, num_indices )
      
-                 DO 1042, i2 = 1, max_uvar
+                 DO i2 = 1, max_uvar
                     save_deleted_list_result(i2) = 
      .		      deleted_list_result(i2)
- 1042            CONTINUE
-                 DO 1050 j = 1, num_indices
+		 ENDDO
+                 DO j = 1, num_indices
                     i = save_deleted_list_result(j)
-	            IF (uvar_name_code(i)(1:3) .EQ. 'EX#'    ) GOTO 1050
-	            IF ( dset .NE. uvar_dset(i)		     ) GOTO 1050
+	            IF (uvar_name_code(i)(1:3) .EQ. 'EX#'    ) CYCLE
+	            IF ( dset .NE. uvar_dset(i)		     ) CYCLE
 	            IF ( uvar_parent(i).NE.0
-     .		    .AND. .NOT.mode_diagnostic		     ) GOTO 1050 ! 7/97
+     .		    .AND. .NOT.mode_diagnostic		     ) CYCLE
 
                     IF (sxml) THEN
                        CALL SHOW_1_UVAR_XML
@@ -1212,8 +1210,9 @@ c                    ENDIF ! status from GET_SAVED_UVAR_AUX_INFO
      .                    (show_lun,i,show_str,'     ',.TRUE.)
                     ENDIF
 
- 1050	         CONTINUE
- 1060	      CONTINUE
+                 ENDDO
+	      ENDDO
+
 * ... global variables defined without /D
 
 	      first = .TRUE.
@@ -1221,16 +1220,16 @@ c                    ENDIF ! status from GET_SAVED_UVAR_AUX_INFO
               CALL deleted_list_get_undel(uvar_num_items_head,
      .                                    deleted_list_result(1),
      .                                    max_uvar, num_indices )
-              DO 1062, i2 = 1, max_uvar
+              DO i2 = 1, max_uvar
                     save_deleted_list_result(i2) = 
      .		      deleted_list_result(i2)
- 1062         CONTINUE
-              DO 1070 j = 1, num_indices
+	      ENDDO
+              DO j = 1, num_indices
                  i = save_deleted_list_result(j)
-	         IF (uvar_name_code(i)(1:3) .EQ. 'EX#'    ) GOTO 1070
-	         IF ( uvar_dset(i) .NE. unspecified_int4  ) GOTO 1070
+	         IF (uvar_name_code(i)(1:3) .EQ. 'EX#'    ) CYCLE
+	         IF ( uvar_dset(i) .NE. unspecified_int4  ) CYCLE
 	         IF ( uvar_parent(i).NE.0
-     .		 .AND. .NOT.mode_diagnostic		  ) GOTO 1070  ! 7/97
+     .		 .AND. .NOT.mode_diagnostic		  ) CYCLE
 
                  IF (sxml) THEN
                     CALL SHOW_1_UVAR_XML
@@ -1246,24 +1245,23 @@ c                    ENDIF ! status from GET_SAVED_UVAR_AUX_INFO
      .                 (show_lun,i,show_str,'     ',.TRUE.)
                  ENDIF
 
- 1070	      CONTINUE
+	      ENDDO
+
 * ... global variables defined with /D
 	      first = .TRUE.
-*	      DO 1080 i = 1, max_uvar
-*	         IF (uvar_num_items(i) .EQ. uvar_deleted  ) GOTO 1080
               CALL deleted_list_get_undel(uvar_num_items_head,
      .                                    deleted_list_result(1),
      .                                    max_uvar, num_indices )
-              DO 1072, i2 = 1, max_uvar
+              DO i2 = 1, max_uvar
                     save_deleted_list_result(i2) = 
      .		      deleted_list_result(i2)
- 1072         CONTINUE
-              DO 1080 j = 1, num_indices
+	      ENDDO
+              DO j = 1, num_indices
                  i = save_deleted_list_result(j)
-	         IF (uvar_name_code(i)(1:3) .EQ. 'EX#'    ) GOTO 1080
-	         IF ( uvar_dset(i) .NE. pdset_irrelevant  ) GOTO 1080
+	         IF (uvar_name_code(i)(1:3) .EQ. 'EX#'    ) CYCLE
+	         IF ( uvar_dset(i) .NE. pdset_irrelevant  ) CYCLE
 	         IF ( uvar_parent(i).NE.0
-     .		 .AND. .NOT.mode_diagnostic		  ) GOTO 1080  ! 7/97
+     .		 .AND. .NOT.mode_diagnostic		  ) CYCLE
 
                  IF (sxml) THEN
                     CALL SHOW_1_UVAR_XML
@@ -1279,10 +1277,10 @@ c                    ENDIF ! status from GET_SAVED_UVAR_AUX_INFO
      .                 (show_lun,i,show_str,'     ',.TRUE.)
                  ENDIF
 
+	      ENDDO
 
-
- 1080	      CONTINUE
 	   ENDIF
+
  4010	FORMAT (1x,A,' = ',A)
  4020	FORMAT (T20,'"',A,'"')
 	ENDIF
@@ -1324,31 +1322,31 @@ c                    ENDIF ! status from GET_SAVED_UVAR_AUX_INFO
            lensub = TM_LENSTR(sub4)
 	ENDIF
 
-	DO 1130 icmnd = 1, total_num_commands
-	   IF ( commands(icmnd)(:4) .EQ. '****' ) GOTO 1130
-	   IF (done_1) GOTO 1130
+	DO icmnd = 1, total_num_commands
+	   IF ( commands(icmnd)(:4) .EQ. '****' ) CYCLE
+	   IF (done_1) CYCLE
 	   IF ( interrupted ) CALL ERRMSG
      .			( ferr_interrupt, status, ' ', *5000 )
 * ... if  only 1 command is of interest is this it ?
            len_mchars = TM_LENSTR(commands(icmnd)(:4))
 	   IF ( only_1 .AND. .NOT.MATCH4(cmnd_buff(arg_start(1):arg_end(1)),
-     .		len_test,commands(icmnd),len_mchars) ) GOTO 1130
+     .		len_test,commands(icmnd),len_mchars) ) CYCLE
 	   IF (only_1) done_1 = .TRUE.
 	   len0 = TM_LENSTR1( commands(icmnd) )
 
 * ... and for each command, its subcommands
 
-	   DO 1120 isub = subcommand_pointer(icmnd),
+	   DO isub = subcommand_pointer(icmnd),
      .			  subcommand_pointer(icmnd)+num_subcommands(icmnd)-1
               
-	      IF ( subcommands(isub)(:4) .EQ. '****' ) GOTO 1120
+	      IF ( subcommands(isub)(:4) .EQ. '****' ) CYCLE
 	      IF (showsub) THEN 
 	         len_msubs = TM_LENSTR(subcommands(isub)(:4)) 
 	         IF (MATCH4(sub4,lensub, subcommands(isub),len_msubs)) THEN
-                    IF (sub_matched) GOTO 1120  
+                    IF (sub_matched) CYCLE  
 		    sub_matched = .TRUE. ! return the first match, which is what Ferret will use
 	         ELSE
-		    GOTO 1120
+		    CYCLE
 	         ENDIF
 	      ENDIF
 
@@ -1357,9 +1355,9 @@ c                    ENDIF ! status from GET_SAVED_UVAR_AUX_INFO
 
 * ... and for each subcommand, its qualifiers (except on /BRIEF listing)
               IF (sbrief) GOTO 1115
-	      DO 1110 iqual =   qualifier_pointer(isub),
+	      DO iqual =   qualifier_pointer(isub),
      .				qualifier_pointer(isub)+num_qualifs(isub)-1
-	         IF ( qualifiers(iqual)(:4) .EQ. '****' ) GOTO 1110
+	         IF ( qualifiers(iqual)(:4) .EQ. '****' ) CYCLE
 	         show_str = show_str(1:len) // '/' // qualifiers(iqual)
 	         len = len + 1 + TM_LENSTR1( qualifiers(iqual) )
 	         IF ( len .GE. 70 ) THEN
@@ -1368,14 +1366,16 @@ c                    ENDIF ! status from GET_SAVED_UVAR_AUX_INFO
 	            show_str = ' '
 	            len = len0 + 2
 	         ENDIF
- 1110	      CONTINUE
+	      ENDDO
+
  1115	      IF ( show_str .NE. ' ' ) CALL SPLIT_LIST
      .			(pttmode_explct, show_lun, ' '//show_str, len+1)
 
 *  ... brief listing, show only the command names (if all commands)
-	   IF (sbrief .AND. .NOT.only_1) GOTO 1130
- 1120	   CONTINUE
- 1130	CONTINUE
+	      IF (sbrief .AND. .NOT.only_1) EXIT
+	   ENDDO
+
+	ENDDO
 	IF ( only_1 .AND. .NOT.done_1 ) THEN
 	   WRITE (risc_buff, 4150)
      .					cmnd_buff( arg_start(1):len_cmnd )
@@ -1490,19 +1490,19 @@ c                    ENDIF ! status from GET_SAVED_UVAR_AUX_INFO
 * loop through the variables named 
 ! bug fix: 11/91 *sh* : changed comma list to blank-separated argument list
 !	    4/96: *sh* used ARG_TO_ITEM to harmonize
-	   DO 1350 ivar = 1, num_items
+	   DO ivar = 1, num_items
 	      i1 = STR_UPCASE(arg,cmnd_buff(item_start(ivar):item_end(ivar)))
 	      IF ( IS_TEMPLATE( arg ) ) THEN
 *    ... first check static grids
-	         DO 1340 grid = 1, max_grids
-	            IF ( grid_name(grid) .EQ. char_init16 ) GOTO 1340
+	         DO grid = 1, max_grids
+	            IF ( grid_name(grid) .EQ. char_init16 ) CYCLE
 	            IF (MATCH_TEMPLATE(grid_name(grid) ,arg)) THEN
 	               WRITE ( risc_buff, 4220 ) '  '//grid_name(grid)
 	               CALL SPLIT_LIST(pttmode_explct, show_lun,
      .				risc_buff, 0)
 	               risc_buff = ' '
 	            ENDIF
- 1340	         CONTINUE
+		 ENDDO
 *    ... then check dynamic grids
                  grid = 0
  1344            CALL TM_NEXT_DYN_GRID( grid, *1346 )
@@ -1519,7 +1519,7 @@ c                    ENDIF ! status from GET_SAVED_UVAR_AUX_INFO
 		 grid = GRID_FROM_NAME
      .                    ( cmnd_buff(item_start(ivar):item_end(ivar)),
      .			  cx_last, status )
-	         IF ( status .NE. ferr_ok ) GOTO 1350
+	         IF ( status .NE. ferr_ok ) CYCLE
                  IF ( grid .EQ. unspecified_int4 ) GOTO 5300
 	         IF (sxml) THEN 
                     CALL SHOW_GRID_XML(show_lun, grid, unspecified_int4 )
@@ -1558,7 +1558,8 @@ c Free the temporary storage for uvar-grid information
 
 	      ENDIF
 
- 1350	   CONTINUE
+	   ENDDO
+
  4210	   FORMAT ( 4X,'GRID ',A)
  4211	   FORMAT ( 4X,'GRID ',A, '  Ensemble Aggregetion Grid')
  4212	   FORMAT ( 4X,'GRID ',A, '  Forecast Aggregation Grid')
@@ -1574,15 +1575,15 @@ c Free the temporary storage for uvar-grid information
 	   WRITE ( risc_buff, 4220 ) '** GRIDS NAMES **'
 	   CALL SPLIT_LIST(pttmode_explct, show_lun, risc_buff, 0)
 	   risc_buff = ' '
-	   DO 1360 grid = 1, max_grids
+	   DO grid = 1, max_grids
 	      IF ( interrupted ) CALL ERRMSG
      .			( ferr_interrupt, status, ' ', *5000 )
-	      IF ( grid_name( grid ) .EQ. char_init16 ) GOTO 1360
+	      IF ( grid_name( grid ) .EQ. char_init16 ) CYCLE
 	      WRITE ( risc_buff, 4220 ) '  '//grid_name( grid )
 	      CALL SPLIT_LIST(pttmode_explct, show_lun, risc_buff, 0)
 	      risc_buff = ' '
  4220	      FORMAT (4X,A)
- 1360	   CONTINUE
+	   ENDDO
 *    ... then check dynamic grids
            grid = 0
  1370      CALL TM_NEXT_DYN_GRID( grid, *1379 )
@@ -1633,11 +1634,11 @@ c Free the temporary storage for uvar-grid information
  
 	IF ( num_args .GE. 1 ) THEN
 * ... loop through the viewports named
-	   DO 1420 i = 1, num_items
+	   DO i = 1, num_items
 * ... identify the viewport number from the template (or name)	      
 	      i1 = STR_UPCASE(arg,cmnd_buff(item_start(i):item_end(i)))
-	      DO 1410 ivp = 1, max_viewport
-	         IF ( vp_name(ivp).EQ.unspecified_name4 ) GOTO 1410
+	      DO ivp = 1, max_viewport
+	         IF ( vp_name(ivp).EQ.unspecified_name4 ) CYCLE
 	         IF ( MATCH_TEMPLATE(vp_name(ivp), arg) ) THEN 
 		    IF ( vp_xclip(ivp) .EQ. unspecified_val4 ) THEN
 		       xtemp = 0.0
@@ -1658,11 +1659,11 @@ c Free the temporary storage for uvar-grid information
 	            CALL SPLIT_LIST(pttmode_explct, show_lun, risc_buff, 0)
 	            risc_buff = ' '
 	         ENDIF
- 1410	      CONTINUE
- 1420	   CONTINUE
+	      ENDDO
+	   ENDDO
 	ELSE
 * ... show 'em all
-	   DO 1450 ivp = 1,max_viewport
+	   DO ivp = 1,max_viewport
 	      IF ( vp_name(ivp).NE.unspecified_name4 ) THEN
 		 IF ( vp_xclip(ivp) .EQ. unspecified_val4 ) THEN
 		    xtemp = 0.0
@@ -1683,7 +1684,7 @@ c Free the temporary storage for uvar-grid information
 	         CALL SPLIT_LIST(pttmode_explct, show_lun, risc_buff, 0)
 	         risc_buff = ' '
 	      ENDIF
- 1450	   CONTINUE
+	   ENDDO
 	ENDIF
 * tell what's current
 	WRITE ( risc_buff, 3148 ) vp_name(vp_num)
@@ -1712,25 +1713,25 @@ c Free the temporary storage for uvar-grid information
 	CALL SPLIT_LIST(pttmode_explct, show_lun, risc_buff, 0)
 	risc_buff = ' '
         IF ( num_args .EQ. 0 .OR. slash_all ) THEN
-	   DO 1610 i = 1, total_num_alias
-	      IF ( alias_name(i) .EQ. unspecified_name4 ) GOTO 1610
+	   DO i = 1, total_num_alias
+	      IF ( alias_name(i) .EQ. unspecified_name4 ) CYCLE
 	      WRITE ( risc_buff, 3160 ) alias_name(i), alias(i)
 	      CALL SPLIT_LIST(pttmode_explct, show_lun, risc_buff, 0)
 	      risc_buff = ' '
- 1610	   CONTINUE
+	   ENDDO
         ELSE
-           DO 1630 i1 = 1, num_items
+           DO i1 = 1, num_items
 	      i2 = STR_UPCASE(arg,cmnd_buff(item_start(i1):item_end(i1)))
-	      DO 1620 i = 1, total_num_alias    
-	         IF ( alias(i) .EQ. unspecified_name4 ) GOTO 1620
+	      DO i = 1, total_num_alias    
+	         IF ( alias(i) .EQ. unspecified_name4 ) CYCLE
 	         IF ( MATCH_TEMPLATE(alias_name(i), arg) ) THEN 
                     WRITE ( risc_buff, 3160 ) alias_name(i), alias(i)
 	            CALL SPLIT_LIST(pttmode_explct, show_lun,
      .					risc_buff, 0)
 	            risc_buff = ' '
                  ENDIF
- 1620	      CONTINUE
- 1630      CONTINUE
+	      ENDDO
+	   ENDDO
         ENDIF
  3160   FORMAT (T4,A,T16,A)
 	IF ( limited_show ) RETURN
@@ -1746,11 +1747,11 @@ c Free the temporary storage for uvar-grid information
         IF(argsym .NE. ' ')THEN
 	   IF ( num_args .GE. 1 ) THEN
 * ... check the names specified by template matching 
-	      DO 1703 i = 1, num_items
+	      DO i = 1, num_items
 	         n = STR_UPCASE(arg,
      .			cmnd_buff(item_start(i):item_end(i)))
 	         IF ( MATCH_TEMPLATE(argsym(:len0),arg) ) GOTO 1705
- 1703         CONTINUE
+	      ENDDO
 	      GOTO 1702			! no match
 	   ENDIF
 * ... display the symbol definition
@@ -1767,11 +1768,11 @@ c Free the temporary storage for uvar-grid information
         IF(i2.EQ.0)THEN
 	   IF ( num_args .GE. 1 ) THEN
 * ... check the names specified by template matching 
-	      DO 1720 i = 1, num_items
+	      DO i = 1, num_items
 	         n = STR_UPCASE(arg,
      .			cmnd_buff(item_start(i):item_end(i)))
 	         IF ( MATCH_TEMPLATE(argsym(:len0),arg) ) GOTO 1750
- 1720	      CONTINUE
+	      ENDDO
 	      GOTO 1710			! no match
 	   ENDIF
 * ... display the symbol definition
@@ -1898,7 +1899,7 @@ c Free the temporary storage for uvar-grid information
 
         IF ( slash_all .OR. dot.EQ.0) THEN  ! SHOW ATT/ALL varname (/ALL optional)
 
-           DO 1820 i = 1, num_items
+           DO i = 1, num_items
 
 	      varname = cmnd_buff( item_start(i):item_end(i) )
               IF(TM_HAS_STRING(varname, '.') ) THEN
@@ -1948,13 +1949,12 @@ c Free the temporary storage for uvar-grid information
      .                              nvdims, vdims, nvatts, coordvar, 
      .                              all_outflag, status)
 
-              DO 1810 iatt = 1, nvatts
+              DO iatt = 1, nvatts
 
                  CALL CD_GET_VAR_ATT_INFO (dset, varid, iatt, aname, 
      .               attype, attlen, attoutflag, status )
 
-                 IF (status .NE. ferr_ok) GOTO 1810
-
+                 IF (status .NE. ferr_ok) CYCLE
                  maxlen = size_rbuff
                  IF (attype .NE. NCCHAR) maxlen = 10
                  got_it = NC_GET_ATTRIB ( dset, varid, aname,
@@ -1969,13 +1969,13 @@ c Free the temporary storage for uvar-grid information
      .                              attoutflag, sho_out)  
 
                  ENDIF
-1810          CONTINUE
+	      ENDDO
 
-1820       CONTINUE 
+	   ENDDO
 
         ELSE  ! SHOW ATT varname.attname
 
-	   DO 1830 i = 1, num_items
+	   DO i = 1, num_items
 	      IF ( interrupted ) CALL ERRMSG
      .			( ferr_interrupt, status, ' ', *5000 )
 
@@ -2054,7 +2054,8 @@ c Free the temporary storage for uvar-grid information
      .                       attype, attlen, risc_buff, attvals, 
      .                       attoutflag, sho_out)
 
-1830	   CONTINUE 
+	   ENDDO
+
         ENDIF
 
         ENDIF  ! sh att dataset vs sho att variable
@@ -2110,29 +2111,30 @@ c Free the temporary storage for uvar-grid information
 	IF ( num_args .GT. 0 ) THEN
 
 * ... one or more functions were explicitly named
-	   DO 2110 i = 1, num_items
+
+	   DO i = 1, num_items
            i1 = STR_UPCASE(arg,cmnd_buff(item_start(i):item_end(i)))
 	      len0 = item_end(i) - item_start(i) + 1
 * ... identify the named function
 * ... first try internal, non-grid-changing functions ...
-	      DO 2104 i2 = 1, num_functions
+	      DO i2 = 1, num_functions
 	         IF ( interrupted ) CALL ERRMSG
      .			( ferr_interrupt, status, ' ', *5000 )
 	         IF (MATCH_TEMPLATE(alg_fcn(i2),arg(:len0)))
      .           CALL SHOW_1_FUNCTION(show_lun, .FALSE.,
      .                                sbrief, sdetail, i2)
- 2104         CONTINUE
+	      ENDDO
 * ... second try internal, grid-changing functions
-	      DO 2106 i2 = 1, gfcn_num_internal
+	      DO i2 = 1, gfcn_num_internal
 	         IF ( interrupted ) CALL ERRMSG
      .			( ferr_interrupt, status, ' ', *5000 )
               IF ( MATCH_TEMPLATE(gfcn_name(i2),arg(:len0)) ) CALL
      .                SHOW_1_FUNCTION(show_lun, .TRUE.,
      .                                sbrief, sdetail, i2)
- 2106         CONTINUE
+	      ENDDO
 * ... third try external functions
               IF (qual_given(slash_internal) .EQ. 0) THEN
- 	         DO 2108 i2 = gfcn_num_internal+1, gfcn_num_internal+
+ 	         DO i2 = gfcn_num_internal+1, gfcn_num_internal+
      .                efcn_scan(gfcn_num_internal)
 	            IF ( interrupted ) CALL ERRMSG
      .			   ( ferr_interrupt, status, ' ', *5000 )
@@ -2145,15 +2147,9 @@ c Free the temporary storage for uvar-grid information
      .               SHOW_1_FUNCTION(show_lun, .TRUE.,
      .                               sbrief, sdetail, i2)
 
-c                 CALL TM_FTOC_STRNG( arg(:len0), fhol, slen )
-c                 IF ( EFCN_MATCH_TEMPLATE(i2,fhol) .EQ. 1) CALL
-c     .               SHOW_1_FUNCTION(show_lun, .TRUE.,
-c     .                               sbrief, sdetail, i2)
-
- 2108            CONTINUE  
+	         ENDDO
               ENDIF
- 2110      CONTINUE
-
+	   ENDDO
 
 * show lists of functions
 	ELSE
@@ -2163,16 +2159,16 @@ c     .                               sbrief, sdetail, i2)
 * ... internal non-grid-changing functions
 	      CALL SPLIT_LIST(pttmode_explct, show_lun,
      .			'Functions internal to Ferret:', 0)
-	      DO 2120 i = 1, num_functions
+	      DO i = 1, num_functions
 	         IF ( alg_fcn(i) .NE. unspecified_name4 ) CALL
      .                SHOW_1_FUNCTION(show_lun, .FALSE.,
      .                  sbrief, sdetail, i)
- 2120         CONTINUE
+	      ENDDO
 * ... internal grid-changing functions
-	      DO 2130 i = 1, gfcn_num_internal
+	      DO i = 1, gfcn_num_internal
 	         CALL SHOW_1_FUNCTION(show_lun, .TRUE.,
      .                  sbrief, sdetail, i)
- 2130         CONTINUE
+	      ENDDO
 	   ENDIF
 
 * ... show all the external functions
@@ -2184,11 +2180,11 @@ c     .                               sbrief, sdetail, i2)
               CALL SPLIT_LIST(pttmode_explct, show_lun,
      .           'Externally defined functions available to Ferret:',
      .             0)
-	      DO 2140 i = gfcn_num_internal+1, gfcn_num_internal+
+	      DO i = gfcn_num_internal+1, gfcn_num_internal+
      .             efcn_scan(gfcn_num_internal)
 	         CALL SHOW_1_FUNCTION(show_lun, .TRUE.,
      .                  sbrief, sdetail, i)
- 2140	      CONTINUE
+	      ENDDO
 	   ENDIF
 
 	ENDIF
@@ -2248,11 +2244,9 @@ c* ... Font
 * Text groups: TITLE LOGO, etc. List settings for any that are
 * different from the overall defaults.
 
-        DO 2210 i1 = ititl, icbar
-	    IF (pyf_set(i1)) THEN
-	       CALL SHOW_PYTEXT_GROUP(i1)
-	    ENDIF
- 2210	CONTINUE
+        DO i1 = ititl, icbar
+           IF (pyf_set(i1)) CALL SHOW_PYTEXT_GROUP(i1)
+	ENDDO
 
 	ENDIF  ! classic-Hershey or not
 
@@ -2260,10 +2254,10 @@ c* ... Font
 
 * SHOW QUERIES
  2300   CONTINUE
-	DO 2310 i = 1, max_queries
+	DO i = 1, max_queries
 	   IF ( queries(i) .NE. unspecified_name4 )CALL SPLIT_LIST
      .			(pttmode_explct, show_lun, queries(i), 0)
- 2310	CONTINUE
+	ENDDO
 	IF ( limited_show ) RETURN
 
 

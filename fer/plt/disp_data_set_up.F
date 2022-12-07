@@ -72,6 +72,7 @@
 *                 palette can be restored after the plot is completed. New flag set_palette.
 * v767 6/22 *acm* See issue 112: Detect whether axis is too large for 4-byte integer indexing
 *		  For /VS plot, data would be too large to plot
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -222,16 +223,17 @@
 	   cx = is_cx(1)
 	   CALL GET_CX_DIMS(cx, ndim, dim)
 	   i8_ax_len = 1
-	   DO 100 idim = 1, ndim
- 100	   i8_ax_len = 2* MAX(i8_ax_len,
-     .			cx_hi_ss(cx,dim(idim)) - 
-     .			cx_lo_ss(cx,dim(idim)) + 1 )
+	   DO idim = 1, ndim
+	     i8_ax_len = 2* MAX(i8_ax_len,
+     .			  cx_hi_ss(cx,dim(idim)) - 
+     .			  cx_lo_ss(cx,dim(idim)) + 1 )
+     	   ENDDO
 	ELSE
 * ... allocate memory used for axes
 *     make them each equal to MAX in case /TRANSPOSE or mulit-dim PLOT/VS
 * (2/99: loop over all arguments to find largest requirement)
 	   i8_ax_len = 1
-	   DO 200 ivar = 1, numv
+	   DO ivar = 1, numv
 	      mr1 = is_mr( ivar )
 	      CALL GET_CX_DIMS( is_cx(ivar), ndim, dim )
 	      i8_ax_len = MAX( i8_ax_len,
@@ -242,7 +244,7 @@
 	      IF (plot_vs) i8_ax_len = MAX( i8_ax_len,
      .		            CGRID_SIZE8(is_cx(ivar))  )
 	      IF (i8_ax_len .GT. arbitrary_large_int4) GOTO 5030
- 200	   CONTINUE
+	   ENDDO
 
 * trajectory plot from DSG trajectory file needs obs-length 
 * (color var may be feature-length).

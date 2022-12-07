@@ -5253,8 +5253,8 @@ Replacing definition of axis TAX
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
-syntax error, unexpected WORD_WORD, expecting SCAN_ATTR or SCAN_DATASET or SCAN_ERROR
-context: <!DOCTYPE^ HTML PUBLIC "-//IETF//DTD HTML 2.0//EN"><html><head><title>503 Service Temporarily Unavailable</title></head><body><h1>Service Temporarily Unavailable</h1><p>The server is temporarily unable to service yourrequest due to maintenance downtime or capacityproblems. Please try again later.</p></body></html>
+syntax error, unexpected $end, expecting SCAN_ATTR or SCAN_DATASET or SCAN_ERROR
+context: ^
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -7047,6 +7047,16 @@ ooooooooooooooooooooooooooooooooooooooooooo
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
  Using every   2th vector in the Y direction
+<<<<<<< HEAD
+ PERMANENT data cleared from memory
+ TEMPORARY data cleared from memory
+ooooooooooooooooooooooooooooooooooooooooooo
+Replacing definition of axis TAX
+*** Running ferret script: bn_scat2grid_bin_fcns.jnl
+           *** NOTE: Units on axis "AX003" are not recognized: na
+           *** NOTE: They will not be convertible:
+=======
+>>>>>>> origin/cleanup2022
 *** Running ferret script: bn_py_graticules.jnl
  Using every   2th vector in the X direction
            *** NOTE: /UNIT=MONTHS is ambiguous ... using 1/12 of 365.2425 days

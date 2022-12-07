@@ -1,24 +1,14 @@
 SRCS_F = \
 arc.F\
-cmprmt.F\
-cmrdst.F\
-comrd5.F\
 conseg.F\
 conseg_section.F\
 contur.F\
-datpt.F\
-daywk1.F\
-delay.F\
 diff.F\
 frmt.F\
-getlev.F\
 habis.F\
 hdcopy.F\
-iday.F\
 inside.F\
-itdiff.F\
 jday.F\
-lenc.F\
 neftn5.F\
 numcde.F\
 numcde_off.F\
@@ -48,5 +38,4 @@ time3.F\
 xaxis1.F\
 xaxis2.F\
 yaxis1.F\
-yaxis2.F\
-zgrid.F 
+yaxis2.F

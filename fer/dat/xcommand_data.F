@@ -268,7 +268,8 @@
 *                  SET MEMORY/SIZE= to SET MEMORY/MAX= (keep /SIZE for bkwds compatibility)
 * V7.62 *acm* 8/20 DSG-enabled Ferret: SET DATA/SMASK= specifies a mask on station or
 *                  trajectory for timeseriesProfile or trajectoryProfile data
-*
+** 10/2022 *acm* Code cleanup: lengths of strings not to overflow length of character variable
+
 * !!!!!!!!!!
 * Use caution when defining new commands, qualifiers, or changing these data structures:
 * 1- Ferret commands are matched to the first 4 characters only. Make sure
@@ -380,7 +381,7 @@
 	   DATA qualifier_pointer(nsub_at1 + 5)	/ nqual_at1f	/
 * SET LIST/PRECISION=#digits, /FILE=filename, /FORMAT=list_format, /APPEND,
 * (for netcdf4 /NCFORMAT= /ENDIAN=, /DEFLATE=, /SHUFFLE=,  /XCHUNK...
-		DATA qualifiers  (nqual_at1f+0)	/ 'PRECISION'	/
+		DATA qualifiers  (nqual_at1f+0)	/ 'PRECISIO'	/
 		DATA qualifiers  (nqual_at1f+1)	/ 'FILE'	/
 		DATA qualifiers  (nqual_at1f+2)	/ 'FORMAT'	/
 		DATA qualifiers  (nqual_at1f+3)	/ 'APPEND'	/
@@ -452,7 +453,7 @@
 		DATA qualifiers  (nqual_at1j+7)	/ 'OFFSET'	/
 		DATA qualifiers  (nqual_at1j+8)	/ 'OUTTYPE'	/
 		DATA qualifiers  (nqual_at1j+9)	/ 'LAYERZ'	/
-		DATA qualifiers  (nqual_at1j+10)/ 'CURVILINEAR'	/
+		DATA qualifiers  (nqual_at1j+10)/ 'CURVILIN'	/
 		DATA qualifiers  (nqual_at1j+11)/ '****'	/
 		DATA qualifiers  (nqual_at1j+12)/ '****'	/
 * SET GRID
@@ -661,7 +662,7 @@
 		DATA qualifiers  (nqual_at2j+7)	/ 'CLOBBER'	/
 		DATA qualifiers  (nqual_at2j+8)	/ 'TREE'	/ ! was /DEPENDENCY
 		DATA qualifiers  (nqual_at2j+9)	/ 'LAYERZ'	/
-		DATA qualifiers  (nqual_at2j+10)/ 'CURVILINEAR'	/
+		DATA qualifiers  (nqual_at2j+10)/ 'CURVILIN'	/
 		DATA qualifiers  (nqual_at2j+11)/ '****'	/
 		DATA qualifiers  (nqual_at2j+12)/ '****'	/
 * SHOW COMMANDS
@@ -677,7 +678,7 @@
 	   DATA qualifier_pointer(nsub_at2 +11)	/ nqual_at2l	/
 * SHOW MEMORY /ALL /TEMP /PERM /FREE
 		DATA qualifiers  (nqual_at2l+0)	/ 'ALL '	/
-		DATA qualifiers  (nqual_at2l+1)	/ 'DIAGNOSTIC'	/
+		DATA qualifiers  (nqual_at2l+1)	/ 'DIAGNOST'	/
 		DATA qualifiers  (nqual_at2l+2)	/ 'TEMPORY'	/
 		DATA qualifiers  (nqual_at2l+3)	/ 'PERMANT'	/
 		DATA qualifiers  (nqual_at2l+4)	/ 'FREE'	/
@@ -836,7 +837,7 @@
 	   DATA qualifier_pointer(nsub_at3 + 5)	/ nqual_at3f	/
 * CANCEL LIST /ALL, /PRECISION, /FILE, /FORMAT
 		DATA qualifiers  (nqual_at3f+0)	/ 'ALL '	/
-		DATA qualifiers  (nqual_at3f+1)	/ 'PRECISION'	/
+		DATA qualifiers  (nqual_at3f+1)	/ 'PRECISIO'	/
 		DATA qualifiers  (nqual_at3f+2)	/ 'FILE'	/
 		DATA qualifiers  (nqual_at3f+3)	/ 'FORMAT'	/
 		DATA qualifiers  (nqual_at3f+4)	/ 'HEADING'	/
@@ -875,7 +876,7 @@
 		DATA qualifiers  (nqual_at3k+0)	/ 'ALL '	/
 		DATA qualifiers  (nqual_at3k+1)	/ 'DATASET'	/
 		DATA qualifiers  (nqual_at3k+2)	/ 'LAYERZ'	/
-		DATA qualifiers  (nqual_at3k+3)	/ 'CURVILINEAR'	/
+		DATA qualifiers  (nqual_at3k+3)	/ 'CURVILIN'	/
 		DATA qualifiers  (nqual_at3k+4)	/ 'NOERROR'	/
 		DATA qualifiers  (nqual_at3k+5)	/ '****'	/
 * CANCEL AXIS
@@ -993,7 +994,7 @@
 		DATA qualifiers  (nqual_at4a+42)/ 'MODULO'/	! modulo for curvilinear plots
 		DATA qualifiers  (nqual_at4a+43)/ 'THICKNES'/	! pen thickness
 		DATA qualifiers  (nqual_at4a+44)/ 'OPACITY'/	! overriding oapcity
-		DATA qualifiers  (nqual_at4a+45)/ 'DEGMINSEC'/	! Request deg/min or deg/min/sec axis labels
+		DATA qualifiers  (nqual_at4a+45)/ 'DEGMINSE'/	! Request deg/min or deg/min/sec axis labels
 		DATA qualifiers  (nqual_at4a+46)/ 'HALFSPAC'/	! Request a space before the E/W or N/S on axis labels
 		DATA qualifiers  (nqual_at4a+47)/ '****'/	!
 
@@ -1028,7 +1029,7 @@
 		DATA qualifiers  (nqual_at5a+18)/ 'ORDER'/
 		DATA qualifiers  (nqual_at5a+19)/ 'FORMAT'/
 		DATA qualifiers  (nqual_at5a+20)/ 'TITLE'/
-		DATA qualifiers  (nqual_at5a+21)/ 'PRECISION'/ !used to be EPKEY
+		DATA qualifiers  (nqual_at5a+21)/ 'PRECISIO'/ !used to be EPKEY
 		DATA qualifiers  (nqual_at5a+22)/ 'RIGID'/ ! /RIGID (CDF)
 		DATA qualifiers  (nqual_at5a+23)/ 'ILIMITS'/
 		DATA qualifiers  (nqual_at5a+24)/ 'JLIMITS'/
@@ -1128,7 +1129,7 @@
 		DATA qualifiers  (nqual_at6a+47)/ 'OPACITY'/	! overriding opacity
 		DATA qualifiers  (nqual_at6a+48)/ 'GAPLOC'/     ! A variable marking gaps to insert in PLOT/VS
 		DATA qualifiers  (nqual_at6a+49)/ 'SKIPSYM'/	! Control for symbol decimation
-		DATA qualifiers  (nqual_at6a+50)/ 'DEGMINSEC'/	! Request deg/min or deg/min/sec axis labels
+		DATA qualifiers  (nqual_at6a+50)/ 'DEGMINSE'/	! Request deg/min or deg/min/sec axis labels
 		DATA qualifiers  (nqual_at6a+51)/ 'HALFSPAC'/	! Request a space before the E/W or N/S on axis labels
 		DATA qualifiers  (nqual_at6a+52)/ 'HIGHLIGH'/	! HIGHLIGHT in PyFerret
 		DATA qualifiers  (nqual_at6a+53)/ '****'/	! unused
@@ -1336,7 +1337,7 @@
 	   DATA num_qualifs      (nsub_at10 + 10)/ nqual10k	/
 	   DATA qualifier_pointer(nsub_at10 + 10)/ nqual_at10k	/
 * DEFINE DATA / AGGREGATE /TITLE /QUIET /HIDE /T /E /F /U /TAXIS /FAXIS /TOVERLAP
-		DATA qualifiers  (nqual_at10k+ 0)/ 'AGGREGATE' /
+		DATA qualifiers  (nqual_at10k+ 0)/ 'AGGREGAT' /
 		DATA qualifiers  (nqual_at10k+ 1)/ '****' / ! reserved for x
 		DATA qualifiers  (nqual_at10k+ 2)/ '****' / ! y
 		DATA qualifiers  (nqual_at10k+ 3)/ '****' / ! z
@@ -1351,7 +1352,7 @@
 		DATA qualifiers  (nqual_at10k+ 12)/ 'FAXIS' /
 		DATA qualifiers  (nqual_at10k+ 13)/ 'TOVERLAP' /
 * DEFINE ANNOTATION
-	   DATA subcommands      (nsub_at10 + 11)/ 'ANNOTATION'	/
+	   DATA subcommands      (nsub_at10 + 11)/ 'ANNOTATI'	/
 	   DATA num_qualifs      (nsub_at10 + 11)/ nqual10l	/
 	   DATA qualifier_pointer(nsub_at10 + 11)/ nqual_at10l	/
 * DEFINE ANNOTATION /USER/NORM/NOUSER/XPOS/YPOS/HALIGN/VALIGN/ANGLE/SIZE/NLAB
@@ -1531,7 +1532,7 @@
 	   DATA qualifier_pointer(nsub_at17 + 0)	/ nqual_at17a	/
 * STAT /BRIEF/PRECISION/I/J/K/L/M/N/X/Y/Z/T/E/F/DATASET/G
 		DATA qualifiers  (nqual_at17a+0)	/ 'BRIEF'/
-		DATA qualifiers  (nqual_at17a+1)	/ 'PRECISION'/
+		DATA qualifiers  (nqual_at17a+1)	/ 'PRECISIO'/
 		DATA qualifiers  (nqual_at17a+2)	/ 'I'	/
 		DATA qualifiers  (nqual_at17a+3)	/ 'J'	/
 		DATA qualifiers  (nqual_at17a+4)	/ 'K'	/
@@ -1594,7 +1595,7 @@
 		DATA qualifiers  (nqual_at18a+34)/ 'HLIMITS'/	! horiz
 		DATA qualifiers  (nqual_at18a+35)/ 'VLIMITS'/	! vertical
 		DATA qualifiers  (nqual_at18a+36)/ 'OPACITY'/	! overriding opacity
-		DATA qualifiers  (nqual_at18a+37)/ 'DEGMINSEC'/	! Request deg/min or deg/min/sec axis labels
+		DATA qualifiers  (nqual_at18a+37)/ 'DEGMINSE'/	! Request deg/min or deg/min/sec axis labels
 		DATA qualifiers  (nqual_at18a+38)/ 'HALFSPAC'/	! Request a space before the E/W or N/S on axis
 
 * SPAWN - command # 19
@@ -1922,7 +1923,7 @@
      .		alias_name(27)	/ 'SMASK' /,
      .		alias_len(27)	/ 17 /,
      .		alias(27)	/ 'SET DATA/SMASK' /
-     .		alias_name(28)	/ 'CLEARMASK' /,
+     .		alias_name(28)	/ 'CLEARMA' /,  ! clearmask
      .		alias_len(28)	/ 17 /,
      .		alias(28)	/ 'CANCEL DATA/MASK' /
 

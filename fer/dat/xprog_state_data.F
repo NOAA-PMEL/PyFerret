@@ -131,6 +131,7 @@
 *                  new mode datefmt for formatted date output, setting stored in date_fmt_out
 * V751 6/19 *acm* TM_FMT rewrite: formatting of lon/lat coordinate strings set to match previous
 * V745 *acm*  5/20  added mode_dsg to control turning off all DSG ops
+** 10/2022 *acm* Code cleanup: lengths of strings not to overflow length of character variable
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
@@ -271,7 +272,7 @@
      .		mode_name ( pmode_labels      )	/ 'LABELS'       /,
      .		mode_name ( pmode_grat        )	/ 'GRATICULE'    /,
      .		mode_name ( pmode_linecolors  )	/ 'LINECOLORS'   /,
-     .		mode_name ( pmode_upcase_output)/ 'UPCASE_OUTPUT'/,
+     .		mode_name ( pmode_upcase_output)/ 'UPCASE_OUTPU'/,
      .		mode_name ( pmode_nlevels     ) / 'NLEVELS'      /,
      .		mode_name ( pmode_nodata_lab  ) / 'NODATA_LAB'   /,
      .		mode_name ( pmode_shrink_ylab ) / 'SHRINK_YLAB'  /,

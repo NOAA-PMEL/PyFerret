@@ -1,6 +1,5 @@
 SRCS_F = \
 arrow.F\
-box.F\
 box_centers.F\
 check_2d_size.F\
 clsppl.F\
@@ -40,11 +39,7 @@ ppldata.F\
 pplldc.F\
 pplldx.F\
 ppllist.F\
-pplus.F\
 prmtiv.F\
-rdseq.F\
-readsq.F\
-redsf.F\
 save.F\
 savezg.F\
 scale2.F\

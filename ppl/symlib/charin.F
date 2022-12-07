@@ -70,39 +70,26 @@ C     Mod *JD* 3.5.91 problems with buffered terminal output in unix
 C *kob* 04/07/96 passed in character strings had to be declared 
 C                with "*(*)" for the linux port 
 * v552 *acm* 3/03 Longer strings: changes for multi-line labels
+c
+C  10/2022 *acm* Code cleanup: Unclear if anything is called here
+C                but fix the possible infinite loop at the READ for str()
 
-#ifdef unix
 	include 'CMDCOM.INC'
 	include 'LUNITS.INC'
-#else
-	include 'pplv11inc:CMDCOM.INC'
-	include 'pplv11inc:lunits.inc'
-#endif
+
 	character str*(*),prmt*(*)
-#ifdef unix
 	write(LTTOUT,999)prmt(:inpl)
-C     Mod format *JD* 3.5.91 get problem with output held in buffer
-# ifdef FORTRAN_90
+
 999	format(a)
-# else
-999	format(1x,a,$) !original
-# endif
-C OK in Sun?? 999	format(a)
 	call flush(LTTOUT)
-C Leave this out JD 3.5.91	call flush(LTTOUT)
-100	read(CMDLUN,998,err=100,end=100)str(:in)
+
+	do in = 1, 2048
+	   if (in .gt. 2048) exit
+	   read(CMDLUN,998,err=100,end=100)str(:in)	   
+	enddo
+
+100	continue
 998	format(a)
-#else
-        INTEGER*2 IOSB(4)
-        BYTE INB(2048),PRMTB(30)
-        INCLUDE '($IODEF)'
-        STR=' '
-        READ(PRMT,'(30A1)')PRMTB
-        CALL SYS$ASSIGN('TT',CHAN,,)
-        CALL SYS$QIOW(,%VAL(CHAN),%VAL(IO$_READPROMPT),IOSB,,,
-     *  INB,%VAL(IN),,,PRMTB,%VAL(INP))
-        CALL SYS$DASSGN(%VAL(CHAN))
-        WRITE(STR,'(2048A1)')(INB(I),I=1,IOSB(2))
-#endif
+
 	RETURN
 	END

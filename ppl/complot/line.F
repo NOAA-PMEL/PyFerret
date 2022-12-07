@@ -37,6 +37,7 @@
 C**    @(#)line.f	1.1    3/10/88
 C**
 C**
+
 C***********************************************************************
 C**
 C**                 PLOT+ Scientific Graphics System
@@ -44,6 +45,8 @@ C**
 C***********************************************************************
 C**
 C**
+* 10/2022 *acm* Code cleanup: Declare arguments X and Y with (*), update DO loop
+
 C
 C     CALL LINE(X,Y,IMARK,NPTS)
 C
@@ -59,7 +62,7 @@ C        IMARK  - DATA MARK CODE (0-88).
 C        NPTS   - NUMBER OF POINTS TO BE PLOTTED.
 C
 C
-      DIMENSION X(1),Y(1)
+      DIMENSION X(*),Y(*)
 C
       IF(NAPTS .EQ. 0)RETURN
       NPTS = IABS(NAPTS)
@@ -72,8 +75,10 @@ C
 C
 C     MOVE TO THE REST OF THE POINTS WITH THE PEN DOWN.
 C
-      DO 10 I=2,NPTS
-   10 CALL PLOT(X(I),Y(I),1,IMARK)
+      DO I=2,NPTS
+         CALL PLOT(X(I),Y(I),1,IMARK)
+      ENDDO
+
       RETURN
 C
       END

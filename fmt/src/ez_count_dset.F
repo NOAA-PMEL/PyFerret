@@ -40,7 +40,7 @@
 * records skipped. Addressing ticket 2182.
 *
 * V701  7/16 *kms* Compare ds_name to char_init2048 instead of char_init1024
-* 
+* 10/2022 *acm* Code cleanup: Rewrite to avoid ASSIGN statements
 
 * Arguments:
 *	dset	- data set number
@@ -66,13 +66,9 @@
 *
 *internal parameter declarations *kob* 4apr94
         CHARACTER*1     cr,lf
-#ifdef NO_INTRINSIC_IN_PARAMETER
-        PARAMETER       ( cr = o'015',
-     .                    lf = o'012')
-#else
         PARAMETER       ( cr = CHAR(13),
      .                    lf = CHAR(10))
-#endif
+
 
 * Local definitions
 	CHARACTER*11	file_format
@@ -104,22 +100,6 @@
 	ELSE
 	  file_format = 'FORMATTED'
 	  in_format = ezform		! Run time format info
-	ENDIF
-
-*   set up ASSIGN statements (for GOTO variable statements)
-	IF ( unformatted ) THEN
-	  ASSIGN 400 TO skip_in			! Goes to UNFORMATTED read
-	  ASSIGN 500 TO read_in			! Goes to UNFORMATTED read
-	ELSEIF ( in_format(:4) .EQ. 'FREE' ) THEN
-	  ASSIGN 450 TO skip_in			! Goes to FORMATTED read
-	  ASSIGN 610 TO read_in			! Goes to FORMATTED read
-	ELSEIF ( stream ) THEN			! "STREAM" direct access binary
-	  ASSIGN 499 TO skip_in
-	  ASSIGN 620 TO read_in
-	  irec = sf_skip(sfcnt) + 1     ! /SKIP=words
-	ELSE
-	  ASSIGN 450 TO skip_in			! Goes to FORMATTED read
-	  ASSIGN 600 TO read_in			! Goes to FORMATTED read
 	ENDIF
 
 * Check file validity if necessary
@@ -168,35 +148,62 @@
 
 *
 * read "SKIP" records and initialize records read counter
-	GOTO skip_in
-  400	DO 425 scnt = 1,sf_skip(sfcnt)
-  425	READ (lunit,END=9200,ERR=9000)
-	GOTO 499
-  450	DO 475 scnt = 1,sf_skip(sfcnt)
-  475	READ (lunit,'(1X)',END=9200,ERR=9000)
-  499	nout = 0		! is number of values (per var) read so far
-*
+
+	IF ( unformatted ) THEN
+	  
+  	   DO scnt = 1,sf_skip(sfcnt)
+  	      READ (lunit,END=9200,ERR=9000)
+  	   ENDDO
+
+	ELSEIF ( in_format(:4) .EQ. 'FREE' ) THEN
+	 
+  	   DO scnt = 1,sf_skip(sfcnt)
+  	      READ (lunit,'(1X)',END=9200,ERR=9000)
+  	   ENDDO
+
+
+	ELSEIF ( stream ) THEN			! "STREAM" direct access binary
+	   irec = sf_skip(sfcnt) + 1     ! /SKIP=words
+  	   nout = 0		! is number of values (per var) read so far
+
+
+	ELSE
+
+  	   DO scnt = 1,sf_skip(sfcnt)
+  	      READ (lunit,'(1X)',END=9200,ERR=9000)
+  	   ENDDO
+
+  	ENDIF 
+
+	nout = 0
+
 * Read depending on format, nrec counts number of records read
-	GOTO read_in
+
+	DO WHILE (.TRUE.)  ! read until END or ERR
+	
 * ... binary data
 
-  500	READ (lunit,END=800,ERR=9500) 
-
-	GOTO 690
-* ... fixed format data
-  600	READ (lunit,*,END=800,ERR=9500) 
-	GOTO 690
+	   IF ( unformatted ) THEN
+  	      READ (lunit,END=800,ERR=9500) 
 
 * ... free format data
-  610   READ (lunit,*,END=800,ERR=9500) 
-	GOTO 690
+	   ELSEIF ( in_format(:4) .EQ. 'FREE' ) THEN
+              READ (lunit,*,END=800,ERR=9500) 
 
 * ... stream
-  620   READ (lunit,rec=irec,ERR=9600) buff
-	irec = irec + 1
+	   ELSEIF ( stream ) THEN	
+              READ (lunit,rec=irec,ERR=9600) buff
+	      irec = irec + 1
+   
+* ... fixed format data
+	   ELSE
+  	     READ (lunit,*,END=800,ERR=9500) 
+	   ENDIF
 
-  690	nout = nout + 1
-	GOTO read_in
+  	   nout = nout + 1
+
+	ENDDO
+
 *
 * Finished, store records read and then exit
   800	nread = nout 

@@ -49,6 +49,8 @@
 *	   11/02 - change no_point to a very negative nalue (was -1)
 *        2/12 *kms* Add E and F dimensions (use nferdims in tmap_dims.parm)
 * V76   1/20 *acm* Orientation of Point-type data set to e_dim
+* 10/2022 *acm* Code cleanup: remove comment after # include statement
+* 10/2022 *acm* Code cleanup: remove comment after # include statement
 
 * Note:  this routine could be made simpler and faster by arranging single
 *        inner loops that looped "loop=1,edge" looking at index-loop and
@@ -56,7 +58,7 @@
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
-#	include	"tmap_dset.parm"  ! with feature-type 
+#	include	"tmap_dset.parm" 
 	include	'ferret.parm'
 	include	'errmsg.parm'
 	include	'interp_stack.parm'

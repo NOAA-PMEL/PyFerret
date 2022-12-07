@@ -9,10 +9,8 @@ bc2whoi.F\
 calendar_blkdat.F\
 check_t_scale.F\
 clrklab.F\
-cmdini.F\
 compute_histo_bins.F\
 compute_mnstd.F\
-daxis_box.F\
 drawpoly.F\
 fillpol.F\
 fillpoly.F\
@@ -49,7 +47,6 @@ pplp_ver_data.F\
 pyfont_block_data.F\
 restore_saved_line_colors.F\
 ribbon_missing.F\
-save_line_color.F\
 save_rgb_blkdat.F\
 say_interrupted.F\
 set_default_colors.F\
@@ -64,7 +61,6 @@ set_num_linecolors.F\
 set_one_color.F\
 set_open_levels.F\
 set_override_opacity.F\
-set_pat_size.F\
 set_regular_plot.F\
 set_ribbon_ndx.F\
 set_t1_date.F\

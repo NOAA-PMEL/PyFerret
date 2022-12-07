@@ -1,20 +1,7 @@
 SRCS_F = \
-bibo5.F\
-datype5.F\
-deflt.F\
-dirrd.F\
-dsf.F\
-dtypi.F\
-init.F\
-krnd.F\
 lnblk.F\
-loadppl.F\
-logger.F\
 lstb5.F\
 mttime.F\
-ndig5.F\
-npbt5.F\
 squish.F\
-uninit.F\
 upper.F\
-wldfle.F 
+wldfle.F

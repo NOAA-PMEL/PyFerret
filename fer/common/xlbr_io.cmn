@@ -1,5 +1,0 @@
-* XLBR_IO - page size control information to assist with HELP io
-
-       COMMON /XPUT_OUTPUT/ line_count, stop_output
-       INTEGER line_count
-       LOGICAL stop_output

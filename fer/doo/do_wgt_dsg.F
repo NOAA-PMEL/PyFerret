@@ -44,10 +44,11 @@
 * NOAA/PMEL, Seattle, WA - Science Data Integration Group
 * 2/2019
 * V76   1/20 *acm* Orientation of Point-type data set to e_dim
+* 10/2022 *acm* Code cleanup: remove comment after # include statement
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
-#	include	"tmap_dset.parm"  ! with feature-type 
+#	include	"tmap_dset.parm" 
 	include	'ferret.parm'
 	include	'interp_stack.parm'
 	include	'xcontext.cmn'

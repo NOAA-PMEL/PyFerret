@@ -3,12 +3,24 @@
 #
 # September 09 1998
 # Jonathan Callahan
+# 
+# External functions are used to develop new functions. If they
+# are seen to have likely wider use, they are moved to the main
+# code base under fer/efi with minor changes to the way include
+# files are specified. 
+#
+# Those that remain here to be built as part of the distribution are
+# in the examples/ directory, and a few others including the string 
+# functions in stringfcns/which could be incorporated into the main 
+# code and documented.
+#
 #
 # ACM 1/2002  add fft directory back in: lsl_lowpass, inverse fcn.
 # ACM 4/2006  link all functions that are distributed statically; the
 #             directories below compile only example functions, functions
 #             under development, or used locally by PMEL/TMAP (e.g.romea fcns)
- 
+# ACM 12/2022 Remove decimate from the directories to build: these functions
+#             are linked into the PyFerret program
 #
 # Site-specific defines
 #
@@ -25,8 +37,8 @@ include ../platform_specific.mk.$(BUILDTYPE)
 #
 
 # DIRS = ef_utility
-DIRS = ef_utility contributed decimate examples fft las statistics stringfcns
-MOREDIRS = cmprsi_by extrema featurecollections gridding tax_times
+DIRS = ef_utility examples fft statistics stringfcns
+MOREDIRS = cmprsi_by extrema decimate featurecollections gridding tax_times
 
 #
 # Targets

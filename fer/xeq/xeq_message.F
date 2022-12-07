@@ -62,6 +62,8 @@
 * V510 5/00 *sh* - added MESSAGE/JOURNAL
 * V520 6/00 *sh* - added MESSAGE/ERROR
 * V650 3/10 *acm - added MESSAGE//OUTFILE= /APPEND /CLOBBER
+** 10/2022 *acm* Code cleanup: remove references to obsolete gui interface
+*                TM_SPLIT_MESSAGE replaced by SPLIT_LIST
 
         IMPLICIT NONE
 	include 'ferret.parm'
@@ -69,7 +71,6 @@
 	include 'errmsg.parm'
 	include 'xprog_state.cmn'
         include 'xrisc.cmn'
-        include 'xgui.cmn'
 	include 'xplot_state.cmn'
 
 * local parameter declarations
@@ -117,8 +118,8 @@
 	      IF (sho_file .GT. 0) CALL OPEN_SHOW_FILE (show_lun, 
      .                       sho_file, clobber, append, status)
 	      IF (status .NE. ferr_ok ) GOTO 2000
-	      CALL TM_SPLIT_MESSAGE( show_lun,
-     .				cmnd_buff(arg_start(1):arg_end(1)) )
+	      CALL SPLIT_LIST(0,  show_lun,
+     .				cmnd_buff(arg_start(1):arg_end(1)), 0)
      
 * ... close the file
 	      CLOSE ( UNIT = show_lun, ERR = 2000 )
@@ -135,20 +136,18 @@
 
 * ... message to operator
 	   ELSE
-	      CALL TM_SPLIT_MESSAGE( ttout_lun,
-     .				cmnd_buff(arg_start(1):arg_end(1)) )
+	      CALL SPLIT_LIST(0,  ttout_lun,
+     .				cmnd_buff(arg_start(1):arg_end(1)), 0)
 
 	   ENDIF
 
 * no message supplied. Just send a CR
-        ELSEIF ( qual_given(slash_continue) .GT. 0
-     .	 .AND.  .NOT.mode_gui ) THEN
+        ELSEIF ( qual_given(slash_continue) .GT. 0) THEN
               WRITE ( ttout_lun, * ) 
         ENDIF
 
 * continue or wait ?
-	IF ( qual_given( slash_continue ) .GT. 0
-     .	.OR. mode_gui) RETURN
+	IF ( qual_given( slash_continue ) .GT. 0) RETURN
 
 * do not wait if in server mode
         IF  (IS_SERVER()) then
@@ -159,18 +158,12 @@
         CALL FGD_CONSIDER_UPDATE(.TRUE.)
 
 * prompt for <CR> ?
-* (in gui mode ferret_dispatch will send a flag back to the GUI)
 	IF ( qual_given( slash_quiet ) .EQ. 0 ) THEN
 	   WRITE ( ttout_lun, * ) ' Hit Carriage Return to continue'
 	ENDIF
 
 * wait for continue signal (use TM_FRIENDLY_READ 12/92)
-        CALL TM_FRIENDLY_READ(' ', risc_buff, *1000 )
-
-* check for interrupt character signal "^>"
- 1000	IF ( risc_buff(1:1) .EQ. gui_char
-     . .AND. risc_buff(2:2) .EQ. '>' )  CALL ERRMSG( ferr_interrupt,
-     .						     status, ' ', *2000 )
+        CALL TM_FRIENDLY_READ(' ', risc_buff, *2000 )
 
  2000	RETURN
 	END

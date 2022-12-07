@@ -226,6 +226,7 @@
 * V745 *acm*  5/20  added mode_dsg to control turning off all DSG ops
 * V761 *acm*  9/20  Set an /SMASK for stations on a timeseriesProfile dataset or
 *                  trajectories on a trajectoryProfile one.
+** 10/2022 *acm* Code cleanup: remove references to obsolete gui interface
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -237,7 +238,6 @@
         include 'xdiag_ctrl.cmn_text'
         include 'xtm_grid.cmn_text'
         external xgt_grid_data
-        include 'xalt_messages.cmn_text'
 	include	'ferret.parm'
 	include	'slash.parm'
 	include 'errmsg.parm'
@@ -363,9 +363,11 @@
 	ENDIF
 
 * illegal delta given ?
-	DO 310 idim = 1, nferdims
- 310	IF ( cx_given(idim,cx_buff)
-     . .AND. cx_delta(idim,cx_buff) .NE. unspecified_val8 ) GOTO 5320
+	DO idim = 1, nferdims
+	   IF ( cx_given(idim,cx_buff).AND. 
+     .          cx_delta(idim,cx_buff) .NE. unspecified_val8 ) 
+     .            GOTO 5320
+     	ENDDO
 
 * wipe clean the history of the command defaults
 	CALL FORGET_PAST_CONTEXT_MODS ( cx_buff )
@@ -507,13 +509,13 @@ c *kob* 4/97
 	      CALL INIT_EZ_DSET( ' ', dset_num, status )
 	      IF ( status .NE. ferr_ok ) RETURN
 	   ELSE
-	     DO 710 item = 1, num_items
-	      CALL INIT_EZ_DSET( cmnd_buff(item_start(item):item_end(item)), 
+	     DO item = 1, num_items
+	        CALL INIT_EZ_DSET( cmnd_buff(item_start(item):item_end(item)), 
      .				 dset_num, status )
-	      IF ( status .NE. ferr_ok ) RETURN
+	        IF ( status .NE. ferr_ok ) RETURN
 * ... dummy calls to make EZ sets act like other sets
-	      CALL GET_AXIS_SPEED( dset_num )
- 710	     CONTINUE
+	        CALL GET_AXIS_SPEED( dset_num )
+	     ENDDO	
 	   ENDIF
 * ... make this data set current
 	   cx_data_set( cx_last )	=  dset_num
@@ -574,8 +576,9 @@ c *kob* 4/97
 	ENDIF
 
 * interpret the /ORDER permutation qualifier for a non-EZ data set
-	DO 720 idim = 1, nferdims
- 720	perm(idim) = unspecified_int4 ! set default
+	DO idim = 1, nferdims
+	   perm(idim) = unspecified_int4 ! set default
+ 	ENDDO
         loc = qual_given(slash_set_data_order )
         IF ( loc .GT. 0 ) THEN
            CALL EQUAL_PERMUTE(
@@ -603,14 +606,14 @@ c *kob* 4/97
 *            that 1979-2010 is a number, causing a crash just below on the READ. 
 
 	      buff_len = TM_LENSTR(buff1)
-              DO 730 ich = 1, buff_len
+              DO ich = 1, buff_len
 		c1 = buff1(ich:ich)
 		IF ( ( c1.GE.'0' .AND. c1.LE.'9' )) THEN
 		   CONTINUE
 		ELSE
 		   GOTO 740
 		ENDIF
- 730	      CONTINUE
+		ENDDO
 	      READ (buff1,*) dset_num
 #elif MANDATORY_FORMAT_WIDTHS
 	      READ (buff1,*,ERR=740) dset_num
@@ -799,20 +802,20 @@ c *kob* 4/97
 	      ENDIF
 	      IF ( set_last ) THEN
 * ... pop the mode stack
-	         DO 804 i = 2, mode_stack_size
+	         DO i = 2, mode_stack_size
 	            mode_state(mode,i-1) = mode_state(mode,i) 
 		    mode_arg  (mode,i-1) = mode_arg  (mode,i)
 		    IF (mode .EQ. pmode_time_lab) 
      .		      mode_state(pmode_f_lab,i-1) = mode_state(pmode_time_lab,i)
- 804	         CONTINUE
+	         ENDDO
 	      ELSE
 * ... push the mode stack adding on a TRUE (because it is SET)
-	         DO 806 i = mode_stack_size, 2, -1
+	         DO i = mode_stack_size, 2, -1
 	            mode_state(mode,i) = mode_state(mode,i-1) 
 		    mode_arg  (mode,i) = mode_arg  (mode,i-1)
 		    IF (mode .EQ. pmode_time_lab) 
      .		      mode_state(pmode_f_lab,i-1) = mode_state(pmode_time_lab,i)
- 806	         CONTINUE
+	         ENDDO
 	         mode_state( mode, 1 ) = .TRUE.
 	         IF ( iarg .NE. unspecified_int4 ) 
      .					mode_arg( mode,1 ) = iarg
@@ -1012,9 +1015,10 @@ c *kob* 4/97
 *      ( could be more selective for efficiency by checking to see where this
 *      axis gets used )
 	   IF ( its_changed ) THEN
-              DO 1210 i = 1,max_mr_avail
- 1210         IF ( mr_protected( i ) .NE. mr_deleted ) 
+              DO i = 1,max_mr_avail
+		 IF ( mr_protected( i ) .NE. mr_deleted ) 
      .                                CALL DELETE_VARIABLE( i )
+     	      ENDDO
            ENDIF
         ENDIF
 * /DEPTH
@@ -1072,12 +1076,12 @@ c *kob* 4/97
               IF (buff1(1:3) .EQ. '365') buff1 = 'NOLEAP' 
               IF (buff1(1:3) .EQ. '366') buff1 = 'ALL_LEAP' 
 
-              DO 1220 i = 1, mxcals
+              DO i = 1, mxcals
                  IF (buff1(1:3) .EQ. allowed_calendars(i)(1:3) ) THEN
                     ok_cal = .TRUE.
                     line_cal_name(axis) = allowed_calendars(i)
                  ENDIF
- 1220         CONTINUE
+              ENDDO
 
               IF (.NOT. ok_cal) GOTO 6320
               new_att_calendar = line_cal_name(axis)
@@ -1162,11 +1166,11 @@ c *kob* 4/97
           CALL CD_GET_VAR_ID (iset, cmnd_buff(item_start(1):item_end(1)), varid, status )
 	  IF (varid .GT. 0) CALL CD_RENAME_VAR(iset, varid, buff1, status)
 
-	   DO 1240 iset = 1, maxdsets
-	      IF ( ds_name(iset) .EQ. char_init2048) GOTO 1240
+	   DO iset = 1, maxdsets
+	      IF ( ds_name(iset) .EQ. char_init2048) CYCLE
 	      CALL CD_GET_VAR_ID (iset, line_name(axis), varid, status )
               IF (varid .GT. 0) CALL CD_RENAME_VAR(iset, varid, buff1, status)
- 1240	   CONTINUE
+	   ENDDO
 
 * Replace the name in Ferret's line storage.
 	   line_name_orig(axis) = buff1
@@ -1381,11 +1385,11 @@ c *kob* 4/97
            igrd=0
 	   idim = 0
  6300      CALL TM_NEXT_DYN_GRID( igrd, *6399)
-              DO 6301 i=1, nferdims
+              DO i=1, nferdims
                  IF ( grid_line(i, igrd) .EQ. axis ) THEN
                     idim=i
                  ENDIF
- 6301         CONTINUE
+	      ENDDO
            GOTO 6300
  6399      CONTINUE
 
@@ -1404,7 +1408,7 @@ c *kob* 4/97
  6000      CALL TM_NEXT_DYN_GRID( igrd, *6099)
               IF ( grid_line(idim, igrd) .EQ. axis ) THEN
 *       loop through all of the file variables
-                 DO 6010 i = 1, maxvars
+                 DO i = 1, maxvars
                     IF (ds_grid_number(i) .EQ. igrd) THEN 
 		       is_nc = (ds_type(ds_var_setnum(i)).EQ.'CDF') .OR.
      .                         (ds_type(ds_var_setnum(i)).EQ.'ENS') .OR.
@@ -1413,7 +1417,7 @@ c *kob* 4/97
                        IF (.NOT. is_nc)  
      .                   GOTO 6088
                     ENDIF
- 6010            CONTINUE
+                 ENDDO
               ENDIF
            GOTO 6000
  6099      CONTINUE
@@ -1467,11 +1471,6 @@ c *kob* 4/97
                IF ( grid_line(idim, igrd) .EQ. axis ) THEN
                   grid_line(idim,igrd) = strided_axis
                   CALL TM_USE_LINE(strided_axis)
-*                   DO 6011 i = 1, maxvars
-*                    IF(ds_grid_number(i) .EQ. igrd) THEN
-*                        ds_grid_end(idim,i) = 18
-*                    ENDIF
-* 6011              CONTINUE
                ENDIF
            GOTO 6001        
  6199      CONTINUE
@@ -1932,7 +1931,7 @@ c *kob* 4/97
 *
 *       Determine all the sources to redirect
         IF ( num_args .GT. 0 ) THEN
-           DO 1610 i = 1,num_args
+           DO i = 1,num_args
               IF ( MATCH4( cmnd_buff(arg_start(i):arg_end(i) ), 
      .              arg_end(i) - arg_start(i) + 1, 'STDOUT', 6) ) THEN
 *                Redirect stdout with these settings
@@ -1947,7 +1946,7 @@ c *kob* 4/97
      .                   'unknown redirect source: ' //
      .                   cmnd_buff( arg_start(i):arg_end(i) ), *5000 )
               ENDIF
- 1610      CONTINUE
+	   ENDDO
         ELSE
 *          Default: redirect stdout, but not stderr, with these settings
            redir_stdout = .TRUE.
@@ -2127,13 +2126,13 @@ c           ENDIF
 	ELSE
 
 	   iset = 0
-	   DO 1820 item = 1, num_items
+	   DO item = 1, num_items
 
 	      buff2 = cmnd_buff(item_start(item):item_end(item))
 
 	      len_test = TM_LENSTR(buff2)
 
-	      DO 1810 igrp = 1, ngp
+	      DO igrp = 1, ngp
                  len_mchars = TM_LENSTR(pyf_group_names(igrp)(:4))
 	         IF ( MATCH4( buff2, len_test,
      .               pyf_group_names( igrp ),len_mchars) ) THEN
@@ -2144,9 +2143,9 @@ c           ENDIF
 		    iset = iset + 1
 		 ENDIF
 
- 1810	      CONTINUE
+	      ENDDO
 	      IF (iset .EQ. 0) GOTO 5480
- 1820	   CONTINUE
+	   ENDDO
 
  	ENDIF  ! SET TEXT arguments
 

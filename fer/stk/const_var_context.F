@@ -17,6 +17,7 @@
 * V533:  7/01 *sh* - allow single quoted strings
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 * V693+ *sh* 2/15 - added support for quotation with _DQ_ and _SQ_
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 
         IMPLICIT NONE
 	include	'tmap_dims.parm'
@@ -54,12 +55,14 @@
 
 * definition applies only to the axis of the constant list
 	cx_given( x_dim, const_cx ) = .TRUE.
-	DO 100 idim =  y_dim, nferdims
- 100	cx_given( idim, const_cx ) = .FALSE.
+	DO idim =  y_dim, nferdims
+	   cx_given( idim, const_cx ) = .FALSE.
+ 	ENDDO
 
 * remove all axes limits
-	DO 200 idim = y_dim, nferdims
- 200	CALL DEL_CX_DIM( idim, const_cx )
+	DO idim = y_dim, nferdims
+	   CALL DEL_CX_DIM( idim, const_cx )
+ 	ENDDO
 
 * set the X axis limits equal to the length of the array
 	cx_lo_ss(const_cx, x_dim) = 1

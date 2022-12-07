@@ -65,22 +65,28 @@
 
 
 * Initialize: limits for calculation
-        DO 10 idim = 1, nferdims
+        DO idim = 1, nferdims
            lo_lim(idim) = cx_lo_ss(cx_lims, idim)
            hi_lim(idim) = cx_hi_ss(cx_lims, idim)
- 10     CONTINUE
+	ENDDO
+
         lo_lim(axis) = MAX( dst_lo, mr_lo_ss(msrc,axis) )
         hi_lim(axis) = MIN( dst_hi, mr_hi_ss(msrc,axis) )
 
-
 * Copy the data to the destination grid
-	DO 100 n = lo_lim(f_dim), hi_lim(f_dim)
-	DO 100 m = lo_lim(e_dim), hi_lim(e_dim)
-	DO 100 l = lo_lim(t_dim), hi_lim(t_dim)
-	DO 100 k = lo_lim(z_dim), hi_lim(z_dim)
-	DO 100 j = lo_lim(y_dim), hi_lim(y_dim)
-	DO 100 i = lo_lim(x_dim), hi_lim(x_dim)
- 100	dst(i,j,k,l,m,n) = src(i,j,k,l,m,n)
+	DO n = lo_lim(f_dim), hi_lim(f_dim)
+	DO m = lo_lim(e_dim), hi_lim(e_dim)
+	DO l = lo_lim(t_dim), hi_lim(t_dim)
+	DO k = lo_lim(z_dim), hi_lim(z_dim)
+	DO j = lo_lim(y_dim), hi_lim(y_dim)
+	DO i = lo_lim(x_dim), hi_lim(x_dim)
+ 	   dst(i,j,k,l,m,n) = src(i,j,k,l,m,n)
+	ENDDO
+	ENDDO
+	ENDDO
+	ENDDO
+	ENDDO
+	ENDDO
 
 	RETURN
 	END

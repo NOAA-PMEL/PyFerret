@@ -12,6 +12,8 @@
 #                eofspace, eofstat, eoftfunc; with same code as in fer/efi,
 #                but with different INCLUDE statements for use in testing
 #                as dynamically-linked functions.
+# 12/2022 Remove from targets list routines and functions that
+#         are linked into the PyFerret program
 
 #
 # include site specific macro definitions
@@ -28,8 +30,6 @@ include ../ef_utility/platform_specific.mk.$(BUILDTYPE)
 #
 
 .SUFFIXES: .so
-
-SUB_OBJS = eofsubs.o
 
 #
 # Rules

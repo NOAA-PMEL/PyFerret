@@ -35,6 +35,7 @@
 *
 *
 C**    @(#)tabmv.F	1.1    3/10/88
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. Remove obsolete ifdefs
 C**
 C**
 C***********************************************************************
@@ -53,17 +54,10 @@ C     COORDINATES OF THE NEW POSITION ARE RECEIVED IN VARIABLES A
 C     AND B.
 C
 C
-#ifdef unix
+
 	INTEGER*2 DUMMY(4)
-#else
-	byte dummy(4)
-#endif
-C
-#ifdef unix
 	include 'PLTCOM.DAT'
-#else
-	include 'pplinc:PLTCOM.DAT'
-#endif
+
 	DATA DUMMY/32,96,32,64/
 C
 C     CONVERT THE POSITION TO A TEKTERMINAL ADDRESS.
@@ -119,19 +113,12 @@ C
 C
 C     CALCULATE THE HIGH-ORDER B-BYTE.  10 BIT CODES FOR TEK401X
 C
-#ifdef unix
-#ifdef sun
-	ihib=or(and(rshift(itb,5),31),32)
-#else
 # ifdef NEED_IAND
 	IHIB=IOR(IAND(ISHFT(ITB,-5),31),32)
 # else
 	IHIB=OR(AND(LSHIFT(ITB,-5),31),32)
 # endif
-#endif
-#else
-	IHIB=IOR(IAND(ISHFT(ITB,-5),31),32)
-#endif
+
 C
 C     IF NO CHANGE, DO NOT TRANSMIT IT.
 C
@@ -142,31 +129,23 @@ C
 C
 C     TRANSMIT THE LOW-ORDER B-BYTE.
 C
-#ifdef unix
+
 # ifdef NEED_IAND
 	CALL CHOUT(IOR(IAND(ITB,31),96),1)
 # else
 	CALL CHOUT(OR(AND(ITB,31),96),1)
 # endif
-#else
-	CALL CHOUT(IOR(IAND(ITB,31),96),1)
-#endif
+
 C
 C     CALCULATE THE HIGH-ORDER A-BYTE.
 C
-#ifdef unix
-#ifdef sun
-	IHIA=OR(AND(rSHIFT(ITA,5),31),32)
-#else
 # ifdef NEED_IAND
 	IHIA=IOR(IAND(ISHFT(ITA,-5),31),32)
 # else
 	IHIA=OR(AND(LSHIFT(ITA,-5),31),32)
 # endif
-#endif
-#else
+
 	IHIA=IOR(IAND(ISHFT(ITA,-5),31),32)
-#endif
 C
 C     IF NO CHANGE, DO NOT TRANSMIT IT.
 C
@@ -177,33 +156,22 @@ C
 C
 C     TRANSMIT THE LOW-ORDER A-BYTE.
 C
-#ifdef unix
 # ifdef NEED_IAND
 	CALL CHOUT(IOR(IAND(ITA,31),64),1)
 # else
 	CALL CHOUT(OR(AND(ITA,31),64),1)
 # endif
-#else
-	CALL CHOUT(IOR(IAND(ITA,31),64),1)
-#endif
+
       ELSE
         ICH = 3
 C
 C     CALCULATE THE HIGH-ORDER B-BYTE.    12 BIT CODES FOR TEK41XX
 C
-#ifdef unix
-#ifdef sun
-        IHIB = OR(AND(rSHIFT(ITB,7), 31), 32)
-#else
 # ifdef NEED_IAND
         IHIB = IOR(IAND(ISHFT(ITB,-7), 31), 32)
 # else
         IHIB = OR(AND(LSHIFT(ITB,-7), 31), 32)
 # endif
-#endif
-#else
-        IHIB = IOR(IAND(ISHFT(ITB,-7), 31), 32)
-#endif
 C
 C     IF NO CHANGE, DO NOT TRANSMIT IT.
 C
@@ -215,15 +183,12 @@ C
 C
 C     CALCULATE THE EXTRA BYTE.
 C
-#ifdef unix
 # ifdef NEED_IAND
         ILOBA=IOR(IOR(ISHFT(IAND(ITB,3),2),IAND(ITA,3)),96)
 # else
         ILOBA=OR(OR(LSHIFT(AND(ITB,3),2),AND(ITA,3)),96)
 # endif
-#else
-        ILOBA=IOR(IOR(ISHFT(IAND(ITB,3),2),IAND(ITA,3)),96)
-#endif
+
 C
 C     IF NO CHANGE, DO NOT TRANSMIT IT.
 C
@@ -235,35 +200,19 @@ C
 C
 C     TRANSMIT THE LOW-ORDER B-BYTE.
 C
-#ifdef unix
-#ifdef sun
-        CALL CHOUT(OR(AND(rSHIFT(ITB,2), 31), 96),1)
-#else
 # ifdef NEED_IAND
         CALL CHOUT(IOR(IAND(ISHFT(ITB,-2), 31), 96),1)
 # else
         CALL CHOUT(OR(AND(LSHIFT(ITB,-2), 31), 96),1)
 # endif
-#endif
-#else
-        CALL CHOUT(IOR(IAND(ISHFT(ITB,-2), 31), 96),1)
-#endif
 C
 C     CALCULATE THE HIGH-ORDER A-BYTE.
 C
-#ifdef unix
-#ifdef sun
-        IHIA = OR(AND(rSHIFT(ITA,7), 31), 32)
-#else
 # ifdef NEED_IAND
         IHIA = IOR(IAND(ISHFT(ITA,-7), 31), 32)
 # else
         IHIA = OR(AND(LSHIFT(ITA,-7), 31), 32)
 # endif
-#endif
-#else
-        IHIA = IOR(IAND(ISHFT(ITA,-7), 31), 32)
-#endif
 C
 C     IF NO CHANGE, DO NOT TRANSMIT IT.
 C
@@ -275,19 +224,11 @@ C
 C
 C     TRANSMIT THE LOW-ORDER A-BYTE.
 C
-#ifdef unix
-#ifdef sun
-        CALL CHOUT(OR(AND(rSHIFT(ITA,2), 31), 64),1)
-#else
 # ifdef NEED_IAND
         CALL CHOUT(IOR(IAND(ISHFT(ITA,-2), 31), 64),1)
 # else
         CALL CHOUT(OR(AND(LSHIFT(ITA,-2), 31), 64),1)
 # endif
-#endif
-#else
-        CALL CHOUT(IOR(IAND(ISHFT(ITA,-2), 31), 64),1)
-#endif
 C
 C     CHECK THE TEKTERMINAL TYPE.
 C
@@ -308,7 +249,8 @@ C
      *     0.0050958) * FLOAT(BAUDR))
           IF(NDELAY .GE. ICH)THEN
             DO 10 J=ICH,NDELAY
-   10       CALL CHOUT(SYN,1)
+              CALL CHOUT(SYN,1)
+10          CONTINUE
           ENDIF
         ENDIF
       ENDIF

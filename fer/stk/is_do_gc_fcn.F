@@ -68,6 +68,7 @@
 * v74  *acm*  1/18 Fixing issue 1575, setting uvar_given for result of grid-changing functions
 *                  that return results on abstract axes.
 * v74  *acm*  3/18 Backing off the fix for 1575, see comments 3/16/2018
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -171,7 +172,7 @@ c	include 'xtm_grid.cmn_text'  ! with line_name
 
         arg_first_mismatch = 0
         check_alt_fcn = .FALSE.
-	DO 100 icom = 1, num_com
+	DO icom = 1, num_com
 	   iarg = GCF_ARG_EVAL_ORDER(ifcn, icom)
 	   itype = GCF_ARG_TYPE(ifcn, iarg)
 	   com_cx  = is_cx(frame_bottom+icom-1)
@@ -186,7 +187,7 @@ c	include 'xtm_grid.cmn_text'  ! with line_name
 	   ENDIF
 	   IF (check_alt_fcn .AND. arg_first_mismatch.EQ.0)
      .        arg_first_mismatch = iarg
- 100	CONTINUE
+	ENDDO
 
 * Does the function designate an alternate function for strings?
 * If so, check the argument types for it.
@@ -204,7 +205,7 @@ c	include 'xtm_grid.cmn_text'  ! with line_name
              typ(icom) = parg_type_float
              pdim(icom) = pfloat_words
            ENDDO
-      	   DO 101 icom = 1, num_com
+      	   DO icom = 1, num_com
 	      iarg = GCF_ARG_EVAL_ORDER(ifcn, icom)
 	      itype = GCF_ARG_TYPE(ifcn, iarg)
 	      com_cx  = is_cx(frame_bottom+icom-1)
@@ -217,7 +218,7 @@ c	include 'xtm_grid.cmn_text'  ! with line_name
 	         IF (itype .NE. parg_type_float_or_string) 
      .              GOTO 5200
 	      ENDIF
- 101	   CONTINUE
+	   ENDDO
         ENDIF
 
 
@@ -351,14 +352,6 @@ c	include 'xtm_grid.cmn_text'  ! with line_name
      .		memry(res_mr)%ptr, res_mr, pdimr, typr,
      .		res_cx, status )
 
-c  Fixing issue 1575. If the result grid has an abstract axis in the aa direction, 
-c  then set uvar_given(aa_dim,uvar) = uvlim_gvn_gnl
-
-cc	  DO idim = 1, nferdims 
-cc	     IF (line_name(CGRID_AXIS(idim,res_cx)) .EQ. 'ABSTRACT') 
-cc     .		uvar_given(idim,uvar) = uvlim_gvn_gnl
-cc	  ENDDO
-  
 	ELSE 
 
 	  CALL DO_EXTERNAL_GC_FCN( 
@@ -375,14 +368,6 @@ cc	  ENDDO
      .			memry(res_mr)%ptr, res_mr,
      .			status )
 
-c  If the result grid has an abstract axis in the aa direction, 
-c  then set uvar_given
-
-cc	  DO idim = 1, nferdims 
-cc	     IF (line_name(CGRID_AXIS(idim,res_cx)) .EQ. 'ABSTRACT') 
-cc     .		uvar_given(idim,uvar) = uvlim_gvn_gnl
-cc	  ENDDO
-
 	ENDIF
 	IF ( status .NE. ferr_ok ) GOTO 5100
 
@@ -390,12 +375,13 @@ cc	  ENDDO
  
 * ... if any components were un_cached we must uncache the result
 	not_reusable = .FALSE.
-	DO 2050 icom = isp, frame_bottom, -1
- 2050	IF ( ITS_UN_CACHED(is_mr(icom)) ) not_reusable = .TRUE.
+	DO icom = isp, frame_bottom, -1
+	   IF ( ITS_UN_CACHED(is_mr(icom)) ) not_reusable = .TRUE.
+ 	ENDDO
 	IF ( not_reusable ) CALL UN_CACHE( res_mr )
 
 * ...release component cx stack space
-	DO 2100 isp = isp, frame_bottom, -1
+	DO isp = isp, frame_bottom, -1
 	   IF ( is_cx(isp) .NE. cx_stack_ptr ) WRITE (6,*) 'OP_STK??'	! temp
 	   cx_stack_ptr = cx_stack_ptr - 1
 	   mr  = is_mr( isp )
@@ -412,7 +398,7 @@ cc	  ENDDO
 	      CALL DEALLO_DYN_GRID(impl_grid)
 	      cx_has_impl_grid(com_cx) = .FALSE.
 	   ENDIF
- 2100	CONTINUE
+	ENDDO
 
 * collapse the interp stack frame
 	isp = frame_bottom

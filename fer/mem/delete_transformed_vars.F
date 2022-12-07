@@ -44,6 +44,7 @@
 * revision 0.0 - 1/10/89
 * V200:  6/9/89 - deleted variables flagged in mr_protected
 *        2/12 *kms* Add E and F dimensions (use nferdims in tmap_dims.parm)
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
@@ -62,8 +63,9 @@
 	   IF ( mr_protected(mr) .EQ. mr_deleted ) GOTO 100
 
 * transforms ?
-	   DO 50 idim = 1,nferdims
-  50	   IF ( mr_trans(idim,mr) .NE. trans_no_transform ) GOTO 60
+	   DO idim = 1,nferdims
+	      IF ( mr_trans(idim,mr) .NE. trans_no_transform ) GOTO 60
+  	   ENDDO
 * regridded ?
 	   IF ( .NOT.mr_unstand_grid(mr) ) GOTO 100
 

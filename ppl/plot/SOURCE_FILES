@@ -9,7 +9,6 @@ daxis.F\
 daxis2.F\
 dellev.F\
 drawvec.F\
-dsflab.F\
 dsflim.F\
 ferret_plot_complete.F\
 get_curvilinear_limits.F\
@@ -26,7 +25,6 @@ linfit.F\
 stmnmx.F\
 rsmnmx.F\
 mplot.F\
-mult.F\
 opnppl.F\
 plotnm.F\
 plotxy.F\

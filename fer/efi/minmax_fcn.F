@@ -3,6 +3,8 @@
 *
 * Ansley Manke
 * May 2009
+* 11/2022 *acm* Code cleanup: 
+*              - Fix loops that share termination statements
 *
 * This function returns the min and max of a variable
 * Faster than individually computing the min and max
@@ -160,19 +162,24 @@
       amin = MAX( ABS(bad_flag(1)), 1.0E34 )
       amax = -1.0 * amin
 
-      DO 100 n1 = arg_lo_ss(F_AXIS,ARG1), arg_hi_ss(F_AXIS,ARG1)
-      DO 100 m1 = arg_lo_ss(E_AXIS,ARG1), arg_hi_ss(E_AXIS,ARG1)
-      DO 100 l1 = arg_lo_ss(T_AXIS,ARG1), arg_hi_ss(T_AXIS,ARG1)
-      DO 100 k1 = arg_lo_ss(Z_AXIS,ARG1), arg_hi_ss(Z_AXIS,ARG1)
-      DO 100 j1 = arg_lo_ss(Y_AXIS,ARG1), arg_hi_ss(Y_AXIS,ARG1)
-      DO 100 i1 = arg_lo_ss(X_AXIS,ARG1), arg_hi_ss(X_AXIS,ARG1)
+      DO n1 = arg_lo_ss(F_AXIS,ARG1), arg_hi_ss(F_AXIS,ARG1)
+       DO m1 = arg_lo_ss(E_AXIS,ARG1), arg_hi_ss(E_AXIS,ARG1)
+        DO l1 = arg_lo_ss(T_AXIS,ARG1), arg_hi_ss(T_AXIS,ARG1)
+         DO k1 = arg_lo_ss(Z_AXIS,ARG1), arg_hi_ss(Z_AXIS,ARG1)
+          DO j1 = arg_lo_ss(Y_AXIS,ARG1), arg_hi_ss(Y_AXIS,ARG1)
+           DO i1 = arg_lo_ss(X_AXIS,ARG1), arg_hi_ss(X_AXIS,ARG1)
 
-         IF ( arg_1(i1,j1,k1,l1,m1,n1) .NE. bad_flag(1) ) THEN
-            amin = MIN(amin, arg_1(i1,j1,k1,l1,m1,n1) )
-            amax = MAX(amax, arg_1(i1,j1,k1,l1,m1,n1) )
-         END IF
+            IF ( arg_1(i1,j1,k1,l1,m1,n1) .NE. bad_flag(1) ) THEN
+              amin = MIN(amin, arg_1(i1,j1,k1,l1,m1,n1) )
+              amax = MAX(amax, arg_1(i1,j1,k1,l1,m1,n1) )
+            END IF
 
- 100  CONTINUE
+           ENDDO
+          ENDDO
+         ENDDO
+        ENDDO
+       ENDDO
+      ENDDO
 
       i = res_lo_ss(X_AXIS)
       j = res_lo_ss(Y_AXIS)

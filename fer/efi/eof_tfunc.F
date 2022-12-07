@@ -49,6 +49,11 @@
 *          arrays in the solvers in TRIDIN in eofsubs.F
 * Jun 2003 Workspace arrays need to be initialized for each vertical level.
 *
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
+*  The functions eof_space, eof_stat, eof_tfunc are not implemented in the double
+*  precision versions of Ferret (and PyFerret).  Sill, updating the do-loops 
+*  in case of future re-implementation of these functions.
+*
 * Compute EOF/s and time amplitude funcions from a 2-d field, or for each level 
 * of a 3-D field.  Based on programs (coadseof.f, etc.) by Dai McClurg and 
 * Ansley Manke and calls Billy Kessler's method for finding EOFs  of NON-gappy 
@@ -433,87 +438,15 @@ c     .   'Compute EOF time functions from XYT field. gappy in T.')
       DO 100 k = res_lo_ss(Z_AXIS), res_hi_ss(Z_AXIS)
 
 *  Initialize work arrays.
-
-         DO 701 nw = wrk1lof,wrk1hif
-         DO 701 mw = wrk1loe,wrk1hie
-         DO 701 lw = wrk1lot,wrk1hit
-         DO 701 kw = wrk1loz,wrk1hiz 
-         DO 701 jw = wrk1loy,wrk1hiy
-         DO 701 iw = wrk1lox,wrk1hix
-            val(iw,jw,kw,lw,mw,nw) = 0.
-  701    CONTINUE
-
-         DO 702 nw = wrk2lof,wrk2hif
-         DO 702 mw = wrk2loe,wrk2hie
-         DO 702 lw = wrk2lot,wrk2hit
-         DO 702 kw = wrk2loz,wrk2hiz 
-         DO 702 jw = wrk2loy,wrk2hiy
-         DO 702 iw = wrk2lox,wrk2hix
-            taf(iw,jw,kw,lw,mw,nw) = 0.
-  702    CONTINUE
-
-         DO 703 nw = wrk3lof,wrk3hif
-         DO 703 mw = wrk3loe,wrk3hie
-         DO 703 lw = wrk3lot,wrk3hit
-         DO 703 kw = wrk3loz,wrk3hiz 
-         DO 703 jw = wrk3loy,wrk3hiy
-         DO 703 iw = wrk3lox,wrk3hix
-            pct(iw,jw,kw,lw,mw,nw) = 0.
-  703    CONTINUE
-
-         DO 704 nw = wrk4lof,wrk4hif
-         DO 704 mw = wrk4loe,wrk4hie
-         DO 704 lw = wrk4lot,wrk4hit
-         DO 704 kw = wrk4loz,wrk4hiz 
-         DO 704 jw = wrk4loy,wrk4hiy
-         DO 704 iw = wrk4lox,wrk4hix
-            vec(iw,jw,kw,lw,mw,nw) = 0.
-  704    CONTINUE
-
-         DO 705 nw = wrk5lof,wrk5hif
-         DO 705 mw = wrk5loe,wrk5hie
-         DO 705 lw = wrk5lot,wrk5hit
-         DO 705 kw = wrk5loz,wrk5hiz 
-         DO 705 jw = wrk5loy,wrk5hiy
-         DO 705 iw = wrk5lox,wrk5hix
-            c(iw,jw,kw,lw,mw,nw) = 0.
-  705    CONTINUE
-
-         DO 706 nw = wrk6lof,wrk6hif
-         DO 706 mw = wrk6loe,wrk6hie
-         DO 706 lw = wrk6lot,wrk6hit
-         DO 706 kw = wrk6loz,wrk6hiz 
-         DO 706 jw = wrk6loy,wrk6hiy
-         DO 706 iw = wrk6lox,wrk6hix
-            ddat_1d(iw,jw,kw,lw,mw,nw) = 0.
-  706    CONTINUE
-
-         DO 707 nw = wrk7lof,wrk7hif
-         DO 707 mw = wrk7loe,wrk7hie
-         DO 707 lw = wrk7lot,wrk7hit
-         DO 707 kw = wrk7loz,wrk7hiz 
-         DO 707 jw = wrk7loy,wrk7hiy
-         DO 707 iw = wrk7lox,wrk7hix
-            isave_jsave(iw,jw,kw,lw,mw,nw) = 0.
-  707    CONTINUE
-
-         DO 708 nw = wrk8lof,wrk8hif
-         DO 708 mw = wrk8loe,wrk8hie
-         DO 708 lw = wrk8lot,wrk8hit
-         DO 708 kw = wrk8loz,wrk8hiz 
-         DO 708 jw = wrk8loy,wrk8hiy
-         DO 708 iw = wrk8lox,wrk8hix
-            ok(iw,jw,kw,lw,mw,nw) = 0.
-  708    CONTINUE
-
-         DO 709 nw = wrk9lof,wrk9hif
-         DO 709 mw = wrk9loe,wrk9hie
-         DO 709 lw = wrk9lot,wrk9hit
-         DO 709 kw = wrk9loz,wrk9hiz 
-         DO 709 jw = wrk9loy,wrk9hiy
-         DO 709 iw = wrk9lox,wrk9hix
-            eofwork(iw,jw,kw,lw,mw,nw) = 0.
-  709    CONTINUE
+         val = 0.
+         taf = 0.
+         pct = 0.
+         vec = 0.
+         c = 0.
+         ddat_1d = 0.
+         isave_jsave = 0.
+         ok = 0.
+         eofwork = 0.
 
 *  Find the number of EOFS to solve for.
 *  neof = number of (x,y) points with frac_timeser good data.  

@@ -41,6 +41,7 @@
 * NOAA/PMEL, Seattle, WA 
 * 3/20/2006
 * V600  4/06 *acm* - additional declarations found by Solaris compiler
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 *
 * Set axis attributes as in SET AXIS; called by edit_attribute.F
 * doing SET ATT axname.attribute=
@@ -91,9 +92,10 @@
 *      ( could be more selective for efficiency by checking to see where this
 *      axis gets used )
 	   IF ( its_changed ) THEN
-              DO 100 i = 1,max_mr_avail
- 100          IF ( mr_protected( i ) .NE. mr_deleted ) 
+              DO i = 1,max_mr_avail
+                 IF ( mr_protected( i ) .NE. mr_deleted ) 
      .                                CALL DELETE_VARIABLE( i )
+     	      ENDDO
            ENDIF
 
            RETURN

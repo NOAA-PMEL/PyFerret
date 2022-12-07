@@ -1,6 +1,8 @@
 #
 # Makefile for Ferret External Functions
 #
+# 12/2022 Remove from targets list routines and functions that
+#         are linked into the PyFerret program
 #
 # include platform specific macro definitions
 #
@@ -12,7 +14,6 @@ include ../ef_utility/platform_specific.mk.$(BUILDTYPE)
 #
 
 .SUFFIXES: .so
-SUB_OBJS = piecewise_subs.o
 
 #
 # Rules

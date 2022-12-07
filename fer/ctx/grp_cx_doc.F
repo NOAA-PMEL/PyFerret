@@ -49,6 +49,7 @@
 * V230:  7/22/92 - added overlay argument to ADDL_CX_DOC
 *       *acm* 3/12 cleanup ifdefs and unnecessary include files
 * V685+ *acm* 12/13 For 6D Ferret, the array coming in as flags is longer for extra dimensions
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 
         IMPLICIT NONE
 	include	'ferret.parm'
@@ -65,15 +66,17 @@
         PARAMETER ( overlay = .TRUE. )
 
 * initialize the key documentation flags
-	DO 100 i = 0, 10
- 100	flags(i) = .FALSE.
+	DO i = 0, 10
+	   flags(i) = .FALSE.
+ 	ENDDO
 
 * the context of the first variable is the starting point
 	CALL TRANSFER_CONTEXT( cx_list(1), joint_cx )
 
 * merge the other contexts with it
-	DO 200 i = 2, ncx
- 200	CALL ADDL_CX_DOC( joint_cx, cx_list(i), .NOT.overlay, flags )
+	DO i = 2, ncx
+	   CALL ADDL_CX_DOC( joint_cx, cx_list(i), .NOT.overlay, flags )
+ 	ENDDO
 
 * regridding is always displayed on the key, not the joint context
 !	cx_unstand_grid( cx_plot ) = .FALSE.

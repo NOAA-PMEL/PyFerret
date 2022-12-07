@@ -74,32 +74,21 @@ C	CLEAR -- LOGICAL IF TRUE CLEAR THE DEVICE  (I.E. START NEW)
 C
 C
 * TMAP mod 8/26/88
-!	include 'PLTCOM.DAT'
-!	include 'GKSCM1.INC'
-#ifdef unix
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. Remove obsolete ifdefs
+
 	include 'pltcom_dat.decl'
 	include 'PLTCOM.DAT'
 	include 'gkscm1_inc.decl'
 	include 'GKSCM1.INC'
 	include 'gkscm2.cmn' !jd 3.20.89 for private gclrwk
-#else
-	INCLUDE 'TMAP_PPLV11INC:PLTCOM_DAT.DECL'
-	INCLUDE 'PPLV11INC:PLTCOM.DAT'
-	INCLUDE 'TMAP_PPLV11INC:GKSCM1_INC.DECL'
-	INCLUDE 'PPLV11INC:GKSCM1.INC'
-	INCLUDE 'tmap_pplv11inc:tmap_gkscm2.inc' !JD 3.20.89 for private GCLRWK
-#endif
 
 	INTEGER	iseg, ivp, lens, itype, i, j, nterm, ndelay ! local declarations
 	integer	control_flag ! For private GCLRWK
 
 * special COMMON to let this routine know if FERRET is in control
 
-#ifdef unix
+
 	include 'ppl_in_ferret.cmn'
-#else
-	INCLUDE 'TMAP_PPLV11INC:PPL_IN_FERRET.CMN'
-#endif
 
 * end of TMAP mods 8/26/88 & 1/20/89
 C
@@ -107,14 +96,9 @@ C	THIS IS A VAX/VMS SUBROUTINE AT THIS TIME
 C
 	LOGICAL CLEAR,TERMF
 	LOGICAL FRST,TRMOPN
-#ifndef unix
 	integer*4 lib$get_symbol,len,stat
 	byte FIRSTB(20,12),SECNDB(20,12),FIRST(20),SECND(20)
 	byte ER4010(2),ER41XX(8)
-#else
-        INTEGER FIRSTB(20,12),SECNDB(20,12),FIRST(20),SECND(20)
-        INTEGER ER4010(2),ER41XX(8)
-#endif
 	CHARACTER TERM(12)*10,TYPE*10
 	INTEGER ITERM(12),FIRSTL(12),SECNDL(12)
 	LOGICAL SEGMNL(12),SEGMN,FCLOSL(12),FCLOS
@@ -185,27 +169,23 @@ C
 C	SET UP FOR SPECIFIC TERMINAL TYPE
 C
 	IF(FRST)THEN
-#ifdef unix
             call getenv('GRAPHTERM',TYPE)
             LENS=lnblk(type,10)
             IF(lens.le.0)then
-#else
-	    stat=lib$get_symbol('GRAPHTERM',type,len)
-	    lens=len
-	    if(.not.stat)then
-#endif
 		ITYPE=1
 	    ELSE
 		DO 14 I=1,NTERM
-		IF(TYPE(1:LENS).EQ.TERM(I))GOTO 11
+		   IF(TYPE(1:LENS).EQ.TERM(I))GOTO 11
 14		CONTINUE
 		I=1
 11		ITYPE=ITERM(I)
 	    ENDIF
 	    DO 12 I=1,20
-12	    FIRST(I)=FIRSTB(I,ITYPE)
+	      FIRST(I)=FIRSTB(I,ITYPE)
+12	    CONTINUE
 	    DO 13 I=1,20
-13	    SECND(I)=SECNDB(I,ITYPE)
+	      SECND(I)=SECNDB(I,ITYPE)
+13	    CONTINUE
 	    FRST=.FALSE.
 	    SEGMN=SEGMNL(ITYPE)
 	    FCLOS=FCLOSL(ITYPE)
@@ -247,19 +227,7 @@ C
 C	DEVICE IS A GKS DEVICE
 C
 	    CALL PPLGFLUSH
-#ifdef core
-            if(.not.gksopn)then
-                call crinit
-                gksopn=.true.
-            endif
-c
-            if(clear)then
-                call delallretainsegs()
-                call newframe()
-                call createretainseg(1)
-            endif
-#else
-* TMAP mod 8/26/88, PPL_in_FERRET added 1/20/89
+
 	    IF(CLEAR) THEN
 	       IF ( PPL_in_FERRET ) THEN
 	         CALL CLEAR_VP
@@ -268,8 +236,7 @@ c
 	         CALL FGD_GCLRWK(WSID,control_flag)
 	       ENDIF
 	    ENDIF
-* end of TMAP mods 8/26/88
-#endif
+
 	ENDIF
 	IF(PTYPE.EQ.0.OR.PTYPE.EQ.2.OR.PTYPE.EQ.4)THEN
 C
@@ -358,9 +325,7 @@ C
 C	DEVICE REQUIRES THE TERMINAL CLEARED
 C
 		CALL CHOUT(ER4010,2)
-c		NDELAY=IFIX(0.7*FLOAT(BAUDR/10))
-c		DO 40 J=1,NDELAY
-c40		CALL CHOUT(SYN,1)
+
 	    ENDIF
 C
 C	GO TO COMMAND SCREEN

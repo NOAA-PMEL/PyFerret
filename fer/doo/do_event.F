@@ -48,6 +48,7 @@
 * V533:  6/01 - new routine based on DO_DIST_LOC
 *        2/12 *kms* Add E and F dimensions (use nferdims in tmap_dims.parm)
 * v685   5/13 *acm* Fix ticket 2054, EVNT in z direction - typo in equiv.
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
@@ -120,21 +121,21 @@
 	bad_com = mr_bad_data( com_mr )
         
 * calculation limits
-	DO 10 i = 1, nferdims
+	DO i = 1, nferdims
 	   lo_sub(i) = cx_lo_ss(res_cx,i)
 	   hi_sub(i) = cx_hi_ss(res_cx,i)
- 10	CONTINUE
+	ENDDO
 
 * SEARCH ALONG X AXIS
 	IF ( idim .EQ. x_dim ) THEN
-	   DO 110 n = lo_s6, hi_s6
-	   DO 110 m = lo_s5, hi_s5
-	   DO 110 l = lo_s4, hi_s4
-	   DO 110 k = lo_s3, hi_s3
-	   DO 110 j = lo_s2, hi_s2
+	   DO n = lo_s6, hi_s6
+	   DO m = lo_s5, hi_s5
+	   DO l = lo_s4, hi_s4
+	   DO k = lo_s3, hi_s3
+	   DO j = lo_s2, hi_s2
 	      step_val = 0
               first_pt = .TRUE.
-	      DO 100 i = lo_s1, hi_s1
+	      DO i = lo_s1, hi_s1
                  IF ( com(i,j,k,l,m,n) .EQ. bad_com ) THEN
 	            first_pt = .TRUE.
                  ELSEIF ( com(i,j,k,l,m,n) .EQ. arg ) THEN
@@ -152,19 +153,23 @@
 	            first_lt = .NOT. first_lt
                  ENDIF
 		 res(i,j,k,l,m,n) = step_val
- 100          CONTINUE
- 110       CONTINUE
+	      ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
 
 * SEARCH ALONG Y AXIS
 	ELSEIF ( idim .EQ. y_dim ) THEN
-	   DO 210 n = lo_s6, hi_s6
-	   DO 210 m = lo_s5, hi_s5
-	   DO 210 l = lo_s4, hi_s4
-	   DO 210 k = lo_s3, hi_s3
-	   DO 210 i = lo_s1, hi_s1
+	   DO n = lo_s6, hi_s6
+	   DO m = lo_s5, hi_s5
+	   DO l = lo_s4, hi_s4
+	   DO k = lo_s3, hi_s3
+	   DO i = lo_s1, hi_s1
 	      step_val = 0
               first_pt = .TRUE.
-	      DO 200 j = lo_s2, hi_s2
+	      DO j = lo_s2, hi_s2
                  IF ( com(i,j,k,l,m,n) .EQ. bad_com ) THEN
 	            first_pt = .TRUE.
                  ELSEIF ( com(i,j,k,l,m,n) .EQ. arg ) THEN
@@ -182,19 +187,23 @@
 	            first_lt = .NOT. first_lt
                  ENDIF
 		 res(i,j,k,l,m,n) = step_val
- 200         CONTINUE
- 210      CONTINUE
+	      ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
 
 * SEARCH ALONG Z AXIS
 	ELSEIF ( idim .EQ. z_dim ) THEN
-	   DO 310 n = lo_s6, hi_s6
-	   DO 310 m = lo_s5, hi_s5
-	   DO 310 l = lo_s4, hi_s4
-	   DO 310 j = lo_s2, hi_s2
-	   DO 310 i = lo_s1, hi_s1
+	   DO n = lo_s6, hi_s6
+	   DO m = lo_s5, hi_s5
+	   DO l = lo_s4, hi_s4
+	   DO j = lo_s2, hi_s2
+	   DO i = lo_s1, hi_s1
 	      step_val = 0
               first_pt = .TRUE.
-	      DO 300 k = lo_s3, hi_s3
+	      DO k = lo_s3, hi_s3
                  IF ( com(i,j,k,l,m,n) .EQ. bad_com ) THEN
 	            first_pt = .TRUE.
                  ELSEIF ( com(i,j,k,l,m,n) .EQ. arg ) THEN
@@ -212,19 +221,23 @@
 	            first_lt = .NOT. first_lt
                  ENDIF
 		 res(i,j,k,l,m,n) = step_val
- 300         CONTINUE
- 310      CONTINUE
+	      ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
 
 * SEARCH ALONG T AXIS
 	ELSEIF ( idim .EQ. t_dim ) THEN
-	   DO 410 n = lo_s6, hi_s6
-	   DO 410 m = lo_s5, hi_s5
-	   DO 410 k = lo_s3, hi_s3
-	   DO 410 j = lo_s2, hi_s2
-	   DO 410 i = lo_s1, hi_s1
+	   DO n = lo_s6, hi_s6
+	   DO m = lo_s5, hi_s5
+	   DO k = lo_s3, hi_s3
+	   DO j = lo_s2, hi_s2
+	   DO i = lo_s1, hi_s1
 	      step_val = 0
               first_pt = .TRUE.
-	      DO 400 l = lo_s4, hi_s4
+	      DO l = lo_s4, hi_s4
                  IF ( com(i,j,k,l,m,n) .EQ. bad_com ) THEN
 	            first_pt = .TRUE.
                  ELSEIF ( com(i,j,k,l,m,n) .EQ. arg ) THEN
@@ -242,19 +255,23 @@
 	            first_lt = .NOT. first_lt
                  ENDIF
 		 res(i,j,k,l,m,n) = step_val
- 400         CONTINUE
- 410      CONTINUE
+	      ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
 
 * SEARCH ALONG E AXIS
 	ELSEIF ( idim .EQ. e_dim ) THEN
-	   DO 510 n = lo_s6, hi_s6
-	   DO 510 l = lo_s4, hi_s4
-	   DO 510 k = lo_s3, hi_s3
-	   DO 510 j = lo_s2, hi_s2
-	   DO 510 i = lo_s1, hi_s1
+	   DO n = lo_s6, hi_s6
+	   DO l = lo_s4, hi_s4
+	   DO k = lo_s3, hi_s3
+	   DO j = lo_s2, hi_s2
+	   DO i = lo_s1, hi_s1
 	      step_val = 0
               first_pt = .TRUE.
-	      DO 500 m = lo_s5, hi_s5
+	      DO m = lo_s5, hi_s5
                  IF ( com(i,j,k,l,m,n) .EQ. bad_com ) THEN
 	            first_pt = .TRUE.
                  ELSEIF ( com(i,j,k,l,m,n) .EQ. arg ) THEN
@@ -272,19 +289,23 @@
 	            first_lt = .NOT. first_lt
                  ENDIF
 		 res(i,j,k,l,m,n) = step_val
- 500         CONTINUE
- 510      CONTINUE
+	      ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
 
 * SEARCH ALONG F AXIS
 	ELSEIF ( idim .EQ. f_dim ) THEN
-	   DO 610 m = lo_s5, hi_s5
-	   DO 610 l = lo_s4, hi_s4
-	   DO 610 k = lo_s3, hi_s3
-	   DO 610 j = lo_s2, hi_s2
-	   DO 610 i = lo_s1, hi_s1
+	   DO m = lo_s5, hi_s5
+	   DO l = lo_s4, hi_s4
+	   DO k = lo_s3, hi_s3
+	   DO j = lo_s2, hi_s2
+	   DO i = lo_s1, hi_s1
 	      step_val = 0
               first_pt = .TRUE.
-	      DO 600 n = lo_s6, hi_s6
+	      DO n = lo_s6, hi_s6
                  IF ( com(i,j,k,l,m,n) .EQ. bad_com ) THEN
 	            first_pt = .TRUE.
                  ELSEIF ( com(i,j,k,l,m,n) .EQ. arg ) THEN
@@ -302,8 +323,12 @@
 	            first_lt = .NOT. first_lt
                  ENDIF
 		 res(i,j,k,l,m,n) = step_val
- 600         CONTINUE
- 610      CONTINUE
+	      ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
 
 	ENDIF
 

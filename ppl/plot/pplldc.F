@@ -57,7 +57,9 @@ C              Mod *sh* 3.7.97 *sh* replace limits if curvilinear plot
 * V54 *acm*9/01 - changes for dynamic pplus buffer, call PPLLDC via pplldc_envelope.c
 *                  which checks pplmem_nsize (new name for NSIZE) and allocates 
 *                  more if needed.
-*      *acm* 10/01  remove VMS includes* V68  *acm* 1/12  changes for double-precision ferret, single-precision pplus
+*      *acm* 10/01  remove VMS includes
+* V68  *acm* 1/12  changes for double-precision ferret, single-precision pplus
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax.
 c
 c	k	=0 already on an equally spaced rectangular grid
 c		=1 on a unequally spaced, but rectangular grid
@@ -111,15 +113,19 @@ C
 	    YMAX=PJ(MY)
 	    NX=MX
 	    NY=MY
-	    DO 100 I=IMN,IMX
+	    DO 105 I=IMN,IMX
 	    DO 100 J=JMN,JMX
-100		pplmem(NX*(J-1)+I)=Z(I,J)
+		pplmem(NX*(J-1)+I)=Z(I,J)
+100	    CONTINUE
+105	    CONTINUE
 	    IV=NX*NY
 	    DO 101 I=1,NX
-101		pplmem(IV+I)=PI(I)
+		pplmem(IV+I)=PI(I)
+101	    CONTINUE
 	    IV=IV+NX
 	    DO 102 J=1,NY
-102		pplmem(IV+J)=PJ(J)
+		pplmem(IV+J)=PJ(J)
+102	    ENDDO
 C
 	ELSE
 C
@@ -130,13 +136,14 @@ C
 	    XMAX=XMIN+DX*(NX-1)
 	    YMAX=YMIN+DY*(NY-1)
 	    I=0
-	    DO 400 II=IMN,IMX
-	    I=I+1
-	    J=0
-	    DO 400 JJ=JMN,JMX
-	    J=J+1
-	    pplmem(NX*(J-1)+I)=Z(II,JJ)
-400	    CONTINUE
+	    DO 401 II=IMN,IMX
+	      I=I+1
+	      J=0
+	      DO 400 JJ=JMN,JMX
+	        J=J+1
+	        pplmem(NX*(J-1)+I)=Z(II,JJ)
+400	      CONTINUE
+401	    CONTINUE
 	ENDIF
 	linen=0
 *
@@ -167,11 +174,7 @@ C
 
         REAL pplmem(*)
 
-#ifdef double_p
 	REAL*8 Z(MX,MY)
-#else
-	REAL Z(MX,MY)
-#endif
 
 	COMMON/LDDXDY/ DX,DY
 ! ... end of copied from pplldc
@@ -187,17 +190,19 @@ C
 	IF(K.EQ.1)THEN
 	    JTYPE=-2
 	    IVLEN=NX*NY+NX+NY
-	    DO 500 I=IMN,IMX
-	    DO 500 J=JMN,JMX
-500	    pplmem(IVLEN+NX*(J-1)+I)=Z(I,J)
+	    DO 505 I=IMN,IMX
+	      DO 500 J=JMN,JMX
+	        pplmem(IVLEN+NX*(J-1)+I)=Z(I,J)
+500	      CONTINUE
+505	    CONTINUE
 	    IV=IVLEN+NX*NY
 	    DO 501 I=1,NX
-!501	    pplmem(IV+I)=PI(I)           ! illegal use of PI (not passed)
-501	    pplmem(IV+I)=pplmem(NX*NY+i) ! reuse coords from PPLLDC
+	       pplmem(IV+I)=pplmem(NX*NY+i) ! reuse coords from PPLLDC
+501	    CONTINUE
 	    IV=IV+NX
 	    DO 502 J=1,NY
-!502	    pplmem(IV+J)=PJ(J)              ! illegal use of PJ (not passed)
-502	    pplmem(IV+J)=pplmem(NX*NY+nx+j) ! reuse coords from PPLLDC
+	        pplmem(IV+J)=pplmem(NX*NY+nx+j) ! reuse coords from PPLLDC
+502	    CONTINUE
 	ELSE
 C
 C	DATA ALREADY GRIDDED
@@ -207,13 +212,14 @@ C
 	    XMAX=XMIN+DX*(NX-1)
 	    YMAX=YMIN+DY*(NY-1)
 	    I=0
-	    DO 700 II=IMN,IMX
-	    I=I+1
-	    J=0
-	    DO 700 JJ=JMN,JMX
-	    J=J+1
-	    pplmem(IVLEN+NX*(J-1)+I)=Z(II,JJ)
-700	    CONTINUE
+	    DO 701 II=IMN,IMX
+	      I=I+1
+	      J=0
+	      DO 700 JJ=JMN,JMX
+	        J=J+1
+	        pplmem(IVLEN+NX*(J-1)+I)=Z(II,JJ)
+700	      CONTINUE
+701	    CONTINUE
 	ENDIF
 	linen=0
 	call stmnmx(pplmem,pplmem_nsize,xmin,xmax,ymin,ymax)

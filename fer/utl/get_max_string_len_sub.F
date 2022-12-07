@@ -41,6 +41,7 @@
 *                   these are the indices to use in looping through grid_data.
 *                   (fixes bug 617, listing string and numeric data together)
 *       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -83,7 +84,7 @@
 
 	IF (ndim .EQ. 1) THEN
 	ii = unspecified_int4
-	   DO i = 1, 6
+	   DO i = 1, nferdims
 	      IF (sshi(i)-sslo(i) .GT. 0) THEN
 	         lo = sslo(i)
 	         hi = sshi(i)
@@ -91,7 +92,7 @@
 	      ENDIF
 	   ENDDO
 	   IF (ii .EQ. unspecified_int4) THEN
-	   DO i = 1, 6
+	   DO i = 1, nferdims
 	      IF (sshi(i) .NE. unspecified_int4) THEN
 	         lo = sslo(i)
 	         hi = sshi(i)
@@ -101,12 +102,12 @@
 	   ENDIF
 	ENDIF
 
-	DO 100 n = sslo(cxperm(6)), sshi(cxperm(6))
-	DO 100 m = sslo(cxperm(5)), sshi(cxperm(5))
-	DO 100 l = sslo(cxperm(4)), sshi(cxperm(4))
-	DO 100 k = sslo(cxperm(3)), sshi(cxperm(3))
-	DO 100 j = sslo(cxperm(2)), sshi(cxperm(2))
-	DO 100 i = sslo(cxperm(1)), sshi(cxperm(1))
+	DO n = sslo(cxperm(6)), sshi(cxperm(6))
+	DO m = sslo(cxperm(5)), sshi(cxperm(5))
+	DO l = sslo(cxperm(4)), sshi(cxperm(4))
+	DO k = sslo(cxperm(3)), sshi(cxperm(3))
+	DO j = sslo(cxperm(2)), sshi(cxperm(2))
+	DO i = sslo(cxperm(1)), sshi(cxperm(1))
 
 	   IF (ndim.EQ.1) THEN
 	      slen = GET_ONED_STRING_LEN_SUB( grid_data, lo,hi, ii )
@@ -115,8 +116,13 @@
 	      slen = GET_C_STRING_LEN( grid_data(i,j,k,l,m,n) )
 	   ENDIF
 	   IF ( slen .GT. smax ) smax = slen
-           
- 100	CONTINUE
+
+	ENDDO
+	ENDDO
+	ENDDO
+	ENDDO
+	ENDDO
+	ENDDO
 
 	RETURN
 	END

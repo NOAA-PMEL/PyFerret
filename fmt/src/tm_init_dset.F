@@ -123,6 +123,7 @@
 * v76  2/20 *acm*  If the specified /FEATURETYPE doesn't change the current setting 
 *                  then do not reinitialize the dataset
 * V745 *acm*  5/20  added mode_dsg to control turning off all DSG ops
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax.
 
 * arguments:
 *	dset_name	- filename of DESCRIPTOR file (input)
@@ -494,12 +495,14 @@
 * 6/94 initialize d_time_modulo with .FALSE instead of 0 for IBM *kob*
 	d_time_modulo = .FALSE.
 	DO 170 cnt = 1,num_aux
-  170	d_aux_modnum(cnt)    = ' '
+  	   d_aux_modnum(cnt)    = ' '
+  170	CONTINUE
 	DO 180 cnt = 1,num_parm
-  180	d_add_parm(cnt)      = ' '
+  	   d_add_parm(cnt)      = ' '
+  180	CONTINUE
 	DO 190 cnt = 1,num_gridfiles
-  190	d_grid_filename(cnt) = ' '
-
+  	   d_grid_filename(cnt) = ' '
+  190	CONTINUE
 
         d_caltype       = 'GREGORIAN'
 

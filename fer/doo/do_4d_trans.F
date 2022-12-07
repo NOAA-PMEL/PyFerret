@@ -84,6 +84,7 @@
 * V741 *acm* 7/18 Issue 1880: bug in the box sizes changes with the v7.02 
 *                 checkin. Test for the region not aligned with first or 
 *                 last grid cell was incorrect.
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 
 	IMPLICIT NONE
         include 'tmap_dims.parm'
@@ -186,10 +187,10 @@
 	its_var_or_std = at_var .OR. at_std
 
 * determine the axes to be transformed
-	DO 10 idim = 1, nferdims
+	DO idim = 1, nferdims
 	  yes_ax(idim) = cx_trans(idim,res_cx) .EQ. action
 	  no_ax (idim) = .NOT.yes_ax(idim)
- 10	CONTINUE
+	ENDDO
 
 * get and save grid box sizes (weights) just once for efficiency
 * ... save all 4 axes in one long array with offsets to find the starts
@@ -198,7 +199,7 @@
 
       IF (.NOT. short_comp) THEN  ! boxes are not needed for ngd, nbd, sum.
 	offset = 0
-	DO 90 idim = 1, nferdims
+	DO idim = 1, nferdims
 	  IF (yes_ax(idim)) THEN
 	    box_offset(idim) = offset - cx_lo_ss(com_cx,idim) + 1 ! pre-comp'ed
 	    offset = offset + 
@@ -206,12 +207,12 @@
 	  ELSE
 	    box_offset(idim) = -9999
 	  ENDIF
- 90	CONTINUE
+	ENDDO
 ! COS(latitudes) also stored in the box array (8/96)
 	cos_offset = offset - cx_lo_s2(com_cx) + 1
 
 * ... save the box sizes
-	DO 100 idim = 1, nferdims
+	DO idim = 1, nferdims
 	  ind_lo = cx_lo_ss(com_cx,idim)
 	  ind_hi = cx_hi_ss(com_cx,idim)
 	  offset = box_offset(idim)
@@ -244,12 +245,12 @@
 	      unit = un_convert( line_unit_code(grid_line(idim,grid)) )
 	      IF (ITSA_TRUEMONTH_AXIS(grid_line(idim,grid))) 
      .		  unit = un_convert(pun_day)
-	      DO 50 i = ind_lo, ind_hi
- 	      boxes(i+offset) = boxes(i+offset) * unit
- 50           continue
+	      DO i = ind_lo, ind_hi
+ 	         boxes(i+offset) = boxes(i+offset) * unit
+	      ENDDO
 	    ENDIF
 	  ENDIF
- 100	CONTINUE
+	ENDDO
 
 * impose cosine factors if latitude and longitude are involved
 * 5/97 - only use COS(y) if X integration is involved and Y axis lims are VALID
@@ -268,24 +269,17 @@ C http://mathworld.wolfram.com/Zone.html. Fix for @DIN too.
         one_y = (cx_lo_ww(y_dim,res_cx) .EQ. cx_hi_ww(y_dim,res_cx))
 
 	IF ( need_cos ) THEN
-	   DO 120 j = cx_lo_s2(com_cx), cx_hi_s2(com_cx)
+	   DO j = cx_lo_s2(com_cx), cx_hi_s2(com_cx)
 
 C Compute the y boxes if there is a y axis; the computation may be 
 C avgs in other directions but we need the ybox size at a given y
 C The top and bottom boxes extend only to the coordinate locations,
 C (Unless there is just one grid cell in the y direction.)
 
-#ifdef double_p
 	      ybxlo = deg2rad* 
      .                TM_WORLD(j, grid, y_dim, box_lo_lim)
 	      ybxhi = deg2rad* 
      .                TM_WORLD(j, grid, y_dim, box_hi_lim)
-#else
-	      ybxlo = deg2rad* 
-     .                SNGL( TM_WORLD(j, grid, y_dim, box_lo_lim) )
-	      ybxhi = deg2rad* 
-     .                SNGL( TM_WORLD(j, grid, y_dim, box_hi_lim) )
-#endif
 	      IF (j .EQ. cx_lo_s2(com_cx) .AND. .NOT.one_y)
      .                ybxlo = deg2rad* cx_lo_ww(y_dim,res_cx)
 
@@ -304,19 +298,14 @@ C (Unless there is just one grid cell in the y direction.)
 	      ENDIF
 	      ! Single-point Y axis or Y not part of the integral
 
-#ifdef double_p
 	      IF ( at_din .AND. no_ax(y_dim))
      .           boxes(j+cos_offset) = COS( deg2rad * 
      .             TM_WORLD(j,grid,y_dim,box_middle) )
-#else
-	      IF ( at_din .AND. no_ax(y_dim))
-     .           boxes(j+cos_offset) = COS( deg2rad * 
-     .           SNGL( TM_WORLD(j,grid,y_dim,box_middle) ) )
-#endif
- 120       CONTINUE
+	   ENDDO
 	ELSE
-	      DO 121 j = cx_lo_s2(com_cx), cx_hi_s2(com_cx)
- 121	      boxes(j+cos_offset)  = 1.0
+	   DO j = cx_lo_s2(com_cx), cx_hi_s2(com_cx)
+	      boxes(j+cos_offset)  = 1.0
+	   ENDDO
 	ENDIF
 
       ENDIF  ! skipped computing boxes for short_comp
@@ -329,12 +318,12 @@ C (Unless there is just one grid cell in the y direction.)
 * "r" refers to result, "c" refers to component
 
 * Set the range of loop indices for the component data on the transformed axes
-	DO 150 idim = 1, nferdims
+	DO idim = 1, nferdims
 	  IF (yes_ax(idim)) THEN
 	    com_lo(idim) = cx_lo_ss(com_cx,idim)
 	    com_hi(idim) = cx_hi_ss(com_cx,idim)
 	  ENDIF
- 150	CONTINUE
+	ENDDO
 
 * Set default box size for untransformed axes
 * (multiplying  by 1.0 to have nil effect)
@@ -348,32 +337,32 @@ C (Unless there is just one grid cell in the y direction.)
 * LOOP OVER THE FULL RANGE OF THE RESULT
 * ... also set up loop indices for non-transformed axes
 *     (component loop to include only the single result point on "no" axes)
-	DO 300 nr = cx_lo_s6(res_cx), cx_hi_s6(res_cx)
+	DO nr = cx_lo_s6(res_cx), cx_hi_s6(res_cx)
 	IF (no_fax) THEN
 	   n_lo = nr
 	   n_hi = nr
 	ENDIF
-	DO 300 mr = cx_lo_s5(res_cx), cx_hi_s5(res_cx)
+	DO mr = cx_lo_s5(res_cx), cx_hi_s5(res_cx)
 	IF (no_eax) THEN
 	   m_lo = mr
 	   m_hi = mr
 	ENDIF
-	DO 300 lr = cx_lo_s4(res_cx), cx_hi_s4(res_cx)
+	DO lr = cx_lo_s4(res_cx), cx_hi_s4(res_cx)
 	IF (no_tax) THEN
 	   l_lo = lr
 	   l_hi = lr
 	ENDIF
-	DO 300 kr = cx_lo_s3(res_cx), cx_hi_s3(res_cx)
+	DO kr = cx_lo_s3(res_cx), cx_hi_s3(res_cx)
 	IF (no_zax) THEN
 	  k_lo = kr
 	  k_hi = kr
 	ENDIF
-	DO 300 jr = cx_lo_s2(res_cx), cx_hi_s2(res_cx)
+	DO jr = cx_lo_s2(res_cx), cx_hi_s2(res_cx)
 	IF (no_yax) THEN
 	  j_lo = jr
 	  j_hi = jr
 	ENDIF
-	DO 300 ir = cx_lo_s1(res_cx), cx_hi_s1(res_cx)
+	DO ir = cx_lo_s1(res_cx), cx_hi_s1(res_cx)
 	IF (no_xax) THEN
 	  i_lo = ir
 	  i_hi = ir
@@ -391,7 +380,7 @@ C (Unless there is just one grid cell in the y direction.)
 
 	    IF (at_din .AND. com(ic,jc,kc,lc,mc,nc) .NE. bad_com) 
      .        res(ir,jr,kr,lr,mr,nr) = 0.0
-            GOTO 300
+            CYCLE  ! next iteration of full-range loops
           ENDIF
 
 * initialize the inner loop accumulators
@@ -415,12 +404,12 @@ C (Unless there is just one grid cell in the y direction.)
 
 	  IF (short_comp) THEN
 
-	    DO 210 nc = n_lo, n_hi
-	    DO 210 mc = m_lo, m_hi
-	    DO 210 lc = l_lo, l_hi
-	    DO 210 kc = k_lo, k_hi
-	    DO 210 jc = j_lo, j_hi
-	    DO 210 ic = i_lo, i_hi
+	    DO nc = n_lo, n_hi
+	    DO mc = m_lo, m_hi
+	    DO lc = l_lo, l_hi
+	    DO kc = k_lo, k_hi
+	    DO jc = j_lo, j_hi
+	    DO ic = i_lo, i_hi
 
 	      IF ( com(ic,jc,kc,lc,mc,nc) .EQ. bad_com ) THEN
 	        nbd = nbd + 1
@@ -432,21 +421,26 @@ C (Unless there is just one grid cell in the y direction.)
 	        ENDIF
 	      ENDIF
 
- 210	    CONTINUE
+	    ENDDO
+	    ENDDO
+	    ENDDO
+	    ENDDO
+	    ENDDO
+	    ENDDO
 
 	  ELSE
 
-	    DO 220 nc = n_lo, n_hi
+	    DO nc = n_lo, n_hi
 	    IF (yes_fax) fbox = boxes(nc+noffset)
-	    DO 220 mc = m_lo, m_hi
+	    DO mc = m_lo, m_hi
 	    IF (yes_eax) ebox = boxes(mc+moffset)
-	    DO 220 lc = l_lo, l_hi
+	    DO lc = l_lo, l_hi
 	    IF (yes_tax) tbox = boxes(lc+loffset)
-	    DO 220 kc = k_lo, k_hi
+	    DO kc = k_lo, k_hi
 	    IF (yes_zax) zbox = boxes(kc+koffset)
-	    DO 220 jc = j_lo, j_hi
+	    DO jc = j_lo, j_hi
 	    IF (yes_yax) ybox = boxes(jc+joffset)
-	    DO 220 ic = i_lo, i_hi
+	    DO ic = i_lo, i_hi
 	    IF (yes_xax) xbox = boxes(ic+ioffset)
 
 	      IF ( com(ic,jc,kc,lc,mc,nc) .NE. bad_com ) THEN
@@ -465,7 +459,12 @@ C (Unless there is just one grid cell in the y direction.)
 	        ENDIF
 	      ENDIF
 
- 220	    CONTINUE
+	    ENDDO
+	    ENDDO
+	    ENDDO
+	    ENDDO
+	    ENDDO
+	    ENDDO
 
 	  ENDIF
 
@@ -494,7 +493,12 @@ C (Unless there is just one grid cell in the y direction.)
 	     CONTINUE
 	  ENDIF
 
- 300	CONTINUE
+	ENDDO  ! Loops over full range of result
+	ENDDO
+	ENDDO
+	ENDDO
+	ENDDO
+	ENDDO
 
 	RETURN
 

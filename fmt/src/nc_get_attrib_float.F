@@ -56,6 +56,7 @@
 *                              whats in netcdf.inc from netcdf4.
 * V6.74 3/12 *acm* cleanup ifdefs and unnecessary include files
 * v6.85+ 12/13 *acm* take more care with string length,needed when bounds checking
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 
 * argument definitions:
 *	dset	 - dataset number
@@ -154,8 +155,9 @@
       ELSE
 
          NC_GET_ATTRIB_FLOAT = .TRUE.
-         DO 80 i = 1, attlen
-  80        vals(i) = dval(i)
+         DO i = 1, attlen
+            vals(i) = dval(i)
+  	 ENDDO
 
       ENDIF
 

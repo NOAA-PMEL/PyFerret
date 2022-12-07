@@ -90,6 +90,8 @@ C     *JD* 8.2.91 Mod to support brain dead PPL -- no @ usage
 *                 quotes, just pass that on. It's not a symbol translation.
 * PyFr *kms*  7/13 IF argument renamed to IFLG
 * V686 *acm* 11/13 Allow symbol names to be up to 120 characters long
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
+*                             Remove obsolete ifdefs
 
         logical         tmapdebug
         common/tmdebug/ tmapdebug
@@ -178,8 +180,9 @@ C
 	ENDIF
 	IF(SLATCH)THEN
 	    SLATCH=.FALSE.
-	    DO 200 I=1,NFLAGS
-200	    DEFLTS(I)=FLAG(I)
+	    DO I=1,NFLAGS
+	       DEFLTS(I)=FLAG(I)
+	    ENDDO
 	ENDIF
 	COM=ICOM(1:ICLEN)
 C
@@ -223,11 +226,7 @@ C     Brain dead exclusion of @ mod
             end if
 	    ISPC=INDEX(LINE,' ')-1
 	    ICMA=INDEX(LINE,',')-1
-#ifdef unix
 	    ISLSH=INDEX(LINE,':')-1
-#else
-	    islsh=index(line,'/')-1
-#endif
 	    IF(ISPC.LE.0)ISPC=buflen+1
 	    IF(ICMA.LE.0)ICMA=buflen+1
 	    IF(ISLSH.LE.0)ISLSH=buflen+1
@@ -243,11 +242,7 @@ C     Brain dead exclusion of @ mod
 	    ENDIF
 	    VALUE=FILE
 	    ivlen=lnblk(value,2048)
-#ifdef unix
 	    file=value
-#else
-	    CALL WLDFLE('SY:.PPC',VALUE(1:ivlen),FILE,STATUS,IFLAG)
-#endif
 	    CALL ATSTRT(FILE,LABEL,I,IER)
 	ELSE IF(COM.EQ.'RETURN')THEN
 	    CALL ATEND
@@ -337,10 +332,10 @@ C
 		GOTO 1000
 	    ENDIF
 	    REWIND(CMDLUN)
-	    DO 300 I=1,WHLINE(WHLEV)
-	    READ(CMDLUN,996)
 996	    FORMAT(1X)
-300	    CONTINUE
+	    DO I=1,WHLINE(WHLEV)
+	       READ(CMDLUN,996)
+	    ENDDO
 	    LINCNT=WHLINE(WHLEV)
 	    WHLEV=WHLEV-1
 	ELSE

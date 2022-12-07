@@ -63,6 +63,7 @@
 *                looking at just one ensemble member (typo fix).
 * V751 *acm*5/19 If DSG dataset, get the calendar of the time var
 * V761 8/20 *acm* Longer LOHI_WORLD, LOHI_STRING strings higher-precision outputs
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -123,8 +124,9 @@
 	   trans_title = ALG_TRANS_TITL( trans, cx )
 	   len_trans   = TM_LENSTR( trans_title )
 	   IF ( trans_arg .NE. bad_val4 ) THEN
-	      DO 100 i = 1, num_transforms
- 100	      IF ( trans .EQ. alg_trans_num(i) ) GOTO 200
+	      DO i = 1, num_transforms
+	         IF ( trans .EQ. alg_trans_num(i) ) GOTO 200
+	      ENDDO
 	      STOP 'ASCII_LIMITS'
  200	      IF ( alg_trans_its_int(i) ) THEN
 * ... add "by nnn pts" squeezing "nnn" to minimum digits

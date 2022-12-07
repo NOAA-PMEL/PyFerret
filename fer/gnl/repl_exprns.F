@@ -135,6 +135,7 @@
 * V751  6/19 *acm* ticket 1929, don't chop off str_len when testing for reformatting at the end
 * V7.63 9/20 *acm* add `var,RETURN=*coord` to get coordinate variables for DSG datasets
 *       5/22 *acm* See issue 112: to allow for large grids, call CGRID_SIZE8 on RETURN=size
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 
         IMPLICIT NONE
 #include "netcdf.inc"
@@ -309,8 +310,9 @@
 	GOTO 149	! nope - no equal sign
 
 * ... locate the comma following the mathematical expression
-  99	DO 100 i = i, istart, -1
- 100	IF ( cmnd(i:i) .EQ. ',' ) GOTO 101
+  99	DO i = i, istart, -1
+	IF ( cmnd(i:i) .EQ. ',' ) GOTO 101
+ 	ENDDO
 	GOTO 5500			! no comma ???
  101	iend = i - 1
 * ... now decode the name/value pairs following the comma
@@ -375,8 +377,9 @@
 * ======
 
 * is the expression just white space?	(1/96 ... quick fix with GOTO's)
- 149	DO 150 i = istart, iend
- 150	IF ( cmnd(i:i) .NE. ' ' .AND. cmnd(i:i) .NE. tab ) GOTO 160
+ 149	DO i = istart, iend
+	   IF ( cmnd(i:i) .NE. ' ' .AND. cmnd(i:i) .NE. tab ) GOTO 160
+ 	ENDDO
 * ... weird - they gave us pure white space - no numerical result possible
 	repl = bad_str
 	str_len = 3

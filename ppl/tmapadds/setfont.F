@@ -50,6 +50,7 @@
 *	not a part of them.
 C *kob* 04/07/96 passed in character strings had to be declared 
 C                with "*(*)" for the linux port 
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. Remove commented-out code
 
         IMPLICIT NONE
 
@@ -67,15 +68,11 @@ c	CHARACTER PLTFIL*80
 * 1/03 *kob* - Add temp character buffer for g77 arbitrary text
 *              concatenations
 	CHARACTER*2048 temp_charbuff
-
-#ifdef unix
 	INTEGER*2 SX,SY
 
         integer       dirlen
         character*255 fontdir
-#else
-	byte sx,sy
-#endif
+
 	INTEGER*2 ICNT,IBASE,IRAST
 *added for linux port
 	INTEGER*4 IBASE4,IRAST4 
@@ -90,17 +87,9 @@ C
 	INCLUDE 'pltcom_dat.decl'
 	INCLUDE 'PLTCOM.DAT'
 
-
-#ifdef unix
- 1010	continue
-* 1/03 *kob* 
 	temp_charbuff = DNAME(id)
 	OPEN(LUSY,FILE=fontdir(:dirlen)//'/'//temp_charbuff,STATUS='OLD',
      *	FORM='UNFORMATTED',ERR=5000)
-#else
-1010	open(lusy,file=dname(id),status='old',readonly,
-     *	form='unformatted',err=5000)
-#endif
 C
 C	SETUP FOR NEW FONT
 C
@@ -114,15 +103,17 @@ C	SETUP IOFF
 C
 	IF(II.EQ.4)GOTO 1008
 	DO 1007 IJ=II+1,4
-	IOFF(IJ)=12000
-	KIF(IJ)='@@'
-	IFN(IJ)='@@'
-1007	IFLEN(IJ)=0
+	  IOFF(IJ)=12000
+	  KIF(IJ)='@@'
+	  IFN(IJ)='@@'
+	  IFLEN(IJ)=0
+ 1007	CONTINUE	
 	IOFF(II+1)=IOFF(II)+IFLEN(II)
 C
 C	READ NEW FONT
 C
- 1008	READ(LUSY,ERR=5010)ICNT,IBASE,IRAST
+ 1008	CONTINUE
+	READ(LUSY,ERR=5010)ICNT,IBASE,IRAST
 	IBASE4 = IBASE
 	IRAST4 = IRAST
 	READ(LUSY,ERR=5010)(ASCII(IJ,II),IJ=1,127)

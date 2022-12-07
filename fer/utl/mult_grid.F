@@ -43,6 +43,7 @@
 *
 * revision 0.0 - 4/23/86
 *       *acm* 3/12 cleanup ifdefs and unnecessary include files
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 
         IMPLICIT NONE
 	include 'ferret.parm'
@@ -50,9 +51,10 @@
 	INTEGER	length, i
 	REAL	grid_data( length ), factor
 	
-	DO 100 i = 1, length
- 100	IF (  grid_data(i) .NE. bad_val4 )
+	DO i = 1, length
+ 	   IF (  grid_data(i) .NE. bad_val4 )
      .			grid_data(i) = grid_data(i) * factor
+     	ENDDO
 
 	RETURN
 	END

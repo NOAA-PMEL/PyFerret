@@ -64,6 +64,7 @@
 * V700 11/16 *sh* fixed bug in koffset_false lingering from K-only regrid
 *                 days of this routine
 * V702 1/17 *sh* for trac enhancement #2369 -- dynamic memory management 
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
@@ -148,7 +149,7 @@
 
 * compute the delta increment for each axis
 * this allows "promotion" of degenerate axes
-        DO 10 idim = 1, nferdims
+        DO idim = 1, nferdims
 	   dstlo(idim) = mr_lo_ss(mdst,idim)
 	   dsthi(idim) = mr_hi_ss(mdst,idim)
            IF ( CX_DIM_LEN(idim,src_cx) .EQ. 1 ) THEN
@@ -161,7 +162,7 @@
            ELSE
               posinc(idim) = 1
            ENDIF
- 10     CONTINUE
+	ENDDO
 * ... a dummy loop on the designated axis 
 	dstlo(axis)  = 1
 	dsthi(axis)  = 1
@@ -171,10 +172,10 @@
 * compute the starting subscript for each axis of each component
 * (pre-decrement by 1 delta for looping ahead)
 * NOTE: 
-        DO 20 idim = 1, nferdims
+        DO idim = 1, nferdims
 	   srclo(idim) = cx_lo_ss(src_cx,idim) - srcinc(idim)
 	   poslo(idim) = cx_lo_ss(pos_cx,idim) - posinc(idim)
- 20	CONTINUE
+	ENDDO
 
 * extract the list of target coordinates
 	IF (trans .EQ. pauxrgrd_linear ) THEN
@@ -212,7 +213,7 @@
 	new_aux_line = .TRUE.
 	is = si0
 	ip = pi0
-	DO 1000 i = dstlo(x_dim), dsthi(x_dim)
+	DO i = dstlo(x_dim), dsthi(x_dim)
 	 is = is + dsi
 	 IF (dpi .NE. 0) THEN
 	   ip = ip + dpi
@@ -220,7 +221,7 @@
 	 ENDIF
 	 js = sj0
 	 jp = pj0
-	 DO 1000 j = dstlo(y_dim), dsthi(y_dim)
+	 DO j = dstlo(y_dim), dsthi(y_dim)
 	  js = js + dsj
 	  IF (dpj .NE. 0) THEN
 	    jp = jp + dpj
@@ -228,7 +229,7 @@
 	  ENDIF
 	   ks = sk0
 	   kp = pk0
-	   DO 1000 k = dstlo(z_dim), dsthi(z_dim)
+	   DO k = dstlo(z_dim), dsthi(z_dim)
 	    ks = ks + dsk
 	    IF (dpk .NE. 0) THEN
 	      kp = kp + dpk
@@ -236,7 +237,7 @@
 	    ENDIF
 	    ls = sl0
 	    lp = pl0
-	    DO 1000 l = dstlo(t_dim), dsthi(t_dim)
+	    DO l = dstlo(t_dim), dsthi(t_dim)
 	     ls = ls + dsl
 	     IF (dpl .NE. 0) THEN
 	       lp = lp + dpl
@@ -244,7 +245,7 @@
 	     ENDIF
 	     ms = sm0
 	     mp = pm0
-	     DO 1000 m = dstlo(e_dim), dsthi(e_dim)
+	     DO m = dstlo(e_dim), dsthi(e_dim)
 	      ms = ms + dsm
 	      IF (dpm .NE. 0) THEN
 	        mp = mp + dpm
@@ -252,13 +253,12 @@
 	      ENDIF
 	      ns = sn0
 	      np = pn0
-	      DO 1000 n = dstlo(f_dim), dsthi(f_dim)
+	      DO n = dstlo(f_dim), dsthi(f_dim)
 	       ns = ns + dsn
 	       IF (dpn .NE. 0) THEN
 	         np = np + dpn
 	         new_aux_line = .TRUE.
 	       ENDIF
-
 
 * compute on the source and destination coords only if they differ from last
 	     IF (new_aux_line) THEN
@@ -302,21 +302,21 @@
 	        DO ss = kmin_src, kmax_src
 	           IF (posline(ss) .NE. bad_pos) THEN
 	              kstart = ss
-	              GOTO 510
+	             EXIT
 	           ENDIF
 	        ENDDO
 * ... find end of non-bad block
- 510	        DO ss = kmax_src, kstart, -1
+	        DO ss = kmax_src, kstart, -1
 	           IF (posline(ss) .NE. bad_pos) THEN
 	              kend = ss
-	              GOTO 590
+	              EXIT
 	           ENDIF
 	        ENDDO
 
 * ... no non-bad-block exists
 	        CONTINUE
 
- 590		CALL FULL_SCAN_INDICES(posline(kmin_src), kmin_src, kmax_src,
+		CALL FULL_SCAN_INDICES(posline(kmin_src), kmin_src, kmax_src,
      .				  kstart, kend,
      .				  bad_pos, dstcoords,
      .				  indices, coef, kmin_dst, kdmax,
@@ -363,7 +363,14 @@
 
 	     ENDIF
 
- 1000	CONTINUE
+* Close nested i, j, k, l, m, n loops
+
+	      ENDDO
+	     ENDDO
+	    ENDDO
+	   ENDDO
+	 ENDDO
+	ENDDO
 
 * successful completion.  Clean up.
         CALL RELEASE_DYN_WORK_SPACE

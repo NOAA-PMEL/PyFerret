@@ -210,31 +210,24 @@
 * sum of counts in arg 2 must be length of x-dimension of arg1
 
       k2 = arg_lo_ss(Z_AXIS,ARG2)
-      L2 = arg_lo_ss(T_AXIS,ARG2)
-      do 20 j2 = arg_lo_ss(Y_AXIS,ARG2), arg_hi_ss(Y_AXIS,ARG2)
-      do 20 L2 = arg_lo_ss(T_AXIS,ARG2), arg_hi_ss(T_AXIS,ARG2)
+      do j2 = arg_lo_ss(Y_AXIS,ARG2), arg_hi_ss(Y_AXIS,ARG2)
+      do L2 = arg_lo_ss(T_AXIS,ARG2), arg_hi_ss(T_AXIS,ARG2)
          isum = 0
-         DO 10 i2 = arg_lo_ss(X_AXIS,ARG2), arg_hi_ss(X_AXIS,ARG2)
+         DO i2 = arg_lo_ss(X_AXIS,ARG2), arg_hi_ss(X_AXIS,ARG2)
             IF  (arg_2(i2,j2,k2,l2) .EQ. bad_flag(ARG2) .OR. 
      .           INT(arg_2(i2,j2,k2,l2)) .LT. 0)
      .          CALL EF_BAIL_OUT(id, 'elements of arg 2 are counts GE zero')
             isum = isum + INT(arg_2(i2,j2,k2,l2))
- 10   CONTINUE
+         enddo
          IF (isum .NE. (arg_hi_ss(X_AXIS,ARG1)-arg_lo_ss(X_AXIS,ARG1)+1) )
      .       CALL EF_BAIL_OUT(id, 
      .         'arg 2 values must sum to x-dimension length of of arg1 ')
- 20   CONTINUE
+      enddo
+      enddo
 
 * pre-fill the entire output result with missing value flags
 *  (since length of each profile may have different number of pts)
-      DO 60 l=res_lo_ss(T_AXIS), res_hi_ss(T_AXIS)
-         DO 50 j=res_lo_ss(Y_AXIS), res_hi_ss(Y_AXIS)
-            DO 40 k=res_lo_ss(Z_AXIS), res_hi_ss(Z_AXIS)
-               DO 30 i=res_lo_ss(X_AXIS), res_hi_ss(X_AXIS)
- 30            result(i,j,k,l) = bad_flag_result
- 40         CONTINUE
- 50      CONTINUE
- 60   CONTINUE
+      result(i,j,k,l) = bad_flag_result
 
 * fill in the points as specified by the counts
       k1 = arg_lo_ss(Z_AXIS,ARG1)

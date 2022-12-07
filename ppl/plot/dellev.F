@@ -35,6 +35,7 @@
 *
 *
 C**    @(#)dellev.F	1.1    3/10/88
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 C**
 C**
 C***********************************************************************
@@ -50,10 +51,11 @@ C**
 	INCLUDE 'CONT.INC'
 
 	DO 520 K=J+1,NLEV
-	ZLEV(K-1)=ZLEV(K)
-	LDIG(K-1)=LDIG(K)
-	LCLR(K-1)=LCLR(K)
-520	LWGT(K-1)=LWGT(K)
+	   ZLEV(K-1)=ZLEV(K)
+	   LDIG(K-1)=LDIG(K)
+	   LCLR(K-1)=LCLR(K)
+	   LWGT(K-1)=LWGT(K)
+520	CONTINUE	
 	NLEV=NLEV-1
 	RETURN
 	END

@@ -78,6 +78,7 @@
 *                  count the records and define an axis
 * V701  7/16 *acm* Ticket 2454. If the user gives lower-case names when opening
 *                  an EZ dataset, keep those names on output, etc.
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -153,9 +154,9 @@
 	   IF (dset .GE. 10) ndigits = 2
 	   IF (slen .GT. ndigits) THEN
               s1 = ndigits + 1
-              DO 80, i = s1,slen
+              DO i = s1,slen
 	         IF (.NOT. TM_DIGIT(dset_name(i:i)) ) GOTO 100
-  80	      CONTINUE
+              ENDDO
            ENDIF
 	      
 	   by_number = .TRUE.
@@ -165,13 +166,9 @@
 
 * open data set by name
  100	by_number = .FALSE.
-#ifdef unix
+
         path_name = TM_INQ_PATH( dset_name, 'FER_DATA', '    ',
      .                                   .TRUE., TMAP_status )
-#else
-	path_name = TM_INQ_PATH( dset_name, 'FER_DATA', 'data.dat', .TRUE.,
-     .					  TMAP_status )
-#endif
 	IF ( TMAP_status .EQ. merr_notmounted ) GOTO 5400
 	IF ( TMAP_status .NE. merr_ok ) GOTO 5900
 	dset = TM_DSET_NUMBER( path_name )
@@ -298,8 +295,9 @@
      .                         .TRUE., .TRUE., .FALSE., order, status )
            IF ( status .NE. ferr_ok ) RETURN
 	ELSE
-	   DO 500 idim = 1,nferdimsp1
- 500	   order(idim) = idim
+	   DO idim = 1,nferdimsp1
+	      order(idim) = idim
+ 	   ENDDO
 	ENDIF
 	loc = qual_given( slash_set_data_grid )
 	IF ( loc .GT. 0 ) THEN

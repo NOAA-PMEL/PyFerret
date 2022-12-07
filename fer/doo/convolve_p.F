@@ -45,6 +45,7 @@
 *	impossible
 * From convolve; removing the restriction that any missing data results in 
 *       missing result. This is called for boxcar smoother SPX.
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
@@ -112,10 +113,10 @@
 	nmod_prev = -99999
 
 * compute limits within which calculation is possible
-	DO 10 ii = 1, nferdims
+	DO ii = 1, nferdims
 	   lo_sub(ii) = cx_lo_ss(res_cx,ii)
 	   hi_sub(ii) = cx_hi_ss(res_cx,ii)
- 10	CONTINUE
+	ENDDO
 
 * it his a subspan modulo axis?
 	has_mod_void = TM_ITS_SUBSPAN_MODULO( CGRID_AXIS(idim,com_cx) )
@@ -128,12 +129,12 @@
 * ... though treating each axis separately is to avoid testing inside the loop
 * CONVOLVE ALONG X AXIS
 	IF ( idim .EQ. x_dim ) THEN
-	   DO 110 n = lo_s6, hi_s6
-	   DO 110 m = lo_s5, hi_s5
-	   DO 110 l = lo_s4, hi_s4
-	   DO 110 k = lo_s3, hi_s3
-	   DO 110 j = lo_s2, hi_s2
-	   DO 110 i = lo_s1, hi_s1
+	   DO n = lo_s6, hi_s6
+	   DO m = lo_s5, hi_s5
+	   DO l = lo_s4, hi_s4
+	   DO k = lo_s3, hi_s3
+	   DO j = lo_s2, hi_s2
+	   DO i = lo_s1, hi_s1
 	      IF (has_mod_void) THEN
 *  ... do not allow convolution across the modulo void
 	         IF (i.GE.1) THEN  ! get # of modulos to curr index
@@ -151,35 +152,41 @@
 	      ENDIF
 	      sum = 0.0
 	      wsum = 0.0
-	      DO 100 ii = -hlen1, hlen1
+	      DO ii = -hlen1, hlen1
 * test limits of component data before using
                  IF ( i+ii .GE. lo_lim
      .          .AND. i+ii .LE. hi_lim ) THEN
                     comp = com(i+ii,j,k,l,m,n)
                  ELSE
-                    res(i,j,k,l,m,n) = bad_res
-                    GOTO 110
+                    wsum = 0.
+		    EXIT  ! from ii loop 
                  ENDIF
 
 	         IF ( comp .NE. bad_com ) THEN
 	            sum = sum + comp*wt(ii)
 		    wsum = wsum + wt(ii)
 	         ENDIF
- 100	      CONTINUE
+	      ENDDO
+
 	      IF (wsum .GT. 0) THEN 
 	         res(i,j,k,l,m,n) = sum/wsum
 	      ELSE 
 	         res(i,j,k,l,m,n) = bad_res
 	      ENDIF
- 110	   CONTINUE
+ 	   ENDDO
+ 	   ENDDO
+ 	   ENDDO
+ 	   ENDDO
+ 	   ENDDO
+ 	   ENDDO
 
 * CONVOLVE ALONG Y AXIS
 	ELSEIF ( idim .EQ. y_dim ) THEN
-	   DO 210 n = lo_s6, hi_s6
-	   DO 210 m = lo_s5, hi_s5
-	   DO 210 l = lo_s4, hi_s4
-	   DO 210 k = lo_s3, hi_s3
-	   DO 210 j = lo_s2, hi_s2
+	   DO n = lo_s6, hi_s6
+	   DO m = lo_s5, hi_s5
+	   DO l = lo_s4, hi_s4
+	   DO k = lo_s3, hi_s3
+	   DO j = lo_s2, hi_s2
 	      IF (has_mod_void) THEN
 *  ... do not allow convolution across the modulo void
 	         IF (j.GE.1) THEN  ! get # of modulos to curr index
@@ -195,37 +202,43 @@
 	            hi_lim = MIN( hi_modlim, cx_hi_ss(com_cx,idim)  )
 	         ENDIF
 	      ENDIF
-	   DO 210 i = lo_s1, hi_s1
+	   DO i = lo_s1, hi_s1
 	      sum = 0.0
 	      wsum = 0.0
-	      DO 200 ii = -hlen1, hlen1
+	      DO ii = -hlen1, hlen1
 * test limits of component data before using
                  IF ( j+ii .GE. lo_lim
      .          .AND. j+ii .LE. hi_lim ) THEN
                     comp = com(i,j+ii,k,l,m,n)
                  ELSE
-                    res(i,j,k,l,m,n) = bad_res
-                    GOTO 210
+                    wsum = 0.0
+		    EXIT  ! from ii loop
                  ENDIF
 
 	         IF ( comp .NE. bad_com ) THEN
 	            sum = sum + comp*wt(ii)
 		    wsum = wsum + wt(ii)
 	         ENDIF
- 200	      CONTINUE
+	      ENDDO
+
 	      IF (wsum .GT. 0) THEN 
 	         res(i,j,k,l,m,n) = sum/wsum
 	      ELSE 
 	         res(i,j,k,l,m,n) = bad_res
 	      ENDIF
- 210	   CONTINUE
+ 	   ENDDO
+ 	   ENDDO
+ 	   ENDDO
+ 	   ENDDO
+ 	   ENDDO
+ 	   ENDDO
 
 * CONVOLVE ALONG Z AXIS
 	ELSEIF ( idim .EQ. z_dim ) THEN
-	   DO 310 n = lo_s6, hi_s6
-	   DO 310 m = lo_s5, hi_s5
-	   DO 310 l = lo_s4, hi_s4
-	   DO 310 k = lo_s3, hi_s3
+	   DO n = lo_s6, hi_s6
+	   DO m = lo_s5, hi_s5
+	   DO l = lo_s4, hi_s4
+	   DO k = lo_s3, hi_s3
 	      IF (has_mod_void) THEN
 *  ... do not allow convolution across the modulo void
 	         IF (k.GE.1) THEN  ! get # of modulos to curr index
@@ -241,37 +254,42 @@
 	            hi_lim = MIN( hi_modlim, cx_hi_ss(com_cx,idim)  )
 	         ENDIF
 	      ENDIF
-	   DO 310 j = lo_s2, hi_s2
-	   DO 310 i = lo_s1, hi_s1
+	   DO j = lo_s2, hi_s2
+	   DO i = lo_s1, hi_s1
 	      sum = 0.0
 	      wsum = 0.0
-	      DO 300 ii = -hlen1, hlen1
+	      DO ii = -hlen1, hlen1
 * test limits of component data before using
                  IF ( k+ii .GE. lo_lim
      .          .AND. k+ii .LE. hi_lim ) THEN
                     comp = com(i,j,k+ii,l,m,n)
                  ELSE
-                    res(i,j,k,l,m,n) = bad_res
-                    GOTO 310
+                    wsum = 0.0
+		    EXIT  ! from ii loop
                  ENDIF
 
 	         IF ( comp .NE. bad_com ) THEN
 	            sum = sum + comp*wt(ii)
 		    wsum = wsum + wt(ii)
 	         ENDIF
- 300	      CONTINUE
+	      ENDDO
 	      IF (wsum .GT. 0) THEN 
 	         res(i,j,k,l,m,n) = sum/wsum
 	      ELSE 
 	         res(i,j,k,l,m,n) = bad_res
 	      ENDIF
- 310	   CONTINUE
+ 	   ENDDO
+ 	   ENDDO
+ 	   ENDDO
+ 	   ENDDO
+ 	   ENDDO
+ 	   ENDDO
 
 * CONVOLVE ALONG T AXIS
 	ELSE IF ( idim .EQ. t_dim ) THEN
-	   DO 410 n = lo_s6, hi_s6
-	   DO 410 m = lo_s5, hi_s5
-	   DO 410 l = lo_s4, hi_s4
+	   DO n = lo_s6, hi_s6
+	   DO m = lo_s5, hi_s5
+	   DO l = lo_s4, hi_s4
 	      IF (has_mod_void) THEN
 *  ... do not allow convolution across the modulo void
 	         IF (l.GE.1) THEN  ! get # of modulos to curr index
@@ -287,37 +305,42 @@
 	            hi_lim = MIN( hi_modlim, cx_hi_ss(com_cx,idim)  )
 	         ENDIF
 	      ENDIF
-	   DO 410 k = lo_s3, hi_s3
-	   DO 410 j = lo_s2, hi_s2
-	   DO 410 i = lo_s1, hi_s1
+	   DO k = lo_s3, hi_s3
+	   DO j = lo_s2, hi_s2
+	   DO i = lo_s1, hi_s1
 	      sum = 0.0
 	      wsum = 0.0
-	      DO 400 ii = -hlen1, hlen1
+	      DO ii = -hlen1, hlen1
 * test limits of component data before using
                  IF ( l+ii .GE. lo_lim
      .          .AND. l+ii .LE. hi_lim ) THEN
                     comp = com(i,j,k,l+ii,m,n)
                  ELSE
-                    res(i,j,k,l,m,n) = bad_res
-                    GOTO 410
+                    wsum = 0.0
+		    EXIT  ! from ii loop
                  ENDIF
 
 	         IF ( comp .NE. bad_com ) THEN
 	            sum = sum + comp*wt(ii)
 		    wsum = wsum + wt(ii)
 	         ENDIF
- 400	      CONTINUE
+	      ENDDO
 	      IF (wsum .GT. 0) THEN 
 	         res(i,j,k,l,m,n) = sum/wsum
 	      ELSE 
 	         res(i,j,k,l,m,n) = bad_res
 	      ENDIF
- 410	   CONTINUE
+ 	   ENDDO
+ 	   ENDDO
+ 	   ENDDO
+ 	   ENDDO
+ 	   ENDDO
+ 	   ENDDO
 
 * CONVOLVE ALONG E AXIS
 	ELSE IF ( idim .EQ. e_dim ) THEN
-	   DO 510 n = lo_s6, hi_s6
-	   DO 510 m = lo_s5, hi_s5
+	   DO n = lo_s6, hi_s6
+	   DO m = lo_s5, hi_s5
 	      IF (has_mod_void) THEN
 *  ... do not allow convolution across the modulo void
 	         IF (m.GE.1) THEN  ! get # of modulos to curr index
@@ -333,37 +356,42 @@
 	            hi_lim = MIN( hi_modlim, cx_hi_ss(com_cx,idim)  )
 	         ENDIF
 	      ENDIF
-	   DO 510 l = lo_s4, hi_s4
-	   DO 510 k = lo_s3, hi_s3
-	   DO 510 j = lo_s2, hi_s2
-	   DO 510 i = lo_s1, hi_s1
+	   DO l = lo_s4, hi_s4
+	   DO k = lo_s3, hi_s3
+	   DO j = lo_s2, hi_s2
+	   DO i = lo_s1, hi_s1
 	      sum = 0.0
 	      wsum = 0.0
-	      DO 500 ii = -hlen1, hlen1
+	      DO ii = -hlen1, hlen1
 * test limits of component data before using
                  IF ( m+ii .GE. lo_lim
      .          .AND. m+ii .LE. hi_lim ) THEN
                     comp = com(i,j,k,l,m+ii,n)
                  ELSE
-                    res(i,j,k,l,m,n) = bad_res
-                    GOTO 510
+                    wsum = 0.0
+		    EXIT  ! from ii loop
                  ENDIF
 
 	         IF ( comp .NE. bad_com ) THEN
 	            sum = sum + comp*wt(ii)
 		    wsum = wsum + wt(ii)
 	         ENDIF
- 500	      CONTINUE
+	      ENDDO
 	      IF (wsum .GT. 0) THEN 
 	         res(i,j,k,l,m,n) = sum/wsum
 	      ELSE 
 	         res(i,j,k,l,m,n) = bad_res
 	      ENDIF
- 510	   CONTINUE
+ 	   ENDDO
+ 	   ENDDO
+ 	   ENDDO
+ 	   ENDDO
+ 	   ENDDO
+ 	   ENDDO
 
 * CONVOLVE ALONG F AXIS
 	ELSE IF ( idim .EQ. f_dim ) THEN
-	   DO 610 n = lo_s6, hi_s6
+	   DO n = lo_s6, hi_s6
 	      IF (has_mod_void) THEN
 *  ... do not allow convolution across the modulo void
 	         IF (n.GE.1) THEN  ! get # of modulos to curr index
@@ -379,34 +407,40 @@
 	            hi_lim = MIN( hi_modlim, cx_hi_ss(com_cx,idim)  )
 	         ENDIF
 	      ENDIF
-	   DO 610 m = lo_s5, hi_s5
-	   DO 610 l = lo_s4, hi_s4
-	   DO 610 k = lo_s3, hi_s3
-	   DO 610 j = lo_s2, hi_s2
-	   DO 610 i = lo_s1, hi_s1
+	   DO m = lo_s5, hi_s5
+	   DO l = lo_s4, hi_s4
+	   DO k = lo_s3, hi_s3
+	   DO j = lo_s2, hi_s2
+	   DO i = lo_s1, hi_s1
 	      sum = 0.0
 	      wsum = 0.0
-	      DO 600 ii = -hlen1, hlen1
+	      DO ii = -hlen1, hlen1
 * test limits of component data before using
                  IF ( n+ii .GE. lo_lim
      .          .AND. n+ii .LE. hi_lim ) THEN
                     comp = com(i,j,k,l,m,n+ii)
                  ELSE
-                    res(i,j,k,l,m,n) = bad_res
-                    GOTO 610
+                    wsum = 0.0
+		    EXIT  ! from ii loop
                  ENDIF
 
 	         IF ( comp .NE. bad_com ) THEN
 	            sum = sum + comp*wt(ii)
 		    wsum = wsum + wt(ii)
 	         ENDIF
- 600	      CONTINUE
+	      ENDDO
 	      IF (wsum .GT. 0) THEN 
 	         res(i,j,k,l,m,n) = sum/wsum
 	      ELSE 
 	         res(i,j,k,l,m,n) = bad_res
 	      ENDIF
- 610	   CONTINUE
+ 	   ENDDO
+ 	   ENDDO
+ 	   ENDDO
+ 	   ENDDO
+ 	   ENDDO
+ 	   ENDDO
+
 
 	ENDIF
 

@@ -42,6 +42,7 @@
 * V69+ *acm* 9/14 Make DATE1900 accept an array of date strings, 
 *                 returning an array of coordinates
 * V76  *acm* 5/20 Let it work on an array in any grid direction
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 *
 * In this subroutine we provide information about
 * the function.  The user configurable information 
@@ -180,12 +181,12 @@
 
 C  result and arg_1 have same array dimension limits
 
-      DO 100 n=res_lo_ss(F_AXIS), res_hi_ss(F_AXIS)
-      DO 100 m=res_lo_ss(E_AXIS), res_hi_ss(E_AXIS)
-      DO 100 l=res_lo_ss(T_AXIS), res_hi_ss(T_AXIS)
-      DO 100 k=res_lo_ss(Z_AXIS), res_hi_ss(Z_AXIS)
-      DO 100 j=res_lo_ss(Y_AXIS), res_hi_ss(Y_AXIS)
-      DO 100 i=res_lo_ss(X_AXIS), res_hi_ss(X_AXIS)
+      DO n=res_lo_ss(F_AXIS), res_hi_ss(F_AXIS)
+      DO m=res_lo_ss(E_AXIS), res_hi_ss(E_AXIS)
+      DO l=res_lo_ss(T_AXIS), res_hi_ss(T_AXIS)
+      DO k=res_lo_ss(Z_AXIS), res_hi_ss(Z_AXIS)
+      DO j=res_lo_ss(Y_AXIS), res_hi_ss(Y_AXIS)
+      DO i=res_lo_ss(X_AXIS), res_hi_ss(X_AXIS)
 
          CALL ef_get_string_arg_element_6d(id, ARG1, arg_1,
      .                       i, j, k, l, m, n, slen, str_date)
@@ -201,7 +202,12 @@ C  result and arg_1 have same array dimension limits
             result(i, j, k, l, m, n) = res
          ENDIF
 
- 100  CONTINUE
+      ENDDO
+      ENDDO
+      ENDDO
+      ENDDO
+      ENDDO
+      ENDDO
 
 *                                                                      ^
 *                                                                      |

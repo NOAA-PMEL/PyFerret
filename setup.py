@@ -159,13 +159,14 @@ for srcname in os.listdir("pyfermod"):
         src_list.append(os.path.join("pyfermod", srcname))
 
 # Get the list of additional objects to be linked in
+# edited to remove reference to long-disused giu-fakes.o
 addnobjs_list = [ ]
 dirname = os.path.join("fer", "ef_utility")
 for srcname in os.listdir(dirname):
     if srcname[-2:] == ".o":
         addnobjs_list.append(os.path.join(dirname, srcname))
 dirname = os.path.join("fer", "special")
-for srcname in ( "FerMem_routines.o", "fakes3.o", "ferret_dispatch.o", "gui_fakes.o", "linux_routines.o", ):
+for srcname in ( "FerMem_routines.o", "fakes3.o", "ferret_dispatch.o", "linux_routines.o", ):
     addnobjs_list.append(os.path.join(dirname, srcname))
 for srcname in os.listdir(dirname):
     if (srcname[0] == 'x') and (srcname[-7:] == "_data.o"):

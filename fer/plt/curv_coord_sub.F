@@ -98,7 +98,7 @@
         branch_test = 190.
         lon_degrees = 360.
 
-	DO 100 i = 1, npt
+	DO i = 1, npt
 
 * transfer coordinate pair to temporary variables
 	xit = xi(i)
@@ -258,13 +258,13 @@ C coordinates on the same branch as x11
 	yj(i) = (y11*(1.-xfrac) + y12*(xfrac)) * (1.-yfrac)
      .	      + (y21*(1.-xfrac) + y22*(xfrac)) * (yfrac)
 
- 100	CONTINUE
+	ENDDO ! i = 1, npt
 
 * Check longitudes for a branch point
 
         IF (units_degrees) THEN
            x11 = xi(1)
-           DO 108 i = 2, npt
+           DO i = 2, npt
               aa = ABS(x11-xi(i))
               IF (ABS(x11-xi(i)) .GT. branch_test) THEN
                  IF (x11 .GT. xi(i)) THEN
@@ -273,17 +273,19 @@ C coordinates on the same branch as x11
                     xi(i) = xi(i) - lon_degrees
                  ENDIF
               ENDIF
- 108       ENDDO
+	   ENDDO
         ENDIF ! units_degrees
 
 * possibly invert the sign of the coordinates (used for descending Z axis)
 	IF ( xinv .EQ. -1. ) THEN
-	   DO 110  i = 1, npt
- 110	   xi(i) = -1.*xi(i)
+	   DO i = 1, npt
+	      xi(i) = -1.*xi(i)
+ 	   ENDDO
 	ENDIF
 	IF ( yinv .EQ. -1. ) THEN
-	   DO 120  i = 1, npt
- 120	   yj(i) = -1.*yj(i)
+	   DO i = 1, npt
+	      yj(i) = -1.*yj(i)
+ 	   ENDDO
 	ENDIF
 
 * successful completion

@@ -5,6 +5,7 @@
 * with the second variable appended on the ensemble axis.
 *
 
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 
 *
 * In this subroutine we provide information about
@@ -182,14 +183,19 @@
       CALL ef_get_bad_flags(id, bad_flag, bad_flag_result)
 
 *     Initialize everything to undefined so nothing is missed
-      DO 10 n = res_lo_ss(F_AXIS), res_hi_ss(F_AXIS)
-      DO 10 m = res_lo_ss(E_AXIS), res_hi_ss(E_AXIS)
-      DO 10 l = res_lo_ss(T_AXIS), res_hi_ss(T_AXIS)
-      DO 10 k = res_lo_ss(Z_AXIS), res_hi_ss(Z_AXIS)
-      DO 10 j = res_lo_ss(Y_AXIS), res_hi_ss(Y_AXIS)
-      DO 10 i = res_lo_ss(X_AXIS), res_hi_ss(X_AXIS)
+      DO n = res_lo_ss(F_AXIS), res_hi_ss(F_AXIS)
+      DO m = res_lo_ss(E_AXIS), res_hi_ss(E_AXIS)
+      DO l = res_lo_ss(T_AXIS), res_hi_ss(T_AXIS)
+      DO k = res_lo_ss(Z_AXIS), res_hi_ss(Z_AXIS)
+      DO j = res_lo_ss(Y_AXIS), res_hi_ss(Y_AXIS)
+      DO i = res_lo_ss(X_AXIS), res_hi_ss(X_AXIS)
          result(i,j,k,l,m,n) = bad_flag_result
-  10  CONTINUE
+      ENDDO
+      ENDDO
+      ENDDO
+      ENDDO
+      ENDDO
+      ENDDO
 
 *     Start by copying the first variable
 *     (Ensemble axis must be outer-most loop)

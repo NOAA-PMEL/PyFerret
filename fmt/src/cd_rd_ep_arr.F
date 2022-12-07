@@ -49,6 +49,7 @@
 * NOAA/PMEL, Seattle, WA - Tropical Modeling and Analysis Program
 
 * revision 0.0 - 3/92
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 
 * argument definitions:
 *	cdfid	 - netCDF id number for already opened CDF file
@@ -66,17 +67,14 @@
       REAL*8  darr(n)
       CHARACTER*(*) t0
 
-#ifdef unix
       include 'tmap_errors.parm'
-#else
-      INCLUDE 'TMAP_FORMAT:TMAP_ERRORS.PARM'
-#endif
 
 * internal variable declarations:
       INTEGER i
 
-      DO 100 i = 1, n
- 100  CALL CD_RD_EP_1(cdfid,t1id,t2id,t0,tunit,i,darr(i),status)
+      DO i = 1, n
+         CALL CD_RD_EP_1(cdfid,t1id,t2id,t0,tunit,i,darr(i),status)
+      ENDDO
 
       RETURN
 

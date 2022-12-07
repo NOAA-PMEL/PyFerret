@@ -43,6 +43,8 @@
 * V320: 2/16/89
 * V541:  2/02 *sh* - added support for delta strides
 * 2/12 *acm* Add E and F dimensions (use nferdims in tmap_dims.parm)
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
+* 11/2022 *acm* Add reversal on E and F axes. 
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -67,62 +69,119 @@
 * reverse the data along the appropriate axis
 
 	IF ( axis .EQ. x_dim ) THEN
-	   DO 100 n = dlof, dhif
-	   DO 100 m = dloe, dhie
-	   DO 100 l = dlot, dhit
-	   DO 100 k = dloz, dhiz
-	   DO 100 j = dloy, dhiy
-	   DO 100 i = dlox, turn_pt
+	   DO n = dlof, dhif
+	   DO m = dloe, dhie
+	   DO l = dlot, dhit
+	   DO k = dloz, dhiz
+	   DO j = dloy, dhiy
+	   DO i = dlox, turn_pt
 
 	      tmp = dat(i,j,k,l,m,n)
 	      dat(      i,j,k,l,m,n) = dat(hiplo-i,j,k,l,m,n)
 	      dat(hiplo-i,j,k,l,m,n) = tmp
 
- 100	   CONTINUE
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
 
 	ELSEIF ( axis .EQ. y_dim ) THEN
-	   DO 200 n = dlof, dhif
-	   DO 200 m = dloe, dhie
-	   DO 200 l = dlot, dhit
-	   DO 200 k = dloz, dhiz
-	   DO 200 j = dloy, turn_pt
-	   DO 200 i = dlox, dhix
+	   DO  n = dlof, dhif
+	   DO  m = dloe, dhie
+	   DO  l = dlot, dhit
+	   DO  k = dloz, dhiz
+	   DO  j = dloy, turn_pt
+	   DO  i = dlox, dhix
 
 	      tmp = dat(i,j,k,l,m,n)
 	      dat(i,      j,k,l,m,n) = dat(i,hiplo-j,k,l,m,n)
 	      dat(i,hiplo-j,k,l,m,n) = tmp
 
- 200	   CONTINUE
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
 
 	ELSEIF ( axis .EQ. z_dim ) THEN
-	   DO 300 n = dlof, dhif
-	   DO 300 m = dloe, dhie
-	   DO 300 l = dlot, dhit
-	   DO 300 k = dloz, turn_pt
-	   DO 300 j = dloy, dhiy
-	   DO 300 i = dlox, dhix
+	   DO n = dlof, dhif
+	   DO m = dloe, dhie
+	   DO l = dlot, dhit
+	   DO k = dloz, turn_pt
+	   DO j = dloy, dhiy
+	   DO i = dlox, dhix
 
 	      tmp = dat(i,j,k,l,m,n)
 	      dat(i,j,      k,l,m,n) = dat(i,j,hiplo-k,l,m,n)
 	      dat(i,j,hiplo-k,l,m,n) = tmp
 
- 300	   CONTINUE
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
 
 	ELSEIF ( axis .EQ. t_dim ) THEN
-	   DO 400 n = dlof, dhif
-	   DO 400 m = dloe, dhie
-	   DO 400 l = dlot, turn_pt
-	   DO 400 k = dloz, dhiz
-	   DO 400 j = dloy, dhiy
-	   DO 400 i = dlox, dhix
+	   DO n = dlof, dhif
+	   DO m = dloe, dhie
+	   DO l = dlot, turn_pt
+	   DO k = dloz, dhiz
+	   DO j = dloy, dhiy
+	   DO i = dlox, dhix
 
 	      tmp = dat(i,j,k,l,m,n)
 	      dat(i,j,k,      l,m,n) = dat(i,j,k,hiplo-l,m,n)
 	      dat(i,j,k,hiplo-l,m,n) = tmp
 
- 400	   CONTINUE
-* TODO: REVERSE_GRID_AXIS_SUB along E and F axes?
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
 
+
+	ELSEIF ( axis .EQ. e_dim ) THEN
+	   DO n = dlof, dhif
+	   DO m = dloe, turn_pt
+	   DO l = dlot, dhit
+	   DO k = dloz, dhiz
+	   DO j = dloy, dhiy
+	   DO i = dlox, dhix
+
+	      tmp = dat(i,j,k,l,m,n)
+	      dat(i,j,k,l,      m,n) = dat(i,j,k,l,hiplo-m,n)
+	      dat(i,j,k,l,hiplo-m,n) = tmp
+
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
+
+	ELSEIF ( axis .EQ. f_dim ) THEN
+	   DO n = dlof, turn_pt
+	   DO m = dloe, dhie
+	   DO l = dlot, dhit
+	   DO k = dloz, dhiz
+	   DO j = dloy, dhiy
+	   DO i = dlox, dhix
+
+	      tmp = dat(i,j,k,l,m,n)
+	      dat(i,j,k,l,m,      n) = dat(i,j,k,l,m,hiplo-n)
+	      dat(i,j,k,l,m,hiplo-n) = tmp
+
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
 * ALONG UNSUPPORTED AXIS
         ELSE
            STOP '**ERROR: REVERSE_GRID_AXIS_SUB on an unsupported axis'

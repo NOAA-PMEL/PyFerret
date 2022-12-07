@@ -49,13 +49,13 @@
 *			should go to disk file, not to screen
 * V6.6  *kms* 5/10 - monitor redirect_*_flags for stdout/stderr redirection.
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
+** 10/2022 *acm* Code cleanup: remove references to obsolete gui interface
+*                previous first argument was "mode", unused except in the gui 
 
         IMPLICIT NONE
 	include	'tmap_dims.parm'
 	include 'ferret.parm'
-        include 'gui.parm'
 	include 'xprog_state.cmn'
-        include 'xgui.cmn'
 
 * calling arguments
 	INTEGER	      mode, out_lun, line_len
@@ -63,12 +63,6 @@
 
 *internal variable declarations:
         INTEGER slen
-        PARAMETER  ( slen = 255 )
-#ifdef sun
-        BYTE      fhol(slen)	! c-type Hollerith string buffer
-#else
-        INTEGER*1 fhol(slen)	! c-type Hollerith string buffer
-#endif
 	INTEGER	TM_LENSTR1, llen
 
 * determine line length if not supplied
@@ -79,11 +73,7 @@
 	ENDIF
 
 * output to the desired device
-!	IF ( mode_gui ) THEN    ! 6/20 - kludge
-	IF ( mode_gui .AND. out_lun.NE.default_list_lun ) THEN
-	   CALL TM_FTOC_STRNG( next_line(:llen), fhol, slen )
-	   CALL FERRET_LIST_IN_WINDOW( fhol, ftxout_append )
-        ELSE IF ( (out_lun .EQ. ttout_lun) .AND.
+	IF ( (out_lun .EQ. ttout_lun) .AND.
      .            (redirect_stdout_flags .NE. redirect_none) ) THEN
            IF ( (redirect_stdout_flags .EQ. redirect_journal_tee) .OR.
      .          (redirect_stdout_flags .EQ. redirect_journal) ) THEN

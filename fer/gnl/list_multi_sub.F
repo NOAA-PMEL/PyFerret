@@ -91,6 +91,7 @@
 * V741 *acm*  4/18 Issue 1870: Check Format more closely when finding an I Format
 * V751 6/19 *acm* TM_FMT rewrite: formatting of lon/lat coordinate strings
 * V76  *acm*  5/20  More on Issue 1870
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -296,10 +297,12 @@
  20	CONTINUE
 
 * ... and total size
-	DO 25 ivar = 1, num_uvars_in_cmnd
-	msize(ivar) = 1
-	DO 25 idim = 1, nferdims	
- 25	msize(ivar) = msize(ivar) * size(idim,ivar)	
+	DO ivar = 1, num_uvars_in_cmnd
+	   msize(ivar) = 1
+	   DO idim = 1, nferdims	
+	      msize(ivar) = msize(ivar) * size(idim,ivar)	
+	   ENDDO
+	ENDDO
 
 * determine which axes have unambiguous coordinates (all variables that are
 * not point locations on this axis must have the same coordinates)
@@ -454,12 +457,12 @@
 * * * * * LIST DATA UNFORMATTED
  200    IF ( do_unform ) THEN
            point = 0
-           DO 300 i6 = lo6, hi6, del6
-           DO 300 i5 = lo5, hi5, del5
-           DO 300 i4 = lo4, hi4, del4
-           DO 300 i3 = lo3, hi3, del3
-           DO 300 i2 = lo2, hi2, del2
-           DO 300 i1 = lo1, hi1, del1
+           DO i6 = lo6, hi6, del6
+           DO i5 = lo5, hi5, del5
+           DO i4 = lo4, hi4, del4
+           DO i3 = lo3, hi3, del3
+           DO i2 = lo2, hi2, del2
+           DO i1 = lo1, hi1, del1
               IF ( interrupted ) RETURN
 * default memory pointer for full-region variables
               point = point + 1
@@ -490,7 +493,12 @@
                  WRITE (list_lun, list_format, ERR=5010)
      .                  ( out(ivar),ivar = 1, num_uvars_in_cmnd )
               ENDIF
- 300       CONTINUE
+           ENDDO
+           ENDDO
+           ENDDO
+           ENDDO
+           ENDDO
+           ENDDO
 * done - go home
            RETURN
         ENDIF
@@ -506,12 +514,12 @@
 	      
 	   point = -1
 
-	   DO 301 i6 = lo6, hi6, del6
-	   DO 301 i5 = lo5, hi5, del5
-	   DO 301 i4 = lo4, hi4, del4
-	   DO 301 i3 = lo3, hi3, del3
-	   DO 301 i2 = lo2, hi2, del2
-	   DO 301 i1 = lo1, hi1, del1
+	   DO i6 = lo6, hi6, del6
+	   DO i5 = lo5, hi5, del5
+	   DO i4 = lo4, hi4, del4
+	   DO i3 = lo3, hi3, del3
+	   DO i2 = lo2, hi2, del2
+	   DO i1 = lo1, hi1, del1
 	      IF ( interrupted ) RETURN
 * default memory pointer for full-region variables
 	      point = point + 1
@@ -599,8 +607,13 @@
 	         WRITE (list_lun, fmtstring, ERR=5010) line_buff
 	      ENDIF
 
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
 
- 301	   CONTINUE
 * done - go home
 	   RETURN
 	ENDIF
@@ -729,7 +742,7 @@
 
  3050   FORMAT (1X,4('-'),1X,A)
 	point = -1
-	DO 600 i6 = lo6, hi6, del6
+	DO i6 = lo6, hi6, del6
 * label the block of block of blocks (6th dimension)
 	   risc_buff = ' '
 	   IF ( hi6 .GT. lo6 ) THEN
@@ -738,7 +751,7 @@
 	      WRITE (risc_buff, 3050) line_buff(:alen)
 	      CALL SPLIT_LIST(pttmode_explct, list_lun, risc_buff, 0)
 	   ENDIF
-	DO 600 i5 = lo5, hi5, del5
+	DO i5 = lo5, hi5, del5
 * label the block of block of blocks (5th dimension)
 	   risc_buff = ' '
 	   IF ( hi5 .GT. lo5 ) THEN
@@ -747,7 +760,7 @@
 	      WRITE (risc_buff, 3050) line_buff(:alen)
 	      CALL SPLIT_LIST(pttmode_explct, list_lun, risc_buff, 0)
 	   ENDIF
-	DO 600 i4 = lo4, hi4, del4
+	DO i4 = lo4, hi4, del4
 * label the block of block of blocks (4th dimension)
 	   risc_buff = ' '
 	   IF ( hi4 .GT. lo4 ) THEN
@@ -756,7 +769,7 @@
 	      WRITE (risc_buff, 3050) line_buff(:alen)
 	      CALL SPLIT_LIST(pttmode_explct, list_lun, risc_buff, 0)
 	   ENDIF
-	DO 600 i3 = lo3, hi3, del3
+	DO i3 = lo3, hi3, del3
 * label the block of blocks (3rd dimension)
 	   IF ( hi3 .GT. lo3 ) THEN
 	      CALL POS_LAB( i3, valid_ax(3), perm(3),
@@ -764,7 +777,7 @@
 	      WRITE (risc_buff, 3050) line_buff(:alen)
 	      CALL SPLIT_LIST(pttmode_explct, list_lun, risc_buff, 0)
 	   ENDIF
-	DO 600 i2 = lo2, hi2, del2
+	DO i2 = lo2, hi2, del2
 * label the block of blocks (3rd dimension)
 	   IF ( hi2 .GT. lo2 ) THEN
 	      CALL POS_LAB( i2, valid_ax(2), perm(2),
@@ -772,7 +785,7 @@
 	      WRITE (risc_buff, 3050) line_buff(:alen)
 	      CALL SPLIT_LIST(pttmode_explct, list_lun, risc_buff, 0)
 	   ENDIF
-	DO 600 i1 = lo1, hi1, del1
+	DO i1 = lo1, hi1, del1
            line_buff = ' '
 	   IF ( interrupted ) RETURN
 
@@ -897,7 +910,13 @@
            IF (do_comma_del .OR. do_tab_del) w0 = ww
 	   CALL SPLIT_LIST(pttmode_explct, list_lun, line_buff, w0)
            line_buff = ' '
- 600	   CONTINUE
+
+           ENDDO
+           ENDDO
+           ENDDO
+           ENDDO
+           ENDDO
+           ENDDO
 
 * successful completion
 	RETURN

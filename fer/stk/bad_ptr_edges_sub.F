@@ -46,6 +46,7 @@
 *
 * V533: 6/01 - like BAD_EDGES_SUB but initialize null pointers
 *       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -87,112 +88,198 @@
      .  .OR. l_lo .GT. l_hi
      .  .OR. m_lo .GT. m_hi
      .  .OR. n_lo .GT. n_hi ) THEN
+
 * fill entire result with bad flags
-	   DO 10 i = slox, shix
-	   DO 10 j = sloy, shiy
-	   DO 10 k = sloz, shiz
-	   DO 10 l = slot, shit
-	   DO 10 m = sloe, shie
-	   DO 10 n = slof, shif
- 10	   CALL SET_NULL_C_STRING(src(i,j,k,l,m,n))
+	   DO i = slox, shix
+	   DO j = sloy, shiy
+	   DO k = sloz, shiz
+	   DO l = slot, shit
+	   DO m = sloe, shie
+	   DO n = slof, shif
+	      CALL SET_NULL_C_STRING(src(i,j,k,l,m,n))
+ 	   ENDDO
+ 	   ENDDO
+ 	   ENDDO
+ 	   ENDDO
+ 	   ENDDO
+ 	   ENDDO
+
            RETURN
         ENDIF
 
 * fill in along X axis
-	DO 100 i = slox, i_lo-1
-	DO 100 j = j_lo, j_hi
-	DO 100 k = k_lo, k_hi
-	DO 100 l = l_lo, l_hi
-	DO 100 m = m_lo, m_hi
-	DO 100 n = n_lo, n_hi
- 100	CALL SET_NULL_C_STRING(src(i,j,k,l,m,n))
-	DO 110 i = i_hi+1, shix
-	DO 110 j = j_lo, j_hi
-	DO 110 k = k_lo, k_hi
-	DO 110 l = l_lo, l_hi
-	DO 110 m = m_lo, m_hi
-	DO 110 n = n_lo, n_hi
- 110	CALL SET_NULL_C_STRING(src(i,j,k,l,m,n))
+	DO i = slox, i_lo-1
+	DO j = j_lo, j_hi
+	DO k = k_lo, k_hi
+	DO l = l_lo, l_hi
+	DO m = m_lo, m_hi
+	DO n = n_lo, n_hi
+	   CALL SET_NULL_C_STRING(src(i,j,k,l,m,n))
+ 	ENDDO
+ 	ENDDO
+ 	ENDDO
+ 	ENDDO
+ 	ENDDO
+ 	ENDDO
+
+	DO i = i_hi+1, shix
+	DO j = j_lo, j_hi
+	DO k = k_lo, k_hi
+	DO l = l_lo, l_hi
+	DO m = m_lo, m_hi
+	DO n = n_lo, n_hi
+	   CALL SET_NULL_C_STRING(src(i,j,k,l,m,n))
+ 	ENDDO
+ 	ENDDO
+ 	ENDDO
+ 	ENDDO
+ 	ENDDO
+ 	ENDDO
 
 * fill in along Y axis
-	DO 200 j = sloy, j_lo-1
-	DO 200 i = i_lo, i_hi
-	DO 200 k = k_lo, k_hi
-	DO 200 l = l_lo, l_hi
-	DO 200 m = m_lo, m_hi
-	DO 200 n = n_lo, n_hi
- 200	CALL SET_NULL_C_STRING(src(i,j,k,l,m,n))
-	DO 210 j = j_hi+1, shiy
-	DO 210 i = i_lo, i_hi
-	DO 210 k = k_lo, k_hi
-	DO 210 l = l_lo, l_hi
-	DO 210 m = m_lo, m_hi
-	DO 210 n = n_lo, n_hi
- 210	CALL SET_NULL_C_STRING(src(i,j,k,l,m,n))
+	DO j = sloy, j_lo-1
+	DO i = i_lo, i_hi
+	DO k = k_lo, k_hi
+	DO l = l_lo, l_hi
+	DO m = m_lo, m_hi
+	DO n = n_lo, n_hi
+	   CALL SET_NULL_C_STRING(src(i,j,k,l,m,n))
+ 	ENDDO
+ 	ENDDO
+ 	ENDDO
+ 	ENDDO
+ 	ENDDO
+ 	ENDDO
+
+	DO j = j_hi+1, shiy
+	DO i = i_lo, i_hi
+	DO k = k_lo, k_hi
+	DO l = l_lo, l_hi
+	DO m = m_lo, m_hi
+	DO n = n_lo, n_hi
+	   CALL SET_NULL_C_STRING(src(i,j,k,l,m,n))
+ 	ENDDO
+ 	ENDDO
+ 	ENDDO
+ 	ENDDO
+ 	ENDDO
+ 	ENDDO
 
 * fill in along Z axis
-	DO 300 k = sloz, k_lo-1
-	DO 300 i = i_lo, i_hi
-	DO 300 j = j_lo, j_hi
-	DO 300 l = l_lo, l_hi
-	DO 300 m = m_lo, m_hi
-	DO 300 n = n_lo, n_hi
- 300	CALL SET_NULL_C_STRING(src(i,j,k,l,m,n))
-	DO 310 k = k_hi+1, shiz
-	DO 310 i = i_lo, i_hi
-	DO 310 j = j_lo, j_hi
-	DO 310 l = l_lo, l_hi
-	DO 310 m = m_lo, m_hi
-	DO 310 n = n_lo, n_hi
- 310	CALL SET_NULL_C_STRING(src(i,j,k,l,m,n))
+	DO k = sloz, k_lo-1
+	DO i = i_lo, i_hi
+	DO j = j_lo, j_hi
+	DO l = l_lo, l_hi
+	DO m = m_lo, m_hi
+	DO n = n_lo, n_hi
+	   CALL SET_NULL_C_STRING(src(i,j,k,l,m,n))
+ 	ENDDO
+ 	ENDDO
+ 	ENDDO
+ 	ENDDO
+ 	ENDDO
+ 	ENDDO
+
+	DO k = k_hi+1, shiz
+	DO i = i_lo, i_hi
+	DO j = j_lo, j_hi
+	DO l = l_lo, l_hi
+	DO m = m_lo, m_hi
+	DO n = n_lo, n_hi
+	   CALL SET_NULL_C_STRING(src(i,j,k,l,m,n))
+ 	ENDDO
+ 	ENDDO
+ 	ENDDO
+ 	ENDDO
+ 	ENDDO
+ 	ENDDO
 
 * fill in along T axis
-	DO 400 l = slot, l_lo-1
-	DO 400 i = i_lo, i_hi
-	DO 400 j = j_lo, j_hi
-	DO 400 k = k_lo, k_hi
-	DO 400 m = m_lo, m_hi
-	DO 400 n = n_lo, n_hi
- 400	CALL SET_NULL_C_STRING(src(i,j,k,l,m,n))
-	DO 410 l = l_hi+1, shit
-	DO 410 i = i_lo, i_hi
-	DO 410 j = j_lo, j_hi
-	DO 410 k = k_lo, k_hi
-	DO 410 m = m_lo, m_hi
-	DO 410 n = n_lo, n_hi
- 410	CALL SET_NULL_C_STRING(src(i,j,k,l,m,n))
+	DO l = slot, l_lo-1
+	DO i = i_lo, i_hi
+	DO j = j_lo, j_hi
+	DO k = k_lo, k_hi
+	DO m = m_lo, m_hi
+	DO n = n_lo, n_hi
+	   CALL SET_NULL_C_STRING(src(i,j,k,l,m,n))
+ 	ENDDO
+ 	ENDDO
+ 	ENDDO
+ 	ENDDO
+ 	ENDDO
+ 	ENDDO
+
+	DO l = l_hi+1, shit
+	DO i = i_lo, i_hi
+	DO j = j_lo, j_hi
+	DO k = k_lo, k_hi
+	DO m = m_lo, m_hi
+	DO n = n_lo, n_hi
+	   CALL SET_NULL_C_STRING(src(i,j,k,l,m,n))
+ 	ENDDO
+ 	ENDDO
+ 	ENDDO
+ 	ENDDO
+ 	ENDDO
+ 	ENDDO
 
 * fill in along E axis
-	DO 500 m = sloe, m_lo-1
-	DO 500 i = i_lo, i_hi
-	DO 500 j = j_lo, j_hi
-	DO 500 l = l_lo, l_hi
-	DO 500 k = k_lo, k_hi
-	DO 500 n = n_lo, n_hi
- 500	CALL SET_NULL_C_STRING(src(i,j,k,l,m,n))
-	DO 510 m = m_hi+1, shie
-	DO 510 i = i_lo, i_hi
-	DO 510 j = j_lo, j_hi
-	DO 510 k = k_lo, k_hi
-	DO 510 l = l_lo, l_hi
-	DO 510 n = n_lo, n_hi
- 510	CALL SET_NULL_C_STRING(src(i,j,k,l,m,n))
+	DO m = sloe, m_lo-1
+	DO i = i_lo, i_hi
+	DO j = j_lo, j_hi
+	DO l = l_lo, l_hi
+	DO k = k_lo, k_hi
+	DO n = n_lo, n_hi
+	   CALL SET_NULL_C_STRING(src(i,j,k,l,m,n))
+ 	ENDDO
+ 	ENDDO
+ 	ENDDO
+ 	ENDDO
+ 	ENDDO
+ 	ENDDO
+
+	DO m = m_hi+1, shie
+	DO i = i_lo, i_hi
+	DO j = j_lo, j_hi
+	DO k = k_lo, k_hi
+	DO l = l_lo, l_hi
+	DO n = n_lo, n_hi
+	   CALL SET_NULL_C_STRING(src(i,j,k,l,m,n))
+ 	ENDDO
+ 	ENDDO
+ 	ENDDO
+ 	ENDDO
+ 	ENDDO
+ 	ENDDO
 
 * fill in along F axis
-	DO 600 n = slof, n_lo-1
-	DO 600 i = i_lo, i_hi
-	DO 600 j = j_lo, j_hi
-	DO 600 k = k_lo, k_hi
-	DO 600 l = l_lo, l_hi
-	DO 600 m = m_lo, m_hi
- 600	CALL SET_NULL_C_STRING(src(i,j,k,l,m,n))
-	DO 610 n = n_hi+1, shif
-	DO 610 i = i_lo, i_hi
-	DO 610 j = j_lo, j_hi
-	DO 610 k = k_lo, k_hi
-	DO 610 l = l_lo, l_hi
-	DO 610 m = m_lo, m_hi
- 610	CALL SET_NULL_C_STRING(src(i,j,k,l,m,n))
+	DO n = slof, n_lo-1
+	DO i = i_lo, i_hi
+	DO j = j_lo, j_hi
+	DO k = k_lo, k_hi
+	DO l = l_lo, l_hi
+	DO m = m_lo, m_hi
+	   CALL SET_NULL_C_STRING(src(i,j,k,l,m,n))
+ 	ENDDO
+ 	ENDDO
+ 	ENDDO
+ 	ENDDO
+ 	ENDDO
+ 	ENDDO
+
+	DO n = n_hi+1, shif
+	DO i = i_lo, i_hi
+	DO j = j_lo, j_hi
+	DO k = k_lo, k_hi
+	DO l = l_lo, l_hi
+	DO m = m_lo, m_hi
+	   CALL SET_NULL_C_STRING(src(i,j,k,l,m,n))
+ 	ENDDO
+ 	ENDDO
+ 	ENDDO
+ 	ENDDO
+ 	ENDDO
+ 	ENDDO
 
 	RETURN
 	END 

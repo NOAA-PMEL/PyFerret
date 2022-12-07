@@ -53,6 +53,7 @@
 * 	programmer - Ansley Manke
 * NOAA/PMEL, Seattle, WA - Science Data Integration Group
 * revision 0.0 - 5/2018  from ave_regrid_1_axis
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
@@ -142,11 +143,11 @@
            need_cos = GEOG_COS_FACTOR( idim, src_grid )
      .                .AND. cx_lo_s2(cx_lims).NE.unspecified_int4
 
-           DO 190 n = cx_lo_s6(cx_lims), cx_hi_s6(cx_lims)
-           DO 190 m = cx_lo_s5(cx_lims), cx_hi_s5(cx_lims)
-           DO 190 l = cx_lo_s4(cx_lims), cx_hi_s4(cx_lims)
-           DO 190 k = cx_lo_s3(cx_lims), cx_hi_s3(cx_lims)
-           DO 190 j = cx_lo_s2(cx_lims), cx_hi_s2(cx_lims)
+           DO n = cx_lo_s6(cx_lims), cx_hi_s6(cx_lims)
+           DO m = cx_lo_s5(cx_lims), cx_hi_s5(cx_lims)
+           DO l = cx_lo_s4(cx_lims), cx_hi_s4(cx_lims)
+           DO k = cx_lo_s3(cx_lims), cx_hi_s3(cx_lims)
+           DO j = cx_lo_s2(cx_lims), cx_hi_s2(cx_lims)
 
            IF ( need_cos ) THEN
               ybxlo = deg2rad* 
@@ -160,7 +161,7 @@
 * loop through the each destination grid box
 	   sum = 0.0D0
 	   dst(dstss_lo, j, k, l, m, n) = sum
-	   DO 160 dstss = dstss_lo,dstss_hi
+	   DO dstss = dstss_lo,dstss_hi
 	      srcss_lo = ss21(dstss-dstss_lo+1)
 	      srcss_hi = ss21(dstss-dstss_lo+2)
 
@@ -169,7 +170,7 @@
      .	     .OR.  srcss_hi .EQ. unspecified_int4)
      .       .AND. .NOT.(ok_neg111) ) THEN
 	         dst(dstss,j,k,l,m,n) = bad_dst
-	         goto 160
+	         CYCLE
 	      ENDIF
 
 * Get destination edges to use
@@ -186,10 +187,10 @@
 
 * IF source box completely encloses the dest box, then srcss_lo=srcss_hi
 * and we can just add the source point into the sum
-	      DO 110 srcss = srcss_lo, srcss_hi
+	      DO srcss = srcss_lo, srcss_hi
 
 * ... ignore missing source data
-	         IF ( src(srcss, j, k, l, m, n) .EQ. bad_src ) GOTO 110
+	         IF ( src(srcss, j, k, l, m, n) .EQ. bad_src ) CYCLE
 
 	         xsrc_min = unit_src* TM_WORLD(srcss,src_grid,idim,box_lo_lim)
 	         xsrc_max = unit_src* TM_WORLD(srcss,src_grid,idim,box_hi_lim)
@@ -207,25 +208,30 @@
 	            sum   = sum  + cos_factor* ddist * src(srcss, j, k, l, m, n)
                  ENDIF
 
- 110	      CONTINUE
+	      ENDDO
               dst(dstss, j, k, l, m, n) = sum
 
- 160	   CONTINUE
- 190	   CONTINUE
+	   ENDDO  ! dstss_lo,dstss_hi
+
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
 
 * along Y axis
         ELSEIF ( idim .EQ. Y_dim ) THEN
 
-           DO 290 n = cx_lo_s6(cx_lims), cx_hi_s6(cx_lims)
-           DO 290 m = cx_lo_s5(cx_lims), cx_hi_s5(cx_lims)
-           DO 290 l = cx_lo_s4(cx_lims), cx_hi_s4(cx_lims)
-           DO 290 k = cx_lo_s3(cx_lims), cx_hi_s3(cx_lims)
-           DO 290 i = cx_lo_s1(cx_lims), cx_hi_s1(cx_lims)
+           DO n = cx_lo_s6(cx_lims), cx_hi_s6(cx_lims)
+           DO m = cx_lo_s5(cx_lims), cx_hi_s5(cx_lims)
+           DO l = cx_lo_s4(cx_lims), cx_hi_s4(cx_lims)
+           DO k = cx_lo_s3(cx_lims), cx_hi_s3(cx_lims)
+           DO i = cx_lo_s1(cx_lims), cx_hi_s1(cx_lims)
 
 * loop through the each destination grid box
 	   sum = 0.0D0
            dst(i, dstss_lo, k, l, m, n) = sum
-	   DO 260 dstss = dstss_lo,dstss_hi
+	   DO dstss = dstss_lo,dstss_hi
 	      srcss_lo = ss21(dstss-dstss_lo+1)
 	      srcss_hi = ss21(dstss-dstss_lo+2)
 
@@ -234,7 +240,7 @@
      .	     .OR.  srcss_hi .EQ. unspecified_int4)
      .       .AND. .NOT.(ok_neg111) ) THEN
 	         dst(i,dstss,k,l,m,n) = bad_dst
-	         goto 260
+	         CYCLE
 	      ENDIF
 
 * Get destination edges to use
@@ -251,10 +257,10 @@
 
 * IF source box completely encloses the dest box, then srcss_lo=srcss_hi
 * and we can just add the source point into the sum
-	      DO 210 srcss = srcss_lo, srcss_hi
+	      DO srcss = srcss_lo, srcss_hi
 
 * ... ignore missing source data
-	         IF ( src(i, srcss, k, l, m, n) .EQ. bad_src ) GOTO 210
+	         IF ( src(i, srcss, k, l, m, n) .EQ. bad_src ) CYCLE
 
 	         xsrc_min = unit_src* TM_WORLD(srcss,src_grid,idim,box_lo_lim)
 	         xsrc_max = unit_src* TM_WORLD(srcss,src_grid,idim,box_hi_lim)
@@ -272,25 +278,30 @@
 	            sum = sum + ddist*  src(i, srcss, k, l, m, n)
                  ENDIF
 
- 210	      CONTINUE
+              ENDDO
               dst(i, dstss, k, l, m, n) = sum
 
- 260	   CONTINUE
- 290	   CONTINUE
+	   ENDDO  ! dstss_lo,dstss_hi
+
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
 
 * along Z axis
         ELSEIF ( idim .EQ. z_dim ) THEN
 
-           DO 390 n = cx_lo_s6(cx_lims), cx_hi_s6(cx_lims)
-           DO 390 m = cx_lo_s5(cx_lims), cx_hi_s5(cx_lims)
-           DO 390 l = cx_lo_s4(cx_lims), cx_hi_s4(cx_lims)
-           DO 390 j = cx_lo_s2(cx_lims), cx_hi_s2(cx_lims)
-           DO 390 i = cx_lo_s1(cx_lims), cx_hi_s1(cx_lims)
+           DO n = cx_lo_s6(cx_lims), cx_hi_s6(cx_lims)
+           DO m = cx_lo_s5(cx_lims), cx_hi_s5(cx_lims)
+           DO l = cx_lo_s4(cx_lims), cx_hi_s4(cx_lims)
+           DO j = cx_lo_s2(cx_lims), cx_hi_s2(cx_lims)
+           DO i = cx_lo_s1(cx_lims), cx_hi_s1(cx_lims)
 
 * loop through the each destination grid box
 	   sum = 0.0D0
            dst(i, j, dstss_lo, l, m, n) = sum
-	   DO 360 dstss = dstss_lo,dstss_hi
+	   DO dstss = dstss_lo,dstss_hi
 	      srcss_lo = ss21(dstss-dstss_lo+1)
 	      srcss_hi = ss21(dstss-dstss_lo+2)
 
@@ -299,7 +310,7 @@
      .	     .OR.  srcss_hi .EQ. unspecified_int4)
      .       .AND. .NOT.(ok_neg111) ) THEN
 	         dst(i,j,dstss,k,m,n) = bad_dst
-	         goto 360
+	         CYCLE
 	      ENDIF
 
 * Get destination edges to use
@@ -316,10 +327,10 @@
 
 * IF source box completely encloses the dest box, then srcss_lo=srcss_hi
 * and we can just add the source point into the sum
-	      DO 310 srcss = srcss_lo, srcss_hi
+	      DO srcss = srcss_lo, srcss_hi
 
 * ... ignore missing source data
-	         IF ( src(i, j, srcss, l, m, n) .EQ. bad_src ) GOTO 310
+	         IF ( src(i, j, srcss, l, m, n) .EQ. bad_src ) CYCLE
 
 	         xsrc_min = unit_src* TM_WORLD(srcss,src_grid,idim,box_lo_lim)
 	         xsrc_max = unit_src* TM_WORLD(srcss,src_grid,idim,box_hi_lim)
@@ -337,26 +348,30 @@
 	            sum = sum + ddist*  src(i, j, srcss, l, m, n)
                  ENDIF
 
- 310	      CONTINUE
-              dst(i, j, dstss, l, m, n) = sum
+              ENDDO
+	      dst(i, j, dstss, l, m, n) = sum
 
+	   ENDDO  ! dstss_lo,dstss_hi
 
- 360	   CONTINUE
- 390	   CONTINUE
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
 
 * along T axis
         ELSEIF ( idim .EQ. T_dim ) THEN
 
-           DO 490 n = cx_lo_s6(cx_lims), cx_hi_s6(cx_lims)
-           DO 490 m = cx_lo_s5(cx_lims), cx_hi_s5(cx_lims)
-           DO 490 k = cx_lo_s3(cx_lims), cx_hi_s3(cx_lims)
-           DO 490 j = cx_lo_s2(cx_lims), cx_hi_s2(cx_lims)
-           DO 490 i = cx_lo_s1(cx_lims), cx_hi_s1(cx_lims)
+           DO n = cx_lo_s6(cx_lims), cx_hi_s6(cx_lims)
+           DO m = cx_lo_s5(cx_lims), cx_hi_s5(cx_lims)
+           DO k = cx_lo_s3(cx_lims), cx_hi_s3(cx_lims)
+           DO j = cx_lo_s2(cx_lims), cx_hi_s2(cx_lims)
+           DO i = cx_lo_s1(cx_lims), cx_hi_s1(cx_lims)
 
 * loop through the each destination grid box
 	   sum = 0.0D0
            dst(i, j, k, dstss_lo, m, n) = sum
-	   DO 460 dstss = dstss_lo,dstss_hi
+	   DO dstss = dstss_lo,dstss_hi
 	      srcss_lo = ss21(dstss-dstss_lo+1)
 	      srcss_hi = ss21(dstss-dstss_lo+2)
 
@@ -365,7 +380,7 @@
      .	     .OR.  srcss_hi .EQ. unspecified_int4)
      .       .AND. .NOT.(ok_neg111) ) THEN
 	         dst(i,j,k,dstss,m,n) = bad_dst
-	         goto 460
+	         CYCLE
 	      ENDIF
 
 * Get destination edges to use
@@ -384,10 +399,10 @@
 
 * IF source box completely encloses the dest box, then srcss_lo=srcss_hi
 * and we can just add the source point into the sum
-	      DO 410 srcss = srcss_lo, srcss_hi
+	      DO srcss = srcss_lo, srcss_hi
 
 * ... ignore missing source data
-	         IF ( src(i, j, k, srcss, m, n) .EQ. bad_src ) GOTO 410
+	         IF ( src(i, j, k, srcss, m, n) .EQ. bad_src ) CYCLE
 
 	         xsrc_min = unit_src* TM_WORLD(srcss,src_grid,idim,box_lo_lim)
 	         xsrc_max = unit_src* TM_WORLD(srcss,src_grid,idim,box_hi_lim)
@@ -405,25 +420,30 @@
 	            sum = sum + ddist*  src(i, j, k, srcss, m, n)
 	         ENDIF 
 
- 410	      CONTINUE
-              dst(i, j, k, dstss, m, n) = sum
+              ENDDO
+	      dst(i, j, k, dstss, m, n) = sum
 
- 460	   CONTINUE
- 490	   CONTINUE
+	   ENDDO  ! dstss_lo,dstss_hi
+
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
 
 * along E axis
         ELSEIF ( idim .EQ. e_dim ) THEN
 
-           DO 590 n = cx_lo_s6(cx_lims), cx_hi_s6(cx_lims)
-           DO 590 l = cx_lo_s4(cx_lims), cx_hi_s4(cx_lims)
-           DO 590 k = cx_lo_s3(cx_lims), cx_hi_s3(cx_lims)
-           DO 590 j = cx_lo_s2(cx_lims), cx_hi_s2(cx_lims)
-           DO 590 i = cx_lo_s1(cx_lims), cx_hi_s1(cx_lims)
+           DO n = cx_lo_s6(cx_lims), cx_hi_s6(cx_lims)
+           DO l = cx_lo_s4(cx_lims), cx_hi_s4(cx_lims)
+           DO k = cx_lo_s3(cx_lims), cx_hi_s3(cx_lims)
+           DO j = cx_lo_s2(cx_lims), cx_hi_s2(cx_lims)
+           DO i = cx_lo_s1(cx_lims), cx_hi_s1(cx_lims)
 
 * loop through the each destination grid box
 	   sum = 0.0D0
            dst(i, j, k, l, dstss_lo, n) = sum
-	   DO 560 dstss = dstss_lo,dstss_hi
+	   DO dstss = dstss_lo,dstss_hi
 	      srcss_lo = ss21(dstss-dstss_lo+1)
 	      srcss_hi = ss21(dstss-dstss_lo+2)
 
@@ -432,7 +452,7 @@
      .	     .OR.  srcss_hi .EQ. unspecified_int4)
      .       .AND. .NOT.(ok_neg111) ) THEN
 	         dst(i,j,k,l,dstss,n) = bad_dst
-	         goto 560
+	         CYCLE
 	      ENDIF
 
 * Get destination edges to use
@@ -451,10 +471,10 @@
 
 * IF source box completely encloses the dest box, then srcss_lo=srcss_hi
 * and we can just add the source point into the sum
-	      DO 510 srcss = srcss_lo, srcss_hi
+	      DO srcss = srcss_lo, srcss_hi
 
 * ... ignore missing source data
-	         IF ( src(i, j, k, l, srcss, n) .EQ. bad_src ) GOTO 510
+	         IF ( src(i, j, k, l, srcss, n) .EQ. bad_src ) CYCLE
 
 	         xsrc_min = unit_src* TM_WORLD(srcss,src_grid,idim,box_lo_lim)
 	         xsrc_max = unit_src* TM_WORLD(srcss,src_grid,idim,box_hi_lim)
@@ -471,25 +491,30 @@
                  IF (ddist .GT. 0.) THEN
 	            sum = sum + ddist*  src(i, j, k, l, srcss, n)
 	         ENDIF
- 510	      CONTINUE
-              dst(i, j, k, l, dstss, n) = sum
+              ENDDO
+	      dst(i, j, k, l, dstss, n) = sum
 
- 560	   CONTINUE
- 590	   CONTINUE
+	   ENDDO  ! dstss_lo,dstss_hi
+
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
 
 * along F axis
         ELSEIF ( idim .EQ. f_dim ) THEN
 
-           DO 690 m = cx_lo_s5(cx_lims), cx_hi_s5(cx_lims)
-           DO 690 l = cx_lo_s4(cx_lims), cx_hi_s4(cx_lims)
-           DO 690 k = cx_lo_s3(cx_lims), cx_hi_s3(cx_lims)
-           DO 690 j = cx_lo_s2(cx_lims), cx_hi_s2(cx_lims)
-           DO 690 i = cx_lo_s1(cx_lims), cx_hi_s1(cx_lims)
+           DO m = cx_lo_s5(cx_lims), cx_hi_s5(cx_lims)
+           DO l = cx_lo_s4(cx_lims), cx_hi_s4(cx_lims)
+           DO k = cx_lo_s3(cx_lims), cx_hi_s3(cx_lims)
+           DO j = cx_lo_s2(cx_lims), cx_hi_s2(cx_lims)
+           DO i = cx_lo_s1(cx_lims), cx_hi_s1(cx_lims)
 
 * loop through the each destination grid box
 	   sum = 0.0D0
            dst(i, j, k, l, m, dstss_lo) = sum
-	   DO 660 dstss = dstss_lo,dstss_hi
+	   DO dstss = dstss_lo,dstss_hi
 	      srcss_lo = ss21(dstss-dstss_lo+1)
 	      srcss_hi = ss21(dstss-dstss_lo+2)
 
@@ -498,7 +523,7 @@
      .	     .OR.  srcss_hi .EQ. unspecified_int4)
      .       .AND. .NOT.(ok_neg111) ) THEN
 	         dst(i,j,k,l,m,dstss) = bad_dst
-	         goto 660
+	         CYCLE
 	      ENDIF
 
 * Get destination edges to use
@@ -517,10 +542,10 @@
 
 * IF source box completely encloses the dest box, then srcss_lo=srcss_hi
 * and we can just add the source point into the sum
-	      DO 610 srcss = srcss_lo, srcss_hi
+	      DO srcss = srcss_lo, srcss_hi
 
 * ... ignore missing source data
-	         IF ( src(i, j, k, l, m, srcss) .EQ. bad_src ) GOTO 610
+	         IF ( src(i, j, k, l, m, srcss) .EQ. bad_src ) CYCLE
 
 	         xsrc_min = unit_src* TM_WORLD(srcss,src_grid,idim,box_lo_lim)
 	         xsrc_max = unit_src* TM_WORLD(srcss,src_grid,idim,box_hi_lim)
@@ -537,11 +562,16 @@
                  IF (ddist .GT. 0.) THEN
 	            sum = sum + ddist*  src(i, j, k, l, m, srcss)
 	         ENDIF
- 610	      CONTINUE
-              dst(i, j, k, l, m, dstss) = sum
+              ENDDO
+	      dst(i, j, k, l, m, dstss) = sum
 
- 660	   CONTINUE
- 690	   CONTINUE
+	   ENDDO  ! dstss_lo,dstss_hi
+
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
 
         ENDIF
 

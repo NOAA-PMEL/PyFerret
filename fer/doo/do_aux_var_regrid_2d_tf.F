@@ -51,6 +51,7 @@
 * V698  3/16 *sh* - compute f_delta from the time2d field rather than F axis
 *                   allowing the F axis to be redefined
 * V702 1/17 *sh* for trac enhancement #2369 -- dynamic memory management 
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
@@ -152,13 +153,13 @@
 
 * compute the delta increment for each axis
 * this allows "promotion" of degenerate axes
-        DO 10 idim = 1, nferdims
+        DO idim = 1, nferdims
            IF ( CX_DIM_LEN(idim,src_cx) .EQ. 1 ) THEN
               srcinc(idim) = 0
            ELSE
               srcinc(idim) = 1
            ENDIF
- 10     CONTINUE
+	ENDDO
 
 * compute the starting subscript for each axis of each component
 * used below through equivalence relationship
@@ -225,7 +226,6 @@
 	STOP 'do_aux_ver_regrid_2d_tf'
 
 * determine where we are starting on the l_per_n cycle
-! 50	n = AMOD(t_target, f_delta) / t_delta + 1
  50	lsrc0 = lsrc0 - 1
 
 ******************************************************************
@@ -253,24 +253,28 @@
 * copy the src data to the destination array -- loop over its  X,Y,Z,E range
 * the 's' variables are source array indices
 	     is = si0
-	     DO 1000 i = mr_lo_s1(mdst), mr_hi_s1(mdst)
+	     DO i = mr_lo_s1(mdst), mr_hi_s1(mdst)
 	      is = is + dsi
 
 	      js = sj0
-	      DO 1000 j = mr_lo_s2(mdst), mr_hi_s2(mdst)
+	      DO j = mr_lo_s2(mdst), mr_hi_s2(mdst)
 	       js = js + dsj
 
 	       ks = sk0
-	       DO 1000 k = mr_lo_s3(mdst), mr_hi_s3(mdst)
+	       DO k = mr_lo_s3(mdst), mr_hi_s3(mdst)
 	        ks = ks + dsk
 
 	         ms = sm0
-	         DO 1000 m = mr_lo_s5(mdst), mr_hi_s5(mdst)
+	         DO m = mr_lo_s5(mdst), mr_hi_s5(mdst)
 	          ms = ms + dsm
 
 	          dst(i,j,k,l,m,n) = src(is,js,ks,ls,ms,ns)
 
- 1000	     CONTINUE
+	         ENDDO
+	       ENDDO
+	      ENDDO
+	     ENDDO
+	     
 	   ENDIF
 
 * set up for same destination time taken from the previous forecast

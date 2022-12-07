@@ -54,6 +54,7 @@
 * V751  *acm* 6/19 read directly from const_text instead of putting that
 *                  text into a smaller buffer. See issue 1929 allowing
 *                  e.g for `00000000000000000012345678901234567890`
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 
         IMPLICIT NONE
 	include	'tmap_dims.parm'
@@ -88,10 +89,9 @@
 	cx_value( const_cx ) = const_buff
 
 * flesh out context by removing all axes limits
-	DO 200 idim = 1, nferdims
- 200	CALL DEL_CX_DIM( idim, const_cx )
-
-	RETURN
+	DO idim = 1, nferdims
+	   CALL DEL_CX_DIM( idim, const_cx )	   
+	ENDDO
 
 * error exit
  5000	RETURN

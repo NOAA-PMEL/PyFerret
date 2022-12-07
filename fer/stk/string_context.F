@@ -14,6 +14,7 @@
 * V500  1/99 *sh*  based on const_context
 * V530  8/00 *sh*  adding support for arrays of strings
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -40,8 +41,9 @@
 	cx_grid    ( string_cx ) = mgrid_abstract
 
 * flesh out context by removing all axes limits
-	DO 200 idim = 1, nferdims
- 200	CALL DEL_CX_DIM( idim, string_cx )
+	DO idim = 1, nferdims
+	   CALL DEL_CX_DIM( idim, string_cx )
+ 	ENDDO
 
 	status = ferr_ok
 	RETURN

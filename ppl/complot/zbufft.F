@@ -35,6 +35,7 @@
 *
 *
 C**    @(#)zbufft.f	1.1    3/10/88
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 C**
 C**
 C***********************************************************************
@@ -44,27 +45,20 @@ C**
 C***********************************************************************
 C**
 C**
-#ifdef unix
+
 	character buff*64,blnk*1,zfile*81
 	character chr*(*)
-#else
-	character buff*64,blnk*1
-	byte chr(*)
-#endif
 C	
 C	WRITES CHAR TO CURRENT ZETA BUFFER EVENTUALLY TO BE
 C	WRITTEN TO LUN ATTACHED TO THE FILE
 C	D. DENBO  JUNE 1983   UPDATED MARCH 1984
 C
-#ifdef unix
+
 	include 'PLTCOM.DAT'
-#else
-	include 'pplinc:PLTCOM.DAT'
-#endif
 	data blnk/' '/
 	J=1
 	IF (NEWFIL) THEN
-#ifdef unix
+
 	len=lnblk(filez,81)
 	jcnt=1
 100	write(zfile,998)filez(:len),fzcnt
@@ -73,17 +67,11 @@ C
 	jcnt=jcnt+1
 	if(jcnt.gt.101)stop 'can not open hp file'
 	OPEN(UNIT=LUHP,FILE=zfile,STATUS='NEW',err=100)
-#else
-	OPEN(UNIT=LUHP,FILE=filez,STATUS='NEW')
-#endif
+
 	NEWFIL=.FALSE.
 	IPT=1
 	ENDIF
-#ifdef unix
 40	BUFF(IPT:IPT)=CHR(J:J)
-#else
-40	BUFF(IPT:IPT)=char(CHR(J))
-#endif
 	IPT=IPT+1
 	J=J+1
 	IF(IPT.GT.64)THEN
@@ -93,10 +81,7 @@ C
 	ENDIF
 	IF(J.LE.ICNT)GOTO 40
 	RETURN
-c	ENTRY ZFLUSH(CHR)
-c	DO 10 I=IPT,63
-c10	BUFF(I)=CHR(1)
-c	BUFF(64)='Z'
+
 30	WRITE(LUHP,999)BUFF
 	CLOSE(LUHP)
 	NEWFIL=.TRUE.
@@ -104,6 +89,7 @@ c	BUFF(64)='Z'
 	RETURN
 	ENTRY HFLUSH
 	DO 20 I=IPT,64
-20	BUFF(I:I)=BLNK
+	  BUFF(I:I)=BLNK
+20	CONTINUE
 	GOTO 30
 	END

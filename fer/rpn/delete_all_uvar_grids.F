@@ -43,6 +43,7 @@
 * V230:  8/10/92 - needed for DEFINE REGION which may change the implied
 *                  context info of uvars using let x = var[@reg] notation
 *       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -56,21 +57,20 @@
 	INTEGER	i, uvar, j, num_indices
 
 * loop through the user-defined variables
-*	DO 500 uvar = 1, max_uvar
-*	   IF ( uvar_num_items( uvar ) .EQ. uvar_deleted ) GOTO 500
         CALL deleted_list_get_undel(uvar_num_items_head,
      .                              deleted_list_result(1),
      .                              max_uvar, num_indices )
-        DO 500 j = 1, num_indices
+        DO j = 1, num_indices
            uvar = deleted_list_result(j)
 * return to default that all limits are irrelevant
-	   DO 100 i = 1, nferdims
- 100	   uvar_given(i,uvar) = uvlim_irrelevant
+	   DO i = 1, nferdims
+	      uvar_given(i,uvar) = uvlim_irrelevant
+ 	   ENDDO
 
 * reset grid to unknown for all data sets and clear dynamic grid info
 	   CALL DEALLO_UVAR_GRIDS(uvar)
 
- 500	CONTINUE
+	ENDDO
 
  	RETURN
 	END

@@ -146,6 +146,7 @@
 * V73+ 1/18 *acm* Changes for Issue 1009; precsision in time info sent to pplus for 2D plots
 *                 scaling for axis coords and box edges
 * V74+ *acm* 10/18 routine minmax returns a new argument: count of valid data
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -282,11 +283,11 @@ c	ind_dim = plot_axis(1)
 * ... check the Y coordinate variable for conformability
 	CALL GET_CX_DIMS( cx_y, nfdim, fdims)
 	IF (ndim .NE. nfdim) GOTO 5210
-	DO 100, idim = 1, ndim
+	DO idim = 1, ndim
 	   IF (dims(idim) .NE. fdims(idim)) GOTO 5210
 	   IF ( CX_DIM_LEN(dims(idim),cx_x)
      .    .NE.  CX_DIM_LEN(dims(idim),cx_y) ) GOTO 5210
- 100	CONTINUE
+	ENDDO
 * ... check the color value array for consistent structure
 	oneD_form = ndim .EQ. 1
 	CALL GET_CX_DIMS( cx_color, nfdim, fdims)
@@ -303,12 +304,12 @@ c	ind_dim = plot_axis(1)
 	   IF (nfdim .EQ. 0) THEN
 	      ambiguous_coord_axis = .TRUE.
 	   ELSE
-	      DO 105 idim = 1, ndim
+	      DO idim = 1, ndim
 	         IF (dims(idim) .EQ. fdims(1)) THEN
 	            ambiguous_coord_axis = .FALSE.
 	            GOTO 106
 	         ENDIF
- 105          CONTINUE
+	      ENDDO
 	      ambiguous_coord_axis = .TRUE.
 	   ENDIF
  106	   IF (ambiguous_coord_axis) THEN
@@ -319,15 +320,16 @@ c	ind_dim = plot_axis(1)
      .					      qual_end  (coord_ax)),
      .				    buff, status )
                  IF ( status .NE. ferr_ok ) RETURN
-                 DO 120 coord_dim = 1,4
+                 DO coord_dim = 1,4
 	            IF (ww_dim_name(coord_dim) .EQ. buff(1:1)
      .		   .OR. ss_dim_name(coord_dim) .EQ. buff(1:1) ) THEN
 *      ... is the specified axis an axis of the arrays?
-	               DO 110 idim = 1, 2
- 110		       IF (coord_dim .EQ. dims(idim)) GOTO 150
+	               DO idim = 1, 2
+		          IF (coord_dim .EQ. dims(idim)) GOTO 150
+ 		       ENDDO
 	               GOTO 5300	! invalid coordinate dim given
 	            ENDIF
- 120	         CONTINUE
+		 ENDDO
 	         GOTO 5300	! coord dim wasn't "X","Y","Z", or "T"
 	      ELSE
 * ... the user has NOT specified the coordinate axis
@@ -526,41 +528,41 @@ c	ind_dim = plot_axis(1)
 
            IF (transpz) THEN
               IF ( xlo .GT. xhi )  THEN
-                 DO 201 i = 1, npts
+                 DO i = 1, npts
                     IF ( y_dat(i) .NE. mr_bad_data(mr_y) )
      .                y_dat(i) = -1.* y_dat(i)
-  201            CONTINUE
+                 ENDDO
               ENDIF
    
               IF ( ylo .GT. yhi )  THEN
-                 DO 202 i = 1, npts
+                 DO i = 1, npts
                     IF ( x_dat(i) .NE. mr_bad_data(mr_x) )
      .                x_dat(i) = -1.* x_dat(i)
-  202            CONTINUE
+                 ENDDO
               ENDIF
 
    	   ELSE
 
       	      IF ( xlo .GT. xhi )  THEN
-                 DO 203 i = 1, npts
+                 DO i = 1, npts
                     IF ( x_dat(i) .NE. mr_bad_data(mr_x) )
      .                x_dat(i) = -1.* x_dat(i)
-  203            CONTINUE
+                 ENDDO
               ENDIF
    
               IF ( ylo .GT. yhi )  THEN
-                 DO 204 i = 1, npts
+                 DO i = 1, npts
                     IF ( y_dat(i) .NE. mr_bad_data(mr_y) )
      .                y_dat(i) = -1.* y_dat(i)
-  204            CONTINUE
+                 ENDDO
               ENDIF
 	   ENDIF  
 
 	   IF (add_lon .NE. 0.) THEN
-	      DO 205 i = 1, npts
+	      DO i = 1, npts
 	         IF ( x_dat(i) .NE. mr_bad_data(mr_x) ) 
      .              x_dat(i) = add_lon + x_dat(i)
-  205	      CONTINUE
+                 ENDDO
            ENDIF
 
 * When using log axis transform to log(x).  Scale the points of the
@@ -574,13 +576,13 @@ c	ind_dim = plot_axis(1)
 	      xptsmin = ABS(mr_bad_data(mr_x))
 	      xptsmax = -1.* xptsmin
 	      count = 0
-	      DO 400 i = 1, npts
+	      DO i = 1, npts
 		 IF (x_dat(i) .NE. mr_bad_data(mr_x)) THEN 
 		    xptsmin = MIN(xptsmin, x_dat(i))
 		    xptsmax = MAX(xptsmax, x_dat(i))
 		    count = count+1
 		 ENDIF
-  400         CONTINUE
+	      ENDDO
 
 	      xptsmean = (xptsmin+xptsmax)/2.
 
@@ -593,11 +595,11 @@ c	ind_dim = plot_axis(1)
 	      IF (xptsmean .GT. 0.0) THEN
 		 xmeanlog = LOG10(xptsmean)
 
-		 DO 410 i = 1, npts
+		 DO i = 1, npts
 		    val = x_dat(i)
 		    xdif = scale*(x_dat(i) - xptsmean)
 		    x_dat(i) = xmeanlog + xdif
-  410		 CONTINUE
+		 ENDDO
 	      ELSEIF (count.GT.0) THEN
 		 small = xptsmean
 		 GO TO 5600
@@ -615,13 +617,13 @@ c	ind_dim = plot_axis(1)
 	      yptsmin = ABS(mr_bad_data(mr_y))
 	      yptsmax = -1.* yptsmin
 	      count = 0
-	      DO 500 i = 1, npts
+	      DO i = 1, npts
 		 IF (y_dat(i) .NE. mr_bad_data(mr_y)) THEN 
 		    yptsmin = MIN(yptsmin, y_dat(i))
 		    yptsmax = MAX(yptsmax, y_dat(i))
 		    count = count+1
 		 ENDIF
-  500         CONTINUE
+	      ENDDO
 
 	      yptsmean = (yptsmin+yptsmax)/2.
 
@@ -633,11 +635,11 @@ c	ind_dim = plot_axis(1)
 	      IF (yptsmean .GT. 0.0) THEN
 		 ymeanlog = LOG10(yptsmean)
 
-		 DO 510 i = 1, npts
+		 DO i = 1, npts
 		  val = y_dat(i)
 		    ydif = scale*(y_dat(i) - yptsmean)
 		    y_dat(i) = ymeanlog + ydif
-  510		 CONTINUE
+	         ENDDO
 	      ELSEIF (count.GT.0) THEN
 		 small = yptsmean
 		 GO TO 5600
@@ -650,22 +652,22 @@ c	ind_dim = plot_axis(1)
 
 	   start = npts
 	   end   = npts
-	   DO 210 i = 1, npts
+	   DO i = 1, npts
 	      IF ( x_dat(i) .NE. mr_bad_data(mr_x) 
      .       .AND. y_dat(i) .NE. mr_bad_data(mr_y) ) THEN
 	         start = i
 	         GOTO 220
 	      ENDIF
- 210	   CONTINUE
+	   ENDDO
 	   GOTO 240   ! This polygon is all missing in X - omit		
 *    ... find the end of the segment
- 220	   DO 230 i = start, npts
+ 220	   DO i = start, npts
 	      IF ( x_dat(i) .EQ. mr_bad_data(mr_x) 
      .       .OR.  y_dat(i) .EQ. mr_bad_data(mr_y) ) THEN
 	         end = i - 1
 	         GOTO 250
 	      ENDIF
- 230	   CONTINUE
+	   ENDDO
 
  240	   IF (start .GE. end ) missing_polygon = .true.
 	   nsiz = npts
@@ -803,8 +805,9 @@ c	   IF ( npoly         .GE. NPOLYGON   ) GOTO 5160
 	   IF ( status .NE. ferr_ok ) GOTO 5000
 	endif
 	IF (ncolor .EQ. 1) THEN
-	   DO 300 ipoly = 1, npoly
- 300	   x_dat(ipoly) = x_dat(1)	! single color applied to all pol'gs
+	   DO ipoly = 1, npoly
+	      x_dat(ipoly) = x_dat(1)	! single color applied to all pol'gs
+ 	   ENDDO
 	   ncolor = npoly
 
 * for time-axis overlays, mising-polygons are not loaded. Account for that in the color array.
@@ -930,22 +933,22 @@ c	   IF ( npoly         .GE. NPOLYGON   ) GOTO 5160
 	   missing_polygon = .false.
 	   start = npts
 	   end   = npts
-	   DO 610 i = 1, npts
+	   DO i = 1, npts
 	      IF ( x_dat(i) .NE. mr_bad_data(mr_x) 
      .       .AND. y_dat(i) .NE. mr_bad_data(mr_y) ) THEN
 	         start = i
 	         GOTO 620
 	      ENDIF
- 610	   CONTINUE
+	   ENDDO
 	   GOTO 640   ! This polygon is all missing in X - omit		
 *    ... find the end of the segment
- 620	   DO 630 i = start, npts
+ 620	   DO i = start, npts
 	      IF ( x_dat(i) .EQ. mr_bad_data(mr_x) 
      .       .OR.  y_dat(i) .EQ. mr_bad_data(mr_y) ) THEN
 	         end = i - 1
 	         GOTO 650
 	      ENDIF
- 630	   CONTINUE
+	   ENDDO
 
  640	   IF (start .GE. end ) missing_polygon = .true.
 

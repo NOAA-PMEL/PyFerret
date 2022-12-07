@@ -58,6 +58,7 @@
 * V671 7/11  *acm* Ticket 1868 IFV - masking expressions with ifValid, treating 
 *		   zero as valid. 
 * V720: 4/17 *acm* add direction-changing functions as a subset of grid-changing ones
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 
         IMPLICIT NONE
 	include 'ferret.parm'
@@ -91,32 +92,25 @@
 	stack(stk_ndx)	= added_left_paren
 	
 	fcn_ndx		= 0
-	do 10 i = 1,max_fcn
+	do i = 1,max_fcn
 	   arg_cnt(i) 	= 1
-10	continue
-
-! 11/96 - obsolete lines dealing with multiple expressions
-!	exp_ndx		= 1
-!	exp_start(1)	= 1
-!	exp_at1(1)	= 1	! 1st atom of RPN
-!	exp_end(1)	= 0
-!	do 20 i = 2,max_exp
-!	   exp_end(i)   = 0
-!20	continue
+	enddo
 
 	wte_ndx 	= 1
-	do 25 i = 1,max_wte+1
+	do i = 1,max_wte+1
 	   wte_cnt(i)   = 0
-25	continue
+	enddo
 
 *	TRANSFER THE ATOM TYPE LIST TO A WORKING ARRAY WITH TERMINATOR (11/96)
-	DO 30 ndx = 1, natom_infx
- 30	atom_type(ndx) = at_typ_in(ndx)
+	DO ndx = 1, natom_infx
+	   atom_type(ndx) = at_typ_in(ndx)
+ 	enddo
+
 	atom_cnt = natom_infx + 1
 	atom_type(atom_cnt) = alg_finished	! terminator
 
 *	EXAMINE EACH ATOM IN INFIX STRING, PUT ON STACK OR IN POSTFIX STRING
-40	do 60 ndx = 1, atom_cnt
+40	do ndx = 1, atom_cnt
 	   las_ptr = inf_ptr
 	   inf_ptr = ndx
 
@@ -231,7 +225,9 @@
 	         end if 
 	      end if
 	   end if
-60	continue
+
+	enddo
+
 ! 11/96 - obsolete lines dealing with multiple expressions
 !!	exp_end(exp_ndx) = atom_end(pstfx_order(pos_ndx))	! old
 !	exp_end(exp_ndx) = atom_end(atom_cnt-1)
@@ -239,18 +235,23 @@
 
 	if (wte_ndx .gt. 1) then
 * ... "WHERE" is a no-op at RPN execution time
-	   DO 64 i = 1, atom_cnt
- 64	   IF ( ((atom_type(i) .EQ. alg_log_struct) .OR. 
-     .           (atom_type(i) .EQ. alg_log_vstruct) )
-     .	  .AND. atom_id(i)   .EQ. where ) at_typ_in(i) = alg_then_marker
+	   DO i = 1, atom_cnt
+	     IF ( ((atom_type(i) .EQ. alg_log_struct) .OR. 
+     .             (atom_type(i) .EQ. alg_log_vstruct) )
+     .	      .AND. atom_id(i)   .EQ. where ) at_typ_in(i) = alg_then_marker
+     	   ENDDO
+
 	   IF (wte_cnt(2) .eq. where) THEN
 	      goto 5100
 	   ELSEIF ( wte_cnt(2) .EQ. pelse ) THEN
+
 * ... WHERE-THEN-ELSE --> THEN becomes a no-op
-	      DO 66 i = 1, atom_cnt
- 66	      IF ( ((atom_type(i) .EQ. alg_log_struct) .OR. 
-     .              (atom_type(i) .EQ. alg_log_vstruct) )
-     .	     .AND. atom_id(i)   .EQ. pthen ) at_typ_in(i) = alg_if_marker
+	      DO i = 1, atom_cnt
+	         IF ( ((atom_type(i) .EQ. alg_log_struct) .OR. 
+     .                 (atom_type(i) .EQ. alg_log_vstruct) )
+     .	          .AND. atom_id(i)   .EQ. pthen ) at_typ_in(i) = alg_if_marker
+     	      ENDDO
+
 	   ENDIF
 	end if
 
@@ -260,29 +261,6 @@
 	   natom_pstfx = pos_ndx
 	   status = ferr_ok
 	   return
-
-! 11/96 - obsolete lines dealing with reordering input arrays
-!*	   REARRANGE TEXT ACCORDING TO PSTFX_ORDER ARRAY POSTFIX ORDERING
-!	   do 70 i = 1,pos_ndx
-!	      tmp_atom_type(i) 	= atom_type(pstfx_order(i))
-!	      tmp_atom_id(i)   	= atom_id(pstfx_order(i))
-!	      tmp_atom_start(i)	= atom_start(pstfx_order(i))
-!	      tmp_atom_end(i)	= atom_end(pstfx_order(i))
-!70	   continue
-!
-!	   do 80 i = 1,pos_ndx
-!	      atom_type(i)	= tmp_atom_type(i)
-!	      atom_id(i)	= tmp_atom_id(i)
-!	      atom_start(i)	= tmp_atom_start(i)
-!	      atom_end(i)	= tmp_atom_end(i)
-!80	   continue
-!	   
-!	   i			= pos_ndx + 1
-!	   atom_type(i)		= atom_type(atom_cnt)
-!	   atom_id(i)		= atom_id(atom_cnt)
-!	   atom_start(i)	= atom_start(atom_cnt)
-!	   atom_end(i)		= atom_end(atom_cnt)
-
 	else
 	   goto 5500
 	end if

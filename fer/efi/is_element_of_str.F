@@ -36,6 +36,7 @@
 * Ansley Manke
 * August 2005
 * V68  *acm* 1/12  ifdef double_p for double-precision ferret.
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 *
 *  For string arguments, 
 *  Return logical value (integer 1 or 0); If argument 1 takes on any of 
@@ -230,12 +231,12 @@ C  Returns a single value, so no incrementing result indices
       m = res_lo_ss(E_AXIS)
       n = res_lo_ss(F_AXIS)
 
-      DO 100 n1=arg_lo_ss(F_AXIS,ARG1), arg_hi_ss(F_AXIS, ARG1)
-      DO 100 m1=arg_lo_ss(E_AXIS,ARG1), arg_hi_ss(E_AXIS, ARG1)
-      DO 100 l1=arg_lo_ss(T_AXIS,ARG1), arg_hi_ss(T_AXIS, ARG1)
-      DO 100 k1=arg_lo_ss(Z_AXIS,ARG1), arg_hi_ss(Z_AXIS, ARG1)
-      DO 100 j1=arg_lo_ss(Y_AXIS,ARG1), arg_hi_ss(Y_AXIS, ARG1)
-      DO 100 i1=arg_lo_ss(X_AXIS,ARG1), arg_hi_ss(X_AXIS, ARG1)
+      DO n1=arg_lo_ss(F_AXIS,ARG1), arg_hi_ss(F_AXIS, ARG1)
+      DO m1=arg_lo_ss(E_AXIS,ARG1), arg_hi_ss(E_AXIS, ARG1)
+      DO l1=arg_lo_ss(T_AXIS,ARG1), arg_hi_ss(T_AXIS, ARG1)
+      DO k1=arg_lo_ss(Z_AXIS,ARG1), arg_hi_ss(Z_AXIS, ARG1)
+      DO j1=arg_lo_ss(Y_AXIS,ARG1), arg_hi_ss(Y_AXIS, ARG1)
+      DO i1=arg_lo_ss(X_AXIS,ARG1), arg_hi_ss(X_AXIS, ARG1)
 
          arg = 1
          CALL ef_get_string_arg_element_6d(id, arg, arg_1, 
@@ -243,12 +244,12 @@ C  Returns a single value, so no incrementing result indices
 
          IF ( slen1 .GT. 0 ) THEN
 
-            DO 200 n2=arg_lo_ss(F_AXIS,ARG2), arg_hi_ss(F_AXIS, ARG2)
-            DO 200 m2=arg_lo_ss(E_AXIS,ARG2), arg_hi_ss(E_AXIS, ARG2)
-            DO 200 l2=arg_lo_ss(T_AXIS,ARG2), arg_hi_ss(T_AXIS, ARG2)
-            DO 200 k2=arg_lo_ss(Z_AXIS,ARG2), arg_hi_ss(Z_AXIS, ARG2)
-            DO 200 j2=arg_lo_ss(Y_AXIS,ARG2), arg_hi_ss(Y_AXIS, ARG2)
-            DO 200 i2=arg_lo_ss(X_AXIS,ARG2), arg_hi_ss(X_AXIS, ARG2)
+            DO n2=arg_lo_ss(F_AXIS,ARG2), arg_hi_ss(F_AXIS, ARG2)
+            DO m2=arg_lo_ss(E_AXIS,ARG2), arg_hi_ss(E_AXIS, ARG2)
+            DO l2=arg_lo_ss(T_AXIS,ARG2), arg_hi_ss(T_AXIS, ARG2)
+            DO k2=arg_lo_ss(Z_AXIS,ARG2), arg_hi_ss(Z_AXIS, ARG2)
+            DO j2=arg_lo_ss(Y_AXIS,ARG2), arg_hi_ss(Y_AXIS, ARG2)
+            DO i2=arg_lo_ss(X_AXIS,ARG2), arg_hi_ss(X_AXIS, ARG2)
 
                arg = 2
                CALL ef_get_string_arg_element_6d(id, arg, arg_2, 
@@ -264,11 +265,21 @@ C Found a match
 
                ENDIF
 
- 200        CONTINUE
+            ENDDO
+            ENDDO
+            ENDDO
+            ENDDO
+            ENDDO
+            ENDDO
 
          ENDIF
 
- 100  CONTINUE
+      ENDDO
+      ENDDO
+      ENDDO
+      ENDDO
+      ENDDO
+      ENDDO
 
 C No match found
       result(i,j,k,l,m,n) = 0.

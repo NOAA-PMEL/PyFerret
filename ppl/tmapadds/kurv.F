@@ -39,6 +39,7 @@
 *     *tc* 1.26.93  added this 'spline under tension' package.
 *                   called by pplmod_contur and pplmod_arc to interpolate 
 *                   on contour lines.
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 
       IMPLICIT NONE
       integer n,islpsw,ierr
@@ -140,8 +141,9 @@ c
       s(1) = 0.
       do 1 i = 2,n
         im1 = i-1
-    1   s(i) = s(im1)+sqrt((x(i)-x(im1))**2+
+        s(i) = s(im1)+sqrt((x(i)-x(im1))**2+
      *         (y(i)-y(im1))**2)
+   1  continue
 c
 c denormalize tension factor
 c
@@ -208,7 +210,8 @@ c
         dx1 = dx2
         dy1 = dy2
         diag1 = diag2
-    8   sdiag1 = sdiag2
+        sdiag1 = sdiag2
+    8 continue
     9 diag = diag1-sdiag1*temp(nm1)
       xp(n) = (slppnx-dx1-sdiag1*xp(nm1))/diag
       yp(n) = (slppny-dy1-sdiag1*yp(nm1))/diag
@@ -218,7 +221,8 @@ c
       do 10 i = 2,n
         ibak = np1-i
         xp(ibak) = xp(ibak)-temp(ibak)*xp(ibak+1)
-   10   yp(ibak) = yp(ibak)-temp(ibak)*yp(ibak+1)
+        yp(ibak) = yp(ibak)-temp(ibak)*yp(ibak+1)
+   10 continue
       return
 c
 c too few points

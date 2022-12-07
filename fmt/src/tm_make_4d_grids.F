@@ -69,6 +69,7 @@
 *       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
 *       *acm* 3/12 removing use of old GT and TS data formats (routine 
 *	           GT_GET_TIME_AXIS is still used for MC datasets).
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 
 * CALLING ARGUMENTS
 *	dnum - the data set fow which a time axis is desired
@@ -83,7 +84,7 @@
 	include 'xdset_info.cmn_text'
 	external xdset_info_data
 	include 'xtm_grid.cmn_text'
-		include 'xstep_files.cmn_text'
+	include 'xstep_files.cmn_text'
 	external xstep_files_data
 
 *
@@ -108,25 +109,25 @@
 * *kob* 12/00 - loop through all variables and check them all 
 *               for time indepedence.   
 	all_normal = .TRUE.
-	DO 50 ivar = 1,maxvars
+	DO ivar = 1,maxvars
 	   ngrd = ds_grid_number(ivar)
 	   IF (ds_var_setnum(ivar) .EQ. dnum) THEN
 	      IF ( grid_line(4,ngrd) .NE. mpsnorm) THEN
 		 all_normal = .FALSE.
-		 GOTO 70
+		 EXIT
 	      ENDIF
 	   ENDIF
- 50	CONTINUE
+	ENDDO
 
 *       Loop through all variables
- 70	DO 150 ivar = 1,maxvars
+ 	DO ivar = 1,maxvars
 	  IF (ds_var_setnum(ivar) .EQ. dnum) THEN
 
 * . Are any non-time axes defined as mpsunkn ?
 	    ngrd = ds_grid_number(ivar)
-	    DO 100 ilne = 1,3
+	    DO ilne = 1,3
 	      IF ( grid_line(ilne,ngrd) .EQ. mpsunkn ) GOTO 9100
-  100	    CONTINUE
+	    ENDDO
 
 * .. If time axis unknown create an auto time axis (once, only)
 *	and build a new nferdims-D grid in position 0 with time info
@@ -176,18 +177,18 @@
 	         CALL TM_USE_LINE( ds_time_axis(dnum) )
 	      ELSE
 *	... This duplicates a pre-existing grid definition -- reuse the older
-	         DO 110 iv =  1,maxvars
+	         DO iv =  1,maxvars
 	           IF (ds_var_setnum(ivar) .EQ. dnum) THEN
 	             IF (ds_grid_number(iv).EQ.ngrd)
      .			 ds_grid_number(iv) = ngrid
 	           ENDIF
- 110		 CONTINUE
+		 ENDDO
 	         ngrd = ngrid
 	      ENDIF
 * ... Set the (previously unspecified) subscript limits for the variable
 * ... Check to see if data is time-independent, if it is, both
 * ...... grid start and end are set to 1 -----------> kob 6/91
-	      DO 120 iv =  1,maxvars
+	      DO iv =  1,maxvars
 	        IF (ds_var_setnum(ivar).EQ.dnum
      .	     .AND.  ds_grid_number(iv) .EQ.ngrd  ) THEN
 	          ds_grid_start(4,iv) = 1
@@ -197,31 +198,32 @@
                     ds_grid_end  (4,iv) = line_dim( ds_time_axis(dnum) )
                   ENDIF
 	        ENDIF
- 120	      CONTINUE
+	      ENDDO
 	    ELSE
 	      ext_tax = grid_line(4,ngrd)	! save external time ax #
 	    ENDIF
 
 	  ENDIF
 
-  150	CONTINUE
+	ENDDO
 
 * a few clean-up details for externally defined time axis (*sh* 9/90)
 * (uses time axis from last data set variable as data set default)
 	IF ( use_ext_tax ) THEN
 	   ds_time_axis  ( dnum ) = ext_tax
 	   ds_time_modulo( dnum ) = line_modulo( ext_tax )
-	   DO 160 sf = 1, maxstepfiles
- 160	   IF ( sf_setnum(sf) .EQ. dnum ) sf_regtimes(sf) = .FALSE.
+	   DO sf = 1, maxstepfiles
+	      IF ( sf_setnum(sf) .EQ. dnum ) sf_regtimes(sf) = .FALSE.
+ 	   ENDDO
 * *sh* 1/93: check for "-1:-1" limits with an explicit time axis
-	   DO 170 ivar = 1,maxvars
+	   DO ivar = 1,maxvars
 	      IF (ds_var_setnum(ivar) .EQ. dnum) THEN
                  IF ( ds_grid_start(4,ivar) .LE. 0 )
      .                 ds_grid_start(4,ivar) = 1
                  IF ( ds_grid_end(4,ivar) .LE. 0 )
      .                 ds_grid_end(4,ivar) =  line_dim( ext_tax )
               ENDIF
- 170       CONTINUE
+	   ENDDO
 	ENDIF
 
 	GOTO 9990

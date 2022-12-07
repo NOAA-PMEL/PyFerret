@@ -44,6 +44,7 @@
 *
 * V200:  6/6/89
 * V301: 2/94 - bug fix if wlen=1 (window of width 1)
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 
 * calling argument declarations:
         IMPLICIT NONE
@@ -54,8 +55,9 @@
 	INTEGER i, k
 
 * zero out the array
-	DO 10 i = 1, wlen+1
- 10	wt(i) = 0.0
+	DO i = 1, wlen+1
+ 	   wt(i) = 0.0
+ 	ENDDO
 
 	IF ( wlen .GT. 1 ) THEN
 * insert [1/2,1/2]
@@ -66,10 +68,11 @@
 	ENDIF
 	
 * repeat convolution wlen-2 times
-	DO 200 k = 1, wlen-2
-	   DO 100 i = 1, wlen
- 100	   wt(i) = wt(i)*0.5 + wt(i+1)*0.5
- 200	CONTINUE
+	DO k = 1, wlen-2
+	   DO i = 1, wlen
+ 	      wt(i) = wt(i)*0.5 + wt(i+1)*0.5
+ 	   ENDDO
+ 	ENDDO
 
 	RETURN
 	END	

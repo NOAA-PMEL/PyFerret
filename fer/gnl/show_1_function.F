@@ -57,6 +57,7 @@
 *                 various SHOW commnands will not list info for E,F dimensions.
 * V7    acm  6/16 Ticket 2437: Deprecating mode_6d_lab. 
 *		  Adjust output to 6-D or 4-D grids
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -185,8 +186,9 @@
 	   CALL SPLIT_LIST( pttmode_explct, lun,
      .		'        Axes of result:', 23)
 	   IF ( ifcn .LE. gfcn_num_internal ) THEN
-	      DO 210 idim = 1, nferdims
- 210          axis_will_be(idim) = gfcn_axis_will_be(idim,ifcn)
+	      DO idim = 1, nferdims
+                 axis_will_be(idim) = gfcn_axis_will_be(idim,ifcn)
+	      ENDDO
 	   ELSE
 	      CALL EFCN_GET_AXIS_WILL_BE(ifcn, axis_will_be)
 	   ENDIF

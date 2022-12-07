@@ -69,6 +69,7 @@
 *       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
 * V685 3/13 *sh* support for aux var regridding: var[gz(depth)=zax]
 * V695  *acm* 2/15 cx_calendar stores info about calendar formatting of T and F axes
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 
 	IMPLICIT NONE
 
@@ -85,9 +86,7 @@
 	LOGICAL	nest_new_cx
 
 * internal variable declarations:
-!	LOGICAL		itsa_uvar
 	INTEGER		idim, var, trans, i
-!	CHARACTER	ALG_TRANS_CODE*3
 
 * first see if data_set or variable is being modified
 	cx_dset_gvn( dest_cx ) = cx_dset_gvn( mods_cx )
@@ -106,8 +105,9 @@
 	   cx_grid( dest_cx ) = cx_grid( mods_cx )
 	ENDIF
 * ... apply regrid transform to each axis (some may be "unspecified")
-	DO 50 idim = 1, nferdims
- 50	cx_regrid_trans(idim,dest_cx) = cx_regrid_trans(idim,mods_cx)
+	DO idim = 1, nferdims
+ 	   cx_regrid_trans(idim,dest_cx) = cx_regrid_trans(idim,mods_cx)
+	ENDDO
 
 * apply modifications for each axis ( except normal axes, of course )
 	DO 100 idim = 1, nferdims

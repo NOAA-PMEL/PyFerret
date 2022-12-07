@@ -53,6 +53,7 @@
 * v491 - *kob* 3.98 - modify loop @450 to use cx_lo/hi_s3 for k 
 *                     rather than s4 *kob*
 *        2/12 *kms* Add E and F dimensions (use nferdims in tmap_dims.parm)
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
@@ -111,18 +112,18 @@
 
 * ALONG X AXIS
 	IF ( idim .EQ. x_dim ) THEN
-	   DO 150 n = cx_lo_s6(res_cx), cx_hi_s6(res_cx)
-	   DO 150 m = cx_lo_s5(res_cx), cx_hi_s5(res_cx)
-	   DO 150 l = cx_lo_s4(res_cx), cx_hi_s4(res_cx)
-	   DO 150 k = cx_lo_s3(res_cx), cx_hi_s3(res_cx)
-	   DO 150 j = cx_lo_s2(res_cx), cx_hi_s2(res_cx)
+	   DO n = cx_lo_s6(res_cx), cx_hi_s6(res_cx)
+	   DO m = cx_lo_s5(res_cx), cx_hi_s5(res_cx)
+	   DO l = cx_lo_s4(res_cx), cx_hi_s4(res_cx)
+	   DO k = cx_lo_s3(res_cx), cx_hi_s3(res_cx)
+	   DO j = cx_lo_s2(res_cx), cx_hi_s2(res_cx)
 * ... locate first valid index off edge of requested region
 	      las_index = unspecified_int4
-	      DO 110 i = offlim, dnlim, delta
+	      DO i = offlim, dnlim, delta
 	         IF ( com(i,j,k,l,m,n) .NE. bad_com ) las_index = i
- 110	      CONTINUE
+	      ENDDO
 * ... loop through points finding distance from last valid point
-	      DO 120 i = dnlim, uplim, delta
+	      DO i = dnlim, uplim, delta
 	         IF ( com(i,j,k,l,m,n) .NE. bad_com ) THEN
 	            las_index = i
 	            res(i,j,k,l,m,n) = 0.0
@@ -137,23 +138,27 @@
      .                    TM_WORLD(i,         grid, idim, box_middle)
      .                  - TM_WORLD(las_index, grid, idim, box_middle) )
 	         ENDIF
- 120	      CONTINUE
- 150	   CONTINUE
+	      ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
 
 * ALONG Y AXIS
 	ELSEIF ( idim .EQ. y_dim ) THEN
-	   DO 250 n = cx_lo_s6(res_cx), cx_hi_s6(res_cx)
-	   DO 250 m = cx_lo_s5(res_cx), cx_hi_s5(res_cx)
-	   DO 250 l = cx_lo_s4(res_cx), cx_hi_s4(res_cx)
-	   DO 250 k = cx_lo_s3(res_cx), cx_hi_s3(res_cx)
-	   DO 250 i = cx_lo_s1(res_cx), cx_hi_s1(res_cx)
+	   DO n = cx_lo_s6(res_cx), cx_hi_s6(res_cx)
+	   DO m = cx_lo_s5(res_cx), cx_hi_s5(res_cx)
+	   DO l = cx_lo_s4(res_cx), cx_hi_s4(res_cx)
+	   DO k = cx_lo_s3(res_cx), cx_hi_s3(res_cx)
+	   DO i = cx_lo_s1(res_cx), cx_hi_s1(res_cx)
 * ... locate first valid index off edge of requested region
 	      las_index = unspecified_int4
-	      DO 210 j = offlim, dnlim, delta
+	      DO j = offlim, dnlim, delta
 	         IF ( com(i,j,k,l,m,n) .NE. bad_com ) las_index = j
- 210	      CONTINUE
+	      ENDDO
 * ... loop through points finding distance from last valid point
-	      DO 220 j = dnlim, uplim, delta
+	      DO j = dnlim, uplim, delta
 	         IF ( com(i,j,k,l,m,n) .NE. bad_com ) THEN
 	            las_index = j
 	            res(i,j,k,l,m,n) = 0.0
@@ -168,23 +173,27 @@
      .                    TM_WORLD(j,         grid, idim, box_middle)
      .                  - TM_WORLD(las_index, grid, idim, box_middle) )
 	         ENDIF
- 220	      CONTINUE
- 250	   CONTINUE
+	      ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
 
 * ALONG Z AXIS
 	ELSEIF ( idim .EQ. z_dim ) THEN
-	   DO 350 n = cx_lo_s6(res_cx), cx_hi_s6(res_cx)
-	   DO 350 m = cx_lo_s5(res_cx), cx_hi_s5(res_cx)
-	   DO 350 l = cx_lo_s4(res_cx), cx_hi_s4(res_cx)
-	   DO 350 j = cx_lo_s2(res_cx), cx_hi_s2(res_cx)
-	   DO 350 i = cx_lo_s1(res_cx), cx_hi_s1(res_cx)
+	   DO n = cx_lo_s6(res_cx), cx_hi_s6(res_cx)
+	   DO m = cx_lo_s5(res_cx), cx_hi_s5(res_cx)
+	   DO l = cx_lo_s4(res_cx), cx_hi_s4(res_cx)
+	   DO j = cx_lo_s2(res_cx), cx_hi_s2(res_cx)
+	   DO i = cx_lo_s1(res_cx), cx_hi_s1(res_cx)
 * ... locate first valid index off edge of requested region
 	      las_index = unspecified_int4
-	      DO 310 k = offlim, dnlim, delta
+	      DO k = offlim, dnlim, delta
 	         IF ( com(i,j,k,l,m,n) .NE. bad_com ) las_index = k
- 310	      CONTINUE
+	      ENDDO
 * ... loop through points finding distance from last valid point
-	      DO 320 k = dnlim, uplim, delta
+	      DO k = dnlim, uplim, delta
 	         IF ( com(i,j,k,l,m,n) .NE. bad_com ) THEN
 	            las_index = k
 	            res(i,j,k,l,m,n) = 0.0
@@ -199,23 +208,27 @@
      .                    TM_WORLD(k,         grid, idim, box_middle)
      .                  - TM_WORLD(las_index, grid, idim, box_middle) )
 	         ENDIF
- 320	      CONTINUE
- 350	   CONTINUE
+	      ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
 
 * ALONG T AXIS
 	ELSEIF ( idim .EQ. t_dim ) THEN
-	   DO 450 n = cx_lo_s6(res_cx), cx_hi_s6(res_cx)
-	   DO 450 m = cx_lo_s5(res_cx), cx_hi_s5(res_cx)
-	   DO 450 k = cx_lo_s3(res_cx), cx_hi_s3(res_cx)
-	   DO 450 j = cx_lo_s2(res_cx), cx_hi_s2(res_cx)
-	   DO 450 i = cx_lo_s1(res_cx), cx_hi_s1(res_cx)
+	   DO n = cx_lo_s6(res_cx), cx_hi_s6(res_cx)
+	   DO m = cx_lo_s5(res_cx), cx_hi_s5(res_cx)
+	   DO k = cx_lo_s3(res_cx), cx_hi_s3(res_cx)
+	   DO j = cx_lo_s2(res_cx), cx_hi_s2(res_cx)
+	   DO i = cx_lo_s1(res_cx), cx_hi_s1(res_cx)
 * ... locate first valid index off edge of requested region
 	      las_index = unspecified_int4
-	      DO 410 l = offlim, dnlim, delta
+	      DO l = offlim, dnlim, delta
 	         IF ( com(i,j,k,l,m,n) .NE. bad_com ) las_index = l
- 410	      CONTINUE
+	      ENDDO
 * ... loop through points finding distance from last valid point
-	      DO 420 l = dnlim, uplim, delta
+	      DO l = dnlim, uplim, delta
 	         IF ( com(i,j,k,l,m,n) .NE. bad_com ) THEN
 	            las_index = l
 	            res(i,j,k,l,m,n) = 0.0
@@ -230,23 +243,27 @@
      .                    TM_WORLD(l,         grid, idim, box_middle)
      .                  - TM_WORLD(las_index, grid, idim, box_middle) )
 	         ENDIF
- 420	      CONTINUE
- 450	   CONTINUE
+	      ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
 
 * ALONG E AXIS
 	ELSEIF ( idim .EQ. e_dim ) THEN
-	   DO 550 n = cx_lo_s6(res_cx), cx_hi_s6(res_cx)
-	   DO 550 l = cx_lo_s4(res_cx), cx_hi_s4(res_cx)
-	   DO 550 k = cx_lo_s3(res_cx), cx_hi_s3(res_cx)
-	   DO 550 j = cx_lo_s2(res_cx), cx_hi_s2(res_cx)
-	   DO 550 i = cx_lo_s1(res_cx), cx_hi_s1(res_cx)
+	   DO n = cx_lo_s6(res_cx), cx_hi_s6(res_cx)
+	   DO l = cx_lo_s4(res_cx), cx_hi_s4(res_cx)
+	   DO k = cx_lo_s3(res_cx), cx_hi_s3(res_cx)
+	   DO j = cx_lo_s2(res_cx), cx_hi_s2(res_cx)
+	   DO i = cx_lo_s1(res_cx), cx_hi_s1(res_cx)
 * ... locate first valid index off edge of requested region
 	      las_index = unspecified_int4
-	      DO 510 m = offlim, dnlim, delta
+	      DO m = offlim, dnlim, delta
 	         IF ( com(i,j,k,l,m,n) .NE. bad_com ) las_index = m
- 510	      CONTINUE
+	      ENDDO
 * ... loop through points finding distance from last valid point
-	      DO 520 m = dnlim, uplim, delta
+	      DO m = dnlim, uplim, delta
 	         IF ( com(i,j,k,l,m,n) .NE. bad_com ) THEN
 	            las_index = m
 	            res(i,j,k,l,m,n) = 0.0
@@ -261,23 +278,27 @@
      .                    TM_WORLD(m,         grid, idim, box_middle)
      .                  - TM_WORLD(las_index, grid, idim, box_middle) )
 	         ENDIF
- 520	      CONTINUE
- 550	   CONTINUE
+	      ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
  
 * ALONG F AXIS
 	ELSEIF ( idim .EQ. f_dim ) THEN
-	   DO 650 m = cx_lo_s5(res_cx), cx_hi_s5(res_cx)
-	   DO 650 l = cx_lo_s4(res_cx), cx_hi_s4(res_cx)
-	   DO 650 k = cx_lo_s3(res_cx), cx_hi_s3(res_cx)
-	   DO 650 j = cx_lo_s2(res_cx), cx_hi_s2(res_cx)
-	   DO 650 i = cx_lo_s1(res_cx), cx_hi_s1(res_cx)
+	   DO m = cx_lo_s5(res_cx), cx_hi_s5(res_cx)
+	   DO l = cx_lo_s4(res_cx), cx_hi_s4(res_cx)
+	   DO k = cx_lo_s3(res_cx), cx_hi_s3(res_cx)
+	   DO j = cx_lo_s2(res_cx), cx_hi_s2(res_cx)
+	   DO i = cx_lo_s1(res_cx), cx_hi_s1(res_cx)
 * ... locate first valid index off edge of requested region
 	      las_index = unspecified_int4
-	      DO 610 n = offlim, dnlim, delta
+	      DO n = offlim, dnlim, delta
 	         IF ( com(i,j,k,l,m,n) .NE. bad_com ) las_index = n
- 610	      CONTINUE
+	      ENDDO
 * ... loop through points finding distance from last valid point
-	      DO 620 n = dnlim, uplim, delta
+	      DO n = dnlim, uplim, delta
 	         IF ( com(i,j,k,l,m,n) .NE. bad_com ) THEN
 	            las_index = n
 	            res(i,j,k,l,m,n) = 0.0
@@ -292,8 +313,12 @@
      .                    TM_WORLD(n,         grid, idim, box_middle)
      .                  - TM_WORLD(las_index, grid, idim, box_middle) )
 	         ENDIF
- 620	      CONTINUE
- 650	   CONTINUE
+	      ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
 
 	ENDIF
 

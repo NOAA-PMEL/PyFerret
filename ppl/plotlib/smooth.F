@@ -52,30 +52,46 @@ c     zxx and zyy are assumed to be zero at edges
 c     unused points in z should be .ge. 10**35 . 
 c     oceanography emr   oct/69   version no. 2  improved edging 
 c 
+c 
+* 11/2022 *acm* Code cleanup: Rework arithmetic IF statements 
+
 	dimension z(nxs,nys)
-	if(nsm)400,400,20 
-20	big=.9e35 
+
+	if(nsm .le. 0) goto 400 
+
+	big=.9e35 
 	r=.25/4. 
+
 	do 330 it=1,nsm 
-	itodd=it-(it/2)*2 
-	do 300 ii=1,nx 
-	i=itodd*ii+(1-itodd)*(nx+1-ii) 
-	iintp=(i-1)*(nx-i) 
-	do 300 jj=1,ny 
-	j=itodd*jj+(1-itodd)*(ny+1-jj) 
-	zij=z(i,j) 
-	if(zij-big)210,210,300 
-210	del2=0. 
-	if(iintp)230,230,215 
-215	del2x=z(i-1,j)+z(i+1,j)-zij-zij 
-	if(del2x-big)220,230,230 
-220	del2=del2x 
-230	if((j-1)*(ny-j))250,250,235 
-235	del2y=z(i,j-1)+z(i,j+1)-zij-zij 
-	if(del2y-big)240,250,250 
-240	del2=del2+del2y 
-250	z(i,j)=zij+del2*r 
-300	continue 
-330	continue 
+
+	   itodd=it-(it/2)*2 
+
+	   do 310 ii=1,nx 
+
+	      i=itodd*ii+(1-itodd)*(nx+1-ii) 
+	      iintp=(i-1)*(nx-i) 
+
+	      do 300 jj=1,ny 
+	         j=itodd*jj+(1-itodd)*(ny+1-jj) 
+	         zij=z(i,j) 
+	         if(zij .gt. big) cycle 
+	         del2=0. 
+
+	         if(iintp .gt. 0) then  
+	            del2x=z(i-1,j)+z(i+1,j)-zij-zij 
+	            if(del2x .lt. big) del2=del2x 
+	         endif
+
+	         if((j-1)*(ny-j) .gt. 0 ) then  
+	            del2y=z(i,j-1)+z(i,j+1)-zij-zij 
+	            if(del2y .lt. big) del2=del2+del2y 
+	         endif
+	         z(i,j)=zij+del2*r 
+
+300	      continue 
+310	   continue
+
+330	continue
+
 400	return 
 	end 

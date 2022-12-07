@@ -164,7 +164,6 @@ tm_allo_dyn_grid_sub.F\
 tm_allo_dyn_line_sub.F\
 tm_allo_tmp_grid.F\
 tm_allo_tmp_line.F\
-tm_alternate_note.F\
 tm_axes_reversed.F\
 tm_axis_direction.F\
 tm_axis_order.F\
@@ -319,7 +318,6 @@ tm_secs_to_date.F\
 tm_secs_to_ymdhms.F\
 tm_set_clim_axes.F\
 tm_set_current_calendar.F\
-tm_split_message.F\
 tm_store_lm_ptr.F\
 tm_store_nul_lm_ptr.F\
 tm_string.F\
@@ -337,7 +335,6 @@ tm_ww_ax_1_n.F\
 tm_ww_axlen.F\
 tm_ww_axlims.F\
 tm_ymd_time_convrt.F\
-xalt_messages_data.F\
 xdiag_ctrl_data.F\
 xdset_info_data.F\
 xerror_text_data.F\

@@ -1,6 +1,5 @@
 SRCS_F = \
 lnblk.F\
-lstb5.F\
 mttime.F\
 squish.F\
 upper.F\

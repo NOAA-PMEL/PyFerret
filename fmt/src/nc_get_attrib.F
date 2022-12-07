@@ -65,6 +65,7 @@
 * V697 12/15 *acm* Increased length of command-line string and risc_buff buffer
 * V697  2/16 *acm* DO NOT increase length of command-line string and risc_buff buffer
 * v751 *acm*  6/19 Allow for longer strings as attribute values
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 
 * argument definitions:
 *	dset	 - dataset number
@@ -106,11 +107,8 @@
 
       INTEGER slen, flen
       PARAMETER (flen=10240)        ! size of attribute string, match size_rbuff
-#ifdef sun
-      BYTE      fhol(flen), ghol(flen)      ! c-type Hollerith string buffer
-#else
       INTEGER*1 fhol(flen), ghol(flen)     ! c-type Hollerith string buffer
-#endif 
+
 
        NC_GET_ATTRIB = .FALSE.
        IF (dset .EQ. unspecified_int4) RETURN
@@ -165,9 +163,9 @@
       ELSE
 
          NC_GET_ATTRIB = .TRUE.
-         DO 80 i = 1, attlen
-  80        vals(i) = dval(i)
-
+         DO i = 1, attlen
+            vals(i) = dval(i)
+	 ENDDO
       ENDIF
 
       RETURN

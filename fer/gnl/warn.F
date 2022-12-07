@@ -48,16 +48,13 @@
 * V320: 2/95 - use TMAP routine tm_note
 * V606  8/07 ACM Send Notes to std error.
 *       *acm* 3/12 cleanup ifdefs and unnecessary include files
+** 10/2022 *acm* Code cleanup: remove references to obsolete gui interface
 
         IMPLICIT NONE
-#ifdef NO_PASSED_CONCAT
-	include 'xrisc.cmn'
-#endif
+
 	include 'tmap_dims.parm'
 	include 'ferret.parm'
-        include 'gui.parm'
 	include 'xprog_state.cmn'
-        include 'xgui.cmn'
 
 * calling argument declarations:
 	CHARACTER*(*)	string

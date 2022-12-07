@@ -34,6 +34,8 @@
 *  CONTRACT, NEGLIGENCE OR OTHER TORTUOUS ACTION, ARISING OUT OF OR IN
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
+* 11/2022 *acm* Code cleanup: Use the variable from common CMXGE rather than 1.e35
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 *
 C**    @(#)linear.F	1.1    3/10/88
 C**
@@ -67,11 +69,7 @@ C	modified by: D. W. Denbo   July 1986
 C		added missing data types, and speeded it up
 C
 C
-#ifdef unix
 	INCLUDE 'MISS.INC'
-#else
-	INCLUDE 'pplinc:MISS.INC'
-#endif
 C
 	DIMENSION Z(NXSIZE,NYSIZE),XP(N),YP(N),ZP(N)
 	DIMENSION X(20000),Y(20000),IPNT(20000),IEND(20000)
@@ -103,9 +101,9 @@ C
 C
 C	TEST FOR MISSING DATA
 C
-	    IF(ZLE.AND.ZP(I).LE.CMZLE)ZP(I)=1.E35
-	    IF(ZEQ.AND.ZP(I).EQ.CMZEQ)ZP(I)=1.E35
-	    IF(ZGE.AND.ZP(I).GE.CMZGE)ZP(I)=1.E35
+	    IF(ZLE.AND.ZP(I).LE.CMZLE)ZP(I)=cmxge
+	    IF(ZEQ.AND.ZP(I).EQ.CMZEQ)ZP(I)=cmxge
+	    IF(ZGE.AND.ZP(I).GE.CMZGE)ZP(I)=cmxge
 	    IF(YP(I).NE.Y(NIY))THEN
 		NIY=NIY+1
 		Y(NIY)=YP(I)
@@ -123,9 +121,9 @@ C
 C
 C	TEST FOR MISSING DATA
 C
-	    IF(ZLE.AND.ZP(I).LE.CMZLE)ZP(I)=1.E35
-	    IF(ZEQ.AND.ZP(I).EQ.CMZEQ)ZP(I)=1.E35
-	    IF(ZGE.AND.ZP(I).GE.CMZGE)ZP(I)=1.E35
+	    IF(ZLE.AND.ZP(I).LE.CMZLE)ZP(I)=cmxge
+	    IF(ZEQ.AND.ZP(I).EQ.CMZEQ)ZP(I)=cmxge
+	    IF(ZGE.AND.ZP(I).GE.CMZGE)ZP(I)=cmxge
 	    IF(XP(I).NE.X(NIX))THEN
 		NIX=NIX+1
 		X(NIX)=XP(I)
@@ -137,10 +135,12 @@ C
 C
 	IF(XFAST)THEN
 	    DO 420 I=1,NIY
-420	    IEND(I)=IPNT(I+1)
+	      IEND(I)=IPNT(I+1)
+420	    CONTINUE
 	ELSE
-	    DO 421 I=1,NIX
-421	    IEND(I)=IPNT(I+1)
+	    DO 421I=1,NIX
+	      IEND(I)=IPNT(I+1)
+421	    CONTINUE
 	ENDIF
 C
 	XDIR=X(2).GT.X(1)
@@ -306,11 +306,13 @@ C
 	ENDIF
 C
 	DO 50 J=1,NIX-1
-50	ODX(J)=1./(X(J+1)-X(J))
+	  ODX(J)=1./(X(J+1)-X(J))
+50	CONTINUE
 	DO 51 J=1,NIY-1
-51	ODY(J)=1./(Y(J+1)-Y(J))
+	  ODY(J)=1./(Y(J+1)-Y(J))
+51	CONTINUE
 C
-	DO 100 J=1,NX
+	DO 101 J=1,NX   ! 100
 	XJ=X1+DX*(J-1)
 	DO 100 L=1,NY
 	YL=Y1+DY*(L-1)
@@ -410,9 +412,13 @@ C
 		ENDIF
 	    ENDIF
 	ENDIF
+
 100	CONTINUE
+101	CONTINUE
+
 	RETURN
 	END
+
 	FUNCTION IPOS(I,J,IPNT,IPS,IEND,FAST,N)
 	LOGICAL FAST
 	DIMENSION IPNT(20000),IPS(20000),IEND(20000)

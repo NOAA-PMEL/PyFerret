@@ -85,6 +85,7 @@
 *                    things as if missing_value = 0 ! 
 * V751 *acm*  8/2019 Issue # 1948. Correct the logic for when there is scaled variable that has
 *                    a missing_value but no _FillValue.
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 
 * include files
         include 'netcdf.inc'
@@ -96,11 +97,7 @@
 	include 'xstep_files.cmn_text'	! step file common
 	external xstep_files_data
         include 'xdset_info.cd_equiv'
-#ifdef sun
-        include 'xmachine_byte.cmn'
-#else
         include 'xmachine_int1.cmn'
-#endif
 
 
 * arguments:
@@ -228,8 +225,9 @@
            IF ( dim_lo(idim) .NE. use_lo(idim)
      .     .OR. dim_hi(idim) .NE. use_hi(idim) ) THEN
               DO 50 idim2 = idim+1, nferdims
- 50           IF ( dim_lo(idim2) .NE. dim_hi(idim2) ) GOTO 5400
-           ENDIF
+                IF ( dim_lo(idim2) .NE. dim_hi(idim2) ) GOTO 5400
+ 50           CONTINUE
+	   ENDIF
  60     CONTINUE
 
 * determine size from the low/hi limits requested
@@ -257,7 +255,8 @@
 
 * compute the map vector (for strides, reversals, and permutations)
 	DO 210 idim = 1, nferdims
- 210	imap(idim) = 0
+ 	   imap(idim) = 0
+ 210	CONTINUE
 * for netCDF V3 the imap array is set up in number of array elements, not bytes
 	imap(trans(1)) = 1
 

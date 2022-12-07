@@ -68,12 +68,12 @@
 
 	ii = 1
 	jj = 1
-	DO 100 n = dlof, dhif
-	DO 100 m = dloe, dhie
-	DO 100 l = dlot, dhit
-	DO 100 k = dloz, dhiz
-	DO 100 j = dloy, dhiy
-	DO 100 i = dlox, dhix
+	DO n = dlof, dhif
+	DO m = dloe, dhie
+	DO l = dlot, dhit
+	DO k = dloz, dhiz
+	DO j = dloy, dhiy
+	DO i = dlox, dhix
 
 	   dst(jj,ii) = src(i,j,k,l,m,n)
 
@@ -83,16 +83,22 @@
 	      jj = jj + 1
 	   ENDIF
 
- 100	CONTINUE
+	ENDDO
+	ENDDO
+	ENDDO
+	ENDDO
+	ENDDO
+	ENDDO
 
 * check for differing bad data flags in an efficient way ...
 	IF ( bad_src .NE. bad_dst ) THEN
-	   DO 200 ii = 1, md1
-	   DO 200 jj = 1, md2
+	   DO ii = 1, md1
+	   DO jj = 1, md2
 
 	      IF ( dst(jj,ii) .EQ. bad_src ) dst(jj,ii) = bad_dst
 
- 200	   CONTINUE
+	   ENDDO
+	   ENDDO
 	ENDIF
 
 	RETURN

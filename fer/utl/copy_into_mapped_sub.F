@@ -46,6 +46,7 @@
 *
 * V510: 8/99 *sh*
 *       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -71,9 +72,10 @@
 
 * initialize
 * ... skip missing value flags at the upper end of the sorted_indices
-	DO 10 pointer = hilim, 1, -1
+	DO pointer = hilim, 1, -1
 	   IF (sorted_indices(pointer) .NE. bad_val4) GOTO 50
- 10	CONTINUE
+	ENDDO
+
 	RETURN	! all of the indices are missing values
 
 
@@ -90,17 +92,26 @@
 	   ENDIF
 
  100	   CONTINUE	! find where src_index belongs in the result
-	   DO 150 isorted = pointer, 1, -1
+	   DO isorted = pointer, 1, -1
+
 	      IF (src_index_2 .EQ. sorted_indices(isorted)) THEN
+
 * ... copy a source point to the destination
 	         dst_index = index_map(isorted)
-	         DO 110 n = cx_lo_s6(cxs), cx_hi_s6(cxs)
-	         DO 110 m = cx_lo_s5(cxs), cx_hi_s5(cxs)
-	         DO 110 l = cx_lo_s4(cxs), cx_hi_s4(cxs)
-	         DO 110 k = cx_lo_s3(cxs), cx_hi_s3(cxs)
-	         DO 110 j = cx_lo_s2(cxs), cx_hi_s2(cxs)
- 110		 dst(dst_index,j,k,l,m,n) = src(src_index,j,k,l,m,n)
+	         DO n = cx_lo_s6(cxs), cx_hi_s6(cxs)
+	         DO m = cx_lo_s5(cxs), cx_hi_s5(cxs)
+	         DO l = cx_lo_s4(cxs), cx_hi_s4(cxs)
+	         DO k = cx_lo_s3(cxs), cx_hi_s3(cxs)
+	         DO j = cx_lo_s2(cxs), cx_hi_s2(cxs)
+		    dst(dst_index,j,k,l,m,n) = src(src_index,j,k,l,m,n)
+		 ENDDO
+		 ENDDO
+		 ENDDO
+		 ENDDO
+		 ENDDO
+
 	      ELSEIF (src_index .GT. sorted_indices(isorted)) THEN
+
 	         src_index   = src_index   - 1
 	         src_index_2 = src_index_2 - 1
 	         IF ( src_index .LT. cx_lo_s1(cxs) ) THEN
@@ -109,10 +120,13 @@
 	            pointer = isorted	! (just for efficiency)
 	            GOTO 100
 	         ENDIF
+
 	      ENDIF
- 150	   CONTINUE
+
+	   ENDDO
 
 	ELSEIF ( axis .EQ. y_dim ) THEN
+
 **** Mapped copy along Y axis
 
 * ... initialize
@@ -125,17 +139,26 @@
 	   ENDIF
 
  200	   CONTINUE	! find where src_index belongs in the result
-	   DO 250 isorted = pointer, 1, -1
+	   DO isorted = pointer, 1, -1
+
 	      IF (src_index_2 .EQ. sorted_indices(isorted)) THEN
+
 * ... copy a source point to the destination
 	         dst_index = index_map(isorted)
-	         DO 210 n = cx_lo_s6(cxs), cx_hi_s6(cxs)
-	         DO 210 m = cx_lo_s5(cxs), cx_hi_s5(cxs)
-	         DO 210 l = cx_lo_s4(cxs), cx_hi_s4(cxs)
-	         DO 210 k = cx_lo_s3(cxs), cx_hi_s3(cxs)
-	         DO 210 i = cx_lo_s1(cxs), cx_hi_s1(cxs)
- 210		 dst(i,dst_index,k,l,m,n) = src(i,src_index,k,l,m,n)
+	         DO n = cx_lo_s6(cxs), cx_hi_s6(cxs)
+	         DO m = cx_lo_s5(cxs), cx_hi_s5(cxs)
+	         DO l = cx_lo_s4(cxs), cx_hi_s4(cxs)
+	         DO k = cx_lo_s3(cxs), cx_hi_s3(cxs)
+	         DO i = cx_lo_s1(cxs), cx_hi_s1(cxs)
+		    dst(i,dst_index,k,l,m,n) = src(i,src_index,k,l,m,n)
+		 ENDDO
+		 ENDDO
+		 ENDDO
+		 ENDDO
+		 ENDDO
+
 	      ELSEIF (src_index .GT. sorted_indices(isorted)) THEN
+
 	         src_index   = src_index   - 1
 	         src_index_2 = src_index_2 - 1
 	         IF ( src_index .LT. cx_lo_s2(cxs) ) THEN
@@ -144,10 +167,13 @@
 	            pointer = isorted	! (just for efficiency)
 	            GOTO 200
 	         ENDIF
+
 	      ENDIF
- 250	   CONTINUE
+
+	   ENDDO
 
 	ELSEIF ( axis .EQ. z_dim ) THEN
+
 **** Mapped copy along Z axis
 
 * ... initialize
@@ -160,16 +186,24 @@
 	   ENDIF
 
  300	   CONTINUE	! find where src_index belongs in the result
-	   DO 350 isorted = pointer, 1, -1
+	   DO isorted = pointer, 1, -1
+
 	      IF (src_index_2 .EQ. sorted_indices(isorted)) THEN
+
 * ... copy a source point to the destination
 	         dst_index = index_map(isorted)
-	         DO 310 n = cx_lo_s6(cxs), cx_hi_s6(cxs)
-	         DO 310 m = cx_lo_s5(cxs), cx_hi_s5(cxs)
-	         DO 310 l = cx_lo_s4(cxs), cx_hi_s4(cxs)
-	         DO 310 j = cx_lo_s2(cxs), cx_hi_s2(cxs)
-	         DO 310 i = cx_lo_s1(cxs), cx_hi_s1(cxs)
- 310		 dst(i,j,dst_index,l,m,n) = src(i,j,src_index,l,m,n)
+	         DO n = cx_lo_s6(cxs), cx_hi_s6(cxs)
+	         DO m = cx_lo_s5(cxs), cx_hi_s5(cxs)
+	         DO l = cx_lo_s4(cxs), cx_hi_s4(cxs)
+	         DO j = cx_lo_s2(cxs), cx_hi_s2(cxs)
+	         DO i = cx_lo_s1(cxs), cx_hi_s1(cxs)
+		    dst(i,j,dst_index,l,m,n) = src(i,j,src_index,l,m,n)
+		 ENDDO
+		 ENDDO
+		 ENDDO
+		 ENDDO
+		 ENDDO
+
 	      ELSEIF (src_index .GT. sorted_indices(isorted)) THEN
 	         src_index   = src_index   - 1
 	         src_index_2 = src_index_2 - 1
@@ -179,8 +213,10 @@
 	            pointer = isorted	! (just for efficiency)
 	            GOTO 300
 	         ENDIF
+
 	      ENDIF
- 350	   CONTINUE
+
+	   ENDDO
 
 	ELSEIF ( axis .EQ. t_dim ) THEN
 **** Mapped copy along T axis
@@ -195,17 +231,27 @@
 	   ENDIF
 
  400	   CONTINUE	! find where src_index belongs in the result
-	   DO 450 isorted = pointer, 1, -1
+
+	   DO isorted = pointer, 1, -1
+
 	      IF (src_index_2 .EQ. sorted_indices(isorted)) THEN
+
 * ... copy a source point to the destination
 	         dst_index = index_map(isorted)
-	         DO 410 n = cx_lo_s6(cxs), cx_hi_s6(cxs)
-	         DO 410 m = cx_lo_s5(cxs), cx_hi_s5(cxs)
-	         DO 410 k = cx_lo_s3(cxs), cx_hi_s3(cxs)
-	         DO 410 j = cx_lo_s2(cxs), cx_hi_s2(cxs)
-	         DO 410 i = cx_lo_s1(cxs), cx_hi_s1(cxs)
- 410		 dst(i,j,k,dst_index,m,n) = src(i,j,k,src_index,m,n)
+	         DO n = cx_lo_s6(cxs), cx_hi_s6(cxs)
+	         DO m = cx_lo_s5(cxs), cx_hi_s5(cxs)
+	         DO k = cx_lo_s3(cxs), cx_hi_s3(cxs)
+	         DO j = cx_lo_s2(cxs), cx_hi_s2(cxs)
+	         DO i = cx_lo_s1(cxs), cx_hi_s1(cxs)
+		    dst(i,j,k,dst_index,m,n) = src(i,j,k,src_index,m,n)
+		 ENDDO
+		 ENDDO
+		 ENDDO
+		 ENDDO
+		 ENDDO
+
 	      ELSEIF (src_index .GT. sorted_indices(isorted)) THEN
+
 	         src_index   = src_index   - 1
 	         src_index_2 = src_index_2 - 1
 	         IF ( src_index .LT. cx_lo_s4(cxs) ) THEN
@@ -214,8 +260,10 @@
 	            pointer = isorted	! (just for efficiency)
 	            GOTO 400
 	         ENDIF
+
 	      ENDIF
- 450	   CONTINUE
+
+	   ENDDO
 
 	ELSEIF ( axis .EQ. e_dim ) THEN
 **** Mapped copy along E axis
@@ -230,16 +278,24 @@
 	   ENDIF
 
  500	   CONTINUE	! find where src_index belongs in the result
-	   DO 550 isorted = pointer, 1, -1
+
+	   DO isorted = pointer, 1, -1
 	      IF (src_index_2 .EQ. sorted_indices(isorted)) THEN
+
 * ... copy a source point to the destination
 	         dst_index = index_map(isorted)
-	         DO 510 n = cx_lo_s6(cxs), cx_hi_s6(cxs)
-	         DO 510 l = cx_lo_s4(cxs), cx_hi_s4(cxs)
-	         DO 510 k = cx_lo_s3(cxs), cx_hi_s3(cxs)
-	         DO 510 j = cx_lo_s2(cxs), cx_hi_s2(cxs)
-	         DO 510 i = cx_lo_s1(cxs), cx_hi_s1(cxs)
- 510		 dst(i,j,k,l,dst_index,n) = src(i,j,k,l,src_index,n)
+	         DO n = cx_lo_s6(cxs), cx_hi_s6(cxs)
+	         DO l = cx_lo_s4(cxs), cx_hi_s4(cxs)
+	         DO k = cx_lo_s3(cxs), cx_hi_s3(cxs)
+	         DO j = cx_lo_s2(cxs), cx_hi_s2(cxs)
+	         DO i = cx_lo_s1(cxs), cx_hi_s1(cxs)
+		    dst(i,j,k,l,dst_index,n) = src(i,j,k,l,src_index,n)
+		 ENDDO
+		 ENDDO
+		 ENDDO
+		 ENDDO
+		 ENDDO
+
 	      ELSEIF (src_index .GT. sorted_indices(isorted)) THEN
 	         src_index   = src_index   - 1
 	         src_index_2 = src_index_2 - 1
@@ -249,10 +305,10 @@
 	            pointer = isorted	! (just for efficiency)
 	            GOTO 500
 	         ENDIF
+
 	      ENDIF
- 550	   CONTINUE
 
-
+	   ENDDO
 
 	ELSEIF ( axis .EQ. f_dim ) THEN
 **** Mapped copy along F axis
@@ -267,16 +323,24 @@
 	   ENDIF
 
  600	   CONTINUE	! find where src_index belongs in the result
-	   DO 650 isorted = pointer, 1, -1
+	   DO isorted = pointer, 1, -1
+
 	      IF (src_index_2 .EQ. sorted_indices(isorted)) THEN
+
 * ... copy a source point to the destination
 	         dst_index = index_map(isorted)
-	         DO 610 m = cx_lo_s5(cxs), cx_hi_s5(cxs)
-	         DO 610 k = cx_lo_s3(cxs), cx_hi_s3(cxs)
-	         DO 610 l = cx_lo_s4(cxs), cx_hi_s4(cxs)
-	         DO 610 j = cx_lo_s2(cxs), cx_hi_s2(cxs)
-	         DO 610 i = cx_lo_s1(cxs), cx_hi_s1(cxs)
- 610		 dst(i,j,k,l,m,dst_index) = src(i,j,k,l,m,src_index)
+	         DO m = cx_lo_s5(cxs), cx_hi_s5(cxs)
+	         DO k = cx_lo_s3(cxs), cx_hi_s3(cxs)
+	         DO l = cx_lo_s4(cxs), cx_hi_s4(cxs)
+	         DO j = cx_lo_s2(cxs), cx_hi_s2(cxs)
+	         DO i = cx_lo_s1(cxs), cx_hi_s1(cxs)
+		 dst(i,j,k,l,m,dst_index) = src(i,j,k,l,m,src_index)
+		 ENDDO
+		 ENDDO
+		 ENDDO
+		 ENDDO
+		 ENDDO
+
 	      ELSEIF (src_index .GT. sorted_indices(isorted)) THEN
 	         src_index   = src_index   - 1
 	         src_index_2 = src_index_2 - 1
@@ -286,8 +350,10 @@
 	            pointer = isorted	! (just for efficiency)
 	            GOTO 600
 	         ENDIF
+
 	      ENDIF
- 650	   CONTINUE
+
+	   ENDDO
 
 
 	ELSE

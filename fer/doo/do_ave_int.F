@@ -64,6 +64,7 @@
 * V7.64 *acm* 08/21 PyFerret issue 91 - @DIN within a single, partial grid box.
 *		  should return the value of the data weighted by the size of the partial
 *		  grid box, instead returns as if the whole cell was given.
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 
 
         IMPLICIT NONE
@@ -131,8 +132,8 @@
      .				res, res_mr, res_cx,
      .				box, weights )
 
-
-	ELSE  ! not dsg
+	   GOTO 5000
+	ENDIF
 
 * get and save grid box sizes (weights) just once for efficiency
 * Point is true if the box size is zero or if the request is for a zero-length region.
@@ -166,8 +167,9 @@
 	IF ( integrate ) THEN
 	   unit = un_convert( line_unit_code(axis) )
 	   IF (ITSA_TRUEMONTH_AXIS(axis)) unit = un_convert(pun_day)
-	   DO 110 i = lo, hi
- 110	   box(i) = box(i) * unit
+	   DO i = lo, hi
+	   box(i) = box(i) * unit
+ 	   ENDDO
 	ENDIF
 
 * AVERAGE/INTEGRATE
@@ -177,7 +179,7 @@
 	IF ( idim .EQ. x_dim ) THEN
 	   need_cos = GEOG_COS_FACTOR( idim, grid )
      .                .AND. cx_lo_s2(com_cx).NE.unspecified_int4
-	   DO 210 j = cx_lo_s2(com_cx), cx_hi_s2(com_cx)
+	   DO j = cx_lo_s2(com_cx), cx_hi_s2(com_cx)
 	   cos_factor = 1.
 	   IF ( need_cos .AND. integrate ) THEN
 	      cos_factor = COS( deg2rad *       
@@ -189,10 +191,10 @@
               bx = ABS(ybxhi - ybxlo)
 	      cos_factor = ABS( SIN(ybxhi) - SIN(ybxlo) )/ bx
 	   ENDIF
-	   DO 210 n = cx_lo_s6(com_cx), cx_hi_s6(com_cx)
-	   DO 210 m = cx_lo_s5(com_cx), cx_hi_s5(com_cx)
-	   DO 210 l = cx_lo_s4(com_cx), cx_hi_s4(com_cx)
-	   DO 210 k = cx_lo_s3(com_cx), cx_hi_s3(com_cx)
+	   DO n = cx_lo_s6(com_cx), cx_hi_s6(com_cx)
+	   DO m = cx_lo_s5(com_cx), cx_hi_s5(com_cx)
+	   DO l = cx_lo_s4(com_cx), cx_hi_s4(com_cx)
+	   DO k = cx_lo_s3(com_cx), cx_hi_s3(com_cx)
               IF ( point ) THEN  ! 8/92
 		 IF ( com(lo,j,k,l,m,n) .EQ. bad_com ) THEN
                     res(pt,j,k,l,m,n) = bad_res
@@ -202,27 +204,31 @@
                     res(pt,j,k,l,m,n) = com(lo,j,k,l,m,n)
                  ENDIF
 		 weights(pt,j,k,l,m,n) = 1.0
-                 GOTO 210
+                 CYCLE
               ENDIF
 	      dsum = 0.0D0	! data
 	      bsum = 0.0D0	! boxes
-	      DO 200 i = cx_lo_s1(com_cx), cx_hi_s1(com_cx)
-	         IF ( com(i,j,k,l,m,n) .EQ. bad_com ) GOTO 200
+	      DO i = cx_lo_s1(com_cx), cx_hi_s1(com_cx)
+	         IF ( com(i,j,k,l,m,n) .EQ. bad_com ) CYCLE
 	         bsum = bsum + box(i)
 	         dsum = dsum + box(i)*com(i,j,k,l,m,n)
- 200	      CONTINUE
+	      ENDDO
 	      res(pt,j,k,l,m,n) = res(pt,j,k,l,m,n) + dsum* cos_factor
 	      weights(pt,j,k,l,m,n) = weights(pt,j,k,l,m,n) + bsum
-210	   CONTINUE
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
 
 
 * ALONG Y AXIS
 	ELSEIF ( idim .EQ. y_dim ) THEN
-	   DO 310 n = cx_lo_s6(com_cx), cx_hi_s6(com_cx)
-	   DO 310 m = cx_lo_s5(com_cx), cx_hi_s5(com_cx)
-	   DO 310 l = cx_lo_s4(com_cx), cx_hi_s4(com_cx)
-	   DO 310 k = cx_lo_s3(com_cx), cx_hi_s3(com_cx)
-	   DO 310 i = cx_lo_s1(com_cx), cx_hi_s1(com_cx)
+	   DO n = cx_lo_s6(com_cx), cx_hi_s6(com_cx)
+	   DO m = cx_lo_s5(com_cx), cx_hi_s5(com_cx)
+	   DO l = cx_lo_s4(com_cx), cx_hi_s4(com_cx)
+	   DO k = cx_lo_s3(com_cx), cx_hi_s3(com_cx)
+	   DO i = cx_lo_s1(com_cx), cx_hi_s1(com_cx)
               IF ( point ) THEN   ! 8/92
                  IF ( com(i,lo,k,l,m,n) .EQ. bad_com ) THEN
                     res(i,pt,k,l,m,n) = bad_res
@@ -232,26 +238,30 @@
                     res(i,pt,k,l,m,n) = com(i,lo,k,l,m,n)
                  ENDIF
 		 weights(i,pt,k,l,m,n) = 1.0
-                 GOTO 310
+                 CYCLE
               ENDIF
 	      dsum = 0.0D0	! data
 	      bsum = 0.0D0	! boxes
-	      DO 300 j = cx_lo_s2(com_cx), cx_hi_s2(com_cx)
-	         IF ( com(i,j,k,l,m,n) .EQ. bad_com ) GOTO 300
+	      DO j = cx_lo_s2(com_cx), cx_hi_s2(com_cx)
+	         IF ( com(i,j,k,l,m,n) .EQ. bad_com ) CYCLE
 	         bsum = bsum + box(j)
 	         dsum = dsum + box(j)*com(i,j,k,l,m,n)
- 300	      CONTINUE
+	      ENDDO
 	      res(i,pt,k,l,m,n) = res(i,pt,k,l,m,n) + dsum
 	      weights(i,pt,k,l,m,n) = weights(i,pt,k,l,m,n) + bsum
- 310	   CONTINUE
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
 
 * ALONG Z AXIS
 	ELSEIF ( idim .EQ. z_dim ) THEN
-	   DO 410 n = cx_lo_s6(com_cx), cx_hi_s6(com_cx)
-	   DO 410 m = cx_lo_s5(com_cx), cx_hi_s5(com_cx)
-	   DO 410 l = cx_lo_s4(com_cx), cx_hi_s4(com_cx)
-	   DO 410 j = cx_lo_s2(com_cx), cx_hi_s2(com_cx)
-	   DO 410 i = cx_lo_s1(com_cx), cx_hi_s1(com_cx)
+	   DO n = cx_lo_s6(com_cx), cx_hi_s6(com_cx)
+	   DO m = cx_lo_s5(com_cx), cx_hi_s5(com_cx)
+	   DO l = cx_lo_s4(com_cx), cx_hi_s4(com_cx)
+	   DO j = cx_lo_s2(com_cx), cx_hi_s2(com_cx)
+	   DO i = cx_lo_s1(com_cx), cx_hi_s1(com_cx)
               IF ( point ) THEN    ! 8/92
                  IF ( com(i,j,lo,l,m,n) .EQ. bad_com ) THEN
                     res(i,j,pt,l,m,n) = bad_res
@@ -261,26 +271,30 @@
                     res(i,j,pt,l,m,n) = com(i,j,lo,l,m,n)
                  ENDIF
                  weights(i,j,pt,l,m,n) = 1.0
-                 GOTO 410
+                 CYCLE
 	      ENDIF
 	      dsum = 0.0D0	! data
 	      bsum = 0.0D0	! boxes
-	      DO 400 k = cx_lo_s3(com_cx), cx_hi_s3(com_cx)
-	         IF ( com(i,j,k,l,m,n) .EQ. bad_com ) GOTO 400
+	      DO k = cx_lo_s3(com_cx), cx_hi_s3(com_cx)
+	         IF ( com(i,j,k,l,m,n) .EQ. bad_com ) CYCLE
 	         bsum = bsum + box(k)
 	         dsum = dsum + box(k)*com(i,j,k,l,m,n)
- 400	      CONTINUE
+	      ENDDO
               res(i,j,pt,l,m,n) = res(i,j,pt,l,m,n) + dsum
               weights(i,j,pt,l,m,n) = weights(i,j,pt,l,m,n) + bsum
- 410	   CONTINUE
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
 
 * ALONG T AXIS
 	ELSEIF ( idim .EQ. t_dim ) THEN
-	   DO 510 n = cx_lo_s6(com_cx), cx_hi_s6(com_cx)
-	   DO 510 m = cx_lo_s5(com_cx), cx_hi_s5(com_cx)
-	   DO 510 k = cx_lo_s3(com_cx), cx_hi_s3(com_cx)
-	   DO 510 j = cx_lo_s2(com_cx), cx_hi_s2(com_cx)
-	   DO 510 i = cx_lo_s1(com_cx), cx_hi_s1(com_cx)
+	   DO n = cx_lo_s6(com_cx), cx_hi_s6(com_cx)
+	   DO m = cx_lo_s5(com_cx), cx_hi_s5(com_cx)
+	   DO k = cx_lo_s3(com_cx), cx_hi_s3(com_cx)
+	   DO j = cx_lo_s2(com_cx), cx_hi_s2(com_cx)
+	   DO i = cx_lo_s1(com_cx), cx_hi_s1(com_cx)
               IF ( point ) THEN
                  IF ( com(i,j,k,lo,m,n) .EQ. bad_com ) THEN
                     res(i,j,k,pt,m,n) = bad_res
@@ -290,28 +304,32 @@
                     res(i,j,k,pt,m,n) = com(i,j,k,lo,m,n)
                  ENDIF
 		 weights(i,j,k,pt,m,n) = 1.0
-                 GOTO 510
+                 CYCLE
               ENDIF
 	      dsum = 0.0D0	! data
 	      bsum = 0.0D0	! boxes
-	      DO 500 l = cx_lo_s4(com_cx), cx_hi_s4(com_cx)
-	         IF ( com(i,j,k,l,m,n) .EQ. bad_com ) GOTO 500
+	      DO l = cx_lo_s4(com_cx), cx_hi_s4(com_cx)
+	         IF ( com(i,j,k,l,m,n) .EQ. bad_com ) CYCLE
 	         bsum = bsum + box(l)
 	         dsum = dsum + box(l)*com(i,j,k,l,m,n)
- 500	      CONTINUE
+	      ENDDO
 * ... accumulate weighted values and weights
 	      weights(i,j,k,pt,m,n) = weights(i,j,k,pt,m,n) + bsum
 	      res    (i,j,k,pt,m,n) = res    (i,j,k,pt,m,n) + dsum
- 510	   CONTINUE
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
 
 
 * ALONG E AXIS
 	ELSEIF ( idim .EQ. e_dim ) THEN
-	   DO 610 n = cx_lo_s6(com_cx), cx_hi_s6(com_cx)
-	   DO 610 l = cx_lo_s4(com_cx), cx_hi_s4(com_cx)
-	   DO 610 k = cx_lo_s3(com_cx), cx_hi_s3(com_cx)
-	   DO 610 j = cx_lo_s2(com_cx), cx_hi_s2(com_cx)
-	   DO 610 i = cx_lo_s1(com_cx), cx_hi_s1(com_cx)
+	   DO n = cx_lo_s6(com_cx), cx_hi_s6(com_cx)
+	   DO l = cx_lo_s4(com_cx), cx_hi_s4(com_cx)
+	   DO k = cx_lo_s3(com_cx), cx_hi_s3(com_cx)
+	   DO j = cx_lo_s2(com_cx), cx_hi_s2(com_cx)
+	   DO i = cx_lo_s1(com_cx), cx_hi_s1(com_cx)
               IF ( point ) THEN
                  IF ( com(i,j,k,l,lo,n) .EQ. bad_com ) THEN
                     res(i,j,k,l,pt,n) = bad_res
@@ -321,27 +339,32 @@
                     res(i,j,k,l,pt,n) = com(i,j,k,l,lo,n)
                  ENDIF
 		 weights(i,j,k,l,pt,n) = 1.0
-                 GOTO 610
+                 CYCLE
               ENDIF
 	      dsum = 0.0D0	! data
 	      bsum = 0.0D0	! boxes
-	      DO 600 m = cx_lo_s5(com_cx), cx_hi_s5(com_cx)
-	         IF ( com(i,j,k,l,m,n) .EQ. bad_com ) GOTO 600
+	      DO m = cx_lo_s5(com_cx), cx_hi_s5(com_cx)
+	         IF ( com(i,j,k,l,m,n) .EQ. bad_com ) CYCLE
 	         bsum = bsum + box(m)
 	         dsum = dsum + box(m)*com(i,j,k,l,m,n)
- 600	      CONTINUE
+	      ENDDO
+
 	      res(i,j,k,l,pt,n) = res(i,j,k,l,pt,n) + dsum
 	      weights(i,j,k,l,pt,n) = weights(i,j,k,l,pt,n) + bsum
- 610	   CONTINUE
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
 
 
 * ALONG F AXIS
 	ELSEIF ( idim .EQ. f_dim ) THEN
-	   DO 710 m = cx_lo_s5(com_cx), cx_hi_s5(com_cx)
-	   DO 710 l = cx_lo_s4(com_cx), cx_hi_s4(com_cx)
-	   DO 710 k = cx_lo_s3(com_cx), cx_hi_s3(com_cx)
-	   DO 710 j = cx_lo_s2(com_cx), cx_hi_s2(com_cx)
-	   DO 710 i = cx_lo_s1(com_cx), cx_hi_s1(com_cx)
+	   DO m = cx_lo_s5(com_cx), cx_hi_s5(com_cx)
+	   DO l = cx_lo_s4(com_cx), cx_hi_s4(com_cx)
+	   DO k = cx_lo_s3(com_cx), cx_hi_s3(com_cx)
+	   DO j = cx_lo_s2(com_cx), cx_hi_s2(com_cx)
+	   DO i = cx_lo_s1(com_cx), cx_hi_s1(com_cx)
               IF ( point ) THEN
                  IF ( com(i,j,k,l,m,lo) .EQ. bad_com ) THEN
                     res(i,j,k,l,m,pt) = bad_res
@@ -351,24 +374,26 @@
                     res(i,j,k,l,m,pt) = com(i,j,k,l,m,lo)
                  ENDIF
 		 weights(i,j,k,l,m,pt) = 1.0
-                 GOTO 710
+                 CYCLE
               ENDIF
 	      dsum = 0.0D0	! data
 	      bsum = 0.0D0	! boxes
-	      DO 700 n = cx_lo_s6(com_cx), cx_hi_s6(com_cx)
-	         IF ( com(i,j,k,l,m,n) .EQ. bad_com ) GOTO 700
+	      DO n = cx_lo_s6(com_cx), cx_hi_s6(com_cx)
+	         IF ( com(i,j,k,l,m,n) .EQ. bad_com ) CYCLE
 	         bsum = bsum + box(n)
 	         dsum = dsum + box(n)*com(i,j,k,l,m,n)
- 700	      CONTINUE
+	      ENDDO
 	      res(i,j,k,l,m,pt) = res(i,j,k,l,m,pt) + dsum
 	      weights(i,j,k,l,m,pt) = weights(i,j,k,l,m,pt) + bsum
- 710	   CONTINUE
-
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
 	ENDIF
 
 
-	ENDIF  ! not dsg
-
+5000	CONTINUE
 
 	RETURN
 	END

@@ -53,6 +53,7 @@
 *                 Counts are saved for the finalization step, to distinguish
 *                 between sum of zero and result that indicates all-missing-data.
 * v7.21 *acm*  9/17 Fix ticket 2560: count is sum of "ok" not "sum" for sum in X
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
@@ -90,112 +91,136 @@
  
 * ALONG X AXIS
 	IF ( idim .EQ. x_dim ) THEN
-	   DO 110 n = cx_lo_s6(com_cx), cx_hi_s6(com_cx)
-	   DO 110 m = cx_lo_s5(com_cx), cx_hi_s5(com_cx)
-	   DO 110 l = cx_lo_s4(com_cx), cx_hi_s4(com_cx)
-	   DO 110 k = cx_lo_s3(com_cx), cx_hi_s3(com_cx)
-	   DO 110 j = cx_lo_s2(com_cx), cx_hi_s2(com_cx)
+	   DO n = cx_lo_s6(com_cx), cx_hi_s6(com_cx)
+	   DO m = cx_lo_s5(com_cx), cx_hi_s5(com_cx)
+	   DO l = cx_lo_s4(com_cx), cx_hi_s4(com_cx)
+	   DO k = cx_lo_s3(com_cx), cx_hi_s3(com_cx)
+	   DO j = cx_lo_s2(com_cx), cx_hi_s2(com_cx)
               sum = 0.0D0
               ok = 0.0D0
 
-	      DO 100 i = cx_lo_s1(com_cx), cx_hi_s1(com_cx)
-	         IF ( com(i,j,k,l,m,n) .EQ. bad_com ) GOTO 100
+	      DO i = cx_lo_s1(com_cx), cx_hi_s1(com_cx)
+	         IF ( com(i,j,k,l,m,n) .EQ. bad_com ) CYCLE
                  sum = sum + com(i,j,k,l,m,n)
                  ok = ok + 1.
- 100	      CONTINUE
+	      ENDDO
 	      res(pt,j,k,l,m,n) = res(pt,j,k,l,m,n) + sum
 	      counts(pt,j,k,l,m,n) = counts(pt,j,k,l,m,n) + ok
- 110	   CONTINUE
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
 
 * ALONG Y AXIS
 	ELSEIF ( idim .EQ. y_dim ) THEN
-	   DO 210 n = cx_lo_s6(com_cx), cx_hi_s6(com_cx)
-	   DO 210 m = cx_lo_s5(com_cx), cx_hi_s5(com_cx)
-	   DO 210 l = cx_lo_s4(com_cx), cx_hi_s4(com_cx)
-	   DO 210 k = cx_lo_s3(com_cx), cx_hi_s3(com_cx)
-	   DO 210 i = cx_lo_s1(com_cx), cx_hi_s1(com_cx)
+	   DO n = cx_lo_s6(com_cx), cx_hi_s6(com_cx)
+	   DO m = cx_lo_s5(com_cx), cx_hi_s5(com_cx)
+	   DO l = cx_lo_s4(com_cx), cx_hi_s4(com_cx)
+	   DO k = cx_lo_s3(com_cx), cx_hi_s3(com_cx)
+	   DO i = cx_lo_s1(com_cx), cx_hi_s1(com_cx)
               sum = 0.0D0
               ok = 0.0D0
-	      DO 200 j = cx_lo_s2(com_cx), cx_hi_s2(com_cx)
-	         IF ( com(i,j,k,l,m,n) .EQ. bad_com ) GOTO 200
+	      DO j = cx_lo_s2(com_cx), cx_hi_s2(com_cx)
+	         IF ( com(i,j,k,l,m,n) .EQ. bad_com ) CYCLE
                  sum = sum + com(i,j,k,l,m,n)
                  ok = ok + 1.
- 200	      CONTINUE
+	      ENDDO
 	      res(i,pt,k,l,m,n) = res(i,pt,k,l,m,n) + sum
 	      counts(i,pt,k,l,m,n) = counts(i,pt,k,l,m,n) + ok
- 210	   CONTINUE
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
 
 * ALONG Z AXIS
 	ELSEIF ( idim .EQ. z_dim ) THEN
-	   DO 310 n = cx_lo_s6(com_cx), cx_hi_s6(com_cx)
-	   DO 310 m = cx_lo_s5(com_cx), cx_hi_s5(com_cx)
-	   DO 310 l = cx_lo_s4(com_cx), cx_hi_s4(com_cx)
-	   DO 310 j = cx_lo_s2(com_cx), cx_hi_s2(com_cx)
-	   DO 310 i = cx_lo_s1(com_cx), cx_hi_s1(com_cx)
+	   DO n = cx_lo_s6(com_cx), cx_hi_s6(com_cx)
+	   DO m = cx_lo_s5(com_cx), cx_hi_s5(com_cx)
+	   DO l = cx_lo_s4(com_cx), cx_hi_s4(com_cx)
+	   DO j = cx_lo_s2(com_cx), cx_hi_s2(com_cx)
+	   DO i = cx_lo_s1(com_cx), cx_hi_s1(com_cx)
               sum = 0.0D0
               ok = 0.0D0
-	      DO 300 k = cx_lo_s3(com_cx), cx_hi_s3(com_cx)
-	         IF ( com(i,j,k,l,m,n) .EQ. bad_com ) GOTO 300
+	      DO k = cx_lo_s3(com_cx), cx_hi_s3(com_cx)
+	         IF ( com(i,j,k,l,m,n) .EQ. bad_com ) CYCLE
                  sum = sum + com(i,j,k,l,m,n)
                  ok = ok + 1.
- 300	      CONTINUE
+	      ENDDO
 	      res(i,j,pt,l,m,n) = res(i,j,pt,l,m,n) + sum
 	      counts(i,j,pt,l,m,n) = counts(i,j,pt,l,m,n) + ok
- 310	   CONTINUE
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
 
 * ALONG T AXIS
 	ELSEIF ( idim .EQ. t_dim ) THEN
-	   DO 410 n = cx_lo_s6(com_cx), cx_hi_s6(com_cx)
-	   DO 410 m = cx_lo_s5(com_cx), cx_hi_s5(com_cx)
-	   DO 410 k = cx_lo_s3(com_cx), cx_hi_s3(com_cx)
-	   DO 410 j = cx_lo_s2(com_cx), cx_hi_s2(com_cx)
-	   DO 410 i = cx_lo_s1(com_cx), cx_hi_s1(com_cx)
+	   DO n = cx_lo_s6(com_cx), cx_hi_s6(com_cx)
+	   DO m = cx_lo_s5(com_cx), cx_hi_s5(com_cx)
+	   DO k = cx_lo_s3(com_cx), cx_hi_s3(com_cx)
+	   DO j = cx_lo_s2(com_cx), cx_hi_s2(com_cx)
+	   DO i = cx_lo_s1(com_cx), cx_hi_s1(com_cx)
               sum = 0.0D0
               ok = 0.0D0
-	      DO 400 l = cx_lo_s4(com_cx), cx_hi_s4(com_cx)
-	         IF ( com(i,j,k,l,m,n) .EQ. bad_com ) GOTO 400
+	      DO l = cx_lo_s4(com_cx), cx_hi_s4(com_cx)
+	         IF ( com(i,j,k,l,m,n) .EQ. bad_com ) CYCLE
                  sum = sum + com(i,j,k,l,m,n)
 		 ok = ok + 1.
- 400	      CONTINUE
+	      ENDDO
 * ... accumulate weighted values and counts
 	      res(i,j,k,pt,m,n) = res(i,j,k,pt,m,n) + sum
 	      counts(i,j,k,pt,m,n) = counts(i,j,k,pt,m,n) + ok
- 410	   CONTINUE
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
 
 * ALONG E AXIS
 	ELSEIF ( idim .EQ. e_dim ) THEN
-	   DO 510 n = cx_lo_s6(com_cx), cx_hi_s6(com_cx)
-	   DO 510 l = cx_lo_s4(com_cx), cx_hi_s4(com_cx)
-	   DO 510 k = cx_lo_s3(com_cx), cx_hi_s3(com_cx)
-	   DO 510 j = cx_lo_s2(com_cx), cx_hi_s2(com_cx)
-	   DO 510 i = cx_lo_s1(com_cx), cx_hi_s1(com_cx)
+	   DO n = cx_lo_s6(com_cx), cx_hi_s6(com_cx)
+	   DO l = cx_lo_s4(com_cx), cx_hi_s4(com_cx)
+	   DO k = cx_lo_s3(com_cx), cx_hi_s3(com_cx)
+	   DO j = cx_lo_s2(com_cx), cx_hi_s2(com_cx)
+	   DO i = cx_lo_s1(com_cx), cx_hi_s1(com_cx)
               sum = 0.0D0
               ok = 0.0D0
-	      DO 500 m = cx_lo_s5(com_cx), cx_hi_s5(com_cx)
-	         IF ( com(i,j,k,l,m,n) .EQ. bad_com ) GOTO 500
+	      DO m = cx_lo_s5(com_cx), cx_hi_s5(com_cx)
+	         IF ( com(i,j,k,l,m,n) .EQ. bad_com ) CYCLE
                  sum = sum + com(i,j,k,l,m,n)
                  ok = ok + 1.
- 500	      CONTINUE
+	      ENDDO
 	      res(i,j,k,l,pt,n) = res(i,j,k,l,pt,n) + sum
 	      counts(i,j,k,l,pt,n) = counts(i,j,k,l,pt,n) + ok
- 510	   CONTINUE
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
 * ALONG F AXIS
 	ELSEIF ( idim .EQ. f_dim ) THEN
-	   DO 610 m = cx_lo_s5(com_cx), cx_hi_s5(com_cx)
-	   DO 610 l = cx_lo_s4(com_cx), cx_hi_s4(com_cx)
-	   DO 610 k = cx_lo_s3(com_cx), cx_hi_s3(com_cx)
-	   DO 610 j = cx_lo_s2(com_cx), cx_hi_s2(com_cx)
-	   DO 610 i = cx_lo_s1(com_cx), cx_hi_s1(com_cx)
+	   DO m = cx_lo_s5(com_cx), cx_hi_s5(com_cx)
+	   DO l = cx_lo_s4(com_cx), cx_hi_s4(com_cx)
+	   DO k = cx_lo_s3(com_cx), cx_hi_s3(com_cx)
+	   DO j = cx_lo_s2(com_cx), cx_hi_s2(com_cx)
+	   DO i = cx_lo_s1(com_cx), cx_hi_s1(com_cx)
               sum = 0.0D0
               ok = 0.0D0
-	      DO 600 n = cx_lo_s6(com_cx), cx_hi_s6(com_cx)
-	         IF ( com(i,j,k,l,m,n) .EQ. bad_com ) GOTO 600
+	      DO n = cx_lo_s6(com_cx), cx_hi_s6(com_cx)
+	         IF ( com(i,j,k,l,m,n) .EQ. bad_com ) CYCLE
                  sum = sum + com(i,j,k,l,m,n)
                  ok = ok + 1.
- 600	      CONTINUE
+	      ENDDO
 	      res(i,j,k,l,m,pt) = res(i,j,k,l,m,pt) + sum
 	      counts(i,j,k,l,m,pt) = counts(i,j,k,l,m,pt) + ok
- 610	   CONTINUE
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
 
 
 	ENDIF

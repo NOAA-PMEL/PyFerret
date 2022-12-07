@@ -56,6 +56,7 @@
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 * V687 *acm* 3/14 tickets 2151 and 2147: allow missing coordinate data in 3-arg 
 *                 and 4-arg plot commands. 
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -130,7 +131,7 @@
            first = .FALSE.
         ENDIF
    
-   	DO 100 i = 1, npt
+   	DO i = 1, npt
    
 * transfer coordinate pair to temporary variables
    	xit = xi(i)
@@ -300,12 +301,12 @@ C coordinates on the same branch as x11
 	yj(i) = (y11*(1.-xfrac) + y12*(xfrac)) * (1.-yfrac)
      .	      + (y21*(1.-xfrac) + y22*(xfrac)) * (yfrac)
 
- 100	CONTINUE
+	ENDDO ! i = 1, npt
 
 * Check longitudes for a branch point
 
         x11 = xi(1)
-        DO 108 i = 2, npt
+        DO i = 2, npt
            IF (ABS(x11-xi(i)) .GT. branch_test .AND. units_degrees) THEN
               IF (x11 .GT. xi(i)) THEN
                  xi(i) = xi(i) + lon_degrees
@@ -313,22 +314,25 @@ C coordinates on the same branch as x11
                  xi(i) = xi(i) - lon_degrees
               ENDIF
            ENDIF
- 108    ENDDO
+	ENDDO
 
 * possibly invert the sign of the coordinates (used for descending Z axis)
 	IF ( xinv .EQ. -1. ) THEN
-	   DO 110  i = 1, npt
- 110	   xi(i) = -1.*xi(i)
+	   DO  i = 1, npt
+	      xi(i) = -1.*xi(i)
+	   ENDDO
 	ENDIF
 	IF ( yinv .EQ. -1. ) THEN
-	   DO 120  i = 1, npt
- 120	   yj(i) = -1.*yj(i)
+	   DO i = 1, npt
+	      yj(i) = -1.*yj(i)
+	   ENDDO
 	ENDIF
 
 * Add the offset to the X output 
 
-	DO 130  i = 1, npt
- 130	   xi(i) = xadd + xi(i)
+	DO  i = 1, npt
+	   xi(i) = xadd + xi(i)
+ 	ENDDO
 	
 
 * successful completion

@@ -61,6 +61,7 @@
 * V73  4/17 *acm* Change the text when showing members of a union aggregation,
 *                 implement dataset.member notation for unions, (e.g.) "12.3"
 * V76  2/20 *acm* Cticket 1965: show data/members/brief just lists the members, not timesteps etc.
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 
 
         IMPLICIT NONE
@@ -92,8 +93,9 @@
 	IF ( ds_type(dset) .EQ. pds_type_ez ) THEN
 	   CALL SPLIT_LIST(pttmode_explct, lun,
      .		' /FORMAT = '//ds_parm_text(1,dset), 0)
-           DO 10 istep = 1,maxstepfiles
- 10	   IF (sf_setnum(istep) .EQ. dset) GOTO 20
+           DO istep = 1,maxstepfiles
+ 	      IF (sf_setnum(istep) .EQ. dset) GOTO 20
+ 	   ENDDO
 	   CALL ERRMSG( ferr_internal, status, 'EZ_ err', *5000 )
  20	   CALL SPLIT_LIST(pttmode_explct, lun,
      .		' /SKIP = '//LEFINT( sf_skip(istep), lskip ), 0)

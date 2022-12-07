@@ -51,6 +51,7 @@
 * V200:  6/1/89
 *	10/11/89 - modified array declarations using XMEM_SUBSC.CMN
 *        2/12 *kms* Add E and F dimensions (use nferdims in tmap_dims.parm)
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
@@ -104,11 +105,11 @@
 * ( separate loops for each axis )
 	IF ( axis .EQ. x_dim ) THEN
 
-	   DO 100 n = cx_lo_s6(com_cx), cx_hi_s6(com_cx)
-	   DO 100 m = cx_lo_s5(com_cx), cx_hi_s5(com_cx)
-	   DO 100 l = cx_lo_s4(com_cx), cx_hi_s4(com_cx)
-	   DO 100 k = cx_lo_s3(com_cx), cx_hi_s3(com_cx)
-	   DO 100 j = cx_lo_s2(com_cx), cx_hi_s2(com_cx)
+	   DO n = cx_lo_s6(com_cx), cx_hi_s6(com_cx)
+	   DO m = cx_lo_s5(com_cx), cx_hi_s5(com_cx)
+	   DO l = cx_lo_s4(com_cx), cx_hi_s4(com_cx)
+	   DO k = cx_lo_s3(com_cx), cx_hi_s3(com_cx)
+	   DO j = cx_lo_s2(com_cx), cx_hi_s2(com_cx)
 
 * source data points
 	      z_lo = com(ss_lo,j,k,l,m,n)
@@ -121,15 +122,19 @@
 	         res(ss,j,k,l,m,n) = c_lo*z_lo + c_hi*z_hi
 	      ENDIF
 
- 100	   CONTINUE
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
 
 	ELSEIF ( axis .EQ. y_dim ) THEN
 
-	   DO 200 n = cx_lo_s6(com_cx), cx_hi_s6(com_cx)
-	   DO 200 m = cx_lo_s5(com_cx), cx_hi_s5(com_cx)
-	   DO 200 l = cx_lo_s4(com_cx), cx_hi_s4(com_cx)
-	   DO 200 k = cx_lo_s3(com_cx), cx_hi_s3(com_cx)
-	   DO 200 i = cx_lo_s1(com_cx), cx_hi_s1(com_cx)
+	   DO n = cx_lo_s6(com_cx), cx_hi_s6(com_cx)
+	   DO m = cx_lo_s5(com_cx), cx_hi_s5(com_cx)
+	   DO l = cx_lo_s4(com_cx), cx_hi_s4(com_cx)
+	   DO k = cx_lo_s3(com_cx), cx_hi_s3(com_cx)
+	   DO i = cx_lo_s1(com_cx), cx_hi_s1(com_cx)
 
 * source data points
 	      z_lo = com(i,ss_lo,k,l,m,n)
@@ -142,15 +147,19 @@
 	         res(i,ss,k,l,m,n) = c_lo*z_lo + c_hi*z_hi
 	      ENDIF
 
- 200	   CONTINUE
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
 
 	ELSEIF ( axis .EQ. z_dim ) THEN
 
-	   DO 300 n = cx_lo_s6(com_cx), cx_hi_s6(com_cx)
-	   DO 300 m = cx_lo_s5(com_cx), cx_hi_s5(com_cx)
-	   DO 300 l = cx_lo_s4(com_cx), cx_hi_s4(com_cx)
-	   DO 300 j = cx_lo_s2(com_cx), cx_hi_s2(com_cx)
-	   DO 300 i = cx_lo_s1(com_cx), cx_hi_s1(com_cx)
+	   DO n = cx_lo_s6(com_cx), cx_hi_s6(com_cx)
+	   DO m = cx_lo_s5(com_cx), cx_hi_s5(com_cx)
+	   DO l = cx_lo_s4(com_cx), cx_hi_s4(com_cx)
+	   DO j = cx_lo_s2(com_cx), cx_hi_s2(com_cx)
+	   DO i = cx_lo_s1(com_cx), cx_hi_s1(com_cx)
 
 * source data points
 	      z_lo = com(i,j,ss_lo,l,m,n)
@@ -163,15 +172,19 @@
 	         res(i,j,ss,l,m,n) = c_lo*z_lo + c_hi*z_hi
 	      ENDIF
 
- 300	   CONTINUE
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
 
 	ELSEIF ( axis .EQ. t_dim ) THEN
 
-	   DO 400 n = cx_lo_s6(com_cx), cx_hi_s6(com_cx)
-	   DO 400 m = cx_lo_s5(com_cx), cx_hi_s5(com_cx)
-	   DO 400 k = cx_lo_s3(com_cx), cx_hi_s3(com_cx)
-	   DO 400 j = cx_lo_s2(com_cx), cx_hi_s2(com_cx)
-	   DO 400 i = cx_lo_s1(com_cx), cx_hi_s1(com_cx)
+	   DO n = cx_lo_s6(com_cx), cx_hi_s6(com_cx)
+	   DO m = cx_lo_s5(com_cx), cx_hi_s5(com_cx)
+	   DO k = cx_lo_s3(com_cx), cx_hi_s3(com_cx)
+	   DO j = cx_lo_s2(com_cx), cx_hi_s2(com_cx)
+	   DO i = cx_lo_s1(com_cx), cx_hi_s1(com_cx)
 
 * source data points
 	      z_lo = com(i,j,k,ss_lo,m,n)
@@ -184,15 +197,19 @@
 	         res(i,j,k,ss,m,n) = c_lo*z_lo + c_hi*z_hi
 	      ENDIF
 
- 400	   CONTINUE
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
 
 	ELSEIF ( axis .EQ. e_dim ) THEN
 
-	   DO 500 n = cx_lo_s6(com_cx), cx_hi_s6(com_cx)
-	   DO 500 l = cx_lo_s4(com_cx), cx_hi_s4(com_cx)
-	   DO 500 k = cx_lo_s3(com_cx), cx_hi_s3(com_cx)
-	   DO 500 j = cx_lo_s2(com_cx), cx_hi_s2(com_cx)
-	   DO 500 i = cx_lo_s1(com_cx), cx_hi_s1(com_cx)
+	   DO n = cx_lo_s6(com_cx), cx_hi_s6(com_cx)
+	   DO l = cx_lo_s4(com_cx), cx_hi_s4(com_cx)
+	   DO k = cx_lo_s3(com_cx), cx_hi_s3(com_cx)
+	   DO j = cx_lo_s2(com_cx), cx_hi_s2(com_cx)
+	   DO i = cx_lo_s1(com_cx), cx_hi_s1(com_cx)
 
 * source data points
 	      z_lo = com(i,j,k,l,ss_lo,n)
@@ -205,15 +222,19 @@
 	         res(i,j,k,l,ss,n) = c_lo*z_lo + c_hi*z_hi
 	      ENDIF
 
- 500	   CONTINUE
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
 
 	ELSEIF ( axis .EQ. f_dim ) THEN
 
-	   DO 600 m = cx_lo_s5(com_cx), cx_hi_s5(com_cx)
-	   DO 600 l = cx_lo_s4(com_cx), cx_hi_s4(com_cx)
-	   DO 600 k = cx_lo_s3(com_cx), cx_hi_s3(com_cx)
-	   DO 600 j = cx_lo_s2(com_cx), cx_hi_s2(com_cx)
-	   DO 600 i = cx_lo_s1(com_cx), cx_hi_s1(com_cx)
+	   DO m = cx_lo_s5(com_cx), cx_hi_s5(com_cx)
+	   DO l = cx_lo_s4(com_cx), cx_hi_s4(com_cx)
+	   DO k = cx_lo_s3(com_cx), cx_hi_s3(com_cx)
+	   DO j = cx_lo_s2(com_cx), cx_hi_s2(com_cx)
+	   DO i = cx_lo_s1(com_cx), cx_hi_s1(com_cx)
 
 * source data points
 	      z_lo = com(i,j,k,l,m,ss_lo)
@@ -226,7 +247,11 @@
 	         res(i,j,k,l,m,ss) = c_lo*z_lo + c_hi*z_hi
 	      ENDIF
 
- 600	   CONTINUE
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
 
 	ENDIF
 

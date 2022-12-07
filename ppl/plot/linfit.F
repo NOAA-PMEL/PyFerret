@@ -43,6 +43,7 @@ C**
 * V694  *acm*  1/15 Changes to allow two time axes on plot (F-T)
 * V695  *acm*  9/15 Changes for hour:min labeling on time axes
 * v695 9/15 *acm* write values to PPL* symbols using 6 digits not 4
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax.
 C**
 C***********************************************************************
 C**
@@ -295,7 +296,8 @@ C
 	ENDIF
 100	JBASE=0
 	DO 10 J=1,ILNE-1
-10	JBASE=JBASE+LLENG(J)
+	   JBASE=JBASE+LLENG(J)
+10	CONTINUE
 C
 	N=LLENG(ILNE)
 C

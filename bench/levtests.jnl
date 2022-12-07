@@ -1,0 +1,6 @@
+go err71_colorlevs
+pause
+go err700_lev_del_symb
+pause
+go err553_symbol_lev
+

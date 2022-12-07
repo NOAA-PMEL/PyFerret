@@ -99,7 +99,7 @@
 * V751 *acm*  7/19 remove ancient scat2gridgauss_*_V0 functions
 * V751 *acm*  5/20 remove samplexy_closest function, renamed samplexy_nrst
 
-* 10/2022 *acm* Code cleanup: defined length of cmd
+* 10/2022 *acm* Code cleanup: defined length of path and cmd in continue_efcn_scan
 */
 
 
@@ -1223,8 +1223,8 @@ static int continue_efcn_scan(int gfcn_num_internal) {
 
   char file[EF_MAX_NAME_LENGTH]="";
   char *path_ptr=NULL;
-  char path[8192]="";
-  char allpaths[8192]="";
+  char path[8180]="";
+  char allpaths[8180]="";
   char cmd[8192]="";   /* EF_MAX_DESCRIPTION_LENGTH */
   int  count=0;
   int  i_intEF;

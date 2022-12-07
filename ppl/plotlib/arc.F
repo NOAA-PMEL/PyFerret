@@ -41,6 +41,8 @@
 * *sh*  - 1/26/93 modified routine to call spline under tension fit
 *                 if spline_tension is not zero.  otherwise, it will
 *		  use the fit that this algorithm calculates (cubic).
+* 10/2022 *acm* Code cleanup: get rid of Arithmetic IF statements
+
 *******************************************************************
 C** 
 C**    @(#)arc.f	1.1    3/10/88
@@ -71,74 +73,80 @@ c
 ! TMAP mod, spline fit:
 	dimension xl(*),yl(*),splxp(*),splyp(*),spls(*)
 c 
-	if(nask-2) 10,10,20 
-10	nret=2 
+
+	if(nask .GT. 2) GOTO 20 
+
+10	continue
+
+	nret=2 
 	xx(1)=x(2) 
 	yy(1)=y(2) 
 	xx(2)=x(3) 
 	yy(2)=y(3) 
 	return 
-c 
+
 20	continue
-c
+
 ! TMAP mod, spline fit:
+
 	if (spline_tension.ne.0.) then
-	nret=nask
-	do 141, k=1,nret
-	  splt=(spls(ks)+float(k)/float(nret)*
+
+	   nret=nask
+	   do k=1,nret
+	   splt=(spls(ks)+float(k)/float(nret)*
      *         (spls(ks+1)-spls(ks)))/spls(kmax)
-	  call kurv2(splt,xx(k),yy(k),kmax,xl,yl,
+	   call kurv2(splt,xx(k),yy(k),kmax,xl,yl,
      *         splxp,splyp,spls,spline_tension)
-141	continue
+	   enddo
+
 	else
 c
-	pi=3.1415926 
-	hafpi =pi*.50 
-	angmax =pi*.25 
-	xcent = (x(2)+x(3))*.5 
-	ycent = (y(2)+y(3))*.5 
-	dx2= x(3)-x(2) 
-	dy2= y(3)-y(2) 
-	ds2 =  sqrt(dx2*dx2+dy2*dy2) 
-	if(ds2-eps)10,30,30 
-30	ang2=atan2(dy2,dx2) 
-	cos2 = cos(ang2) 
-	sin2 = sin(ang2) 
+	   pi=3.1415926 
+	   hafpi =pi*.50 
+	   angmax =pi*.25 
+	   xcent = (x(2)+x(3))*.5 
+	   ycent = (y(2)+y(3))*.5 
+	   dx2= x(3)-x(2) 
+	   dy2= y(3)-y(2) 
+	   ds2 =  sqrt(dx2*dx2+dy2*dy2) 
+	   if(ds2 .LT. eps) GOTO 10
+	   ang2=atan2(dy2,dx2) 
+	   cos2 = cos(ang2) 
+	   sin2 = sin(ang2) 
 c 
-	do 130 k=1,3,2 
-	dx = x(k+1)-x(k) 
-	dy = y(k+1)-y(k) 
-	ds(k)=sqrt(dx*dx + dy*dy) 
-	slope(k)=0. 
-	if(ds(k)-eps) 130,40,40 
-40	ang =(atan2(dy,dx) - ang2)*.5 
-	if(ang-hafpi) 60,60,50 
-50	ang = ang-pi 
-60	if(ang+hafpi) 70,80,80 
-70	ang = ang+pi 
-80	if(ang-angmax)100,100,90 
-90	ang=angmax 
-100	if(ang+angmax)110,120,120 
-110	ang=-angmax 
-120	slope(k)=sin(ang)/cos(ang) 
-130	continue 
-	if(ds(3)-eps)132,134,134 
-132	slope(3)=-slope(1)*.5 
-134	if(ds(1)-eps)136,138,138 
-136	slope(1)=-slope(3)*.5 
-138	continue 
-	c= .25*(slope(3)-slope(1)) 
-	d= .25*(slope(3)+slope(1)) 
+	   do k=1,3,2 
+	      dx = x(k+1)-x(k) 
+	      dy = y(k+1)-y(k) 
+	      ds(k)=sqrt(dx*dx + dy*dy) 
+	      slope(k)=0. 
+
+	      if(ds(k) .LT. eps) cycle 
+	      ang =(atan2(dy,dx) - ang2)*.5 
+
+	      if(ang .GT. hafpi) ang = ang-pi 
+	      if(ang+hafpi .LT. 0.) ang = ang+pi 
+	      if(ang .GT. angmax) ang=angmax 
+	      if(ang+angmax .LT. 0)ang=-angmax 
+
+	      slope(k)=sin(ang)/cos(ang) 
+	   enddo
+
+	   if(ds(3) .LT. eps) slope(3)=-slope(1)*.5 
+
+	   if(ds(1) .LT. eps)slope(1)=-slope(3)*.5 
+
+	   c= .25*(slope(3)-slope(1)) 
+	   d= .25*(slope(3)+slope(1)) 
 c 
-	nret=nask 
-	dx=2./(nret-1) 
-	xt=-1.-dx 
-	do 140 k=1,nret 
-	  xt=xt+dx
-	  yt=(c+d*xt)*(xt*xt-1.) 
-	  xx(k)=(xt*cos2-yt*sin2)*ds2*.5+xcent 
-	  yy(k)=(xt*sin2+yt*cos2)*ds2*.5+ycent 
-140	continue
+	   nret=nask 
+	   dx=2./(nret-1) 
+	   xt=-1.-dx 
+	   do k=1,nret 
+	     xt=xt+dx
+	     yt=(c+d*xt)*(xt*xt-1.) 
+	     xx(k)=(xt*cos2-yt*sin2)*ds2*.5+xcent 
+	     yy(k)=(xt*sin2+yt*cos2)*ds2*.5+ycent 
+	   enddo
 c
 ! TMAP mod, spline fit:
 	endif

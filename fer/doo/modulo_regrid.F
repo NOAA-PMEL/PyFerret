@@ -63,6 +63,7 @@
 *        2/12 *kms* Add E and F dimensions (use nferdims in tmap_dims.parm)
 *       *acm* 4/12 6D Ferret: time axis may be in t or f direction. 
 * V741  5/18 *acm* issue 1868: gridding transforms that will grid to same axis
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -120,12 +121,12 @@
      .           trans.EQ.prgrd_modvar
 
 * initialize outputs to zero (ngd serves as flag for a valid calculation, too)
-        DO 10 n = cx_lo_s6(cx_lims), cx_hi_s6(cx_lims)
-        DO 10 m = cx_lo_s5(cx_lims), cx_hi_s5(cx_lims)
-        DO 10 l = cx_lo_s4(cx_lims), cx_hi_s4(cx_lims)
-        DO 10 k = cx_lo_s3(cx_lims), cx_hi_s3(cx_lims)
-        DO 10 j = cx_lo_s2(cx_lims), cx_hi_s2(cx_lims)
-        DO 10 i = cx_lo_s1(cx_lims), cx_hi_s1(cx_lims)
+        DO n = cx_lo_s6(cx_lims), cx_hi_s6(cx_lims)
+        DO m = cx_lo_s5(cx_lims), cx_hi_s5(cx_lims)
+        DO l = cx_lo_s4(cx_lims), cx_hi_s4(cx_lims)
+        DO k = cx_lo_s3(cx_lims), cx_hi_s3(cx_lims)
+        DO j = cx_lo_s2(cx_lims), cx_hi_s2(cx_lims)
+        DO i = cx_lo_s1(cx_lims), cx_hi_s1(cx_lims)
 	   ngd(i,j,k,l,m,n) = 0.0
 	   nbd(i,j,k,l,m,n) = 0.0
 
@@ -146,7 +147,12 @@
 	      dst(i,j,k,l,m,n) = arbitrary_small_val4
 	   ENDIF
 
- 10	CONTINUE
+	ENDDO
+	ENDDO
+	ENDDO
+	ENDDO
+	ENDDO
+	ENDDO
 
 * the modulo index length of the destination axis
 ! ...	nmod = CAXIS_LEN(axis,cx_dst)	if cx_dst were known ...
@@ -162,7 +168,7 @@
         IF ( axis .EQ. x_dim ) THEN
 
 * loop through the each source grid point
-	   DO 190 srcss = srcss_lo,srcss_hi
+	   DO srcss = srcss_lo,srcss_hi
 
 * what destination grid point owns this source point?
 	      dstww = TDEST_WORLD(srcss, src_grid, axis, box_middle)
@@ -173,19 +179,19 @@
 	      IF (dst_start .LT. dstss_lo) dst_start = dst_start + nmod
 
 * add this contribution to all of the appropriate destination points
-	      DO 120 dstss = dst_start, dstss_hi, nmod
-                 DO 110 n = cx_lo_s6(cx_lims), cx_hi_s6(cx_lims)
-                 DO 110 m = cx_lo_s5(cx_lims), cx_hi_s5(cx_lims)
-                 DO 110 l = cx_lo_s4(cx_lims), cx_hi_s4(cx_lims)
-                 DO 110 k = cx_lo_s3(cx_lims), cx_hi_s3(cx_lims)
-                 DO 110 j = cx_lo_s2(cx_lims), cx_hi_s2(cx_lims)
+	      DO dstss = dst_start, dstss_hi, nmod
+                 DO n = cx_lo_s6(cx_lims), cx_hi_s6(cx_lims)
+                 DO m = cx_lo_s5(cx_lims), cx_hi_s5(cx_lims)
+                 DO l = cx_lo_s4(cx_lims), cx_hi_s4(cx_lims)
+                 DO k = cx_lo_s3(cx_lims), cx_hi_s3(cx_lims)
+                 DO j = cx_lo_s2(cx_lims), cx_hi_s2(cx_lims)
 
 * ... ignore missing source data
 	         IF ( src(srcss,j,k,l,m,n) .EQ. bad_src ) THEN
                     nbd(dstss,j,k,l,m,n) = nbd(dstss,j,k,l,m,n) + 1.
                     IF ( trans .EQ. prgrd_modnbd ) 
      .                  dst(dstss,j,k,l,m,n) = nbd(dstss,j,k,l,m,n)
-                    GOTO 110
+                    CYCLE
                  ENDIF
 
 * ... count this point
@@ -210,16 +216,21 @@
      .			dst(dstss,j,k,l,m,n) = src(srcss,j,k,l,m,n)
 	         ENDIF
 
- 110	         CONTINUE
- 120	      CONTINUE
+		 ENDDO
+		 ENDDO
+		 ENDDO
+		 ENDDO
+		 ENDDO
 
- 190	   CONTINUE
+	      ENDDO
+
+	   ENDDO
 
 * along Y axis
         ELSEIF ( axis .EQ. Y_dim ) THEN
 
 * loop through the each source grid point
-	   DO 290 srcss = srcss_lo,srcss_hi
+	   DO srcss = srcss_lo,srcss_hi
 
 * what destination grid point owns this source point?
 	      dstww = TDEST_WORLD(srcss, src_grid, axis, box_middle)
@@ -230,19 +241,19 @@
 	      IF (dst_start .LT. dstss_lo) dst_start = dst_start + nmod
 
 * add this contribution to all of the appropriate destination points
-	      DO 220 dstss = dst_start, dstss_hi, nmod
-                 DO 210 n = cx_lo_s6(cx_lims), cx_hi_s6(cx_lims)
-                 DO 210 m = cx_lo_s5(cx_lims), cx_hi_s5(cx_lims)
-                 DO 210 l = cx_lo_s4(cx_lims), cx_hi_s4(cx_lims)
-                 DO 210 k = cx_lo_s3(cx_lims), cx_hi_s3(cx_lims)
-                 DO 210 i = cx_lo_s1(cx_lims), cx_hi_s1(cx_lims)
+	      DO dstss = dst_start, dstss_hi, nmod
+                 DO n = cx_lo_s6(cx_lims), cx_hi_s6(cx_lims)
+                 DO m = cx_lo_s5(cx_lims), cx_hi_s5(cx_lims)
+                 DO l = cx_lo_s4(cx_lims), cx_hi_s4(cx_lims)
+                 DO k = cx_lo_s3(cx_lims), cx_hi_s3(cx_lims)
+                 DO i = cx_lo_s1(cx_lims), cx_hi_s1(cx_lims)
 
 * ... ignore missing source data
 	         IF ( src(i,srcss,k,l,m,n) .EQ. bad_src ) THEN
                     nbd(i,dstss,k,l,m,n) = nbd(i,dstss,k,l,m,n) + 1.
                     IF ( trans .EQ. prgrd_modnbd ) 
      .                 dst(i,dstss,k,l,m,n) = nbd(i,dstss,k,l,m,n)
-                    GOTO 210
+                    CYCLE
                  ENDIF
 
 * ... count this point
@@ -267,16 +278,21 @@
      .			dst(i,dstss,k,l,m,n) = src(i,srcss,k,l,m,n)
 	         ENDIF
 
- 210	         CONTINUE
- 220	      CONTINUE
+		 ENDDO
+		 ENDDO
+		 ENDDO
+		 ENDDO
+		 ENDDO
 
- 290	   CONTINUE
+	      ENDDO
+
+	   ENDDO
 
 * along Z axis
         ELSEIF ( axis .EQ. z_dim ) THEN
 
 * loop through the each source grid point
-	   DO 390 srcss = srcss_lo,srcss_hi
+	   DO srcss = srcss_lo,srcss_hi
 
 * what destination grid point owns this source point?
 	      dstww = TDEST_WORLD(srcss, src_grid, axis, box_middle)
@@ -287,19 +303,19 @@
 	      IF (dst_start .LT. dstss_lo) dst_start = dst_start + nmod
 
 * add this contribution to all of the appropriate destination points
-	      DO 320 dstss = dst_start, dstss_hi, nmod
-                 DO 310 n = cx_lo_s6(cx_lims), cx_hi_s6(cx_lims)
-                 DO 310 m = cx_lo_s5(cx_lims), cx_hi_s5(cx_lims)
-                 DO 310 l = cx_lo_s4(cx_lims), cx_hi_s4(cx_lims)
-                 DO 310 k = cx_lo_s2(cx_lims), cx_hi_s2(cx_lims)
-                 DO 310 i = cx_lo_s1(cx_lims), cx_hi_s1(cx_lims)
+	      DO dstss = dst_start, dstss_hi, nmod
+                 DO n = cx_lo_s6(cx_lims), cx_hi_s6(cx_lims)
+                 DO m = cx_lo_s5(cx_lims), cx_hi_s5(cx_lims)
+                 DO l = cx_lo_s4(cx_lims), cx_hi_s4(cx_lims)
+                 DO k = cx_lo_s2(cx_lims), cx_hi_s2(cx_lims)
+                 DO i = cx_lo_s1(cx_lims), cx_hi_s1(cx_lims)
 
 * ... ignore missing source data
 	         IF ( src(i,j,srcss,l,m,n) .EQ. bad_src ) THEN
                     nbd(i,j,dstss,l,m,n) = nbd(i,j,dstss,l,m,n) + 1.
                     IF ( trans .EQ. prgrd_modnbd ) 
      .                  dst(i,j,dstss,l,m,n) = nbd(i,j,dstss,l,m,n)
-                    GOTO 310
+                    CYCLE
                  ENDIF
 
 * ... count this point
@@ -324,10 +340,15 @@
      .			dst(i,j,dstss,l,m,n) = src(i,j,srcss,l,m,n)
 	         ENDIF
 
- 310	         CONTINUE
- 320	      CONTINUE
+		 ENDDO
+		 ENDDO
+		 ENDDO
+		 ENDDO
+		 ENDDO
 
- 390	   CONTINUE
+	      ENDDO
+
+	   ENDDO
 
 * along T axis
         ELSEIF ( axis .EQ. T_dim ) THEN
@@ -337,7 +358,7 @@
            IF ( status .NE. ferr_ok ) STOP 'bogus TDEST_WORLD_INIT'
 
 * loop through the each source grid point
-	   DO 490 srcss = srcss_lo,srcss_hi
+	   DO srcss = srcss_lo,srcss_hi
 
 * USE DESTINATION GRID TIME/DATE ENCODINGS FOR ALL CALCULATIONS
 * what destination grid point owns this source point?
@@ -349,19 +370,19 @@
 	      IF (dst_start .LT. dstss_lo) dst_start = dst_start + nmod
 
 * add this contribution to all of the appropriate destination points
-	      DO 420 dstss = dst_start, dstss_hi, nmod
-                 DO 410 n = cx_lo_s6(cx_lims), cx_hi_s6(cx_lims)
-                 DO 410 m = cx_lo_s5(cx_lims), cx_hi_s5(cx_lims)
-                 DO 410 k = cx_lo_s3(cx_lims), cx_hi_s3(cx_lims)
-                 DO 410 j = cx_lo_s2(cx_lims), cx_hi_s2(cx_lims)
-                 DO 410 i = cx_lo_s1(cx_lims), cx_hi_s1(cx_lims)
+	      DO dstss = dst_start, dstss_hi, nmod
+                 DO n = cx_lo_s6(cx_lims), cx_hi_s6(cx_lims)
+                 DO m = cx_lo_s5(cx_lims), cx_hi_s5(cx_lims)
+                 DO k = cx_lo_s3(cx_lims), cx_hi_s3(cx_lims)
+                 DO j = cx_lo_s2(cx_lims), cx_hi_s2(cx_lims)
+                 DO i = cx_lo_s1(cx_lims), cx_hi_s1(cx_lims)
 
 * ... ignore missing source data
 	         IF ( src(i,j,k,srcss,m,n) .EQ. bad_src ) THEN
                     nbd(i,j,k,dstss,m,n) = nbd(i,j,k,dstss,m,n) + 1.
                     IF ( trans .EQ. prgrd_modnbd ) 
      .                  dst(i,j,k,dstss,m,n) = nbd(i,j,k,dstss,m,n)
-                    GOTO 410
+                    CYCLE
                  ENDIF
 
 * ... count this point
@@ -386,17 +407,22 @@
      .			dst(i,j,k,dstss,m,n) = src(i,j,k,srcss,m,n)
 	         ENDIF
 
- 410	         CONTINUE
- 420	      CONTINUE
+		 ENDDO
+		 ENDDO
+		 ENDDO
+		 ENDDO
+		 ENDDO
 
- 490	   CONTINUE
+	      ENDDO
+
+	   ENDDO
 
 
 * along E axis
         ELSEIF ( axis .EQ. e_dim ) THEN
 
 * loop through the each source grid point
-	   DO 590 srcss = srcss_lo,srcss_hi
+	   DO srcss = srcss_lo,srcss_hi
 
 * what destination grid point owns this source point?
 	      dstww = TDEST_WORLD(srcss, src_grid, axis, box_middle)
@@ -407,19 +433,19 @@
 	      IF (dst_start .LT. dstss_lo) dst_start = dst_start + nmod
 
 * add this contribution to all of the appropriate destination points
-	      DO 520 dstss = dst_start, dstss_hi, nmod
-                 DO 510 n = cx_lo_s6(cx_lims), cx_hi_s6(cx_lims)
-                 DO 510 l = cx_lo_s4(cx_lims), cx_hi_s4(cx_lims)
-                 DO 510 k = cx_lo_s3(cx_lims), cx_hi_s3(cx_lims)
-                 DO 510 j = cx_lo_s2(cx_lims), cx_hi_s2(cx_lims)
-                 DO 510 i = cx_lo_s1(cx_lims), cx_hi_s1(cx_lims)
+	      DO dstss = dst_start, dstss_hi, nmod
+                 DO n = cx_lo_s6(cx_lims), cx_hi_s6(cx_lims)
+                 DO l = cx_lo_s4(cx_lims), cx_hi_s4(cx_lims)
+                 DO k = cx_lo_s3(cx_lims), cx_hi_s3(cx_lims)
+                 DO j = cx_lo_s2(cx_lims), cx_hi_s2(cx_lims)
+                 DO i = cx_lo_s1(cx_lims), cx_hi_s1(cx_lims)
 
 * ... ignore missing source data
 	         IF ( src(i,j,k,l,srcss,n) .EQ. bad_src ) THEN
                     nbd(i,j,k,l,dstss,n) = nbd(i,j,k,l,dstss,n) + 1.
                     IF ( trans .EQ. prgrd_modnbd ) 
      .                  dst(i,j,k,l,dstss,n) = nbd(i,j,k,l,dstss,n)
-                    GOTO 510
+                    CYCLE
                  ENDIF
 
 * ... count this point
@@ -444,10 +470,15 @@
      .			dst(i,j,k,l,dstss,n) = src(i,j,k,l,srcss,n)
 	         ENDIF
 
- 510	         CONTINUE
- 520	      CONTINUE
+		 ENDDO
+		 ENDDO
+		 ENDDO
+		 ENDDO
+		 ENDDO
 
- 590	   CONTINUE
+	      ENDDO
+
+	   ENDDO
 
 * along F axis
         ELSEIF ( axis .EQ. F_dim ) THEN
@@ -457,7 +488,7 @@
            IF ( status .NE. ferr_ok ) STOP 'bogus TDEST_WORLD_INIT'
 
 * loop through the each source grid point
-	   DO 690 srcss = srcss_lo,srcss_hi
+	   DO srcss = srcss_lo,srcss_hi
 
 * USE DESTINATION GRID TIME/DATE ENCODINGS FOR ALL CALCULATIONS
 * what destination grid point owns this source point?
@@ -469,19 +500,19 @@
 	      IF (dst_start .LT. dstss_lo) dst_start = dst_start + nmod
 
 * add this contribution to all of the appropriate destination points
-	      DO 620 dstss = dst_start, dstss_hi, nmod
-                 DO 610 m = cx_lo_s5(cx_lims), cx_hi_s5(cx_lims)
-                 DO 610 l = cx_lo_s4(cx_lims), cx_hi_s4(cx_lims)
-                 DO 610 k = cx_lo_s3(cx_lims), cx_hi_s3(cx_lims)
-                 DO 610 j = cx_lo_s2(cx_lims), cx_hi_s2(cx_lims)
-                 DO 610 i = cx_lo_s1(cx_lims), cx_hi_s1(cx_lims)
+	      DO dstss = dst_start, dstss_hi, nmod
+                 DO m = cx_lo_s5(cx_lims), cx_hi_s5(cx_lims)
+                 DO l = cx_lo_s4(cx_lims), cx_hi_s4(cx_lims)
+                 DO k = cx_lo_s3(cx_lims), cx_hi_s3(cx_lims)
+                 DO j = cx_lo_s2(cx_lims), cx_hi_s2(cx_lims)
+                 DO i = cx_lo_s1(cx_lims), cx_hi_s1(cx_lims)
 
 * ... ignore missing source data
 	         IF ( src(i,j,k,l,m,srcss) .EQ. bad_src ) THEN
                     nbd(i,j,k,l,m,dstss) = nbd(i,j,k,l,m,dstss) + 1.
                     IF ( trans .EQ. prgrd_modnbd ) 
      .                  dst(i,j,k,l,m,dstss) = nbd(i,j,k,l,m,dstss)
-                    GOTO 610
+                    CYCLE
                  ENDIF
 
 * ... count this point
@@ -506,10 +537,15 @@
      .			dst(i,j,k,l,m,dstss) = src(i,j,k,l,m,srcss)
 	         ENDIF
 
- 610	         CONTINUE
- 620	      CONTINUE
+		 ENDDO
+		 ENDDO
+		 ENDDO
+		 ENDDO
+		 ENDDO
 
- 690	   CONTINUE
+	      ENDDO
+
+	   ENDDO
 
 	ENDIF
 
@@ -518,12 +554,12 @@
 
 * for all axis orientations
 * ... fill in missing values where there were zero source points
-        DO 1000 n = cx_lo_s6(cx_lims), cx_hi_s6(cx_lims)
-        DO 1000 m = cx_lo_s5(cx_lims), cx_hi_s5(cx_lims)
-        DO 1000 l = cx_lo_s4(cx_lims), cx_hi_s4(cx_lims)
-        DO 1000 k = cx_lo_s3(cx_lims), cx_hi_s3(cx_lims)
-        DO 1000 j = cx_lo_s2(cx_lims), cx_hi_s2(cx_lims)
-        DO 1000 i = cx_lo_s1(cx_lims), cx_hi_s1(cx_lims)
+        DO n = cx_lo_s6(cx_lims), cx_hi_s6(cx_lims)
+        DO m = cx_lo_s5(cx_lims), cx_hi_s5(cx_lims)
+        DO l = cx_lo_s4(cx_lims), cx_hi_s4(cx_lims)
+        DO k = cx_lo_s3(cx_lims), cx_hi_s3(cx_lims)
+        DO j = cx_lo_s2(cx_lims), cx_hi_s2(cx_lims)
+        DO i = cx_lo_s1(cx_lims), cx_hi_s1(cx_lims)
 
 	   IF ( ngd(i,j,k,l,m,n) .EQ. 0.0 ) THEN
 	      dst(i,j,k,l,m,n) = bad_dst
@@ -540,7 +576,12 @@
 	      ENDIF
 	   ENDIF
 
- 1000	CONTINUE
+	ENDDO
+	ENDDO
+	ENDDO
+	ENDDO
+	ENDDO
+	ENDDO
 
 	IF ( trans .NE. prgrd_modvar ) RETURN
 	IF ( self_vari ) RETURN
@@ -555,7 +596,7 @@
         IF ( axis .EQ. x_dim ) THEN
 
 * loop through the each source grid point
-	   DO 1190 srcss = srcss_lo,srcss_hi
+	   DO srcss = srcss_lo,srcss_hi
 
 * what destination grid point owns this source point?
 	      dstww = TDEST_WORLD(srcss, src_grid, axis, box_middle)
@@ -566,12 +607,12 @@
 	      IF (dst_start .LT. dstss_lo) dst_start = dst_start + nmod
 
 * add this contribution to all of the appropriate destination points
-	      DO 1120 dstss = dst_start, dstss_hi, nmod
-                 DO 1110 n = cx_lo_s6(cx_lims), cx_hi_s6(cx_lims)
-                 DO 1110 m = cx_lo_s5(cx_lims), cx_hi_s5(cx_lims)
-                 DO 1110 l = cx_lo_s4(cx_lims), cx_hi_s4(cx_lims)
-                 DO 1110 k = cx_lo_s3(cx_lims), cx_hi_s3(cx_lims)
-                 DO 1110 j = cx_lo_s2(cx_lims), cx_hi_s2(cx_lims)
+	      DO dstss = dst_start, dstss_hi, nmod
+                 DO n = cx_lo_s6(cx_lims), cx_hi_s6(cx_lims)
+                 DO m = cx_lo_s5(cx_lims), cx_hi_s5(cx_lims)
+                 DO l = cx_lo_s4(cx_lims), cx_hi_s4(cx_lims)
+                 DO k = cx_lo_s3(cx_lims), cx_hi_s3(cx_lims)
+                 DO j = cx_lo_s2(cx_lims), cx_hi_s2(cx_lims)
 
 * sum of squared deviations
 	         IF ( ngd(dstss,j,k,l,m,n) .GT. 1.0 ) THEN
@@ -583,17 +624,22 @@
                     ENDIF
 	         ENDIF
 
- 1110	         CONTINUE
- 1120	      CONTINUE
+		 ENDDO
+		 ENDDO
+		 ENDDO
+		 ENDDO
+		 ENDDO
 
- 1190	   CONTINUE
+	      ENDDO
+
+	   ENDDO
 
 
 * along Y axis
         ELSEIF ( axis .EQ. Y_dim ) THEN
 
 * loop through the each source grid point
-	   DO 1290 srcss = srcss_lo,srcss_hi
+	   DO srcss = srcss_lo,srcss_hi
 
 * what destination grid point owns this source point?
 	      dstww = TDEST_WORLD(srcss, src_grid, axis, box_middle)
@@ -604,12 +650,12 @@
 	      IF (dst_start .LT. dstss_lo) dst_start = dst_start + nmod
 
 * add this contribution to all of the appropriate destination points
-	      DO 1220 dstss = dst_start, dstss_hi, nmod
-                 DO 1210 n = cx_lo_s6(cx_lims), cx_hi_s6(cx_lims)
-                 DO 1210 m = cx_lo_s5(cx_lims), cx_hi_s5(cx_lims)
-                 DO 1210 l = cx_lo_s4(cx_lims), cx_hi_s4(cx_lims)
-                 DO 1210 k = cx_lo_s3(cx_lims), cx_hi_s3(cx_lims)
-                 DO 1210 i = cx_lo_s1(cx_lims), cx_hi_s1(cx_lims)
+	      DO dstss = dst_start, dstss_hi, nmod
+                 DO n = cx_lo_s6(cx_lims), cx_hi_s6(cx_lims)
+                 DO m = cx_lo_s5(cx_lims), cx_hi_s5(cx_lims)
+                 DO l = cx_lo_s4(cx_lims), cx_hi_s4(cx_lims)
+                 DO k = cx_lo_s3(cx_lims), cx_hi_s3(cx_lims)
+                 DO i = cx_lo_s1(cx_lims), cx_hi_s1(cx_lims)
 
 * sum of squared deviations
 	         IF ( ngd(i,dstss,k,l,m,n) .GT. 1.0 ) THEN
@@ -621,17 +667,21 @@
 		    ENDIF
 	         ENDIF
 
- 1210	         CONTINUE
- 1220	      CONTINUE
+		 ENDDO
+		 ENDDO
+		 ENDDO
+		 ENDDO
+		 ENDDO
 
- 1290	   CONTINUE
+	      ENDDO
 
+	   ENDDO
 
 * along Z axis
         ELSEIF ( axis .EQ. z_dim ) THEN
 
 * loop through the each source grid point
-	   DO 1390 srcss = srcss_lo,srcss_hi
+	   DO srcss = srcss_lo,srcss_hi
 
 * what destination grid point owns this source point?
 	      dstww = TDEST_WORLD(srcss, src_grid, axis, box_middle)
@@ -642,12 +692,12 @@
 	      IF (dst_start .LT. dstss_lo) dst_start = dst_start + nmod
 
 * add this contribution to all of the appropriate destination points
-	      DO 1320 dstss = dst_start, dstss_hi, nmod
-                 DO 1310 n = cx_lo_s6(cx_lims), cx_hi_s6(cx_lims)
-                 DO 1310 m = cx_lo_s5(cx_lims), cx_hi_s5(cx_lims)
-                 DO 1310 l = cx_lo_s4(cx_lims), cx_hi_s4(cx_lims)
-                 DO 1310 k = cx_lo_s2(cx_lims), cx_hi_s2(cx_lims)
-                 DO 1310 i = cx_lo_s1(cx_lims), cx_hi_s1(cx_lims)
+	      DO dstss = dst_start, dstss_hi, nmod
+                 DO n = cx_lo_s6(cx_lims), cx_hi_s6(cx_lims)
+                 DO m = cx_lo_s5(cx_lims), cx_hi_s5(cx_lims)
+                 DO l = cx_lo_s4(cx_lims), cx_hi_s4(cx_lims)
+                 DO k = cx_lo_s2(cx_lims), cx_hi_s2(cx_lims)
+                 DO i = cx_lo_s1(cx_lims), cx_hi_s1(cx_lims)
 
 * sum of squared deviations
 	         IF ( ngd(i,j,dstss,l,m,n) .GT. 1.0 ) THEN
@@ -659,17 +709,22 @@
 		    ENDIF
 	         ENDIF
 
- 1310	         CONTINUE
- 1320	      CONTINUE
+		 ENDDO
+		 ENDDO
+		 ENDDO
+		 ENDDO
+		 ENDDO
 
- 1390	   CONTINUE
+	      ENDDO
+
+	   ENDDO
 
 
 * along T axis
         ELSEIF (  axis .EQ. T_dim ) THEN
 
 * loop through the each source grid point
-	   DO 1490 srcss = srcss_lo,srcss_hi
+	   DO srcss = srcss_lo,srcss_hi
 
 * USE DESTINATION GRID TIME/DATE ENCODINGS FOR ALL CALCULATIONS
 * what destination grid point owns this source point?
@@ -681,12 +736,12 @@
 	      IF (dst_start .LT. dstss_lo) dst_start = dst_start + nmod
 
 * add this contribution to all of the appropriate destination points
-	      DO 1420 dstss = dst_start, dstss_hi, nmod
-                 DO 1410 n = cx_lo_s6(cx_lims), cx_hi_s6(cx_lims)
-                 DO 1410 m = cx_lo_s5(cx_lims), cx_hi_s5(cx_lims)
-                 DO 1410 k = cx_lo_s3(cx_lims), cx_hi_s3(cx_lims)
-                 DO 1410 j = cx_lo_s2(cx_lims), cx_hi_s2(cx_lims)
-                 DO 1410 i = cx_lo_s1(cx_lims), cx_hi_s1(cx_lims)
+	      DO dstss = dst_start, dstss_hi, nmod
+                 DO n = cx_lo_s6(cx_lims), cx_hi_s6(cx_lims)
+                 DO m = cx_lo_s5(cx_lims), cx_hi_s5(cx_lims)
+                 DO k = cx_lo_s3(cx_lims), cx_hi_s3(cx_lims)
+                 DO j = cx_lo_s2(cx_lims), cx_hi_s2(cx_lims)
+                 DO i = cx_lo_s1(cx_lims), cx_hi_s1(cx_lims)
 
 * sum of squared deviations
 	         IF ( ngd(i,j,k,dstss,m,n) .GT. 1.0 ) THEN
@@ -698,17 +753,22 @@
 		    ENDIF
 	         ENDIF
 
- 1410	         CONTINUE
- 1420	      CONTINUE
+		 ENDDO
+		 ENDDO
+		 ENDDO
+		 ENDDO
+		 ENDDO
 
- 1490	   CONTINUE
+	      ENDDO
+
+	   ENDDO
  
 
 * along E axis
         ELSEIF ( axis .EQ. e_dim ) THEN
 
 * loop through the each source grid point
-	   DO 1590 srcss = srcss_lo,srcss_hi
+	   DO srcss = srcss_lo,srcss_hi
 
 * what destination grid point owns this source point?
 	      dstww = TDEST_WORLD(srcss, src_grid, axis, box_middle)
@@ -719,12 +779,12 @@
 	      IF (dst_start .LT. dstss_lo) dst_start = dst_start + nmod
 
 * add this contribution to all of the appropriate destination points
-	      DO 1520 dstss = dst_start, dstss_hi, nmod
-                 DO 1510 n = cx_lo_s6(cx_lims), cx_hi_s6(cx_lims)
-                 DO 1510 l = cx_lo_s4(cx_lims), cx_hi_s4(cx_lims)
-                 DO 1510 k = cx_lo_s3(cx_lims), cx_hi_s3(cx_lims)
-                 DO 1510 j = cx_lo_s2(cx_lims), cx_hi_s2(cx_lims)
-                 DO 1510 i = cx_lo_s1(cx_lims), cx_hi_s1(cx_lims)
+	      DO dstss = dst_start, dstss_hi, nmod
+                 DO n = cx_lo_s6(cx_lims), cx_hi_s6(cx_lims)
+                 DO l = cx_lo_s4(cx_lims), cx_hi_s4(cx_lims)
+                 DO k = cx_lo_s3(cx_lims), cx_hi_s3(cx_lims)
+                 DO j = cx_lo_s2(cx_lims), cx_hi_s2(cx_lims)
+                 DO i = cx_lo_s1(cx_lims), cx_hi_s1(cx_lims)
 
 * sum of squared deviations
 	         IF ( ngd(i,j,k,l,dstss,n) .GT. 1.0 ) THEN
@@ -736,16 +796,21 @@
                     ENDIF
 	         ENDIF
 
- 1510	         CONTINUE
- 1520	      CONTINUE
+		 ENDDO
+		 ENDDO
+		 ENDDO
+		 ENDDO
+		 ENDDO
 
- 1590	   CONTINUE
+	      ENDDO
+
+	   ENDDO
 
 * along F axis
         ELSEIF (  axis .EQ. f_dim ) THEN
 
 * loop through the each source grid point
-	   DO 1690 srcss = srcss_lo,srcss_hi
+	   DO srcss = srcss_lo,srcss_hi
 
 * USE DESTINATION GRID TIME/DATE ENCODINGS FOR ALL CALCULATIONS
 * what destination grid point owns this source point?
@@ -757,12 +822,12 @@
 	      IF (dst_start .LT. dstss_lo) dst_start = dst_start + nmod
 
 * add this contribution to all of the appropriate destination points
-	      DO 1620 dstss = dst_start, dstss_hi, nmod
-                 DO 1610 m = cx_lo_s5(cx_lims), cx_hi_s5(cx_lims)
-                 DO 1610 l = cx_lo_s4(cx_lims), cx_hi_s4(cx_lims)
-                 DO 1610 k = cx_lo_s3(cx_lims), cx_hi_s3(cx_lims)
-                 DO 1610 j = cx_lo_s2(cx_lims), cx_hi_s2(cx_lims)
-                 DO 1610 i = cx_lo_s1(cx_lims), cx_hi_s1(cx_lims)
+	      DO dstss = dst_start, dstss_hi, nmod
+                 DO m = cx_lo_s5(cx_lims), cx_hi_s5(cx_lims)
+                 DO l = cx_lo_s4(cx_lims), cx_hi_s4(cx_lims)
+                 DO k = cx_lo_s3(cx_lims), cx_hi_s3(cx_lims)
+                 DO j = cx_lo_s2(cx_lims), cx_hi_s2(cx_lims)
+                 DO i = cx_lo_s1(cx_lims), cx_hi_s1(cx_lims)
 
 * sum of squared deviations
 	         IF ( ngd(i,j,k,l,m,dstss) .GT. 1.0 ) THEN
@@ -774,20 +839,25 @@
 		    ENDIF
 	         ENDIF
 
- 1610	         CONTINUE
- 1620	      CONTINUE
+		 ENDDO
+		 ENDDO
+		 ENDDO
+		 ENDDO
+		 ENDDO
 
- 1690	   CONTINUE
+	      ENDDO
+
+	   ENDDO
 
 	ENDIF
 
 * for all axis orientations: divide sum of squared deviations by N-1
-        DO 2000 n = cx_lo_s6(cx_lims), cx_hi_s6(cx_lims)
-        DO 2000 m = cx_lo_s5(cx_lims), cx_hi_s5(cx_lims)
-        DO 2000 l = cx_lo_s4(cx_lims), cx_hi_s4(cx_lims)
-        DO 2000 k = cx_lo_s3(cx_lims), cx_hi_s3(cx_lims)
-        DO 2000 j = cx_lo_s2(cx_lims), cx_hi_s2(cx_lims)
-        DO 2000 i = cx_lo_s1(cx_lims), cx_hi_s1(cx_lims)
+        DO n = cx_lo_s6(cx_lims), cx_hi_s6(cx_lims)
+        DO m = cx_lo_s5(cx_lims), cx_hi_s5(cx_lims)
+        DO l = cx_lo_s4(cx_lims), cx_hi_s4(cx_lims)
+        DO k = cx_lo_s3(cx_lims), cx_hi_s3(cx_lims)
+        DO j = cx_lo_s2(cx_lims), cx_hi_s2(cx_lims)
+        DO i = cx_lo_s1(cx_lims), cx_hi_s1(cx_lims)
 
 	   IF ( ngd(i,j,k,l,m,n) .LE. 1.0 ) THEN
 	      dst(i,j,k,l,m,n) = bad_dst
@@ -796,7 +866,12 @@
      .                           (ngd(i,j,k,l,m,n) - 1.0)
 	   ENDIF
 
- 2000	CONTINUE
+	ENDDO
+	ENDDO
+	ENDDO
+	ENDDO
+	ENDDO
+	ENDDO
 
 	RETURN
 	END

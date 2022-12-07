@@ -44,6 +44,7 @@
 * V200:  8/1/89 - based on DO_DERIV_CNTR
 *	10/11/89 - modified array declarations using XMEM_SUBSC.CMN
 * 2/12 *acm* Add E and F dimensions (use nferdims in tmap_dims.parm)
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -79,29 +80,41 @@
 * fill in edges if not computable
 	lo_l = mr_lo_s4(mres)
 	IF ( mr_lo_s4(mcom) .EQ. mr_lo_s4(mres) ) THEN
-	   DO 100 n = mr_lo_s6(mres), mr_hi_s6(mres)
-	   DO 100 m = mr_lo_s5(mres), mr_hi_s5(mres)
-	   DO 100 l = mr_lo_s4(mres), mr_hi_s4(mres)
-	   DO 100 k = mr_lo_s3(mres), mr_hi_s3(mres)
-	   DO 100 j = mr_lo_s2(mres), mr_hi_s2(mres)
-	   DO 100 i = mr_lo_s1(mres), mr_hi_s1(mres)
- 100	   res(i,j,k,lo_l,m,n) = bad_res
+	   DO n = mr_lo_s6(mres), mr_hi_s6(mres)
+	   DO m = mr_lo_s5(mres), mr_hi_s5(mres)
+	   DO l = mr_lo_s4(mres), mr_hi_s4(mres)
+	   DO k = mr_lo_s3(mres), mr_hi_s3(mres)
+	   DO j = mr_lo_s2(mres), mr_hi_s2(mres)
+	   DO i = mr_lo_s1(mres), mr_hi_s1(mres)
+	      res(i,j,k,lo_l,m,n) = bad_res
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
 	   lo_l = lo_l + 1
 	ENDIF
 	hi_l = mr_hi_s4(mres)
 	IF ( mr_hi_s4(mcom) .EQ. mr_hi_s4(mres) ) THEN
-	   DO 200 n = mr_lo_s6(mres), mr_hi_s6(mres)
-	   DO 200 m = mr_lo_s5(mres), mr_hi_s5(mres)
-	   DO 200 l = mr_lo_s4(mres), mr_hi_s4(mres)
-	   DO 200 k = mr_lo_s3(mres), mr_hi_s3(mres)
-	   DO 200 j = mr_lo_s2(mres), mr_hi_s2(mres)
-	   DO 200 i = mr_lo_s1(mres), mr_hi_s1(mres)
- 200	   res(i,j,k,hi_l,m,n) = bad_res
+	   DO n = mr_lo_s6(mres), mr_hi_s6(mres)
+	   DO m = mr_lo_s5(mres), mr_hi_s5(mres)
+	   DO l = mr_lo_s4(mres), mr_hi_s4(mres)
+	   DO k = mr_lo_s3(mres), mr_hi_s3(mres)
+	   DO j = mr_lo_s2(mres), mr_hi_s2(mres)
+	   DO i = mr_lo_s1(mres), mr_hi_s1(mres)
+	      res(i,j,k,hi_l,m,n) = bad_res
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
 	   hi_l = hi_l - 1
 	ENDIF
 	   
 * loop through all computable points
-	DO 1000 l = lo_l, hi_l
+	DO l = lo_l, hi_l
 
 	lm1 = l-1
 	lp1 = l+1
@@ -118,11 +131,11 @@
 	      IF ( box .NE. box1 ) reg = .FALSE.
 	   ENDIF
 
-	   DO 500 n = mr_lo_s6(mres), mr_hi_s6(mres)
-	   DO 500 m = mr_lo_s5(mres), mr_hi_s5(mres)
-	   DO 500 k = mr_lo_s3(mres), mr_hi_s3(mres)
-	   DO 500 j = mr_lo_s2(mres), mr_hi_s2(mres)
-	   DO 500 i = mr_lo_s1(mres), mr_hi_s1(mres)
+	   DO n = mr_lo_s6(mres), mr_hi_s6(mres)
+	   DO m = mr_lo_s5(mres), mr_hi_s5(mres)
+	   DO k = mr_lo_s3(mres), mr_hi_s3(mres)
+	   DO j = mr_lo_s2(mres), mr_hi_s2(mres)
+	   DO i = mr_lo_s1(mres), mr_hi_s1(mres)
 
 	      lo_com = com(i,j,k,lm1,m,n)
 	      hi_com = com(i,j,k,lp1,m,n)
@@ -132,8 +145,13 @@
 	         res(i,j,k,l,m,n) = (hi_com-lo_com) / box
 	      ENDIF
 
- 500	   CONTINUE
- 1000	CONTINUE
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
+
+	ENDDO
 
 * compute delta t
 	IF ( reg ) THEN

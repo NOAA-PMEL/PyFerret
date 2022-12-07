@@ -45,6 +45,7 @@
 *		Found a logic bug in the loop that re-assigns ds_grid_number
 * V5.1 *sh* 4/00 - using dynamic grids and axes
 * V674 2/12 *acm* 6D Ferret: use nferdims rather than 4 for dimension indexing
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax.
 
 * argument definitions:
 *	dset - the current data set
@@ -84,8 +85,8 @@
 * ... bump use counts on all lines used by these grids
 	   IF ( grid_name(igrid) .NE. char_init ) THEN
 	      DO 110 idim = 1, nferdims
- 110	      CALL TM_USE_LINE( grid_line(idim,igrid) )
-
+ 	         CALL TM_USE_LINE( grid_line(idim,igrid) )
+ 110	      CONTINUE
 !* ... a use count of zero indicates that this explicit parent grid is not used
 !*	set its use count to 1 to indicate that it uses itself
 !	      IF ( grid_use_cnt(igrid) .EQ. 0 ) grid_use_cnt(igrid) = 1

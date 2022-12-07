@@ -42,6 +42,10 @@
 * V5.53  *acm*  6/03 Correct the frequency axis:  why was there a factor of
 *                     1.001 in freqn = 1.001*yquist?
 * V7.65 *acm*  10/22 Fix for issue 126: incorrect frequency axis
+C  11/2022 *acm* Code cleanup: Update FFTPACK code to F90 standard, from
+C                https://github.com/fortran-lang/fftpack.git 
+*                Send an integer work array along with wft tom avoid 
+*                type-mismatch warnings
 *
 *
 * This function computes fft amplitude spectrum for each time series.  Result
@@ -308,7 +312,7 @@ C  The FFT code returns frequencies W(k) for k=1 to N/2, with N/2 rounded down
 
       mtdat = 1 + arg_hi_ss(T_AXIS,ARG1) - arg_lo_ss(T_AXIS,ARG1)
 
-      mtwork = 2.5* mtdat + 15
+      mtwork = 2 * mtdat
   
 * a
       CALL ef_set_work_array_dims_6d(id, 1,
@@ -384,6 +388,7 @@ C  The FFT code returns frequencies W(k) for k=1 to N/2, with N/2 rounded down
 *                                                                      |
 *                                                                      V
 
+
       CHARACTER ax_name(6)*16, ax_units(6)*16
       LOGICAL its_dsg, backward(6), modulo(6), regular(6)
       REAL aa, bb
@@ -391,11 +396,17 @@ C  The FFT code returns frequencies W(k) for k=1 to N/2, with N/2 rounded down
       INTEGER i, j, k, l, m, n
       INTEGER i1, j1, k1, l1, m1, n1
       CHARACTER*128 err_msg
+ 
+* In addition to the array wft, will allocate an integer array iwft.
+* Previously a portion of the work array wft was used for this, sending 
+* a real array into fftpack routines that want an integer array.
+
+
+      INTEGER iwft(15)
 
    40 FORMAT ('FFTA encountered missing data at (i,j,k,l,m,n)', 6I5)
    50 FORMAT ('FFTA encountered missing data at L=', I5)
 
-   
 * Does the variable come from a Discrete Sampling Geometries dataset?  
 * IF so we aren't (yet) handling its time coordinates correctly.
 
@@ -426,9 +437,9 @@ C  The FFT code returns frequencies W(k) for k=1 to N/2, with N/2 rounded down
          GO TO 999
       ENDIF
 
-*  Set WFT for fft; prime factorization of ND and trig functions.
+* Set WFT and IWFT for fft; prime factorization of ND and trig functions.
 
-      CALL rffti (nd, wft)
+      CALL rffti (nd, wft, iwft)
 
       n1 = arg_lo_ss(F_AXIS,ARG1)
       DO 600 n=res_lo_ss(F_AXIS), res_hi_ss(F_AXIS)
@@ -468,7 +479,7 @@ C  The FFT code returns frequencies W(k) for k=1 to N/2, with N/2 rounded down
                   l1 = l1 + arg_incr(T_AXIS,ARG1)
  400           CONTINUE
 
-               CALL four_re (nd, ts, a, b, wft)
+               CALL four_re (nd, ts, a, b, wft, iwft)
 
                DO 410 l = res_lo_ss(T_AXIS), res_hi_ss(T_AXIS) 
                    aa = a(l,1,1,1,1,1)

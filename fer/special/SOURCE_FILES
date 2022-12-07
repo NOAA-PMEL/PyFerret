@@ -2,7 +2,6 @@ SRCS_F = \
 README_dsg_in_ferret.F\
 fakes3.F\
 ferret_dispatch.F\
-gui_fakes.F\
 linux_routines.F\
 xmake_date_data.F\
 xrevision_type_data.F\

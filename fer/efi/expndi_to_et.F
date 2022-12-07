@@ -4,6 +4,7 @@
 *  Ansley Manke
 *  8/31/2016
 * DSGTODO  Make use of dsg-handling upgrade
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 
 * 
 * Expand argument 1 to a 2D E-T variable, using argument 2, a RowSize variable to
@@ -244,14 +245,7 @@
 * pre-fill the entire output result with missing value flags
 *  (since each t-series in the input has different start and end times)
 
-      DO 10 n=res_lo_ss(F_AXIS), res_hi_ss(F_AXIS)
-      DO 10 m=res_lo_ss(E_AXIS), res_hi_ss(E_AXIS)
-      DO 10 l=res_lo_ss(T_AXIS), res_hi_ss(T_AXIS)
-      DO 10 j=res_lo_ss(Y_AXIS), res_hi_ss(Y_AXIS)
-      DO 10 k=res_lo_ss(Z_AXIS), res_hi_ss(Z_AXIS)
-      DO 10 i=res_lo_ss(X_AXIS), res_hi_ss(X_AXIS)
-         result(i,j,k,l,m,n) = bad_flag_result
- 10   CONTINUE
+      result = bad_flag_result
 
       i = res_lo_ss(X_AXIS)
       j = res_lo_ss(Y_AXIS)
@@ -263,14 +257,13 @@
 
       index1 = 1
       m = res_lo_ss(E_AXIS)
-      DO 100 m = res_lo_ss(E_AXIS), res_hi_ss(E_AXIS)
+      DO m = res_lo_ss(E_AXIS), res_hi_ss(E_AXIS)
          index2 = index1 + INT(arg_3(k1,k1,k1,k1,m,k1)) - 1
 	 t1 = arg_2(index1,k1,k1,k1,k1,k1)
 	 t2 = arg_2(index2,k1,k1,k1,k1,k1)
 	 DO l = arg_lo_ss(T_AXIS,ARG4), arg_hi_ss(T_AXIS,ARG4)
-	    IF (t1 .GE. taxlo(l) .AND. t1 .LT. taxhi(l) ) GOTO 123
+	    IF (t1 .GE. taxlo(l) .AND. t1 .LT. taxhi(l) ) EXIT
 	 ENDDO
- 123	 CONTINUE
          lpos = l
 
 	 if (index2 .GT. res_hi_ss(T_AXIS)) index2 = res_hi_ss(T_AXIS)
@@ -291,7 +284,7 @@
 
 	 index1 = index2+1
 
- 100  CONTINUE
+      ENDDO
          
 
 

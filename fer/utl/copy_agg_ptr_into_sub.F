@@ -47,6 +47,7 @@
 *
 * V680 5/12 *acm* 6D Ferret, changes for DEFINE DATA/AGGREGATE
 * V695 2/15 *acm* 6D add aggregation in forecast direction
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 *
         IMPLICIT NONE
 	include 'ferret.parm'
@@ -67,28 +68,36 @@
 
 	IF (agg_dim .EQ. e_dim) THEN
 	   m = cxlo(agg_dim)
-           DO 100 n = cxlo(6), cxhi(6)
-	   DO 100 l = cxlo(4), cxhi(4)
-	   DO 100 k = cxlo(3), cxhi(3)
-	   DO 100 j = cxlo(2), cxhi(2)
-	   DO 100 i = cxlo(1), cxhi(1)
+           DO n = cxlo(6), cxhi(6)
+	   DO l = cxlo(4), cxhi(4)
+	   DO k = cxlo(3), cxhi(3)
+	   DO j = cxlo(2), cxhi(2)
+	   DO i = cxlo(1), cxhi(1)
 
 	      CALL COPY_C_STRING( src(i,j,k,l,m,n), dst(i,j,k,l,aloc,n) )
 
- 100	   CONTINUE
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
 	ENDIF
 
 	IF (agg_dim .EQ. f_dim) THEN
 	   n = cxlo(agg_dim)
-           DO 200 m = cxlo(5), cxhi(5)
-	   DO 200 l = cxlo(4), cxhi(4)
-	   DO 200 k = cxlo(3), cxhi(3)
-	   DO 200 j = cxlo(2), cxhi(2)
-	   DO 200 i = cxlo(1), cxhi(1)
+           DO m = cxlo(5), cxhi(5)
+	   DO l = cxlo(4), cxhi(4)
+	   DO k = cxlo(3), cxhi(3)
+	   DO j = cxlo(2), cxhi(2)
+	   DO i = cxlo(1), cxhi(1)
 
 	      CALL COPY_C_STRING( src(i,j,k,l,m,n), dst(i,j,k,l,m,aloc) )
 
- 200	   CONTINUE
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
 	ENDIF
 
 	RETURN

@@ -36,6 +36,8 @@
 *
 *
 C**    @(#)axis.f	1.1    3/10/88
+*
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 C**
 C**
 C***********************************************************************
@@ -136,9 +138,10 @@ C     DRAW THE NEGATIVE Y-AXIS.
 C
    10     IF(NSTICY .EQ. 0)GO TO 30
           DO 20 J=1,NSTICY
-          Y = Y - SMY
-          IF(Y .LT. YLOW)GO TO 40
-   20     CALL PLOT(X,Y,1,5)
+            Y = Y - SMY
+            IF(Y .LT. YLOW)GO TO 40
+            CALL PLOT(X,Y,1,5)
+   20     CONTINUE
    30     Y = Y - SMY
           IF(Y .LT. YLOW)GO TO 40
           CALL PLOT(X,Y,1,6)
@@ -154,9 +157,10 @@ C     DRAW THE POSITIVE Y-AXIS.
 C
    50     IF(NSTICY .EQ. 0)GO TO 70
           DO 60 J=1,NSTICY
-          Y = Y + SMY
-          IF(Y .GT. YHIGH)GO TO 80
-   60     CALL PLOT(X,Y,1,5)
+            Y = Y + SMY
+            IF(Y .GT. YHIGH)GO TO 80
+            CALL PLOT(X,Y,1,5)
+   60	  CONTINUE     
    70     Y = Y + SMY
           IF(Y .GT. YHIGH)GO TO 80
           CALL PLOT(X,Y,1,6)
@@ -184,9 +188,10 @@ C     DRAW THE NEGATIVE X-AXIS.
 C
    90     IF(NSTICX .EQ. 0)GO TO 110
           DO 100 J=1,NSTICX
-          X = X - SMX
-          IF(X .LT. XLOW)GO TO 120
-  100     CALL PLOT(X,Y,1,7)
+            X = X - SMX
+            IF(X .LT. XLOW)GO TO 120
+            CALL PLOT(X,Y,1,7)
+  100     CONTINUE
   110     X = X - SMX
           IF(X .LT. XLOW)GO TO 120
           CALL PLOT(X,Y,1,8)
@@ -202,9 +207,10 @@ C     DRAW THE POSITIVE X-AXIS.
 C
   130     IF(NSTICX .EQ. 0)GO TO 150
           DO 140 J=1,NSTICX
-          X = X + SMX
-          IF(X .GT. XHIGH)GO TO 160
-  140     CALL PLOT(X,Y,1,7)
+            X = X + SMX
+            IF(X .GT. XHIGH)GO TO 160
+            CALL PLOT(X,Y,1,7)
+  140     CONTINUE
   150     X = X + SMX
           IF(X .GT. XHIGH)GO TO 160
           CALL PLOT(X,Y,1,8)

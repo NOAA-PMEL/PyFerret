@@ -60,6 +60,7 @@ C V695 *acm*  5/15 Change in arguments to YAXIS1 and XAXIS1
 * V7    *acm* 6/16 Ticket 2434: command qualifiers /DEGMINSEC= /HALFSPAC
 *                  DEGMINSEC=1 for Deg-Min axis labels, =2 for Deg-Min-Sec. Default = 1
 *                  /HALFSPAC adds a half space between the degree sign and E/W or N/S
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax.
 
 C**
 C**
@@ -492,7 +493,8 @@ C
 	IY=NXS/2
 C
 	DO 50 J=1,I-1
-50	IBASE=IBASE+LLENG(J)
+	  IBASE=IBASE+LLENG(J)
+50	CONTINUE
 C
 	  CALL MARKH(HMARK(I))
 	  CALL COLOR(IPEN(I))
@@ -515,7 +517,8 @@ C     DO NOT CHECK POINTS FOR MISSING DATA
 	      DO 60 J=IBASE+1,IBASE+LLENG(I)
 	        CALL TRANS(I,X(J),X(IY+J),XT,YT)
 	        CALL PLOT(XT,YT,1,0)
-60            CALL MARK(IM)
+	        CALL MARK(IM)
+60	      CONTINUE
 	    ELSE
 C     CHECK POINTS FOR OUT OF RANGE   (CM)
 	      DO 70 J=IBASE+1,IBASE+LLENG(I)

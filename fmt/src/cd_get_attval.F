@@ -64,6 +64,7 @@
 *                  linked with OPeNDAP library.
 * V65  *acm* 2/10- all warnings and notes to std error not std out
 * V6.74 3/12 *acm* cleanup ifdefs and unnecessary include files
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 
 * argument definitions:
 *	cdfid	 - netCDF id number for already opened CDF file
@@ -143,20 +144,24 @@
          IF (CD_GET_ATTVAL) THEN
             IF (attype.EQ.NF_BYTE .OR. attype.EQ.NF_CHAR ) THEN
                DO 100 i = 1, vback
- 100           val(i) = i1buff(i)
+                 val(i) = i1buff(i)
+ 100           CONTINUE
             ELSEIF (attype.EQ.NF_INT2) THEN
                DO 200 i = 1, vback
- 200           val(i) = i2buff(i)
+                 val(i) = i2buff(i)
+ 200           CONTINUE
             ELSEIF (attype.EQ.NF_INT ) THEN
                DO 300 i = 1, vback
- 300           val(i) = i4buff(i)
+                 val(i) = i4buff(i)
+ 300           CONTINUE
             ELSEIF (attype.EQ.NF_FLOAT ) THEN
                DO 400 i = 1, vback
- 400           val(i) = r4buff(i)  
+                 val(i) = r4buff(i)  
+ 400           CONTINUE
             ELSE
                DO 500 i = 1, vback
- 500           val(i) = r8buff(i)  
-! 500           val(i) = r4buff(i)   ! kob 4/98
+                 val(i) = r8buff(i) 
+ 500           CONTINUE
             ENDIF
 	 ENDIF
 

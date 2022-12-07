@@ -59,6 +59,7 @@
 *                  netcdf3-style calls, which are also consistent with netcdf4.
 * V674 2/12 *acm* 6D Ferret: use nferdims rather than 4 for dimension indexing
 * TODO: initially leave this as 4D -- what to do with old files that have 4 slab min/max?
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 
 * argument definitions:
 *       dset        - TMAP data set pointer
@@ -143,7 +144,8 @@
 * e.g. map X NORMAL Z T to 1 3 4 0
  110      IF ( ds_ordering(1,tmvar) .EQ. unspecified_int4 ) THEN
              DO 190 idim = 1, nferdims
- 190         ds_ordering(idim,tmvar) = 0
+               ds_ordering(idim,tmvar) = 0
+ 190         ENDDO
              ndim = 0
              DO 200 idim = 1, 4
                 IF ( grid_line(idim,igrid) .EQ. mpsnorm ) GOTO 200
@@ -161,7 +163,8 @@
 * set ds_grid_start if not explicitly given in file
           IF ( ds_grid_start(1,tmvar) .EQ. unspecified_int4 ) THEN
              DO 300 idim = 1, 4
- 300         ds_grid_start(idim,tmvar) = 1
+               ds_grid_start(idim,tmvar) = 1
+ 300         CONTINUE
           ENDIF
 	  
 * set ds_grid_end if not explicitly given in file
@@ -179,7 +182,8 @@
 * TODO won't need this after implementing full 6D treatment here.
           DO 410 idim = 5, nferdims
              ds_grid_start(idim,tmvar) = 1
- 410         ds_grid_end(idim,tmvar) = 1
+             ds_grid_end(idim,tmvar) = 1
+ 410      CONTINUE
 
 * check that the parent lo/hi limits are consistent with the variable slab size
 

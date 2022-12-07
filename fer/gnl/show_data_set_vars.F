@@ -98,6 +98,7 @@
 *                 to its own routine, also called by SHOW GRID.
 * V76  2/20 *acm* Clean up the SHOW DATA/FULL output for DSG grids -
 *                 coordinate info is only at the end of the listing
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -557,8 +558,9 @@
 c	IF ( full  .AND. grid_dsg) taxis = grid_line(t_dim, dsg_xlate_grid(dset))
 
 * ... check among the static grids
-        DO 500 grid = 1, max_grids
- 500    IF ( grid_line(t_dim,grid) .EQ. taxis ) GOTO 520
+        DO grid = 1, max_grids
+           IF ( grid_line(t_dim,grid) .EQ. taxis ) GOTO 520
+ 	ENDDO
 * ... check among the dynamic grids
 	grid = 0
  510	CALL TM_NEXT_DYN_GRID( grid, *515)

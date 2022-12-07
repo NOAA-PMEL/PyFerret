@@ -99,6 +99,7 @@
 * v745 *acm* 12/18 Issue 1909, option to write dates in ISO8601 format
 * v751 *acm*  8/19 Issue 1946, allow for user-set string dimension length, SAVE/STRLEN
 * V751 *acm* 11/19 *acm* new qualifier SAVE/NOCOORDS
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 
 * argument definitions:
 *     cdfid   - netCDF id number for already opened CDF file
@@ -204,8 +205,9 @@
 	   cdfstat = NF_INQ_DIMLEN(cdfid, strdim, slen)
 	   IF (maxstrlen .GT. slen) GOTO 5300
 
-	   DO 10 idim = 1, 5
- 10	   vdims(idim) = vdims(idim+1)
+	   DO idim = 1, 5
+ 	      vdims(idim) = vdims(idim+1)
+	   ENDDO
 	   nvdims = nvdims - 1
 	 ENDIF
          dims = 0

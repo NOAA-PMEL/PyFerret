@@ -47,6 +47,7 @@
 *
 * V533: 6/01 *sh*
 *       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -79,21 +80,26 @@
 * --- end of introductory code ---
 
 * initialize - save loop limits as unsubscripted variables
-	DO 100 idim = 1, nferdims
+	DO idim = 1, nferdims
 	   lo(idim) = cx_lo_ss(src_cx,idim)
 	   hi(idim) = cx_hi_ss(src_cx,idim)
- 100	CONTINUE
+	ENDDO
 
-	DO 200  n = lon, hin
-	DO 200  m = lom, him
-	DO 200  l = lol, hil
-	DO 200  k = lok, hik
-	DO 200  j = loj, hij
-	DO 200  i = loi, hii
+	DO n = lon, hin
+	DO m = lom, him
+	DO l = lol, hil
+	DO k = lok, hik
+	DO j = loj, hij
+	DO i = loi, hii
 	   CALL COPY_C_STRING( src(i,j,k,l,m,n),
      .		dst(ii(perm(1)),ii(perm(2)),ii(perm(3)),ii(perm(4)),
      .		ii(perm(5)),ii(perm(6))))
- 200	CONTINUE
+	ENDDO
+	ENDDO
+	ENDDO
+	ENDDO
+	ENDDO
+	ENDDO
 
 	RETURN
 	END 

@@ -48,6 +48,7 @@
 *
 * V230:  1/22/92 - new routine based on DO_FILL_AVE and DO_LOCATE
 *        2/12 *kms* Add E and F dimensions (use nferdims in tmap_dims.parm)
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
@@ -91,24 +92,24 @@
 	bad_res = mr_bad_data( com_mr )
         
 * calculation limits
-	DO 10 i = 1, nferdims
+	DO i = 1, nferdims
 	   lo_sub(i) = cx_lo_ss(res_cx,i)
 	   hi_sub(i) = cx_hi_ss(res_cx,i)
- 10	CONTINUE
+	ENDDO
 
 * SEARCH ALONG X AXIS
 	IF ( idim .EQ. x_dim ) THEN
-	   DO 110 n = lo_s6, hi_s6
-	   DO 110 m = lo_s5, hi_s5
-	   DO 110 l = lo_s4, hi_s4
-	   DO 110 k = lo_s3, hi_s3
-	   DO 110 j = lo_s2, hi_s2
+	   DO n = lo_s6, hi_s6
+	   DO m = lo_s5, hi_s5
+	   DO l = lo_s4, hi_s4
+	   DO k = lo_s3, hi_s3
+	   DO j = lo_s2, hi_s2
               first_pt = .TRUE.
               crossing_found = .FALSE.
-	      DO 100 i = lo_s1, hi_s1
+	      DO i = lo_s1, hi_s1
                  res(i,j,k,l,m,n) = bad_res
-                 IF ( crossing_found ) GOTO 100
-                 IF ( com(i,j,k,l,m,n) .EQ. bad_res ) GOTO 100
+                 IF ( crossing_found ) CYCLE
+                 IF ( com(i,j,k,l,m,n) .EQ. bad_res ) CYCLE
                  IF ( com(i,j,k,l,m,n) .EQ. arg ) THEN
 * ... exact equality
                     res(i,j,k,l,m,n) = 1.0
@@ -131,22 +132,26 @@
                     res(i  ,j,k,l,m,n) = (arg-com1) / del
                     crossing_found = .TRUE.
                  ENDIF
- 100          CONTINUE
- 110       CONTINUE
+	      ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
 
 * SEARCH ALONG Y AXIS
 	ELSEIF ( idim .EQ. y_dim ) THEN
-	   DO 210 n = lo_s6, hi_s6
-	   DO 210 m = lo_s5, hi_s5
-	   DO 210 l = lo_s4, hi_s4
-	   DO 210 k = lo_s3, hi_s3
-	   DO 210 i = lo_s1, hi_s1
+	   DO n = lo_s6, hi_s6
+	   DO m = lo_s5, hi_s5
+	   DO l = lo_s4, hi_s4
+	   DO k = lo_s3, hi_s3
+	   DO i = lo_s1, hi_s1
               first_pt = .TRUE.
               crossing_found = .FALSE.
-	      DO 200 j = lo_s2, hi_s2
+	      DO j = lo_s2, hi_s2
                  res(i,j,k,l,m,n) = bad_res
-                 IF ( crossing_found ) GOTO 200
-                 IF ( com(i,j,k,l,m,n) .EQ. bad_res ) GOTO 200
+                 IF ( crossing_found ) CYCLE
+                 IF ( com(i,j,k,l,m,n) .EQ. bad_res ) CYCLE
                  IF ( com(i,j,k,l,m,n) .EQ. arg ) THEN
 * ... exact equality
                     res(i,j,k,l,m,n) = 1.0
@@ -169,22 +174,26 @@
                     res(i,j  ,k,l,m,n) = (arg-com1) / del
                     crossing_found = .TRUE.
                 ENDIF
- 200         CONTINUE
- 210      CONTINUE
+	      ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
 
 * SEARCH ALONG Z AXIS
 	ELSEIF ( idim .EQ. z_dim ) THEN
-	   DO 310 n = lo_s6, hi_s6
-	   DO 310 m = lo_s5, hi_s5
-	   DO 310 l = lo_s4, hi_s4
-	   DO 310 j = lo_s2, hi_s2
-	   DO 310 i = lo_s1, hi_s1
+	   DO n = lo_s6, hi_s6
+	   DO m = lo_s5, hi_s5
+	   DO l = lo_s4, hi_s4
+	   DO j = lo_s2, hi_s2
+	   DO i = lo_s1, hi_s1
               first_pt = .TRUE.
               crossing_found = .FALSE.
-	      DO 300 k = lo_s3, hi_s3
+	      DO k = lo_s3, hi_s3
                  res(i,j,k,l,m,n) = bad_res
-                 IF ( crossing_found ) GOTO 300
-                 IF ( com(i,j,k,l,m,n) .EQ. bad_res ) GOTO 300
+                 IF ( crossing_found ) CYCLE
+                 IF ( com(i,j,k,l,m,n) .EQ. bad_res ) CYCLE
                  IF ( com(i,j,k,l,m,n) .EQ. arg ) THEN
 * ... exact equality
                     res(i,j,k,l,m,n) = 1.0
@@ -207,22 +216,26 @@
                     res(i,j,k,  l,m,n) = (arg-com1) / del
                     crossing_found = .TRUE.
                 ENDIF
- 300         CONTINUE
- 310      CONTINUE
+	      ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
 
 * SEARCH ALONG T AXIS
 	ELSEIF ( idim .EQ. t_dim ) THEN
-	   DO 410 n = lo_s6, hi_s6
-	   DO 410 m = lo_s5, hi_s5
-	   DO 410 k = lo_s3, hi_s3
-	   DO 410 j = lo_s2, hi_s2
-	   DO 410 i = lo_s1, hi_s1
+	   DO n = lo_s6, hi_s6
+	   DO m = lo_s5, hi_s5
+	   DO k = lo_s3, hi_s3
+	   DO j = lo_s2, hi_s2
+	   DO i = lo_s1, hi_s1
               first_pt = .TRUE.
               crossing_found = .FALSE.
-	      DO 400 l = lo_s4, hi_s4
+	      DO l = lo_s4, hi_s4
                  res(i,j,k,l,m,n) = bad_res
-                 IF ( crossing_found ) GOTO 400
-                 IF ( com(i,j,k,l,m,n) .EQ. bad_res ) GOTO 400
+                 IF ( crossing_found ) CYCLE
+                 IF ( com(i,j,k,l,m,n) .EQ. bad_res ) CYCLE
                  IF ( com(i,j,k,l,m,n) .EQ. arg ) THEN
 * ... exact equality
                     res(i,j,k,l,m,n) = 1.0
@@ -245,22 +258,26 @@
                     res(i,j,k,l,  m,n) = (arg-com1) / del
                     crossing_found = .TRUE.
                 ENDIF
- 400         CONTINUE
- 410      CONTINUE
+	      ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
 
 * SEARCH ALONG E AXIS
 	ELSEIF ( idim .EQ. e_dim ) THEN
-	   DO 510 n = lo_s6, hi_s6
-	   DO 510 l = lo_s4, hi_s4
-	   DO 510 k = lo_s3, hi_s3
-	   DO 510 j = lo_s2, hi_s2
-	   DO 510 i = lo_s1, hi_s1
+	   DO n = lo_s6, hi_s6
+	   DO l = lo_s4, hi_s4
+	   DO k = lo_s3, hi_s3
+	   DO j = lo_s2, hi_s2
+	   DO i = lo_s1, hi_s1
               first_pt = .TRUE.
               crossing_found = .FALSE.
-	      DO 500 m = lo_s5, hi_s5
+	      DO m = lo_s5, hi_s5
                  res(i,j,k,l,m,n) = bad_res
-                 IF ( crossing_found ) GOTO 500
-                 IF ( com(i,j,k,l,m,n) .EQ. bad_res ) GOTO 500
+                 IF ( crossing_found ) CYCLE
+                 IF ( com(i,j,k,l,m,n) .EQ. bad_res ) CYCLE
                  IF ( com(i,j,k,l,m,n) .EQ. arg ) THEN
 * ... exact equality
                     res(i,j,k,l,m,n) = 1.0
@@ -283,22 +300,26 @@
                     res(i,j,k,l,  m,n) = (arg-com1) / del
                     crossing_found = .TRUE.
                 ENDIF
- 500         CONTINUE
- 510      CONTINUE
+	      ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
 
 * SEARCH ALONG F AXIS
 	ELSEIF ( idim .EQ. f_dim ) THEN
-	   DO 610 m = lo_s5, hi_s5
-	   DO 610 l = lo_s4, hi_s4
-	   DO 610 k = lo_s3, hi_s3
-	   DO 610 j = lo_s2, hi_s2
-	   DO 610 i = lo_s1, hi_s1
+	   DO m = lo_s5, hi_s5
+	   DO l = lo_s4, hi_s4
+	   DO k = lo_s3, hi_s3
+	   DO j = lo_s2, hi_s2
+	   DO i = lo_s1, hi_s1
               first_pt = .TRUE.
               crossing_found = .FALSE.
-	      DO 600 n = lo_s6, hi_s6
+	      DO n = lo_s6, hi_s6
                  res(i,j,k,l,m,n) = bad_res
-                 IF ( crossing_found ) GOTO 600
-                 IF ( com(i,j,k,l,m,n) .EQ. bad_res ) GOTO 600
+                 IF ( crossing_found ) CYCLE
+                 IF ( com(i,j,k,l,m,n) .EQ. bad_res ) CYCLE
                  IF ( com(i,j,k,l,m,n) .EQ. arg ) THEN
 * ... exact equality
                     res(i,j,k,l,m,n) = 1.0
@@ -321,9 +342,12 @@
                     res(i,j,k,l,m,  n) = (arg-com1) / del
                     crossing_found = .TRUE.
                 ENDIF
- 600         CONTINUE
- 610      CONTINUE
-
+	      ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
 	ENDIF
 
 * always success

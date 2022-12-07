@@ -99,6 +99,7 @@
 * V720: 4/17 *acm* Add direction-changing functions as a subset of grid-changing ones
 *                  A new grid is defined for these at grid initialization time; it
 *                  will be changed later.
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -133,17 +134,18 @@
 	has_children = .FALSE.
 
 * find an unused uvar slot for the variable and initialize grid chg fcn stack
-	DO 100 uvar = 1, max_uvar
+
+	DO uvar = 1, max_uvar
 	   IF ( uvar_num_items( uvar ) .EQ. uvar_deleted ) THEN
 	      gcfstk = 0	
 	      gcf_start(0) = 0
 	      gcf_uvar (0) = uvar ! assignment never used but what the heck ...
-*	      uvar_num_items( uvar ) = uvar_on_hold
               CALL deleted_list_modify(uvar_num_items_head, uvar,
      .                uvar_on_hold)
 	      GOTO 200
 	   ENDIF
- 100	CONTINUE
+	ENDDO
+
 	GOTO 5100
 
 * scan the atoms for grid-changing functions. These functions need to
@@ -152,17 +154,22 @@
 * using mode diagnostic). They have the special property that their result
 * grid cannot necessarily be inferred from the component arguments.
  200	paren_level = 0
-	DO 300 iat = gcf_start(gcfstk)+1, natom
+
+	DO iat = gcf_start(gcfstk)+1, natom
+
 	   IF ( at_type(iat).EQ.alg_grid_chg_fcn .OR.  at_type(iat).EQ.alg_dir_chg_fcn ) THEN
 * ... find the variable number for this "child variable"
 *     Note that for the simple non-nested case of LET v = GCF(arg, arg, ...)
 *     no child variables are needed - so at the end of this routine we clean
 *     up left-over "on_hold" uvars
-	      DO 250 uvar_child = 1, max_uvar
-	         IF ( uvar_child .EQ. uvar ) GOTO 250
+
+	      DO uvar_child = 1, max_uvar
+	         IF ( uvar_child .EQ. uvar ) CYCLE
 	         IF ( uvar_num_items( uvar_child ) .EQ. uvar_deleted ) GOTO 260
- 250	      CONTINUE
+	      ENDDO
+
 	      GOTO 5900
+
  260	      gcfstk = gcfstk + 1 ! new stack level for the child
 *	      uvar_num_items( uvar_child ) = uvar_on_hold
               CALL deleted_list_modify(uvar_num_items_head, uvar_child,
@@ -181,7 +188,9 @@
 	         IF ( paren_level .EQ. 0 ) GOTO 700
 	      ENDIF
 	   ENDIF
- 300	CONTINUE
+
+	ENDDO
+
 	IF ( gcfstk .NE. 0 ) GOTO 5200	! syntax error
 
 * no (more) child definitions. Go initialize the parent
@@ -196,11 +205,14 @@
 * At this point we know there are no grid-changing functions used in the args.
 * In this very simple parsing operation any arg with more than one "atom"
 * will generate a separate child variable, including "gcfcn( (A) )"
+
  700	child_start = gcf_start(gcfstk)
 	gc_arg_start = child_start + 2		! past first paren 
 	paren_level = 1
-	DO 750 iat = child_start+2, child_end
-	   IF ( at_type(iat) .NE. alg_punctuation ) GOTO 750
+
+	DO iat = child_start+2, child_end
+
+	   IF ( at_type(iat) .NE. alg_punctuation ) CYCLE
 	   IF     ( at_id(iat) .EQ. left_paren  ) THEN
 	      paren_level = paren_level + 1
 	   ELSEIF ( at_id(iat) .EQ. right_paren ) THEN
@@ -234,7 +246,8 @@
 	         GOTO 800
 	      ENDIF	
 	   ENDIF
- 750	CONTINUE
+
+	ENDDO
 
 * There were no complex arguments in this grid-changing function
 * If the entire definition is LET A = GCFCN(args) then no need for child fcns
@@ -254,13 +267,15 @@
 	   uvar_child = gcf_uvar(gcfstk)
 	   parent = gcf_uvar(gcfstk-1)
 	ELSE
-	   DO 850 uvar_child = 1, max_uvar
-	      IF ( uvar_child .EQ. uvar ) GOTO 850
+
+	   DO uvar_child = 1, max_uvar
+	      IF ( uvar_child .EQ. uvar ) CYCLE
 	      IF ( uvar_num_items( uvar_child ) .EQ. uvar_deleted ) THEN
 	         parent = gcf_uvar(gcfstk)
 	         GOTO 860
 	      ENDIF
- 850	   CONTINUE
+	   ENDDO
+
 	   GOTO 5900
 	ENDIF
 
@@ -287,13 +302,15 @@
 	at_end(child_start) = at_end(child_end)
 	at_type(child_start) = alg_child_var	! alg_variable w/ diff. naming 
 	at_id(child_start)   = unspecified_int4
-	DO 900 iat = child_end+1, natom
+
+	DO iat = child_end+1, natom
 	   child_start = child_start + 1
 	   at_start(child_start) = at_start(iat)
 	   at_end(child_start)   = at_end(iat)
 	   at_type(child_start)  = at_type(iat)
 	   at_id(child_start)    = at_id(iat)
- 900	CONTINUE
+	ENDDO
+
 	natom = natom - atoms_lost
 	has_children = .TRUE.
 	GOTO 200		! back for more children
@@ -311,13 +328,12 @@
 	IF ( status .NE. ferr_OK ) GOTO 5900
 
 * clean up left-over on-hold variables
-	DO 1100 uvar_child = 1, max_uvar
-*	   IF (uvar_num_items(uvar_child) .EQ. uvar_on_hold)
-*     .			uvar_num_items(uvar_child) = uvar_deleted
+
+	DO uvar_child = 1, max_uvar
 	   IF (uvar_num_items(uvar_child) .EQ. uvar_on_hold)
      .	      CALL deleted_list_modify(uvar_num_items_head, uvar_child,
      .                                  uvar_deleted )
- 1100	CONTINUE
+	ENDDO
 
 * successful completion
 	status = ferr_ok
@@ -325,12 +341,11 @@
 
 * error exit
 * ... remove any holds left on variable slots
- 5000	DO 5010 uvar = 1, max_uvar
-* 5010	IF  ( uvar_num_items(uvar) .EQ. uvar_on_hold )
-*     .	      uvar_num_items(uvar) = uvar_deleted
- 5010	IF  ( uvar_num_items(uvar) .EQ. uvar_on_hold )
-     .	  CALL deleted_list_modify(uvar_num_items_head, uvar,
-     .                            uvar_deleted )
+ 5000	DO  uvar = 1, max_uvar
+	   IF  ( uvar_num_items(uvar) .EQ. uvar_on_hold )
+     .	   CALL deleted_list_modify(uvar_num_items_head, uvar,
+     .                              uvar_deleted )
+     	ENDDO
 	RETURN
 
  5100	CALL ERRMSG( ferr_prog_limit, status,
@@ -342,21 +357,12 @@
 
 * remove all child variables of the variable being initialized
  5900	CALL GCF_CHILD_VAR_NAME( uvar, 0, child_name )
-	DO 5910 uvar_child = uvar, max_uvar
+	DO uvar_child = uvar, max_uvar
 	   IF ( uvar_name_code(uvar_child)(7:10)
      .     .EQ. child_name(7:10) ) THEN
 	      CALL DELETE_USER_VAR(uvar_child, dset)
-!*	      uvar_num_items( uvar_child ) = uvar_deleted
-!              CALL deleted_list_modify(uvar_num_items_head, 
-!     .                         uvar_child, uvar_deleted )
-!
-!*	      uvar_name_code( uvar_child ) = " "
-!              CALL string_array_modify(uvar_name_code_head, uvar_child,
-!     .                                  " ", 1)!
-!
-!	      uvar_text     ( uvar_child ) = " "
 	   ENDIF
- 5910	CONTINUE
+	ENDDO
 	GOTO 5000
 
 	END

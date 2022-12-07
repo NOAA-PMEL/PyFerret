@@ -44,6 +44,7 @@
 
 * V450: 3/97
 *       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 
         IMPLICIT NONE
 	include	'tmap_dims.parm'
@@ -65,19 +66,24 @@
 	hi = arbitrary_small_val4
 	lo = arbitrary_large_val4
 
-	DO 100 n = cx_lo_s6(cx), cx_hi_s6(cx)
-	DO 100 m = cx_lo_s5(cx), cx_hi_s5(cx)
-	DO 100 l = cx_lo_s4(cx), cx_hi_s4(cx)
-	DO 100 k = cx_lo_s3(cx), cx_hi_s3(cx)
-	DO 100 j = cx_lo_s2(cx), cx_hi_s2(cx)
-	DO 100 i = cx_lo_s1(cx), cx_hi_s1(cx)
+	DO n = cx_lo_s6(cx), cx_hi_s6(cx)
+	DO m = cx_lo_s5(cx), cx_hi_s5(cx)
+	DO l = cx_lo_s4(cx), cx_hi_s4(cx)
+	DO k = cx_lo_s3(cx), cx_hi_s3(cx)
+	DO j = cx_lo_s2(cx), cx_hi_s2(cx)
+	DO i = cx_lo_s1(cx), cx_hi_s1(cx)
 
 	   IF (arr(i,j,k,l,m,n) .NE. bad) THEN
 	      IF (arr(i,j,k,l,m,n) .LT. lo) lo = arr(i,j,k,l,m,n)
 	      IF (arr(i,j,k,l,m,n) .GT. hi) hi = arr(i,j,k,l,m,n)
 	   ENDIF
-	   
- 100	CONTINUE
+
+	ENDDO
+	ENDDO
+	ENDDO
+	ENDDO
+	ENDDO
+	ENDDO
 
 	RETURN
 	END 

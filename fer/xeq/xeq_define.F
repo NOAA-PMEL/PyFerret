@@ -534,9 +534,9 @@
 
 * ... if this region was not previously defined find a slot
 	   IF ( create ) THEN
-	      DO 240 islot = 0, min_context, -1
-	         IF ( cx_name(islot) .EQ. unspecified_name4 ) GOTO 245!fix 7/92
- 240	      CONTINUE
+	      DO islot = 0, min_context, -1
+	         IF ( cx_name(islot) .EQ. unspecified_name4 ) GOTO 245
+	      ENDDO
 * ... no free slots
 	      CALL ERRMSG( ferr_prog_limit,status,
      .			   'Cancel or redefine a region',*5000 )
@@ -546,20 +546,21 @@
 *     that are defined
  245       IF ( num_qualifiers .EQ. 0 
      .     .OR. qual_given( slash_dflt ) .GT. 0 ) THEN
-	      DO 210 idim = 1, nferdims
+	      DO idim = 1, nferdims
 	         IF (cx_by_ss(idim,cx_buff)
      .		   .AND. cx_lo_ss(cx_buff,idim) .NE. unspecified_int4
      .	        .OR..NOT.cx_by_ss(idim,cx_buff)
      .		   .AND. cx_lo_ww(idim,cx_buff) .NE. unspecified_val8)
      .				cx_given( idim, cx_buff ) = .TRUE.
- 210	      CONTINUE
+	      ENDDO
 * ... else flag only the dimensions named
 	   ENDIF
 	ENDIF
 
 * all unmodified axes must be set to unspecified
-	DO 230 idim = 1, nferdims
- 230	IF ( .NOT.cx_given(idim,cx_buff) ) CALL DEL_CX_DIM( idim, cx_buff )
+	DO idim = 1, nferdims
+	   IF ( .NOT.cx_given(idim,cx_buff) ) CALL DEL_CX_DIM( idim, cx_buff )
+ 	ENDDO
 
 * LET-defined variables may involve now-redefined @regions so wipe out
 * previously computed values and grids that may be obsolete(7/92)
@@ -607,15 +608,15 @@
 	   IF ( status .NE. ferr_ok ) RETURN
 	   CALL TM_COPY_GRID( grid, mgrid_buff )
 	ELSE
-	   DO 310 idim = 1, nferdims
+	   DO idim = 1, nferdims
 	      grid_line    (idim, mgrid_buff) = mnormal
               grid_out_prod(idim, mgrid_buff) = .TRUE.
- 310	   CONTINUE	
+	   ENDDO	
 	   grid_rotation( mgrid_buff ) = 0.0
 	ENDIF
 
 * axes named with /X=line_grid_or_var, /Y= ...
-	DO 320 idim = 1, nferdims
+	DO idim = 1, nferdims
 	   iqual = qual_given( idim )
 	   IF ( iqual .GT. 0 ) THEN
 	      CALL EQUAL_STRING( cmnd_buff(qual_start(iqual):qual_end(iqual)),
@@ -643,7 +644,7 @@
 	         grid_line(idim, mgrid_buff) = grid_line( idim, ax_grid )
 	      ENDIF
 	   ENDIF
- 320	CONTINUE
+	ENDDO
 
 * check for repeated definitions and illegal redefinitions
 	IF ( dup_name ) THEN
@@ -669,9 +670,9 @@
 	   CALL PURGE_MR_GRID( old_grid, status )
 	   IF ( status .NE. merr_ok ) GOTO 5000
 * ... deallocate dynamic axes used in previous definition of this grid
-	   DO 350 idim = 1,nferdims
+	   DO idim = 1,nferdims
 	      CALL TM_DEALLO_DYN_LINE( grid_line(idim,old_grid) )
- 350	   CONTINUE
+	   ENDDO
 	   grid_name( old_grid ) = char_init16
 	ENDIF
 
@@ -815,19 +816,16 @@
 * do we need to delete a previous definition of this same-named var ?
 * Note: need to purge old defs ALSO if the same name is now redefined in a 
 *	new data set -- expressions using this name chg interpretation  
-*	DO 410 i1 = 1, max_uvar
-*	   IF ( uvar_num_items(i1) .EQ. uvar_deleted ) GOTO 410
-*	   vax_code = STR_CASE_BLIND_COMPARE( uvar_name_code(i1), buff1 )
-*	   IF ( vax_code .EQ. vms_str_success ) THEN
+
         CALL string_array_find_caseblind(uvar_name_code_head,
      .                                   buff1,
      .                                   LEN(buff1),
      .                                   string_array_result(1),
      .                                   max_uvar,
      .                                   num_indices)        
-        DO 410 j = 1, num_indices
+        DO j = 1, num_indices
               i1 = string_array_result(j)
-              IF ( uvar_num_items(i1) .EQ. uvar_deleted ) GOTO 410
+              IF ( uvar_num_items(i1) .EQ. uvar_deleted ) CYCLE
 * ... delete only if same name in same data set
 	      IF ( uvar_dset(i1) .EQ. dset ) THEN
 	         CALL DELETE_USER_VAR(i1, dset)
@@ -836,7 +834,7 @@
 *     Also invalidates any memory-cached results that used aux of this name
 	      purge_all = .TRUE.
 *	   ENDIF
- 410	CONTINUE
+	ENDDO
 
 
 * if this name is used as the target of an aux (curvilinear) coordinate var
@@ -891,8 +889,9 @@
       ENDIF
 
 * is there at least one slot blank ?
-	DO 430 i1 = 1, max_uvar
- 430	IF ( uvar_num_items(i1) .EQ. uvar_deleted ) RETURN
+	DO i1 = 1, max_uvar
+	   IF ( uvar_num_items(i1) .EQ. uvar_deleted ) RETURN
+ 	ENDDO
 
 * no - not allowed to fill the last slot !
 *	uvar_num_items(uvar) = uvar_deleted
@@ -1052,12 +1051,12 @@ c	IF ( .NOT.TM_LEGAL_NAME( buff3 ) ) GOTO 5100
 * orientation must be uniquely defined
 
 	orient = unspecified_int4
-	DO 510 idim = 1, nferdims
+	DO idim = 1, nferdims
 	   IF ( qual_given(slash_x0+idim) .GT. 0 ) THEN   !!!!!!!!
 	      IF ( orient .NE. unspecified_int4 ) GOTO 5510
 	      orient = idim
 	   ENDIF
- 510	CONTINUE
+	ENDDO
 
 	IF ( irreg  .AND. orient.EQ.unspecified_int4) THEN
 * ... orientation may be inferred from clues if irregular coord syntax is used
@@ -1422,11 +1421,11 @@ C /units=months  is 1/12 of the length of the year
 
 
 * ... monotonic?
-	      DO 527 i1 = 2, n
+	      DO i1 = 2, n
 	         vhi  = GET_LINE_COORD (lineedg(iline)%ptr, i1)
 	         vlo = GET_LINE_COORD (lineedg(iline)%ptr, i1-1)
 	         IF (.NOT. TM_FPEQ( vlo, vhi ) .AND. vhi .LT. vlo) GOTO 5570
- 527	      CONTINUE
+	      ENDDO
 
 * ... are there repeated values?
 
@@ -1449,11 +1448,11 @@ C /units=months  is 1/12 of the length of the year
 * ... store points: midway between box boundaries ...
 
 	      has_repeated = .FALSE.
-	      DO 528 i1 = 2, n+1
+	      DO i1 = 2, n+1
 	         vhi = GET_LINE_COORD (lineedg(iline)%ptr,i1)
 	         vlo = GET_LINE_COORD (lineedg(iline)%ptr,i1-1)
 	         CALL PUT_LINE_COORD(linemem(iline)%ptr, i1-1, (vlo+vhi)* 0.5)
- 528	      CONTINUE
+	      ENDDO
 
 * Fix ticket 2400: Def of start was pointing to the lower grid cell edge not the
 * lower coordinate. The loop start and stop were one off, so most axes detected
@@ -1462,13 +1461,13 @@ C /units=months  is 1/12 of the length of the year
 	      its_reg = .TRUE.	! until proven otherwise
 	      start = GET_LINE_COORD (linemem(iline)%ptr, 1)
               delta = GET_LINE_COORD (linemem(iline)%ptr, 2) - start
-              DO 530 i1 = 2, n+1
+              DO i1 = 2, n+1
 	         idel = GET_LINE_COORD (lineedg(iline)%ptr, i1) - GET_LINE_COORD (lineedg(iline)%ptr, i1-1)
 		 IF (.NOT.TM_FPEQ( (delta),idel) ) THEN
 		    its_reg = .FALSE.
 		    EXIT ! loop
 		 ENDIF
- 530	      CONTINUE
+	      ENDDO
 
 	   ELSE
 
@@ -1488,11 +1487,11 @@ C /units=months  is 1/12 of the length of the year
 	      
 * ... monotonic?	      
 
-	      DO 532 i1 = 2, npoints  
+	      DO i1 = 2, npoints  
 	         vhi  = GET_LINE_COORD (linemem(iline)%ptr, i1)
 	         vlo = GET_LINE_COORD (linemem(iline)%ptr, i1-1)
 	         IF (.NOT. TM_FPEQ( vlo, vhi ) .AND. vhi .LT. vlo) GOTO 5570
- 532	      CONTINUE
+	      ENDDO
 
 * ... are there repeated values?
 
@@ -1590,12 +1589,12 @@ C /units=months  is 1/12 of the length of the year
                 val = vlo - (vhi-vlo)/2.
 		CALL PUT_LINE_COORD (lineedg(iline)%ptr, 1, val)
 *    ... mid-axis box boundaries ...
-	         DO 539 i1 = 2, npoints
+	         DO i1 = 2, npoints
                     vlo = GET_LINE_COORD (linemem(iline)%ptr, i1-1)
                     vhi = GET_LINE_COORD (linemem(iline)%ptr, i1)
                     val = vlo + (vhi-vlo)/2.
                     CALL PUT_LINE_COORD (lineedg(iline)%ptr, i1, val)
- 539	         CONTINUE
+		 ENDDO
 
 *    ... upper-most box bound (end of axis)
 	         val = vhi + (vhi-vlo)/2.
@@ -1606,13 +1605,13 @@ C /units=months  is 1/12 of the length of the year
 	         its_reg = .TRUE.	! until proven otherwise
 	         start = GET_LINE_COORD (linemem(iline)%ptr, 1)
                  delta = GET_LINE_COORD (linemem(iline)%ptr, 2) - start
-                 DO 550 i1 = 2, npoints
+                 DO i1 = 2, npoints
 	            idel = GET_LINE_COORD (lineedg(iline)%ptr, i1) - GET_LINE_COORD (lineedg(iline)%ptr, i1-1)
 		    IF (.NOT.TM_FPEQ( (delta),idel) ) THEN
 		       its_reg = .FALSE.
 		       EXIT ! from loop
 		    ENDIF
- 550	         CONTINUE
+		 ENDDO
               ENDIF
 
 	   ENDIF  ! end of irreg
@@ -2205,16 +2204,18 @@ c	ENDIF
 	ivp = VIEWPORT_NUMBER( buff1 )
 	IF ( ivp .EQ. unspecified_int4 ) THEN
 * ... new name - find an unused slot
-	   DO 610 ivp = 1, max_viewport
- 610	   IF ( vp_name(ivp) .EQ. unspecified_name4 ) GOTO 620
+	   DO ivp = 1, max_viewport
+	      IF ( vp_name(ivp) .EQ. unspecified_name4 ) GOTO 620
+ 	   ENDDO
 	   GOTO 5610	! no free slots
 	ELSE
 * ... name in use - flag segments in this viewport as deleted
 	   IF ( ivp .EQ. mvp_dflt ) GOTO 5640
 	   CALL SPLIT_LIST(pttmode_ops, err_lun,
      .			'Re-defining viewport '//vp_name(ivp), 0)
-	   DO 614 iseg = vp_seg0(ivp)+1 , vp_segn(ivp)
- 614	   CALL FGD_GDSG( iseg ) 
+	   DO iseg = vp_seg0(ivp)+1 , vp_segn(ivp)
+	      CALL FGD_GDSG( iseg ) 
+ 	   ENDDO
 	   vp_seg0 ( ivp ) = 0
 	   vp_segn ( ivp ) = 0
 *          make sure the change is immediately seen
@@ -2399,9 +2400,9 @@ c	ENDIF
 * find a slot to save this alias
         i1 = ALIAS_ID( buff1 )
         IF ( i1 .EQ. unspecified_int4 ) THEN
-	   DO 710 i1 = num_predefined_alias+1, total_num_alias
+	   DO i1 = num_predefined_alias+1, total_num_alias
 	      IF ( alias_name(i1) .EQ. unspecified_name4 ) GOTO 720
- 710	   CONTINUE
+	   ENDDO
            GOTO 5710
         ENDIF
 
@@ -3134,14 +3135,14 @@ c ?? if nlab=0, use next avail slot?
      .		'use CANCEL ALIAS to reclaim space', *5000 )
  5720	err_string = 'Invalid calendar name. Names are'
         t2 = ' '
-	DO 5721 i1=1, max_calendars
+	DO i1=1, max_calendars
            len_cal = TM_LENSTR1(err_string)
            slen = TM_LENSTR1(allowed_calendars(i1))
            err_string = err_string(:len_cal)//t2//
      .                   allowed_calendars(i1)(:slen)
            t2 = ', '
            len_cal = len_cal + slen
- 5721   CONTINUE
+	ENDDO
         CALL ERRMSG( ferr_syntax, status,err_string, *5000 )
 
 5730	CALL ERRMSG( ferr_syntax,status,

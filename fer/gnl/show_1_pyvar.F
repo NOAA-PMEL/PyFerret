@@ -128,7 +128,7 @@
      .                          grid, k, box_lo_lim)
                   hi = TM_WORLD(pyvar_grid_end(k,ivar), 
      .                          grid, k, box_hi_lim )
-                  risc_buff = myline(:j)
+                  risc_buff(:256) = myline(:j)
                   myline = risc_buff(:j) // ww_dim_name(k) // '=' //
      .                   LOHI_STRING(lo,hi,k,grid,':',ax_dec_pt(k),q)
      .            // '  '

@@ -160,19 +160,21 @@ C.................Note PCT is used first as a dummy to save the mean.
 	RNT = NT
 	DO 100 I=1,NX
 	PCT(I)=0.0
-	DO 110 J=1,NT
-110	PCT(I)=PCT(I)+DATA(I,J)/RNT
-	DO 120 J=1,NT
-120	DATA(I,J)=DATA(I,J)-PCT(I)
+	DO J=1,NT
+	   PCT(I)=PCT(I)+DATA(I,J)/RNT
+	ENDDO
+	DO J=1,NT
+	   DATA(I,J)=DATA(I,J)-PCT(I)
+	ENDDO
 100	CONTINUE
 C--------------------------------------------------------------------
 C.................Form the mean product matrix.
 	DO 210 I1=1,NX
 	DO 211 I2=1,NX
 
-	DO 200 J=1,NT
-200	C(I1,I2) = C(I1,I2) + DATA(I1,J) * DATA(I2,J)
-
+	DO J=1,NT
+	   C(I1,I2) = C(I1,I2) + DATA(I1,J) * DATA(I2,J)
+	ENDDO
 	C(I1,I2) = C(I1,I2)/ RNT
 
 211	CONTINUE
@@ -188,10 +190,12 @@ C------------------------------------------------------------------------
 C.................Find the percentage of total variance accounted for by
 C.................each eigenvector.
 	TVAR=0.0
-	DO 220 I=1,NX
-220	TVAR=TVAR+VAL(I)
-	DO 221 I=1,NX
-221	PCT(I)=100.*ABS(VAL(I)/TVAR)
+	DO I=1,NX
+	   TVAR=TVAR+VAL(I)
+	ENDDO
+	DO I=1,NX
+	   PCT(I)=100.*ABS(VAL(I)/TVAR)
+	ENDDO
 C------------------------------------------------------------------------
 C.................Renormalize EOFs.
 C.................Thus EOFs have units of data, while time amplitude functions
@@ -207,18 +211,20 @@ C.................Renormalize each TAF by dividing by SQRT of its eigenvalue.
 
 	TAF(IE,J)=0.0
 
-	DO 370 IS=1,NX
-370	TAF(IE,J) = TAF(IE,J) + VEC(IS,IE)*DATA(IS,J)/SQRT(ABS(VAL(IE)))
+	DO IS=1,NX
+	   TAF(IE,J) = TAF(IE,J) + VEC(IS,IE)*DATA(IS,J)/SQRT(ABS(VAL(IE)))
+	ENDDO
 
 360	CONTINUE
 350	CONTINUE
 
 C.................Renormalize each EOF by the SQRT of its eigenvalue.
 
-	DO 300 IE=1,NX			! loop over EOF numbers
-	DO 310 IS=1,NX
-310	VEC(IS,IE) = VEC(IS,IE)*SQRT(ABS(VAL(IE)))
-300	CONTINUE
+	DO IE=1,NX			! loop over EOF numbers
+	   DO IS=1,NX
+	      VEC(IS,IE) = VEC(IS,IE)*SQRT(ABS(VAL(IE)))
+	   ENDDO
+	ENDDO
 C----------------------------------------------------------------------
 	RETURN
 	END
@@ -307,11 +313,13 @@ c.............initializations.
 	do 50 ix=1,nx
 	val(ix)=0.
 	pct(ix)=0.
-	do 51 i2=1,nx
-	vec(ix,i2)=0.
-51	c(ix,i2)=0.
-	do 52 it=1,nt
-52	taf(ix,it)=0.
+	do i2=1,nx
+	   vec(ix,i2)=0.
+	   c(ix,i2)=0.
+	ENDDO
+	do it=1,nt
+	   taf(ix,it)=0.
+	ENDDO
 50	continue
 C---------------------------------------------------------------------
 C.................Find mean, demean DATA.
@@ -333,35 +341,36 @@ C.................Note PCT is used first as a dummy to save the mean.
 	   return
 	endif
 	DO 120 J=1,NT
-	if (data(i,j).GT.bad_flag_dat) then
+	   if (data(i,j).GT.bad_flag_dat) then
 		DATA(I,J)=DATA(I,J)-PCT(I)
-	endif
+	   endif
 120	continue
 100	CONTINUE
 C--------------------------------------------------------------------
 C.................Form the mean product matrix.
-	DO 210 I1=1,NX
-	DO 210 I2=1,NX
+	DO I1=1,NX
+	   DO I2=1,NX
 
-	ct=0.
-	DO 200 J=1,NT
-	if (data(i1,j).GT.bad_flag_dat .and. data(i2,j).GT.bad_flag_dat) then
-		ct=ct+1.
-		C(I1,I2) = C(I1,I2) + DATA(I1,J) * DATA(I2,J)
-	endif
-200	continue
+	      ct=0.
+	      DO J=1,NT
+	        if (data(i1,j).GT.bad_flag_dat .and. 
+     .              data(i2,j).GT.bad_flag_dat) then
+		   ct=ct+1.
+		   C(I1,I2) = C(I1,I2) + DATA(I1,J) * DATA(I2,J)
+	         endif
+	      ENDDO
 
-	if (ct.gt.0.) then
+	      if (ct.gt.0.) then
 		c(i1,i2)=c(i1,i2)/ct
-	else
-           write(err_msg,*) ' EOFIN_CHEL_GAP found no overlapping',
-     .       ' values in two time series at EOF-1D-coordinates ', 
-     .       i1,i2, ' Will be a zero in covariance matrix'
-           ier = 1
-           return
-	endif
-
-210	CONTINUE
+	      else
+                 write(err_msg,*) ' EOFIN_CHEL_GAP found no overlapping',
+     .          ' values in two time series at EOF-1D-coordinates ', 
+     .          i1,i2, ' Will be a zero in covariance matrix'
+                 ier = 1
+                 return
+	      endif
+	   ENDDO
+	ENDDO
 C------------------------------------------------------------------------
 C.................Call the subroutines which do the work.
 
@@ -371,28 +380,22 @@ C.................VEC(IS,IE) is arranged so that IS indexes the space
 C.................dimension of each eigenvector and IE the EOF number.
 C------------------------------------------------------------------------
 c...................check for negative eigenvalues, set to eps.
-	do 250 ie=1,nx
-250	if (val(ie).lt.0.) GOTO 251
+	do ie=1,nx
+	   if (val(ie).lt.0.) GOTO 251
+	ENDDO
 	GOTO 252
 
 251	continue
-cc 251	write(6,*) 'Found a negative eigenvalue. EV#',ie,
-cc     .        ' Further checking ...'
-cc 251	write(6,*) 'Found a negative eigenvalue. Further checking ...'
 
 	eps=1.e20
-	do 255 ie=1,nx
-255	if (abs(val(ie)).lt.eps) eps=abs(val(ie))
+	do ie=1,nx
+	   if (abs(val(ie)).lt.eps) eps=abs(val(ie))
+	enddo
 	eps=eps/10.
-cc	write(6,*) 'Setting epsilon to',eps
-cc	write(6,*) '= 1/10th of the smallest eigenvalue'
-	do 256 ie=1,nx
-	if (val(ie).lt.0.) then
-cc		write(6,*) 'Setting EV #',ie,' =',val(ie),
-cc     .					' to epsilon (=',eps,')'
-		val(ie)=eps
-	endif
-256	continue
+	do ie=1,nx
+	   if (val(ie).lt.0.) val(ie)=eps
+	enddo
+
 252	continue
 
 C----------------------------------------------------------------------
@@ -403,12 +406,12 @@ C.................each eigenvector.
 c.................Place this at the end to be able to use pct as dummy
 c.................for counting missing data in TAF calculation.
 	TVAR=0.0
-	DO 1220 I=1,NX
-1220	TVAR=TVAR+VAL(I)
-	DO 1221 I=1,NX
-	PCT(I)=100.*ABS(VAL(I)/TVAR)
-c 1221	IF (PCT(I) .GE. pct_cutoff) NX_compute = I
-1221	CONTINUE
+	DO I=1,NX
+	   TVAR=TVAR+VAL(I)
+	ENDDO
+	DO I=1,NX
+	   PCT(I)=100.*ABS(VAL(I)/TVAR)
+	ENDDO
 
 C------------------------------------------------------------------------
 C.................Renormalize EOFs.
@@ -422,7 +425,6 @@ C.................Renormalize each TAF by dividing by SQRT of its eigenvalue.
 
 c...........................loop over time
 
-c        nout = NX
 	DO 350 J=1,NT
 	npr = nt/ 10 
         if (nt .gt. 100) npr = (npr/ 10) * 10     
@@ -430,72 +432,69 @@ c        nout = NX
 c............find out if any gaps exist at this time.
 c............use ic to count them and pct(nx) to keep track of where they are.
 	ic=0
-	do 400 is=1,nx
-	if (data(is,j).GT.bad_flag_dat) then
+	do is=1,nx
+	   if (data(is,j).GT.bad_flag_dat) then
 		ic=ic+1
 		pct(is)=0.
-	else
+	   else
 		pct(is)=1.
-	endif
-400	continue
+	   endif
+	enddo
 
 c..............if no blanks at this time, compute TAF as usual.
 	if (ic.eq.nx) then
 c................................loop over EOF numbers, then over space.
-		DO 360 IE=1,NX
+		DO IE=1,NX
 
-		DO 370 IS=1,NX
-370		TAF(IE,J) = TAF(IE,J) + 
+		   DO IS=1,NX
+		      TAF(IE,J) = TAF(IE,J) + 
      .			    VEC(IS,IE)*DATA(IS,J)
-360		CONTINUE
+		   ENDDO
+		ENDDO
 	elseif (ic.eq.0) then
 c..............If there are NO data values at time j, then blank the TAF.
-		do 450 ie=1,nx
-450		taf(ie,j)=bad_flag_result
+		do ie=1,nx
+		taf(ie,j)=bad_flag_result
+		enddo
 	else
 c.............If there are some blanks, then use Chelton's estimate Beta_i(t).
 c.............Now use c(nx,nx) as dummy to keep Chelton's Gamma_ji.
 c.............Fill c(i,j), where i and j are both EOF #s. 
 c.............Sum over MISSING data points only.
 
-		do 410 i1=1,NX
-		do 410 i2=1,nx
+		do i1=1,NX
+		do i2=1,nx
 		   c(i1,i2)=0.
-		   do 415 ix=1,nx
-415		   if (pct(ix).eq.1)
-     .			c(i1,i2)=c(i1,i2)+vec(ix,i1)*vec(ix,i2)
-410		continue
+		   do ix=1,nx
+		      if (pct(ix).eq.1)
+     .			  c(i1,i2)=c(i1,i2)+vec(ix,i1)*vec(ix,i2)
+		   enddo
+		enddo
+		enddo
 
 c..................Loop over EOF numbers.
-		do 420 ie=1,NX
+		do ie=1,NX
 
 c......................Find Beta_i(t) from Gamma_ij.
 c......................Also need the sum of Lambda_j*Gamma_ji**2 over all j.ne.i
 
 c.......................loop 430 sums over space.
 		   sumljgji=0.
-                   do 430 i2=1,nx
-430                if (i2.ne.ie) sumljgji=sumljgji+val(i2)*c(i2,ie)**2
-c
-c  Billy said to replace the loop below with the one above. This is the
-c    problem that Mick spotted. 
-c
-c		   do 430 i2=1,nx
-c		   if (i2.eq.ie) GOTO 431
-c 430		   sumljgji=sumljgji+val(i2)*c(i2,ie)**2
-c
-431		   continue
+                   do i2=1,nx
+                      if (i2.ne.ie) sumljgji=sumljgji+val(i2)*c(i2,ie)**2
+                   enddo
 
 c.....................find beta.
 		   beta = ( (1.-c(ie,ie)) * val(ie) ) / 
      .			 ( val(ie) * (1.-c(ie,ie))**2 + sumljgji )
 
 c...................Now find TAF. Summation in space over existing points only.
-		   do 440 is=1,nx
-440			if (pct(is).eq.0.) taf(ie,j) = taf(ie,j) + 
+		   do is=1,nx
+			if (pct(is).eq.0.) taf(ie,j) = taf(ie,j) + 
      .			   	beta * vec(is,ie) * data(is,j)
+		   enddo
 
-420		continue
+		enddo
 
 
 	endif
@@ -506,23 +505,28 @@ C-------------------------------------------------------------------------
 C.................Renormalize each EOF by the SQRT of its eigenvalue.
 c.................loop over EOF numbers, then over space.
 
-	DO 300 IE=1,NX
-	do 315 j=1,nt
+	DO IE=1,NX
 
-315	if (taf(ie,j) .GT. bad_flag_dat) taf(ie,j)=taf(ie,j)/sqrt(val(ie))
-	DO 316 IS=1,NX
-316	VEC(IS,IE) = VEC(IS,IE)*SQRT(VAL(IE))
-300	CONTINUE
+	   DO j=1,nt
+	      if (taf(ie,j) .GT. bad_flag_dat) taf(ie,j)=taf(ie,j)/sqrt(val(ie))
+	   ENDDO
+	   DO IS=1,NX
+	      VEC(IS,IE) = VEC(IS,IE)*SQRT(VAL(IE))
+	   ENDDO
+
+	ENDDO
 C----------------------------------------------------------------------
 C.................Find the percentage of total variance accounted for by
 C.................each eigenvector.
 c.................Place this at the end to be able to use pct as dummy
 c.................for counting missing data in TAF calculation.
 	TVAR=0.0
-	DO 220 I=1,NX
-220	TVAR=TVAR+VAL(I)
-	DO 221 I=1,NX
-221	PCT(I)=100.*ABS(VAL(I)/TVAR)
+	DO I=1,NX
+	   TVAR=TVAR+VAL(I)
+	ENDDO
+	DO I=1,NX
+	   PCT(I)=100.*ABS(VAL(I)/TVAR)
+	ENDDO
 C------------------------------------------------------------------------
 	RETURN
 	END
@@ -585,55 +589,80 @@ c              double precision.
       INTEGER NB
       REAL G(NB,*),A(*),B(*)
 
-c      DIMENSION P(2000)
       REAL P(*)
 
       INTEGER n, n2, k, k1, i, j, i1
       REAL*8 sum, sigma, absb, alpha, beta, gamma, t
 
       N2=N-2
-      IF(N2)45,44,2
-    2 DO 43 K=1,N2
-      A(K)=G(K,K)
-      SUM=0
-      K1=K+1
-      DO 8 I=K1,N
-    8 SUM=SUM+G(I,K)**2
-      SIGMA=SUM
-      ABSB=SQRT(SIGMA)
-      ALPHA=G(K+1,K)
-      BETA=-ABSB
-      IF(ALPHA)15,16,16
-   15 BETA=ABSB
-   16 B(K)=BETA
-      IF(SIGMA)18,43,18
-   18 GAMMA=1/(SIGMA-ALPHA*BETA)
-      G(K+1,K)=ALPHA-BETA		! change C so now not Mean Prod Matrix
-      DO 27 I=K1,N
-      SUM=0
-      DO 23 J=K1,I
-   23 SUM=SUM+G(I,J)*G(J,K)
-      IF(I.EQ.N)GO TO 27
-      I1=I+1
-      DO 26 J=I1,N
-   26 SUM=SUM+G(J,I)*G(J,K)
-   27 P(I)=GAMMA*SUM
-      SUM=0
-      DO 30 I=K1,N
-   30 SUM=SUM+G(I,K)*P(I)
-      T=0.5*GAMMA*SUM
-      DO 32 I=K1,N
-   32 P(I)=P(I)-T*G(I,K)
-      DO 35 I=K1,N
-      DO 35 J=K1,I
-   35 G(I,J)=G(I,J)-G(I,K)*P(J)-P(I)*G(J,K)
-   43 CONTINUE
-   44 A(N-1)=G(N-1,N-1)
+      IF(N2 .EQ. 0) THEN 
+         A(N-1)=G(N-1,N-1)
+         B(N-1)=G(N,N-1)
+	 GOTO 45
+      ELSE IF (N2 .LT. 0) THEN
+         GOTO 45
+      ENDIF
+
+      DO K=1,N2
+         A(K)=G(K,K)
+         SUM=0
+         K1=K+1
+         DO I=K1,N
+            SUM=SUM+G(I,K)**2
+         ENDDO
+
+         SIGMA=SUM
+         ABSB=SQRT(SIGMA)
+         ALPHA=G(K+1,K)
+         BETA=-ABSB
+         IF(ALPHA .LT. 0.) BETA=ABSB
+         BETA=ABSB
+         B(K)=BETA
+         IF(SIGMA .EQ. 0.) GOTO 43 
+         GAMMA=1/(SIGMA-ALPHA*BETA)
+         G(K+1,K)=ALPHA-BETA		! change C so now not Mean Prod Matrix
+
+         DO I=K1,N
+            SUM=0
+            DO J=K1,I
+              SUM=SUM+G(I,J)*G(J,K)
+            ENDDO
+	    IF(I .NE. N) THEN
+               I1=I+1
+               DO J=I1,N
+                  SUM=SUM+G(J,I)*G(J,K)
+	       ENDDO
+	    ENDIF
+            P(I)=GAMMA*SUM
+         ENDDO
+         SUM=0
+         DO I=K1,N
+            SUM=SUM+G(I,K)*P(I)
+	 ENDDO
+         T=0.5*GAMMA*SUM
+
+         DO I=K1,N
+            P(I)=P(I)-T*G(I,K)
+	 ENDDO
+
+         DO I=K1,N
+            DO J=K1,I
+               G(I,J)=G(I,J)-G(I,K)*P(J)-P(I)*G(J,K)
+            ENDDO
+	 ENDDO
+43       CONTINUE
+      ENDDO
+     
+      A(N-1)=G(N-1,N-1)
       B(N-1)=G(N,N-1)
-   45 A(N)=G(N,N)
+      
+   45 CONTINUE
+      A(N)=G(N,N)
       B(N)=0.0
+
       RETURN
       END
+
 
 C************************************************************************
 
@@ -648,16 +677,17 @@ C W.KAHAN AND J.VARAH, TWO WORKING ALGORITHMS FOR THE EIGENVALUES OF A
 C SYMMETRIC TRIDIAGONAL MATRIX. TECHNICAL REPORT NO. CS43, AUGUST 11,
 C 1966. COMP.SC.DEPT. STANFORD UNIVERSITY.
 
-      DO 2 I=1,N
-      E(I)=ALPHA(I)
-      BB(I+1)=BETA(I)**2
-    2 continue
+      DO I=1,N
+         E(I)=ALPHA(I)
+         BB(I+1)=BETA(I)**2
+      ENDDO
       BB(1)=0.0
       BB(N+1)=0.0
 C INFINITY NORM OF TRIDIAGONAL MATRIX
       RNORM=0.0
-      DO 5 I=1,N
-    5 RNORM=AMAX1(RNORM,SQRT(BB(I))+ABS(E(I))+SQRT(BB(I+1)))
+      DO I=1,N
+         RNORM=AMAX1(RNORM,SQRT(BB(I))+ABS(E(I))+SQRT(BB(I+1)))
+      ENDDO
 C ETA = RELATIVE MACHINE PRECISION
       DELTA=ETA*RNORM
       EPS=DELTA**2
@@ -757,31 +787,22 @@ C 368-376 (1962)
 * 9/05 ACM  Use a work array eofwork rather than explicitly dimensioned
 *           arrays M, P, Q, R, INT, and X
 
-c      REAL M(4000),P(4000),Q(4000),R(4000),INT(4000),X(4002)
-
       INTEGER N,M1
       REAL NORM,MACHEPS
 
       INTEGER I,J
-c      REAL BI,BI1,Z1,LAMBDA,U,S,V,H,EPS,ETA
       REAL BI,BI1,LAMBDA,U,V,H,EPS,ETA,BIG,BIGGER
 
 
 * In single-precision these were 1.e10 and 1.e20
 * Determined by trial and error.
 	
-#ifdef double_p
       big = 1.E20
       bigger = 1.E30
-#else
-      big = 1.E10
-      bigger = 1.E20
-#endif
 
-      IF (N-1)10,20,30
-   20 Z(1,1)=1.
-   10 RETURN
-   30 CONTINUE
+      IF (N .LT. 1) RETURN
+      IF (N .EQ. 0)  Z(1,1)=1.
+
       LAMBDA=NORM
       EPS=MACHEPS*NORM
       DO 90 J=1,M1
@@ -830,8 +851,11 @@ c      REAL BI,BI1,Z1,LAMBDA,U,S,V,H,EPS,ETA
    65 X(I)=U/P(I)
    66 H=H+ABS(X(I))
    67 CONTINUE
-      DO 68 I=1,N
-   68 X(I)=X(I)/H
+
+      DO I=1,N
+         X(I)=X(I)/H
+      ENDDO
+
       DO 75 I=2,N
       IF(INT(I).LE.0)GO TO 70
       U=X(I-1)
@@ -840,6 +864,7 @@ c      REAL BI,BI1,Z1,LAMBDA,U,S,V,H,EPS,ETA
       GO TO 75
    70 X(I)=X(I)-M(I)*X(I-1)
    75 CONTINUE
+
       H=0
       DO 82 II=1,N
       I=N-II+1
@@ -848,7 +873,7 @@ c      REAL BI,BI1,Z1,LAMBDA,U,S,V,H,EPS,ETA
       X(I)=U/EPS
       GO TO 81
    80 X(I)=U/P(I)
-C   81 H=H+X(I)**2
+
  81   IF (X(I).GT.BIG) THEN
         H=BIGGER
       ELSE
@@ -857,8 +882,10 @@ C   81 H=H+X(I)**2
    82 CONTINUE
       H=SQRT(H)
 C STORE VECTORS AS COLUMNS
-      DO 85 I=1,N
-   85 Z(I,J)=X(I)/H
+      DO I=1,N
+         Z(I,J)=X(I)/H
+      ENDDO
+
    90 CONTINUE
       RETURN
       END
@@ -875,18 +902,24 @@ C**********************************************************************
 
 C BACKTRANSFORMATION
 
-   73 IF (N.LE.2)RETURN
+      IF (N.LE.2)RETURN
+
       DO 90 J=1,M1
       DO 85 KK=3,N
       K=N-KK+1
-   76 IF (ABS(BETA(K)).LE.EPS) GO TO 85
+      IF (ABS(BETA(K)).LE.EPS) GO TO 85
       S=0.0
       K1=K+1
-      DO 75 I=K1,N
-   75 S=S+A(I,K)*X(I,J)
+
+      DO I=K1,N
+         S=S+A(I,K)*X(I,J)
+      ENDDO
+
       S=S/(BETA(K)*A(K1,K))
-      DO 80 I=K1,N
-   80 X(I,J)=X(I,J)+S*A(I,K)
+      DO I=K1,N
+         X(I,J)=X(I,J)+S*A(I,K)
+      ENDDO
+
    85 CONTINUE
    90 CONTINUE
 

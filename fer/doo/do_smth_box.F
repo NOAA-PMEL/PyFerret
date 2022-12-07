@@ -47,6 +47,7 @@
 * V200:  6/2/89
 *        2/12 *kms* Add E and F dimensions (use nferdims in tmap_dims.parm)
 *        2/19 *acm* Note Data from DSG datsets is handled within CONVOLVE
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
@@ -76,8 +77,9 @@
 	weight = 1. / FLOAT(wlen)
 	even = MOD(wlen,2) .EQ. 0
 	IF (even) wlen = wlen + 1
-	DO 100 i = 1, wlen
- 100	wt(i) = weight
+	DO i = 1, wlen
+	   wt(i) = weight
+ 	ENDDO
 	IF ( even) THEN
 	   wt(1)    = weight * 0.5
 	   wt(wlen) = weight * 0.5

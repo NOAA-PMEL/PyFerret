@@ -15,8 +15,6 @@ axis_intervals.F\
 bkwd_axis.F\
 box_bounds.F\
 box_size.F\
-break_varattname.F\
-break_varname.F\
 cal_factr.F\
 calendar_axis.F\
 caxis_len.F\

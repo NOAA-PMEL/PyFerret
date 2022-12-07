@@ -42,6 +42,10 @@
 * V5.53  *acm*  6/03 Correct the frequency axis:  why was there a factor of
 *                     1.001 in freqn = 1.001*yquist?
 * V7.65 *acm*  10/22 Fix for issue 126: incorrect frequency axis
+C  11/2022 *acm* Code cleanup: Update FFTPACK code to F90 standard, from
+C                https://github.com/fortran-lang/fftpack.git 
+*                Send an integer work array along with wft tom avoid 
+*                type-mismatch warnings
 *
 *
 * This function returns the imaginary part of the FFT transform. The result 
@@ -290,7 +294,7 @@ C  The FFT code returns frequencies W(k) for k=1 to N/2, with N/2 rounded down
 
       mtdat = 1 + arg_hi_ss(T_AXIS,ARG1) - arg_lo_ss(T_AXIS,ARG1)
 
-      mtwork = 2.5* mtdat + 15
+      mtwork = 2* mtdat
 
 * a
       CALL ef_set_work_array_dims_6d(id, 1,
@@ -373,6 +377,8 @@ C  The FFT code returns frequencies W(k) for k=1 to N/2, with N/2 rounded down
       INTEGER i1, j1, k1, l1, m1, n1
       CHARACTER*128 err_msg
 
+      INTEGER iwft(15)
+
    40 FORMAT ('FFT_IM encountered missing data at (i,j,k,l,m,n)', 6I5)
    50 FORMAT ('FFT_IM encountered missing data at L=', I5)
 
@@ -405,9 +411,9 @@ C  The FFT code returns frequencies W(k) for k=1 to N/2, with N/2 rounded down
          GO TO 999
       ENDIF
 
-*  Set WFT for fft; prime factorization of ND and trig functions.
+* Set WFT and IWFT for fft; prime factorization of ND and trig functions.
 
-      CALL rffti (nd, wft)
+      CALL rffti (nd, wft, iwft)
 
       n1 = arg_lo_ss(F_AXIS,ARG1)
       DO 600 n=res_lo_ss(F_AXIS), res_hi_ss(F_AXIS)
@@ -447,7 +453,7 @@ C  The FFT code returns frequencies W(k) for k=1 to N/2, with N/2 rounded down
                   l1 = l1 + arg_incr(T_AXIS,ARG1)
  400           CONTINUE
 
-               CALL four_re (nd, ts, a, b, wft)
+               CALL four_re (nd, ts, a, b, wft, iwft)
 
                DO 410 l = res_lo_ss(T_AXIS), res_hi_ss(T_AXIS) 
                    result(i,j,k,l,m,n) = b(l,1,1,1,1,1)

@@ -2,6 +2,7 @@
 * str_mask.F
 *
 * Ansley Manke 08/2013
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 *
 * This function takes a string variable and mask on the same axis.
 * and returns the variable containing the strings where the mask is
@@ -148,12 +149,12 @@
 
 * Put the requested features into the result
 
-      DO 200 n = res_lo_ss(F_AXIS), res_hi_ss(F_AXIS)
-      DO 200 m = res_lo_ss(E_AXIS), res_hi_ss(E_AXIS)
-      DO 200 l = res_lo_ss(Z_AXIS), res_hi_ss(T_AXIS)
-      DO 200 k = res_lo_ss(T_AXIS), res_hi_ss(Z_AXIS)
-      DO 200 j = res_lo_ss(Y_AXIS), res_hi_ss(Y_AXIS)
-      DO 200 i = res_lo_ss(X_AXIS), res_hi_ss(X_AXIS)
+      DO n = res_lo_ss(F_AXIS), res_hi_ss(F_AXIS)
+      DO m = res_lo_ss(E_AXIS), res_hi_ss(E_AXIS)
+      DO l = res_lo_ss(Z_AXIS), res_hi_ss(T_AXIS)
+      DO k = res_lo_ss(T_AXIS), res_hi_ss(Z_AXIS)
+      DO j = res_lo_ss(Y_AXIS), res_hi_ss(Y_AXIS)
+      DO i = res_lo_ss(X_AXIS), res_hi_ss(X_AXIS)
 
 	 IF ( arg_2(i,j,k,l,m,n) .NE. bad_flag(2) ) THEN
             CALL ef_get_string_arg_element_6d(id, ARG1, arg_1, 
@@ -163,9 +164,12 @@
             CALL EF_PUT_STRING(null, 1, result(1,i,j,k,l,m,n))
          ENDIF  ! arg_2 good
 
- 200  CONTINUE
-
- 300  CONTINUE
+      ENDDO
+      ENDDO
+      ENDDO
+      ENDDO
+      ENDDO
+      ENDDO
       
 *                                                                      ^
 *                                                                      |

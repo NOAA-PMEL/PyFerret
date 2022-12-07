@@ -38,6 +38,7 @@
 * which was passed as an argument to the external function.
 *
 * V691+*acm* 8/14  Fix ticket 2190: long strings were being cut off.
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 *
 
       IMPLICIT NONE
@@ -101,17 +102,22 @@
 * and we can call GET_STRING_ELEMENT to get the length of a string element. 
 
           smax = 0
-          DO 100 n = lof, hif
-          DO 100 m = loe, hie
-          DO 100 l = lot, hit
-          DO 100 k = loz, hiz
-          DO 100 j = loy, hiy
-          DO 100 i = lox, hix
+          DO n = lof, hif
+          DO m = loe, hie
+          DO l = lot, hit
+          DO k = loz, hiz
+          DO j = loy, hiy
+          DO i = lox, hix
              CALL EF_GET_STRING_ARG_ELEM_LEN_SUB(lox, hix, loy, hiy,
      .                   loz, hiz, lot, hit, loe, hie, lof, hif,
      .                   str_arg, i, j, k, l, m, n, max_line_len, slen)
              smax = MAX(slen, smax)
- 100      CONTINUE
+          ENDDO
+          ENDDO
+          ENDDO
+          ENDDO
+          ENDDO
+          ENDDO
 
       ENDIF
 

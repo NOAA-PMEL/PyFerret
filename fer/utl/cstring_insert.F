@@ -45,25 +45,18 @@
 * correct position for the next insert
 
 * If insert_pt>clen upon return that means the buffer has overflowed
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 
         IMPLICIT NONE
 * calling argument declarations:
 	INTEGER	flen, clen, insert_pt
 	CHARACTER fstring*(*)
-#ifdef sun
-        BYTE      cstring(clen) ! c-type Hollerith string buffer
-#else
         INTEGER*1 cstring(clen) ! c-type Hollerith string buffer
-#endif
 
 * internal variable declarations:
 
 * internal parameter declarations:
-#ifdef sun
-        BYTE      CR, NULL, STAR
-#else
         INTEGER*1 CR, NULL, STAR
-#endif
 	PARAMETER ( CR   = 13,
      .		    NULL =  0,
      .		    STAR = 42 )	
@@ -82,8 +75,9 @@
 	ELSE
 
 * ERROR: insufficient room to append this text
-	  DO 100 insert_pt = insert_pt, clen-1
- 100	  cstring(insert_pt) = STAR
+	  DO insert_pt = insert_pt, clen-1
+	     cstring(insert_pt) = STAR
+ 	  ENDDO
 	  cstring(clen) = NULL
 	  insert_pt = clen + 1
 

@@ -73,6 +73,7 @@
 * V751 10/19 *acm* Issue 1955: don't try to do the rename for the fix to ticket 2227
 *                  if the dimension name wasn't stored as a variable to begin with.
 * v7.6 2/2020 *acm* handling  files with dimensions that are not coordinate variables
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 
 * argument definitions:
 *       dset    - pointer to TMAP data set
@@ -196,8 +197,9 @@
           ELSEIF ( dup_guts ) THEN
              grid_name(igrid) = char_init   ! throw it away
              DO 290 ivar = 1, maxvars
- 290         IF ( ds_grid_number(ivar) .EQ. igrid )
+               IF ( ds_grid_number(ivar) .EQ. igrid )
      .               ds_grid_number(ivar) = i_dup
+ 290         CONTINUE
 
 * Duplicate name - differing guts / make the grid name unique
           ELSE

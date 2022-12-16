@@ -152,8 +152,6 @@
 	include 'PLT.INC'
 	include 'pltl_inc.decl'
 	include 'PLTL.INC'
-	include 'mplot_inc.decl'
-	include 'MPLOT.INC'
 	include 'cmrd_inc.decl'
 	include 'CMRD.INC'
 	include 'prmcom_inc.decl'
@@ -202,7 +200,7 @@ CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
      *		.OR.MAKEP.EQ.'VECTOR'.or.makep.eq.'SHADE'   
      *          .or.makep.eq.'FLOWLINE'
      *          .or.makep.eq.'FILL'.or.makep.eq.'PIXEL'
-	CLEAR = .NOT.SOVER .AND. IMCNT.LE.1 .AND. .NOT.PLTOPN
+	CLEAR = .NOT.SOVER .AND. .NOT.PLTOPN
 C	SETUP AXIS FOR ALL PLOT TYPES.
 
 *below	no_vpt_flag = .not.(vpt_was_set .and. ppl_viewports_active)!12.1.89 JD

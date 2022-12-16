@@ -148,6 +148,7 @@ C              do not make small tics by default.
 * 11/2022 *acm* Code cleanup: Use the variable from common CMXGE rather than 1.e35
 * 11/2022 *acm* Code cleanup: Modernize DO-loop syntax.
 * 11/2022 *acm* Code cleanup: Remove and issue note for long-obsolete PPLUS commands
+* 12/2022 *acm* Code cleanup: Get rid of MULTPLT, long ago replaced by viewports
 
 c	fromi	command file or device (/dev/tty or TT: for terminal)
 c	linei	input line for parameters
@@ -156,9 +157,7 @@ c	combuf() command buffer for executing commands from memory
 c	icmdim	dimensioned length of combuf
 c	icmsze	number of lines in combuf
 c
-        include 'comepl_inc.decl'  ! added 9.6.88 j davison 
         include 'COMEPL.INC'  ! added 9.6.88 j davison 
-	include 'comeps_inc.decl'
 	include 'COMEPS.INC'
 	include 'comepv_inc.decl'
 	include 'COMEPV.INC'
@@ -185,8 +184,6 @@ c
 	include 'PLT.INC'
 	include 'pltl_inc.decl'
 	include 'PLTL.INC'
-	include 'hab_inc.decl'
-	include 'HAB.INC'
 	include 'data_inc.decl'
 	include 'DATA.INC'
 	include 'cmrd_inc.decl'
@@ -195,8 +192,6 @@ c
 	include 'CMRDL.INC'
 	include 'hd_inc.decl'
 	include 'HD.INC'
-	include 'mplot_inc.decl'
-	include 'MPLOT.INC'
 	include 'miss_inc.decl'
 	include 'MISS.INC'
 	include 'taxis_inc.decl'
@@ -1658,7 +1653,6 @@ C	ENTER
 	GOTO 10
 C     MULTPLT
 4900	CONTINUE
-cc 4900	CALL MULT
 
          err_msg = 'PPLUS Command not supported '//icom(:TM_LENSTR1(icom))
          CALL ERRMSG (ferr_not_implemented, status, err_msg, *9999)
@@ -1682,34 +1676,7 @@ C	PLOTUV
 	ENDIF
 6001	IF(N.NE.0)LAB1=LABEL
 	ICOUNT=ICOUNT+1
-	IF(IMULT.NE.1)THEN
-	    CALL PLTIT(pplmem,pplmem_nsize)
-	ELSE
-	    CALL MPLOT(pplmem,pplmem_nsize)
-	    IF(IMCNT.LT.MNX*MNY)GOTO 10
-            rewind(lmult)
-	    DO 6003 IMCNT=1,MNX*MNY
-		READ(LMULT,END=6004)IPTS,MXBOT,MYLEF
-		READ(LMULT,END=6004)XLABS,YLABS,RLABS,LTYPE,XLLABS,
-     *		YLLABS,LLTYPE,RHLABS,USRLBS
-		CALL GET(LMULT)
-		IF(JTYPE.EQ.1)THEN
-		    CALL GETXY(LMULT,pplmem,pplmem_nsize)
-		ELSE
-		    CALL GETZ(LMULT,pplmem,NX,NY)
-		ENDIF
-		IF(IZTYP.NE.0)CALL GETZG(LMULT)
-		CALL PLTIT(pplmem,pplmem_nsize)
-6003	    CONTINUE
-
-6004	    CLOSE(LMULT)
-
-c
-c	show mult file is closed by clearing the file name
-c
-	    MULTFL=' '
-	    CALL MPLOT2(pplmem,pplmem_nsize)
-	ENDIF
+	CALL PLTIT(pplmem,pplmem_nsize)
 	GOTO 10
 C	VELVCT
 9100	MAKEP='VELVCT'
@@ -1763,39 +1730,7 @@ C	SHADE
 9150    MAKEP = 'SHADE'                                                       
         IF(N.NE.0)LAB1=LABEL                                                  
         ICOUNT=ICOUNT+1                                                       
-        IF(IMULT.NE.1)THEN                                                    
-            CALL PLTIT(pplmem,pplmem_nsize)                                               
-        ELSE                                                                  
-            CALL MPLOT(pplmem,pplmem_nsize)                                               
-            IF(IMCNT.LT.MNX*MNY)GOTO 10                                       
-            OPEN(LMULT,FILE=MULTFL,STATUS='OLD',                              
-     *      FORM='UNFORMATTED')                                               
-            DO 9151 IMCNT=1,MNX*MNY                                           
-            READ(LMULT,END=9152)IPTS,MXBOT,MYLEF                              
-	    READ(LMULT,END=9152)XLABS,YLABS,RLABS,LTYPE,XLLABS,YLLABS,LLTYPE, 
-     *	    RHLABS,USRLBS                                                     
-            CALL GET(LMULT)                                                   
-            IF(JTYPE.EQ.1)THEN                                                
-                CALL GETXY(LMULT,pplmem,pplmem_nsize)                                     
-            ELSE                                                              
-                CALL GETZ(LMULT,pplmem,NX,NY)                                      
-            ENDIF                                                             
-            IF(IZTYP.NE.0)CALL GETZG(LMULT)                                   
-            CALL PLTIT(pplmem,pplmem_nsize)                                               
-9151        CONTINUE    
-9152        CLOSE(LMULT)
- 
-cc#ifdef FORTRAN_90                                           
-cc9152        CLOSE(LMULT,STATUS='DELETE')                             c
-cc#else
-cc9152        CLOSE(LMULT,DISP='DELETE')                             
-cc#endif
-c                                                                  
-c       show mult file is closed by clearing the file name         
-c                                                                  
-            MULTFL=' '                                             
-            CALL MPLOT2(pplmem,pplmem_nsize)                                   
-        ENDIF                                                      
+        CALL PLTIT(pplmem,pplmem_nsize)
         GOTO 10                                                    
 C       SHAKEY                                                     
 9160    call shade_key (-1)

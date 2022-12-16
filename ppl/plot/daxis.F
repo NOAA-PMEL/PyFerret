@@ -90,16 +90,12 @@ C**
 	include 'LABELS.INC'
 	include 'labcom_inc.decl'
 	include 'LABCOM.INC'
-	include 'hab_inc.decl'
-	include 'HAB.INC'
 	include 'lines_inc.decl'
 	include 'LINES.INC'
 	include 'pen_inc.decl'
 	include 'PEN.INC'
 	include 'pltl_inc.decl'
 	include 'PLTL.INC'
-	include 'mplot_inc.decl'
-	include 'MPLOT.INC'
 	include 'taxis_inc.decl'
 	include 'TAXIS.INC'
 	include 'tics_inc.decl'
@@ -141,7 +137,7 @@ C
 * (PyFerret) labels along vertical axes will be drawn with the ivtics text style
       IF (pyfont .AND. pyf_set(ivtics)) igroup = ivtics
 
-      IF(MYLEF.EQ.0.AND.IAXON(3).EQ.1)THEN
+      IF(IAXON(3).EQ.1)THEN
 	  IY=ITY
 C	  YAXIS1 = LINEAR ,  YAXIS2 = LOG
 C
@@ -210,7 +206,7 @@ C
           END IF
       END IF
 	IF ( interrupted ) GOTO 3333		! TMAP interrupt
-      IF(MXBOT.EQ.0.AND.IAXON(2).EQ.1)THEN
+      IF(IAXON(2).EQ.1)THEN
           IX=ITX
           IF (ITFLG.EQ.1 .OR. ITFLG.EQ.2) THEN
               CALL TAXIS(ITYPET,TLO,IT1,IT2,DT,NMTCT,LTB,IFDB,ISDB,

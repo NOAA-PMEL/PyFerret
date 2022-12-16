@@ -46,25 +46,15 @@ C**
 C**
 C *kob* 04/07/96 passed in character strings had to be declared 
 C                with "*(*)" for the linux port 
+*  11/2022 *acm* Code cleanup: remove code having to do with Tektronix
+*		 and other terminals
+
 	CHARACTER NME*(*)
-#ifdef unix
+
 	include 'PLTCOM.DAT'
-#else
-	include 'pplinc:PLTCOM.DAT'
-#endif
+
 	IF(PLTFLG)THEN
 	    PEN=.FALSE.
-	    IF(PTYPE.LT.0)THEN
-		A=0.
-		B=0.
-		CALL HPABMV
-		CALL ZBUFFT('SP0;',4)
-		OLDHTA=0
-		CALL HFLUSH
-	    ELSE IF(PTYPE.EQ.0.OR.PTYPE.EQ.2.OR.PTYPE.EQ.4)THEN
-		CALL ZABMV
-		CALL BINFSH
-	    ENDIF
 	    PLTFLG=.FALSE.
 	ENDIF
 	FILEZ=NME

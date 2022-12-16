@@ -1,6 +1,0 @@
-* PPL_INC.DECL - converted to Unix 2.26.91         
-* COMMON for PLOT+ with all variables declared
-* created for TMAP usage by J Davison 11/88
-kkk - deliberate syntax error - this file is untested (though probably ok)*sh*
-kkk - check for undeclared variables ...
-* requires: INCLUDE 'PPLV11INC:PPL.INC'                                  

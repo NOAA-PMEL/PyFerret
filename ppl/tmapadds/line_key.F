@@ -81,8 +81,6 @@ C	KTYPE = 1 -XY  0 -Z  2-VECTOR
 	include 'PLT.INC'
 	include 'pltl_inc.decl'
 	include 'PLTL.INC'
-	include 'mplot_inc.decl'
-	include 'MPLOT.INC'
 	include 'cmrd_inc.decl'
 	include 'CMRD.INC'
 	include 'prmcom_inc.decl'

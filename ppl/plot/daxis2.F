@@ -51,15 +51,16 @@ C**
 * V69+  5/14 *acm* Fix for ascii font in multi-line labels, ticket 2176
 
 * V695  4/15 (PyFerret) Logo labels drawn with the logo text style
+* 12/2022 *acm* Code cleanup: remove code having to do with Tektronix
+*		 and other terminals. 
+* 12/2022 *acm* Code cleanup: remove obsolete multplt
 
 	INCLUDE 'PARAMPL5.DAT'
 	INCLUDE 'AXIS.INC'
 	INCLUDE 'LABELS.INC'
 	INCLUDE 'LABCOM.INC'
 	INCLUDE 'PLT.INC'
-	INCLUDE 'HAB.INC'
 	INCLUDE 'LINES.INC'
-	INCLUDE 'MPLOT.INC'
 	INCLUDE 'TAXIS.INC'
 	INCLUDE 'TICS.INC'
 	INCLUDE 'TICS2.INC'
@@ -71,8 +72,8 @@ C**
 	INCLUDE 'SYSTEM.INC'
 	INCLUDE 'SWITCH.INC'
 
-        include         'xinterrupt.cmn' ! 1/89 *sh*
-        include         'ppl_in_ferret.cmn'
+        include 'xinterrupt.cmn' ! 1/89 *sh*
+        include 'ppl_in_ferret.cmn'
         include 'pyfonts.cmn'
 
 ******************************************************************************
@@ -256,27 +257,10 @@ C  Set up to use any font settings from this line on subsequent lines.
 	IF (pyfont) igroup = fnt_all
 80	CONTINUE
 
-
 	IF(PLTOPN)RETURN
-	IF(IMULT.EQ.0.OR.IMCNT.EQ.MNX*MNY)THEN
-	    IF(SWAIT)THEN
-		CALL HABIS(IPLOT,IPAUSE,IHDCPY,INC)
-	    ELSE
-		CALL HABIS(IPLOT,0,IHDCPY,INC)
-	    ENDIF
+	CALL HABIS
+	call ferret_plot_complete (icount)
 
-*     Mod is here
-        if (ppl_in_ferret) then   
-           call ferret_plot_complete (icount)
-        else
-	   IF(.NOT.QUIETF)WRITE(LTTOUT,'('' PLOT'',I8,
-     *         '' COMPLETE'')')ICOUNT
-	       IF(INC.EQ.27)THEN
-		  CALL ATFLSH
-	       ENDIF
-	endif
-
-        ENDIF
 	RETURN
 	END
 

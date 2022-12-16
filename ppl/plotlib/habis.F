@@ -60,9 +60,17 @@ C                = 1 FOR A  PAUSE
 C         IHDCPY= 0 FOR NO HARDCOPY
 C                = 1 FOR A HARD COPY
 C
-	CALL ALPHAS
-	CALL PAGE
+C
+c ( call alphas, call page, which boil down to these calls)
 
+C     SET THE PLOTTING MODE.
+C
+      PMODE = ALPHA
+
+C     IF THE LAST POINT WAS NOT PLOTTED BECAUSE THE PEN WAS UP,
+C     PLOT THE POINT NOW.
+
+      IF(SAVEF)CALL XYZPLT
 	call clsdev(termf,sover)
 	RETURN
 	END

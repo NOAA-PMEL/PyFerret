@@ -84,8 +84,6 @@ C                with "*(*)" for the linux port
         include 'CONLAB.INC'
         include 'plt_inc.decl'
         include 'PLT.INC'
-        include 'hab_inc.decl'
-        include 'HAB.INC'
         include 'data_inc.decl'
         include 'DATA.INC'
         include 'cmrd_inc.decl'

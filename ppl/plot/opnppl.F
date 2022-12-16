@@ -41,6 +41,8 @@
 * V686 *acm* 11/13 Allow symbol names to be up to 120 characters long
 * v691 5/14 *acm* Change name MOD to TEKMOD
 * v695 9/15 *acm* write values to PPL* symbols using 6 digits not 4
+* 12/2022 *acm* Code cleanup: Get rid of MULTPLT, long ago replaced by viewports
+*                             Clean up unused ifdefs.
 C**
 C**    @(#)opnppl.F	1.1    3/10/88
 C**
@@ -102,49 +104,15 @@ C	USE OF IP FLAGS
 C
 C	IP(1)= BOX ON AND OFF  1=ON  0=OFF
 C
-#ifndef unix
-c       Set up structures for exit handler
-c
-        STRUCTURE /EXIT_DESCRIPTOR/
-            INTEGER LINK,
-     *      ADDR,
-     *      ARGS /1/,
-     *      STATUS_ADDR
-        END STRUCTURE
-        RECORD /EXIT_DESCRIPTOR/ HANDLER
-C
-        EXTERNAL PPLEXT
-        INTEGER*4 EXIT_STATUS
-C
-        BYTE BUF(80),CRB,ESCB
-#endif
+
 	CHARACTER EFILE*(*)
 C	CHARACTER EFILE*81
 	INTEGER ELUN,DLUN,MLUN,CLUN,LTT,KEY1,KEY2,EPLUN1,EPLUN2
-#ifndef unix
-	CHARACTER ESC*1,CR*1
-        INTEGER*4 LIB$GET_FOREIGN,STAT,LIB$GET_SYMBOL,LEN,IFLAG
-        INCLUDE '($JPIDEF)'
-#endif
 	CHARACTER TEMP*81,TERM*20,SYM*120
 C
 	CHARACTER TYPE*81
 C
-#ifdef unix
         DATA CRB,ESCB/13,27/,TEMP/'/dev/tty'/,TERM/'/dev/tty'/
-#else
-        DATA CRB,ESCB/13,27/,TEMP/'TT:'/,TERM/'TT:'/
-        EQUIVALENCE (BUF(1),LABEL),(CR,CRB),(ESC,ESCB)
-C
-C       SET UP THE EXIT HANDLER
-C
-        HANDLER.ADDR = %LOC(PPLEXT)
-        HANDLER.STATUS_ADDR = %LOC(EXIT_STATUS)
-C
-C       EXTABLISH THE EXIT HANDLER
-C
-        CALL SYS$DCLEXH(HANDLER)
-#endif
 C
 C	SET UP THE LOGICAL UNITS
 C
@@ -159,29 +127,17 @@ C
 	CMDLUN=CLUN
 	ECHLUN=ELUN
 C
-#ifndef unix
-	CALL ERRSET(64,.TRUE.,.FALSE.,.TRUE.,.FALSE.)
-	CALL ERRSET(44,.TRUE.,.FALSE.,.TRUE.,.FALSE.)
-	CALL ERRSET(36,.TRUE.,.FALSE.,.TRUE.,.FALSE.)
-	CALL ERRSET(30,,.FALSE.,,.FALSE.)
-#endif
+
 	CALL BAUD(IR)
 	CALL PLTYPE(ICODE)
 C
-#ifdef unix
-#ifndef F90_NO_GETLOG
+
         call getlog(type)
-#endif
+
         BATCHF = TYPE.EQ.' '
 C
         call getenv('GRAPHTERM',type)
         len=lnblk(type,81)
-#else
-        STAT=LIB$GETJPI(JPI$_MODE,,,ISTAT,TYPE,LEN)
-        BATCHF = TYPE(:LEN).EQ.'BATCH'
-C
-        STAT=LIB$GET_SYMBOL('GRAPHTERM',TYPE,LEN)
-#endif
 
 	IF(TYPE(1:LEN).EQ.'TEK41XX'.OR.TYPE(1:LEN).EQ.'TEK4105')THEN
 		TEKMOD=4107
@@ -194,32 +150,17 @@ C
 C	OPEN ECHO FILE
 C
 	IF(EFILE.NE.' ')THEN
-#ifdef unix
             OPEN(ECHLUN,FILE=EFILE,STATUS='UNKNOWN')
-#else
-            OPEN(ECHLUN,FILE=EFILE,STATUS='NEW',CARRIAGECONTROL='LIST')
-#endif
 	ENDIF
 c
 c	open key file
 c
-#ifdef unix
         call dbmopen('PPL$KEY.001',11,keyln1)
 c
         IF(BATCHF)TERM='/dev/null'
 C
 C Don't open below -- problem w/ Ultrix *JD* 3.5.91
 C       OPEN(UNIT=LTTOUT,FILE=TERM,STATUS='UNKNOWN')
-#else
-        OPEN(KEYLN1,FILE='PPL$KEY.001',STATUS='NEW',
-     *  ORGANIZATION='INDEXED',ACCESS='KEYED',
-     *  RECORDTYPE='VARIABLE',FORM='FORMATTED',
-     *  KEY=(1:30:CHARACTER))
-c
-        IF(BATCHF)TERM='SYS$OUTPUT:'
-C
-        OPEN(UNIT=LTTOUT,FILE=TERM,STATUS='UNKNOWN',RECL=255)
-#endif
 C
 	CALL STPRMP('ppl+>',5)
 C
@@ -231,11 +172,7 @@ C
 	SYM='*PPL$PLTNME'
 	call putsym(sym, meta_file, LNBLK(meta_file,2048), ier)
 	SYM='*PPL$TEKNME'
-#ifdef unix
         TEMP='/dev/tty'
-#else
-	TEMP='TT:'
-#endif
 	CALL PUTSYM(SYM,TEMP,7,IER)
 	SYM='*PPL$XLEN'
 	CALL PUTVAL(SYM,XLEN,7,IER)
@@ -281,72 +218,3 @@ C
 10	CONTINUE
 	RETURN
 	END
-#ifndef unix
-        SUBROUTINE PPLEXT(STATUS)
-C**
-C**
-C***********************************************************************
-C**
-C**                 PLOT+ Scientific Graphics System
-C**
-C***********************************************************************
-C**
-C**
-C**     Subprogram called:
-C**             N/A
-C**
-C**     Parameters:
-C**             STATUS -- Exit status, passed from system
-C**
-C**     Description:
-C**             This routine closes all files and deletes temporary files
-C**
-C**     History:
-C**         Written:
-C**             2-AUG-86        by Donald W. Denbo
-C**         Modified:
-C**
-C**
-        INTEGER*4 STATUS
-#ifdef unix
-        include 'filnam_inc.decl'
-        include 'FILNAM.INC'
-        include 'lunits_inc.decl'
-        include 'LUNITS.INC'
-        include 'symkey_inc.decl'
-        include 'SYMKEY.INC'
-        include 'cmdcom_inc.decl'
-        include 'CMDCOM.INC'
-        include 'pltcom_dat.decl'
-        include 'PLTCOM.DAT'
-#else
-        INCLUDE 'tmap_pplv11inc:tmap_FILNAM.INC'
-        INCLUDE 'tmap_pplv11inc:tmap_LUNITS.INC'
-        INCLUDE 'TMAP_PPLV11INC:SYMKEY_INC.DECL'
-        INCLUDE 'PPLV11INC:SYMKEY.INC'
-        INCLUDE 'TMAP_PPLV11INC:CMDCOM_INC.DECL'
-        INCLUDE 'PPLV11INC:CMDCOM.INC'
-        INCLUDE 'tmap_pplv11inc:tmap_PLTCOM.DAT'
-#endif
-C
-C       CLOSE ALL OPEN COMMAND FILES
-C
-        CALL ATFLSH
-        CLOSE(KEYLN1,DISP='DELETE')
-C
-C       CLOSE MULT FILE IF OPEN
-C
-        IF(MULTFL.NE.' ')THEN
-           CLOSE(LMULT,DISP='DELETE')
-        ENDIF
-        IF(PLTFLG)THEN
-C
-C       BINARY FILE IS OPEN
-C
-            PEN = .FALSE.
-            CALL ZABMV
-            CALL BINFSH
-        ENDIF
-        RETURN
-        END
-#endif

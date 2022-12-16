@@ -62,8 +62,6 @@ CCCCC	VIRTUAL X(NXS)		(*jd* 12.96 for linux port)
 	real		axmin,aymin,axmax,aymax
 	integer  	icnt,im,j,ibase,iy,a_line
 	logical		old_swait
-
-
 C	KTYPE = 1 -XY  0 -Z  2-VECTOR
 	include 'lines_inc.decl'
 	include 'LINES.INC'
@@ -81,8 +79,6 @@ C	KTYPE = 1 -XY  0 -Z  2-VECTOR
 	include 'PLT.INC'
 	include 'pltl_inc.decl'
 	include 'PLTL.INC'
-	include 'mplot_inc.decl'
-	include 'MPLOT.INC'
 	include 'cmrd_inc.decl'
 	include 'CMRD.INC'
 	include 'prmcom_inc.decl'

@@ -61,6 +61,8 @@ C V695 *acm*  5/15 Change in arguments to YAXIS1 and XAXIS1
 *                  DEGMINSEC=1 for Deg-Min axis labels, =2 for Deg-Min-Sec. Default = 1
 *                  /HALFSPAC adds a half space between the degree sign and E/W or N/S
 * 11/2022 *acm* Code cleanup: Modernize DO-loop syntax.
+* 12/2022 *acm* Code cleanup: remove code having to do with Tektronix
+*		 and other terminals. In PyFerret pltype is 3
 
 C**
 C**
@@ -141,7 +143,6 @@ C
 	INCLUDE 'PEN.INC'
 	INCLUDE 'PLT.INC'
 	INCLUDE 'PLTL.INC'
-	INCLUDE 'HAB.INC'
 	INCLUDE 'LABCOM.INC'
 	INCLUDE 'HD.INC'
 	INCLUDE 'MISS.INC'
@@ -195,11 +196,7 @@ C
 	    QUIETF=SVQIET
 	    LOGCMF=SVLOG
 	    PLTOPN=.FALSE.
-	    IF(SWAIT)THEN
-		CALL HABIS(IPLOT,IPAUSE,IHDCPY,INC)
-	    ELSE
-		CALL HABIS(IPLOT,0,IHDCPY,INC)
-	    ENDIF
+	    CALL HABIS
 C
 C***	RANGE
 C

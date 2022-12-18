@@ -81,6 +81,7 @@
 * V6.04  7/07 *acm* - increase size of dataset names to 1024. 
 * V701  7/16 *kms*  - increase size of dataset names to 2048
 * 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
+* 12/2022 *acm* Code cleanup remove obsolete ifdefs and f772.1 bug workaround 
 
 
 * calling argument declarations:
@@ -102,17 +103,8 @@
       LOGICAL relative, dot_next_to_tilde, retry_ext
       CHARACTER  ext*8, path_buff*(slen),suffix*16,TM_LEFINT*8
       CHARACTER  tilde_buff*8,vers_no*8,temp_fname*(slen)
-
-	
-*
-#ifdef sun
-      BYTE      nhol(slen), vhol(slen),fhol(slen),phol(slen)
-                                !c-type Hollerith string buffers
-#else
       INTEGER*1 nhol(slen), vhol(slen),fhol(slen),phol(slen)
-                                !c-type Hollerith string buffers
-#endif
-*
+
       include 'tmap_errors.parm'
 #include "gt_lib.parm"
 
@@ -264,28 +256,11 @@
      .                      //vers_no(:vers_len)//'~'
          endif
       len_pbuff = TM_LENSTR1( path_buff )
-* INQUIRE bug check was added for f772.1 problem.
-* the INQUIRE check was commented out 5/13/93 for f77 3.2
-* but was restored May 28 cuz the bug was still there
-* on June 9 this comment was removed from the ifdef line
-* On 11/96 the ifdef sun was changed to ifdef inquire_not_nfs_compatible
-* (and the ifdef logic was reversed)
-* 7/2007 When increasing length of dataset names, in particular for long 
-* DODS file names. Apparently the first argument to INQUIRE cannot be 
-* longer than 256, it causes a bus error, overwriting other vars. This
-* is handled in the calling routine tm_inq_path.
 
-#ifdef inquire_not_nfs_compatible
-! temporary routine needed because of incompatibility between DEC f772.1 and
-! Multinet nfs-mounted files (files sometimes not found)  *sh* 10/21/92
-      file_exist = TM_F7721BUG_INQUIRE( path_buff( :len_pbuff ) )
-#else
       INQUIRE ( FILE		= path_buff( :len_pbuff ) ,
      .			EXIST		= file_exist,
      .			ERR 		= 5000)
-* took out NAME statement because v3.0 of f77 didn't dig it ------kob 10/8/91
-*     .		   	NAME		= TM_PATH_LIST,
-#endif
+
       IF ( file_exist ) GOTO 1100
 
 * try next path in list

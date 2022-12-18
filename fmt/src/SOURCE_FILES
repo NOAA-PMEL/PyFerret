@@ -218,7 +218,6 @@ tm_dsg_nfeatures.F\
 tm_dsg_obs_grid.F\
 tm_dsg_orientation.F\
 tm_errmsg.F\
-tm_f7721bug_inquire.F\
 tm_ferret_vartype.F\
 tm_find_like_dyn_grid.F\
 tm_find_like_dyn_line.F\

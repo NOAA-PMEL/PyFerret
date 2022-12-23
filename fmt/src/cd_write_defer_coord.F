@@ -54,6 +54,9 @@
 *                              whats in netcdf.inc from netcdf4.
 * V65  *acm* 2/10- all warnings and notes to std error not std out
 * 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
+C 12/2022 *acm* Code cleanup: Declare variables start1d and count1d for call to 
+*               NF_PUT_VARA_DOUBLE to avoid rank-mismatch errors when compiling 
+*               under gfortran v10.
 
 * argument declarations:
 	INTEGER cdfid, status
@@ -72,7 +75,7 @@
 
 * local variable declarations:
 	INTEGER	 iax, i, i1000, hilim, cdfstat, box_loc,
-     .           start(2), count(2)
+     .           start(2), count(2), start1d(1), count1d(2)
 	REAL*8   buff(1000)
 	REAL*8   TM_WORLD
 
@@ -105,8 +108,10 @@
                   buff(i-i1000+1) = TM_WORLD(i, dfr_grid(iax), 
      .			              dfr_idim(iax), box_loc)
 	       ENDDO
+	       start1d(1) = i1000-dfr_lo(iax)+1
+	       count1d(1) = hilim-i1000+1
                cdfstat = NF_PUT_VARA_DOUBLE (cdfid, dfr_cdaxis(iax), 
-     .		       i1000-dfr_lo(iax)+1, hilim-i1000+1, buff)
+     .		       start1d, count1d, buff)
                IF (cdfstat .NE. NF_NOERR) GOTO 5010
 	    ENDDO
 

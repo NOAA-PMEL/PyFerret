@@ -57,6 +57,8 @@
 * V541: 2/02 *sh* - support for modulo length
 *       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
 * 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
+* 12/2022 *acm* Code cleanup: The modulo argument to TM_MAKE_DYN_LINE is of
+*		type logical
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -75,7 +77,7 @@
 	INTEGER	gcfcn, cx_base, axes(*), status
 
 * internal variable declarations
-	LOGICAL known_limits
+	LOGICAL known_limits, is_modulo
 	INTEGER	CGRID_AXIS, TM_LENSTR1, CX_DIM_LEN, CAXIS_LEN,
      .          EFCN_GET_NUM_REQD_ARGS,
      .		cx, i, idim, axis_will_be(nferdims), n, grid, modulo
@@ -233,8 +235,9 @@
               IF (axis_will_be(idim) .EQ. pgc_axis_supplied_herein) THEN
                  CALL EFCN_GET_CUSTOM_AXIS(gcfcn, idim, dlo, dhi, del,
      .                unit, modulo)
-                 CALL TM_MAKE_DYN_LINE(idim, dlo, dhi, del,
-     .                unit, modulo, 0.0D0, axes(idim), status)
+                 is_modulo = modulo .NE. 0 
+		 CALL TM_MAKE_DYN_LINE(idim, dlo, dhi, del,
+     .                unit, is_modulo, 0.0D0, axes(idim), status)
                  IF (status .NE. ferr_ok) GOTO 5000
               ENDIF
 

@@ -51,6 +51,7 @@
 * V7.5 *acm* 7/19 -fixes to indexing for some operations
 * V7.51 *acm* 8/19 - more fixes to indexing for some operations
 * V7.5  *acm* 4/20 - more fixes to indexing for some operations, atan2,...
+* 12/2022 *acm* Code cleanup: Argument to RANDN2 is of type integer
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -2234,7 +2235,7 @@
 	   IF ( arg1.EQ.bad1 ) THEN
 	      res(1) = bad_res
 	   ELSE
-	      res(1) = RANDN2 (arg1 )
+	      res(1) = RANDN2 (inseed )
 	   ENDIF
 	   RETURN
 	ENDIF

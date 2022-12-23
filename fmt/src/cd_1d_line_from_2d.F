@@ -45,6 +45,8 @@
 *                 -- look for and read time_bounds 2d array if it exists
 * V72 6/17 *acm* For trac enhancement #767 -- dynamic coordinate storage 
 * v751 *acm*  6/19 Allow for longer strings as attribute values (line_name is length 64)
+C 12/2022 *acm* Code cleanup: Declare uppermost as an array to avoid rank-mismatch errors
+*               when compiling under gfortran v10.
 
 * include files
         include 'netcdf.inc'
@@ -69,7 +71,7 @@
      .		start(nferdims),count(nferdims), zero(nferdims),
      .		npts, nT, nF, npts_cdf, vdims(8), nvdim,
      .		vlen, blen, bndid, attid, attype, attlen, attoutflag
-	REAL*8  TM_WORLD_AX, avg_lag, uppermost
+	REAL*8  TM_WORLD_AX, avg_lag, uppermost(1)
 	CHARACTER  TM_STRING*13, buff*256
 	CHARACTER bname*64, attname*64
 

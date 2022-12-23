@@ -88,6 +88,7 @@
 * V710 *acm* 10/16 Ticket 2422: remove unneeded call to DEALLO_UVAR_GRIDS. 
 *                  Also clean up long-unused lines that were commented out.
 * 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
+* 12/2022 *acm* Code cleanup: Update code for up-casing strings
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -110,7 +111,7 @@
 	LOGICAL		inquote, toolong
 	INTEGER	        TM_LENSTR1, TM_LENSTR, STR_SAME, i, idim,
      .                  natom_rpn, rpn_order(maxatoms), i2, quote_type,
-     .                  dset_to_add, slen, iat, varid, type, coordvar
+     .                  dset_to_add, slen, iat, varid, type, coordvar, ic
 	CHARACTER	buff*255, c*1
 ! 6/16 -- declared but never used: CHARACTER attname*128
 
@@ -120,13 +121,6 @@
      .			p_double_quote = 2,
      .			p__DQ_         = 3,
      .			p__SQ_         = 4 )
-
-* kob 9/30/98 This needed for 7/7/98 code addition
-#ifdef FORTRAN_90
-      INTEGER HEXDF
-      DATA HEXDF/Z'DF'/
-#endif
-
 
 * initialize
 
@@ -157,7 +151,6 @@ cc     .                                  name, LEN(name))
 	i2 = 0
 	inquote = .FALSE.
 	i = txstart - 1
-
 	DO WHILE (i .LT. txend)
 	   i = i + 1
 	   i2 = i2 + 1
@@ -207,20 +200,7 @@ cc     .                                  name, LEN(name))
 	   IF ( inquote .OR. (c .LT. 'a' .OR. c .GT. 'z' ) ) THEN
 	      uvar_text(uvar)(i2:i2) = c   ! preserve case
 	   ELSE
-* ... convert lower case character to upper case
-#if defined unix  && ! defined NEED_IAND
-	      uvar_text(uvar)(i2:i2) = CHAR( AND('DF'X, ICHAR(c)) )
-#else
-# ifdef FORTRAN_90
-	      uvar_text(uvar)(i2:i2) = CHAR( IAND(HEXDF, ICHAR(c)) )
-# elif defined gfortran
-	      uvar_text(uvar)(i2:i2) = CHAR( AND('DF'X, ICHAR(c)) )
-#else
-* VMS needs IAND
-* bug fix - forgot (uvar) in var reference
-	      uvar_text(uvar)(i2:i2) = CHAR( IAND('DF'X, ICHAR(c)) )
-# endif
-#endif
+	      uvar_text(uvar)(i2:i2) = ACHAR( IACHAR(c) - upcase_off)
 	   ENDIF
 
 	ENDDO
@@ -305,6 +285,7 @@ c* copy title, units, dset, and missing flag into buffers
 
 * successful completion
 	status = ferr_ok
+
 	RETURN
 
 * error exit

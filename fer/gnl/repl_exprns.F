@@ -136,6 +136,7 @@
 * V7.63 9/20 *acm* add `var,RETURN=*coord` to get coordinate variables for DSG datasets
 *       5/22 *acm* See issue 112: to allow for large grids, call CGRID_SIZE8 on RETURN=size
 * 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
+C 12/2022 *acm* Code cleanup: Fixes to calls to CHECK_DATE_REFORMAT
 
         IMPLICIT NONE
 #include "netcdf.inc"
@@ -177,7 +178,7 @@
      .            attid, ieq, base_isp, base_cx, cat, var, uvar,
      .            i1ss, inss, grid, ucode, dotidx, shorterlen,
      .            hi_cx, item, itype, start, len_name, var_status, 
-     .            siz, ifeature
+     .            siz, ifeature, cal_id
 	INTEGER*8 CGRID_SIZE8, i8
 	REAL	  result, val, aval
 	REAL*8 TM_WORLD, TM_WW_AXLEN, ww
@@ -533,8 +534,8 @@
 		    ENDIF
 	         ENDIF
 	         str_len = TM_LENSTR1(repl)
-	         CALL CHECK_DATE_REFORMAT (repl, str_len, 
-     .              TM_GET_CALENDAR_ID ( line_cal_name(axis)), status)
+		 cal_id = TM_GET_CALENDAR_ID ( line_cal_name(axis))
+	         CALL CHECK_DATE_REFORMAT (repl, str_len, cal_id, status)
 	         GOTO 500
 
 * ... RETURN=F0
@@ -552,8 +553,8 @@
                     ENDIF
 	         ENDIF
 	         str_len = TM_LENSTR1(repl)
-		 CALL CHECK_DATE_REFORMAT (repl, str_len, 
-     .                       TM_GET_CALENDAR_ID ( line_cal_name(axis)))
+		 cal_id = TM_GET_CALENDAR_ID ( line_cal_name(axis))
+	         CALL CHECK_DATE_REFORMAT (repl, str_len, cal_id, status)
 	         GOTO 500
               
 * ... RETURN=CALENDAR
@@ -863,8 +864,9 @@
                   ENDIF
 	      ENDIF
 	      str_len = TM_LENSTR1(repl)
+	      cal_id = TM_GET_CALENDAR_ID ( line_cal_name(axis))
 	      CALL CHECK_DATE_REFORMAT (repl(:str_len*2), str_len, 
-     .                    TM_GET_CALENDAR_ID ( line_cal_name(axis)))
+     .                    cal_id, status)
 
 * ... RETURN=F0
 	   ELSEIF ( repl .EQ. "F0" ) THEN
@@ -879,8 +881,8 @@
                   ENDIF
 	      ENDIF
 	      str_len = TM_LENSTR1(repl)
-	      CALL CHECK_DATE_REFORMAT (repl, str_len, 
-     .                    TM_GET_CALENDAR_ID ( line_cal_name(axis)))
+	      cal_id = TM_GET_CALENDAR_ID ( line_cal_name(axis))
+	      CALL CHECK_DATE_REFORMAT (repl, str_len, cal_id, status)
               
 * ... RETURN=CALENDAR
 	   ELSEIF ( repl(1:3) .EQ. "CAL" ) THEN

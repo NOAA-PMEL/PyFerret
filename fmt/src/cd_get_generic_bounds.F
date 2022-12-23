@@ -63,6 +63,8 @@
 * V698  4/16 *acm* Fix ticket 2241: If file has dimension but not a coordinate 
 *                  variable, do not write the coordinate variable, ONLY IF writing 
 *                  the full-span in that direction.
+C 12/2022 *acm* Code cleanup: Declare cvdim as an array to avoid rank-mismatch errors
+*               when compiling under gfortran v10.
 
 * argument definitions:
 *	cdfid   - id of currently open CDF file
@@ -99,7 +101,7 @@
       INTEGER TM_LENSTR1, TM_SUBSC, 
      .        idim, vartyp, nvdim,
      .        ndims, cdfstat, vdims(8), nvatts,
-     .	      cvartyp, ncvdims, cvdim, npts, alen, axid, offset
+     .	      cvartyp, ncvdims, cvdim(1), npts, alen, axid, offset
 * 4/99 *kob* 
       CHARACTER vname*128, axnam*128
       REAL*8 TM_WORLD, file_val, mem_val
@@ -168,11 +170,7 @@
 * ... get the vital statistics of the coordinate variable
 		 cdfstat = NF_INQ_VAR(cdfid, axid, axnam, 
      .			cvartyp, ncvdims,
-#ifdef FORTRAN_90
-     .			TRANSFER(cvdim,cvdim,1), nvatts)
-#else
      .                  cvdim, nvatts)
-#endif
 * ... read the first coordinate
                  CALL CD_RD_R8_1( cdfid, axid, 1, cvartyp,
      .                      'axis: '//axnam(:alen), file_val, status )

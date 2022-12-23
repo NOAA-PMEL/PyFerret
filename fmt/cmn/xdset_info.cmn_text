@@ -35,6 +35,9 @@
 *                   The attribute points to the time or trajectory dimension, and 
 *                   the variable is a timeseries-index var or trajectory-index var, 
 *                   pointing to the timeseries or trajectory which profiles belong to.
+* 12/2022 *acm* Code cleanup: Declare ds_var_code_head etc as REAL*8 for consistency
+*		with such pointers elsewhere
+
 
 **************************************************************************
 * V720
@@ -158,9 +161,9 @@
 *    - only in TS sets
 	INTEGER*4	min_ds_tstart,max_ds_tend,ds_tdelta
 	INTEGER*4	ds_var_type
-        INTEGER         ds_var_code_head,
-     .                  ds_var_code_padding,
-     .                  string_array_result1
+        REAL*8          ds_var_code_head,
+     .                  ds_var_code_padding
+        INTEGER          string_array_result1
 
 * additional calculated or derived values pertaining to data sets
 	CHARACTER*2048	ds_name

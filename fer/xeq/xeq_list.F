@@ -170,6 +170,7 @@
 * v76  *acm* 11/19 New LIST/NOCOORDS to write dimensions only not coord vars. 
 ** 10/2022 *acm* Code cleanup: remove references to obsolete gui interface
 * 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
+* 12/2022 *acm* Code cleanup: Ensure consistent arguments in subroutine calls 
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -245,6 +246,9 @@
 
 * *kob* 2/99 - did the user request a quiet listing
 	quiet = qual_given( slash_quiet ) .GT. 0
+	
+	as_global = .FALSE.
+	usr_maxstrlen = unspecified_int4
 
 * special trap to create DODS cache version of NetCDF file
         IF ( list_fmt_type .EQ. plist_cdf_cache ) THEN
@@ -262,7 +266,8 @@
      .                    .FALSE., 'N', nvars, is_mr, is_cx,
      .			   ' ', .TRUE., pcdf_mode_cache, clobber, 
      .                    edges_flag, do_bounds, keepax_flag, out_type,  
-     .                    status )
+     .                    quiet, as_global, usr_maxstrlen, do_coords, status )
+
 	   CALL DELETE_MRS_IN_PROGRESS		! remove temporary vars
 	   RETURN
 	ENDIF

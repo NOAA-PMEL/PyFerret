@@ -11,6 +11,8 @@
 * or only specific ones.
 
 * v751 *acm*  6/19 Allow for longer strings as attribute values
+C 12/2022 *acm* Code cleanup: Declare variables miss_in and fill_in as arrays 
+*               to avoid rank-mismatch errors when compiling under gfortran v10.
 
 
         include 'netcdf.inc'
@@ -32,7 +34,7 @@
      .          attoutflag, no_fill_flag, no_missing_flag, attid, attype, 
      .          attlen, iatt, nvatts, slen, alen, all_outflag, maxlen, 
      .          lbuff, nvdims, vdims(8), vtype
-	REAL vals(100), miss_in, fill_in, scalefac, addoff
+	REAL vals(100), miss_in(1), fill_in(1), scalefac, addoff
 	CHARACTER attname*128, vbuff*128
 	CHARACTER*1024 buff
 
@@ -102,7 +104,7 @@
 
 * If un-scaling on output, write the original missing flag.
 	   IF (scalefac .NE. 1.D0  .OR. addoff .NE. 0.D0) THEN
-	      vals(1) = miss_in
+	      vals(1) = miss_in(1)
 	      vals(1) = vals(1)
 
 * Otherwise convert missing flag to requested output type for the variable
@@ -151,9 +153,9 @@
 	         IF (attoutflag .NE. 0) got_it = NC_GET_ATTRIB_DP
      .	            (dset, varid, attname, do_warn, vbuff, attlen, 
      .	             attoutflag, fill_in)
-	         IF ( TM_CHECK_NAN(fill_in) .EQ. 1   ) fill_in = bad
-	         IF (got_it .AND. (fill_in.EQ.bad .OR. fill_in.EQ.miss_in) ) THEN
-	            vals(1) = fill_in
+	         IF ( TM_CHECK_NAN(fill_in(1)) .EQ. 1   ) fill_in(1) = bad
+	         IF (got_it .AND. (fill_in(1).EQ.bad .OR. fill_in(1).EQ.miss_in(1)) ) THEN
+	            vals(1) = fill_in(1)
 	            vals(1) = vals(1)
 	            attype = outtype
 	         ELSE

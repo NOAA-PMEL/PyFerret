@@ -56,6 +56,7 @@
 * V510: 10/99 *sh* - make checks on 
 *       *acm* 3/12 cleanup ifdefs and unnecessary include files
 * V702 *sh* Added dynamic memory checks.  Removed old block-oriented stuff
+C 12/2022 *acm* Code cleanup: Call LEFINT8 for INTEGER*8 arguments
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -72,7 +73,7 @@
      .		nmvlost, pile, last, size, test_next,
      .		navail, nperm, ntemp, ndel, slen, nn, mrsizelen
         INTEGER*8 mem_in_use
-	CHARACTER LEFINT*8, buff*40, b04*4, mrsizebuf*16, byte_unit*2
+	CHARACTER LEFINT*8, LEFINT8*8, buff*40, b04*4, mrsizebuf*16, byte_unit*2
 	PARAMETER (b04 = '    ')
 
 
@@ -84,7 +85,7 @@
 * ... no valid ws_size() work memory in use when this routine is called
         IF (mem_in_use .NE. total_mem) THEN
 	      CALL WARN('***** corrupted total mem size: '
-     .                  //LEFINT(mem_in_use,slen) )
+     .                  //LEFINT8(mem_in_use,slen) )
         ENDIF
 	CALL SPLIT_LIST( pttmode_explct, lun, 
      .			 b04//'Total table slots: '//

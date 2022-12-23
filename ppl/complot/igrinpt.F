@@ -109,7 +109,6 @@ C	GKS DATA FOR CHOICE AND LOCATOR INPUT
 
 	CHARACTER*1 IMODE
 	DIMENSION IN(8)
-	INTEGER*2 T4662N(3),T4662F(3),T4663(6)
 
 	include 'PLTCOM.DAT'
         include 'xgrinpt.cmn'
@@ -117,26 +116,7 @@ C	GKS DATA FOR CHOICE AND LOCATOR INPUT
 
 	DATA CHCE/70,76,82,67,32/
 
-C
-
-	DATA T4662N/27,67,75/,T4662F/27,67,76/,
-     *  T4663/27,67,65,71,49,59/
-
-
-CC	Linux port:
-	integer octal37
-
-#ifdef FORTRAN_90
-	data 	octal37/O'37'/
-#else
-	data 	octal37/'37'O/
-#endif
-
-#ifdef FORTRAN_90
-        external XGRINPT_BLKDAT
-#else
         DATA has_new_mouse/ .FALSE. /   ! at program initialization
-#endif
 
 
 CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC

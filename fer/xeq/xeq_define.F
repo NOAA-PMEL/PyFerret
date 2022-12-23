@@ -273,6 +273,7 @@
 *                  uer redefines the mask variable, verify and set the new mask.
 * v767 6/22 *acm* See issue 112: Detect whether axis length is too large for 
 *                 4-byte integer indexing
+* 12/2022 *acm* Code cleanup: Ensure consistent data types in subroutine calls 
 
         IMPLICIT NONE
 	include	'tmap_errors.parm'
@@ -441,7 +442,7 @@
      .            dset_to_add, dir, type, attype, attid, ibuff, i0,  
      .            agg_dim, nagfiles, ivar, item, nlab, ierr, nlen,  
      .            llen, line, dstart, units, npts, ipt1, ipte, iline_b,
-     .            tline, fline, idx, vaxcode, toverlap
+     .            tline, fline, idx, vaxcode, toverlap, mr1(1)
 
 	REAL	  rbuff, bad_flag, yeardays, 
      .            val, dummy, val_buf, xloc, yloc, halign, angle, size,
@@ -1408,7 +1409,8 @@ C /units=months  is 1/12 of the length of the year
            IF (has_bounds) THEN
               CALL NON_ARRAY_SUBSC( is_mr, 2 )
            ELSE
-              CALL NON_ARRAY_SUBSC( mr, 1 )
+              mr1(1) = mr
+	      CALL NON_ARRAY_SUBSC( mr1, 1 )
            ENDIF
 
 	   IF (its_edges) THEN
@@ -1886,7 +1888,7 @@ C /units=months  is 1/12 of the length of the year
 	     new_att_modulo_len = rmod_len
 	  ELSE IF (.NOT.has_bounds .AND. .NOT.line_regular(iline)) THEN 
 	    CALL TM_ADJUST_BOUNDS(iline, line_dim(iline), 
-     .       360, axwwlen, its_modulo)
+     .       360., axwwlen, its_modulo)
 
 	     IF (its_modulo) THEN
 	        rmod_len = 360.D0
@@ -1925,8 +1927,9 @@ C /units=months  is 1/12 of the length of the year
 	      delta = end - start
               IF ( (secs2start .LE.  2*secsperyear)
      .	           .AND. (delta*line_tunit(iline) .LE. secsperyear) ) THEN
-	         CALL TM_ADJUST_BOUNDS( iline, line_dim(iline), 
-     .              secsperyear/line_tunit(iline), axwwlen, okmod)
+	         rmod_len = secsperyear/line_tunit(iline)
+		 CALL TM_ADJUST_BOUNDS( iline, line_dim(iline), 
+     .              rmod_len, axwwlen, okmod)
 
 	         IF (okmod) THEN
 		    its_modulo = .TRUE.

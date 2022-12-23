@@ -60,6 +60,8 @@
 *                  both featuretype and cf_role as that feature type.
 * V7.63 *acm* 9/20 DSG trajectoryProfile, TimeseriesProfile data saves not implemented.
 *                  issue an error message.
+C 12/2022 *acm* Code cleanup: Declare a variable val1(1) as an array 
+*               to avoid rank-mismatch errors when compiling under gfortran 10
 
         include 'netcdf.inc'
 #include "netcdf_declareUnderscore.inc"
@@ -124,7 +126,7 @@
      .                  slen1, slen2, idummy_line, base, fobs, count,
      .                  line_fcoord, line_obscoord, dummy, nmasked, dset_dsg,
      .                  dndims, dlen, dnv, ngatts, ftype, f_direc
-	REAL*8		GET_LINE_COORD, vals(100), bad, val, scalefac, addoff
+	REAL*8		GET_LINE_COORD, vals(100), bad, val, val1(1), scalefac, addoff
 
 	CHARACTER	SANITARY_VAR_CODE*128, TM_FMT*48,
      .                  CD_DSG_FEATURENAME*20, CD_AXIS_NAME*128, 
@@ -1141,9 +1143,9 @@ c	IF (.NOT. instance_vars_only) THEN
 	      write_hi(orientation) = n_obs
 
 	      IF (synthetic_rowsiz) THEN
-		 val = n_obs  ! stand-in for rowsize
+		 val1(1) = n_obs  ! stand-in for rowsize
 		 CALL MASK_DSG_OBSVAR ( nfeatures, process_feature, process_obs,
-     .               val, dset_dsg, cx, 
+     .               val1, dset_dsg, cx, 
      .               memry(mr)%ptr, lineedg(line_obscoord)%ptr, nmasked )
 	      ELSE
 	        CALL MASK_DSG_OBSVAR ( nfeatures, process_feature, process_obs,

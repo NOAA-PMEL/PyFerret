@@ -1497,7 +1497,7 @@ C	DEBUG
 9910	    CONTINUE
 
          err_msg = 'PPLUS Command not supported '//icom(:TM_LENSTR1(icom))
-         CALL ERRMSG
+         CALL ERRMSG (ferr_not_implemented, status, err_msg, *9999)
 
 	    GOTO 10
 C	RESET
@@ -1538,7 +1538,7 @@ C	RENAMPL
 9960	    CONTINUE
 
          err_msg = 'PPLUS Command not supported '//icom(:TM_LENSTR1(icom))
-         CALL ERRMSG
+         CALL ERRMSG (ferr_not_implemented, status, err_msg, *9999)
 
 	    GOTO 10
 C	SHRINKY

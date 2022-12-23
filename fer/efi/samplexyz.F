@@ -42,6 +42,8 @@
 *         Result is abstract on the x axis, normal on the y and z axes,
 *         and keeps the t, e, f axes of the input 6-d data.
 * 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
+C 12/2022 *acm* Code cleanup: Declare variables zboxlo_lo, zboxhi_hi as arrays 
+*              to avoid rank-mismatch  errors when compiling under gfortran v10.
 *
 *
 * In this subroutine we provide information about
@@ -325,7 +327,7 @@
       INTEGER xlo, xhi, ylo, yhi, zlo, zhi
       INTEGER ilo, ihi, jlo, jhi, klo, khi
       LOGICAL ok, z_out_of_range, its_dsg
-      REAL zboxlo_lo, zboxhi_hi, dummy
+      REAL zboxlo_lo(1), zboxhi_hi(1), dummy(1)
       REAL fxbot, fxtop, fbb, ftb, fbt, ftt, aa, bb
       REAL xbot, xtop, ybot, ytop, zbot, ztop
       REAL xfrac, yfrac, zfrac_lo, zfrac_hi
@@ -502,7 +504,7 @@ C  variables for checking axis characteristics (modulo axes)
          zpt = arg_4(i4,j4,k4,l4,m4,n4)
 
 * Check if any of the sample pts are missing, or if zpt is outside the Z-axis range
-         z_out_of_range = (zpt .LT. zboxlo_lo .OR. zpt .GT. zboxhi_hi)
+         z_out_of_range = (zpt .LT. zboxlo_lo(1) .OR. zpt .GT. zboxhi_hi(1))
 
          IF ( xpt .EQ. bad_flag(ARG2) .OR.
      .        ypt .EQ. bad_flag(ARG3) .OR.
@@ -552,7 +554,7 @@ C  variables for checking axis characteristics (modulo axes)
 	 
          zbot = zaxdat(kbot)
 	 IF (ktop.GT.zhi) THEN
-	    ztop = zboxhi_hi
+	    ztop = zboxhi_hi(1)
 	    ktop = zhi
          ELSE
 	    ztop = zaxdat(ktop)

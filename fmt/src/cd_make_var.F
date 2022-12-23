@@ -100,6 +100,7 @@
 * v751 *acm*  8/19 Issue 1946, allow for user-set string dimension length, SAVE/STRLEN
 * V751 *acm* 11/19 *acm* new qualifier SAVE/NOCOORDS
 * 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
+C 12/2022 *acm* Code cleanup: Consistent argument types in the calls to CD_WRITE_AXIS
 
 * argument definitions:
 *     cdfid   - netCDF id number for already opened CDF file
@@ -269,11 +270,12 @@
          IF ( status .NE. merr_ok ) RETURN
 
 * create child axes where this variable doesn't run full-span on an axis
-         DO 250 idim = 1, nferdims
+         ii = 0  ! do_bounds is zero for this case
+	 DO 250 idim = 1, nferdims
             IF ( need_child(idim) ) THEN
                CALL CD_WRITE_AXIS( cdfid, dset, grid, idim, .FALSE.,
      .                   lo(idim), hi(idim), pcdf_child_span, 
-     .                   .FALSE., .FALSE., mode_upcase_output, 
+     .                   .FALSE., ii, mode_upcase_output, 
      .                   keepax_flag, name_from_grid(idim), dim_only(idim), 
      .                   date_fmt_out, status)
                IF ( status .NE. merr_ok ) GOTO 5900

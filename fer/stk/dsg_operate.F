@@ -52,6 +52,8 @@
 * V7.51 *acm* 8/19 - more fixes to indexing for some operations
 * V7.5  *acm* 4/20 - more fixes to indexing for some operations, atan2,...
 * 12/2022 *acm* Code cleanup: Argument to RANDN2 is of type integer
+*  1/2023 *acm* Code cleanup: Replace the computed GOTO statement 
+*                  "GOTO ( 100, 200, 300..) op"  with IF blocks
 
 	include 'tmap_dims.parm'
 	include	'ferret.parm'
@@ -177,23 +179,14 @@
 	   IF (op .EQ. 46) op = 48
         ENDIF
 
-* operators, functions, logic structures
-
-	GOTO (   100, 200, 300, 400, 500, 600, 700, 800, 900,1000,
-     .		1100,1200,1300,1400,1500,1600,1700,1800,
-     .
-     .		1900,2000,
-     .		2100,2200,2300,2400,2500,2600,2700,2800,2900,3000,
-     .		3100,3200,3300,3400,3500,3600,3700,3800,3900,4000,
-     .		4100,4200,4300,
-     .
-     .		4400,4500,4600,4700,4800		   ) op
+* operators, functions, logic structures according to the value of op
 
 * ----------------------------------------------------------------------------
 * ------- OPERATORS -------------
 *
 * "+"
- 100    CONTINUE
+      IF (op .EQ. 1) THEN
+
 	IF (is_const_1 .AND. is_const_2) THEN  ! 2 constants may have been sent in
 	   IF (arg1.EQ.bad1 .OR. arg2.EQ.bad2) THEN
 	      res(1) = bad_res
@@ -244,8 +237,11 @@
 	base = 0
 	RETURN
 
+      ENDIF
+
 * "-"
- 200	CONTINUE
+      IF (op .EQ. 2) THEN
+
 	IF (is_const_1 .AND. is_const_2) THEN  ! 2 constants may have been sent in
 	   IF (arg1.EQ.bad1 .OR. arg2.EQ.bad2) THEN
 	      res(1) = bad_res
@@ -296,8 +292,10 @@
 	base = 0
 	RETURN
 
+      ENDIF
+
 * "*"
- 300	CONTINUE
+      IF (op .EQ. 3) THEN
 	IF (is_const_1 .AND. is_const_2) THEN  ! 2 constants may have been sent in
 	   IF (arg1.EQ.bad1 .OR. arg2.EQ.bad2) THEN
 	      res(1) = bad_res
@@ -348,8 +346,11 @@
 	base = 0
 	RETURN
 
+      ENDIF
+
 * "/"
- 400	CONTINUE
+      IF (op .EQ. 4) THEN
+
 	IF (is_const_1 .AND. is_const_2) THEN  ! 2 constants may have been sent in
 	   IF (arg2.EQ.0 .OR. arg1.EQ.bad1 .OR. arg2.EQ.bad2) THEN
 	      res(1) = bad_res
@@ -400,10 +401,12 @@
 	base = 0
 	RETURN
 
-* "^"
+      ENDIF
  
 * "^"
- 500	CONTINUE
+
+      IF (op .EQ. 5) THEN
+
 	IF (is_const_1 .AND. is_const_2) THEN  ! 2 constants may have been sent in
 	   IF (arg1.EQ.bad1 .OR. arg2.EQ.bad2) THEN
 	      res(1) = bad_res
@@ -454,8 +457,11 @@
 	base = 0
 	RETURN
 
+      ENDIF
+
 * "AND" - logical AND of 2 masks (any non-zero data regarded as .TRUE.)
- 600    CONTINUE
+
+      IF (op .EQ. 6) THEN
 
 	IF (is_const_1 .AND. is_const_2) THEN  ! 2 constants may have been sent in
 	   IF (arg1.EQ.bad1 .OR. arg2.EQ.bad2) THEN
@@ -515,8 +521,12 @@
         ENDDO
 	base = 0
 	RETURN
+
+      ENDIF
+
 * "OR" - logical OR of 2 masks (any non-zero data regarded as .TRUE.)
- 700	CONTINUE
+
+      IF (op .EQ. 7) THEN
 
 	IF (is_const_1 .AND. is_const_2) THEN  ! 2 constants may have been sent in
 	   IF (arg1.EQ.bad1 .OR. arg2.EQ.bad2) THEN
@@ -577,10 +587,12 @@
 	base = 0
 	RETURN
 
+      ENDIF
 
 * "GT" - mask of 1's where grid 1 exceeds grid 2, 0's elsewhere
 * "GT" - mask of 1's where grid 1 exceeds grid 2, bad-val elsewhere
- 800 	CONTINUE
+
+      IF (op .EQ. 8) THEN
 
 	IF (is_const_1 .AND. is_const_2) THEN  ! 2 constants may have been sent in
 	   IF (arg1.EQ.bad1 .OR. arg2.EQ.bad2) THEN
@@ -641,8 +653,11 @@
 	base = 0
 	RETURN
 
+      ENDIF
+
 * "GE" - mask of 1's where grid 1 exceeds or equals grid 2, bad elsewhere
- 900 	CONTINUE
+
+      IF (op .EQ. 9) THEN
 
 	IF (is_const_1 .AND. is_const_2) THEN  ! 2 constants may have been sent in
 	   IF (arg1.EQ.bad1 .OR. arg2.EQ.bad2) THEN
@@ -703,10 +718,12 @@
 	base = 0
 	RETURN
 
+      ENDIF
 
 * "LT" - mask of 1's where grid 1 is less than grid 2, bad elsewhere
 
- 1000    CONTINUE
+      IF (op .EQ. 10) THEN
+
 	 IF (is_const_1 .AND. is_const_2) THEN  ! 2 constants may have been sent in
 	   IF (arg1.EQ.bad1 .OR. arg2.EQ.bad2) THEN
 	      res(1) = bad_res
@@ -763,9 +780,12 @@
            base = base + flen
         ENDDO
 	RETURN
+	
+      ENDIF
 
 * "LE" - mask of 1's where grid 1 is less than or equal to grid 2, bad elsewher
- 1100	CONTINUE
+
+      IF (op .EQ. 11) THEN
 
 	IF (is_const_1 .AND. is_const_2) THEN  ! 2 constants may have been sent in
 	   IF (arg1.EQ.bad1 .OR. arg2.EQ.bad2) THEN
@@ -826,10 +846,12 @@
 	base = 0
 	RETURN
 
+      ENDIF
 
 * "EQ" - mask of 1's where grids are equal, 0's elsewhere
 * "EQ" - mask of 1's where grids are equal, bad elsewhere
- 1200	CONTINUE
+
+      IF (op .EQ. 12) THEN
 
 	IF (is_const_1 .AND. is_const_2) THEN  ! 2 constants may have been sent in
 	   IF (arg1.EQ.bad1 .OR. arg2.EQ.bad2) THEN
@@ -890,9 +912,12 @@
 	base = 0
 	RETURN
 
+      ENDIF
+
 
 * "NE" - mask of 1's where grids are not equal, 0's elsewhere
- 1300	CONTINUE
+
+      IF (op .EQ. 13) THEN
 
 	IF (is_const_1 .AND. is_const_2) THEN  ! 2 constants may have been sent in
 	   IF (arg1.EQ.bad1 .OR. arg2.EQ.bad2) THEN
@@ -953,20 +978,20 @@
 	base = 0
 	RETURN
 
+      ENDIF
 
- 1400	CONTINUE
- 1500	CONTINUE
- 1600	CONTINUE
- 1700	CONTINUE
- 1800	CONTINUE
+      
+      IF (op.EQ.14 .OR.op.EQ.15 .OR.op.EQ.16 .OR.op.EQ.17 .OR.op.EQ.18) THEN
 	STOP 'OPERATOR NOT IMPLEMENTED'
+      ENDIF
+
 * -----------------------------------------------------------------------------
 * -------- FUNCTIONS ------------
 
 
-
 * "EXP" - exponential function (single argument)
- 1900	CONTINUE
+
+      IF (op .EQ. 19) THEN
 
 	IF (is_const_1) THEN  
 	   IF (arg1.EQ.bad1 ) THEN
@@ -1016,9 +1041,11 @@
 	base = 0
 	RETURN
 
+      ENDIF
 
 * "LOG"  (single argument)
- 2000	CONTINUE
+
+      IF (op .EQ. 20) THEN
 
 	IF (is_const_1) THEN  
 	   IF (arg1.EQ.bad1 .OR. arg1.LE.0.0 ) THEN
@@ -1068,8 +1095,11 @@
 	base = 0
 	RETURN
 
+      ENDIF
+
 * "MAX" 2 arguments
- 2100	CONTINUE
+
+      IF (op .EQ. 21) THEN
 
 	IF (is_const_1 .AND. is_const_2) THEN  ! 2 constants may have been sent in
 	   IF (arg1.EQ.bad1 .OR. arg2.EQ.bad2) THEN
@@ -1121,8 +1151,11 @@
 	base = 0
 	RETURN
 
+      ENDIF
+
 * "MIN" 2 arguments
- 2200	CONTINUE
+
+      IF (op .EQ. 22) THEN
 
 	IF (is_const_1 .AND. is_const_2) THEN  ! 2 constants may have been sent in
 	   IF (arg1.EQ.bad1 .OR. arg2.EQ.bad2) THEN
@@ -1174,9 +1207,12 @@
 	base = 0
 	RETURN
 
+      ENDIF
+
 
 * "INT"  (single argument)
- 2300	CONTINUE
+
+      IF (op .EQ. 23) THEN
 
 	IF (is_const_1) THEN  
 	   IF (arg1 .EQ. bad1 ) THEN
@@ -1226,9 +1262,12 @@
 	base = 0
 	RETURN
 
+      ENDIF
+
 
 * "ABS"  (single argument)
- 2400	CONTINUE
+
+      IF (op .EQ. 24) THEN
 
 	IF (is_const_1) THEN  
 	   IF (arg1 .EQ. bad1 ) THEN
@@ -1278,9 +1317,12 @@
 	base = 0
 	RETURN
 
+      ENDIF
+
 
 * "SIN"  (single argument)
- 2500	CONTINUE
+
+      IF (op .EQ. 25) THEN
 
 	IF (is_const_1) THEN  
 	   IF (arg1 .EQ. bad1 ) THEN
@@ -1330,8 +1372,11 @@
 	base = 0
 	RETURN
 
+      ENDIF
+
 * "COS"  (single argument)
- 2600	CONTINUE
+
+      IF (op .EQ. 26) THEN
 
 	IF (is_const_1) THEN  
 	   IF (arg1 .EQ. bad1 ) THEN
@@ -1381,8 +1426,12 @@
 	base = 0
 	RETURN
 
+      ENDIF
+
 * "TAN"  (single argument)
- 2700	base = 0    ! obs index at end of preceding feature
+	
+      IF (op .EQ. 27) THEN
+	base = 0    ! obs index at end of preceding feature
 * ... loop over the features
 	DO ifeature = 1, nfeatures 
 
@@ -1421,9 +1470,12 @@
 	base = 0
 	RETURN
 
+      ENDIF
+
 
 * "LN"  (single argument)
- 2800	CONTINUE 
+
+      IF (op .EQ. 28) THEN
 
 	IF (is_const_1) THEN  
 	   IF (arg1.EQ.bad1 .OR. arg1.LE.0.0 ) THEN
@@ -1473,8 +1525,11 @@
 	base = 0
 	RETURN
 
+      ENDIF
+
 * "MOD"  2 argument
- 2900	CONTINUE
+
+      IF (op .EQ. 29) THEN
 
 	IF (is_const_1 .AND. is_const_2) THEN  ! 2 constants may have been sent in
 	   IF (arg1.EQ.bad1 .OR. arg2.EQ.bad2) THEN
@@ -1526,8 +1581,11 @@
 	base = 0
 	RETURN
 
+      ENDIF
+
 * "MISSING" - replace missing value flag with values in grid 2
- 3000	CONTINUE
+
+      IF (op .EQ. 30) THEN
 
 	IF (is_const_1 .AND. is_const_2) THEN  ! 2 constants may have been sent in
 	   IF (arg1 .NE. bad1 ) THEN
@@ -1584,8 +1642,11 @@
 	base = 0
 	RETURN
 
+      ENDIF
+
 * "IGNORE0" - replace zeros with bad flags  (single argument)
- 3100	CONTINUE
+
+      IF (op .EQ. 31) THEN
 
 	IF (is_const_1) THEN  
 	   IF (arg1.EQ.bad1 .OR. arg1.EQ.0.) THEN
@@ -1635,8 +1696,11 @@
 	base = 0
 	RETURN
 
+      ENDIF
+
 * "ATAN"  (single argument)
- 3200	CONTINUE
+
+      IF (op .EQ. 32) THEN
 
 	IF (is_const_1) THEN  
 	   IF (arg1.EQ.bad1) THEN
@@ -1686,9 +1750,12 @@
 	base = 0
 	RETURN
 
+      ENDIF
+
 
 * "ATAN2" - 2 argument arc tangent
- 3300	CONTINUE
+
+      IF (op .EQ. 33) THEN
 
 	IF (is_const_1 .AND. is_const_2) THEN  ! 2 constants may have been sent in
 	   IF (arg1.EQ.bad1 .OR. arg2.EQ.bad2 ) THEN
@@ -1745,9 +1812,12 @@
 	base = 0
 	RETURN
 
+      ENDIF
+
 
 * "ASIN"  (single argument)
- 3400	CONTINUE
+
+      IF (op .EQ. 34) THEN
 
 	IF (is_const_1) THEN  
 	   IF (arg1.EQ.bad1) THEN
@@ -1797,9 +1867,12 @@
 	base = 0
 	RETURN
 
+      ENDIF
+
 
 * "ACOS"
- 3500	CONTINUE
+
+      IF (op .EQ. 35) THEN
 
 	IF (is_const_1) THEN  
 	   IF (arg1.EQ.bad1) THEN
@@ -1849,9 +1922,12 @@
 	base = 0
 	RETURN
 
+      ENDIF
+
 * "RANDU" - random uniform  (single argument)
 * use the first value as the seed
- 3600	CONTINUE
+
+      IF (op .EQ. 36) THEN
 
 	first = .TRUE.
 	IF (is_const_1) THEN  
@@ -1909,9 +1985,12 @@
 	base = 0
 	RETURN
 
+      ENDIF
+
 * "RANDN" - random normal  (single argument)
 * use the first value as the seed
- 3700	CONTINUE
+
+      IF (op .EQ. 37) THEN
 
 	first = .TRUE.
 	IF (is_const_1) THEN  
@@ -1969,10 +2048,13 @@
 	base = 0
 	RETURN
 
+      ENDIF
+
 * "RHO" - UNESCO equation of state:
 * rho = rho(salinity, temperature, pressure)
 * three components - each may be a different XYZT shape
- 3800	CONTINUE
+
+      IF (op .EQ. 38) THEN
 
 	IF (is_const_1 .AND. is_const_2 .AND. is_const_3) THEN  ! all constants may have been sent in
 	   IF (arg1.EQ.bad1 .OR. arg2.EQ.bad2) THEN
@@ -2026,11 +2108,14 @@
 	base = 0
 	RETURN
 
+      ENDIF
+
 * "THETA" - potential temperature from BRYDEN,H.,1973,DEEP-SEA RES
 *           and FOFONOFF,N,M,1977,DEEP-SEA RES
 * theta = theta(salinity, temperature, pressure,reference_pressure)
 * three components - each may be a different XYZT shape
- 3900	CONTINUE
+
+      IF (op .EQ. 39) THEN
 
 	IF (is_const_1 .AND. is_const_2 .AND. is_const_3 .AND. is_const_4) THEN  ! all constants?
 	   IF (arg1.EQ.bad1 .OR. arg2.EQ.bad2) THEN
@@ -2087,12 +2172,14 @@
 	base = 0
 	RETURN
 
+      ENDIF
+
 
 * "DAYS1900(year, month, day)" - number of days since 1900
 * three components - each may be a different XYZT shape
 * *** note: returns days since 1-jan-1900, on the STANDARD CALENDAR
 
- 4000	CONTINUE
+      IF (op .EQ. 40) THEN
 
 	IF (is_const_1 .AND. is_const_2 .AND. is_const_3) THEN  ! all constants?
 	   IF (arg1.EQ.bad1 .OR. arg2.EQ.bad2 .OR. arg3.EQ.bad3 .OR.
@@ -2152,6 +2239,8 @@
 	base = 0
 	RETURN
 
+      ENDIF
+
 * "RANDU2" - random uniform 
 * Call the gfortran RANDOM_SEED and RANDOM_SEED functions.
 * See ticket 1886 for discussions of RANDU
@@ -2160,7 +2249,7 @@
 * iseed = -1 initialize using system clock
 * iseed = integer > 0 initialize using that integer: results will be repeatable
 
- 4100	CONTINUE
+      IF (op .EQ. 41) THEN
 
 	IF (.NOT. is_const_2) THEN
 	   RETURN  ! shouldn't get here
@@ -2219,10 +2308,13 @@
 	base = 0
 	RETURN
 
+      ENDIF
+
 
 * "RANDN2" - random normal using gfortran RANDOM_SEED and RANDOM_SEED functions.
 * seed set as for RANDU2
- 4200	CONTINUE
+
+      IF (op .EQ. 42) THEN
 
 	IF (.NOT. is_const_2) THEN
 	   RETURN  ! shouldn't get here
@@ -2283,18 +2375,21 @@
 	base = 0
 	RETURN
 
+      ENDIF
 
- 4300	CONTINUE
+      IF (op .EQ. 43) THEN
 	STOP 'FUNCTION NOT IMPLEMENTED'
+      ENDIF
 
 * ----------------------------------------------------------------------------
 * ------- LOGIC STRUCTURES -------------
 *
- 4400	CONTINUE
+      IF (op.EQ.44 .OR. op.EQ.45) THEN
 
 * "THEN" - comes from IF (condition) THEN (choice)   ... no "ELSE" given
 * component 1 is the condition.  component 2 is the choice
- 4500    base = 0    ! obs index at end of preceding feature
+	base = 0    ! obs index at end of preceding feature
+
 * ... loop over the features
 	DO ifeature = 1, nfeatures 
 
@@ -2336,9 +2431,13 @@
         ENDDO
 	RETURN
 
+      ENDIF
+
 * "ELSE" - comes from IF (condition) THEN (choice1) ELSE (choice2)
 * component 1 is the condition.  components 2 and 3 are the choices
- 4600    base = 0    ! obs index at end of preceding feature
+      IF (op .EQ. 46) THEN
+
+	base = 0    ! obs index at end of preceding feature
 * ... loop over the features
         DO ifeature = 1, nfeatures 
 
@@ -2388,9 +2487,12 @@
         ENDDO
 	RETURN
 
+      ENDIF
+
 * "THEN" - comes from IFV (condition) THEN (choice)   ... no "ELSE" given
 * component 1 is the condition.  component 2 is the choice
- 4700	CONTINUE
+
+      IF (op .EQ. 47) THEN
 
 	IF (is_const_1 .AND. is_const_2) THEN  ! all constants?
 	   IF (arg1.EQ.bad1 .OR. arg2.EQ.bad2) THEN
@@ -2444,10 +2546,13 @@
 	base = 0
 	RETURN
 
+      ENDIF
+
 
 * "ELSE" - comes from IFV (condition) THEN (choice1) ELSE (choice2)
 * component 1 is the condition.  components 2 and 3 are the choices
- 4800	CONTINUE
+
+      IF (op .EQ. 48) THEN
 
 	IF (is_const_1 .AND. is_const_2 .AND. is_const_3) THEN  ! all constants?
 	   IF (arg1 .NE. bad1) THEN
@@ -2517,6 +2622,7 @@
 	base = 0
 	RETURN
 
-* error exits
-! 9000	RETURN
-	END
+      ENDIF
+
+      RETURN
+      END

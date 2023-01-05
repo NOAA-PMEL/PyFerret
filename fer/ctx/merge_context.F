@@ -54,6 +54,8 @@
 *			crash in pathological cases
 *       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
 * V720 *sh* 5/17 - incorporate merging of a DSG context
+* 12/2022 *acm* Code cleanup: Replace the computed GOTO statement 
+*                  "GOTO (100, 5020, ...) choice(icom,imrg)"  with IF blocks
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -321,17 +323,24 @@
 	   IF ( cx_lo_ss(mrg_cx,idim) .EQ. unspecified_int4 ) imrg = 5
 
 * merge new component context with previous stuff
-*	          TAX   ERR   BUG   NA
-	   GOTO ( 100, 5020, 9000, 400 ) choice(icom,imrg)
 
+	   IF (choice(icom,imrg) .EQ. BUG) GOTO 9000
+	   IF (choice(icom,imrg) .EQ. ERR) GOTO 5020
+
+	   IF (choice(icom,imrg).EQ.TAX .OR. choice(icom,imrg).EQ.NA) THEN  
+
+	      IF (choice(icom,imrg) .EQ. TAX) THEN
 * transfer axis (component transforms don't belong to the merged context)
- 100	   CALL TRANSFER_AXIS( idim, com_cx, mrg_cx )
-	   cx_trans    (idim, mrg_cx ) = trans_no_transform
-	   cx_trans_arg(idim, mrg_cx ) = bad_val4
+		 CALL TRANSFER_AXIS( idim, com_cx, mrg_cx )
+		 cx_trans    (idim, mrg_cx ) = trans_no_transform
+		 cx_trans_arg(idim, mrg_cx ) = bad_val4
+	      ENDIF
 
 * "given" is false if any component doesn't have an explicit region
- 400	   cx_given(idim,mrg_cx) = cx_given(idim,mrg_cx)
-     .			     .AND. cx_given(idim,com_cx)
+	      cx_given(idim,mrg_cx) = cx_given(idim,mrg_cx)
+     .			        .AND. cx_given(idim,com_cx)
+
+	   ENDIF 
 
  500	CONTINUE
 

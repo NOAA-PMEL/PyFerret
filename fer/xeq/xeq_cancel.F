@@ -169,6 +169,8 @@
 * V7.6 *acm*  6/20 Set a second attribute __feature_mask_var when defining a 
 *                  mask variable, used if we go and redefine the mask variable.
 ** 10/2022 *acm* Code cleanup: remove references to obsolete gui interface
+*   1/2023 *acm* Code cleanup: Replace the computed GOTO statement 
+*                  "GOTO ( 100, 200, ... )  subcmnd_num"  with IF blocks
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -243,28 +245,39 @@
 * then make it behave like a comma-separated list (4/96)
 	CALL ARG_TO_ITEM
 
-* select subcommand
-	GOTO ( 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000,
-     .        1100,1200,1300,1400,1500,1600,1700, 1800, 1900, 2000 ) 
-     .       subcmnd_num
+* execute the given subcommand
 
 * CANCEL '    '
 * arrival at this point usually means an illegal subcommand was given
 * and was assumed to be an argument by the command parser
- 100	IF ( num_args .GE. 1 ) THEN
+
+      IF (subcmnd_num .EQ. 1) THEN
+
+	IF ( num_args .GE. 1 ) THEN
 	   CALL ERRMSG( ferr_invalid_subcmnd,status,
      .				cmnd_buff( arg_start(1):arg_end(1) ), *5000 )
 	ELSE
 	   GOTO 5010
 	ENDIF
+	
 	RETURN
+
+      ENDIF
 
 * CANCEL WINDOW
- 200	CALL CANCEL_WINDOW( status )
+
+      IF (subcmnd_num .EQ. 2) THEN
+
+	CALL CANCEL_WINDOW( status )
 	RETURN
 
+      ENDIF
+
 * CANCEL REGION[/ALL/X/Y/Z/T/E/F/I/J/K/L/M/N] [region_name]
- 300	IF ( slash_all .AND.
+
+      IF (subcmnd_num .EQ. 3) THEN
+
+	IF ( slash_all .AND.
      .	     (num_args.GT.0 .OR. num_qualifiers.GT.1) ) GOTO 5310
 	all_dims = num_qualifiers .EQ. 0
 	IF ( slash_all ) THEN
@@ -306,8 +319,13 @@
 	ENDIF
 	RETURN
 
+      ENDIF
+
 * CANCEL MEMORY /ALL /TEMP[default] or /PERM
- 400	del_perm = slash_all .OR. qual_given( slash_del_perm ) .GT. 0
+
+      IF (subcmnd_num .EQ. 4) THEN
+
+	del_perm = slash_all .OR. qual_given( slash_del_perm ) .GT. 0
 	del_temp = slash_all .OR. qual_given( slash_del_temp ) .GT. 0
      .			     .OR. .NOT.del_perm
 
@@ -347,13 +365,23 @@
      .			' TEMPORARY data cleared from memory', 0) 
 	RETURN
 
+      ENDIF
+
 * CANCEL EXPRESSION
- 500	CALL DELETE_OLD_EXPR
+
+      IF (subcmnd_num .EQ. 5) THEN
+
+	CALL DELETE_OLD_EXPR
 	num_uvars_in_cmnd = cmnd_uvars_not_given
 	RETURN
 
+      ENDIF
+
 * CANCEL LIST
- 600	IF ( slash_all .OR. qual_given( slash_canc_list_prec   ) .GT. 0 )
+
+      IF (subcmnd_num .EQ. 6) THEN
+
+	IF ( slash_all .OR. qual_given( slash_canc_list_prec   ) .GT. 0 )
      .	   list_digits = default_output_precision
 	IF ( slash_all .OR. qual_given( slash_canc_list_out ) .GT. 0 ) THEN
 	   list_file       = 'AUTO'
@@ -377,8 +405,13 @@
 	IF (slash_all) CALL NETCDF4_CANCEL_SETTINGS
 	RETURN
 
+      ENDIF
+
 * CANCEL DATA_SET data_set_number1,number2,...
- 700	report_error = qual_given(slash_canc_data_noerr) .LE. 0      ! 5/93
+
+      IF (subcmnd_num .EQ. 7) THEN
+
+	report_error = qual_given(slash_canc_data_noerr) .LE. 0      ! 5/93
 
  	IF ( num_items .GT. 0 ) THEN
 	   DO 710 item = 1, num_items
@@ -503,9 +536,14 @@
 	ENDIF
  790	RETURN
 
+      ENDIF
+
 * CANCEL MODE mode_name
 * loop through the list of mode names given
- 800	IF ( num_items .EQ. 0 ) GOTO 5010
+
+      IF (subcmnd_num .EQ. 8) THEN
+
+	IF ( num_items .EQ. 0 ) GOTO 5010
 	DO 820 item = 1, num_items
 * identify the specified mode to CANCEL
            len_test = TM_LENSTR(cmnd_buff( item_start(item):item_end(item) ))
@@ -572,7 +610,7 @@
 		    mode_state( mode,1 ) = .TRUE.
 
                     WRITE (show_str, 880) mode_arg(pmode_linecolors, 1)
- 880               FORMAT (I3)
+ 880                FORMAT (I3)
                     IF (no_plot_yet) THEN
                        CALL START_PPLUS(.FALSE.)
                        CALL PPLCMD (from, line, 0, 
@@ -642,12 +680,22 @@
  820	CONTINUE
 	RETURN
 
+      ENDIF
+
 * CANCEL MOVIE
- 900	frame_on = .FALSE.
+
+      IF (subcmnd_num .EQ. 9) THEN
+
+	frame_on = .FALSE.
 	RETURN
 
+      ENDIF
+
 * CANCEL VIEWPORT
- 1000	IF ( num_items .EQ. 0 ) THEN
+
+      IF (subcmnd_num .EQ. 10) THEN
+
+	IF ( num_items .EQ. 0 ) THEN
 * return to default(full) viewport
 	   CALL SET_VIEWPORT( mvp_dflt )
 	ELSE
@@ -667,10 +715,15 @@
 	ENDIF
 	RETURN
 
+      ENDIF
+
 * CANCEL VARIABLE
 * ... data set specified?
 * /D=xxx: has the user requested CANCEL VAR/D= ?
- 1100	iqual = qual_given( slash_canc_var_data )
+
+      IF (subcmnd_num .EQ. 11) THEN
+
+	iqual = qual_given( slash_canc_var_data )
 	IF ( iqual .GT. 0 ) THEN
 	   CALL EQUAL_STRING( cmnd_buff(qual_start(iqual):qual_end(iqual)),
      .			      buff, status )
@@ -783,8 +836,13 @@
 	ENDIF
 	RETURN
 
+      ENDIF
+
 * CANCEL AXIS/MODULO
- 1200	IF ( qual_given(slash_canc_axis_modulo) .GT. 0 ) THEN
+
+      IF (subcmnd_num .EQ. 12) THEN
+
+	IF ( qual_given(slash_canc_axis_modulo) .GT. 0 ) THEN
 
            new_att_modulo = .FALSE.
            new_att_modulo_len = 0.
@@ -919,8 +977,12 @@
 
 	RETURN
 
+      ENDIF
+
 * CANCEL GRID
- 1300   CONTINUE
+
+      IF (subcmnd_num .EQ. 13) THEN
+
 	DO item = 1, num_items
            grid = TM_GET_GRIDNUM(
      .			cmnd_buff(item_start(item):item_end(item)) )
@@ -951,13 +1013,18 @@
 	      CALL WARN( 'Not deleted: '//grid_name(grid))
 	   ENDIF
 	ENDDO
+
 	RETURN
+
+      ENDIF
 
 
 * CANCEL ATTRIBUTE  /OUTPUT[=all]
- 1400	 IF ( num_args .LT. 1 ) GOTO 5010
 
-!
+      IF (subcmnd_num .EQ. 14) THEN
+
+	 IF ( num_args .LT. 1 ) GOTO 5010
+
 * ... get dset number if present:  CANCEL ATT/D=dset ...
 	iqual = qual_given( slash_canc_attr_data ) 
         IF ( iqual .GT. 0 ) THEN
@@ -1027,12 +1094,12 @@
 
         buff = cmnd_buff(item_start(1):item_end(1))
 
-!! get dataset from varname.attname
 * ... evaluate the context without computing the expression to get the dataset
 
 	CALL GET_NEW_CX( cx_last, cx_cmnd, .TRUE., status )
         IF ( status .NE. ferr_ok ) GOTO 5000
  
+* get dataset from varname.attname
         IF (buff(1:1) .EQ. '(') THEN
            dset = cx_data_set(cx_cmnd)   ! initial value to try; will return dset
            CALL ISIT_COORD_VAR ( buff, dset, 
@@ -1047,22 +1114,6 @@
               ENDIF
            ENDIF
         ENDIF
-c
-c        ELSE
-c
-c* Get the dataset if given as [d=]
-c
-c	   IF ( INDEX(buff,'[') .GT. 0 ) THEN
-c               dset = pdset_irrelevant	! default (not used ...)
-c               CALL PARSE_NAM_DSET(buff, cx_last, dset,
-c     .				     cat, var, mods_cx, status)
-c           ELSE
-c              cx = is_cx( 1 )
-c              IF (cx .EQ. 0 .OR. cx .EQ. unspecified_int4)
-c     .             cx = cx_cmnd
-c             dset = cx_data_set(cx)
-c          ENDIF
-c	ENDIF
 
         IF (dset .EQ. pdset_irrelevant .OR. dset .EQ. unspecified_int4)
      .        dset = cx_data_set(cx_cmnd) 
@@ -1173,9 +1224,14 @@ c	ENDIF
         ENDIF
 
 	RETURN
+
+      ENDIF
         
 * CANCEL REDIRECT
- 1500   redir_cancel_stdout = .FALSE.
+
+      IF (subcmnd_num .EQ. 15) THEN
+
+	redir_cancel_stdout = .FALSE.
         redir_cancel_stderr = .FALSE.
         IF ( num_args .GT. 0 ) THEN
 *          Get all the redirect sources to cancel
@@ -1248,8 +1304,13 @@ c	ENDIF
 *
         RETURN
 
+      ENDIF
+
 * CANCEL ALIAS
- 1600	IF ( slash_all ) THEN
+
+      IF (subcmnd_num .EQ. 16) THEN
+
+	IF ( slash_all ) THEN
            DO i = num_predefined_alias+1, total_num_alias
 	      alias_name(i) = unspecified_name4
  	   ENDDO
@@ -1268,8 +1329,13 @@ c	ENDIF
         ENDIF
 	RETURN
 
+      ENDIF
+
 * CANCEL SYMBOL
- 1700	IF ( slash_all ) THEN
+
+      IF (subcmnd_num .EQ. 17) THEN
+
+	IF ( slash_all ) THEN
 * cancel all symbols
 * (this lovely piece of code is borrowed from the PLOT+ routine getcmd.F)
 	   i=0
@@ -1296,10 +1362,14 @@ c	ENDIF
 	ENDIF
 	RETURN
 
+      ENDIF
+
 
 * CANCEL NCCACHE. Set all arguments of -1 to restore the default settings.
 
- 1800	cache_size = -1
+      IF (subcmnd_num .EQ. 18) THEN
+
+	cache_size = -1
 	cache_nelems = -1
 	cache_preemption = -1
 	CALL CD_SET_CHUNK_CACHE (cache_size, cache_nelems, 
@@ -1309,11 +1379,16 @@ c	ENDIF
 
 	RETURN
 
+      ENDIF
+
 
 * CANCEL PYVAR
 * modeled after CANCEL VAR
 *       /D=xxx: has the user requested CANCEL PYVAR/D= ?
- 1900   iqual = qual_given( slash_canc_var_data )
+
+      IF (subcmnd_num .EQ. 19) THEN
+
+	iqual = qual_given( slash_canc_var_data )
         IF ( iqual .GT. 0 ) THEN
            CALL EQUAL_STRING( cmnd_buff(qual_start(iqual):qual_end(iqual)),
      .                        buff, status )
@@ -1355,10 +1430,13 @@ c	ENDIF
 	   ENDDO
         ENDIF
         RETURN
+
+      ENDIF
 	
 * CANCEL TEXT
 *      /FONT /BOLD /ITALIC /COLOR /ISIZ
- 2000   CONTINUE
+
+      IF (subcmnd_num .EQ. 20) THEN
 
 * No arguments, or argument ALL, cancel the global and group settings
 * Look for argument ALL
@@ -1399,6 +1477,8 @@ c	ENDIF
 	pyfont = (STR_SAME(pyfnt_fontname, 'Hershey') .NE. 0 )
 
 	RETURN
+
+      ENDIF
 
 
 * error exits

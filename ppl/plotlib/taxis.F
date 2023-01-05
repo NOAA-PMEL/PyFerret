@@ -53,6 +53,8 @@ C V695  *acm*  9/15 Changes for hour:min labeling on time axes
 C V697  *acm* 12/15 For short-time plots do the time axis in a separate
 C                   routine taxis4
 * *acm* - 8/16   ticket 1787: restore pen 0 correctly after graticule
+* 12/2022 *acm* Code cleanup: Rewrite to replace the computed GOTO statement 
+*                             "GOTO (10,20,20,30)IT+1"  with IF logic
 
 C If graticule lines are to be drawn across the plot at the tics
 C then only do them for one horizontal and one vertical axis.  
@@ -68,19 +70,26 @@ C sides. HLINE and VLINE control this.
         INTEGER color0         ! pen number to restore
         LOGICAL vline          ! If true, do the lines across.
 
-	GOTO (10,20,20,30)IT+1
-10	IF (is_hours_axis .EQ. 0) THEN 
-	   CALL TAXIS0(TLO,IT1,IT2,DT,NMTCT,LTT,IFDB,ISDB,XF,YHI,YF,TCSIZE,
-     .              yacross,vgrat,vcolor,vline,color0)
-	ELSE
-	   CALL TAXIS4(TLO,IT1,IT2,DT,NMTCT,LTT,IFDB,ISDB,XF,YHI,YF,TCSIZE,
-     .              yacross,vgrat,vcolor,vline,color0,is_hours_axis)
-	ENDIF
-	RETURN
-20	CALL TAXIS1(TLO,IT1,IT2,DT,NMTCT,LTT,IFDB,ISDB,XF,YHI,YF,TCSIZE,
-     .              yacross,vgrat,vcolor,vline,color0)
-	RETURN
-30	CALL TAXIS3(TLO,IT1,IT2,DT,NMTCT,LTT,IFDB,ISDB,XF,YHI,YF,TCSIZE,
-     .              yacross,vgrat,vcolor,vline,color0)
+	IF (IT .EQ. 0) THEN
+
+	   IF (is_hours_axis .EQ. 0) THEN 
+	      CALL TAXIS0(TLO,IT1,IT2,DT,NMTCT,LTT,IFDB,ISDB,XF,YHI,YF,TCSIZE,
+     .                    yacross,vgrat,vcolor,vline,color0)
+	   ELSE
+	      CALL TAXIS4(TLO,IT1,IT2,DT,NMTCT,LTT,IFDB,ISDB,XF,YHI,YF,TCSIZE,
+     .                    yacross,vgrat,vcolor,vline,color0,is_hours_axis)
+	   ENDIF
+
+	ELSE IF (IT.EQ.1 .OR. IT.EQ.2) THEN
+
+	   CALL TAXIS1(TLO,IT1,IT2,DT,NMTCT,LTT,IFDB,ISDB,XF,YHI,YF,TCSIZE,
+     .                    yacross,vgrat,vcolor,vline,color0)
+
+	ELSE IF (IT .EQ. 3) THEN
+	   CALL TAXIS3(TLO,IT1,IT2,DT,NMTCT,LTT,IFDB,ISDB,XF,YHI,YF,TCSIZE,
+     .                 yacross,vgrat,vcolor,vline,color0)
+
+     	ENDIF
+
 	RETURN
 	END

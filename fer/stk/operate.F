@@ -84,6 +84,8 @@
 *       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
 * V7.43 Issue 1891 Compute v^2 as v*v for efficiency
 * 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
+*  1/2023 *acm* Code cleanup: Replace the computed GOTO statement 
+*                  "GOTO ( 100, 200, 300..) op"  with IF blocks
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -178,22 +180,15 @@
 	ENDDO
 	ENDDO
 
-* operators, functions, logic structures
-	GOTO (   100, 200, 300, 400, 500, 600, 700, 800, 900,1000,
-     .		1100,1200,1300,1400,1500,1600,1700,1800,
-     .
-     .		1900,2000,
-     .		2100,2200,2300,2400,2500,2600,2700,2800,2900,3000,
-     .		3100,3200,3300,3400,3500,3600,3700,3800,3900,4000,
-     .		4100,4200,4300,
-     .
-     .		4400,4500,4600,4700,4800		   ) op
+* operators, functions, logic structures according to the value of op
 
 * ----------------------------------------------------------------------------
 * ------- OPERATORS -------------
 *
 * "+"
- 100	n1 = sn1
+      IF (op .EQ. 1) THEN
+
+	n1 = sn1
 	n2 = sn2
 	DO n = mr_lo_s6(mres), mr_hi_s6(mres)
 	 n1 = n1 + dn1
@@ -240,8 +235,12 @@
 
 	RETURN
 
+      ENDIF
+
 * "-"
- 200	n1 = sn1
+      IF (op .EQ. 2) THEN
+
+	n1 = sn1
 	n2 = sn2
 	DO n = mr_lo_s6(mres), mr_hi_s6(mres)
 	 n1 = n1 + dn1
@@ -287,8 +286,13 @@
 	ENDDO
 
 	RETURN
+
+      ENDIF
 * "*"
- 300	n1 = sn1
+
+      IF (op .EQ. 3) THEN
+
+	n1 = sn1
 	n2 = sn2
 	DO n = mr_lo_s6(mres), mr_hi_s6(mres)
 	 n1 = n1 + dn1
@@ -335,8 +339,12 @@
 
 	RETURN
 
+      ENDIF
+
 * "/"
- 400	n1 = sn1
+      IF (op .EQ. 4) THEN
+ 
+	n1 = sn1
 	n2 = sn2
 	DO n = mr_lo_s6(mres), mr_hi_s6(mres)
 	 n1 = n1 + dn1
@@ -384,8 +392,12 @@
 
 	RETURN
 
+      ENDIF
+
 * "^"
- 500	n1 = sn1
+      IF (op .EQ. 5) THEN
+
+	n1 = sn1
 	n2 = sn2
 	DO n = mr_lo_s6(mres), mr_hi_s6(mres)
 	 n1 = n1 + dn1
@@ -441,8 +453,12 @@
 
 	RETURN
 
+      ENDIF
+
 * "AND" - logical AND of 2 masks (any non-zero data regarded as .TRUE.)
- 600    n1 = sn1
+      IF (op .EQ. 6) THEN
+
+	n1 = sn1
 	n2 = sn2
 	DO n = mr_lo_s6(mres), mr_hi_s6(mres)
 	 n1 = n1 + dn1
@@ -494,8 +510,13 @@
 
 	RETURN
 
+      ENDIF
+
 * "OR" - logical OR of 2 masks (any non-zero data regarded as .TRUE.)
- 700	n1 = sn1
+
+      IF (op .EQ. 7) THEN
+
+	n1 = sn1
 	n2 = sn2
 	DO n = mr_lo_s6(mres), mr_hi_s6(mres)
 	 n1 = n1 + dn1
@@ -547,9 +568,13 @@
 
 	RETURN
 
+      ENDIF
+
 * "GT" - mask of 1's where grid 1 exceeds grid 2, 0's elsewhere
 * "GT" - mask of 1's where grid 1 exceeds grid 2, bad-val elsewhere
- 800 	n1 = sn1
+      IF (op .EQ. 8) THEN
+
+ 	n1 = sn1
 	n2 = sn2
 	DO n = mr_lo_s6(mres), mr_hi_s6(mres)
 	 n1 = n1 + dn1
@@ -600,9 +625,14 @@
 
 	RETURN
 
+      ENDIF
+
 * "GE" - mask of 1's where grid 1 exceeds or equals grid 2, 0's elsewhere
 * "GE" - mask of 1's where grid 1 exceeds or equals grid 2, bad elsewhere
- 900 	n1 = sn1
+
+      IF (op .EQ. 9) THEN
+
+	n1 = sn1
 	n2 = sn2
 	DO n = mr_lo_s6(mres), mr_hi_s6(mres)
 	 n1 = n1 + dn1
@@ -653,9 +683,13 @@
 
 	RETURN
 
+      ENDIF
+
 * "LT" - mask of 1's where grid 1 is less than grid 2, 0's elsewhere
 * "LT" - mask of 1's where grid 1 is less than grid 2, bad elsewhere
- 1000 	n1 = sn1
+      IF (op .EQ. 10) THEN
+
+ 	n1 = sn1
 	n2 = sn2
 	DO n = mr_lo_s6(mres), mr_hi_s6(mres)
 	 n1 = n1 + dn1
@@ -706,9 +740,13 @@
 
 	RETURN
 
+      ENDIF
+
 * "LE" - mask of 1's where grid 1 is less than or equal to grid 2, 0's elsewhere
 * "LE" - mask of 1's where grid 1 is less than or equal to grid 2, bad elsewhere
- 1100	n1 = sn1
+      IF (op .EQ. 11) THEN
+
+	n1 = sn1
 	n2 = sn2
 	DO n = mr_lo_s6(mres), mr_hi_s6(mres)
 	 n1 = n1 + dn1
@@ -759,9 +797,14 @@
 
 	RETURN
 
+      ENDIF
+
 * "EQ" - mask of 1's where grids are equal, 0's elsewhere
 * "EQ" - mask of 1's where grids are equal, bad elsewhere
- 1200	n1 = sn1
+
+      IF (op .EQ. 12) THEN
+
+	n1 = sn1
 	n2 = sn2
 	DO n = mr_lo_s6(mres), mr_hi_s6(mres)
 	 n1 = n1 + dn1
@@ -791,7 +834,6 @@
 	     DO i = mr_lo_s1(mres), mr_hi_s1(mres)
 	     i1 = i1 + di1
 	     i2 = i2 + di2
-
 	   IF ( com1(i1,j1,k1,l1,m1,n1) .EQ. bad1
      .	   .OR. com2(i2,j2,k2,l2,m2,n2) .EQ. bad2 ) THEN
 	      res(i,j,k,l,m,n) = bad_res
@@ -815,8 +857,12 @@
 
 	RETURN
 
+      ENDIF
+
 * "NE" - mask of 1's where grids are not equal, 0's elsewhere
- 1300	n1 = sn1
+      IF (op .EQ. 13) THEN
+
+	n1 = sn1
 	n2 = sn2
 	DO n = mr_lo_s6(mres), mr_hi_s6(mres)
 	 n1 = n1 + dn1
@@ -870,17 +916,19 @@
 
 	RETURN
 
- 1400	CONTINUE
- 1500	CONTINUE
- 1600	CONTINUE
- 1700	CONTINUE
- 1800	CONTINUE
+      ENDIF
+
+      IF (op.EQ.14 .OR.op.EQ.15 .OR.op.EQ.16 .OR.op.EQ.17 .OR.op.EQ.18) THEN
 	STOP 'OPERATOR NOT IMPLEMENTED'
+      ENDIF
+
 * -----------------------------------------------------------------------------
 * -------- FUNCTIONS ------------
 
-* "EXP" - exponential function
- 1900	DO n = mr_lo_s6(mres), mr_hi_s6(mres)
+* "EXP" - exponential function 
+      IF (op .EQ. 19) THEN
+
+	DO n = mr_lo_s6(mres), mr_hi_s6(mres)
 	 DO m = mr_lo_s5(mres), mr_hi_s5(mres)
 	  DO l = mr_lo_s4(mres), mr_hi_s4(mres)
 	   DO k = mr_lo_s3(mres), mr_hi_s3(mres)
@@ -906,8 +954,12 @@
 
 	RETURN
 
+      ENDIF
+
 * "LOG"
- 2000	DO n = mr_lo_s6(mres), mr_hi_s6(mres)
+      IF (op .EQ. 20) THEN
+
+	DO n = mr_lo_s6(mres), mr_hi_s6(mres)
 	 DO m = mr_lo_s5(mres), mr_hi_s5(mres)
 	  DO l = mr_lo_s4(mres), mr_hi_s4(mres)
 	  DO k = mr_lo_s3(mres), mr_hi_s3(mres)
@@ -930,8 +982,12 @@
 
 	RETURN
 
+      ENDIF
+
 * "MAX"
- 2100	n1 = sn1
+      IF (op .EQ. 21) THEN
+
+	n1 = sn1
 	n2 = sn2
 	DO n = mr_lo_s6(mres), mr_hi_s6(mres)
 	 n1 = n1 + dn1
@@ -978,8 +1034,13 @@
 
 	RETURN
 
+      ENDIF
+
 * "MIN"
- 2200	n1 = sn1
+
+      IF (op .EQ. 22) THEN
+
+	n1 = sn1
 	n2 = sn2
 	DO n = mr_lo_s6(mres), mr_hi_s6(mres)
 	 n1 = n1 + dn1
@@ -1027,8 +1088,12 @@
 
 	RETURN
 
+      ENDIF
+
 * "INT"
- 2300	DO n = mr_lo_s6(mres), mr_hi_s6(mres)
+      IF (op .EQ. 23) THEN
+
+	DO n = mr_lo_s6(mres), mr_hi_s6(mres)
 	 DO m = mr_lo_s5(mres), mr_hi_s5(mres)
 	  DO l = mr_lo_s4(mres), mr_hi_s4(mres)
 	   DO k = mr_lo_s3(mres), mr_hi_s3(mres)
@@ -1050,8 +1115,12 @@
 
 	RETURN
 
+      ENDIF
+
 * "ABS"
- 2400	DO n = mr_lo_s6(mres), mr_hi_s6(mres)
+      IF (op .EQ. 24) THEN
+
+	DO n = mr_lo_s6(mres), mr_hi_s6(mres)
 	 DO m = mr_lo_s5(mres), mr_hi_s5(mres)
 	  DO l = mr_lo_s4(mres), mr_hi_s4(mres)
 	   DO k = mr_lo_s3(mres), mr_hi_s3(mres)
@@ -1073,8 +1142,12 @@
 
 	RETURN
 
+      ENDIF
+
 * "SIN"
- 2500	DO n = mr_lo_s6(mres), mr_hi_s6(mres)
+      IF (op .EQ. 25) THEN
+
+	DO n = mr_lo_s6(mres), mr_hi_s6(mres)
 	 DO m = mr_lo_s5(mres), mr_hi_s5(mres)
 	  DO l = mr_lo_s4(mres), mr_hi_s4(mres)
 	   DO k = mr_lo_s3(mres), mr_hi_s3(mres)
@@ -1096,8 +1169,12 @@
 
 	RETURN
 
+      ENDIF
+
 * "COS"
- 2600	DO n = mr_lo_s6(mres), mr_hi_s6(mres)
+      IF (op .EQ. 26) THEN
+
+	DO n = mr_lo_s6(mres), mr_hi_s6(mres)
 	 DO m = mr_lo_s5(mres), mr_hi_s5(mres)
 	  DO l = mr_lo_s4(mres), mr_hi_s4(mres)
 	   DO k = mr_lo_s3(mres), mr_hi_s3(mres)
@@ -1119,8 +1196,12 @@
 
 	RETURN
 
+      ENDIF
+
 * "TAN"
- 2700	DO n = mr_lo_s6(mres), mr_hi_s6(mres)
+      IF (op .EQ. 27) THEN
+
+	DO n = mr_lo_s6(mres), mr_hi_s6(mres)
 	 DO m = mr_lo_s5(mres), mr_hi_s5(mres)
 	  DO l = mr_lo_s4(mres), mr_hi_s4(mres)
 	   DO k = mr_lo_s3(mres), mr_hi_s3(mres)
@@ -1142,8 +1223,12 @@
 
 	RETURN
 
+      ENDIF
+
 * "LN"
- 2800	DO n = mr_lo_s6(mres), mr_hi_s6(mres)
+      IF (op .EQ. 28) THEN
+
+	DO n = mr_lo_s6(mres), mr_hi_s6(mres)
 	 DO m = mr_lo_s5(mres), mr_hi_s5(mres)
 	  DO l = mr_lo_s4(mres), mr_hi_s4(mres)
 	   DO k = mr_lo_s3(mres), mr_hi_s3(mres)
@@ -1166,8 +1251,12 @@
 
 	RETURN
 
+      ENDIF
+
 * "MOD"
- 2900	n1 = sn1
+      IF (op .EQ. 29) THEN
+
+	n1 = sn1
 	n2 = sn2
 	DO n = mr_lo_s6(mres), mr_hi_s6(mres)
 	 n1 = n1 + dn1
@@ -1214,8 +1303,12 @@
 
 	RETURN
 
+      ENDIF
+
 * "MISSING" - replace missing value flag with values in grid 2
- 3000	n1 = sn1
+      IF (op .EQ. 30) THEN
+
+	n1 = sn1
 	n2 = sn2
 	DO n = mr_lo_s6(mres), mr_hi_s6(mres)
 	 n1 = n1 + dn1
@@ -1263,8 +1356,12 @@
 
 	RETURN
 
+      ENDIF
+
 * "IGNORE0" - replace zeros with bad flags
- 3100	DO n = mr_lo_s6(mres), mr_hi_s6(mres)
+      IF (op .EQ. 31) THEN
+
+	DO n = mr_lo_s6(mres), mr_hi_s6(mres)
 	 DO m = mr_lo_s5(mres), mr_hi_s5(mres)
 	  DO l = mr_lo_s4(mres), mr_hi_s4(mres)
 	   DO k = mr_lo_s3(mres), mr_hi_s3(mres)
@@ -1288,8 +1385,12 @@
 
 	RETURN
 
+      ENDIF
+
 * "ATAN"
- 3200	DO n = mr_lo_s6(mres), mr_hi_s6(mres)
+      IF (op .EQ. 32) THEN
+
+	DO n = mr_lo_s6(mres), mr_hi_s6(mres)
 	 DO m = mr_lo_s5(mres), mr_hi_s5(mres)
 	  DO l = mr_lo_s4(mres), mr_hi_s4(mres)
 	   DO k = mr_lo_s3(mres), mr_hi_s3(mres)
@@ -1311,8 +1412,12 @@
 
 	RETURN
 
+      ENDIF
+
 * "ATAN2" - 2 argument arc tangent
- 3300	n1 = sn1
+      IF (op .EQ. 33) THEN
+
+	n1 = sn1
 	n2 = sn2
 	DO n = mr_lo_s6(mres), mr_hi_s6(mres)
 	 n1 = n1 + dn1
@@ -1362,8 +1467,12 @@
 
 	RETURN
 
+      ENDIF
+
 * "ASIN"
- 3400	DO n = mr_lo_s6(mres), mr_hi_s6(mres)
+      IF (op .EQ. 34) THEN
+
+	DO n = mr_lo_s6(mres), mr_hi_s6(mres)
 	 DO m = mr_lo_s5(mres), mr_hi_s5(mres)
 	  DO l = mr_lo_s4(mres), mr_hi_s4(mres)
 	   DO k = mr_lo_s3(mres), mr_hi_s3(mres)
@@ -1387,8 +1496,12 @@
 
 	RETURN
 
+      ENDIF
+
 * "ACOS"
- 3500	DO n = mr_lo_s6(mres), mr_hi_s6(mres)
+      IF (op .EQ. 35) THEN
+
+	DO n = mr_lo_s6(mres), mr_hi_s6(mres)
 	 DO m = mr_lo_s5(mres), mr_hi_s5(mres)
 	  DO l = mr_lo_s4(mres), mr_hi_s4(mres)
 	   DO k = mr_lo_s3(mres), mr_hi_s3(mres)
@@ -1412,9 +1525,13 @@
 
 	RETURN
 
+      ENDIF
+
 * "RANDU" - random uniform
 * use the first value as the seed
- 3600	first = .TRUE.
+      IF (op .EQ. 36) THEN
+
+	first = .TRUE.
 	DO n = mr_lo_s6(mres), mr_hi_s6(mres)
 	 DO m = mr_lo_s5(mres), mr_hi_s5(mres)
 	  DO l = mr_lo_s4(mres), mr_hi_s4(mres)
@@ -1443,9 +1560,13 @@
 
 	RETURN
 
+      ENDIF
+
 * "RANDN" - random normal
 * use the first value as the seed
- 3700	first = .TRUE.
+      IF (op .EQ. 37) THEN
+
+	first = .TRUE.
 	DO n = mr_lo_s6(mres), mr_hi_s6(mres)
 	 DO m = mr_lo_s5(mres), mr_hi_s5(mres)
 	  DO l = mr_lo_s4(mres), mr_hi_s4(mres)
@@ -1474,10 +1595,14 @@
 
 	RETURN
 
+      ENDIF
+
 * "RHO" - UNESCO equation of state:
 * rho = rho(salinity, temperature, pressure)
 * three components - each may be a different XYZT shape
- 3800	n1 = sn1
+      IF (op .EQ. 38) THEN
+
+	n1 = sn1
 	n2 = sn2
 	n3 = sn3
 	DO n = mr_lo_s6(mres), mr_hi_s6(mres)
@@ -1540,11 +1665,15 @@
 
 	RETURN
 
+      ENDIF
+
 * "THETA" - potential temperature from BRYDEN,H.,1973,DEEP-SEA RES
 *           and FOFONOFF,N,M,1977,DEEP-SEA RES
 * theta = theta(salinity, temperature, pressure,reference_pressure)
 * three components - each may be a different XYZT shape
- 3900	n1 = sn1
+      IF (op .EQ. 39) THEN
+
+	n1 = sn1
 	n2 = sn2
 	n3 = sn3
 	n4 = sn4
@@ -1620,11 +1749,15 @@
 
 	RETURN
 
+      ENDIF
+
 * "DAYS1900(year, month, day)" - number of days since 1900
 * three components - each may be a different XYZT shape
 * *** note: returns days since 1-jan-1900, on the STANDARD CALENDAR
 
- 4000	n1 = sn1
+      IF (op .EQ. 40) THEN
+
+	n1 = sn1
 	n2 = sn2
 	n3 = sn3
 	DO n = mr_lo_s6(mres), mr_hi_s6(mres)
@@ -1693,6 +1826,8 @@
 
 	RETURN
 
+      ENDIF
+
 
 * "RANDU2" - random uniform 
 * Call the gfortran RANDOM_SEED and RANDOM_SEED functions.
@@ -1702,7 +1837,9 @@
 * iseed = -1 initialize using system clock
 * iseed = integer > 0 initialize using that integer: results will be repeatable
 
- 4100	CONTINUE
+      IF (op .EQ. 41) THEN
+
+	CONTINUE
 	n2 = sn2
 	m2 = sm2
 	l2 = sl2
@@ -1733,9 +1870,12 @@
 
 	RETURN
 
+      ENDIF
+
 * "RANDN2" - random normal using gfortran RANDOM_SEED and RANDOM_SEED functions.
 * seed set as for RANDU2
- 4200	CONTINUE
+      IF (op .EQ. 42) THEN
+
 	n2 = sn2
 	m2 = sm2
 	l2 = sl2
@@ -1769,16 +1909,21 @@
 
 	RETURN
 
- 4300	CONTINUE
+      ENDIF
+
+      IF (op .EQ. 42) THEN
+
 	STOP 'FUNCTION NOT IMPLEMENTED'
 
+      ENDIF
 * ----------------------------------------------------------------------------
 * ------- LOGIC STRUCTURES -------------
 *
- 4400	CONTINUE
+      IF (op .EQ. 44 .OR. op.EQ.45) THEN
+
 * "THEN" - comes from IF (condition) THEN (choice)   ... no "ELSE" given
 * component 1 is the condition.  component 2 is the choice
- 4500	n1 = sn1
+	n1 = sn1
 	n2 = sn2
 	DO n = mr_lo_s6(mres), mr_hi_s6(mres)
 	 n1 = n1 + dn1
@@ -1825,9 +1970,13 @@
 	ENDDO
 
 	RETURN
+
+      ENDIF
 * "ELSE" - comes from IF (condition) THEN (choice1) ELSE (choice2)
 * component 1 is the condition.  components 2 and 3 are the choices
- 4600	n1 = sn1
+
+      IF (op .EQ. 46) THEN
+	n1 = sn1
 	n2 = sn2
 	n3 = sn3
 	DO n = mr_lo_s6(mres), mr_hi_s6(mres)
@@ -1894,9 +2043,13 @@
 
 	RETURN
 
+      ENDIF
+
 * "THEN" - comes from IFV (condition) THEN (choice)   ... no "ELSE" given
 * component 1 is the condition.  component 2 is the choice
- 4700	n1 = sn1
+
+      IF (op .EQ. 47) THEN
+	n1 = sn1
 	n2 = sn2
 	DO n = mr_lo_s6(mres), mr_hi_s6(mres)
 	 n1 = n1 + dn1
@@ -1942,9 +2095,13 @@
 	ENDDO
 
 	RETURN
+
+      ENDIF
 * "ELSE" - comes from IFV (condition) THEN (choice1) ELSE (choice2)
 * component 1 is the condition.  components 2 and 3 are the choices
- 4800	n1 = sn1
+
+      IF (op .EQ. 48) THEN
+	n1 = sn1
 	n2 = sn2
 	n3 = sn3
 	DO n = mr_lo_s6(mres), mr_hi_s6(mres)
@@ -2010,6 +2167,6 @@
 
 	RETURN
 
-* error exits
-! 9000	RETURN
+      ENDIF
+
 	END

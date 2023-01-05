@@ -73,6 +73,8 @@
 *                 SPAWN_OK -> SPAWN_OK, so 1=succcess, 0=failure
 *                 SPAWN_STATUS returns the status value
 * V751 6/19 *acm* Ticket 1903, reporting memory in bytes, so new symbol FERRET_BYTES_MEM
+* 12/2022 *acm* Code cleanup: Replace the computed GOTO statement 
+*                  "GOTO ( 1100, 1200, ...) i"  with IF blocks
 
         IMPLICIT NONE
 * calling argument declarations:
@@ -86,8 +88,7 @@
 * internal variable declarations:
 	LOGICAL	IS_SECURE
 	INTEGER STR_UPCASE, TM_LENSTR, i, i1, ierr, wsid, 
-     .          nxpix, nypix, llen, icount, irate, imax, iset
-c        REAL DTIME 
+     .          nxpix, nypix, llen, icount, irate, imax, iset, isi
         REAL TArray(2), dtime_res, clock_secs, count, cputime_now, rstatus
 	CHARACTER special(nspecial)*16, upname*16
 	CHARACTER LEFINT*16, TM_FMT*48, TM_FMT_TRIM*48, NF_INQ_LIBVERS*80,
@@ -128,13 +129,7 @@ c        REAL DTIME
 #	include "tmap_dset.parm"
 	include 'xdset_info.cmn_text'
 	include 'xprog_state.cmn'	! for spawn_status
-
-* #ifdef for endianness info.
-#ifdef sun
-	include 'xmachine_byte.cmn'
-#else
 	include 'xmachine_int1.cmn'
-#endif
 
 * is this a query by integer or by name?
 	IF (isym .GE. 1) THEN 
@@ -150,122 +145,187 @@ c        REAL DTIME
 * ***** QUERY BY NAME *****
 * identify the given name
 	ierr = STR_UPCASE( upname, name )
-	DO 100 i = 1, nspecial
-	   IF (upname .EQ. special(i)) GOTO 200
- 100	CONTINUE
+	isi = 0
+	DO i = 1, nspecial
+	   IF (upname .EQ. special(i)) THEN
+	      isi = i
+	      EXIT
+	   ENDIF
+	ENDDO
 
 * not a recognized special symbol
-	slen = 0
-	RETURN
-
- 200	GOTO (1100, 1200, 1300, 1400, 1500, 1600, 1700, 1800, 
-     .        1900, 2000, 2100, 2200, 2300, 2400, 2500, 2600,
-     .        2700, 2800, 2900, 3000, 3100 ) i
+	IF (isi .EQ. 0) THEN
+	   slen = 0
+	   RETURN
+	ENDIF
 
 * PPL$XPIXEL
 * get the horizontal pixels size of the window as specified by the user
- 1100   DO 1110 wsid = 1, max_windows
+
+      IF (special(isi) .EQ. 'PPL$XPIXEL') THEN
+
+	DO wsid = 1, max_windows
            IF ( wn_active(wsid) ) THEN
                value = LEFINT(NINT(wn_xpixels(wsid)),slen)
                RETURN
            ENDIF
- 1110   CONTINUE
+	ENDDO
 * ... no currently active window
         value = '0'
         slen = 1
         RETURN
 
+      ENDIF
+
 * PPL$YPIXEL
 * get the vertical pixels size of the window as specified by the user
- 1200   DO 1210 wsid = 1, max_windows
+
+      IF (special(isi) .EQ. 'PPL$YPIXEL') THEN
+
+	DO wsid = 1, max_windows
            IF ( wn_active(wsid) ) THEN
                value = LEFINT(NINT(wn_ypixels(wsid)),slen)
                RETURN
            ENDIF
- 1210   CONTINUE
+	ENDDO
 * ... no currently active window
         value = '0'
         slen = 1
         RETURN
 
+      ENDIF
+
 * BYTEORDER - get byteorder of this architecture
- 1300	IF (active_cpu .EQ. cptype_sun) THEN
+
+      IF (special(isi) .EQ. 'BYTEORDER') THEN
+
+	IF (active_cpu .EQ. cptype_sun) THEN
 	   value = 'BIG'
 	   slen = 3
 	ELSE
 	   value = 'LITTLE'
 	   slen = 6
 	ENDIF
-	RETURN
+        RETURN
+
+      ENDIF
 
 * FERRET_VERSION
+
+      IF (special(isi) .EQ. 'FERRET_VERSION') THEN
+
  1400	value = ' '
 	value = TM_FMT(revision_level, 5, 12, llen)
 	slen = llen
-	RETURN
+        RETURN
 
-* PLATFORM_TYPE  *kob* 10/01
- 1500	value = platform_type
+      ENDIF
+
+* FERRET_PLATFORM  *kob* 10/01
+
+      IF (special(isi) .EQ. 'FERRET_PLATFORM') THEN
+
+	value = platform_type
 	slen = TM_LENSTR(platform_type)
-	RETURN
+        RETURN
+
+      ENDIF
 
 * FERRET_PRECISION
- 1600	CONTINUE
+
+      IF (special(isi) .EQ. 'FERRET_PRECISION') THEN
+
 #ifdef double_p
         value = 'double'
 #else
         value = 'single'
 #endif
 	slen = TM_LENSTR(value)
-	RETURN
+        RETURN
+
+      ENDIF
 
 * NETCDF_VERSION
- 1700	CONTINUE
+
+      IF (special(isi) .EQ. 'NETCDF_VERSION') THEN
+
 	value = NF_INQ_LIBVERS()
 	slen = TM_LENSTR(value)
-	RETURN
+        RETURN
+
+      ENDIF
 
 * FERRET_MEMORY
- 1800	value = TM_FMT_TRIM(max_mem_allowed/1.D6,-2,12,llen)
+
+      IF (special(isi) .EQ. 'FERRET_MEMORY') THEN
+
+	value = TM_FMT_TRIM(max_mem_allowed/1.D6,-2,12,llen)
 	slen = llen
-	RETURN
+        RETURN
+
+      ENDIF
 
 * FERRET_BYTES_MEM
- 1900  CALL MEM_TO_BYTES (max_mem_allowed, value, llen, byte_unit)
+
+      IF (special(isi) .EQ. 'FERRET_BYTES_MEM') THEN
+
+	CALL MEM_TO_BYTES (max_mem_allowed, value, llen, byte_unit)
        value = value(:llen)//byte_unit
        slen = llen + 2
        RETURN
 
+      ENDIF
+
 * SESSION_DATE
- 2000	value = today_date
+
+      IF (special(isi) .EQ. 'SESSION_DATE') THEN
+
+	value = today_date
 	slen = 9
-	RETURN
+        RETURN
+
+      ENDIF
 
 * SESSION_TIME
- 2100	value = today_time
+
+      IF (special(isi) .EQ. 'SESSION_TIME') THEN
+
+	value = today_time
 	slen = 5
-	RETURN
+        RETURN
+
+      ENDIF
 
 * SESSION_PID
- 2200	CONTINUE
+
+      IF (special(isi) .EQ. 'SESSION_PID') THEN
+
 	i1 = GETPID()
 	count = i1
 	value =  TM_FMT(count, 0, 10, slen)
-	RETURN
+        RETURN
 
+      ENDIF
 
 * DELTA_CPU
- 2300	CONTINUE
-c        CALL DTIME(TArray)
+
+      IF (special(isi) .EQ. 'DELTA_CPU') THEN
+
+	CONTINUE
 	CALL CPU_TIME(cputime_now)
         dtime_res = cputime_now - cpu_last
 	cpu_last = cputime_now
 	value = ' '
 	value = TM_FMT(dtime_res, 6, 8, slen)
-	RETURN
+        RETURN
+
+      ENDIF
 
 * CLOCK_SECS
- 2400	CALL SYSTEM_CLOCK(icount, irate, imax)
+
+      IF (special(isi) .EQ. 'CLOCK_SECS') THEN
+
+	CALL SYSTEM_CLOCK(icount, irate, imax)
         clock_secs = FLOAT(icount-clock_start_count)/FLOAT(irate)
 	IF (clock_secs .LT. 0) THEN
            CALL WARN('Evaluating CLOCK_SECS, call to '//
@@ -277,28 +337,30 @@ c        CALL DTIME(TArray)
 	ENDIF
 	value = ' '
 	value = TM_FMT_TRIM(clock_secs, -1, 8, slen)
-	RETURN
+        RETURN
+
+      ENDIF
 
 * CURRENT_DATE
- 2500	CONTINUE
 
-#ifdef AIX_XLF
-	CALL AIX_DATE( current_date )
-#elif F90_DATE_TIME
+      IF (special(isi) .EQ. 'CURRENT_DATE') THEN
+
+#ifdef F90_DATE_TIME
 	CALL FDATE(current_date)
 #else
 	CALL GET_DATE_AND_TIME (current_date, current_time)
 #endif
         value = current_date
 	slen = 9
-	RETURN
+        RETURN
+
+      ENDIF
 
 * CURRENT_TIME
- 2600	CONTINUE
 
-#ifdef AIX_XLF
-	CALL AIX_TIME( current_time )
-#elif F90_DATE_TIME
+      IF (special(isi) .EQ. 'CURRENT_TIME') THEN
+
+#ifdef F90_DATE_TIME
 	CALL FTIME(current_time)
 #else
 	CALL GET_DATE_AND_TIME (current_date, current_time)  ! doesnt get seconds
@@ -310,32 +372,48 @@ c        CALL DTIME(TArray)
 #endif
 	value = current_time
 	slen = 8
-	RETURN
+        RETURN
+
+      ENDIF
 
 * N_OPEN_DSETS
- 2700	CONTINUE
- 
+
+      IF (special(isi) .EQ. 'N_OPEN_DSETS') THEN
+
 	count = 0.
 	DO iset = 1, maxdsets
 	   IF ( ds_name(iset) .NE. char_init2048) count = count + 1.
 	ENDDO
 
 	value =  TM_FMT(count, 0, 10, slen)
-	RETURN
+        RETURN
+
+      ENDIF
 
 * PROGRAM_NAME
- 2800   CONTINUE
+
+      IF (special(isi) .EQ. 'PROGRAM_NAME') THEN
 
         value = 'PyFerret'
         slen = 8
         RETURN
 
+      ENDIF
+
 * PEAK_MEMORY
- 2900	value = LEFINT8(peak_mem,slen)
+
+      IF (special(isi) .EQ. 'PEAK_MEMORY') THEN
+
+	value = LEFINT8(peak_mem,slen)
         RETURN
 
+      ENDIF
+
 * SPAWN_OK
- 3000   IF (IS_SECURE()) THEN
+
+      IF (special(isi) .EQ. 'SPAWN_OK') THEN
+
+	IF (IS_SECURE()) THEN
            rstatus = 0.
         ELSEIF (spawn_status .EQ. 0.) THEN
            rstatus = 1.
@@ -345,8 +423,13 @@ c        CALL DTIME(TArray)
 	value = TM_FMT(rstatus, 0, 10, slen)
         RETURN
 
+      ENDIF
+
 * SPAWN_STATUS
- 3100   IF (IS_SECURE()) THEN
+
+      IF (special(isi) .EQ. 'SPAWN_STATUS') THEN
+
+	IF (IS_SECURE()) THEN
 	   value = 'secure: spawn not allowed'
 	   slen = 25
         ELSE
@@ -355,5 +438,7 @@ c        CALL DTIME(TArray)
 	ENDIf
         RETURN
 
-	END
+      ENDIF
+
+      END
 

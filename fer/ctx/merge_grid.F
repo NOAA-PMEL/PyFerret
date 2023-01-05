@@ -127,6 +127,9 @@
 * V76  1/20 *acm* working with Point-type dsg data
 * V76  2/20 *acm* Regridding Point-type dsg data, restore value of com_grd before deallocating
 
+* 12/2022 *acm* Code cleanup: Replace the computed GOTO statement 
+*                  "GOTO ( 100, 200, ...) ax_choice(icom,imrg)"  with IF blocks
+
         IMPLICIT NONE
 	include 'tmap_dims.parm'
 	include 'implicit.parm'    ! has pline_not_dsg
@@ -554,43 +557,49 @@
 * when merging a constant
 
 	IF (com_ax.EQ.mabstract .AND. mrg_ax.EQ.mnormal) THEN
-c	   IF (.NOT. (normabst) .AND. var_is_const) GOTO 400
 	   IF (normabst .AND. var_is_const) GOTO 400
 	ENDIF
 
 * take appropriate merging action
-*		  EXP  IMP WRN1   ***   NA  WRN2
-	   GOTO ( 100, 200,  90, 9000, 400, 190 ) ax_choice(icom,imrg)
+
+	IF (ax_choice(icom,imrg).EQ.WRN1 .OR. ax_choice(icom,imrg).EQ.EXP) THEN
 
 * give a warning before imposing ambiguous explicit limits
 * (use grid name as a flag to prevent multiple warnings)
- 90	   IF ( grid_name(mrg_grd) .EQ. 'UVAR' ) CALL WARN
+	   IF (ax_choice(icom,imrg).EQ.WRN1) THEN
+	      IF ( grid_name(mrg_grd) .EQ. 'UVAR' ) CALL WARN
      .			('Ambiguous coordinates on '//
      .			ww_dim_name(idim)//' axis: '//
      .			uvar_text(uvar)(:TM_LENSTR1(uvar_text(uvar))))
-	   grid_name(mrg_grd) = 'AMBG'
+	      grid_name(mrg_grd) = 'AMBG'
+	   ENDIF
 
 * impose explicit limits from component that gave them (e.g. U[K=5])
- 100	   CALL TM_USE_LINE(com_ax)
+	   CALL TM_USE_LINE(com_ax)
 	   CALL TM_DEALLO_DYN_LINE(mrg_ax)
 	   grid_line( idim, mrg_grd ) = com_ax
 	   cx_lo_ss( mrg_cx, idim ) = cx_lo_ss( com_cx, idim )
 	   cx_hi_ss( mrg_cx, idim ) = cx_hi_ss( com_cx, idim )
-	   GOTO 400
+	ENDIF
+
+
+	IF (ax_choice(icom,imrg).EQ.WRN2 .OR. ax_choice(icom,imrg).EQ.IMP) THEN
 
 * give a warning before imposing ambiguous implicit limits
-
- 190	   IF ( grid_name(mrg_grd) .EQ. 'UVAR'
+	   IF (ax_choice(icom,imrg).EQ.WRN2) THEN
+	      IF ( grid_name(mrg_grd) .EQ. 'UVAR'
      .		.OR. grid_name(mrg_grd) .EQ. 'AMBG' ) CALL WARN
      .			('Ambiguous coordinates on '//
      .			ww_dim_name(idim)//' axis: '//
      .			uvar_text(uvar)(:TM_LENSTR1(uvar_text(uvar))))
-	   grid_name(mrg_grd) = 'AMBG'
+	      grid_name(mrg_grd) = 'AMBG'
+	   ENDIF
 
 * impose an axis with implicit coordinates (inferred from the context)
- 200	   CALL TM_USE_LINE(com_ax)
+	   CALL TM_USE_LINE(com_ax)
 	   CALL TM_DEALLO_DYN_LINE(mrg_ax)
 	   grid_line( idim, mrg_grd ) = com_ax
+	ENDIF
 
 * save implications about how limits are given in thi uvar_given(idim,uvar) .EQ. uvlim_s component
 * if the component is a user-defined variable then consider the implications
@@ -649,7 +658,6 @@ c	   IF (.NOT. (normabst) .AND. var_is_const) GOTO 400
 * if the new component or any previous lacks given limits so does the result
 * e.g. LIST/K=1:5 U - U[K=3]
 * (the /K limits are lacking in the overall expression)
-!    2/28/98: replaced:  	   .OR. .NOT.cx_given(idim,com_cx)
 	   IF (its_dsg .AND. idim.NE.f_dim) THEN
 ! *sh* these settings are educated guesses -- concepts don't apply to DSGs
 	      IF (idim.EQ.e_dim) THEN

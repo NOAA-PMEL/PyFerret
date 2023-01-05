@@ -60,6 +60,8 @@
 *                 point vs range of points
 * 10/2022 *acm* Code cleanup: remove references to obsolete gui interface
 * 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
+* 12/2022 *acm* Code cleanup: Replace the computed GOTO statement with IF blocks
+*                 GOTO ( 100, 200, 300, ...
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
@@ -103,25 +105,31 @@
 	ENDIF
 
 * respond to the appropriate query
-	GOTO ( 100, 200, 300, 400, 500, 600, 700, 800, 900,1000,
-     .	      1100,1200,1300,1400,1500,1600,1700,1800,1900,2000,
-     .	      2100,2200,2300,2400,2500,2600,2700,2800,2900,3000 ) query
-	
+
 * STATUS
 * error status of last command
- 100	CONTINUE
+
+      IF (queries(query) .EQ. 'STATUS') THEN
+
 	WRITE (risc_buff, fmt ) 0, queries(query), tag
 	CALL SPLIT_LIST(pttmode_explct, chout, risc_buff, 0)
 	GOTO 4999
 
+      ENDIF
+
 * MESSAGE
 * messages from last command
- 200	CONTINUE
+
+      IF (queries(query) .EQ. 'MESSAGE') THEN
+
 	GOTO 4999
+
+      ENDIF
 
 * DSET
 * list of open data sets
- 300	CONTINUE
+      IF (queries(query) .EQ. 'DSET') THEN
+
 *   ... count data sets
  	   n = 0
 	   DO i = 1,  maxdsets
@@ -140,9 +148,13 @@
  	   ENDDO
 	GOTO 4999
 
+      ENDIF
+
 * VARIABLE dset
 * list variables in data set
- 400	CONTINUE
+
+      IF (queries(query) .EQ. 'VARIABLE') THEN
+
 	IF ( num_args .NE. 2 ) GOTO 5040
 * ... identify the data set
 	dset = FIND_DSET_NUMBER( cmnd_buff(arg_start(2):arg_end(2)) )
@@ -171,10 +183,14 @@
  	ENDDO
 	GOTO 4999
 
+      ENDIF
+
 * GRID dset variable
 * n-axis description of grid for given variable
 * 5 records back: grid name and axis names with flags
- 500	CONTINUE
+
+      IF (queries(query) .EQ. 'GRID') THEN
+
 	IF ( num_args .NE. 3 ) GOTO 5050
 * ... identify the data set, then variable, then its grid
 	dset = FIND_DSET_NUMBER( cmnd_buff(arg_start(2):arg_end(2)) )
@@ -205,22 +221,33 @@
  	ENDDO
 	GOTO 4999
 
+      ENDIF
+
 * AXIS  axname
 * axis description: "npts reg modulo calendar lo_value delta unit_code units"
- 600	CONTINUE
+
+      IF (queries(query) .EQ. 'AXIS') THEN
 	IF ( num_args .NE. 2 ) GOTO 5060
 	axis = TM_GET_LINENUM( cmnd_buff(arg_start(2):arg_end(2)) )
  610	IF ( axis .EQ. unspecified_int4 ) GOTO 5930
-	GOTO 5000  ! not available yet
+	GOTO 5000
+
+      ENDIF  ! not available yet
 
 * COORDS axis
 * coordinates of (irregular) axis
- 700	CONTINUE
+
+      IF (queries(query) .EQ. 'AXIS') THEN
+
 	GOTO 5000
+
+      ENDIF
 
 * TRANS  *************
 * list of transforms
- 800	CONTINUE
+
+      IF (queries(query) .EQ. 'TRANS') THEN
+
 * ... count the number of transforms
 	n = 0
 	DO i = 4, num_transforms
@@ -260,47 +287,98 @@
  3800	FORMAT(A3,1X,A,1X,A1,' "',A,'"')
 	GOTO 4999
 
+      ENDIF
+
 * TRNARG (trans) ****will not be used!!*************
 * argument description for given transform
- 900	CONTINUE
+
+      IF (queries(query) .EQ. 'TRNARG') THEN
+
+	GOTO 5000
+
+      ENDIF
+
 * LVARS  *************
 * list of LET-defined variables
- 1000	CONTINUE
+
+      IF (queries(query) .EQ. 'LVARS') THEN
+
+	GOTO 5000
+
+      ENDIF
+
 * DVARS (dset) *************
 * list of LET-defined variables defined for data set
- 1100	CONTINUE
+
+      IF (queries(query) .EQ. 'DVARS') THEN
+
+	GOTO 5000
+
+      ENDIF
+
 * VBACKGROUND  (dset variable) *************
 * background info about this variable
- 1200	CONTINUE
+
+      IF (queries(query) .EQ. 'VBACKGROUND') THEN
+
 	GOTO 5000
+
+      ENDIF
+
 * DBACKGROUND (dset) *************
 * background info about this data set
- 1300	CONTINUE
+
+      IF (queries(query) .EQ. 'DBACKGROUND') THEN
+
 	GOTO 5000
+
+      ENDIF
 * WINDOWS  *************
 * list of open windows
- 1400	CONTINUE
+
+      IF (queries(query) .EQ. 'WINDOWS') THEN
+
 	GOTO 5000
+
+      ENDIF
 * WCURRENT  *************
 * name of current window
- 1500	CONTINUE
+
+      IF (queries(query) .EQ. 'WCURRENT') THEN
+
 	GOTO 5000
+
+      ENDIF
 * VPORTS  *************
 * list of defined viewports
- 1600	CONTINUE
+
+      IF (queries(query) .EQ. 'VPORTS') THEN
+
 	GOTO 5000
+
+      ENDIF
 * VCURRENT  *************
 * name of current viewport
- 1700	CONTINUE
+
+      IF (queries(query) .EQ. 'VCURRENT') THEN
+
 	GOTO 5000
+
+      ENDIF
 * VIEW  (vport) *************
 * definition of indicated viewport
- 1800	CONTINUE
+
+      IF (queries(query) .EQ. 'VIEW') THEN
+
 	GOTO 5000
+
+      ENDIF
 
 * DCURRENT
 * name of current data set
- 1900	CONTINUE
+
+      IF (queries(query) .EQ. 'DCURRENT') THEN
+
 	done = .FALSE.
 	DO dset = 1, maxdsets
            IF ( ds_name(dset) .EQ. char_init2048) CYCLE
@@ -321,11 +399,15 @@
 	ENDIF
 	GOTO 4999
 
+      ENDIF
+
 * SPAN  dset variable
 * return nferdims+1 records:
 * 1 - the grid name for this variable
 * 2-n the subssript, world coords, and world text limits along each axis
- 2000	CONTINUE
+
+      IF (queries(query) .EQ. 'SPAN') THEN
+
 	IF ( num_args .NE. 3 ) GOTO 5050
 * ... identify the data set, then variable, then its grid
 	dset = FIND_DSET_NUMBER( cmnd_buff(arg_start(2):arg_end(2)) )
@@ -370,8 +452,12 @@
  3200	FORMAT(2I6,2(1PG14.5),2(1x,A))
 	GOTO 4999
 
+      ENDIF
+
 * GAXIS grid orientation    (like AXIS but different args)
- 2100	CONTINUE
+
+      IF (queries(query) .EQ. 'GAXIS') THEN
+
 	IF ( num_args .NE. 3 ) GOTO 5210
 	grid = TM_GET_GRIDNUM( cmnd_buff(arg_start(2):arg_end(2)) )
 	IF ( grid .EQ. unspecified_int4 ) GOTO 5930
@@ -421,11 +507,15 @@
      .			      line_unit_code(axis),
      .			      line_units(axis)(1:TM_LENSTR1(line_units(axis)))
 	CALL SPLIT_LIST(pttmode_explct, chout, risc_buff, 0)
-	GOTO 4999
  3060	FORMAT(I6,3I2,2(1PG14.5),I4,2X,A)
+	GOTO 4999
+
+      ENDIF
 
 * GCOORDS grid orientation    (like COORDS but different args)
- 2200	CONTINUE
+
+      IF (queries(query) .EQ. 'GCOORDS') THEN
+
 	IF ( num_args .NE. 3 ) GOTO 5220
 	grid = TM_GET_GRIDNUM( cmnd_buff(arg_start(2):arg_end(2)) )
 	IF ( grid .EQ. unspecified_int4 ) GOTO 5930
@@ -452,11 +542,15 @@
 	risc_buff = ' '
 	GOTO 4999
 
+      ENDIF
+
 * SSPOINT grid orientation delta_index index
 * given an index or a world coordinate return an index value
 * that is offset by an index change delta_index
 * The "orientation" parameter should match the "coordinate" wrt index or ww
- 2300	CONTINUE
+
+      IF (queries(query) .EQ. 'SSPOINT') THEN
+
 	IF ( num_args .NE. 5 ) GOTO 5230
 	grid = TM_GET_GRIDNUM( cmnd_buff(arg_start(2):arg_end(2)) )
 	IF ( grid .EQ. unspecified_int4 ) GOTO 5930
@@ -508,12 +602,16 @@
 	CALL SPLIT_LIST(pttmode_explct, chout, risc_buff, 0)
 	GOTO 4999
 
+      ENDIF
+
 * WWPOINT grid orientation delta_index coordinate
 * given a index or a world coordinate return both a formatted string
 * for a world coordinate and a numerical value that are offset by an
 * index change delta_index
 * The "orientation" parameter should match the "coordinate" wrt index or ww
- 2400	CONTINUE
+
+      IF (queries(query) .EQ. 'WWPOINT') THEN
+
 	IF ( num_args .NE. 5 ) GOTO 5240
 	grid = TM_GET_GRIDNUM( cmnd_buff(arg_start(2):arg_end(2)) )
 	IF ( grid .EQ. unspecified_int4 ) GOTO 5930
@@ -568,25 +666,7 @@
 	CALL SPLIT_LIST(pttmode_explct, chout, risc_buff, 0)
 	GOTO 4999
 
-* ****  *************
- 2500	CONTINUE
-	GOTO 5000
-* ****  *************
- 2600	CONTINUE
-	GOTO 5000
-* ****  *************
- 2700	CONTINUE
-	GOTO 5000
-* ****  *************
- 2800	CONTINUE
-	GOTO 5000
-* ****  *************
- 2900	CONTINUE
-	GOTO 5000
-* ****  *************
- 3000	CONTINUE
-	GOTO 5000
-
+      ENDIF
 
 * successful completion
  4999	RETURN

@@ -106,12 +106,14 @@
 * v767 6/22 *acm* See issue 112: Detect whether 1-D grid that's the result of
 *		  XSEQUENCE etc is not too large for 4-byte integer indexing
 * 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
-
+* 12/2022 *acm* Code cleanup: Replace the computed GOTO statement 
+*                  "GOTO ( 1100,1200,1300 fcn"  with IF blocks
         IMPLICIT NONE
         include 'tmap_dims.parm'
 	include	'ferret.parm'
 	include	'errmsg.parm'
         include 'grid_chg_fcns.parm'
+	include	'xgrid_chg_fcns.cmn'
 	include 'xvariables.cmn'
 	include	'xmem_subsc.cmn'
 	include 'xcontext.cmn'
@@ -235,14 +237,13 @@
 	ENDDO
 	ENDDO
 
-* select the function
-	GOTO ( 1100,1200,1300,1400,1500,1600,1700,1800,1900,2000,
-     .	       2100,2200,2300,2400,2500,2600,2700,2800,2900,3000,
-     .	       3100,3200,3300,3400,3500,3600 ) fcn
-
+* Execute the function
 
 * "XSEQUENCE" - reshape/flatten the input into a line in X
- 1100	IF (typr .EQ. pfcn_rtn_float) THEN
+
+      IF (gfcn_name(fcn) .EQ. 'XSEQUENCE') THEN
+
+	IF (typr .EQ. pfcn_rtn_float) THEN
 
 	  IF (TM_ITSA_DSG(grid)) THEN
 	     nres = m10hix - m10lox + 1
@@ -296,11 +297,15 @@
         ENDIF
 	RETURN
 
+      ENDIF
 
 * "TIMES2" (a.k.a. "ECHO") - debugging function
 * ECHO the string that was passed in
 * here is how you check the variable type
- 1200   IF (mr_category(mr1) .NE. cat_string)
+
+      IF (gfcn_name(fcn) .EQ. 'ECHO') THEN
+
+	IF (mr_category(mr1) .NE. cat_string)
      .     WRITE (6,*) "ERROR: argument is not a string after all!"
 * here is how you decode the string
         coded_pointer = mr_variable(mr1)
@@ -342,11 +347,15 @@
         ENDIF
         RETURN
 
+      ENDIF
 
 * "RESHAPE" - reshape argument 1 into the grid of arg 2. Start output
 * at the i,j,k,l,m,n point given in arg 2. It is commonly useful for taking
 * monthly data and recasting it as a 12 month Z axis by a yearly axis
- 1300   DO idim = 1, nferdims
+
+      IF (gfcn_name(fcn) .EQ. 'RESHAPE') THEN
+
+	DO idim = 1, nferdims
  	   ind(idim) = cx_lo_ss(cx1,idim)
 	ENDDO
 	size = CGRID_SIZE8(cx1)
@@ -428,12 +437,15 @@
         IF (TM_ITSA_DSG(grid)) CALL TRANSFER_CONTEXT (cx2, res_cx)
 
 	RETURN
-
+      ENDIF
 
 * "ZAXREPLACE(V,ZVALS,ZAX)" - regrid a sigma-coordinate-style (layered)
 * variable, V, onto a depth axis, ZAX, guided by the depths in ZVALS
 * ... sanity check -- V and ZVALS must match in vertical structure
- 1400   IF ( (cx_lo_s3(cx1) .NE. cx_lo_s3(cx2))
+
+      IF (gfcn_name(fcn) .EQ. 'ZAXREPLACE') THEN
+
+	IF ( (cx_lo_s3(cx1) .NE. cx_lo_s3(cx2))
      . .OR.  (cx_hi_s3(cx1) .NE. cx_hi_s3(cx2)) ) CALL ERRMSG
      .		(ferr_limits, status,
      .		 'Z limits of data and depth fields must match', *5000)
@@ -536,9 +548,13 @@
         CALL RELEASE_DYN_WORK_SPACE
         RETURN
 
+      ENDIF
 
 * "YSEQUENCE" - reshape/flatten the input into a line in Y
- 1500	IF (typr .EQ. pfcn_rtn_float) THEN
+
+      IF (gfcn_name(fcn) .EQ. 'YSEQUENCE') THEN
+
+	IF (typr .EQ. pfcn_rtn_float) THEN
 
 	  IF (TM_ITSA_DSG(grid)) THEN
 	  
@@ -594,9 +610,13 @@
         ENDIF
 	RETURN
 
+      ENDIF
 
 * "ZSEQUENCE" - reshape/flatten the input into a line in Z
- 1600	IF (typr .EQ. pfcn_rtn_float) THEN
+
+      IF (gfcn_name(fcn) .EQ. 'ZSEQUENCE') THEN
+
+	IF (typr .EQ. pfcn_rtn_float) THEN
 
 	  IF (TM_ITSA_DSG(grid)) THEN
 	     nres = m10hiz - m10loz + 1
@@ -650,9 +670,13 @@
         ENDIF
 	RETURN
 
+      ENDIF
 
 * "TSEQUENCE" - reshape/flatten the input into a line in T
- 1700	IF (typr .EQ. pfcn_rtn_float) THEN
+
+      IF (gfcn_name(fcn) .EQ. 'TSEQUENCE') THEN
+
+	IF (typr .EQ. pfcn_rtn_float) THEN
 
 	  IF (TM_ITSA_DSG(grid)) THEN
 	     nres = m10hit - m10lot + 1
@@ -706,9 +730,13 @@
         ENDIF
 	RETURN
 
+      ENDIF
 	
 * "ESEQUENCE" - reshape/flatten the input into a line in E
- 1800	IF (typr .EQ. pfcn_rtn_float) THEN
+
+      IF (gfcn_name(fcn) .EQ. 'ESEQUENCE') THEN
+
+	IF (typr .EQ. pfcn_rtn_float) THEN
 
 	  IF (TM_ITSA_DSG(grid)) THEN
 	     nres = m10hie - m10loe + 1
@@ -762,9 +790,13 @@
         ENDIF
 	RETURN
 
+      ENDIF
 	
 * "FSEQUENCE" - reshape/flatten the input into a line in F
- 1900	IF (typr .EQ. pfcn_rtn_float) THEN
+
+      IF (gfcn_name(fcn) .EQ. 'FSEQUENCE') THEN
+
+	IF (typr .EQ. pfcn_rtn_float) THEN
 
 	  IF (TM_ITSA_DSG(grid)) THEN
 	     nres = m10hif - m10lof + 1
@@ -818,25 +850,21 @@
         ENDIF
 	RETURN
 
+      ENDIF
 
 * "SAMPLEI", "SAMPLEJ", "SAMPLEK", "SAMPLEL" , "SAMPLEM", "SAMPLEN"- 
 * just copy arg 2 to result
 * setup for sampling done elsewhere
- 2000   CONTINUE        ! SAMPLEI
- 2100   CONTINUE        ! SAMPLEJ
- 2200   CONTINUE        ! SAMPLEK
- 2300   CONTINUE        ! SAMPLEL
- 2400   CONTINUE        ! SAMPLEN
- 2500   CONTINUE        ! SAMPLEN
-	
+
+      IF (gfcn_name(fcn) .EQ. 'SAMPLEI' .OR. 
+     .    gfcn_name(fcn) .EQ. 'SAMPLEJ' .OR.
+     .    gfcn_name(fcn) .EQ. 'SAMPLEK' .OR. 
+     .    gfcn_name(fcn) .EQ. 'SAMPLEL' .OR. 
+     .    gfcn_name(fcn) .EQ. 'SAMPLEM' .OR. 
+     .    gfcn_name(fcn) .EQ. 'SAMPLEN'  ) THEN
+
 	IF (TM_ITSA_DSG( cx_grid(cx1) )) THEN
-	   fcn_name = 'SAMPLEI'
-	   IF (fcn .EQ. 2100) fcn_name = 'SAMPLEJ'
-	   IF (fcn .EQ. 2100) fcn_name = 'SAMPLEJ'
-	   IF (fcn .EQ. 2200) fcn_name = 'SAMPLEK'
-	   IF (fcn .EQ. 2300) fcn_name = 'SAMPLEL'
-	   IF (fcn .EQ. 2400) fcn_name = 'SAMPLEM'
-	   IF (fcn .EQ. 2500) fcn_name = 'SAMPLEN'
+	   fcn_name = gfcn_name(fcn)
 	   
 	   buff = ' does not apply to Data from a '//
      .   'Discrete Sampling Geometries (DSG) dataset. Use masking'
@@ -882,9 +910,11 @@
         ENDIF
 	RETURN
 
+      ENDIF
 
 * SPAWN function - perform a Unix system command
- 2600	CONTINUE
+
+      IF (gfcn_name(fcn) .EQ. 'SPAWN') THEN
 
 *spawn is disallowed in secure mode.
         IF (IS_SECURE()) GOTO 5200
@@ -903,9 +933,12 @@
         CALL STORE_SYS_STRINGS(buff, res_cx, mres, 1, nnew, status)
         RETURN
 
+      ENDIF
 
 * STRCMP function
- 2700	CONTINUE
+
+      IF (gfcn_name(fcn) .EQ. 'STRCMP') THEN
+
 	n1 = sn1
 	n2 = sn2
 	DO n = mr_lo_s6(mres), mr_hi_s6(mres)
@@ -947,9 +980,12 @@
 	ENDDO
         RETURN
 
+      ENDIF
 
 * *kob* 3/02 STRLEN function
- 2800	CONTINUE
+
+      IF (gfcn_name(fcn) .EQ. 'STRLEN') THEN
+
 	n1 = sn1
 	DO n = mr_lo_s6(mres), mr_hi_s6(mres)
 	 n1 = n1 + dn1
@@ -978,8 +1014,12 @@
 	ENDDO
         RETURN
 
+      ENDIF
+
 * *kob* 3/02 UPCASE function
- 2900	CONTINUE
+
+      IF (gfcn_name(fcn) .EQ. 'UPCASE') THEN
+
 	n1 = sn1
 	DO n = mr_lo_s6(mres), mr_hi_s6(mres)
 	 n1 = n1 + dn1
@@ -1008,9 +1048,12 @@
 	ENDDO
         RETURN
 
+      ENDIF
 
 * *kob* 3/02 STRINDEX function
- 3000	CONTINUE
+
+      IF (gfcn_name(fcn) .EQ. 'STRINDEX') THEN
+
 	n1 = sn1
 	n2 = sn2
 	DO n = mr_lo_s6(mres), mr_hi_s6(mres)
@@ -1052,8 +1095,12 @@
 	ENDDO
         RETURN
 
+      ENDIf
+
 * *kob* 3/02 STRRINDEX function
- 3100	CONTINUE
+
+      IF (gfcn_name(fcn) .EQ. 'STRRINDEX') THEN
+
 	n1 = sn1
 	n2 = sn2
 	DO n = mr_lo_s6(mres), mr_hi_s6(mres)
@@ -1101,8 +1148,12 @@
 	ENDDO
         RETURN
 
+      ENDIF
+
 * *kob* 3/02 DNCASE function
- 3200	CONTINUE
+
+      IF (gfcn_name(fcn) .EQ. 'DNCASE') THEN
+
 	n1 = sn1
 	DO n = mr_lo_s6(mres), mr_hi_s6(mres)
 	 n1 = n1 + dn1
@@ -1131,8 +1182,11 @@
 	ENDDO
         RETURN
 
- 3300	CONTINUE
+      ENDIF
+
 * *kob* STRCAT function 3/02
+
+      IF (gfcn_name(fcn) .EQ. 'STRCAT') THEN
 	n1 = sn1
 	n2 = sn2
 	DO n = mr_lo_s6(mres), mr_hi_s6(mres)
@@ -1174,8 +1228,9 @@
 	ENDDO
         RETURN
 
- 3400	CONTINUE
-* *kob* SUBSTRING function 3/02
+      ENDIF
+
+      IF (gfcn_name(fcn) .EQ. 'SUBSTRING') THEN
 	n1 = sn1
 	n2 = sn2
 	n3 = sn3
@@ -1240,8 +1295,12 @@
 	ENDDO
         RETURN
 
+      ENDIF
+
 * *kob* 5/02 STRFLOAT function
- 3500	CONTINUE
+
+      IF (gfcn_name(fcn) .EQ. 'STRFLOAT') THEN
+
 	n1 = sn1
 	DO n = mr_lo_s6(mres), mr_hi_s6(mres)
 	 n1 = n1 + dn1
@@ -1270,11 +1329,12 @@
 	ENDDO
         RETURN
 
+      ENDIF
 
 * Undefined functions
- 3600   CONTINUE
-	STOP '**ERROR: GC FUNCTION NOT IMPLEMENTED'
 
+	print *, ' fcn, gfcn_name(fcn)', fcn, ' ', gfcn_name(fcn)
+	STOP '**ERROR: GC FUNCTION NOT IMPLEMENTED'
 
 * error exits
  5000	RETURN

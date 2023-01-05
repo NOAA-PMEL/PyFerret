@@ -227,6 +227,8 @@
 * V761 *acm*  9/20  Set an /SMASK for stations on a timeseriesProfile dataset or
 *                  trajectories on a trajectoryProfile one.
 ** 10/2022 *acm* Code cleanup: remove references to obsolete gui interface
+*  1/2023 *acm* Code cleanup: Replace the computed GOTO statement 
+*                  "GOTO ( 100,200, ... )  subcmnd_num"  with IF blocks
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -321,14 +323,15 @@
 * initialize
 !	reconfig = 0   	! zero signals NO memory reconfigure
 
-* select subcommand
-	GOTO ( 100,200,300,400,500,600,700,800,900,1000,
-     .        1100,1200,1300,1400,1500,1600,1700,1800 ) subcmnd_num
+* execute subcommand
 
 * SET '    ' 
 * arrival at this point usually means an illegal subcommand was given
 * and was assumed to be an argument by the command parser
- 100	IF ( num_args .GE. 1 ) THEN
+
+      IF (subcmnd_num .EQ. 1) THEN
+
+	IF ( num_args .GE. 1 ) THEN
 	   CALL ERRMSG( ferr_invalid_subcmnd,status,
      .				cmnd_buff( arg_start(1):arg_end(1) ), *5000 )
 	ELSE
@@ -336,13 +339,23 @@
 	ENDIF
 	RETURN
 
+      ENDIF
+
 * SET WINDOW
- 200	IF ( interactive ) CALL SET_WINDOW( status )
+
+      IF (subcmnd_num .EQ. 2) THEN
+
+	IF ( interactive ) CALL SET_WINDOW( status )
 	RETURN
+
+      ENDIF
 
 * SET REGION/I=ilow:ihigh/J=..., ... [reg_name]
 * completely replace "last" context if requested
- 300	IF ( num_args .EQ. 1 ) THEN
+
+      IF (subcmnd_num .EQ. 3) THEN
+
+	IF ( num_args .EQ. 1 ) THEN
 	   arg = cmnd_buff(arg_start(1):arg_end(1))
 	   cx = REGION_NUMBER( arg )
 	   IF ( cx .EQ. unspecified_int4 ) CALL ERRMSG
@@ -377,25 +390,40 @@
 
 	RETURN
 
+      ENDIF
+
 * SET VIEWPORT
- 400	IF ( num_args .EQ. 0 ) GOTO 5100
+
+      IF (subcmnd_num .EQ. 4) THEN
+
+	IF ( num_args .EQ. 0 ) GOTO 5100
 	item = 1
 	iv = VIEWPORT_NUMBER( cmnd_buff(item_start(1):item_end(1)) )
 	IF ( iv .EQ. unspecified_int4 ) GOTO 5020
 	CALL SET_VIEWPORT( iv )
 	RETURN
 
+      ENDIF
+
 * SET EXPRESSION var_name1, var_name2, ...
- 500	IF ( num_args .EQ. 0 ) GOTO 5100
+
+      IF (subcmnd_num .EQ. 5) THEN
+
+	IF ( num_args .EQ. 0 ) GOTO 5100
 	CALL DELETE_OLD_EXPR
 	CALL BREAK_UP_EXPR( cmnd_buff( arg_start(1):len_cmnd ),
      .			    num_uvars_in_cmnd,
      .			    status )
 	RETURN
 
+      ENDIF
+
 * SET LIST
 * ... SET LIST/PRECISION=#digits
- 600	IF ( qual_given( slash_set_list_prec ) .GT. 0) THEN
+
+      IF (subcmnd_num .EQ. 6) THEN
+
+	IF ( qual_given( slash_set_list_prec ) .GT. 0) THEN
 	   lp = qual_given( slash_set_list_prec )	! list pos.
 	   equal_pos = INDEX( cmnd_buff( qual_start(lp):qual_end(lp) ), '=' )
 	   IF ( equal_pos .EQ. 0 ) THEN
@@ -456,8 +484,13 @@ c *kob* 4/97
 
 	RETURN
 
+      ENDIF
+
 * SET DATA_SET data_set1, data_set2, ...
- 700    ds_dset_type = ' '
+
+      IF (subcmnd_num .EQ. 7) THEN
+
+	ds_dset_type = ' '
 
  	IF ( qual_given(slash_set_data_save) .GT. 0
      .	.OR. qual_given(slash_set_data_restore) .GT. 0 ) THEN
@@ -587,7 +620,7 @@ c *kob* 4/97
            IF ( status .NE. ferr_ok ) GOTO 5000
 	ENDIF
 
-	DO 750 item = 1, num_items
+	DO item = 1, num_items
 
 * check to see if data set was referred to by number
 * 9/95 - replaced "*" with "(I)" read from separate buffer
@@ -682,9 +715,6 @@ c *kob* 4/97
 * determine relative access speeds along each axis
 	   CALL GET_AXIS_SPEED( dset_num )
 
-* check for negative time step values (warning, only)
-! 3/00	   CALL CHECK_NEG_TAXIS( dset_num )
-
 * make this data set current
  745	   cx_data_set( cx_last )	=  dset_num
 
@@ -742,18 +772,22 @@ c *kob* 4/97
 
 	   ENDIF
 
-
- 750	CONTINUE
+	ENDDO
 
 	RETURN
                 
 
 * error in descriptor not detected by GT_INIT_DSET
- 790	CALL TM_CLOSE_SET( dset_num, tmap_status )
+ 	CALL TM_CLOSE_SET( dset_num, tmap_status )
 	RETURN
 
+      ENDIF
+
 * SET MODE mode_name argument  (or mode_name:argument)
- 800	set_last = qual_given( slash_set_last ) .GT. 0
+
+      IF (subcmnd_num .EQ. 8) THEN
+
+	set_last = qual_given( slash_set_last ) .GT. 0
 	IF ( num_items .EQ. 0 ) GOTO 5100
 
 * identify the specified mode to SET
@@ -930,19 +964,34 @@ c *kob* 4/97
 	   GOTO 5020
  820	RETURN
 
+      ENDIF
+
 * SET MOVIE[/FILE=filename] [title]
 * Movies are discontinued with Ferret v6.6: NetCDF-4 / HDF5
 
- 900	GOTO 5086
+
+      IF (subcmnd_num .EQ. 9) THEN
+
+	GOTO 5086
+
+      ENDIF
 
 * SET VARIABLE
- 1000	IF ( num_items .NE. 1 ) GOTO 5100
+
+      IF (subcmnd_num .EQ. 10) THEN
+
+	IF ( num_items .NE. 1 ) GOTO 5100
 	CALL SET_VAR( cmnd_buff(item_start(1):item_end(1)), status )
 	RETURN
 
+      ENDIF
+
 * SET GRID
 * NOTE: for historical reasons mgrid_abstract is the name of the SET GRID
- 1100	IF ( qual_given(slash_set_grid_save) .GT. 0 ) THEN
+
+      IF (subcmnd_num .EQ. 11) THEN
+
+	IF ( qual_given(slash_set_grid_save) .GT. 0 ) THEN
 	   saved_abstract_grid = mgrid_abstract
 	   RETURN
 	ENDIF
@@ -970,8 +1019,13 @@ c *kob* 4/97
 	mgrid_abstract = grid
 	RETURN
 
+      ENDIF
+
 * SET AXIS  /MODULO /DEPTH /CALENDAR /REGULAR /T0 /UNITS /OUTTYPE
- 1200	axis = TM_GET_LINENUM( cmnd_buff(item_start(1):item_end(1)) )
+
+      IF (subcmnd_num .EQ. 12) THEN
+
+	axis = TM_GET_LINENUM( cmnd_buff(item_start(1):item_end(1)) )
         IF ( axis .EQ. unspecified_int4 ) GOTO 6210
 * /MODULO
         new_att_modulo = .FALSE.
@@ -1487,10 +1541,14 @@ c *kob* 4/97
 
 	RETURN
 
+      ENDIF
+
 * SET MEMORY/MAX=megawords (Or equivalently the older SET MEMORY/SIZE=megawords)
 * Optional units given as /MAX=xxKb /MAX=xxMb /MAX=xxGb, looking only at the first letter.
 
- 1300	IF ( num_args .GT. 0 ) GOTO 5800
+      IF (subcmnd_num .EQ. 13) THEN
+
+	IF ( num_args .GT. 0 ) GOTO 5800
 	if (is_secure()) then
 	   CALL SPLIT_LIST(pttmode_help, err_lun,
      1	        'This command is not allowed in secure mode.', 0)
@@ -1546,10 +1604,15 @@ c *kob* 4/97
 
         RETURN
 
+      ENDIF
+
 * SET ATTRIBUTE/TYPE= /DATASET= /OUTPUT[=] /LIKE= /QUIET
- 1400 IF ( num_args .LT. 1 ) GOTO 5900
-      CALL NAME_EQUAL_STRING_VATT ( buff1, pos, status )
-      IF ( status .NE. ferr_ok )  GOTO 5000
+
+      IF (subcmnd_num .EQ. 14) THEN
+
+	IF ( num_args .LT. 1 ) GOTO 5900
+	CALL NAME_EQUAL_STRING_VATT ( buff1, pos, status )
+	IF ( status .NE. ferr_ok )  GOTO 5000
 
 * Initialize
       dset_num = unspecified_int4
@@ -1887,8 +1950,13 @@ c *kob* 4/97
         ENDIF
 	RETURN
 
+      ENDIF
+
 * SET NCCACHE/SIZE=bytes/cache_nelems/cache_preemption
- 1500	IF ( num_args .GT. 0 ) GOTO 5200
+
+      IF (subcmnd_num .EQ. 15) THEN
+
+	IF ( num_args .GT. 0 ) GOTO 5200
         cache_size = -1
         cache_nelems = -1
         cache_preemption = -1
@@ -1925,8 +1993,13 @@ c *kob* 4/97
 
 	RETURN
 
+      ENDIF
+
 * SET REDIRECT /TEE /JOURNAL /FILE= /APPEND /CLOBBER [stdout] [stderr]
- 1600   redir_stdout = .FALSE.
+
+      IF (subcmnd_num .EQ. 16) THEN
+
+	redir_stdout = .FALSE.
         redir_stderr = .FALSE.
 *
 *       Determine all the sources to redirect
@@ -2102,8 +2175,12 @@ c           ENDIF
         ENDIF
         RETURN
 
-* SET GIFFILE
- 1700   IF ( num_args .EQ. 0 ) GOTO 5100
+      ENDIF
+
+
+      IF (subcmnd_num .EQ. 17) THEN
+
+	IF ( num_args .EQ. 0 ) GOTO 5100
 
 * *kms* with the graphics delegate, treat it the same as set mode meta:"filename"
         buff2 = cmnd_buff(item_start(1):item_end(1))
@@ -2114,10 +2191,13 @@ c           ENDIF
         mode_metafile = .TRUE.
         RETURN
 
+      ENDIF
+
 	
 * SET TEXT /FONT /COLOR /ITALIC /BOLD /ISIZ  GROUP
 
- 1800   CONTINUE
+
+      IF (subcmnd_num .EQ. 18) THEN
 
 	IF (num_items .EQ. 0) THEN 
 	   igroup = fnt_all
@@ -2157,6 +2237,8 @@ c           ENDIF
 * Set logical flag
 	pyfont = (STR_SAME(pyfnt_fontname, 'Hershey') .NE. 0 )
 	RETURN
+
+      ENDIF
 
 * error exits
  5000	RETURN

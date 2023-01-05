@@ -51,6 +51,8 @@
 * V71 12/16 *acm* For ticket 2158: working with true monthly time axes.
 *                 (no actual changes, just modernizing the code a bit.)
 * V720 *sh* 5/17 support for DSG coordinates as pseduo-variables
+*  1/2023 *acm* Code cleanup: Replace the computed GOTO statement 
+*                  "GOTO ( 100, 200, 300..) pv"  with IF blocks
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -95,10 +97,12 @@
 
 	IF ( pv .GT. nferdims+1 )  STOP 'MK_PSEUDO_VAR'	! diag
 
-	GOTO (  100, 200, 300, 400, 500 ) pv
 
 * "I", "J", "K", "L", "M", "N"
- 100	IF (its_dsg) THEN
+
+      IF (pv .EQ. 1) THEN
+
+	IF (its_dsg) THEN
 	   nfeatures = TM_DSG_NFEATURES(grid)
 	   IF (lm_size(dsg_lm) .EQ. nfeatures) THEN
 * ... DSG instance indices
@@ -125,9 +129,14 @@
 	ENDIF
 	RETURN
 
+      ENDIF
+
 * "X", "Y", "Z", "T", "E", "F"
 * TM_WORLD returns days if it is a true-month time axis
- 200	IF (its_dsg) THEN
+
+      IF (pv .EQ. 2) THEN
+
+	IF (its_dsg) THEN
 !DSGTBD: more efficient would be to just retuen the pointer dsg_linemem(dsg_lm)%ptr
 !  an example of how to do this is found in FIND_MEM_VAR
 !  In IS_PSEUDO would need to trap the X,Y,Z,T pseudo-variable case
@@ -141,28 +150,45 @@
 	ENDIF
 	RETURN
 
+      ENDIF
+
 * "XBOX", "YBOX", "ZBOX", "TBOX", "EBOX", "FBOX"
 !DSGTBD: BOX, BOXLO, and BOXHI are useful values to return for the coordinates
 ! that are observation variable, but not for the coordinates that are instance
 ! variables.
 !       Currently these are trapped as errors in PSEUDO_VAR_CONTEXT
- 300	DO i = lo_ss, hi_ss
+
+      IF (pv .EQ. 3) THEN
+
+	DO i = lo_ss, hi_ss
 	   pvar( i ) = BOX_SIZE( i, grid, idim )
 	ENDDO
 	RETURN
 
+      ENDIF
+
 * "XBOXLO", "YBOXLO", "ZBOXLO", "TBOXLO", "EBOXLO", "FBOXLO"
 !DSGTBD: e.g. the low value of XBOXLO for a trajectory feature can be returned
 !    as the midpoint between X-observation and X-previous-observation
- 400	DO i = lo_ss, hi_ss
+
+      IF (pv .EQ. 4) THEN
+
+	DO i = lo_ss, hi_ss
 	   pvar( i ) =  TM_WORLD( i,grid,idim,box_lo_lim )
 	ENDDO
 	RETURN
 
+      ENDIF
+
 * "XBOXHI", "YBOXHI", "ZBOXHI", "TBOXHI", "EBOXHI", "FBOXHI"
- 500	DO i = lo_ss, hi_ss
+
+      IF (pv .EQ. 5) THEN
+
+	DO i = lo_ss, hi_ss
 	   pvar( i ) =  TM_WORLD( i,grid,idim,box_hi_lim )
 	ENDDO
 	RETURN
 
-	END
+      ENDIF
+
+      END

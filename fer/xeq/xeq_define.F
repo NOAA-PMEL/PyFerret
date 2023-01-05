@@ -274,6 +274,8 @@
 * v767 6/22 *acm* See issue 112: Detect whether axis length is too large for 
 *                 4-byte integer indexing
 * 12/2022 *acm* Code cleanup: Ensure consistent data types in subroutine calls 
+*  1/2023 *acm* Code cleanup: Replace the computed GOTO statement 
+*                  "GOTO ( 100,200, ... )  subcmnd_num"  with IF blocks
 
         IMPLICIT NONE
 	include	'tmap_errors.parm'
@@ -482,13 +484,15 @@
 	LOGICAL OUTSIDE_0_1
 	OUTSIDE_0_1( x ) = x.LT.0.0 .OR. x.GT.1.0
 
-* select subcommand
-	GOTO ( 100,200,300,400,500,600,700,800,900,1000,1100,1200 ) subcmnd_num
+* execute subcommand
 
 * DEFINE  '    ' - (no action)
 * arrival at this point usually means an illegal subcommand was given
 * and was assumed to be an argument by the command parser
- 100	IF ( num_args .GE. 1 ) THEN
+
+      IF (subcmnd_num .EQ. 1) THEN
+
+	IF ( num_args .GE. 1 ) THEN
 	   CALL ERRMSG( ferr_invalid_subcmnd, status,
      .			cmnd_buff( arg_start(1):arg_end(1) ), *5000 )
 	ELSE
@@ -496,10 +500,15 @@
      .			'DEFINE what ?', *5000 )
 	ENDIF
 
+      ENDIF
+
 **************************************************************************
 * DEFINE REGION
 * ... command syntax ok ?
- 200	IF ( num_args .EQ. 0 ) THEN
+
+      IF (subcmnd_num .EQ. 2) THEN
+
+	IF ( num_args .EQ. 0 ) THEN
 	   CALL ERRMSG( ferr_invalid_command, status,
      .			'DEFINE what region ?', *5000 )
 	ENDIF
@@ -575,10 +584,16 @@
 	cx_name( islot ) = reg_name
 	RETURN
 
+      ENDIF
+
 **************************************************************************
 * DEFINE GRID
 * ... DEFINE GRID/X/Y/Z/T/E/F /FILE /LIKE
- 300	iqual = qual_given( slash_file )
+
+ 300  continue
+      IF (subcmnd_num .EQ. 3) THEN
+
+	iqual = qual_given( slash_file )
 	IF ( iqual .GT. 0 ) THEN
 * ... note "err_string" is used to save space - this is not an error
 	   CALL EQUAL_STR_LC( cmnd_buff(qual_start(iqual):qual_end(iqual)),
@@ -679,12 +694,17 @@
 
 	RETURN
 
+      ENDIF
+
 **************************************************************************
 * DEFINE VARIABLE
 * find name to define
 * 2 syntaxes are allowed: "DEFINE VAR NAME=TEXT", "DEFINE VAR NAME TEXT"
 * in the latter be careful that "TEXT" may contain "="
- 400	purge_all = .FALSE.  ! initialize
+
+      IF (subcmnd_num .EQ. 4) THEN
+
+	purge_all = .FALSE.  ! initialize
         IF ( num_args .LT. 1 ) GOTO 5300
 	CALL NAME_EQUAL_STRING( buff1, pos, status )
 	CALL NAME_EQUAL_STRING_LC( varname, pos, status )
@@ -902,10 +922,19 @@
      .		'too many user-defined variables'//pCR//
      .		'cancel or redefine some variables', *5000 )
 
+
+      ENDIF
+
 **************************************************************************
 * DEFINE AXIS
 * ... /FILE=
- 500	IF ( qual_given( slash_file ) .GT. 0 ) GOTO 300 ! like DEFINE GRID/FILE
+
+      IF (subcmnd_num .EQ. 5) THEN
+
+	IF ( qual_given( slash_file ) .GT. 0 ) THEN
+	   subcmnd_num = 3
+	   GOTO 300 ! like DEFINE GRID/FILE
+	ENDIF
 
 * initialize	
 	buff2 = ' '
@@ -2189,17 +2218,15 @@ c	ENDIF
 	line_name_orig( iline ) = varname
 	RETURN
 
+      ENDIF
+
+
 **************************************************************************
-* DEFINE VIEWPORT
+* DEFINE VIEWPORT 
 
-* main window opened yet ?
-	IF ( .NOT.pplus_started ) THEN
-	   CALL START_PPLUS(.TRUE.)
-*          this opens a window, so need to set physical_chg .TRUE. to resize it
-*           physical_chg = .TRUE.
-	ENDIF
+      IF (subcmnd_num .EQ. 6) THEN
 
- 600	IF ( num_args .NE. 1 ) GOTO 5300
+	IF ( num_args .NE. 1 ) GOTO 5300
  
 	r4_unspec = unspecified_val4
 * check out viewport name
@@ -2369,9 +2396,15 @@ c	ENDIF
 	IF ( ivp .EQ. vp_num ) CALL SET_VIEWPORT( ivp )
 	RETURN
 
+      ENDIF
+
+
 **************************************************************************
 * DEFINE ALIAS
- 700	IF ( num_args .LT. 1 ) GOTO 5300
+
+      IF (subcmnd_num .EQ. 7) THEN
+
+	IF ( num_args .LT. 1 ) GOTO 5300
 	CALL NAME_EQUAL_STRING( buff1, pos, status )
 	IF ( status .NE. ferr_ok )  GOTO 5000
 	IF ( pos .EQ. 0 ) GOTO 5400
@@ -2413,12 +2446,18 @@ c	ENDIF
  720    vax_code = STR_UPCASE( alias_name(i1), buff1 ) 
         alias(i1) = cmnd_buff(pos:arg_end(num_args))
         alias_len(i1) = TM_LENSTR1( alias(i1) )
+
 	RETURN
+
+      ENDIF
 
 
 **************************************************************************
 * DEFINE SYMBOL
- 800	IF ( num_args .LT. 1 ) GOTO 5300
+
+      IF (subcmnd_num .EQ. 8) THEN
+
+	IF ( num_args .LT. 1 ) GOTO 5300
 	CALL NAME_EQUAL_STRING( buff1, pos, status )
 	IF ( status .NE. ferr_ok )  GOTO 5000
 	IF ( pos .EQ. 0 ) GOTO 5400
@@ -2439,9 +2478,15 @@ c	ENDIF
 ! ... no check on returned error code (could be "internal error")
 	RETURN
 
+      ENDIF
+
+
 **************************************************************************
 * DEFINE ATTRIBUTE /D= /TYPE= /OUTPUT /QUIET
- 900	IF ( num_args .LT. 1 ) GOTO 5900
+
+      IF (subcmnd_num .EQ. 9) THEN
+
+	IF ( num_args .LT. 1 ) GOTO 5900
 	CALL NAME_EQUAL_STRING_VATT ( buff1, pos, status )
 	IF ( status .NE. ferr_ok )  GOTO 5000
 	IF ( pos .EQ. 0 ) GOTO 5400
@@ -2673,10 +2718,15 @@ c	ENDIF
             IF (status .NE. ferr_ok) GOTO 6500
 	RETURN
 
+      ENDIF
+
+
 **************************************************************************
 * DEFINE PYFUNC /NAME=<alias> python.module.name
 
- 1000   IF ( num_args .LT. 1 ) GOTO 6000
+      IF (subcmnd_num .EQ. 10) THEN
+
+	IF ( num_args .LT. 1 ) GOTO 6000
         IF ( num_args .GT. 1 ) GOTO 6010
 
         iqual = qual_given(slash_pyfunc_name)
@@ -2709,6 +2759,9 @@ c	ENDIF
 
         RETURN
 
+      ENDIF
+
+
 	
 **************************************************************************
 * DEFINE DATA /AGGREGATE /TITLE= /QUIET
@@ -2717,7 +2770,10 @@ c	ENDIF
 * where D1,D2 can be already-open Ferret dataset numbers, or dataset specs
 * that would allow Ferret to open the datset.
 
-1100	IF ( num_args .NE. 1 ) GOTO 5350
+
+      IF (subcmnd_num .EQ. 11) THEN
+
+	IF ( num_args .NE. 1 ) GOTO 5350
 
 
 * define data valid only with /AGGREGATE
@@ -3010,6 +3066,8 @@ c	ENDIF
 
 	RETURN
 
+      ENDIF
+
 
 **************************************************************************
 * DEFINE ANNOTATION /USER/NORM/NOUSER/XPOS/YPOS/HALIGN/VALIGN/ANGLE/SIZE/NLAB label_text
@@ -3017,7 +3075,10 @@ c	ENDIF
 *
 * Find label text
 
-1200	IF ( num_args .LT. 1 ) GOTO 6200
+
+      IF (subcmnd_num .EQ. 12) THEN
+
+	IF ( num_args .LT. 1 ) GOTO 6200
 
 	item = 1
 	buff1 = cmnd_buff(item_start(item):item_end(item))
@@ -3051,6 +3112,8 @@ c ?? if nlab=0, use next avail slot?
         IF (status .NE. ferr_ok) GOTO 5000 
 
 	RETURN
+
+      ENDIF
 **************************************************************************
 
 * error exit

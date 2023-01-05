@@ -148,7 +148,8 @@ C              do not make small tics by default.
 * 11/2022 *acm* Code cleanup: Use the variable from common CMXGE rather than 1.e35
 * 11/2022 *acm* Code cleanup: Modernize DO-loop syntax.
 * 11/2022 *acm* Code cleanup: Remove and issue note for long-obsolete PPLUS commands
-* 12/2022 *acm* Code cleanup: Get rid of MULTPLT, long ago replaced by viewports
+* 12/2022 *acm* Code cleanup: Major rewrite to replace the computed GOTO statement 
+*                             "GOTO (100,200,300,500 ...), I"  with IF blocks
 
 c	fromi	command file or device (/dev/tty or TT: for terminal)
 c	linei	input line for parameters
@@ -237,9 +238,6 @@ c
                                      
         real            pplmem(*)
         logical         tmapdebug
-CCCCCCC Assign value below rather than initialize here.  F90 complains (linux)
-CCCCCCC data	        tmapdebug/.false./
-
         common/tmdebug/ tmapdebug
 
 *       Declarations added J Davison 9.2.88                    
@@ -276,7 +274,7 @@ CCCCCCC data	        tmapdebug/.false./
 	CHARACTER FROMI*10,LINEI*10
 	CHARACTER COMBUF(ICMDIM)*2048
 	CHARACTER YES*3,NO*2,err_msg*40
-	LOGICAL LEOF
+	LOGICAL old_comm
 	LOGICAL IFLG1,IFLG2,LABON,VALOFF,TBOTH
 	DIMENSION X1(5),Y1(5),Y2(4),X3(2),IX3(5)
 	DIMENSION X4(4)
@@ -284,9 +282,8 @@ CCCCCCC data	        tmapdebug/.false./
 	PARAMETER(num_comm = 126)
 	CHARACTER COMM(num_comm)*7
 	EQUIVALENCE (DT,X3(1)),(ITYPET,IX3(1)),(TSMX,X4(1))
-	EQUIVALENCE (XLO,X1(1)),(YLO,Y1(1)),
-     *		(HLAB1,Y2(1))
-	INTEGER	ISTAT,IFLAG !Added back in -- deleted for some reason in v1.1
+	EQUIVALENCE (XLO,X1(1)),(YLO,Y1(1)), (HLAB1,Y2(1))
+	INTEGER	ISTAT,IFLAG 
 	DATA YES,NO/'YES','NO'/
 	DATA FILE/' '/
 	DATA COMM/'AUTO','BAUD','EXIT','PLTYPE','RWDSEQ','SIZE',
@@ -309,16 +306,11 @@ CCCCCCC data	        tmapdebug/.false./
      *  'FLOWLIN', 'S_KEY', 'S_CELL', 'POLYGON', 'XVALOFF', 'YVALOFF',
      *  'LINECOL','RENAMPL','SHRINKY','RIBBON','RIBFAST','RIBMISS',
      *  'GAPLOC','CLRKLAB'/
-
-!  *  'SQFILL','AREA'/ NAME CHANGE *jd*
  
 	CHARACTER*15  TMPCHR
 	character*2048 set_name
 
-*	*jd* linux external stmt below inserted	
 	external scale
-
-* *kob* add external statment 9/98
 	EXTERNAL 
      .          PPLDAT,
      .          WS_TYPES_INIT
@@ -335,6 +327,8 @@ CCCCCCC data	        tmapdebug/.false./
 
       FROMI = PPLFROMI
       LINEI = PPLLINEI
+
+      makep = ' '
 
 *       SETUP SHADE ROUTINE DEFAULTS             
         if (first_time_thru) then                
@@ -361,12 +355,11 @@ C
 	MEMBUF=ICMSZE.GE.1
 	BUFSZE=ICMSZE
 	IF(MEMBUF)THEN
-!	    M=BUFDIM No longer defined in v1.1 -- see cmdcom.inc
 	    M=IBFDIM
 	    M=MIN0(M,BUFSZE)
-	    DO 30 I=1,M
+	    DO I=1,M
 	      CMDBUF(I)=COMBUF(I)
-30	    CONTINUE
+	    ENDDO
 	    FROM='$$MEMBUF$$'
 	    LINE=' '
 	    IS=0
@@ -382,8 +375,10 @@ C
 C	READ COMMAND FROM INPUT AND PARSE
 C
 	MBUFF=1
+
 10	call FGD_GQOPS(ws_state)
-!	If GKS WS is active, flush output buffer before leaving if just plotted
+
+C	If GKS WS is active, flush output buffer before leaving if just plotted
 	if (ws_state .ge. 3) then
 	  if (makep .eq. 'CONTOUR'
      .	  .or.makep .eq. 'PLOT'
@@ -410,16 +405,18 @@ C
 	CALL GETCMD(STRING,ISLEN,ICOM,P,IFLG,M,LABEL,N,LBSTRT)
 	IF (DONEF) RETURN
 
-C       Changed ICOM to CHAR*7 comparison for CALENDAR command. *jd* 10.99
+C   Is this a known command?
+
 	ICOM7(1:7)=ICOM(1:7)
-	DO 20 I=1,num_comm
-	    IF(ICOM7.EQ.COMM(I))GOTO 21
-20	CONTINUE
+	DO I=1,num_comm
+	   IF(ICOM7.EQ.COMM(I)) GOTO 21
+	ENDDO
+
 	IF(ICOM(1:1).EQ.'%')THEN
-! 	   Mod 11.9.93 to insert advanced command output into segments
-*          TMAP check that output window is active
+
+*  TMAP check that output window is active
            IF ( PPL_in_FERRET ) CALL CK_GKS_ACTIVE( *9999 ) 
-*          TMAP addition to turn on segment
+*  TMAP addition to turn on segment
            IF ( PPL_in_FERRET ) CALL SEG_ON( )
 
 	   CALL PRMTIV(pplmem,pplmem_nsize)
@@ -427,158 +424,156 @@ C       Changed ICOM to CHAR*7 comparison for CALENDAR command. *jd* 10.99
 	ELSE
 	    CALL SPWN
 	ENDIF
+
 	GOTO 10
-21	IFLG1=(M.GE.1.AND.IFLG(1).NE.0)
+
+C known commands
+21	CONTINUE
+	IFLG1=(M.GE.1.AND.IFLG(1).NE.0)
 	IFLG2=(M.GE.2.AND.IFLG(2).NE.0)
 	LABON=(LABEL.EQ.'ON'.OR.LABEL.EQ.'on')
 	TBOTH=(LABEL.EQ.'BO'.OR.LABEL.EQ.'bo')
 	IF (TBOTH) LABON = .TRUE.
 	VALOFF=(INDEX(LABEL,'OFF')+INDEX(LABEL,'off')).NE.0
-C       Mod below for brain dead version *JD* 8.2.91
-        if (tmapdebug) then
-	GOTO (100,200,300,500,600,700,900,1000,1100,1200,1300,
-     *	1400,1500,1600,1800,1900,2000,2100,2200,2300,2500,2600,
-     *	2700,2800,2900,3300,3400,3500,3600,4000,4200,4300,
-     *	4400,4500,4600,4700, 600,1600,3300,4900,5000,5100,5200,
-     *	5300,5400,5500,5700,5800,5900,6000,6100,6200,6300,6400,
-     *	6500,6600,6700,6800,6900,7000,7100,7200,7300,7400,7500,
-     *	7600,7700,7800,7900,8000,8100,8200,8300,8400,8500,8600,
-     *	8700,8800,8900,9000,9100,9200,9300,9400,9500,9600,9700,9750,
-     *	9800,9900,9910,9920,9930,9940,9950,9110,9120,9130,9140,
-     *	9150,9160,9170,9180,9190,98,9191,9380,9171,9172,9173,
-     *  9174,9175,9390,9165,9166,9183,4401,4501,9192,9960,9970,
-     *  1550,9980,9982,9984,9985),I
-        else
-	GOTO (100,200,300,500,99,700,900,1000,1100,1200,1300,
-     *	1400,1500,99,1800,1900,2000,2100,2200,2300,2500,2600,
-     *	2700,2800,2900,99,3400,3500,3600,4000,4200,4300,
-     *	4400,4500,4600,4700,99,99,99,4900,5000,5100,5200,
-     *	5300,5400,5500,5700,5800,5900,6000,6100,6200,6300,6400,
-     *	6500,6600,6700,6800,6900,7000,7100,7200,7300,7400,7500,
-     *	7600,7700,7800,7900,8000,8100,8200,8300,8400,8500,8600,
-     *	8700,8800,8900,9000,9100,9200,9300,9400,9500,9600,9700,9750,
-     *	9800,9900,9910,9920,9930,9940,9950,9110,9120,9130,9140,
-     *	9150,9160,9170,9180,9190,98,9191,9380,9171,9172,9173,
-     *  9174,9175,9390,9165,9166,9183,4401,4501,9192,9960,9970,
-     *  1550,9980,9982,9984,9985),I
-        end if
-        goto 10
 
-C     TMDEBUG
- 98   call upper (label,2048)
-      if (label .eq. 'ON')  tmapdebug = .true.
-      if (label .eq. 'OFF') tmapdebug = .false.
-      goto 10
-C
-C     Brain dead response for RDing
-C
- 99   IF(.NOT.QUIETF)WRITE(LTTOUT,
-     . '(1X,''COMMAND NOT SUPPORTED IN THIS VERSION OF PPLUS: '',A7)') 
-     . ICOM(:7)
-      GOTO 10
-C     AUTO
-100	CONTINUE
+C Obsolete commands. Issue an error message
+      old_comm = .FALSE.
+      IF (ICOM7 .EQ. 'AUTO') old_comm = .TRUE. 
+      IF (ICOM7 .EQ. 'BAUD') old_comm = .TRUE.
+      IF (ICOM7 .EQ. 'RWDS' ) old_comm = .TRUE.
+      IF (ICOM7 .EQ. 'READS') old_comm = .TRUE.
+      IF (ICOM7 .EQ. 'VARS') old_comm = .TRUE.
+      IF (ICOM7 .EQ. 'CLINE') old_comm = .TRUE.
+      IF (ICOM7 .EQ. 'SKPS') old_comm = .TRUE.
+      IF (ICOM7 .EQ. 'RWD') old_comm = .TRUE.
+      IF (ICOM7 .EQ. 'RD') old_comm = .TRUE.
+      IF (ICOM7 .EQ. 'SKP') old_comm = .TRUE.
+      IF (ICOM7 .EQ. 'TKTYPE') old_comm = .TRUE.
+      IF (ICOM7 .EQ. 'ENTER') old_comm = .TRUE.
+      IF (ICOM7 .EQ. 'SAVE') old_comm = .TRUE.
+      IF (ICOM7 .EQ. 'GET') old_comm = .TRUE.
+      IF (ICOM7 .EQ. 'PARAM') old_comm = .TRUE.
+      IF (ICOM7 .EQ. 'MULTPLT') old_comm = .TRUE.
+      IF (ICOM7 .EQ. 'RDCOM') old_comm = .TRUE.
+      IF (ICOM7 .EQ. 'LINFIT') old_comm = .TRUE.
+      IF (ICOM7 .EQ. 'GRID') old_comm = .TRUE.
+      IF (ICOM7 .EQ. 'TEKNME') old_comm = .TRUE.
+      IF (ICOM7 .EQ. 'AUTOLAB') old_comm = .TRUE.
+      IF (ICOM7 .EQ. 'ECHO') old_comm = .TRUE.
+      IF (ICOM7 .EQ. 'EVAR') old_comm = .TRUE.
+      IF (ICOM7 .EQ. 'DEBUG') old_comm = .TRUE.
+      IF (ICOM7 .EQ. 'RESET') old_comm = .TRUE.
+      IF (ICOM7 .EQ. 'TMDEBUG') old_comm = .TRUE.
+      IF (ICOM7 .EQ. 'PIXMAP') old_comm = .TRUE.
+      IF (ICOM7 .EQ. 'RENAMPL') old_comm = .TRUE.
+      IF (ICOM7 .EQ. 'USR') old_comm = .TRUE.
+
+
+      IF (old_comm) THEN
          err_msg = 'PPLUS Command not supported '//icom(:TM_LENSTR1(icom))
          CALL ERRMSG (ferr_not_implemented, status, err_msg, *9999)
+         GOTO 10
+      ENDIF
 
-	GOTO 10
-C     BAUD
-200	CONTINUE  ! unused
-300	CALL ATFLSH
-	RETURN
-C     PLTYPE
-500	ICODE=IFIX(P(1))
-C       More brain dead mods:
-        IF (ICODE .NE. 3 .AND. .not. tmapdebug) THEN
+	IF (ICOM7.EQ.'TMDEBUG') GOTO 10
+	IF (ICOM7.EQ.'BAUD') RETURN
+
+C PLTYPE
+      IF (ICOM7 .EQ. 'PLTYPE') THEN
+	   ICODE=IFIX(P(1))
+        IF (ICODE .NE. 3) THEN
            IF(.NOT.QUIETF)WRITE(LTTOUT,'(1X,A)')
      .          'PLTYPE 3 ONLY IS SUPPORTED IN THIS VERSION OF PPLUS'
            GOTO 10
         ENDIF
 	CALL PLTYPE(ICODE)
 	GOTO 10
-600	CONTINUE ! unused
-C     SIZE
-700	WIDTH=P(1)
+      ENDIF
+
+C SIZE
+      IF (ICOM7 .EQ. 'SIZE') THEN
+	WIDTH=P(1)
 	HEIGHT=P(2)
 	SYM='*PPL$WIDTH'
 	CALL PUTVAL(SYM,WIDTH,6,IER)
 	SYM='*PPL$HEIGHT'
 	CALL PUTVAL(SYM,HEIGHT,6,IER)
 	GOTO 10
-C     SMOOTH
-900	IF(M.EQ.0)GOTO 10
+      ENDIF
+
+C SMOOTH
+      IF (ICOM7 .EQ. 'SMOOTH') THEN
+	IF(M.EQ.0)GOTO 10
 	CALL SMOOTH(pplmem,NX,NY,NX,NY,IFIX(P(1)))
 	GOTO 10
-C     TKTYPE
-1000	CONTINUE
+      ENDIF
 
-         err_msg = 'PPLUS Command not supported '//icom(:TM_LENSTR1(icom))
-         CALL ERRMSG (ferr_not_implemented, status, err_msg, *9999)
+C XLAB
+      IF (ICOM7 .EQ. 'XLAB') THEN
+	XLAB=LABEL
+	GOTO 10
+      ENDIF
 
+C YLAB
+      IF (ICOM7 .EQ. 'YLAB') THEN
+	YLAB=LABEL
 	GOTO 10
-C     XLAB
-1100	XLAB=LABEL
-	GOTO 10
-C     YLAB
-1200	YLAB=LABEL
-	GOTO 10
-C     FORMAT
-1300	IFORM=LABEL
+      ENDIF
+
+C FORMAT
+      IF (ICOM7 .EQ. 'FORMAT') THEN
+	IFORM=LABEL
 	CALL UPPER(IFORM,80)
 	SYM='*PPL$FORMAT'
 	ISYM=LNBLK(IFORM,80)
 	CALL PUTSYM(SYM,IFORM,ISYM,IER)
 	LSCTD=SCTD
 	GOTO 10
-C     VARS
-1800	IEFLG=0
-	LSOFFS=SOFFS
-	LSTIME=STIME
-	LSNEXT=SNEXT
-	IF(IFLG(1).NE.0)NGRP=IFIX(P(1))
-	JX=0
-	JY=0
-	JZ=0
-	DO 1801 I=2,M
-	    IF(IFLG(I).EQ.0)GOTO 1801
-	    IF(P(I).EQ.1.)JX=I-1
-	    IF(P(I).EQ.2.)JY=I-1
-	    IF(P(I).EQ.3.)JZ=I-1
-1801	CONTINUE
-	NVAR=M-1
-	GOTO 10
-C     XAXIS
-1900	DO 1901 I=1,M
-	    IF(I.GE.4)GOTO 1902
+      ENDIF
+
+C XAXIS
+      IF (ICOM7 .EQ. 'XAXIS') THEN
+	DO I=1,M
+	    IF(I.GE.4) EXIT
 	    IF(IFLG(I).NE.0)X1(I)=P(I)
-1901	CONTINUE
-1902	IF(M.GT.0)THEN
+	ENDDO
+	IF(M.GT.0)THEN
 	    IAUTOX=0
 	    X1(3)=SIGN(ABS(X1(3)),X1(2)-X1(1))
 	ELSE
 	    IAUTOX=1
 	ENDIF
 	GOTO 10
-C     YAXIS
-2000	DO 2001 I=1,M
-	    IF(M.GE.4)GOTO 2002
+      ENDIF
+
+C YAXIS
+      IF (ICOM7 .EQ. 'YAXIS') THEN
+	DO I=1,M
+	    IF(M.GE.4)EXIT
 	    IF(IFLG(I).NE.0)Y1(I)=P(I)
-2001	CONTINUE
-2002	IF(M.GT.0)THEN
+	ENDDO
+	IF(M.GT.0)THEN
 	    IAUTOY=0
 	    Y1(3)=SIGN(ABS(Y1(3)),Y1(2)-Y1(1))
 	ELSE
 	    IAUTOY=1
 	ENDIF
 	GOTO 10
-C     NLINES
-2100	CALL RSMNMX
+      ENDIF
+      
+C NLINES
+      IF (ICOM7 .EQ. 'NLINES') THEN
+	CALL RSMNMX
 	LINEN=0
 	IBASE=1
 	PBUF=0
 	LNUM=1
 	GOTO 10
-2200	I=IFIX(P(1))
+      ENDIF
+
+C LINE
+      IF (ICOM7 .EQ. 'LINE') THEN
+	I=IFIX(P(1))
 	IF(IFLG2)IMARK(I)=IFIX(P(2))
 	IF(M.GE.3.AND.IFLG(3).NE.0)ITYPE(I)=IFIX(P(3))
         if(m.ge.4.and.iflg(4).ne.0)xoff(i)=p(4)     
@@ -589,13 +584,15 @@ C     NLINES
         if(m.ge.9.and.iflg(9).ne.0)up2(i)=p(9)      
 	IF(M.GE.10.AND.IFLG(10).NE.0)IPEN(I)=IFIX(P(10))
 	GOTO 10
+      ENDIF
 
-C     LABS
-2300	IF(P(1).EQ.0..OR.M.EQ.0)THEN
-	    DO 2301 I=1,NLABS
+C LABS
+      IF (ICOM7 .EQ. 'LABS') THEN
+	IF(P(1).EQ.0..OR.M.EQ.0)THEN
+	    DO I=1,NLABS
 		LLTYPE(I)=0
 		RHLABS(I)=-1.0
-2301	    CONTINUE
+	    ENDDO
 	    NLAB=0
 	ELSE
 	    I=IFIX(P(1))
@@ -611,24 +608,25 @@ C     LABS
 	    IF(NLAB.LT.I)NLAB=I
 	END IF
 	GOTO 10
-C     LABSET
-2500	DO 2501 I=1,M
+      ENDIF
+
+C LABSET
+      IF (ICOM7 .EQ. 'LABSET') THEN
+	DO I=1,M
 	    IF(IFLG(I).NE.0)Y2(I)=P(I)
-2501	CONTINUE
+	ENDDO
 	GOTO 10
-C     LEVELS
-2600	CALL LEVEL
+      ENDIF
+
+C LEVELS
+      IF (ICOM7 .EQ. 'LEVELS') THEN
+	CALL LEVEL
 	GOTO 10
-C     CLINE
-2700	DO 2701 I=1,M
-	    IF(IFLG(I).NE.0)LWGT(I)=IFIX(P(I))
-2701	CONTINUE
-	DO 2702 I=M+1,NLEV
-	  LWGT(I)=1
-2702	CONTINUE
-	GOTO 10
-C     CONSET
-2800	IF(IFLG1)HGT=P(1)
+      ENDIF
+
+C CONSET
+      IF (ICOM7 .EQ. 'CONSET') THEN
+	IF(IFLG1)HGT=P(1)
 	NEWSIG = 0  ! set this flag if a PPL CONSET is specificially setting the nsig value
 	IF(IFLG2)THEN
 	   IF (IFIX(P(2)) .GT. 0) NEWSIG = 1
@@ -646,29 +644,15 @@ C     CONSET
 	if(m.ge.10.and.iflg(10).ne.0.and.p(10).ne.0.)draftsman=.true.	
 	if(m.ge.10.and.iflg(10).ne.0.and.p(10).eq.0.)draftsman=.false.	
 	GOTO 10
-C     CROSS
-3600	ICROSS=0
+      ENDIF
+
+C CROSS
+      IF (ICOM7 .EQ. 'CROSS') THEN
+	ICROSS=0
 	IF(LABON)ICROSS=1
 	IF(IFLG(1).EQ.1)ICROSS=ICROSS+INT(P(1))
 	GOTO 10
-C     PARAM
-4000	GOTO 10
-
-C     SAVE
-4200	CONTINUE
-
-         err_msg = 'PPLUS Command not supported '//icom(:TM_LENSTR1(icom))
-         CALL ERRMSG (ferr_not_implemented, status, err_msg, *9999)
-
-	GOTO 10
-C	GET
-4300	CONTINUE
-
-         err_msg = 'PPLUS Command not supported '//icom(:TM_LENSTR1(icom))
-         CALL ERRMSG (ferr_not_implemented, status, err_msg, *9999)
-
-	GOTO 10
-
+      ENDIF
 
 c For XFOR and YFOR, check if LABEL is a valid format: 
 c do a test write to the string err_msg, using label as a format
@@ -682,10 +666,11 @@ C   call to RANGE sets intervals based on degrees and decimal
 C   fractions of degrees.) Reset only the delta, as the user may
 C   have explicitly set the lo and hi limit
 
-C     XFOR
-4400  i = STR_UPCASE (TMPCHR, LABEL(1:5))
-      i = TM_LENSTR1(LABEL) - 1
-      IF (TMPCHR(2:2) .EQ. 'D') THEN  ! degrees/mintues/seconds ?
+C XFOR
+      IF (ICOM7 .EQ. 'XFOR') THEN
+	i = STR_UPCASE (TMPCHR, LABEL(1:5))
+	i = TM_LENSTR1(LABEL) - 1
+	IF (TMPCHR(2:2) .EQ. 'D') THEN  ! degrees/mintues/seconds ?
            IF (TMPCHR(2:3) .EQ. 'DM') THEN
               xdms = 0
               IF (TMPCHR(2:3) .EQ. 'DM') xdms = 1 
@@ -719,11 +704,14 @@ C     XFOR
 	   xdms = 0
         ENDIF
 	GOTO 10
-C     YFOR
 
-4500  i = STR_UPCASE (TMPCHR, LABEL(1:15))
-      i = TM_LENSTR1(LABEL) - 1
-      IF (TMPCHR(2:2) .EQ. 'D') THEN  ! degrees/mintues/seconds ?
+      ENDIF
+
+C YFOR
+      IF (ICOM7 .EQ. 'YFOR') THEN
+	i = STR_UPCASE (TMPCHR, LABEL(1:15))
+	i = TM_LENSTR1(LABEL) - 1
+	IF (TMPCHR(2:2) .EQ. 'D') THEN  ! degrees/mintues/seconds ?
            IF (TMPCHR(2:3) .EQ. 'DM') THEN
               ydms = 0
               IF (TMPCHR(2:3) .EQ. 'DM') ydms = 1 
@@ -758,27 +746,33 @@ C     YFOR
 	   ydms = 0
         ENDIF
 	GOTO 10
-        
-C     XVALOFF
-4401  XVALOFF=P(1)
-      i = XVALOFF
-      IF (FLOAT(i) .NE. XVALOFF) THEN
-         err_msg = 'Offset must be an integer'
-         CALL ERRMSG (ferr_out_of_range, status, err_msg, *9999)
+	
       ENDIF
-      GOTO 10
 
-C     YVALOFF
-4501  YVALOFF=P(1)
-      i = YVALOFF
-      IF (FLOAT(i) .NE. YVALOFF) THEN
-         err_msg = 'Offset must be an integer'
-         CALL ERRMSG (ferr_out_of_range, status, err_msg, *9999)
+C XVALOFF
+      IF (ICOM7 .EQ. 'XVALOFF') THEN
+	XVALOFF=P(1)
+	i = XVALOFF
+	IF (FLOAT(i) .NE. XVALOFF) THEN
+           err_msg = 'Offset must be an integer'
+           CALL ERRMSG (ferr_out_of_range, status, err_msg, *9999)
+	ENDIF
+	GOTO 10
       ENDIF
-      GOTO 10
 
-C     ORIGIN
-4600	IF(IFLG1)XORG=P(1)
+C YVALOFF
+      IF (ICOM7 .EQ. 'YVALOFF') THEN
+	i = YVALOFF
+	IF (FLOAT(i) .NE. YVALOFF) THEN
+           err_msg = 'Offset must be an integer'
+           CALL ERRMSG (ferr_out_of_range, status, err_msg, *9999)
+	ENDIF
+	GOTO 10
+      ENDIF
+
+C ORIGIN
+      IF (ICOM7 .EQ. 'ORIGIN') THEN
+	IF(IFLG1)XORG=P(1)
 	IF(IFLG2)YORG=P(2)
 	SYM='*PPL$XORG'
 	CALL PUTVAL(SYM,XORG,6,IER)
@@ -790,18 +784,30 @@ C     ORIGIN
      	    call scale(xft,yft,xorg,yorg,xlo,ylo)
 	endif
 	GOTO 10
-C     WINDOW
-4700	IWIND=0
+      ENDIF
+
+C WINDOW
+      IF (ICOM7 .EQ. 'WINDOW') THEN
+	IWIND=0
 	IF(LABON) IWIND=1
 	GOTO 10
-C     METRIC
-5000	CALL METRIC
+      ENDIF
+
+C METRIC
+      IF (ICOM7 .EQ. 'METRIC') THEN
+	CALL METRIC
 	GOTO 10
-C     ENGLISH
-5100	CALL ENGLSH
+      ENDIF
+
+C ENGLISH
+      IF (ICOM7 .EQ. 'ENGLSH') THEN
+	CALL ENGLSH
 	GOTO 10
-C     LIMITS
-5200	CALL UPPER(LABEL,2048)
+      ENDIF
+
+C LIMITS
+      IF (ICOM7 .EQ. 'LIMITS') THEN
+	CALL UPPER(LABEL,2048)
 	IF(INDEX(LABEL,'XLE').NE.0)THEN
 	    XLE=.NOT.VALOFF
 	    IF(IFLG1)CMXLE=P(1)
@@ -831,8 +837,11 @@ C     LIMITS
 	    IF(IFLG1)CMZGE=P(1)
 	ENDIF
 	GOTO 10
-C     TAXIS
-5400	ITFLG=0
+      ENDIF
+
+C TAXIS
+      IF (ICOM7 .EQ. 'TAXIS') THEN
+	ITFLG=0
 	IF(LABON)THEN
 	    IF(SYAXIS)THEN
 		ITFLG=-1
@@ -841,75 +850,84 @@ C     TAXIS
 	    ENDIF
 	ENDIF
 	IF (TBOTH) ITFLG=2
-	DO 5401 I=1,M
+	DO I=1,M
 	    IF(I.GE.3)GOTO 5402
 	    IF(IFLG(I).NE.0)X3(I)=P(I)
-5401	CONTINUE
+	ENDDO
 	GOTO 10
-5402	DO 5403 J=I,M
+5402	DO J=I,M
 	    IF(IFLG(J).NE.0)IX3(J-2)=IFIX(P(J))
-5403	CONTINUE
+	ENDDO
 	GOTO 10
-C     RDCOM
-5500	goto 10
-C     TICS
-5800	DO 5801 I=1,M
-	    IF(I.GT.4)GOTO 5802
-	    IF(IFLG(I).NE.0)X4(I)=P(I)
-5801	CONTINUE
-5802	IF(M.GE.5.AND.IFLG(5).EQ.1)ITX=P(5)
-	IF(M.GE.6.AND.IFLG(6).EQ.1)ITY=P(6)
-* The following lets the user plot small tics with PPL TICS
-	MULTICENFLAG = .FALSE.
-	GOTO 10
-C	TMIN
-5900	IF(N.NE.0)THEN
+      ENDIF
+      
+C TMIN
+      IF (ICOM7 .EQ. 'TMIN') THEN
+	IF(N.NE.0)THEN
 	    IT1=LABEL(2:11)
 	    IF(ITSTRT.EQ.' ')ITSTRT=IT1
 	ENDIF
 
-C	Linux port. *jd* 12.96 F90 compiler has problem with the statement
-C	below "Invalid forward reference to 6102 detected at DT (end of stmt)"
-C	This is into an IF THEN ELSE clause.  As there is but one command 
-C	before another GOTO I have copied the code from line 6102 and 
-C	GOTO 10 right here.
-
-CCC	GOTO 6102
-	TLO=1.-DIFF(IT1,ITSTRT)/DT ! Needs to be == line 6102
+	TLO=1.-DIFF(IT1,ITSTRT)/DT 
 	GOTO 10
-C	TMAX
-6000	IF(N.NE.0)THEN
+      ENDIF
+
+C TMAX
+      IF (ICOM7 .EQ. 'TMAX') THEN
+	IF(N.NE.0)THEN
 	    IT2=LABEL(2:11)
 	ENDIF
 	GOTO 10
-C	TSTART
-6100	IF (IFORM(1:3).EQ.'EPI' .OR. IFORM(1:3).EQ.'BIB') THEN
+      ENDIF
+
+C TSTART
+      IF (ICOM7 .EQ. 'TSTART') THEN
+ 	IF (IFORM(1:3).EQ.'EPI' .OR. IFORM(1:3).EQ.'BIB') THEN
 	    GOTO 10
 	ELSE
 	    IF(N.EQ.0)LABEL(2:)=IT1
 	    ITSTRT=LABEL(2:11)
-6102	    TLO=1.-DIFF(IT1,ITSTRT)/DT
+	    TLO=1.-DIFF(IT1,ITSTRT)/DT
 	    GOTO 10
 	ENDIF
-C	PEN
-6200	I=IFIX(P(1))
+      ENDIF
+
+C TICS
+      IF (ICOM7 .EQ. 'TICS') THEN
+	DO I=1,M
+	    IF(I.GT.4)EXIT
+	    IF(IFLG(I).NE.0)X4(I)=P(I)
+	ENDDO
+	IF(M.GE.5.AND.IFLG(5).EQ.1)ITX=P(5)
+	IF(M.GE.6.AND.IFLG(6).EQ.1)ITY=P(6)
+* The following lets the user plot small tics with PPL TICS
+	MULTICENFLAG = .FALSE.
+	GOTO 10
+
+      ENDIF 
+
+C PEN
+      IF (ICOM7 .EQ. 'PEN') THEN
+	I=IFIX(P(1))
 	if (label .ne. ' ') then 
 	   call upnsquish (label,strr,end)
 	   if (strr .eq. 'SAVE') then
 	      ipen_save(i) = ipen(i)
-	      goto 6201
+	      goto 10
 	   elseif (strr .eq. 'RESTORE') then
 	      ipen(i) = ipen_save(i)
-	      goto 6201
+	      goto 10
 	   endif
 	endif
 	IF(M.LT.2.OR.IFLG(2).EQ.0)GOTO 10
 	IF(I.LT.1)I=0
 	IPEN(I)=IFIX(P(2))
-6201	GOTO 10
+	GOTO 10
+      ENDIF
 
-C	AXLEN
-6300	IF(IFLG1)XLEN=P(1)
+C AXLEN
+      IF (ICOM7 .EQ. 'AXLEN') THEN
+	IF(IFLG1)XLEN=P(1)
 	IF(IFLG2)YLEN=P(2)
 	SYM='*PPL$XLEN'
 	CALL PUTVAL(SYM,XLEN,6,IER)
@@ -921,94 +939,134 @@ C	AXLEN
 	    call scale(xft,yft,xorg,yorg,xlo,ylo)
 	endif
 	GOTO 10
-C	AXLABP
-6400	IF(IFLG1)LABELX=IFIX(P(1))
+      ENDIF
+
+C AXLABP
+      IF (ICOM7 .EQ. 'AXLABP') THEN
+	IF(IFLG1)LABELX=IFIX(P(1))
 	IF(IFLG2)LABELY=IFIX(P(2))
 	GOTO 10
-C	AXLINT
-6500	IF(IFLG1)LINTX=IFIX(P(1))
+      ENDIF
+
+C AXLINT
+      IF (ICOM7 .EQ. 'AXLINT') THEN
+	IF(IFLG1)LINTX=IFIX(P(1))
 	IF(IFLG2)LINTY=IFIX(P(2))
 	GOTO 10
-C	AXTYPE
-6600	IF(IFLG1)ITYPEX=IFIX(P(1))
+      ENDIF
+
+C AXTYPE
+      IF (ICOM7 .EQ. 'AXTYPE') THEN
+	IF(IFLG1)ITYPEX=IFIX(P(1))
 	IF(IFLG2)ITYPEY=IFIX(P(2))
 	GOTO 10
-C	AXLSZE
-6700	IF(IFLG1)XCSIZE=P(1)
+      ENDIF
+
+C AXLSZE
+      IF (ICOM7 .EQ. 'AXLSZE') THEN
+	IF(IFLG1)XCSIZE=P(1)
 	IF(IFLG2)YCSIZE=P(2)
 	GOTO 10
-C	AXNSIG
-6800	IF(IFLG1)NSIGX=IFIX(P(1))
+      ENDIF
+
+C AXNSIG
+      IF (ICOM7 .EQ. 'AXNSIG') THEN
+	IF(IFLG1)NSIGX=IFIX(P(1))
 	IF(IFLG2)NSIGY=IFIX(P(2))
 	GOTO 10
-C	AXNMTC
-6900	IF(IFLG1)NMTCX=IFIX(P(1))
+      ENDIF
+
+C AXNMTC
+      IF (ICOM7 .EQ. 'AXNMTC') THEN
+	IF(IFLG1)NMTCX=IFIX(P(1))
 	IF(IFLG2)NMTCY=IFIX(P(2))
 	GOTO 10
-C	AXATIC
-7000	IF(IFLG1)NTICX=IFIX(P(1))
+      ENDIF
+
+C AXATIC
+      IF (ICOM7 .EQ. 'AXATIC') THEN
+	IF(IFLG1)NTICX=IFIX(P(1))
 	IF(IFLG2)NTICY=IFIX(P(2))
 	GOTO 10
-C	ROTATE
-7100	IF(LABON)THEN
+      ENDIF
+
+C ROTATE
+      IF (ICOM7 .EQ. 'ROTATE') THEN
+	IF(LABON)THEN
 	    CALL ROTATE(90.)
 	ELSE
 	    CALL ROTATE(0.)
 	ENDIF
 	GOTO 10
-C	COMMENT COMMAND 'C'
-7200	GOTO 10
-C	BOX
-7300	IP(1)=0
+      ENDIF
+
+C COMMENT COMMAND 'C'
+      IF (ICOM7 .EQ. 'C') THEN
+	GOTO 10
+      ENDIF
+
+C BOX
+      IF (ICOM7 .EQ. 'BOX') THEN
+	IP(1)=0
 	IF(LABON)IP(1)=1
 	GOTO 10
-C	RLABS
-7400	I=IFIX(P(1))
+      ENDIF
+
+C RLABS
+      IF (ICOM7 .EQ. 'RLABS') THEN
+	I=IFIX(P(1))
 	IF(IFLG2)THEN
 	    RLABS(I)=P(2)
 	ELSE
 	    RLABS(I)=0.
 	ENDIF
 	GO TO 10
-C	AXSET
-7500	DO 7501 I=1,M
+      ENDIF
+
+C AXSET
+      IF (ICOM7 .EQ. 'AXSET') THEN
+	DO I=1,M
 	    IF(IFLG(I).NE.0) IAXON(I)=P(I)
-7501	CONTINUE
-	    GOTO 10
-C	'BLANK COMMAND'
-7600	    CONTINUE
-	    GOTO 10
-C	LLABS
-7700	    IF(.NOT.IFLG1)GOTO 10
-	    I=P(1)
-	    IF(IFLG2)THEN
-		XLLABS(I)=P(2)
-		YLLABS(I)=P(3)
-	    ELSE
-		LLTYPE(I)=0
-	    ENDIF
-	    IF(M.GE.4.AND.IFLG(4).NE.0)LLTYPE(I)=P(4)
-	    GOTO 10
-C	LEV
-7800	    CALL LEV
-	    GOTO 10
-C	DATPT
-7900	    IF(IFLG1)IZTYP=P(1)
-	    IF(IFLG2)IZMRK=P(2)
-	    GOTO 10
-C	PLTNME
-*8000	    IF(N.EQ.0)THEN
-*		TEMP='ppl.meta'
-*	    ELSE
-*		TEMP=LABEL
-*	    ENDIF
-*	    CALL PLTNME(TEMP)
-*	    SYM='*PPL$PLTNME'
-*	    ISYM=LNBLK(TEMP,2048)
-*	    CALL PUTSYM(SYM,TEMP,ISYM,IER)
-*           Open a "metafile"
-*           *kms* First check if this is actually a rename
-8000        IF ( save_on_exit .AND. imgname_sent ) THEN
+	ENDDO
+	GO TO 10
+      ENDIF
+
+C 'BLANK COMMAND'
+      IF (ICOM7 .EQ. ' ') THEN
+	GO TO 10
+      ENDIF
+
+C LLABS
+      IF (ICOM7 .EQ. 'LLABS') THEN
+	IF(.NOT.IFLG1)GOTO 10
+	I=P(1)
+	IF(IFLG2)THEN
+	   XLLABS(I)=P(2)
+	   YLLABS(I)=P(3)
+	ELSE
+	   LLTYPE(I)=0
+	ENDIF
+	IF(M.GE.4.AND.IFLG(4).NE.0)LLTYPE(I)=P(4)
+	GOTO 10
+      ENDIF
+
+C LEV
+      IF (ICOM7 .EQ. 'LEV') THEN
+	CALL LEV
+	GOTO 10
+      ENDIF
+
+C DATPT
+      IF (ICOM7 .EQ. 'DATPT') THEN
+	IF(IFLG1)IZTYP=P(1)
+	IF(IFLG2)IZMRK=P(2)
+	GOTO 10
+      ENDIF
+
+C PLTNME
+      IF (ICOM7 .EQ. 'PLTNME') THEN
+
+            IF ( save_on_exit .AND. imgname_sent ) THEN
                CALL FGD_SAVE_WINDOW(meta_file)
             ENDIF
             IF(N.EQ.0)THEN
@@ -1027,8 +1085,12 @@ C	PLTNME
 	    ISYM=LNBLK(TEMP,2048)
 	    CALL PUTSYM(SYM,TEMP,ISYM,IER)
 	    GOTO 10
-C	HLABS
-8100	    IF(.NOT.IFLG1)GOTO 10
+
+      ENDIF
+
+C HLABS
+      IF (ICOM7 .EQ. 'HLABS') THEN
+	    IF(.NOT.IFLG1)GOTO 10
 	    I=P(1)
 	    IF(IFLG2)THEN
 		RHLABS(I)=P(2)
@@ -1036,22 +1098,31 @@ C	HLABS
 		RHLABS(I)=-1.0
 	    ENDIF
 	    GOTO 10
-C	CONPRE
-8200	    IF(N.EQ.0)THEN
+      ENDIF
+
+C CONPRE
+      IF (ICOM7 .EQ. 'CONPRE') THEN
+	    IF(N.EQ.0)THEN
 		CONPRE=' '
 	    ELSE
 		CONPRE=LABEL
 	    ENDIF
 	    GOTO 10
-C	CONPST
-8300	    IF(N.EQ.0)THEN
+      ENDIF
+
+C CONPST
+      IF (ICOM7 .EQ. 'CONPST') THEN
+	    IF(N.EQ.0)THEN
 		CONPST=' '
 	    ELSE
 		CONPST=LABEL
 	    ENDIF
 	    GOTO 10
-C	TRANSXY
-8400	    I=IFIX(P(1))
+      ENDIF
+
+C TRANSXY
+      IF (ICOM7 .EQ. 'TRANSXY') THEN
+	    I=IFIX(P(1))
 	    IF(IFLG2)XFCT(I)=P(2)
 	    IF(M.GE.3.AND.IFLG(3).NE.0)XOFF(I)=P(3)
 	    IF(M.GE.4.AND.IFLG(4).NE.0)YFCT(I)=P(4)
@@ -1072,24 +1143,20 @@ C	TRANSXY
 	    WRITE(SYM,997)'YOFF',I
 	    CALL PUTVAL(SYM,YOFF(I),6,IER)
 	    GOTO 10
-C	MARKH
-8500	    I=IFIX(P(1))
+      ENDIF
+
+C MARKH
+      IF (ICOM7 .EQ. 'MARKH') THEN
+	    I=IFIX(P(1))
 	    IF(IFLG2)HMARK(I)=P(2)
 	    IF(M.EQ.1)HMARK(I)=0.08
 	    IF(M.GE.3)nskpsym(I) = p(3)
 	    GOTO 10
-C	LINFIT
-8600	    I=IFIX(P(1))
-	    IF(I.GT.LINEN.OR.LLENG(I).LE.2.OR.LINEN.GE.NLINES)THEN
-		IF(.NOT.QUIETF)WRITE(LTTOUT,
-     *            '('' LINFIT ERROR -- NO ROOM OR LINE'',I3,
-     *            '' DOES NOT EXIST'')')
-		GOTO 10
-	    ENDIF
-	    CALL LINFIT(I,pplmem,pplmem_nsize,IBASE,PBUF)
-	    GOTO 10
-C	DFLTFNT
-8700	    IF(N.EQ.0)GOTO 10
+      ENDIF
+
+C DFLTFNT
+      IF (ICOM7 .EQ. 'DFLTFNT') THEN
+	    IF(N.EQ.0)GOTO 10
 	    I=INDEX(LABEL,'@')
 	    DTE='@CL@'
 	    IF(I.EQ.0)THEN
@@ -1100,26 +1167,10 @@ C	DFLTFNT
 	    XT=SYMWID(HLAB1,6,DTE)
 	    CONPRE=DTE(4:)
 	    GOTO 10
-C	GRID
-8800	CONTINUE 
+      ENDIF
 
-         err_msg = 'PPLUS Command not supported '//icom(:TM_LENSTR1(icom))
-         CALL ERRMSG (ferr_not_implemented, status, err_msg, *9999)
-
-C	TEKNME
-8900	CONTINUE
-
-         err_msg = 'PPLUS Command not supported '//icom(:TM_LENSTR1(icom))
-         CALL ERRMSG (ferr_not_implemented, status, err_msg, *9999)
-
-C	ECHO
-9000	CONTINUE
-
-         err_msg = 'PPLUS Command not supported '//icom(:TM_LENSTR1(icom))
-         CALL ERRMSG (ferr_not_implemented, status, err_msg, *9999)
-
-C	TIME
-9200	CONTINUE
+C TIME
+      IF (ICOM7 .EQ. 'TIME') THEN
 
 	IF(N.EQ.0)THEN
 		IAUTOT=1
@@ -1139,7 +1190,6 @@ C
 	    IS=INDEX(LABEL,' ')
 	    IS=MIN0(IS,IC)
 
-!*JD*	    IT1=LABEL(2:IS-1)
 	    TMPCHR = LABEL(1:IS-1)
 
 	    IF ( TMPCHR(12:12) .EQ. ' ' ) THEN
@@ -1172,7 +1222,6 @@ C
 	    IS=INDEX(LABEL,' ')
 	    IS=MIN0(IS,IC)
 
-!*JD*	    IT2=LABEL(2:IS-1)
 	    TMPCHR = LABEL(1:IS-1)
 
 	    IF ( TMPCHR(12:12) .EQ. ' ' ) THEN
@@ -1193,7 +1242,6 @@ C
 		LABEL=LABEL(IS:)
 	    ENDIF
 
-!*JD* 9202  ITSTRT=LABEL(2:11)
 9202	    TMPCHR = LABEL(1:15)
 
 	    IF ( TMPCHR(12:12) .EQ. ' ' ) THEN
@@ -1207,7 +1255,8 @@ C
 
 9203	    TLO=1.-DIFF(IT1,ITSTRT)/DT
 	    GOTO 10
-c------------------------------------------------------------------------------------
+	   
+c--------------------------------------------------------------------
 
 C Time definition for second time axis (forecast/time plot)
 9230    CONTINUE
@@ -1285,16 +1334,16 @@ C
 		ITSTRTb(13:14) = TMPCHR(2:3) ! century
 	    ENDIF
 	    
-
-
 9233	    TLOb=1.-DIFF(IT1b,ITSTRTb)/DT
 	    GOTO 10
 
-c------------------------------------------------------------------------------------
+c------- end of Time definition for second time axis 
+
+	ENDIF  ! end of  IF (ICOM7 .EQ. 'TIME')     
 
 
-C	TXTYPE
-9300	CONTINUE	
+C TXTYPE
+      IF (ICOM7 .EQ. 'TXTYPE') THEN	
 
 C	IF NO FIRST PARAMETER SKIP PROCESSING
 C
@@ -1424,10 +1473,11 @@ C
 	    LABELTb=ITXTPEb*ITXLBPb
 	    
 	    GOTO 10
+      ENDIF
 c------------------------------------------------------------------------------------
 
-C	TXLSZE
-9400	    CONTINUE
+C TXLSZE
+      IF (ICOM7 .EQ. 'TXLSZE') THEN
 	    IF (itflg .EQ. 2) THEN
 	       IF(IFLG1)TCSIZEb=P(1)
 	    ELSE
@@ -1436,8 +1486,10 @@ C	TXLSZE
 	    ENDIF
 	    
 	    GOTO 10
-C	TXLINT
-9500	    CONTINUE
+      ENDIF
+
+C TXLINT
+      IF (ICOM7 .EQ. 'TXLINT') THEN
 	    IF (itflg .EQ. 2) THEN
 	       IF(IFLG1)IFDBb=P(1)
 	       IF(IFLG2)ISDBb=P(2)
@@ -1451,8 +1503,10 @@ C	TXLINT
 
 	    ENDIF
 	    GOTO 10
-C	TXNMTC
-9600	    CONTINUE
+      ENDIF
+
+C TXNMTC
+      IF (ICOM7 .EQ. 'TXNMTC') THEN
 	    IF (itflg .EQ. 2) THEN
 	       IF(IFLG1)NMTCTb=P(1)
 	    ELSE
@@ -1460,8 +1514,10 @@ C	TXNMTC
 	       IF (itflg.EQ.0 .AND.IFLG1)NMTCTb=P(1) 
 	    ENDIF
 	    GOTO 10
-C	TXLABP
-9700	    CONTINUE
+      ENDIF
+
+C TXLABP
+      IF (ICOM7 .EQ. 'TXLABP') THEN
 	    IF (itflg .EQ. 2) THEN
 	       IF(IFLG1)THEN
 		  ITXLBPb=P(1)
@@ -1478,42 +1534,31 @@ C	TXLABP
 	       ENDIF
 	    ENDIF
 	    GOTO 10
+	    
+      ENDIF
+
+
 C restore delta-T for underlay plots
-C	TAXUND
-9750	    CONTINUE
+C TAXUND
+      IF (ICOM7 .EQ. 'TAXUND') THEN
 	    DT_SAVE = P(1)
 	    GOTO 10
-C	AUTOLAB
-9800	    IGTLAB=0
-	    IF(LABON)IGTLAB=1
-	    GOTO 10
-C	EVAR
-9900	    CONTINUE
+      ENDIF
 
-         err_msg = 'PPLUS Command not supported '//icom(:TM_LENSTR1(icom))
-         CALL ERRMSG (ferr_not_implemented, status, err_msg, *9999)
-	    GOTO 10
-C	DEBUG
-9910	    CONTINUE
-
-         err_msg = 'PPLUS Command not supported '//icom(:TM_LENSTR1(icom))
-         CALL ERRMSG (ferr_not_implemented, status, err_msg, *9999)
-
-	    GOTO 10
-C	RESET
-9920	    LABEL='PPL$RESET'
-	    N=9
-	    GOTO 4300
-C	TITLE
-9930	    IF(N.EQ.0)THEN
+C TITLE
+      IF (ICOM7 .EQ. 'TITLE') THEN
+	    IF(N.EQ.0)THEN
 		LAB1=' '
 	    ELSE
 		LAB1=LABEL
 	    ENDIF
 	    IF(IFLG1)HLAB1=P(1)
 	    GOTO 10
-C	VPOINT
-9940	    IF(IFLG1)VIEWX=P(1)
+      ENDIF
+
+C VPOINT
+      IF (ICOM7 .EQ. 'VPOINT') THEN
+	    IF(IFLG1)VIEWX=P(1)
 	    IF(IFLG2)VIEWY=P(2)
 	    IF(M.GE.3.AND.IFLG(3).NE.0)VIEWZ=P(3)
 	    WRITE(SYM,999)'X'
@@ -1524,9 +1569,12 @@ C	VPOINT
 	    WRITE(SYM,999)'Z'
 	    CALL PUTVAL(SYM,VIEWZ,6,IER)
 	    GOTO 10
-C	CLSPLT
-*           Close a metafile
-9950	    CALL PLTYPE(ICODE)
+      ENDIF
+
+C CLSPLT
+      IF (ICOM7 .EQ. 'CLSPLT') THEN
+*           Close a metafile, cancel viewports
+	    CALL PLTYPE(ICODE)
             IF ( save_on_exit .AND. imgname_sent ) THEN
                 CALL FGD_SAVE_WINDOW(meta_file)
             ENDIF
@@ -1534,32 +1582,29 @@ C	CLSPLT
             imgname_sent = .FALSE.
             vpt_was_set = .FALSE.
 	    GOTO 10
-C	RENAMPL
-9960	    CONTINUE
+      ENDIF
 
-         err_msg = 'PPLUS Command not supported '//icom(:TM_LENSTR1(icom))
-         CALL ERRMSG (ferr_not_implemented, status, err_msg, *9999)
-
-	    GOTO 10
-C	SHRINKY
-9970	    CONTINUE
+C SHRINKY
+      IF (ICOM7 .EQ. 'SHRINKY') THEN
 *	Whether to shrink ylabels automatically so they will fit in margin.
 *       see YAXIS1
             SHRINKY = .FALSE.      
             IF (P(1) .EQ. 1) SHRINKY = .TRUE.      
 	    GOTO 10
+      ENDIF
 
-C	RIBFAST (RIBBON/FAST)  
-9980	    CONTINUE
+C RIBFAST (RIBBON/FAST)  
+      IF (ICOM7 .EQ. 'RIBFAST') THEN
 *	Plot style for ribbon plots: 
 *	 FAST for one color per point, default is interpolate
 *	 colors between points
             RIBBON_FAST = .FALSE.      
             IF (P(1) .EQ. 1) RIBBON_FAST = .TRUE.      
 	    GOTO 10
+      ENDIF
 
-C	RIBMISS (RIBBON/MISS=)  
-9982	    CONTINUE
+C RIBMISS (RIBBON/MISS=) 
+      IF (ICOM7 .EQ. 'RIBMISS') THEN
 * Plot style for missing-data in ribbon plots: 
 * Default: thin black line. Can request /missing=dash, /missing=blank, 
 * /missing= color-palette (e.g. gray_light). The color palette 
@@ -1568,54 +1613,57 @@ C	RIBMISS (RIBBON/MISS=)
 
             CALL RIBBON_MISSING      
 	    GOTO 10
+      ENDIF
 
-
-C	GAPLOC (PLOT/VS/GAPLOC)  
-9984	    CONTINUE
+C GAPLOC (PLOT/VS/GAPLOC)  
+      IF (ICOM7 .EQ. 'GAPLOC') THEN
 * Extra variable sent on PLOT/VS plots, with 1 or zero to indicate
 * end of segments
 	    gap_var = 0
             gap_var = P(1) 
 	    GOTO 10
+      ENDIF
 
-
-C     CLRKLAB COLOR-KEY LABELS
-9985	    CALL CLRKLAB (LABEL)
+C CLRKLAB COLOR-KEY LABELS
+      IF (ICOM7 .EQ. 'CLRKLAB') THEN
+	    CALL CLRKLAB (LABEL)
 	    GOTO 10
+      ENDIF
 
-
-C     CONTOUR
-1400	MAKEP='CONTOUR'
+C CONTOUR
+      IF (ICOM7 .EQ. 'CONTOUR') THEN
+	MAKEP='CONTOUR'
 	if(iflg1)then
 	    ivcomp=p(1)
 	else
 	    ivcomp=1
 	endif
 	if(iflg2)cangle=p(2)
-1401	continue
 	GOTO 6001
-C     PLOT
-1500	MAKEP='PLOT'
-	GOTO 6002
-C     Ribbon PLOT
-1550	MAKEP='RIBPLOT'
-	GOTO 6002
-C     READSEQ & RD
-1600	CONTINUE
+      ENDIF
 
-         err_msg = 'PPLUS Command not supported '//icom(:TM_LENSTR1(icom))
-         CALL ERRMSG (ferr_not_implemented, status, err_msg, *9999)
 
-C     LIST
-2900	CALL LIST(LTTOUT,pplmem,pplmem_nsize,LABEL)
+C PLOT
+      IF (ICOM7 .EQ. 'PLOT') THEN
+	MAKEP='PLOT'
+	GOTO 6002
+      ENDIF
+
+C Ribbon PLOT
+      IF (ICOM7 .EQ. 'RIBBON') THEN
+	MAKEP='RIBPLOT'
+	GOTO 6002
+      ENDIF
+
+C LIST
+      IF (ICOM7 .EQ. 'LIST') THEN
+	CALL LIST(LTTOUT,pplmem,pplmem_nsize,LABEL)
 	GOTO 10
-3302	IF(.NOT.QUIETF)WRITE(LTTOUT,'('' EOF'')')
-	SYM='*PPL$EOF'
-	CALL PUTSYM(SYM,YES,3,IER)
-	GOTO 10
-3300	CONTINUE ! unused
-C	VIEW
-3400	MAKEP='VIEW'
+      ENDIF
+
+C VIEW
+      IF (ICOM7 .EQ. 'VIEW') THEN
+	MAKEP='VIEW'
 	IF(IFLG2)THEN
 	    XYSCLE=1
 	ELSE
@@ -1643,60 +1691,57 @@ C	VIEW
 	else
 	    ivcomp=1
 	endif
-	GOTO 1401
-C	ENTER
-3500	CONTINUE
+	GOTO 6001
+      ENDIF
 
-         err_msg = 'PPLUS Command not supported '//icom(:TM_LENSTR1(icom))
-         CALL ERRMSG (ferr_not_implemented, status, err_msg, *9999)
-
-	GOTO 10
-C     MULTPLT
-4900	CONTINUE
-
-         err_msg = 'PPLUS Command not supported '//icom(:TM_LENSTR1(icom))
-         CALL ERRMSG (ferr_not_implemented, status, err_msg, *9999)
-
-	GOTO 10
-C     PLOTV
-5300	MAKEP='PLOTV'
-5301	IF(IFLG(1).EQ.1)VANG=P(1)
+C PLOTV
+      IF (ICOM7 .EQ. 'PLOTV') THEN
+	MAKEP='PLOTV'
+	IF(IFLG(1).EQ.1)VANG=P(1)
 	GOTO 6002
-C	PLOTUV
-5700	MAKEP='PLOTUV'
-	GOTO 5301
-6002	CONTINUE
+      ENDIF
 
-	IF(PBUF.EQ.0)THEN
-	    IF(.NOT.QUIETF)WRITE(LTTOUT,'('' BUFF EMPTY'')')
-	    GOTO 10
-	ELSE
-	    LINEN=0
-	    IBASE=1
-	ENDIF
-6001	IF(N.NE.0)LAB1=LABEL
-	ICOUNT=ICOUNT+1
-	CALL PLTIT(pplmem,pplmem_nsize)
-	GOTO 10
-C	VELVCT
-9100	MAKEP='VELVCT'
-	GOTO 5301
-C	VECTOR
-9110	MAKEP='VECTOR'
+C PLOTUV
+      IF (ICOM7 .EQ. 'PLOTUV') THEN
+	MAKEP='PLOTUV'
+	IF(IFLG(1).EQ.1)VANG=P(1)
+	GOTO 6002
+      ENDIF
+
+
+C VELVCT
+      IF (ICOM7 .EQ. 'VELVCT') THEN
+	MAKEP='VELVCT'
+	IF(IFLG(1).EQ.1)VANG=P(1)
+	GOTO 6002
+      ENDIF
+
+C VECTOR
+      IF (ICOM7 .EQ. 'VECTOR') THEN
+	MAKEP='VECTOR'
 	IF(IFLG1)VSKPX=P(1)
 	IF(IFLG2)VSKPY=P(2)
 	GOTO 6001
-C       FLOWLINE (VECTOR/FLOWLINE)
-9390	MAKEP='FLOW'
+      ENDIF
+
+C FLOWLINE (VECTOR/FLOWLINE)
+      IF (ICOM7 .EQ. 'FLOWLIN') THEN
+	MAKEP='FLOW'
 	IF(IFLG1)DENSITY=P(1)
 	GOTO 6001
-C	VECSET
-9120	IF(IFLG1)VLEN=P(1)
+      ENDIF
+
+C VECSET
+      IF (ICOM7 .EQ. 'VECSET') THEN
+	IF(IFLG1)VLEN=P(1)
 	IF(IFLG2)VUSRLN=P(2)
 	VAUTO=M.LT.2
 	GOTO 10
-C	VECKEY
-9130	IF(IFLG1)VXLOC=P(1)
+      ENDIF
+
+C VECKEY
+      IF (ICOM7 .EQ. 'VECKEY') THEN
+	IF(IFLG1)VXLOC=P(1)
 	IF(IFLG2)VYLOC=P(2)
 	IF(M.GE.3.AND.IFLG(3).NE.0)VPOS=P(3)
 	IF(N.GT.0)THEN
@@ -1715,44 +1760,47 @@ c do a test write to the string err_msg, using label as a format
 	VUSER=SUSER
 	VKEY=M.GE.2
 	GOTO 10
-c	usr
-9140	temp2=' '
-	call pplusr(label,ier,temp2)
-	IF(ier.ne.0)then
-	    ilen=lnblk(temp2,80)
-	    temp='USR: '//temp2(:ilen)
-	    if(.not.quietf)WRITE(LTTOUT,'(a)')temp(:ilen+5)
-	    temp2='C '//temp(:ilen+5)
-	    call echo(temp2,ilen+7)
-	endif
-	goto 10
-C	SHADE
-9150    MAKEP = 'SHADE'                                                       
+      ENDIF
+
+C SHADE
+      IF (ICOM7 .EQ. 'SHADE') THEN
+        MAKEP = 'SHADE'                                                       
         IF(N.NE.0)LAB1=LABEL                                                  
         ICOUNT=ICOUNT+1                                                       
         CALL PLTIT(pplmem,pplmem_nsize)
-        GOTO 10                                                    
-C       SHAKEY                                                     
-9160    call shade_key (-1)
-        goto 10                                                    
-C       SHASET                                                     
-9170    call shade_set                                             
+        GOTO 10  
+      ENDIF
+                             
+C SHAKEY      
+      IF (ICOM7 .EQ. 'SHAKEY') THEN                                               
+	call shade_key (-1)
+	goto 10  
+      ENDIF
+                                                  
+C SHASET  
+      IF (ICOM7 .EQ. 'SHASET') THEN                                                
+	call shade_set                                             
         goto 10
-                                                 
-C       S_KEY   (continuous color key, center labels, horizontal)                                                   
-9165    ICODE=IFIX(P(1))
+      ENDIF
+
+C S_KEY   (continuous color key, center labels, horizontal)                  
+      IF (ICOM7 .EQ. 'S_KEY') THEN    
+	ICODE=IFIX(P(1))
         IF (ICODE .LE. 1) call shade_key_cont (ICODE)
         call shade_key (ICODE)
-        goto 10       
-                                
-C       SHADE_CELL   (use cellarray call for shade)                                                   
-9166    ICODE=IFIX(P(1))
+        goto 10  
+      ENDIF
+                 
+C SHADE_CELL   (use cellarray call for shade)                  
+      IF (ICOM7 .EQ. 'S_CELL') THEN                                                     
+	ICODE=IFIX(P(1))
         call shade_cell (ICODE)
-        goto 10       
+        goto 10   
+      ENDIF
 
-c       area
-*!9171 makep='AREA' NAME CHANGE *jd*
-9171   makep='FILL'
+c FILL      
+      IF (ICOM7 .EQ. 'FILL') THEN               
+	makep='FILL'
         if(iflg1)then
             ivcomp=p(1)
         else
@@ -1760,8 +1808,11 @@ c       area
         endif
         if(iflg2)cangle=p(2)
         GOTO 6001
+      ENDIF
 
- 9172	makep='PLOTPOL'
+C PLOTPOL
+      IF (ICOM7 .EQ. 'PLOTPOL') THEN
+ 	makep='PLOTPOL'
         if(iflg1)then
             ivcomp=p(1)
         else
@@ -1769,8 +1820,11 @@ c       area
         endif
         if(iflg2)cangle=p(2)
         GOTO 6001
+      ENDIF
 
- 9173	makep='FILLPOL'
+C FILLPOL
+      IF (ICOM7 .EQ. 'FILLPOL' .OR. ICOM7.EQ.'POLYGON') THEN
+ 	makep='FILLPOL'
         if(iflg1)then
             ivcomp=p(1)
         else
@@ -1778,21 +1832,17 @@ c       area
         endif
         if(iflg2)cangle=p(2)
         GOTO 6001
+      ENDIF
 
- 9183	makep='FILLPOL'   ! makep='POLYGON'
-        if(iflg1)then
-            ivcomp=p(1)
-        else
-            ivcomp=1
-        endif
-        if(iflg2)cangle=p(2)
-        GOTO 6001
-
- 9174	call pattern_set
+C PATSET
+      IF (ICOM7 .EQ. 'PATSET') THEN
+	call pattern_set
 	goto 10
+      ENDIF
 
-C  calendar
- 9175	if(n.eq.0)then
+C CALENDAR
+      IF (ICOM7 .EQ. 'CALENDA') THEN
+ 	if(n.eq.0)then
 	   set_name='GREGORIAN'
 	else
 	   set_name=label
@@ -1801,21 +1851,50 @@ C  calendar
 	call tm_set_current_calendar (set_name, cal_status)
 	if (cal_status .ne. merr_ok) GOTO 2999
 	goto 10
+      ENDIF
 
-9180    continue
-        goto 10                                                    
-9190	call aline (pplmem,pplmem_nsize)
+C ALINE
+      IF (ICOM7 .EQ. 'ALINE') THEN
+	call aline (pplmem,pplmem_nsize)
 	goto 10
+      ENDIF
+
 c COLOR
-9191    call set_one_color
+      IF (ICOM7 .EQ. 'COLOR') THEN
+	call set_one_color
         goto 10
+      ENDIF
+
 c LINECOLORS
-9192    call set_num_linecolors
+      IF (ICOM7 .EQ. 'LINECOL') THEN
+	call set_num_linecolors
         goto 10
-c sqfill
- 9380   if(labon)sqfflg=.true.
+      ENDIF
+
+c SQFILL
+      IF (ICOM7 .EQ. 'SQFILL') THEN
+	if(labon)sqfflg=.true.
         if(VALOFF .or. n.eq.0)sqfflg=.false.
         goto 10
+      ENDIF
+
+
+* Call PLTIT to draw a plot
+
+6002	CONTINUE
+
+	IF(PBUF.EQ.0)THEN
+	    IF(.NOT.QUIETF)WRITE(LTTOUT,'('' BUFF EMPTY'')')
+	    GOTO 10
+	ELSE
+	    LINEN=0
+	    IBASE=1
+	ENDIF
+6001	IF(N.NE.0)LAB1=LABEL
+	ICOUNT=ICOUNT+1
+	CALL PLTIT(pplmem,pplmem_nsize)
+	GOTO 10
+
 9999	RETURN
 
 c Format errors
@@ -1826,7 +1905,7 @@ c Format errors
 c Calendar errors
 2999    slen = lnblk (set_name,16)
 	WRITE (err_msg, 9176) set_name(1:slen)
- 9176	FORMAT('Calendar "',a, '" is invalid.')
+9176	FORMAT('Calendar "',a, '" is invalid.')
         CALL errmsg (ferr_unknown_arg, status, err_msg, *9999)
 
 	END

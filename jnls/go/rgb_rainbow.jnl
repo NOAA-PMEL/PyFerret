@@ -1,8 +1,0 @@
-CANCEL MODE VERIFY     ! ... now changing color spectrum
-! set color spectrum to a rainbow
-
-! Description:  An obsolete tool equivalent to "PALETTE rnb"
-
-ppl shaset spectrum=rnb
-
-SET MODE/LAST VERIFY

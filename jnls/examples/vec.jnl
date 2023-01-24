@@ -1,0 +1,37 @@
+
+
+($1) uwnd,vwnd
+\
+DEFINE SYMBOL upcommand = `UPCASE("\($1)\")`
+LET vclen = `STRLEN("($upcommand)")`
+LET ipos = `STRINDEX("($upcommand)", "/COL")`
+IF `ipos GT 0` THEN
+   let inxt = `STRINDEX( SUBSTRING("($upcommand)", ipos+1, vclen-ipos), "/")`
+   IF `inxt eq 0` THEN
+      define symbol quals = ($quals)`SUBSTRING("($upcommand)", ipos, vclen-ipos)`
+   ELSE
+      define symbol quals = ($quals)`SUBSTRING("($upcommand)", ipos, inxt)`
+   ENDIF
+ENDIF
+
+
+LET ipos = `STRINDEX("($upcommand)", "/THI")`
+IF `ipos GT 0` THEN
+   let inxt = `STRINDEX( SUBSTRING("($upcommand)", ipos+1, vclen-ipos), "/")`
+   IF `inxt eq 0` THEN
+      define symbol quals = ($quals)`SUBSTRING("($upcommand)", ipos, vclen-ipos)`
+   ELSE
+      define symbol quals = ($quals)`SUBSTRING("($upcommand)", ipos, inxt)`
+   ENDIF
+ENDIF
+
+
+LET ipos = `STRINDEX("($upcommand)", "/OPA")`
+IF `ipos GT 0` THEN
+   let inxt = `STRINDEX( SUBSTRING("($upcommand)", ipos+1, vclen-ipos), "/")`
+   IF `inxt eq 0` THEN
+      define symbol quals = ($quals)`SUBSTRING("($upcommand)", ipos, vclen-ipos)`
+   ELSE
+      define symbol quals = ($quals)`SUBSTRING("($upcommand)", ipos, inxt)`
+   ENDIF
+ENDIF

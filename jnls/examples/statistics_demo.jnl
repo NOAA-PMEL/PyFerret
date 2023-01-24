@@ -2,6 +2,7 @@
 ! Description: demo of some sample distribution functions and plots
 
 ! minor changes 11/93 for FERRET V3.01
+! Updated 1/2023
 
 ! some simple manipulations of distribution functions ...
 
@@ -11,67 +12,75 @@
 !     ( the random variable X, normally distributed )
 
 CANCEL REGION   ! in case there's region info left over from previous commands
+SET WINDOW/SIZe=1.5
+CANCEL MODE logo
 
 ! define the mathematical variables
-LET PI = 3.14159
-LET XBAR = 2
-LET SIGMA = 1
-LET ARG = (X-XBAR)/SIGMA
-LET/TITLE="gaussian pdf" NORM_PDF = (1./(2*PI)^.5)/SIGMA * EXP(-.5*ARG*ARG)
-LET/TITLE="gaussian cdf" NORM_CDF = NORM_PDF[X=@IIN]
+LET pi = 3.14159
+LET xbar = 2
+LET sigma = 1
+LET arg = (x-xbar)/sigma
+LET/TITLE="gaussian pdf" norm_pdf = (1./(2*pi)^.5)/sigma * exp(-.5*arg*arg)
+LET/TITLE="gaussian cdf" norm_cdf = norm_pdf[X=@IIN]
 
 ! define the region for plotting and the resolution of calculations
-DEFINE AXIS/X=-10:50:.01 XAXIS
-DEFINE GRID/X=XAXIS G_GAUSS
-SET GRID G_GAUSS	! abstract variables will use g_gauss by default
-SET REGION/x=-2:6
+DEFINE AXIS/X=-10:50:.01 xaxis
+DEFINE GRID/X=xaxis g_gauss
+SET GRID g_gauss	! abstract variables will use g_gauss by default
+SET REGION/X=-2:6
+
 
 ! make a few demo plots:
 ! plot the bell curve of the Normal pdf
-MESSAGE
-PLOT NORM_PDF
+
+PLOT/COLOR=blue norm_pdf
+pause
+
 ! plot the integrated bell curve
-MESSAGE
-PLOT NORM_CDF
+
+PLOT/COLOR=blue norm_cdf
+pause
+
 ! plot both together scaling the PDF so its max is 1
-MESSAGE
-PLOT NORM_CDF,NORM_PDF/NORM_PDF[X=@MAX]
+
+PLOT norm_cdf,norm_pdf/norm_pdf[X=@MAX]
+pause
+
 
 ! define and compute some simple statistics
-LET MEDIAN = NORM_CDF[X=@LOC:.5]	! where is cdf equal to 0.5 ?
-LET WT_PDF = X*NORM_PDF
-LET MEAN = WT_PDF[X=@DIN]		! integrate X*pdf
-LIST MEAN,MEDIAN
-MESSAGE
+LET median = norm_cdf[X=@LOC:.5]	! where is cdf equal to 0.5 ?
+LET wt_pdf = x*norm_pdf
+LET mean = wt_pdf[X=@DIN]		! integrate X*pdf
+LIST mean,median
+
+pause
 
 ! * * * define and plot a LOG-NORMAL probability density function * * *
 !    this is done by associating the values from the normal cdf with a
 !    transformed axis - using the fact that exp(x) is monotonic
 
-! write the normal cdf values to a file
-SPAWN rm normal_cdf.dat
-LIST/FILE=normal_cdf.dat/FORMAT=UNFORMATTED/NOHEAD NORM_CDF
-
 ! create an exponentially transformed axis
-LET BETA = 5	! 0 maps into beta
-LET LAMDA = .5	
-LET EXP_TRNS = BETA*EXP(LAMDA*X)	! exponentially transformed axis
-DEFINE AXIS/FROM/NAME=AX_EXP/X EXP_TRNS
-DEFINE GRID/X=AX_EXP G_EXP
 
-! associate the exponentail axis with the normal cdf - call the variable lnorm
+CANCEL REGION
+LET beta = 5	! 0 maps into beta
+LET lamda = .5	
+LET exp_trns = beta*exp(lamda*x)	! exponentially transformed axis
+DEFINE AXIS/X ax_exp = exp_trns
+
+LET lnorm = norm_cdf[gx=ax_exp@asn]
+
 ! then normalize it and define the pdf as its derivative
-FILE/GRID=G_EXP/FORMAT=UNFORMATTED/VAR=LNORM normal_cdf.dat
-LET LNRM_CDF = LNORM/LNORM[X=@MAX]	! normalize the cdf
-LET LNRM_PDF = LNRM_CDF[X=@DDB]
+
+LET lnrm_cdf = lnorm/lnorm[X=@MAX]	! normalize the cdf
+LET lnrm_pdf = lnrm_cdf[X=@DDB]
 
 ! plot the log-normal cdf and the scaled pdf
 SET REGION/X=0:50
-MESSAGE
-PLOT LNRM_CDF,LNRM_PDF/LNRM_PDF[X=@MAX]
+
+PLOT lnrm_cdf,lnrm_pdf/lnrm_pdf[X=@MAX]
 
 ! define and compute some simple statistics
-LET MEDIAN = LNRM_CDF[X=@LOC:.5]
-LET WT_PDF = X*LNRM_PDF
-LET MEAN = WT_PDF[X=@DIN]	
-LIST MEAN,MEDIAN
+LET median = LNRM_CDF[X=@LOC:.5]
+LET wt_pdf = X*LNRM_PDF
+LET mean = wt_pdf[X=@DIN]	
+LIST mean,median

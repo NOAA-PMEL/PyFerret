@@ -1,3 +1,7 @@
+set mode verify
+set window/size=1.5
+cancel mode logo
+
 ! reading_files.jnl *sh* 11/91 - updated 11/93
 
 ! Description: shows examples of reading data from ASCII files
@@ -17,27 +21,30 @@ SET MODE VERIFY ! display the FERRET commands at the console
 ! name it "v1"
 
 FILE snoopy.dat
+show data
+
 PLOT v1
-MESSAGE 
+pause 
 
 ! Now we will access all the data by telling FERRET there are 2 variables
 ! located in 6 columns.
 
 FILE/VARIABLES="my_var1,my_var2"/COLUMNS=6 snoopy.dat
 PLOT my_var1,my_var2
-MESSAGE 
+show data
+pause 
 
 ! Just for the heck of it lets add the two variables together.
 PLOT my_var1+my_var2
 
-MESSAGE 
+pause 
 
 ! And just for the heck of it lets grab columns 3 and 4, only.
 
 FILE/VARIABLES="my_var1,my_var2"/FORMAT=(21X,F14.0,F8.0) snoopy.dat
 PLOT my_var1,my_var2
 
-MESSAGE 
+pause 
 
 ! Now suppose that the data, instead, represent a 2D grid with
 ! 6 longitudes by 50 latitudes
@@ -49,7 +56,7 @@ DEFINE GRID/x=xlong/y=y50 gsnoopy2D
 FILE/VARIABLES=my_2D_var/COLUMNS=6/GRID=gsnoopy2D snoopy.dat
 contour my_2D_var
 
-MESSAGE 
+pause 
 
 ! or suppose it was a time series of 10 lat/long grids - each grid
 ! having 6 longitudes by 5 latitudes

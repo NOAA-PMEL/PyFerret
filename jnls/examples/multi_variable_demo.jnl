@@ -1,10 +1,10 @@
 \cancel mode verify
-
 ! Description: show some styles of plots with multiple dependent axes
 
+cancel mode logo
 cancel viewports
 set data levitus_climatology
-set window/aspect=.6/size=0.6
+set window/aspect=.6/size=1.5
 set mode verify
 alias WAITING MESSAGE
 
@@ -62,7 +62,7 @@ waiting
 ! ** ... SIMILARLY ...
 ! ** 3 variables using differing X axes
 
-set window/aspect=1.5
+set window/aspect=1.5/size=1.5
 set region/y=0/x=160e/Z=0:500		! line in Z
 let dens = rho_un(salt,temp,0) - 1000
 go multi_xaxis_plot1 temp 2		! "2" variables to follow
@@ -77,16 +77,16 @@ waiting
 ! etc.  Here is a quick example in which customizations are applied to
 ! axis scaling, axis labels, axis spacing, tic label sizes, and tic spacing
 
-set window/aspect=.6
+set window/aspect=.6/size=1.5
 set region/y=0/z=0/x=130e:80w		! line in X
 let dens = rho_un(salt,temp,0) - 1000
-go multi_yaxis_plot1 temp 3 "0.21  @CRPlot With Customized Axes"
+go multi_yaxis_plot1 temp 3 "0.21  Plot With Customized Axes"
 go multi_yaxis_overlay salt 1 "-" "33,36,0.5" "My Salinity" 0.25 1.5
-go multi_yaxis_overlay dens 2 "-" " " @CI"Density" .3 1.5  ",1,,,.13,(1PG10.3)"
+go multi_yaxis_overlay dens 2 "-" " " "Density" .3 1.5  ",1,,,.13,(1PG10.3)"
 
 waiting
 
-set window/aspect=0.8
+set window/aspect=0.8/size=1.5
 ! *** MULTI-VARIAABLE PLOT STYLES INSIDE VIEWPORTS
 
 set view ul			! upper left

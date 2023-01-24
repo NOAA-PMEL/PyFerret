@@ -4,19 +4,17 @@
 
 ! Description: Overlay an ellipse outline from inscribing rectangle coordinates
 
-! usage:  GO ellipse xlo xhi ylo yhi [pen_number]
+! usage:  GO ellipse xlo xhi ylo yhi [color and thickness]
 ! 	   (arguments identical to GO box)
 
 ! Notes:
-!  1) use  GO line_samples    to view the first 6 pen numbers
-!       Higher pen numbers cycle with thicker lines (max 18)
+!  Argument 5 is any COLOR=/THICKNESS or /SYMBOL qualifiers. Default /COLOR=black/THICK=2
 
 ! test pen_number before performing any actions
-query/ignore $1%<Usage: GO ellipse xlo xhi ylo yhi [pen_number]%
-query/ignore $2%<Usage: GO ellipse xlo xhi ylo yhi [pen_number]%
-query/ignore $3%<Usage: GO ellipse xlo xhi ylo yhi [pen_number]%
-query/ignore $4%<Usage: GO ellipse xlo xhi ylo yhi [pen_number]%
-query/ignore $5%1|red>1|green>1|blue>1|thick>1|0>1|1>1|2>1|3>1|4>1|5>1|6>1|7>1|8>1|9>1|10>1|11>1|12>1|13>1|14>1|15>1|16>1|17>1|18>1|<GO ellipse xlo xhi ylo yhi pen with pen = 0(back), 1(fore), thick, 2-18 or a color%
+query/ignore $1%<Usage: GO ellipse xlo xhi ylo yhi [color and thickness]%
+query/ignore $2%<Usage: GO ellipse xlo xhi ylo yhi [color and thickness]%
+query/ignore $3%<Usage: GO ellipse xlo xhi ylo yhi [color and thickness]%
+query/ignore $4%<Usage: GO ellipse xlo xhi ylo yhi [color and thickness]%
 
 LET/QUIET xellipse_axis = ($2) - ($1)
 LET/QUIET yellipse_axis = ($4) - ($3)
@@ -26,17 +24,19 @@ LET/QUIET ellipse_theta = i * (6.29/100)   ! just over 2 PI in 100 points
 LET/QUIET xellipse = xellipse_axis/2 * COS(ellipse_theta) +  xellipse_center
 LET/QUIET yellipse = yellipse_axis/2 * SIN(ellipse_theta) +  yellipse_center
 
-! set up PLOT+
-! Note: The "line=" could be used to specify the line style but the command
-!       gets too ungainly to read
-PLOT/VS/NOLAB/OVER/line=1/SET_UP/I=1:101  xellipse, yellipse
+! Define the PLOT command
 
-! select line style
-ppl pen 1,$5"1|red>2|green>3|blue>4|thick>7|0>0|1>1|2>2|3>3|4>4|5>5|6>6|7>7|8>8|9>9|10>10|11>11|12>12|13>13|14>14|15>15|16>16|17>17|18>18|"
-
-! plot it
-PPL PLOT/OVERLAY
+DEFINE SYMBOL penqual = LINE/COLOR=black/THICK=2
+IF ($5"0|*>1") THEN
+   DEFINE SYMBOL penqual = ($5)
+   IF `STRINDEX("($penqual)", "/") EQ 0` THEN
+      DEFINE SYMBOL penqual = /LINE/COLOR=($5)
+   ELSE
+      IF `STRINDEX("($penqual)", "/SY") EQ 0` THEN \
+        DEFINE SYMBOL penqual = /LINE($5)
+   ENDIF
+ENDIF
+PLOT/VS/NOLAB/OVERLAY($penqual)/I=1:101  xellipse, yellipse
 
 ! clean up
-ppl pen 1,1
 set mode/last verify

@@ -21,10 +21,18 @@
 ! $8 - hr, min, or sec to add :hh or hh:mm or hh:mm:ss
 
 !      shape names include:
-!           triangle           delta           square
-!           diamond            pentagon        hexagon
-!           circle             star            plus
-!           ex
+!    triangle		delta		square
+!    diamond		pentagon	hexagon
+!    circle		star		plus
+!    ex			rectangle	tallbox
+!    hletter            lletter
+!    trianglec		deltac		exc
+!    rectanglec		tallboxc	fslash
+!    bslash		tletter		tupside
+!    tleft		tright		vright
+!    vleft		rtriangle	ltriangle
+!    uright		uleft
+
 
 ! examples
 !       GO polymark_datekey polygon/over/key lon lat sst diamond " " tax
@@ -36,14 +44,14 @@
 !       yes? def view/x=0:0.8/y=0:1 xview
 !       yes? set view xview
 !
-!       yes? def axis/t=1-jan-1990:1-mar-1990:1/units=days timeax
+!       yes? define axis/t=1-jan-1990:1-mar-1990:1/units=days timeax
 !       yes? LET lpts = L[gt=timeax]
 !       yes? LET xpts = 180 + 50*COS(2*3.14*lpts/60)
 !       yes? LET ypts = 15 + 20*sin(2*3.14*lpts/60)
 !       yes? LET taxvar = t[gt=timeax]
 !
 !       yes? GO basemap x=120:250 Y=25s:65n 20
-!       yes? GO polymark_datekey polygon/over/key  xpts,ypts,lpts,ex,0.5,taxvar
+!       yes? GO polymark_datekey polygon/over/key  xpts,ypts,lpts,delta,1.2,taxvar
 
 ! argument check
 QUERY/IGNORE $1"<usage: yes? GO polymark_datekey polygon_command xpts ypts [values] [shape] [scale] timevar"

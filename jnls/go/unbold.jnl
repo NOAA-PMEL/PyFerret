@@ -2,6 +2,8 @@
 ! Description: restore PLOT+ & FERRET to normal styling following "GO bold"
 ! created 10/93 *sh*
 
+! Settings apply to the Hershey font
+
 ! normal ASCII fonts
 set mode ascii
 ppl dfltfnt SR

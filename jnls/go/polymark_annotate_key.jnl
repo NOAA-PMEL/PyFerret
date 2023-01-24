@@ -8,82 +8,13 @@
 !              Needs a basemap or other underlying plot to define scaling
 !              parameters.
 
-! *****  
-! NOTE: This script is unneeded. Just make the setting KEYMARK to turn on colorbar annotations
-! *****
-
-! Usage:                  $1        $2    $3     $4      $5      $6
-! Yes?	GO polymark polygon_command xpts ypts [values] [shape] [scale]
-! $1 - the plot command with qualifiers (eg POLYGON/OVER/KEY)
-! $2 - X coordinates of track 
-! $3 - Y coordinates of track 
-! $4 - variable whose values will be plotted along the track (eg SST)
-! $5 - shape of the symbol, as defined by polyshape.jnl 
-! $6 - scale the symbol size by this factor (optional, default 1)
-
-!      shape names include:
-!           triangle           delta           square
-!           diamond            pentagon        hexagon
-!           circle             star            plus
-!           ex
-
-! examples
-!       GO polymark_annotate_key polygon/over/key lon lat sst diamond
-
-! In detail, set cruise track and plot on a map:
-!       yes? LET xpts = 180 + 50*COS(2*3.14*I[I=1:50]/60)
-!       yes? LET ypts = 15  + 20*SIN(2*3.14*I[I=1:50]/60)
-!       yes? LET sst = 25 - ypts + RANDN(ypts)
-
-!       yes? GO basemap x=120:250 Y=25s:65n 20
-!
-!       yes? GO polymark_annotate_key polygon/over/key/title="SST"  xpts,ypts,sst,ex, 0.5 
-
 say ...
 say NOTE The polymark_annotate_key script is redundant.  Simply say 
+say
 say    KEYMARK 1 to turn on colorbar annotation
 say    KEYMARK 0 to turn off colorbar annotation
+say
+say  and run the polymark.jnl script. exiting
 say ...
 
-keymark 1
-
-! argument check
-QUERY/IGNORE $1"<usage: yes? GO polymark_annotate_key polygon_command xpts ypts [values] [shape] [scale]"
-QUERY/IGNORE $2"<usage: yes? GO polymark_annotate_key polygon_command xpts ypts [values] [shape] [scale]"
-QUERY/IGNORE $3"<usage: yes? GO polymark_annotate_key polygon_command xpts ypts [values] [shape] [scale]"
-
-! save the input expressions into simple variable definitions
-LET/QUIET PLMxpoly = ($2)
-LET/QUIET PLMypoly = ($3)
-LET/QUIET PLMpolydata = $4"0"
-
-! determine the orientation of the data (and check that it is 1D or a point)
-DEFINE SYMBOL PLMax `PLMxpoly,return=shape`
-DEFINE SYMBOL PLMpoly_ax ($PLMax"|POINT>Z|X>Z|Y>Z|Z>Y|T>Z|E>Z|F>Z|<error: data is not a point or line")
-
-! units/inch scale factors
-LET/QUIET PLMdefault_scale =$6"1" *  0.1
-LET/QUIET PLMx_correction = PLMdefault_scale*((($xaxis_max))-(($xaxis_min)))/($ppl$xlen)
-LET/QUIET PLMy_correction = PLMdefault_scale*((($yaxis_max))-(($yaxis_min)))/($ppl$ylen)
-
-! optionally create the polygon coordinates, xpolyshape, ypolyshape
-! else check that the coordinates exist
-IF $5"0|*>1" THEN
-   GO polyshape $5
-ELSE
-   LOAD xpolyshape, ypolyshape  ! THESE MUST BE DEFINED BY GO polyshape
-ENDIF
-
-! make sure that the polygon coordinates are along the correct axis
-! and correct the coordinates for unequal axis scaling and user scale factor 
-LET/QUIET PLMxpolymark = ($PLMpoly_ax)SEQUENCE(xpolyshape) * PLMx_correction
-LET/QUIET PLMypolymark = ($PLMpoly_ax)SEQUENCE(ypolyshape) * PLMy_correction
-
-$1/coord_ax=($PLMpoly_ax)  PLMxpoly+PLMxpolymark, PLMypoly+PLMypolymark, PLMpolydata
-
-cancel symbol PLM*
-cancel variable PLM*
-set mode/last verify
-
-
-keymark 0
+exit

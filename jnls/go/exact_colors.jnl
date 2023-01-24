@@ -16,6 +16,10 @@ say For detailed instructions examine the file  $FER_DIR/go/exact_colors.jnl
 ! The actual colors used by SHADE or FILL are determined by dividing this
 ! abstract color scale into n equal percentage increments, where n is the
 ! number of colors, and linearly interpolating between the SHASET values.
+! -- this is true when using /levels=n to specify an approximate number of
+! colors to be used, or when /levels=(lo,hi,delta) is used. This script returns
+! the same colors used on the plot only when the levels are a simple interpolation
+! of all the colors in the palette onto a set of equally spaced levels.
 
 ! exact_colors.jnl determines the actual RGB values for each SHADE or FILL
 ! color and writes those results to exact_colors.spk (or the specified output
@@ -56,30 +60,59 @@ cancel region/x
 
 ! read the specified input spectrum name (Default:$FER_PALETTE/default.spk)
 ! using its "percentage" variable as the data set axis
-file/var=pcentin,redin,greenin,bluein "$FER_PALETTE/$2&default&.spk"
+
+file/form=delim/delim="\b"/var="text1,text2"/type="text,text"  "$FER_PALETTE/$2&default&.spk"
+let ntext = `text1,return=isize`
+
+! Find the first line that starts with 0.  There may be comments at the top
+! Also check that if there is a RGB_Mapping specifier in the palette, that it
+! is defining a percent palette.
+
+define symbol rgb_map = percent
+repeat/range=1:`ntext`/name=q (\
+define symbol q = `q`;\
+if `substring(text1[i=($q)],1,1) EQ "0"` then exit/loop;\
+if `substring(upcase(text1[i=($q)]),1,11) EQ "RGB_MAPPING" and \
+    substring(upcase(text2[i=($q)]),1,8) EQ "BY_LEVEL"` then define symbol rgb_map = by_level;\
+if `substring(upcase(text1[i=($q)]),1,20) EQ "RGB_MAPPING" and \
+    substring(upcase(text2[i=($q)]),1,8) EQ "BY_VALUE"` then define symbol rgb_map = by_value;\
+if ($rgb_map"0|percent>0|by_level>1|by_value>1|*>0") then exit/loop;\
+)
+
+IF ($rgb_map"0|percent>0|by_level>1|by_value>1|*>0") then 
+  say 
+  say The exact_colors script is only for palettes defined by percent.
+  say ($2) is a defined as a RGB_Mapping ($rgb_map) palette. Exiting.
+  say 
+  exit/script
+ENDIF
+
+let nskip = `($q)-1`
+
+file/skip=`nskip`/var=pcentin,redin,greenin,bluein "$FER_PALETTE/$2&default&.spk"
 define axis/from/x/name=axin pcentin
 define grid/x=axin  gin
 cancel data/noerr $2&default&.spk
-file/var=pcentin,redin,greenin,bluein/grid=gin "$FER_PALETTE/$2&default&.spk"
+file/skip=`nskip`/var=pcentin,redin,greenin,bluein/grid=gin "$FER_PALETTE/$2&default&.spk"
 
 ! number of desired colors 
 let percent = 100*(i-1)/($1-1) 
 
 ! split the 0 to 100% range into n equally-spaced regions
-! using g=gout linear-interpolation regridding
+! using gx=axout linear-interpolation regridding
+
 define axis/from/x/name=axout percent[i=1:$1]
-define grid/x=axout gout
-let pcentout = x[g=gout]
-let redout   = redin[g=gout]    ! linear interpolation
-let greenout = greenin[g=gout]  ! linear interpolation
-let blueout  = bluein[g=gout]   ! linear interpolation
+let pcentout = x[gx=axout]
+let redout   = redin[gx=axout]    ! linear interpolation
+let greenout = greenin[gx=axout]  ! linear interpolation
+let blueout  = bluein[gx=axout]   ! linear interpolation
 
 spawn rm -f $3"exact_colors.spk"
 ! note: output precision restricted to 1 decimal place consistent with PLOT+ 
 list/file=$3"exact_colors.spk"/nohead/format=(4F10.1)/i=1:$1 pcentout,redout,greenout,blueout
 
-ppl shaset spectrum=$3"exact_colors.spk"
+say The file exact_colors.spk contains the (percent, red, green, blue) colors used in the color plot
+say
 
-cancel data/noerr $2&default&.spk
 set mode/last verify
 

@@ -1,8 +1,9 @@
-! DSG point data from ERDDAP  
+\cancel mode verify
+cancel mode logo
 
-set mode verify
-can mode logo
-set win/siz=0.6
+! DSG timeseries data from ERDDAP  
+
+
 
 
 use dsg_timeseries_example
@@ -22,13 +23,16 @@ pause
 ! The default "PLOT" command draws a set of time plots. 
 ! The time axis for each station need not contain common times.
 
+set window/size=1.5
+
 plot t_25
-pause; ! frame/file=prof_plot.png
+pause
 
 
 ! Where are the stations located?  This is a standard 
-! PLOT/VS plot.
-plot/vs/thick/color=blue/siz=0.2 longitude, latitude
+! longitude/latitude plot using the PLOT/VS command
+
+plot/vs/thick/color=blue/size=0.2 longitude, latitude
 pause
 
 ! Constrain the region using standard /X= /Y= /T= qualifiers
@@ -37,8 +41,8 @@ plot/x=0:100/y=-20:0 t_25
 
 
 ! Or we could define a mask to pick out data by station
-! These station names use the locations, so to choose all of 
-! the stations along the equator,
+! These station names use the locations, so this will choose 
+! all of the stations along the equator:
 
 let mask = if strindex (station, "0n") EQ 1 then 1
 set data/fmask=mask 1

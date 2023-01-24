@@ -19,7 +19,7 @@ pause
 ! clean up from any previous activity and set up
 define region/default save
 cancel region
-set wind/asp=.75:ax
+set window/asp=.75:ax/size=1.5
 go white
 cancel mode logo
 cancel viewports
@@ -114,15 +114,15 @@ say Plot with /LINE/SYMBOL to show both the points and the line between them
 say ...
 say
 say .    yes? SET VIEW upper
-say .    yes? RIBBON/VS/LINE/SYMBOL=21/THICK/LEV=10/TITLE="Without FAST qualifier" xpts,ypts,var
+say .    yes? RIBBON/VS/LINE/SYMBOL=21/THICK/LEV=10/TITLE="Without FAST qualifier: colors blended" xpts,ypts,var
 say
 say .    yes? SET VIEW lower
-say .    yes? RIBBON/FAST/VS/LINE/SYMBOL=21/THICK/LEV=10/TITLE="With FAST qualifier" xpts,ypts,var
+say .    yes? RIBBON/FAST/VS/LINE/SYMBOL=21/THICK/LEV=10/TITLE="With FAST qualifier: no blending" xpts,ypts,var
 
 
 
 SET VIEW upper
-RIBBON/VS/LINE/SYMBOL=21/THICK/LEV=10/TITLE="Without FAST qualifier" xpts,ypts,var
+RIBBON/VS/LINE/SYMBOL=21/THICK/LEV=10/TITLE="Without FAST qualifier: colors blended" xpts,ypts,var
 
 pause
 
@@ -131,7 +131,7 @@ say ...
 say
 
 SET VIEW lower
-RIBBON/FAST/VS/LINE/SYMBOL=21/THICK/LEV=10/TITLE="With FAST qualifier" xpts,ypts,var
+RIBBON/FAST/VS/LINE/SYMBOL=21/THICK/LEV=10/TITLE="With FAST qualifier: no blending" xpts,ypts,var
 
 pause
 cancel view
@@ -150,7 +150,7 @@ say        3.13, 6.88, 2.02, 8.63, , , 2.94,-0.65}
 
 
 say .    yes? SET VIEW upper
-say .    yes? RIBBON/VS/LINE/THICK=3/PAL=rnb2/TITLE="Gaps in var" xpts,ypts,var
+say .    yes? RIBBON/VS/LINE/THICK=3/PAL=rnb2/TITLE="Gaps in color-by variable" xpts,ypts,var
 
 
 
@@ -160,7 +160,7 @@ LET/TITLE="VAR"/UNITS="V" var =  {\
 
 
 SET VIEW upper
-RIBBON/VS/LINE/THICK=3/PAL=rnb2/TITLE="Gaps in var" xpts,ypts,var
+RIBBON/VS/LINE/THICK=3/PAL=rnb2/TITLE="Gaps in color-by variable" xpts,ypts,var
 
 pause
 
@@ -174,7 +174,7 @@ say        29.42,29.43, ,29.19,29.22,29.12,29.36,29.22,29.04,28.92,29.00,28.59,2
 say        28.69,28.20,28.86,27.98, ,28.29,27.94}
 
 say .    yes? SET VIEW lower 
-say .    yes? RIBBON/VS/LINE/THICK=3/PAL=rnb2/TITLE="Gaps also in the versus variable"  xpts,ypts,var
+say .    yes? RIBBON/VS/LINE/THICK=3/PAL=rnb2/TITLE="Gaps in the versus (location) variables"  xpts,ypts,var
 
      
 LET/TITLE="SST"/UNITS="Deg C" ypts {\
@@ -182,13 +182,17 @@ LET/TITLE="SST"/UNITS="Deg C" ypts {\
   28.69,28.20,28.86,27.98, ,28.29,27.94}
 
 SET VIEW lower 
-RIBBON/VS/LINE/THICK=3/PAL=rnb2/TITLE="Gaps also in the versus variable"  xpts,ypts,var
+RIBBON/VS/LINE/THICK=3/PAL=rnb2/TITLE="Gaps in the versus (location) variables"  xpts,ypts,var
 
 
 pause
 say ...
-
-say clean up
+say
+say *** NOTE: 
+say Another important use of Ribbon plots is for Discrete Sampling Geometries (DSG) datasets. Try:
+say 
+say    yew? go dsg_tutorial.jnl
+say
 set region save
 
 set mode/last logo

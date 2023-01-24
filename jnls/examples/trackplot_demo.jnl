@@ -1,14 +1,19 @@
 ! trackplot_demo.jnl
 ! *jd* 5.99
 ! *acm* 7/01 update /line=  to /color=/thickness=
+cancel mode logo
+set window/siz=1.5
 
 ! Description: demonstrate usage of trackplot jnl file
 
 set mode verify
+set text/font=arial
 
-
-if ($program_name"0|PyFerret>1|*>0") THEN set text/font=arial
-
+! Trackplot makes a line that deviates from a track according to the 
+! argument given.  SEE ALSO "Ribbon Plots" in the documentation.
+! A ribbon plot is a line track plot whose color varies according
+! to a value along the track.
+pause
 
 ! Define a 3-leg plot track with discontinuities
 LET/QUIET     X0 = 240
@@ -38,13 +43,14 @@ SET REGION/L=1:120
 ! Plot variable "my_var" as a red line, "other_var" in blue
 ! over the ship track in black
 ! Use automatic scaling and baseline of plot
+
 go basemap x=120:260 Y=25s:65n 20
 plot/vs/line/over/title="Ship track" xtrack, ytrack
 go trackplot plot/vs/over/line/color=red/title="Variable MY_VAR" xtrack ytrack my_var
 go trackplot plot/vs/over/line/color=blue/title="Variable OTHER_VAR" xtrack ytrack other_var
-label/nouser `($ppl$xlen)/2` -1 0 0 .18 "@CRSynthetic track and 2 variables"
-frame/file=trackplot_demo_1.png
-\PAUSE
+label/nouser `($ppl$xlen)/2` -1 0 0 .18 "Synthetic track and 2 variables"
+
+PAUSE
 
 ! Try again, but scale the data smaller and shift baseline of other_var 
 SAY ($TRACKPLOTscale)			! notice default scaling = 5.5983 units/inch
@@ -52,23 +58,20 @@ go basemap x=120:260 Y=25s:65n 20
 plot/vs/line/over/title="Ship track" xtrack, ytrack
 go trackplot plot/vs/over/line/color=red/title="Variable MY_VAR" xtrack ytrack my_var 12
 go trackplot plot/vs/over/line/color=blue/title="Variable OTHER_VAR" xtrack ytrack other_var 12 1
-frame/file=trackplot_demo_2.png
-\PAUSE
+
+PAUSE
 
 ! In this demo we will mark every 10th point on the ship track
 ! and put scale markers onto the plot
 go basemap x=120:260 Y=25s:65n 20
 plot/vs/line/over/title="Ship track" xtrack, ytrack
-plot/vs/over/NOLABEL/SYMBOL=88 xtrack[L=1:120:10], ytrack[L=1:120:10]
-if ($program_name"0|PyFerret>1|*>0") THEN 
-  label 220,-10,-1,0,.1 "Star every 10<sup>th</sup> point"
-else
-  label 220,-10,-1,0,.1 "@PM88@CR - every 10^t^h point"
-endif
+plot/vs/over/NOLABEL/SYMBOL=starfill/size=0.16 xtrack[L=1:120:10], ytrack[L=1:120:10]
+label 220,-10,-1,0,.1 "Star every 10<sup>th</sup> point"
+
 label 220,-10,-1,0,.1 "Star every 10<sup>th</sup> point"
 go trackplot plot/vs/over/line/color=red/title="Variable MY_VAR" xtrack ytrack my_var 4
 go scalemark 1 -1 2    ! position outside of plot rectangle using inches
 go trackplot plot/vs/over/line/color=blue/title="Variable OTHER_VAR" xtrack ytrack other_var " " 1
 go scalemark 180 0 2 user "2 units"
 label/user 180 -3 0 0 .08 "random values plus 1"
-frame/file=trackplot_demo_3.png
+

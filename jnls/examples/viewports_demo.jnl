@@ -1,6 +1,8 @@
 CANCEL MODE VERIFY
 CANCEL VARIABLES/ALL   ! clean up from whatever went before
-SET MODE VERIFY
+set mode verify
+cancel mode logo
+
 
 ! viewports.jnl - *sh* 11/91 updated (slightly) 11/93 
 ! *acm* 7/01 update PPL PEN to /COLOR=/THICKNESS=  and PPL AXTYPE to /NOAXIS 
@@ -13,6 +15,7 @@ SET MODE VERIFY
 ! === This demo displays the figures from GO spirograph in viewports
 
 message
+set window/size=1.5
 
 ! simple spiral in lower left
 SET VIEWPORT LL		! lower left
@@ -43,12 +46,5 @@ SET VIEWPORT UR		! upper right
 LET GAUSS = 2*EXP( -1*(((i-21)/10)^2 + ((j-21)/5)^2) )
 WIRE/NOLAB/I=1:41/J=1:41/VIEW=-4,-10,4 gauss
 
-! a parting thought ...
-SET WINDOW/SIZE=0.5 2
-GO setup_text
-PPL labs 1 0.5,0.5,0 @CI@P2finis; PPL hlabs 1,1.0; PPL plot
-
-message
-GO cleanup_text
-say Done.  See ya
-CANCEL WINDOW 2
+pause
+go cleanup_text

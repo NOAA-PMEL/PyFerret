@@ -1,3 +1,6 @@
+\set mode verify
+cancel mode logo
+
 !two_dee_plot_of_1d.jnl   7/95  *sh*
 
 ! Description: Illustrates FILLing under a 1D plot (e.g. ocean bottom)
@@ -6,7 +9,7 @@
 set data etopo60
 set data levitus_climatology
 
-set wind/asp=.75/siz=.6
+set window/aspect=.75/size=1.5
 set region/x=180:360/y=20n/z=0:5000
 
 ! the temperature and the bottom as a line
@@ -26,6 +29,6 @@ message Lets make a nice looking plot of this
 ! as long as we've gone this far lets make a "nice" plot
 ! ("@fln" fills by linear interpolation)
 ! ("@fln:100" reaches over North Africa to find an interpolating point)
-set wind/asp=.5/size=.6
-fill/title="Aint it purdy?" temp[x=@fln:100]
+set window/aspect=.5/size=1.5
+fill/title="Fill temperature using x=@fln:100" temp[x=@fln:100]
 fill/over/lev=(-10000)(0)/palette=black/nolab bottom_2d

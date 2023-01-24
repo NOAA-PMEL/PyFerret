@@ -7,6 +7,11 @@
 !		1: (optional)		name of color palette to use
 !					(default=black)
 
+IF ($program_name"0|PyFerret>1|*>0") THEN
+   say PATTERN style is not available in PyFerret. Exiting.
+   exit/script
+ENDIF
+
 
 define symbol color $1"black"		
 

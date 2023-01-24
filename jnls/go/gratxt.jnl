@@ -3,6 +3,10 @@
 ! 
 ! Note: you may need to change the PPL LEV commands to contour over the
 !       range of the axes for your data.  Here we contour L rather than T 
+!
+! Note: the /GRATICULE qualifier on plot commands supersedes this script
+!	with more-flexible control of graticule lines
+!
 ! Example:
 !     yes? use coads_climatology
 !     yes? shade/y=0/x=180:210 sst

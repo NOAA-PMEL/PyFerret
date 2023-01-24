@@ -1,4 +1,5 @@
 \cancel mode verify   
+cancel mode logo
 
 ! dsg_checker.jnl
 ! Check a DSG file for valid attributes and LAS/ ERDDAP reqirements
@@ -8,9 +9,7 @@
 !  * The ID variable must be of string type (for ERDDAP).
 !  * The time variable must be in units of "seconds since 1970-01-01" (for ERDDAP).
 
-
 query/ignore $1%|<Argument 1 is the file to check%
-
 
 use $1
 DEFINE SYMBOL filename = $1
@@ -46,9 +45,11 @@ ENDIF
 ! Look for the cf_role attribute. It must be ($feature_type)_id.
 ! Check for the sample_dimension attribute.
 ! Find the time variable and store its units string
+! Attributes including cf_role are not present in a point dataset
 
 LET varnames = ..varnames
-LET nvars = ..nvars
+LET nvars = `varnames,return=isize`  
+
 REPEAT/RANGE=1:`nvars`/NAME=q (\
 DEFINE SYMBOL q = `q`;\
 DEFINE SYMBOL vname = `varnames[i=($q)]`;\
@@ -72,6 +73,17 @@ IF `($time_units"0|*>1") EQ 0 AND IS_ELEMENT_OF_STR_N(attnames, "units") GT 0` T
      DEFINE SYMBOL time_var = ($vname);\
      DEFINE SYMBOL time_units = `($vname).units`;\
   ENDIF;\
+ENDIF;\
+;\
+IF `IS_ELEMENT_OF_STR_N(attnames, "positive") GT 0` THEN; \
+   IF `IS_ELEMENT_OF_STR_N(attnames, "units") GT 0` THEN;\
+      DEFINE SYMBOL vaxis = `($vname).axis`;\
+   ENDIF;\
+  DEFINE SYMBOL positive = `($vname).positive`;\
+  DEFINE SYMBOL depth_var = ($vname);\
+  DEFINE SYMBOL depth_pos = `($vname).positive`;\
+  DEFINE SYMBOL depth_units = `($vname).units`;\
+  IF `STRINDEX(UPCASE("($vaxis%0%)"), "Z") EQ 0` THEN CANCEL SYMBOL depth_var;\
 ENDIF)
 
 ! If no cf_role, look for it on a coordinate variable.
@@ -91,121 +103,162 @@ IF `($cf_role"0|*>1) EQ 0` THEN
    ENDIF)
 ENDIF
 
-! Report cf_role attribute.
-IF `($cf_role"0|*>1) EQ 0` THEN
-   SAY
-   SAY **ERROR ** cf_role attribute is not found.
-   LET errors = `errors + 1`
-ELSE
-   SAY
-   SAY --------- cf_role attribute found on variable ($id_var).
-ENDIF
+! ***
+! Skip checking cf_role, ID variable, rowsize, and sample_dimension for Point dataset
 
-! Check that the feature type and cf_role attribute describe the same feature type.
+IF ($feature_type"0|point>0|*>1") THEN 
+    
+    ! Report cf_role attribute.
+    IF `($cf_role"0|*>1) EQ 0` THEN
+       SAY
+       SAY **ERROR ** cf_role attribute is not found.
+       LET errors = `errors + 1`
+    ELSE
+       SAY
+       SAY --------- cf_role attribute found on variable ($id_var).
+    ENDIF
+    
+    ! Check that the feature type and cf_role attribute describe the same feature type.
+    
+    DEFINE SYMBOL feature_type_test = ($feature_type)_id
+    
+    IF `STRCMP( UPCASE("($feature_type_test)"), UPCASE("($cf_role)") ) NE 0` THEN
+       SAY
+       SAY **ERROR ** cf_role attribute must match the feature type.
+       SAY **       ** Feature_Type is ($feature_type) cf_role is ($cf_role).
+       LET errors = `errors + 1`
+    ELSE
+       SAY
+       SAY --------- cf_role attribute ($cf_role) matches feature type ($feature_type).
+    ENDIF
+    
+    
+    ! For LAS, the type of the ID variable must be String.
+    
+    IF `($vtype"0|*>1") EQ 0` THEN DEFINE SYMBOL vtype = `($id_var),RETURN=dtype`
+    IF `($vtype"0|CHAR>1|*>0") EQ 0` THEN
+       SAY
+       SAY **ERROR ** The ID variable: ($id_var), must be of type string. Its type is ($vtype"Unknown").
+       LET errors = `errors + 1`
+    ELSE
+       SAY
+       SAY --------- ID variable, ($id_var), is of type string.
+    ENDIF
+    
+    ! Make sure the rowSize and ID variable are on the same, non-normal grid.
+    IF `($rowsizevar"0|*>1") AND ($id_var"0|*>1")` THEN 
+    
+       LET instance_grid = `($id_var),RETURN=grid`
+       LET rgrid = `($rowsizevar),RETURN=grid`
+       IF `STRCMP("($instance_grid)", "($rgrid)") NE 0` THEN 
+          SAY
+          SAY **ERROR ** Grids of OD variable, ($id_var), and Rowsize variable, ($rowsizevar), do not match
+          SHOW GRID ($idvar)
+          SHOW GRID ($rowvar)
+          LET errors = `errors + 1`
+       ENDIF
+    ENDIF
+    
+    ! Check the sample_dimension attribute, matching a dimension name
+    
+    IF `($sample_dimension"0|*>1") EQ 1` THEN
+       LET dimnames = ..dimnames
+       LET ndims = ..ndims
+       REPEAT/RANGE=1:`ndims`/NAME=q (\
+       DEFINE SYMBOL q = `q`;\
+       DEFINE SYMBOL dname = `dimnames[i=($q)]`;\
+       IF `STRCMP( UPCASE("($sample_dimension)"), UPCASE("($dname)") ) EQ 0` THEN;\
+          DEFINE SYMBOL sample_dim = ($dname);\
+          EXIT/LOOP;\
+       ENDIF)
+    ENDIF
+    
+    ! Report on the sample_dimension attribute 
+    
+    IF ($sample_dim"0|*>1") THEN
+       SAY
+       SAY --------- sample_dimension attribute found, ($sample_dim).
+    ELSE
+       SAY
+       SAY **NOTE  ** sample_dimension attribute not found. This is acceptable for a file containing a single feature. 
+    ENDIF
+    
+    ! Is the sample_dimension attribute on the variable named rowSize? If not, it's legal,
+    ! but issue a note.
+    
+    IF ($rowsizevar"0|*>1") THEN
+       IF `($rowvar"0|*>1") AND (STRCMP( UPCASE("($rowvar)"), UPCASE("($rowsizevar)") ) NE 0)` THEN
+       SAY
+       SAY **NOTE  ** There is a variable named ($rowvar), but the sample_dimension attribute is on variable ($rowsizevar)
+       ENDIF
+    ENDIF
 
-DEFINE SYMBOL feature_type_test = ($feature_type)_id
+ENDIF  ! skipping attribute checks that for Point dataset
+! ***
 
-IF `STRCMP( UPCASE("($feature_type_test)"), UPCASE("($cf_role)") ) NE 0` THEN
-   SAY
-   SAY **ERROR ** cf_role attribute must match the feature type.
-   SAY **       ** Feature_Type is ($feature_type) cf_role is ($cf_role).
-   LET errors = `errors + 1`
-ELSE
-   SAY
-   SAY --------- cf_role attribute ($cf_role) matches feature type ($feature_type).
-ENDIF
-
-
-! For LAS, the type of the ID variable must be String.
-
-IF `($vtype"0|*>1") EQ 0` THEN DEFINE SYMBOL vtype = `($id_var),RETURN=dtype`
-IF `($vtype"0|CHAR>1|*>0") EQ 0` THEN
-   SAY
-   SAY **ERROR ** The ID variable: ($id_var), must be of type string. Its type is ($vtype"Unknown").
-   LET errors = `errors + 1`
-ELSE
-   SAY
-   SAY --------- ID variable, ($id_var), is of type string.
-ENDIF
-
-! Make sure the rowSize and ID variable are on the same, non-normal grid.
-IF `($rowsizevar"0|*>1") AND ($id_var"0|*>1")` THEN 
-
-   LET instance_grid = `($id_var),RETURN=grid`
-   LET rgrid = `($rowsizevar),RETURN=grid`
-   IF `STRCMP("($instance_grid)", "($rgrid)") NE 0` THEN 
-      SAY
-      SAY **ERROR ** Grids of OD variable, ($id_var), and Rowsize variable, ($rowsizevar), do not match
-      SHOW GRID ($idvar)
-      SHOW GRID ($rowvar)
-      LET errors = `errors + 1`
-   ENDIF
-ENDIF
-
-! Check the sample_dimension attribute, matching a dimension name
-
-IF `($sample_dimension"0|*>1") EQ 1` THEN
-   LET dimnames = ..dimnames
-   LET ndims = ..ndims
-   REPEAT/RANGE=1:`ndims`/NAME=q (\
-   DEFINE SYMBOL q = `q`;\
-   DEFINE SYMBOL dname = `dimnames[i=($q)]`;\
-   IF `STRCMP( UPCASE("($sample_dimension)"), UPCASE("($dname)") ) EQ 0` THEN;\
-      DEFINE SYMBOL sample_dim = ($dname);\
-      EXIT/LOOP;\
-   ENDIF)
-ENDIF
-
-! Report on the sample_dimension attribute 
-
-IF ($sample_dim"0|*>1") THEN
-   SAY
-   SAY --------- sample_dimension attribute found, ($sample_dim).
-ELSE
-   SAY
-   SAY **NOTE  ** sample_dimension attribute not found. This is acceptable for a file containing a single feature. 
-ENDIF
-
-! Is the sample_dimension attribute on the variable named rowSize? If not, it's legal,
-! but issue a note.
-
-IF ($rowsizevar"0|*>1") THEN
-   IF `($rowvar"0|*>1") AND (STRCMP( UPCASE("($rowvar)"), UPCASE("($rowsizevar)") ) NE 0)` THEN
-   SAY
-   SAY **NOTE  ** There is a variable named ($rowvar), but the sample_dimension attribute is on variable ($rowsizevar)
-   ENDIF
-ENDIF
-
-
-! Look for longitude and latitude variables. 
+! Look for longitude and latitude and depth variables. 
 ! For ERDDAP: Are the longitudes in -180:180?
 
+let lat = 0
+let lon = 0
 REPEAT/RANGE=1:`nvars`/NAME=q (\
 DEFINE SYMBOL q = `q`;\
 DEFINE SYMBOL vname = `varnames[i=($q)]`;\
-leT mmvar = MINMAX(($vname));\
+LET mmvar = MINMAX(($vname));\
 LET attnames = ($vname).attnames;\
+IF `IS_ELEMENT_OF_STR_N(attnames, "axis") GT 0` THEN;\
+   DEFINE SYMBOL vaxis = `($vname).axis`;\
+ENDIF;\
 IF `IS_ELEMENT_OF_STR_N(attnames, "units") GT 0` THEN;\
    LET vunits = ($vname).units;\
    IF `strlen(vunits) LE 1` THEN EXIT/CYCLE;\
    DEFINE SYMBOL vunits = `($vname),RETURN=units`;\
-   IF `STRINDEX(UPCASE("($vunits)"), "NORTH") GT 0` THEN;\
+   IF `STRINDEX(UPCASE("($vaxis%0%)"), "Y") GT 0 AND STRINDEX(UPCASE("($vunits)"), "NORTH") GT 0` THEN;\
+      LET lat = 1;\
       LET l1 = mmvar[i=@MIN];\
       LET l2 = mmvar[i=@MAX];\
       SAY;\
-      SAY --------- Latitude variable found ... ($vname) with units ($vunits), ($vname) range `l1,prec=6`  to  `l2,prec=6`;\
+      SAY --------- Latitude coordinate variable found  ... ($vname) with units ($vunits), ($vname) range `l1,prec=6`  to  `l2,prec=6`;\
    ENDIF;\
-   IF `STRINDEX(UPCASE("($vunits)"), "EAST") GT 0` THEN;\
+   IF `STRINDEX(UPCASE("(vaxis%0%)"), "X") GT 0 AND STRINDEX(UPCASE("($vunits)"), "EAST") GT 0` THEN;\
+      LET lon = 1;\
       SAY;\
       LET l1 = mmvar[i=@MIN];\
       LET l2 = mmvar[i=@MAX];\
-      SAY --------- Longitude variable found ... ($vname) with units ($vunits), ($vname) range `l1,prec=6`  to  `l2,prec=6`;\
+      SAY --------- Longitude coordinate variable found ... ($vname) with units ($vunits), ($vname) range `l1,prec=6`  to  `l2,prec=6`;\
       IF `(l1 lt -180 or l2 gt 180)` then;\
-      SAY **ERROR ** Longitude must be in -180:180;\
+      SAY '          ***NOTE ** For ERDDAP Longitude must be in -180:180';\
    ENDIF;\
 ENDIF;\
 CANCEL SYMBOL vunits;\
 )
+
+IF `lat eq 0` THEN
+   SAY 
+   SAY **ERROR ** Latitude coordinate variable not found or is missing requrired attributes
+   LET errors = `errors + 1`
+ENDIF 
+IF `lon eq 0` THEN
+   SAY 
+   SAY **ERROR ** Longitude coordinate variable not found or is missing requrired attributes.
+   LET errors = `errors + 1`
+ENDIF 
+
+! Check for the depth variable 
+
+IF `($depth_var"0|*>1") EQ 0` THEN
+   IF ($feature_type"0|profile>1|*>0") THEN
+      SAY 
+      SAY **ERROR ** Depth coordinate variable not found or is missing requrired attributes. Required for Profile datasets.
+      LET errors = `errors + 1`
+   ELSE
+      SAY 
+      SAY ---------  **NOTE ** Depth coordinate variable not found. Technically required but not present in all datasets
+   ENDIF
+ELSE
+   SAY
+   SAY --------- Depth coordinate variable found     ... ($depth_var) positive ($depth_pos) with units of ($depth_units)
+ENDIF
 
 
 ! Check for the time variable 
@@ -213,7 +266,7 @@ CANCEL SYMBOL vunits;\
 
 IF `($time_var"0|*>1") EQ 0` THEN
    SAY  
-   SAY **ERROR ** Time variable not found. Searching for units of xxx since date.
+   SAY **ERROR ** Time coordinate variable not found or is missing requrired attributes. Searching for units of xxx since date.
    LET errors = `errors + 1`
 ELSE
    IF `STRINDEX(UPCASE("($time_units)"), "SECONDS SINCE 1970-01-01") EQ 0` THEN

@@ -1,0 +1,44 @@
+! fill_between_demo.jnl
+
+! The script fill_between draws a color fill between two curves
+! or between a curve and a constant value
+!
+! yes?  GO fill_between polygon_command data axis [base]
+! $1 - the polygon command with qualifiers (eg POLYGON/OVER/PALETTE=GREEN
+! $2 - a 1-D variable -- as if it were being plotted
+! $3 - the name of the independent axis for variable "data"
+! $4 - base curve or offset value.  If omitted, shade between "data" and 0.
+
+set window/size=1.5
+cancel mode logo
+
+! Define two variables on a time axis
+define axis/t=1-jan-1990:1-mar-1990:1/unit=days tday
+
+let a = SIN(T[gt=tday]/10)
+let b = 0.4*cos(T[gt=tday]/4) - 2
+plot a, b
+pause
+
+
+go fill_between poly/over/palette=red/line/nolab a tday b
+pause
+
+go fill_between poly/over/palette=yellow/nolab a tday 1.
+pause
+
+go fill_between poly/over/palette=green/nolab b tday -3
+
+
+! Now an example with a depth axis. Use RETURN=zaxis to get the
+! name of the variable's independent axis
+pause
+
+use levitus_climatology
+let a = temp[y=0,x=180]
+let b = temp[y=60,x=180]
+plot/z=0:1000 a,b
+pause
+
+go fill_between poly/over/palette=green/line/nolab a `a,return=zaxis` b
+

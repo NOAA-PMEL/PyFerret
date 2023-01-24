@@ -8,26 +8,33 @@
 
 ! Usage:                    $1          $2          $3        $4
 ! yes?	GO bar_chart3 polygon_command bar_data [color_data] [base]
+! 
 ! $1 - the polygon command with qualifiers (eg POLYGON/OVER/NOLABEL)
 ! $2 - a variable -- as if it were being plotted
 !       region for variable should be self-contained (not depend on SET REG
 !	or on command qualifiers)
 ! $4 - base or offset value (this value will have a zero-sized bar)
 
-! example  (see also bar_chart_demo)
+! Example 1  (see also bar_chart_demo)
+! 
 ! yes? go bar_chart3 poly/line/nolabel/fill RANDN(I[i=1:10]) RANDN(I[i=1:10]+1)
-
-! example 2 - two variables overlaid
-!let a = 1+RANDU(I[i=1:10])
+! 
+!
+! Example 2 - two variables overlaid
+! 
+! let a = 1+RANDU(I[i=1:10])
 ! plot/hlimits=0.5:10.5/sym/ylim=0:2/title="My Bars" 0*a+0.5  ! axes + title
-!go bar_chart3 poly/line/palette=red/overlay/title="My reds" a
+! go bar_chart3 poly/line/palette=red/overlay/title="My reds" a
+!
 ! let b = RANDU(I[i=1:10]+1)
-!go bar_chart3 poly/line/palette=blue/overlayy/title="My blues" b
-
-! example 3
-!let a = RANDN(T[T=2-jan-1990:1-jun-1990:24])
-!plot/ylim=-3:3/title="hist-style plot" 0*a
-!go bar_chart3 poly/over/palette=no_green_centered/levels=(-3,3,.5)/nolab a a
+! go bar_chart3 poly/line/palette=blue/overlayy/title="My blues" b
+! 
+! 
+! Example 3
+!
+! let a = RANDN(T[T=2-jan-1990:1-jun-1990:24])
+! plot/ylim=-3:3/title="hist-style plot" 0*a
+! go bar_chart3 poly/over/palette=no_green_centered/levels=(-3,3,.5)/nolab a a
 
 ! argument check
 QUERY/IGNORE $1"<usage: yes? GO bar_chart3 polygon_command bar_data [color_data] [base]"

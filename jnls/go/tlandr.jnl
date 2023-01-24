@@ -16,4 +16,5 @@ ppl plot/over
 cancel data unf_tlandr.dat
 set data/restore
 set mode/last verify
+sp rm unf_tlandr.dat
 

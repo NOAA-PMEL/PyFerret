@@ -2,11 +2,13 @@
 ! graticule.jnl  (12/93)
 
 ! Description: Set the plot axis style to use a graticule (see GO tics)
+! Note: the /GRATICULE qualifier on plot commands supersedes this script
+!	with more-flexible control of graticule lines
 
 ! Usage:  GO graticule
 ! 	(to restore the normal tic style use  "GO tics")
 
-! This script needs to be exectuted AFTER changes in aspect ration
+! This script needs to be exectuted AFTER changes in aspect ratio
 ! (It uses the current axis lengths to set up)
 
 ppl tics,,'ppl$ylen',,'ppl$xlen',1,1

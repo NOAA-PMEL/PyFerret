@@ -7,6 +7,7 @@
 
 ! in case a region setting was left by a previous command
 CANCEL REGION
+cancel mode logo
 
 LET lg=10
 LET delta=.25
@@ -23,6 +24,7 @@ DEFINE AXIS/Y=-20:20:.2/unit="ROSSBY RADIUS" yax
 DEFINE GRID/X=xax/Y=yax gping
 SET GRID gping
 
+set window/size=1.5
 ! Now we will produce a contour plot of VHAT over the domain.
 ! X=[0,4] and Y=[-20,20]
 contour vhat
@@ -37,10 +39,10 @@ contour vhat
 message
 LET lg=10
 LET delta=.25
-set window/asp=1.4/size=.6
+set window/aspect=1.4/size=1.5
 set view upper
 contour/lev=(-.01,.01,.002)PEN(-.01,0,.002,4)PEN(0,.01,.002,2)DARK(0)/set vhat
-ppl title .3, @TR-(B+1/2)*D_y*e^B/D^2     ! big title with sub/superscripts
+ppl title .3, -(B+1/2)*D_y*e^B/D^2     ! big title with sub/superscripts
 ppl contour
 
 ! a wire frame of it at lower resolution right underneath
@@ -58,5 +60,5 @@ message
 
 SET GRID abstract
 CANCEL VIEWPORTS
-set wind/asp=.75:ax       ! default aspect ratio
+set window/aspect=.75:ax       ! default aspect ratio
 ppl lev () (-.01,.01,.002,1) pen(-.01,.01,.002,1) ! reset PLOT+ contour colors 

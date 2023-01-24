@@ -17,7 +17,7 @@ SET MODE VERIFY
 ! poly_vectors.jnl to set up the polygons for plotting.
 
 PAUSE
-SET WINDOW/siz=0.6
+SET WINDOW/size=1.5
 CANCEL MODE logo
 
 USE coads_climatology

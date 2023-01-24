@@ -1,3 +1,7 @@
+\cancel mode verify
+cancel mode logo
+
+
 ! DSG point data from ERDDAP  
 
 use dsg_point_example
@@ -19,13 +23,14 @@ pause
 
 ! The default "PLOT" command draws a map plot of the lon/lat locations
 ! colored by the variable specified
+set window/size=1.5
 
 plot/thick/lev=v larvae_size
 go fland 5
 pause
 
 ! We can use PLOT/VS to see the distribution in time
-PLOT/VS/thick time, larvae_count
+PLOT/VS/thick/sym=boxfill/color=blue time, larvae_count
 pause
 
 ! or try PLOT/VS/RIBBON to plot a variable vs time colored by another variable
@@ -47,6 +52,8 @@ cancel data/fmask 1
 let mask = if STRINDEX(common_name, "Pacific sardine") GT 0 then 1
 set data/fmask=mask 1
 
-plot/thick/levels=v larvae_size
+plot/thick/levels=v/set larvae_size
+   go unlabel ($lab($labnum_dset))
+ppl plot
 go fland 5
 

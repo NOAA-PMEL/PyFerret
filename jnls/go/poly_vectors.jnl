@@ -66,15 +66,14 @@ let vect_y_comp = vect_y_comp1[g=vect_cnt_grd@asn]
 
 ! Compute the plot scaling. 
 
-let plt_x_inch_span = `($PPL$XLEN)` + 0*x[g=poly_vert_grd]
-let plt_y_inch_span = `($PPL$YLEN)` + 0*x[g=poly_vert_grd]
+let plt_x_inch_span = ($PPL$XLEN) + 0*x[g=poly_vert_grd]
+let plt_y_inch_span = ($PPL$YLEN) + 0*x[g=poly_vert_grd]
 
-let plt_x_user_span = `($xaxis_max)` - `($xaxis_min)` + 0*x[g=poly_vert_grd]
-let plt_y_user_span = `($yaxis_max)` - `($yaxis_min)` + 0*x[g=poly_vert_grd]
+let plt_x_user_span = ($xaxis_max) - ($xaxis_min) + 0*x[g=poly_vert_grd]
+let plt_y_user_span = ($yaxis_max) - ($yaxis_min) + 0*x[g=poly_vert_grd]
 
 let plt_x_per_inch = plt_x_user_span/plt_x_inch_span
 let plt_y_per_inch = plt_y_user_span/plt_y_inch_span
-
 
 ! Compute the vector direction on the plot
 

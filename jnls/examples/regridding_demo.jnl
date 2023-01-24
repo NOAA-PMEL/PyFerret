@@ -7,10 +7,10 @@ MESSAGE/CONTINUE   ... setting up demo environment ...
 CANCEL REGION
 CANCEL VARIABLES/ALL
 CANCEL DATA/ALL
-SET WINDOW/SIZE=0.7/ASPECT=.75:axis   ! default
 SET GRID ABSTRACT
 SET MODE CALENDAR:DAYS
 SET MODE VERIFY     ! display the command lines below at the user's console
+cancel mode logo
 
 ! This demonstration/tutorial will introduce FERRET regridding concepts.
 
@@ -21,21 +21,20 @@ SET MODE VERIFY     ! display the command lines below at the user's console
 ! The explanatory text provided is quite brief.
 ! Further explanation is provided in the FERRET Users' Guide.
 
-! This demonstration presumes that you are seated at a windowing screen.
-! ==== Parts of this demo will not work properly on dumb terminal displays ====
-
 MESSAGE
+SET WINDOW/size=1.5/ASPECT=.75:axis   ! default
 
 ! We begin by selecting the ETOPO data set: earth surface relief
 ! We will display some data over North America.
 ! Notice that the resolution of this particular data set is quite low.
 
 SET DATA etopo120
-SHADE/X=160W:40W/Y=20N:70N rose
+SHADE/X=160W:40W/Y=20N:70N/palette=centered/level=c rose
 
 message
 
-! Now we will define new axes and a new grid with finer resolution.
+! Higher-resolution datasets are available, but for this demonstration,
+! we will define new axes and a new grid with finer resolution.
 ! We will then view the same data regridded to this new grid.
 ! FERRET regridding is controlled by "g=...".
 ! By default regridding is done via multi-linear interpolation.
@@ -45,11 +44,11 @@ message
 DEFINE AXIS/X=160W:40W:.5/UNIT=LONGITUDE xfine
 DEFINE AXIS/Y=20N:70N:.5/UNIT=LATITUDE   yfine
 DEFINE GRID/X=xfine/Y=yfine gfine
-SHADE/X=160W:40W/Y=20N:70N rose[g=gfine]
+SHADE/X=160W:40W/Y=20N:70N/palette=centered/level=c  rose[g=gfine]
 
 message The @AVE transformation improves this behavior in this instance
 
-SHADE/X=160W:40W/Y=20N:70N rose[g=gfine@AVE]
+SHADE/X=160W:40W/Y=20N:70N/palette=centered/level=c  rose[g=gfine@AVE]
 
 message
 
@@ -120,7 +119,7 @@ message
 
 LET DIFF = sst[d=esku_heat_budget,g=sst[d=coads_climatology]] - sst[d=coads_climatology]
 SHADE/T="15-JAN"/LEVELS=(-3,3,0.5) diff
-GO rgb_centered
+palette saz2
 GO land
 
 message
@@ -173,5 +172,5 @@ message
 
 ! done - restore normal FERRET states
 SET MODE VERIFY
-GO rgb_rainbow
+palette default
 SET MODE CALENDAR:MINUTES

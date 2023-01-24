@@ -1,11 +1,16 @@
+! minmax_label_demo.jnl
+
 ! example to call label_hi_lo.jnl to label extrema 
 ! 1/2002 change in the "neighborhood" arguments fromm
 !        number of gridpoints, to range in data units.
 
+cancel mode logo
+set window/size=1.5
+
 use coads_climatology
 set region/l=7/x=100:360/y=-20:60
 
-fill/line/pal=no_red slp; go fland
+fill/line/pal=magma slp; go fland
 go label_hi_lo.jnl slp label 10 8 green purple
 
 pause
@@ -18,14 +23,14 @@ pause
 !       label_hi_lo, but as long as the time region is set,the
 !       script gets ppl$xmin, ppl$xmax, etc and is ok
 
-can region
+cancel region
 set region/l=7
-fill/line/pal=no_red slp[l=7,x=100:360,y=-20:60]; go fland
+fill/line/pal=magma slp[x=100:360,y=-20:60]; go fland
 go label_hi_lo.jnl slp label 10 8 green purple
 
-message but this fails:
+message but this would fail:
 
-can region
-
-fill/line/pal=no_red/l=7/x=100:360/y=-20:60 slp; go fland
-go label_hi_lo.jnl slp[l=7] label 10 8 green purple
+! cancel region
+! 
+! fill/line/pal=magma/l=7/x=100:360/y=-20:60 slp; go fland
+! go label_hi_lo.jnl slp[l=7] label 10 8 green purple

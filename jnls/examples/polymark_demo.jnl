@@ -4,6 +4,8 @@
 ! Description: demonstrate usage of polymark jnl file
 
 set mode verify
+cancel mode logo
+set window/size=1.5
 
 ! Open demo ship track file with Lat, Lon, and SST
 use polydata
@@ -11,19 +13,19 @@ use polydata
 ! polymark needs an underlying plot to define scaling
 go basemap x=130:250 Y=20:65 20
 go polymark poly/over/key/title="SST along track" lon lat sst star 
-\message
+pause
 
 ! A little smaller & outline
 go basemap x=130:250 Y=20:65 20
-go polymark poly/over/key/line/fill/lev=(1,9,1)/title="Smaller & outline" lon lat sst square .6
-\message
+go polymark poly/over/key/line/fill/lev=(4,13,1)/title="Smaller & outline" lon lat sst square .6
+pause
 
 ! Use a square in a pattern & outline  (Ferret only)
 
 IF ($program_name"0|Ferret>1|*>0") THEN 
   go basemap x=130:250 Y=20:65 20
-  go polymark poly/over/key/pattern=4patterns/palette=black/line/fill/lev=(1,9,2)/title="Using patterns" lon[i=3:37:2] lat[i=3:37:2] sst[i=3:37:2] square 1.75
-\message
+  go polymark poly/over/key/pattern=4patterns/palette=black/line/fill/lev=(4,13,1)/title="Using patterns" lon[i=3:37:2] lat[i=3:37:2] sst[i=3:37:2] square 1.75
+pause
 ENDIF
 
 ! If running Pyferret demonstrate use of named symbols and PLOT command.
@@ -35,4 +37,4 @@ IF ($program_name"0|Ferret>1|*>0") THEN  EXIT/SCRIPT
 ! Watch how much faster this is than the outlined polygons.
 
 go basemap x=130:250 Y=20:65 20
-ribbon/vs/over/key/sym=hexfill/highlight/siz=0.15/lev=(1,9,1) lon, lat, sst
+ribbon/vs/over/key/sym=hexfill/highlight/size=0.15/lev=(4,13,1) lon, lat, sst

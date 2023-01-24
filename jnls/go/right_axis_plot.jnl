@@ -25,6 +25,14 @@
 !  or (for example)
 !  GO right_axis_plot salt "33,36,0.5" "My Salinity" 0.25 ",2,,+1,.13,(I2)"
 
+! These scripts only work when the independent axis is the horizontal axis
+
+define symbol varshape = `($1),return=shape`
+if strindex("($varshape)", "Z") THEN
+   say `left_axis_plot and right_axis plot do not work with variables on a Z axis
+   exit/script
+endif
+
 ! initialize  (FERRET initializes PLOT+ through "plot/set")
 plot/set $1
 ppl title

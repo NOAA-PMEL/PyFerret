@@ -11,6 +11,13 @@ set mode cal months
 
 ! Note that colors are set in the usual way...
 
+
+IF ($program_name"0|PyFerret>1|*>0") THEN
+   say PATTERN style is not available in PyFerret. Exiting.
+   exit/script
+ENDIF
+
+
 set win 1
 shade/pal=black/lev=(10,30,5,-3)/line/key/pattern=4patterns sst
 

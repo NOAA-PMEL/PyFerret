@@ -27,6 +27,10 @@ set mode verify
 !
 !**************************************************************
 
+say
+say See also documentation about the /GRATICULE qualifier for all plots
+say
+
 query/ignore $1%<Usage: go tgridlines hdelta [vdelta]%
 
 ! x1 = first vertical line (superior value)

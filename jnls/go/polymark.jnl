@@ -20,10 +20,17 @@
 ! $6 - scale the symbol size by this factor (optional, default 1)
 
 !      shape names include:
-!           triangle           delta           square
-!           diamond            pentagon        hexagon
-!           circle             star            plus
-!           ex
+!    triangle		delta		square
+!    diamond		pentagon	hexagon
+!    circle		star		plus
+!    ex			rectangle	tallbox
+!    hletter            lletter
+!    trianglec		deltac		exc
+!    rectanglec		tallboxc	fslash
+!    bslash		tletter		tupside
+!    tleft		tright		vright
+!    vleft		rtriangle	ltriangle
+!    uright		uleft
 
 ! examples
 !       GO polymark polygon/over/key lon lat sst diamond
@@ -35,7 +42,7 @@
 
 !       yes? GO basemap x=120:250 Y=25s:65n 20
 !
-!       yes? GO polymark polygon/over/key/title="SST"  xpts,ypts,sst,ex, 0.5 
+!       yes? GO polymark polygon/over/key/title="SST"  xpts,ypts,sst,ex, .8
 !
 ! NOTE: This script will fail if the polygon command contains a comma.
 !       To specify multiple options, i.e. /key=cont,horiz put the qualifier's

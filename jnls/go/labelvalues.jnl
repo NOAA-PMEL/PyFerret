@@ -108,7 +108,7 @@ IF `LN_ndig LT 0` THEN
     LET LN_xval = LN_x[i=`i`] + LN_xoff;\
     LET LN_yval = LN_y[i=`i`] + LN_yoff;\
     LET ln_vval = LN_v[i=`i`];\
-    LET LN_out1 = STRCAT(($LN_prefix),"`ln_vval`");\
+    LET LN_out1 = STRCAT(($LN_prefix),"`ln_vval,p=6`");\
     LET LN_outlab = STRCAT(LN_out1,($LN_suffix));\  
     LET LN_p = ln_vval AND `LN_prefix_exists eq 1`;\
     LET LN_n = ln_vval AND `LN_prefix_exists eq 0`;\
@@ -122,7 +122,7 @@ ELSE
     LET LN_xval = LN_x[i=`i`] + LN_xoff;\  
     LET LN_yval = LN_y[i=`i`] + LN_yoff;\
     LET ln_vval = LN_v[i=`i`];\ 
-    LET LN_lab = "`ln_vval`";\
+    LET LN_lab = "`ln_vval,p=6`";\
     LET LN_ndot = STRINDEX(LN_lab, ".");\ 
     LET LN_nlen = STRLEN(LN_lab);\
     LET LN_wh = LN_nlen - LN_ndot + LN_ndig;\  

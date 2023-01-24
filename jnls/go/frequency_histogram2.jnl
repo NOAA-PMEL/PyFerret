@@ -95,11 +95,14 @@ LET/QUIET wt_count = missing(fh_wc,0.)
 IF `style EQ 0` THEN
   message/cont You may want to replot with color qualifiers on PLOT and Ymin specified:
   message/cont >>>  go bar_chart2 plot/line wt_count $6"y|X|Y|Z|T|E|F" clear [Ymin]
+  show region
+  show var wt_count
+  stat wt_count
   go bar_chart2 plot/line wt_count $6"y|X|Y|Z|T|E|F"
 ELSE
-  message/cont You may want to replot with /HLIM /PALETTE or other qualifiers on PLOT:
+  message/cont You may want to replot with /HLIM /PALETTE or other qualifiers on POLY:
   message/cont Color may be same as wt_count or another variable with the same shape
-  message/cont Base is a constant value, the value with a bar of size zero.
+  message/cont Base is a constant value, to set the value having a bar of size zero.
   message/cont >>>  go bar_chart3 poly/line/nolabel/fill wt_count [color] [base]
   go bar_chart3 poly/line/nolabel/fill wt_count
 ENDIF

@@ -1,4 +1,6 @@
 \CANCEL MODE VERIFY
+cancel mode logo
+
 ! Description: A brief tutorial introduction to FERRET
 
 SAY   ... setting up demo environment ...
@@ -13,11 +15,9 @@ CANCEL REGION
 CANCEL VARIABLES/ALL
 CANCEL DATA/ALL
 CANCEL VIEWPORTS
-SET WINDOW/SIZE=0.7/ASPECT=.75:axis   ! default
 SET GRID ABSTRACT
 SET MODE CALENDAR:DAYS
 CANCEL MODE LOGO
-GO black
 SET MODE VERIFY      ! show command file lines at the screen
 
 !
@@ -32,6 +32,7 @@ SET MODE VERIFY      ! show command file lines at the screen
 
 ! ******************************************************************** 
 MESSAGE
+SET WINDOW/size=1.5/ASPECT=.75:axis   ! default aspect
 
 ! Suppose we want to plot values of 1/i for the first 10 integers
 ! i = 1, 2, 3, ..., 10
@@ -45,7 +46,7 @@ MESSAGE
 ! We can change the aspect ratio of the plot to a more pleasing size and
 ! shape and re-draw the plot
 
-SET WINDOW/SIZE=0.5/ASPECT=0.5
+SET WINDOW/size=1.5/ASPECT=0.5
 PLOT/i=1:10  1/i
 
 ! ******************************************************************** 
@@ -64,7 +65,6 @@ MESSAGE
 ! choosing.  In this plot we use both custom plot marks and a line and
 ! we specify the vertical plotting axis range.
 
-GO black
 LET/TITLE="My inverse of I" iinverse = 1/i
 PLOT/i=1:10/SYMBOLS=2/LINE/VLIMITS=-1:2:0.25  iinverse
 
@@ -82,7 +82,6 @@ MESSAGE
 ! The parts of the window are called "viewports".
 ! They are named UL, for "upper left", LL, LR, and UR, similarly.
 
-SET WINDOW/SIZE=.9    ! (bigger 'cause there will be 4 plots)
 SET VIEWPORT UL
 PLOT/i=1:10  1/i
 SET VIEWPORT LL
@@ -100,7 +99,7 @@ MESSAGE
 
 ! Contouring ...
 CANCEL VIEWPORT
-SET WINDOW/ASPECT=0.8
+SET WINDOW/ASPECT=0.8/size=1.5
 LET circle = ((i-20)^2 + (j-20)^2) ^ 0.5
 CONTOUR/i=1:40/j=1:40 circle * exp((10-(i+j))/50)
 
@@ -357,7 +356,7 @@ MESSAGE
 ! (If the new window overlaps the old you can use your mouse to separate them)
 
 SET REGION/X=180
-SET WINDOW/SIZE=0.6/NEW
+SET WINDOW/size=1.5/NEW
 FILL/Y=70S:70N/L=1:48/LEVELS=(-7,7,1) SST_ANOM
 
 ! The time axis of this data set is referred to as a "modulo" axis
@@ -376,8 +375,7 @@ MESSAGE
 ! We will put the results into the first window so they can easily be
 ! compared to the last shaded drawing.
 
-SET WINDOW/CLEAR 1
-SET WINDOW/ASPECT=0.4/SIZE=0.5 1
+SET WINDOW/CLEAR/ASPECT=0.4/size=1.5 1
 CANCEL VIEWPORTS
 LET NORTH = SST_ANOM[Y=23.5N:65N@AVE]
 LET SOUTH = SST_ANOM[Y=65S:23.5S@AVE]

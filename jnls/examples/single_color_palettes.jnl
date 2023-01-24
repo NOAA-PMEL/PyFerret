@@ -2,7 +2,7 @@
 ! good for backgrounds, or plotting symbols
 ! with the POLYGON command.
 
-set win/asp=0.5
+set win/asp=0.5/size=1.5
 
 list 1./12
 def view/xlim=0:0.08/ylim=0:0.33/axes v1_1
@@ -118,3 +118,28 @@ set view v12_1; shade/noax/nolab/nokey/pal=grey_light/title=grey_light/i=1:2/j=1
 label/user 1,1.5,-1,0,0.24,"grey"
 set view v12_2; shade/noax/nolab/nokey/pal=grey/title=grey/i=1:2/j=1:2 i+j
 set view v12_3; shade/noax/nolab/nokey/pal=grey_dark/title=grey_dark/i=1:2/j=1:2 i+j
+
+cancel mode verify
+say
+say There are other single-color palettes. Those shown here are:
+say
+say Palettes shown are:
+say
+say pink_light	pink	pink_dark
+say red_light	red	red_dark
+say orange_light	orange	orange_dark
+say yellow_light	yellow	yellow_dark
+say green_light	green	green_dark
+say cyan_light	cyan	cyan_dark
+say blue_light	blue	blue_dark
+say purple_light	purple	purple_dark
+say magenta_light	magenta	magenta_dark
+say brown_light	brown	brown_dark
+say tan_light	tan	tan_dark
+say grey_light	grey	grey_dark
+
+say
+say
+say To search for other palettes use the Unix command Fpalette. e.g.
+say
+say  > Fpalette green

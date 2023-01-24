@@ -7,10 +7,11 @@ can mode logo
 ! set up for demo
 \set data levitus_climatology
 \set reg/@t
-\SET WINDOW/ASPECT=1.2:axisi/siz=0.5
+\SET WINDOW/ASPECT=1.2:axis/size=1.5
 \DEFINE VIEWPORT/x=0.02:0.98/y=0:.33 low
 \DEFINE VIEWPORT/x=0.02:0.98/y=.33:.67 mid
 \DEFINE VIEWPORT/x=0.02:0.98/y=.67:1 up
+cancel mode logo
 
 ! * * * *  PALETTES  * * * *
 ! As of Ferret version 5 there are 3 types of palettes:
@@ -36,6 +37,16 @@ can mode logo
 
 ! Here are examples using a PERCENT palette:
 PALETTE rainbow
+ppl list shaset
+
+set view upper; go magnify 1.2
+FILL/levels=10 temp[z=0]; go land thick
+
+set view lower; go magnify 1.2
+FILL/lev=20 temp[z=0]; go land thick
+\pause; set window/clear
+
+PALETTE magma
 ppl list shaset
 
 set view upper; go magnify 1.2
@@ -104,6 +115,6 @@ FILL/Z=200 temp; go land thick
 
 ! clean up
 PALETTE default
-SET WINDOW/ASP=.75:ax
+SET WINDOW/aspect=.75:ax
 CANCEL VIEWPORTS
 

@@ -1,0 +1,9 @@
+ ! NOAA/PMEL TMAP
+ ! PyFerret v7.65 (debug)
+ ! Linux 4.4.0-22621-Microsoft - 01/23/23
+ ! 23-Jan-23 19:49     
+
+set mode verify
+SET DATA levitus_climatology
+ GO  frequency_histogram temp[X=0:360,Y=0:45N,Z=0] 0 32 0.5
+q

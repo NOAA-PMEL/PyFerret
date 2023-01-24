@@ -16,7 +16,7 @@ CANCEL REGION
 !         external functions for sorting data.
  
 ! ******************************************************************** 
-MESSAGE
+pause
 
 !         A first simple example of sorting: Sort a list of data.
 
@@ -27,7 +27,7 @@ LIST sst[x=19e,y=77n,l=1:6]
 !         the data using the new order of indices.  This is COADS sea surface 
 !         data at a location where some of the data is missing.
 ! ******************************************************************** 
-MESSAGE
+pause
 
 !       Show the indices and the sorted temperatures
 
@@ -44,7 +44,7 @@ list samplel(sst[x=19e,y=77n,l=1:6], {1,5})
 
 
 ! ******************************************************************** 
-MESSAGE
+pause
 
 !         A more involved example:  What is the Sea Surface 
 !         Temperature in a region 3 months after the strongest winds 
@@ -76,7 +76,10 @@ LET sst_by_wwe = samplel(sst_e, sorted_indices3)
 
 LET leng = wwe_by_wwe[l=@NGD]
 ! ******************************************************************** 
-MESSAGE
+pause
+
+set window/size=1.5
+cancel mode logo
 
 ! Make a scatter plots: sampled winds vs SST, using the 
 ! PLOT/VS/RIBBON style to color the symbols by the magnitude of the winds

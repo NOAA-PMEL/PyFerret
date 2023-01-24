@@ -1,4 +1,6 @@
 \cancel mode verify
+cancel mode logo
+
 ! ef_fft_demo.jnl
 ! *acm* 4/99
 ! *acm* 7/01 update /xlimits and /ylimits to /hlimits and /vlimits
@@ -28,7 +30,7 @@ LET FFT_uwndtim = uwnd[x=150e:130w@ave,y=20n:40n@ave]
 LET FFT_uwndfft = FFTA(FFT_uwndtim)
 SET VARIABLE/TITLE="Amplitude Spectrum" FFT_uwndfft
 
-SET WINDOW/SIZ=0.4
+SET WINDOW/size=1.5
 
 SET VIEW ul
 PLOT/THICK/COLOR=blue FFT_uwndfft
@@ -101,7 +103,6 @@ LET fcn2 = COS(0.3*tpts)
 LET sample_function = fcn1 - fcn2 + 0.2* RANDU(tpts)
 LET tpts = t
 
-SET WINDOW/SIZ=0.4
 SET VIEW upper
 PLOT/THICK/COLOR=blue/TITLE="Original SAMPLE_FUNCTION" sample_function
 
@@ -125,6 +126,8 @@ PLOT/COLOR=red/OVER FFTA(sample_function)
 
 ! next compare the phase function
 PAUSE
+cancel view
+
 ! Compute the equivalent of FFTP(sample_function)
 
 LET sample_re = FFT_RE(sample_function)
@@ -135,7 +138,6 @@ LET phas =  rad* ATAN2(-1.*sample_im, sample_re)     ! the computation done in F
 
 ! Compare with the computation of FFTA
 
-SET WINDOW/SIZ=0.4
 SET VIEW upper
 PLOT/THICK/COLOR=blue FFTP(sample_function)
 SET VIEW lower

@@ -10,7 +10,7 @@
 ! example:
 !	yes? GO set_pixel_size 600 400
 ! or
-!       yes? GO set_pixel_size 600 400 781 674
+!       yes? GO set_pixel_size 600 400 700 604
 !
 ! xsize - desired window width  in pixels
 ! ysize - desired window height in pixels
@@ -29,6 +29,11 @@
 !     yes? say ($ppl$xpixel), ($ppl$ypixel)
 ! to see the actual size and adjust the arguments accordingly
 !
+!
+say
+say NOTE: Can also use SET WINDOW/XPIXEL=/YPIXEL= to set the window size
+say
+
 ! check validity of arguments (first two args are mandatory)
 query/ignore $1"<Usage: GO set_pixel_size xsize ysize [default_x] [default_y]"
 query/ignore $2"<Usage: GO set_pixel_size xsize ysize [default_x] [default_y]"
@@ -37,4 +42,4 @@ query/ignore $2"<Usage: GO set_pixel_size xsize ysize [default_x] [default_y]"
 SET WINDOW/ASPECT=`$2/$1`
 !
 ! set window size. Note that the default window has a size of .7
-SET WINDOW/SIZE= `(($1 * $2) / ($3"781" * $4"674")) * .7`
+SET WINDOW/SIZE= `(($1 * $2) / ($3"700" * $4"604")) * .7`

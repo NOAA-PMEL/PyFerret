@@ -17,9 +17,8 @@
 
 ! example: mark the sea level pressure maximum in the N. Pacific
 !          SET DATA coads_climatology
-!          ! GO graticule             ! optional - helps to locate extrema
-!          SHADE/L=1/LEVELS=40 slp
-!          GO extremum MAX "slp[l=1]" x=170w:110w y=20N:40N 0.15 2
+!          SHADE/graticule/L=1/LEVELS=v slp       ! /gtaticule helps to locate extrema
+!          GO extremum MAX "slp[l=1]" x=170w:110w y=20N:40N 0.15 6
 
 ! Note: this quick and dirty version is suitable only for 2D plots in the
 ! XY plane. Extension to other planes is straightforward. 
@@ -36,10 +35,13 @@ LET/quiet xlocs = field0[$3@loc:0]     ! becomes X=lo:hi@loc:0
 LET/quiet ylocs = field0[$4@loc:0]
 
 ! put a plot mark over the maximum
-PLOT/VS/OVER/NOLABEL/SYM=2 `xlocs[$4@ave]`,`ylocs[$3@ave]`
+DEFINE SYMBOL plotsym = 25
+IF ($program_name"0|PyFerret>1|*>0") THEN DEFINE SYMBOL plotsym = diamfill
+
+PLOT/VS/OVER/NOLABEL/SYM=($plotsym)/size=.15 `xlocs[$4@ave]`,`ylocs[$3@ave]`
 
 ! label the maximum (place label above the mark)
-LABEL `xlocs[$4@ave]`,`ylocs[$3@ave]+$6"0"`,0,0,$5".15" "@CR`extremum`"
+LABEL `xlocs[$4@ave]`,`ylocs[$3@ave]+$6"0"`,0,0,$5".15" "`extremum,p=6`"
 
 ! clean up
 SET MODE/LAST VERIFY

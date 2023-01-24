@@ -1,11 +1,10 @@
-
 \cancel mode verify
 ! define_12_colors.jnl
 ! Define additional line colors
 
 say Defining 12 line colors: requries setting a new window
 
-set mode linec:12
+set mode linecolor:12
 cancel window/all
 set win/new
 

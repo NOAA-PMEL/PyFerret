@@ -52,8 +52,7 @@ $1/ASPECT/LENGTH=$4/XSKIP=1/YSKIP=1 $2-$2, $3-$3
 ! initialize
 SET GRID/SAVE
 cancel data/noerr custom_vectors.dat
-sp rm -f custom_vectors.dat    ! sometimes this doesn't work ???
-sp rm -f custom_vectors.dat
+sp rm -f custom_vectors.dat  
 
 ! define variable with known missing flag and in case an expression was passed
 LET/QUIET uexpr = missing($2,-9999.)
@@ -75,3 +74,4 @@ GO scattered_vectors custom_vectors.dat $4 $5"centered" $6"head"
 PLOT/VS/LINE/D=custom_vectors.dat/@aros/nolab/overlay arrow_x,arrow_y
 
 set mode/last verify
+sp rm -f custom_vectors.dat  

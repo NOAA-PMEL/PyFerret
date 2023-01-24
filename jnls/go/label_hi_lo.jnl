@@ -5,7 +5,8 @@
 *                             is too big; set the default precision of this script to 6.
 
 ! Description: overlay labels for local extrema with H and L or the
-!              values at those extrema
+!              values at those extrema. This script works best with 
+!              the context set via SET REGION.
 !
 !   usage:
 !       GO label_hi_lo var marktype xrng yrng [hicolor] [locolor] [labsize] [precision]

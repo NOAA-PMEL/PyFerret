@@ -17,7 +17,9 @@
 ! ycenter_inches - vertical   center of rose in PLOT+ inches (default=3)
 
 ! set up PLOT+ as if a plot had just been made
-SET WIND/CLEAR
+
+set window/CLEAR/SIZE=1.5
+
 PLOT/HLIMITS=-2:2:1/VLIMITS=-2:2:1/nolabels/set_up 1
 PPL AXSET 0,0,0,0
 PPL xlab; ppl ylab

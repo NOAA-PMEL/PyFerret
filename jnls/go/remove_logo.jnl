@@ -10,6 +10,10 @@
 !	   yes? GO remove_logo
 !	   yes? PPL PLOT
 
+say
+say NOTE: The script remove_logo.jnl is unnecessary if you "CANCEL MODE LOGO"
+say
+
 ! Label 1, the FERRET version number
 PPL LABS/NOUSER 1,0,0 @AS
 

@@ -1,0 +1,34 @@
+\cancel mode verify	! beat 8 colors against 3 scale locations - 24 combos
+
+! Description: a display of video color changes
+
+ppl shaset
+
+ppl shaset  100  100   0   0
+ppl shaset    0    0 100   0
+ppl shaset   50    0   0 100
+ppl shaset  100  100 100   0
+ppl shaset    0    0 100 100
+ppl shaset   50  100   0 100
+ppl shaset  100  100 100 100
+ppl shaset    0    0   0   0
+
+ppl shaset   50  100   0   0
+ppl shaset  100    0 100   0
+ppl shaset    0    0   0 100
+ppl shaset   50  100 100   0
+ppl shaset  100    0 100 100
+ppl shaset    0  100   0 100
+ppl shaset   50  100 100 100
+ppl shaset  100    0   0   0
+
+ppl shaset    0  100   0   0
+ppl shaset   50    0 100   0
+ppl shaset  100    0   0 100
+ppl shaset    0  100 100   0
+ppl shaset   50    0 100 100
+ppl shaset  100  100   0 100
+ppl shaset    0  100 100 100
+ppl shaset   50    0   0   0
+
+set mode/last verify

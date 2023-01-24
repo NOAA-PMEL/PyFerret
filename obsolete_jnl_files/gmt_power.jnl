@@ -1,0 +1,121 @@
+\cancel mode verify
+! gmt_power.jnl 10/96
+! update  - display the GMT command that is issued
+
+! Description: define a variable for the power spectrum of a time series
+
+! Output: variable definitions for "out_name".power and "out_name".error
+
+! Usage:	            1        2        3         4
+!         GO gmt_power my_T_series grid  [out_name] [seg_len]
+
+! Arguments:
+!  my_T_series - variable or expression for time series
+!		 (should not depend on SET REGION/T=...)
+!
+!  grid		The name of the grid upon which your time series is defined
+!		   (If computing the power spectrum of a file variable you
+!			may simply use the variable name here.)  
+!				[default="unknown"]
+!
+!  out_name   - name stem for the resultant variables
+!			        [default="gmt"]
+!		    use this argument especially when it is necessary to
+!		    work with multiple time series simultaneously
+!
+!  seg_len	seg_len ("-S" in GMT spectrum1d man pages)
+!		  [default=largest power of 2 less than 1/2 Npoints]
+!	  ... a radix-2 number of samples per window for ensemble
+!	  averaging.  The smallest frequency estimated is 1.0/(segment_size *
+!	  dt), while the largest is 1.0/(2 * dt).  One standard error in power
+!	  spectral density is approximately 1.0 / sqrt(n_data / segment_size),
+!	  so if segment_size = 256, you need 25,600 data to get a one standard
+!	  error bar of 10%.
+
+! Example: power spectrum of zonal wind at Equator, dateline
+
+!	yes? SET DATA monthly_navy_winds
+!	yes? GO gmt_power uwnd[x=180,y=0] uwnd x180y0 64
+!	yes? PLOT x180y0_power
+!	yes? GO overlay_bars x180y0_power  x180y0_error red
+
+! See "man spectrum1d" for detailed explanations.
+
+! Note -- this tool:
+!  - computes a power spectrum at a single geographical location, only
+!  - CANCELs the current REGION
+!  - cannot accept missing data (gaps) in the time series
+!  For details on the FFT calculation type "man spectrum1d" at the Unix prompt.
+
+! check for valid time series - must exist, must be a simple 1D time series
+query/ignore $1%<Usage: GO gmt_power my_T_series grid [out_name] [seg-len]%
+query/ignore $2%<Usage: GO gmt_power my_T_series grid [out_name] [seg-len]%
+DEFINE SYMBOL psgmt_shape `$1,return=shape`
+IF ($psgmt_shape"|T>0|*>1") THEN
+   SAY You must pass a simple time series to this routine
+   SAY Your argument of $1 is ($psgmt_shape) dimensioned
+   CANNOT_CONTINUE using $1		! deliberate syntax error
+ENDIF 
+
+! abort if the time series contains missing values
+LET/quiet psgmt_check = $1
+IF `psgmt_check[l=@nbd]` THEN
+   SAY >>> GMT FFT routines cannot handle gaps in data
+   SAY >>> Expression contains `psgmt_check[l=@nbd]` missing values: $1
+   EXIT
+ENDIF
+
+! determine the "segment length" (if not passed as an argument)
+IF $4"0" THEN
+  DEFINE SYMBOL psgmt_seg $4
+ELSE
+! ... greatest power of 2 less than one half of the time series length
+  DEFINE SYMBOL psgmt_Nt  `$1,return=lsize`
+  DEFINE SYMBOL psgmt_seg `2^(INT(LOG(($psgmt_Nt))/LOG(2))-1)`
+  SAY Using segment length of ($psgmt_seg)
+ENDIF
+
+! set up symbols for variable names, and file names
+DEFINE SYMBOL psgmt_var     $3"gmt"
+DEFINE SYMBOL psgmt_dat     ($psgmt_var).tseries
+
+! determine delta T for the time series (in days)
+LET/QUIET gmt_T_one = T[G=$2]/T[G=$2]
+DEFINE SYMBOL psgmt_days `gmt_T_one[l=@din]/(gmt_T_one[l=@ngd]*60*60*24)`
+CANCEL VARIABLE gmt_T_one
+
+! clean up files after last use
+SPAWN rm -f ($psgmt_dat)
+
+! write the indicated time series data into a new file
+list/file=($psgmt_dat)/format=(1PG15.6)/nohead $1
+
+! compute the power spectrum using GMT routine
+SAY >>> Using GMT command: spectrum1d ($psgmt_dat) -N($psgmt_var) -S($psgmt_seg) -D($psgmt_days)
+SPAWN spectrum1d ($psgmt_dat) -N($psgmt_var) -S($psgmt_seg) -D($psgmt_days)
+
+! read the frequency axis from the resulting spectrum
+SET DATA/SAVE
+CANCEL REGION
+file/var=freq ($psgmt_var).xpower
+DEFINE AXIS/T=`freq[i=1]`:`freq[i=@max]`/npoints=`freq[i=@ngd]`/units="1/days" ($psgmt_var)freq
+define grid/T=($psgmt_var)freq ($psgmt_var)freq
+CANCEL DATA ($psgmt_var).xpower 
+
+! define variables for the results: power series and error
+file/grid=($psgmt_var)freq/var=-,power,error ($psgmt_var).xpower 
+
+! set titles and units for resultant variables
+LET/QUIET ($psgmt_var)_power = power[d=($psgmt_var).xpower]
+SET VARIABLE/TITLE="Power Spectrum of $1 " ($psgmt_var)_power
+LET/QUIET ($psgmt_var)_error = error[d=($psgmt_var).xpower]
+SET VARIABLE/TITLE="Spectral Error of $1 " ($psgmt_var)_error
+
+! let the user know what the power spectrum variables are
+SAY >>> Power spectrum is  ($psgmt_var)_power   (try PLOT ($psgmt_var)_power )
+SAY >>> Spectral error is  ($psgmt_var)_error
+
+! clean up
+CANCEL SYMBOL psgmt*
+SET DATA/RESTORE
+SET MODE/LAST VERIFY

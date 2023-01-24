@@ -1,0 +1,60 @@
+\cancel mode verify 
+
+! Description:  Set filename and write a vis5d file with up to 8 variables.
+!  Data is written to a scratch file, then appended to the data in the file.
+!  From the Vis5D README.txt file:
+
+!v5dappend
+!     Usage:  v5dappend [-var] [...] file.v5d [...] target.v5d
+!     
+!     Description:  v5dappend allows you to append a number of v5d files
+!     together to make one larger file.  This might be useful if your
+!     model generates a separate .v5d file for each timestep and
+!     you want to join those files together to view the data in Vis5D.
+!     
+!     The arguments are, in order:
+!        -  An optional list of variables to omit from the output file. For
+!           example, if you want to omit the variables U and THETA you would
+!           use the arguments -U and -THETA.
+!        -  The list of v5d files to append onto the target file.
+!        -  The name of the target v5d file to create (if it doesnt exit)
+!           or append onto (if the target file already exists).
+!     
+!     Note that the dimensions of the grids (rows, columns and levels) must
+!     be the same in each file to append them together.  The map projection
+!     and vertical coordinate system information will be taken from the
+!     first input file and ignored the the remaining files.
+     
+
+! Script usage:
+!                arg 1     arg 2      arg 3       arg 4           arg 9   
+!      GO wv5d file-name  variable1 [variable2] [variable3] ... [variable8]
+
+!  Must have the filename and at least one variable
+!  Default to 0 any more variables not specified.
+
+! test argument before performing any actions
+
+query/ignore $1"<Argument 1 is the file name for vis5d file."
+query/ignore $2"<vis5d writes at least one variable to the file. Supply variable name"
+
+DEFINE SYMBOL Making_vis5d_file Append to Vis5D file $1
+
+MESSAGE/CONTINUE !
+SHOW SYMBOL Making_vis5d_file
+
+!  Write the scratch file with new time records.
+ 
+DEFINE SYMBOL VIS5D_FILENAME = appnd_scratch.v5d
+let vflag = writev5d($2, $3%0%, $4%0%, $5%0%, $6%0%, $7%0%, $8%0%, $9%0%, 0)
+LOAD/TEMPORARY vflag
+
+!  v5dappend utility appends the new file onto the old.
+
+MESSAGE/CONTINUE !
+sp v5dappend appnd_scratch.v5d $1
+sp rm appnd_scratch.v5d
+
+set mode/last verify
+
+

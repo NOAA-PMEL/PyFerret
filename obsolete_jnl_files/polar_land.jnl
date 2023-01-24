@@ -1,0 +1,65 @@
+\cancel mode verify
+! 2/94 - polar_land.jnl
+ 
+
+! NOTE: The map projection capabilities beginning with Ferret v5.0
+! provide far more flexibility for making plots with curvilinear coordinates.
+! Run the script  mp_demo  for an introduction"
+
+
+! Description: overlay the continental outlines on a polar stereographic plot
+
+! usage:   GO polar_land [color] [radius]
+!       where the color argument may be red, green, blue, thick, or 1-18
+!   e.g.   GO polar_land red        - to use pen color red (2)
+!   e.g.   GO polar_land 10         - to use pen number 10
+!   e.g.   GO polar_land  0         - to use pen number 0 (background)
+!       [radius] is the max radius the land will be plotted relative
+!                to the -1:1,-1:1 full hemisphere box.
+!  use  GO line_samples    to view the first 6 pen numbers
+!       Higher pen numbers cycle with thicker lines (max 18)
+! Note: the rotation parameter is inherited from the other polar routines
+
+
+
+! test argument before performing any actions
+ppl pen 1 $1%1|red>1|green>1|blue>1|thick>1|0>1|1>1|2>1|3>1|4>1|5>1|6>1|7>1|8>1|9>1|10>1|11>1|12>1|13>1|14>1|15>1|16>1|17>1|18>1|<GO polar_land "pen" with pen = 0(back), 1(fore), thick, 2-18 or a color%
+
+set data/save
+
+! introduce the coastal outline data set
+define axis/x=1:8850:1 axtlandr
+define grid/x=axtlandr gtlandr
+file/col=2/form=unform/var="xland,yland"/grid=gtlandr unf_tlandr.dat
+set variable/bad=1E35 xland
+set variable/bad=1E35 yland
+
+let/quiet deg2rad = 3.141592/180
+let/quiet polar_cosx = cos(xland * deg2rad)
+let/quiet polar_sinx = 0-sin(xland * deg2rad)*signgr
+let/quiet polar_cosy = cos(yland * deg2rad)
+let/quiet polar_siny = sin(yland * deg2rad)*signgr
+let/quiet polar_xpage0 = polar_sinx*polar_cosy/(1+polar_siny)
+let/quiet polar_ypage0 = polar_cosx*polar_cosy/(1+polar_siny)
+
+! rotate to arbitrary angle
+let/quiet polar_sinrot = sin(polar_rotation*deg2rad)
+let/quiet polar_cosrot = cos(polar_rotation*deg2rad)
+!let/quiet polar_xpage = polar_sinrot*polar_xpage0 + polar_cosrot*polar_ypage0
+!let/quiet polar_ypage = polar_sinrot*polar_ypage0 - polar_cosrot*polar_xpage0
+let/quiet polar_xpage = polar_cosrot*polar_xpage0 + signgr*polar_sinrot*polar_ypage0
+let/quiet polar_ypage = polar_cosrot*polar_ypage0 - signgr*polar_sinrot*polar_xpage0
+
+let/quiet mask = if ((polar_xpage*polar_xpage+polar_ypage*polar_ypage)^0.5 le $2"2") then 1.
+
+plot/set/vs/over/nolab/line=1/x=1:8850 mask*polar_xpage,mask*polar_ypage
+ppl pen 1 $1"1|red>2|green>3|blue>4|thick>7|0>0|1>1|2>2|3>3|4>4|5>5|6>6|7>7|8>8|9>9|10>10|11>11|12>12|13>13|14>14|15>15|16>16|17>17|18>18|"
+ppl plot/over
+
+cancel data unf_tlandr.dat
+set data/restore
+set mode/last verify
+
+message/continue "NOTE: The map projection capabilities beginning with Ferret v5.0"
+message/continue "provide far more flexibility for plots with curvilinear coordinates."
+message/continue "Run the script  mp_demo  for an introduction"

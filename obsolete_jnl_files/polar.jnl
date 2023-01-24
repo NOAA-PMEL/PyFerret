@@ -1,0 +1,4 @@
+! Description: Define R and THETA from X and Y to perform (limited) polar plots
+
+let theta = atan2(y,x)
+let r = (x^2+y^2)^.5

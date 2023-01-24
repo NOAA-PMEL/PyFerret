@@ -1,0 +1,58 @@
+! Description: demonstrate South pole polar stereographic projections
+! *acm* 7/01 update /xlimits and /ylimits to /hlimits and /vlimits
+
+! *** Note: this demo is superseded by newer map projection  *** !
+! *** capabilities introduced in Ferret Version 5.0 see      *** !
+! *** "map projections" in Users Guide, and                  *** !
+! ***                                                        *** !
+! ***  yes? go mp_demo                                       *** !
+! ***                                                        *** !
+
+! This demo will display the same plot twice: first with a standard
+! latitude/longitude rectangular "projection" and again using a polar
+! stereographic projection.   The demo plots are based on COADS data
+! and include these features:
+
+! 1) An SST field as a color-filled contour background
+! 2) The continents in solid-filled gray at 40 minute resolution
+! 3) The outline of the continents overlaid (for sharpness)
+! 4) Vectors of surface wind speed overlaid in red
+! 5) Contours of air temperature as an overlay
+! 6) A series of CTD cast locations plotted as overlaid symbols
+
+! South pole enhancements to the FERRET polar routines were contributed by
+! FERRET user Tony Craig at NCAR - 6/94.
+
+message
+
+set data coads_climatology
+cancel region/x
+set region/l=1
+set region/y=0s:90s
+
+! define fake variables as make-pretend CTD cast data
+let/quiet ctd_casts_lon = if i[i=1:40] LT 20 then 140+3*i[i=1:40] else 200 
+let/quiet ctd_casts_lat = if i[i=1:40] LT 20 then  0-25 else 0-(1.5*i[i=1:40]-5)
+
+set window 1
+set window/aspect=.6/size=.5
+fill/lev=(-2,30,2)/title="SST, winds, and AIRT"/pal=no_red sst
+go fland 60 gray
+go land
+vector/color=red/overlay uwnd,vwnd
+contour/color=black/levels=(-5,30,5)/overlay airt
+plot/vs/overlay/nolabels/symbols ctd_casts_lon,ctd_casts_lat
+
+
+
+set window 2
+set wind/aspect=1:ax/size=.5
+
+go polar_2d fill/lev=(-2,30,2)/title="SST,winds and AIRT"/pal=no_red sst,100,,,,,-1
+go polar_fland 60 gray
+go polar_land green,1.0
+go polar_vector vector/color=red/overlay uwnd,vwnd,100,,,,-1
+go polar_2d contour/color=black/levels=(-5,30,5)/overlay airt,100,,,,,-1
+go polar_vs plot/vs/overlay/nolabels/symbols ctd_casts_lon,ctd_casts_lat
+go polar_grid_fancy
+

@@ -123,17 +123,9 @@
 
 * Function is intended only for variables in the x direction
 
-* Single precision Ferret: string arg and result needed to be twice the length.
-      INTEGER strdf
-#ifdef double_p
-      PARAMETER (strdf = 1)
-#else
-      PARAMETER (strdf = 2)
-#endif
-
-      REAL arg_1(strdf,mem1lox:mem1hix)
+      REAL arg_1(mem1lox:mem1hix)
       REAL arg_2(mem2lox:mem2hix)
-      REAL result(strdf,memreslox:memreshix)
+      REAL result(memreslox:memreshix)
 
 * After initialization, the 'res_' arrays contain indexing information 
 * for the result axes.  The 'arg_' arrays will contain the indexing 

@@ -106,20 +106,7 @@
 	DATA  		dimnam/'I','J','K','L','M','N'/
 	CHARACTER*1024 ebuff, upstr  ! for nf_ error message
 
-* special equivalence (cannot include in tmap_format/xdset_info.cd_equiv 
-* because "BYTE" isn't supported on DECstation)
 * 10/96 reorder the if def because linux cpp didn't like it
-
-#ifdef unix
-#ifdef sun
-      BYTE cd_data_type(maxvars)
-#else
-      INTEGER*1 cd_data_type(maxvars)
-#endif
-#else
-      BYTE cd_data_type(maxvars)
-#endif
-      EQUIVALENCE ( ds_precision, cd_data_type )
 
 * initialize
         cdfid = sf_lunit(dset)

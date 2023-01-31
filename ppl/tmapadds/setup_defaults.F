@@ -120,11 +120,7 @@
 *	SHADE DEFAULT COLORS
 	ncl = 6
 	custom_colors = .true.
-*#ifdef atc_gks
 	area_bundles  = .false.
-*#else
-*	area_bundles  = .true.
-*#endif
 	mncl = 0
 
 *       RGB MAPPING PARAMETERS

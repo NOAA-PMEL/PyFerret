@@ -98,26 +98,18 @@
       INCLUDE 'EF_Util.cmn'
       INCLUDE 'EF_mem_subsc.cmn'
 
-      INTEGER strdf
-#ifdef double_p
-      PARAMETER (strdf = 1)
-#else
-      PARAMETER (strdf = 2)
-#endif
 
 
       INTEGER id
 
       REAL bad_flag(1:EF_MAX_ARGS), bad_flag_result
-      REAL arg_1(strdf,
-     .           mem1lox:mem1hix, mem1loy:mem1hiy, 
+      REAL arg_1(mem1lox:mem1hix, mem1loy:mem1hiy, 
      .           mem1loz:mem1hiz, mem1lot:mem1hit, 
      .           mem1loe:mem1hie, mem1lof:mem1hif)
       REAL arg_2(mem2lox:mem2hix, mem2loy:mem2hiy, 
      .           mem2loz:mem2hiz, mem2lot:mem2hit, 
      .           mem2loe:mem2hie, mem2lof:mem2hif)
-      REAL result(strdf, 
-     .            memreslox:memreshix, memresloy:memreshiy,
+      REAL result(memreslox:memreshix, memresloy:memreshiy,
      .            memresloz:memreshiz, memreslot:memreshit,
      .            memresloe:memreshiz, memreslof:memreshif)
 
@@ -159,9 +151,9 @@
 	 IF ( arg_2(i,j,k,l,m,n) .NE. bad_flag(2) ) THEN
             CALL ef_get_string_arg_element_6d(id, ARG1, arg_1, 
      .                      i,j,k,l,m,n, slen, buff)
-            CALL EF_PUT_STRING(buff, slen, result(1,i,j,k,l,m,n))
+            CALL EF_PUT_STRING(buff, slen, result(i,j,k,l,m,n))
 	 ELSE
-            CALL EF_PUT_STRING(null, 1, result(1,i,j,k,l,m,n))
+            CALL EF_PUT_STRING(null, 1, result(i,j,k,l,m,n))
          ENDIF  ! arg_2 good
 
       ENDDO

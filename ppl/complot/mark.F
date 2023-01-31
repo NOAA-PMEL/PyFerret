@@ -142,18 +142,8 @@ C     CALCULATE THE DISPLACEMENT FROM THE REFERENCE POINT.
 C     FOR SPEED WE HAVE CODED THE NEXT TWO LINES USING THE NON STANDARD
 C     AND AND RS FUNCTIONS.  HOWEVER THESE LINES COULD BE REPLACED BY
 C
-#ifdef unix
-# ifdef NEED_IAND
-	movex = ishft(ib,-3) -3
-	movey = iand(ib,7) -3
-# else
-	movex = rshift(ib,3) - 3
-        MOVEY = AND(IB,7) - 3
-# endif
-#else
-	movex = ishft(ib,-3) -3
-	movey = iand(ib,7) -3
-#endif
+	movex = ISHFT(ib,-3) -3
+	movey = IAND(ib,7) -3
 C
 C     IF THE DATA MARK IS LARGE, DOUBLE THE DISPLACEMENT.
 C

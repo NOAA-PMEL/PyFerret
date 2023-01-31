@@ -214,10 +214,6 @@
 * then return to the stack to get it
 	IF ( std_grid .EQ. unspecified_int4 ) THEN
 	   IF ( cx_has_impl_grid(cx) ) THEN
-#ifdef debug_dyn_grids
-	      IF ( mode_diagnostic )  CALL DIAG_OP
-     .	     ('dealloc ',isact_class_impl_grid,cx_impl_grid(cx),0)
-#endif
 * ... grid was barely started by GET_CONTEXT_MODS. Axes were never allocated
 	      CALL DEALLO_UNFORMED_GRID(status)
 	   ENDIF
@@ -329,17 +325,10 @@
 * ... make the implicit axes and save them in the implicit grid
 	   DO 20 idim = 1, nferdims
 	      IF (cx_delta(idim,cx) .NE. unspecified_val8) THEN
-! ... trap for twice-defined axis of implicit grid is removed because
-!	var[g=var2,gx=lo:hi:del] needs to be a legal expression
-!	         IF ( grid_line(idim,impl_grid).NE.unspecified_int4 )
-!     .							GOTO 5100
 	         IF ( cx_by_ss(idim,cx) ) THEN
 * ... clip to axis ss limits
 	            CALL GRID_SUBSCRIPT_EXTREMES(ilo, ihi, std_grid, idim)
 		    IF (cx_lo_ss(cx,idim) .LT. ilo ) THEN	! ilo is 1
-! unused code: "modulo clip" -> ss #1 to be a multiple of delta from users strt
-!	               n = 1 - INT(cx_lo_ss(cx,idim)/cx_delta(idim,cx))
-!	               dlo = cx_lo_ss(cx,idim) + n * cx_delta(idim,cx)
 	               dlo = 1
 	            ELSE
 	               dlo = cx_lo_ss(cx,idim)
@@ -488,11 +477,6 @@
 	         CALL TM_COPY_GRID_W_LINE_USE(std_grid, impl_grid)
 	         grid_name(impl_grid) = '(conformable)'
 	         cx_has_impl_grid(cx) = .TRUE.
-!	         cx_impl_grid(cx) = impl_grid
-#ifdef debug_dyn_grids
-                 IF ( mode_diagnostic )  CALL DIAG_OP
-     .              ('allocate', isact_class_impl_grid, impl_grid, 0)
-#endif
 	      ENDIF
 	      grid_line(idim,impl_grid) = grid_line(x_dim,use_grid)
 	      CALL TM_USE_LINE(grid_line(idim,impl_grid))
@@ -512,11 +496,6 @@
 	            CALL TM_COPY_GRID_W_LINE_USE(use_grid, impl_grid)
 	            grid_name(impl_grid) = '(conformable)'
 	            cx_has_impl_grid(cx) = .TRUE.
-!	            cx_impl_grid(cx) = impl_grid
-#ifdef debug_dyn_grids
-                    IF ( mode_diagnostic )  CALL DIAG_OP
-     .              ('allocate', isact_class_impl_grid, impl_grid, 0)
-#endif
 	         ENDIF
 	         CALL TM_DEALLO_DYN_LINE(grid_line(idim,impl_grid))
 	         grid_line(idim,impl_grid) = grid_line(idim,std_grid)
@@ -541,15 +520,11 @@
 	   ENDIF
 
 * ... deallocate the (now unnecessary) implicit stack-based grid
-#ifdef debug_dyn_grids
-	   IF ( mode_diagnostic )  CALL DIAG_OP
-     .	  ('dealloc ', isact_class_impl_grid, impl_grid, 0)
-#endif
+
 	   CALL DEALLO_GRID(status)
 
 	   cx_grid(cx) = use_grid
 	ENDIF
-cc what is dsg_xlate_grid(dset) 
 
 * flesh out regridding transformations
 	DO 100 idim = 1, nferdims

@@ -431,12 +431,7 @@
 	   ELSE
 * syntax change 9/95 for IBM/AIX compatibility
 	      buff1 = cmnd_buff( equal_pos+qual_start(lp):qual_end(lp) )
-c *kob* 4/97
-#ifdef MANDATORY_FORMAT_WIDTHS
 	      READ ( buff1,*,ERR=5030 ) iv
-#else
-	      READ ( buff1,'(I)',ERR=5030 ) iv
-#endif
 	      list_digits = iv
 	   ENDIF
 	ENDIF
@@ -630,7 +625,6 @@ c *kob* 4/97
 	   IF ( c1 .GE. '0' .AND. c1 .LE. '9' ) THEN
 	      buff1 = cmnd_buff(item_start(item):item_end(item))
 * *kob* 4/97
-#ifdef INTERNAL_READ_FORMAT_BUG
 * *kob* 9/03 kludge due to g77 internal read bug which does not correctly identify
 *            a character and signal an error when doing an internal read into an
 *            integer variable - e.g. 11111112_3.nc was being read as an integer so Ferret
@@ -648,11 +642,7 @@ c *kob* 4/97
 		ENDIF
 		ENDDO
 	      READ (buff1,*) dset_num
-#elif MANDATORY_FORMAT_WIDTHS
-	      READ (buff1,*,ERR=740) dset_num
-#else
-	      READ (buff1,'(I)',ERR=740) dset_num
-#endif
+
 * ... check for valid number given 
 
 	      IF   ( dset_num .LT. 1
@@ -2091,19 +2081,12 @@ c           ENDIF
            INQUIRE( FILE = title, EXIST = fexist )
            IF ( fexist ) THEN    
               IF ( redir_append ) THEN
-#ifdef NO_ACCESS_APPEND
-                 faccess = 'SEQUENTIAL'
-#else
                  faccess = 'APPEND'
                  fposition = 'APPEND'
-#endif
                  fstatus = 'OLD'
               ELSE IF ( redir_clobber ) THEN
                  faccess = 'SEQUENTIAL'
                  fstatus = 'REPLACE'
-#ifdef F90_OPEN_FILE_CLOBBER
-                 fposition = 'ASIS'
-#endif
               ELSE
                  CALL ERRMSG( ferr_invalid_command, status,
      .                   'neither /CLOBBER nor /APPEND specified ' //
@@ -2119,11 +2102,7 @@ c           ENDIF
            OPEN( UNIT = redir_file_lun,
      .           FILE = title,
      .           FORM = 'FORMATTED',
-#ifdef F90_OPEN_FILE_APPEND
-     .           POSITION = fposition,
-#else
      .           ACCESS = faccess,
-#endif
      .           STATUS = fstatus,
      .           ERR    = 6800 )
 *

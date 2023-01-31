@@ -45,8 +45,7 @@
 * written for VAX computer under VMS operating system
 *
 * V200:	10/11/89 - modified array declarations using XMEM_SUBSC.CMN
-* V230: 5/6/92 - COS correction checks that J location is defined         
-* V68  *acm* 1/12  ifdef double_p for double-precision ferret.
+* V230: 5/6/92 - COS correction checks that J location is defined  
 *       2/12 *kms* Include E and F dimensions (use nferdims in tmap_dims.parm)
 * V71 12/16 *acm* For ticket 2158: working with true monthly time axes.
 * 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 

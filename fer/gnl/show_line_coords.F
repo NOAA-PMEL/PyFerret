@@ -51,7 +51,6 @@
 *                  argument grid rather than calendar name?!)
 * V601 *acm*  3/08 Allow more figs when writing values with negative exponents.
 * V650  Write to show_lun which may be set to a file unit number rather than std out
-* V68  *acm* 1/12  ifdef double_p for double-precision ferret.
 *       *acm* 3/12 6D Ferret, changed a comment only
 *       *acm* 4/12 6D Ferret: time axis may be in t or f direction. The time 
 *                  dimension is now an arg to SECS_TO_TSTEP.
@@ -232,13 +231,8 @@ c	          cx_hi_ww(idim,cx) = INT(cx_lo_ww(idim,cx)+1)
 	      CALL TRANSLATE_TO_WORLD( lo_val8,idim,grid,ndec,lo_str )
 	   ENDIF
 
-#ifdef double_p
 	   IF ( calendar ) extra = 
      .	         	TM_FMT( (pt_val8), sig_figs, 14, dlen )
-#else
-	   IF ( calendar ) extra = 
-     .	         	TM_FMT( SNGL(pt_val8), sig_figs, 14, dlen )
-#endif
            buff = TM_FMT(
      .                       BOX_SIZE(i,grid,idim), sig_figs, 9, dlen )
            IF (dlen .GT. 9) THEN

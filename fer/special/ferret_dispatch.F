@@ -163,11 +163,7 @@
 * temporarily we simply declare the "memory" array right here
 * calling argument declarations
 	INTEGER nflags, nchars, rtn_flags(nflags), nerrlines
-#ifdef NEED_BYTE
-        BYTE       command(*), rtn_chars(nchars)
-#else
         INTEGER*1  command(*), rtn_chars(nchars)
-#endif
 
 * local variable declarations:
 	INTEGER	TM_LENSTR1,

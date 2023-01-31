@@ -110,4 +110,5 @@ SET REGION save
 
 
 set mode/last verify
+cancel data bar_plot.dat
 sp rm bar_plot.dat

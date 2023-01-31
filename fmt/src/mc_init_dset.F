@@ -68,7 +68,6 @@
 * V65  *acm* 2/10- all warnings and notes to std error not std out
 * V68  *acm* 1/12- added use_strict argument for ticket 1910: micro-adjusting on 
 *                  repeated coordinates in netCDF/OPeDNAP datasets
-* V68  *acm* 1/12  ifdef double_p for double-precision ferret.
 * V682 *acm* 9/12  Fix ticket 1969: stepfiles may have 3- or 4-digit extensions 
 *                  when listed under S_NUM_OF_FILES
 * V698+ *sh* 11/15 new arg in call to CD_INIT_DSET ... not relevant here
@@ -336,15 +335,9 @@ c	     sf_ndxe(stp_cnt) = steps_in_file + sf_ndxs(stp_cnt) - 1
 * removed SNGL function from evalutating last_delta because it isn't
 * a real*8   *kob* 14apr94
 * v51 - put it back in - last_delta IS a real*8
-#ifdef double_p
 	  ds_regsteps(dset_num) = ds_regsteps(dset_num) .AND.
      .				  sf_regtimes(stp_cnt) .AND.
-     .		     TM_FPEQ((s_delta), (last_delta))
-#else
-	  ds_regsteps(dset_num) = ds_regsteps(dset_num) .AND.
-     .				  sf_regtimes(stp_cnt) .AND.
-     .		     TM_FPEQ(SNGL(s_delta), SNGL(last_delta))
-#endif
+     .		                TM_FPEQ((s_delta), (last_delta))
 	  stp_pos = stp_cnt
   210	CONTINUE
 	GOTO 170

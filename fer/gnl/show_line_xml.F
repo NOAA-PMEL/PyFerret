@@ -51,7 +51,6 @@
 *                  with &lt; etc.
 * V650  Write to show_lun which may be set to a file unit number rather than std out
 * V67  *acm* 2/11 XML fixes. New attribute formatting, ![CDATA] escape, upper/lowercase handling.
-* V68  *acm* 1/12  ifdef double_p for double-precision ferret.
 *      *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
 *      *acm* 3/13 Dont show axes with names in parentheses e.g. (AX004)
 * V71 12/16 *acm* For ticket 2158: working with true monthly time axes.

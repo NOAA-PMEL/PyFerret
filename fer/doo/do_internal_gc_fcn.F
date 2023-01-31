@@ -90,7 +90,6 @@
 *                  CALL C_STRLEN(com2(1,i2,j2,k2,l2),ii) led to a crash
 *                  when applying STRRINDEX to a list of strings.
 * V68   1/12 *acm* call C_SUBSTR with integers for offset and length.
-* V68  *acm* 1/12  ifdef double_p for double-precision ferret.
 *       2/12 *kms* Add E and F dimensions (use nferdims in tmap_dims.parm)
 * V68   3/12 *KMS/ACM* see 6D branch: working on string bugs. Remove overloading
 *                   of argument/return-type variable and predimensional (data size)

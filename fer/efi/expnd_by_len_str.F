@@ -140,19 +140,12 @@
       INCLUDE 'EF_Util.cmn'
       INCLUDE 'EF_mem_subsc.cmn'
 
-      INTEGER strdf
-#ifdef double_p
-      PARAMETER (strdf = 1)
-#else
-      PARAMETER (strdf = 2)
-#endif
 
 
       INTEGER id
 
       REAL bad_flag(1:EF_MAX_ARGS), bad_flag_result
-      REAL arg_1(strdf,
-     .           mem1lox:mem1hix, mem1loy:mem1hiy, 
+      REAL arg_1(mem1lox:mem1hix, mem1loy:mem1hiy, 
      .           mem1loz:mem1hiz, mem1lot:mem1hit, 
      .           mem1loe:mem1hie, mem1lof:mem1hif)
       REAL arg_2(mem2lox:mem2hix, mem2loy:mem2hiy, 
@@ -161,8 +154,7 @@
       REAL arg_3(mem3lox:mem3hix, mem3loy:mem3hiy, 
      .           mem3loz:mem3hiz, mem3lot:mem3hit, 
      .           mem3loe:mem3hie, mem3lof:mem3hif)
-      REAL result(strdf, 
-     .            memreslox:memreshix, memresloy:memreshiy,
+      REAL result(memreslox:memreshix, memresloy:memreshiy,
      .            memresloz:memreshiz, memreslot:memreshit,
      .            memresloe:memreshiz, memreslof:memreshif)
 
@@ -239,7 +231,7 @@
             count = INT(arg_2(i2,j2,k2,l2,m2,n2))    ! number to replicate
 
             DO indx = 1, count
-               CALL EF_PUT_STRING(buff, slen, result(1,i,j,k,l,m,n))
+               CALL EF_PUT_STRING(buff, slen, result(i,j,k,l,m,n))
                i = i + 1
             ENDDO
 

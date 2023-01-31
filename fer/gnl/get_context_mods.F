@@ -234,11 +234,7 @@
 
 * internal parameter declarations:
 	CHARACTER*1	tab
-#ifdef NO_INTRINSIC_IN_PARAMETER
-	PARAMETER     ( tab = o'011' )
-#else
 	PARAMETER     ( tab = CHAR(9))
-#endif
 	INTEGER		looking_for_D, looking_for_eq, looking_for_name,
      .			done_looking, cal_id, TM_GET_CALENDAR_ID
 	PARAMETER     ( looking_for_D = 1,

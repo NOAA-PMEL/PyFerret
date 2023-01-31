@@ -91,7 +91,7 @@
 * get the axis number
 	axis = grid_line( dim, grid )
 	modulo = line_modulo(axis)
-#ifdef double_p	
+
 	IF ( axis .EQ. mnormal .OR. axis .EQ. munknown ) THEN
 	   WRITE ( date, * ) (tstep)
 	   RETURN
@@ -99,15 +99,6 @@
 	   WRITE ( date, * ) (tstep)
 	   RETURN
 	ENDIF
-#else
-	IF ( axis .EQ. mnormal .OR. axis .EQ. munknown ) THEN
-	   WRITE ( date, * ) SNGL(tstep)
-	   RETURN
-	ELSEIF ( line_direction(axis) .NE. linedir ) THEN
-	   WRITE ( date, * ) SNGL(tstep)
-	   RETURN
-	ENDIF
-#endif
 
 * get the calendar type
 

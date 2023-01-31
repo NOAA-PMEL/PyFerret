@@ -201,7 +201,6 @@
         
 * error exit
  5000   RETURN
-#ifdef NO_PASSED_CONCAT
  5010   tlen = TM_LENSTR1(text)
         risc_buff = text(:tlen)
         CALL ERRMSG( ferr_out_of_range, status,
@@ -214,17 +213,6 @@
         risc_buff = text(:tlen)
         CALL ERRMSG( ferr_out_of_range, status,
      .   'illegal mode argument. Negative or > 1.e+9, ', *5500 )
-#else
- 5010   tlen = TM_LENSTR1(text)
-        CALL ERRMSG( ferr_out_of_range, status,
-     .   'illegal mode argument < 6 '//text(:tlen), *5500 )
- 5020   tlen = TM_LENSTR1(text)
-        CALL ERRMSG( ferr_out_of_range, status,
-     .   'illegal mode argument. Must be in [1,250] '//text(:tlen), *5500 )
- 5030   tlen = TM_LENSTR1(text)
-        CALL ERRMSG( ferr_out_of_range, status,
-     .   'illegal mode argument > 1.e+9, ', *5500 )
-#endif
  5040   CALL ERRMSG( ferr_out_of_range, status,
      .   'illegal mode argument. Must be 0 to 90 percent '
      .          //text(:tlen), *5000 )

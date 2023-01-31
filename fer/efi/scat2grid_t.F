@@ -37,8 +37,7 @@
 * Ansley Manke
 * May 2003
 * 11-Jul-2003  Clean up section where we get box limits
-* V68  *acm* 1/12  ifdef double_p for double-precision ferret.
-
+       
 * Input is a set of T coordinates on an abstract axis, and an output time axis.
 * Returns a time series which is the number of points that fall inside of each T cell.
 *

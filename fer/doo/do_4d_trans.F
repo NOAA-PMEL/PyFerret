@@ -72,7 +72,6 @@
 *        failed to set ybox sizes and cos correction. Still need to set these.
 * 8/10 - One further fix to #1735
 * 2/11 - One further fix to #1348: @DIN over 1 grid cell in Y
-* V68  *acm* 1/12  ifdef double_p for double-precision ferret.
 *        2/12 *kms* Add E and F dimensions (use nferdims in tmap_dims.parm)
 * V685 *acm* 7/13  Fix ticket 2083: single-y and multi-D transform
 * V685+*acm* 12/13 Bug in y boxes; only when y axis in the transf.

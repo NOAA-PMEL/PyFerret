@@ -126,23 +126,16 @@
      .		 FILE = ds_des_name(dset),
      .		 FORM = 'UNFORMATTED',
      .		 ACCESS = 'DIRECT',
-#ifdef reclen_in_bytes
      .		 RECL = 4,
-#else
-     .		 RECL = 1,
-#endif
      .		 STATUS = 'OLD',
      .		 ERR = 9000)
 	ELSE
-* added ifdef for READONLY_ALLOWED for IBM port *kob* 4apr94
+
 	   OPEN	(UNIT = lunit,
      .		 FILE = ds_des_name(dset),
      .		 FORM = file_format,
      .		 ACCESS = 'SEQUENTIAL',
      .		 STATUS = 'OLD',
-#ifdef READONLY_ALLOWED
-     .		 READONLY,
-#endif
      .		 ERR = 9000)
 	ENDIF
 

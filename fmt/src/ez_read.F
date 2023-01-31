@@ -76,7 +76,6 @@
 *                         statements.  use character constant instead
 * v604 *acm* 7/07 increase length of ds_name, ds_des_name
 * V68  *acm* 1/12 The variables should be declared REAL (conversion to double prec.)
-* V68  *acm* 1/12  ifdef double_p for double-precision ferret.
 * V694 11/14 *acm* Ticket 2217: permuted ASCII reading in 6D
 * V701  7/16 *kms* Compare ds_name to char_init2048 instead of char_init1024
 * 10/2022 *acm* Code cleanup: Rewrite to avoid ASSIGN statements and computed GOTO
@@ -215,33 +214,20 @@ c	print *, 'ez_read file_format, permuted ',  file_format, ' ', permuted
 
 *
 * open the file
-#ifdef sun 
-#  ifndef sgi
-#    define reclen_in_bytes
-#  endif
-#endif
 	IF ( stream ) THEN       ! 5/94
 	   OPEN	(UNIT = lunit,
      .		 FILE = ds_des_name(dset),
      .		 FORM = 'UNFORMATTED',
      .		 ACCESS = 'DIRECT',
-#ifdef reclen_in_bytes
      .		 RECL = 4,
-#else
-     .		 RECL = 1,
-#endif
      .		 STATUS = 'OLD',
      .		 ERR = 9000)
 	ELSE
-* added ifdef for READONLY_ALLOWED for IBM port *kob* 4apr94
 	   OPEN	(UNIT = lunit,
      .		 FILE = ds_des_name(dset),
      .		 FORM = file_format,
      .		 ACCESS = 'SEQUENTIAL',
      .		 STATUS = 'OLD',
-#ifdef READONLY_ALLOWED
-     .		 READONLY,
-#endif
      .		 ERR = 9000)
 	ENDIF
 	sf_lunit(sfcnt) = lunit    ! *sh* dset -> sfcnt 5/91

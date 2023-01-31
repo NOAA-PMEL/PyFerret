@@ -104,30 +104,24 @@
       INCLUDE 'EF_Util.cmn'
       INCLUDE 'EF_mem_subsc.cmn'
 
-      INTEGER strdf
-#ifdef double_p
-      PARAMETER (strdf = 1)
-#else
-      PARAMETER (strdf = 2)
-#endif
 
       INTEGER id
 
-      REAL arg_1(strdf, mem1lox:mem1hix, mem1loy:mem1hiy,
-     .                  mem1loz:mem1hiz, mem1lot:mem1hit,
-     .                  mem1loe:mem1hie, mem1lof:mem1hif)
+      REAL arg_1(mem1lox:mem1hix, mem1loy:mem1hiy,
+     .           mem1loz:mem1hiz, mem1lot:mem1hit,
+     .           mem1loe:mem1hie, mem1lof:mem1hif)
 
-      REAL arg_2(strdf, mem2lox:mem2hix, mem2loy:mem2hiy,
-     .                  mem2loz:mem1hiz, mem1lot:mem1hit,
-     .                  mem1loe:mem1hie, mem1lof:mem1hif)
+      REAL arg_2(mem2lox:mem2hix, mem2loy:mem2hiy,
+     .           mem2loz:mem1hiz, mem1lot:mem1hit,
+     .           mem1loe:mem1hie, mem1lof:mem1hif)
 
-      REAL arg_3(strdf, mem3lox:mem3hix, mem3loy:mem3hiy,
-     .                  mem3loz:mem3hiz, mem3lot:mem3hit,
-     .                  mem3loe:mem3hie, mem3lof:mem3hif)
+      REAL arg_3(mem3lox:mem3hix, mem3loy:mem3hiy,
+     .           mem3loz:mem3hiz, mem3lot:mem3hit,
+     .           mem3loe:mem3hie, mem3lof:mem3hif)
 
-      REAL result(strdf, memreslox:memreshix, memresloy:memreshiy, 
-     .                   memresloz:memreshiz, memreslot:memreshit,
-     .                   memresloe:memreshie, memreslof:memreshif)
+      REAL result(memreslox:memreshix, memresloy:memreshiy, 
+     .            memresloz:memreshiz, memreslot:memreshit,
+     .            memresloe:memreshie, memreslof:memreshif)
 
 * Ignore the Y/Z/T/E/F dimensions in the work arrays since
 * they are not used and Fortran is column major
@@ -205,10 +199,10 @@
                   CALL EF_GET_STRING_ARG_ELEMENT_6D(id, ARG1, arg_1,
      .                    i1, j1, k1, l1, m1, n1, slen, buff)
                   IF (slen .LE. 0) THEN
-                     CALL EF_PUT_STRING(buff, slen, result(1,i,j,k,l,m,n))
+                     CALL EF_PUT_STRING(buff, slen, result(i,j,k,l,m,n))
                   ELSE
                      CALL REPLACE_LETTER(buff, slen, c_remove, c_replace)
-                     CALL EF_PUT_STRING(buff, slen, result(1,i,j,k,l,m,n))
+                     CALL EF_PUT_STRING(buff, slen, result(i,j,k,l,m,n))
                   ENDIF
 
                   i1 = i1 + arg_incr(X_AXIS,ARG1)

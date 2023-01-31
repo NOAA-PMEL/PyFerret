@@ -66,14 +66,8 @@
 	INCLUDE 'errmsg.parm'
 
 	integer		zwsid,zwstype,i,j, low_index
-
-#ifdef atc_gks
-	integer 	ltype(6)
-	data	 	ltype/1,2,3,4,-1001,-1004/
-#else
 	integer 	ltype(6)
 	data		ltype/1,2,3,4,-3,-4/
-#endif
 
 	integer		max_pline, max_pmark, max_text, max_fill_area
 	integer		max_pattern, max_color, error, ncolors

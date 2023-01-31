@@ -55,7 +55,6 @@
 *                  netcdf3-style calls, which are also consistent with netcdf4.
 * V65  *acm* 1/10  Add #ifdef usingDODSf2cUnderscore, for 32-bit linux build
 *                  linked with OPeNDAP library.
-* V68  *acm* 1/12  ifdef double_p for double-precision ferret.
 * V674 2/12 *acm* 6D Ferret: use nferdims rather than 4 for dimension indexing
 * V686 4/13 *acm* Fix ticket 2064: use single-precision comparisons
 * v694 1/15 *acm* for ticket 2227: if a dimension from a nc file is not also a 

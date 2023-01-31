@@ -115,10 +115,6 @@
 
         IMPLICIT NONE
 
-#ifdef MIXING_NAG_F90_AND_C
-	USE F90_UNIX
-#endif
-
 * calling argument declarations:
 	INTEGER		status
 	CHARACTER*(*)	called_string
@@ -136,13 +132,8 @@
         CHARACTER*1 backslash, tab
 	CHARACTER*5 dprefix
 	PARAMETER ( dprefix = ' !-> ') 
-#ifdef NO_INTRINSIC_IN_PARAMETER
-        PARAMETER ( backslash = o'134' )
-	PARAMETER ( tab = o'011' )
-#else
         PARAMETER ( backslash = char(92) )
 	PARAMETER ( tab = CHAR(9) )
-#endif
 
 	include 'tmap_dims.parm'
 	include 'errmsg.parm'

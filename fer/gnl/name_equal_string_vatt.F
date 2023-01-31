@@ -54,11 +54,7 @@
 	INTEGER STR_UPCASE, pos, i1
 
 	CHARACTER*1 tab
-#ifdef NO_INTRINSIC_IN_PARAMETER
-	PARAMETER     ( tab = o'011' )
-#else
 	PARAMETER     ( tab = CHAR(9))
-#endif
 
 * find name to define
 * 2 syntaxes are allowed: "DEFINE VAR NAME=TEXT", "DEFINE VAR NAME TEXT"

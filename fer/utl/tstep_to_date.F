@@ -50,7 +50,6 @@
 * V600 - SECS_TO_DATE --> SECS_TO_DATE_OUT for better formatting
 * V610: *acm*  2/08 Fix bug 762: if the axis is not modulo, always list the
 *                   year (previously never listed year 0 or year 1)
-* V68  *acm* 1/12  ifdef double_p for double-precision ferret.
 *       *acm* 3/12 6D Ferret: Add E and F dimensions 
 *                  A time axis may be a T axis or F axis.
 * V698  *acm* 5/16 Ticket 2405: MODE CALENDAR:auto
@@ -94,28 +93,16 @@
 	prec = ABS(precision)
 
 * get the axis number
-#ifdef double_p
-	axis = grid_line( idim, grid )
-	IF ( axis .EQ. mnormal .OR. axis .EQ. munknown ) THEN
-	   WRITE ( date, * ) (tstep)
-	   RETURN
-	ELSEIF ( (line_direction(axis).NE.'TI') .AND.
-     .           (line_direction(axis).NE.'FI')  ) THEN
-	   WRITE ( date, * ) (tstep)
-	   RETURN
-	ENDIF
-#else	
-	axis = grid_line( idim, grid )
-	IF ( axis .EQ. mnormal .OR. axis .EQ. munknown ) THEN
-	   WRITE ( date, * ) SNGL(tstep)
-	   RETURN
-	ELSEIF ( (line_direction(axis).NE.'TI') .AND.
-     .           (line_direction(axis).NE.'FI')  ) THEN
-	   WRITE ( date, * ) SNGL(tstep)
-	   RETURN
-	ENDIF
-#endif
 
+	axis = grid_line( idim, grid )
+	IF ( axis .EQ. mnormal .OR. axis .EQ. munknown ) THEN
+	   WRITE ( date, * ) (tstep)
+	   RETURN
+	ELSEIF ( (line_direction(axis).NE.'TI') .AND.
+     .           (line_direction(axis).NE.'FI')  ) THEN
+	   WRITE ( date, * ) (tstep)
+	   RETURN
+	ENDIF
 
 * get the calendar type
 

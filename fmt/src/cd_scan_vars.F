@@ -166,22 +166,8 @@
 
       INTEGER tt  ! nice short name
       EQUIVALENCE (tt,lunit_errors)
-* special equivalence (cannot include in tmap_format/xdset_info.cd_equiv because "BYTE"
-* isn't supported on DECstation
+
 * reorder loop logic because linux cpp didn't like it *kob* 10/96
-
-#ifdef unix
-#ifdef sun
-      BYTE cd_data_type(maxvars)
-#else
-      INTEGER*1 cd_data_type(maxvars)
-#endif
-#else
-      BYTE cd_data_type(maxvars)
-#endif
-
-
-      EQUIVALENCE ( ds_precision, cd_data_type )
 
 * initialize: save the state of grid memory prior to any new definitions
 

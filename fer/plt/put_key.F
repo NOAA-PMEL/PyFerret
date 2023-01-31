@@ -57,9 +57,7 @@
 	include	'xplot_setup.cmn'
 	include 'axis_inc.decl'	! axis lengths
 	include 'AXIS.INC'	! axis lengths
-#ifdef NO_PASSED_CONCAT
 	include 'xrisc.cmn'
-#endif
 
 * calling argument declarations
 	INTEGER line_num, style, xaxrel, yaxrel
@@ -102,12 +100,8 @@
      .			lab_ht, ppl_left_just, xaxrel, yaxrel )
 
 * define a PLOT+ symbol LABKEY
-#ifdef NO_PASSED_CONCAT
 	risc_buff = string
 	CALL PPLCMD ( from, line, 0, 'SET LABKEY '//risc_buff, 1, 1 )
-#else
-	CALL PPLCMD ( from, line, 0, 'SET LABKEY '//string, 1, 1 )
-#endif
 
 	RETURN
 	END

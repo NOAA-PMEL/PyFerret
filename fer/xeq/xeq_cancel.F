@@ -421,12 +421,7 @@
 	      IF ( TM_DIGIT_TEST(buff) ) THEN
 	         argsym = buff(:blen)			! 10/95 for AIX
 
-*  (1/03 *acm*) See xeq_set
-#ifdef MANDATORY_FORMAT_WIDTHS
 	         READ ( argsym,*,ERR=610 ) iset
-#else
-	         READ ( argsym,'(I)',ERR=610 ) iset
-#endif
 
 * ... check for valid number given
 	         IF ( iset .LT. 1 .OR. iset .GT. maxdsets ) GOTO 5030

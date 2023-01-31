@@ -83,11 +83,7 @@
 	  ELSEIF (pos.EQ.1) THEN
 	    GOTO 5100   ! null delimiter
 *  ... escaped comma?
-#ifdef NO_DOUBLE_ESCAPE_SLASH
 	  ELSEIF (buff(pos-1:pos-1).EQ.'\') THEN
-#else
-	  ELSEIF (buff(pos-1:pos-1).EQ.'\\') THEN
-#endif	    
 	    ll = INDEX(buff(pos+1:),',')
 	    IF (ll.EQ.0) THEN
 	      pos = llen + 1
@@ -98,11 +94,7 @@
 
 * interpret the next delimiter
 	  n = n + 1
-#ifdef NO_DOUBLE_ESCAPE_SLASH
 	  IF (buff(1:1).EQ.'\') THEN
-#else
-	  IF (buff(1:1).EQ.'\\') THEN
-#endif	     
 	    IF (buff(2:2).EQ.'t' .OR. buff(2:2).EQ.'T') THEN
 	      outstring(n:n) = tab
 	    ELSEIF (buff(2:2).EQ.'b' .OR. buff(2:2).EQ.'B' ) THEN

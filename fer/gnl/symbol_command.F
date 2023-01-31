@@ -56,9 +56,7 @@
 *			for editing symbols that exists for numbered
 *			"dollar arguments" to GO files
 * V430	*kob* 11/96 - Need to avoid passing a concatenated string as
-*		      on argument to COACHED_STR_SUB routine for sgi. 
-*		      added crptd_cat_argument ifdef and set it to true
-*		      for sgi
+*		      on argument to COACHED_STR_SUB routine. 
 * Linux Port *kob* 12/96 - had to remove a single quote from a comment line
 * 
 * v491b2 - *kob* 3/98 - fixed sgi only bug introduced by 11/96 change.  erroneously
@@ -82,12 +80,6 @@
 	INTEGER	  clen, status
 	CHARACTER buffer*(*)
 
-*11/96 *kob*
-#ifdef sgi
-#  define crptd_cat_argument
-#endif
-
-
 * internal variable declarations:
 	LOGICAL coaching
 	INTEGER	STR_UPCASE, lenbuff, spos, epos, nchar, ierr,
@@ -98,18 +90,10 @@
 
 * internal parameter declarations:
 	CHARACTER*1     tab
-#ifdef NO_INTRINSIC_IN_PARAMETER
-	PARAMETER     ( tab = o'011' )
-#else
 	PARAMETER     ( tab = CHAR(9))
-#endif
 
-
-* 11/96 *kob*
-#ifdef crptd_cat_argument
 	INTEGER clen2
 	CHARACTER cat_argument*48
-#endif 
 
 	include 'ferret.parm'
 	include 'errmsg.parm'
@@ -200,18 +184,12 @@
 	IF ( coaching ) THEN
 * 4/99 *kob* bug fix  - change below to .GT. from .GE
 	   IF (coach_start .GT. coach_end) GOTO 5400
-*11/96 *kob* - concatenation w/in procedure call corrupted on sgis. !kob 12/96
-#ifdef crptd_cat_argument	
+*11/96 *kob* - concatenation w/in procedure call corrupted 	
 	   cat_argument = 'symbol '//buffer(spos+2:sym_end)
 	   clen2 = MIN(48,7 + sym_end-spos-1)
 	   CALL COACHED_STR_SUB( cat_argument(:clen2),
      .		symval, buffer(coach_start:coach_end), risc_buff,
      .		nchar, status ) 
-#else
-	   CALL COACHED_STR_SUB( 'symbol '//buffer(spos+2:sym_end),
-     .		symval, buffer(coach_start:coach_end), risc_buff,
-     .		nchar, status ) 
-#endif
 	   IF ( status .NE. ferr_ok ) GOTO 5000
 	   symval = risc_buff(:nchar)
 	ENDIF

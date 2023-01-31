@@ -142,6 +142,7 @@
 
 * initialize
 
+
 	ind_max = arbitrary_small_val8
 	ind_min = arbitrary_large_val8
 	versus = .TRUE.
@@ -477,7 +478,7 @@
 
 	IF (.NOT.overlay) THEN
 
-	   delta = unspecified_val8    
+	   delta = unspecified_val8
 	   CALL AXIS_ENDS(dep_ax, dep_dim, grid1, dep_min, dep_max,
      .                      delta, indep_is_log, dep_axtyp, versus, status)
 
@@ -725,7 +726,7 @@
      .			formatted, range_rqd, cal_id_1, status )
 	      IF ( status .NE. ferr_OK ) GOTO 5000
 
-	      CALL AXIS_ENDS( dep_ax, the_taxis, grid, dep_min, dep_max, 
+	      CALL AXIS_ENDS( dep_ax, dep_dim, grid, dep_min, dep_max, 
      .                        delta, indep_is_log, dep_axtyp, versus, status )
 	      IF ( status .NE. ferr_OK ) THEN
                  first = dep_min
@@ -738,7 +739,7 @@
 	      delta = 1.
 	      IF (val1 .NE. 0) delta = 0.1* val1
 	      
-	      CALL AXIS_ENDS( dep_ax, the_taxis, grid,val1-delta,val1+delta,delta,
+	      CALL AXIS_ENDS( dep_ax, dep_dim, grid,val1-delta,val1+delta,delta,
      .                        indep_is_log, dep_axtyp, versus, status )   
 	      IF ( status .NE. ferr_OK ) THEN
                   first = val1-delta

@@ -1,6 +1,5 @@
 *
 * test_opendap.F
-* V68  *acm* 1/12  ifdef double_p for double-precision ferret.
 *
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -36,6 +35,7 @@
 *
 * Ansley Manke
 * July 2005
+* Jan 2023 extend this using TM_INQ_PATH to local netCDF files in the path
 *
 *  Return index value in LIST for each grids point in V, or a
 *  missing value wherever there is no match)
@@ -161,18 +161,11 @@
       INCLUDE 'EF_Util.cmn'
       INCLUDE 'EF_mem_subsc.cmn'
 
-      INTEGER strdf
-#ifdef double_p
-      PARAMETER (strdf = 1)
-#else
-      PARAMETER (strdf = 2)
-#endif
-
       INTEGER id
 
-      REAL arg_1(strdf, mem1lox:mem1hix, mem1loy:mem1hiy,
-     .                  mem1loz:mem1hiz, mem1lot:mem1hit,
-     .                  mem1loe:mem1hie, mem1lof:mem1hif)
+      REAL arg_1(mem1lox:mem1hix, mem1loy:mem1hiy,
+     .           mem1loz:mem1hiz, mem1lot:mem1hit,
+     .           mem1loe:mem1hie, mem1lof:mem1hif)
 
       REAL result(memreslox:memreshix, memresloy:memreshiy, 
      .            memresloz:memreshiz, memreslot:memreshit,
@@ -201,9 +194,12 @@
 
       INTEGER i, j, k, l, m, n
       INTEGER i1, j1, k1, l1, m1, n1
-      INTEGER istatus, slen, cdfid
+      INTEGER TM_LENSTR, istatus, slen, cdfid, dlen
       CHARACTER*2048 filename
       CHARACTER*1024 errbuff
+      CHARACTER*512 TM_INQ_PATH, des_name
+      CHARACTER*4 ext
+      LOGICAL TM_HAS_STRING, explicit_ext
 
       CALL ef_get_res_subscripts_6d(id, res_lo_ss, res_hi_ss, res_incr)
       CALL ef_get_arg_subscripts_6d(id, arg_lo_ss, arg_hi_ss, arg_incr)
@@ -222,19 +218,37 @@
       n = res_lo_ss(F_AXIS)
 
       i = res_lo_ss(X_AXIS)
-      DO 100 i1 = arg_lo_ss(X_AXIS,ARG1), arg_hi_ss(X_AXIS, ARG1)
+      DO i1 = arg_lo_ss(X_AXIS,ARG1), arg_hi_ss(X_AXIS, ARG1)
          CALL ef_get_string_arg_element_6d(id, ARG1, arg_1, 
      .                          i1, j1, k1, l1, m1, n1, slen, filename)
 
-           istatus = NF_OPEN(filename, NF_NOWRITE, cdfid) 
-           IF ( istatus .NE. 0 ) errbuff = NF_STRERROR(istatus)
-* close the netCDF file
-           IF ( istatus .EQ. 0 ) istatus = NF_CLOSE(cdfid)
+         dlen =  TM_LENSTR(filename)
+	 explicit_ext = .FALSE.
+	 ext = '.cdf'
+	 IF ( dlen .GT. 3 ) THEN
+	   IF (TM_HAS_STRING(filename(dlen-2:dlen), '.nc')) THEN
+	      explicit_ext = .TRUE.
+	      ext = '.nc'
+	   ENDIF
+	   
+	   IF (TM_HAS_STRING(filename(dlen-3:dlen), '.cdf'))  THEN
+	      explicit_ext = .TRUE.
+	      ext = '.cdf'
+	   ENDIF
+	 ENDIF
+	 des_name = TM_INQ_PATH(filename,'FER_DATA',ext,explicit_ext,
+     .                    istatus)
+    
+	 istatus = NF_OPEN(des_name, NF_NOWRITE, cdfid) 
 
-           result(i,j,k,l,m,n) = istatus
+	 IF ( istatus .NE. 0 ) errbuff = NF_STRERROR(istatus)
+	 result(i,j,k,l,m,n) = istatus
+
+* close the netCDF file
+	 IF ( istatus .EQ. 0 ) istatus = NF_CLOSE(cdfid)
 
          i = i + 1
- 100  CONTINUE
+      ENDDO
 
 *                                                                      ^
 *                                                                      |

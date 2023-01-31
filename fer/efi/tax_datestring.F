@@ -37,7 +37,6 @@
 * Jing Y. Li 
 * May 2006
 * 18-may-2006 ACM change to compare only the first 3 characters of the precision string.
-* V68  *acm* 1/12  ifdef double_p for double-precision ferret.
 * 27-Feb-2013 ACM  Fix ticket 2043: remove old code for handling single-
 *                  precision values coming in from argument 1
 * v695  *acm 2/15  Return dates on an F axis or a T axis.
@@ -129,12 +128,6 @@
       INCLUDE 'EF_Util.cmn'
       INCLUDE 'EF_mem_subsc.cmn'
 
-      INTEGER strdf
-#ifdef double_p
-      PARAMETER (strdf = 1)
-#else
-      PARAMETER (strdf = 2)
-#endif
 
       INTEGER id
 
@@ -142,13 +135,13 @@
      .           mem1lot:mem1hit, mem1loe:mem1hie, mem1lof:mem1hif)
       REAL arg_2(mem2lox:mem2hix, mem2loy:mem2hiy, mem2loz:mem2hiz, 
      .           mem2lot:mem2hit, mem2loe:mem2hie, mem2lof:mem2hif)
-      REAL arg_3(strdf, mem3lox:mem3hix, mem3loy:mem3hiy,
-     .                  mem3loz:mem3hiz, mem3lot:mem3hit,
-     .                  mem3loe:mem3hie, mem3lof:mem3hif)
+      REAL arg_3(mem3lox:mem3hix, mem3loy:mem3hiy,
+     .           mem3loz:mem3hiz, mem3lot:mem3hit,
+     .           mem3loe:mem3hie, mem3lof:mem3hif)
 
-      REAL result(strdf, memreslox:memreshix, memresloy:memreshiy, 
-     .                   memresloz:memreshiz, memreslot:memreshit,
-     .                   memresloe:memreshie, memreslof:memreshif)
+      REAL result(memreslox:memreshix, memresloy:memreshiy, 
+     .            memresloz:memreshiz, memreslot:memreshit,
+     .            memresloe:memreshie, memreslof:memreshif)
 
 * After initialization, the 'res_' arrays contain indexing information 
 * for the result axes.  The 'arg_' arrays will contain the indexing 

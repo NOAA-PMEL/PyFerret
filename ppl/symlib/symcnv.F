@@ -63,15 +63,10 @@ C**
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 *
-*       *jd* 11.94 - modified for AIX port
-*       Modification uses TM_NUMBER to determine if "value" is a number rather
-*       than the ERR= branch of a READ which fails on AIX/xlf
 C *kob* 04/07/96 passed in character strings had to be declared 
 C                with "*(*)" for the linux port 
 * v580 *acm* 9/04 Longer strings: changes for multi-line labels; symbols may be *2048.
-* V686 *acm* 11/13 Allow symbol names to be up to 120 characters long
-
-        LOGICAL TM_NUMBER      
+* V686 *acm* 11/13 Allow symbol names to be up to 120 characters long  
 
 	LOGICAL SYS,SYS2
 	CHARACTER SYM*(*),FRMT*120,SYM2*120,VALUE*2048
@@ -89,17 +84,11 @@ C                with "*(*)" for the linux port
 	IF(I.EQ.1.OR.J.EQ.-1)RETURN
 	if(i.eq.j)then
 
-#ifdef AIX_XLF
-            IF ( .NOT.TM_NUMBER(sym(i:j)) ) GOTO 100  ! TMAP mod
-#endif
 	    read(sym(i:j),'(i1)',err=100)jk
 	    frmt=sym(i:j)
 	else
 	WRITE(FRMT,999)J-I+1
 999	FORMAT('(E',I2.2,'.0)')
-#ifdef AIX_XLF
-            IF ( .NOT.TM_NUMBER(sym(i:j)) ) GOTO 100  ! TMAP mod
-#endif
 	READ(SYM(I:J),FRMT,ERR=100)X
 	WRITE(FRMT,998)IFIX(X+0.5)
 998	FORMAT(I2.2)

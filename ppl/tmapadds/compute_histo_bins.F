@@ -57,11 +57,7 @@
 
 * calling argument declarations:
 	INTEGER nsize, status
-#ifdef double_p
 	REAL*8 z(*), wrk(*), badz
-#else
-	REAL z(*), wrk(*), badz
-#endif
 
 * internal variable declarations:
 

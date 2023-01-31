@@ -101,7 +101,6 @@
 * V602  4/07 *acm* - Add RETURN=xmod,tmod
 * V615 11/08 *acm* - fixing bug 1523. If the variable contains a grid-changing 
 *                    function, we will do a full evaluation to get its size
-* V68  *acm* 1/12  ifdef double_p for double-precision ferret.
 *       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
 * V684 *acm* 12/12 Add data type of DOUBLE for return=dtype
 * V685 *sh*  11/13 Add return=status and return=ready
@@ -191,11 +190,7 @@ C 12/2022 *acm* Code cleanup: Fixes to calls to CHECK_DATE_REFORMAT
 
 * local parameter declarations
 	CHARACTER	tab*1
-#ifdef NO_INTRINSIC_IN_PARAMETER
-	PARAMETER     ( tab = o'011' )
-#else
 	PARAMETER     ( tab = CHAR(9))
-#endif
 
         DATA typstring/
      .  'Notype', 'BYTE', 'CHAR', 'SHORT', 'INT4', 'FLOAT', 'DOUBLE' /
@@ -228,15 +223,9 @@ C 12/2022 *acm* Code cleanup: Fixes to calls to CHECK_DATE_REFORMAT
 	itmp = INDEX(cmnd(istart:),'`')
         IF ( itmp .EQ. 0 ) RETURN
 	istart = istart + itmp
-#ifdef NO_DOUBLE_ESCAPE_SLASH
 	IF ( istart .GT. 2 ) THEN
-	   IF (cmnd(istart-2:istart-2) .EQ. '\') GOTO 10  ! ' for emacs
+	   IF (cmnd(istart-2:istart-2) .EQ. '\') GOTO 10
 	ENDIF
-#else
-	IF ( istart .GT. 2 ) THEN
-	   IF (cmnd(istart-2:istart-2) .EQ. '\\') GOTO 10  
-	ENDIF
-#endif
 
 * locate the end of the next grave accent pair
 * Note: no check for backslash-escaped accent here because properly paired

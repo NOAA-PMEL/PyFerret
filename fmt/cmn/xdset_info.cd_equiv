@@ -10,6 +10,7 @@
 	INTEGER     cd_varid(maxvars),
      .	            cd_stepfile(maxdsets),
      .		    mc_init_stepfile(maxdsets)
+	INTEGER*1   cd_data_type(maxvars)
 	REAL	    cd_add_offset(maxvars),
      .	            cd_scale_factor(maxvars)	  
 	CHARACTER*4 cd_dset_code(maxdsets)   ! unique code made from dset name
@@ -22,6 +23,7 @@
      .		    (cd_stepfile,      ds_ntuple     ),
      .		    (cd_dset_code,     ds_prog_rev   ),
      .		    (cd_what_isit,     ds_aux_modnum ),
+     .		    (cd_data_type,     ds_precision  ),
      .		    (mc_init_stepfile, ds_aux_modnum )
 
 * still available: INTEGER*2 ds_npospervar(maxvars)

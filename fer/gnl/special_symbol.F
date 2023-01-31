@@ -63,7 +63,6 @@
 * V65   1/10 *acm*- New special symbol N_OPEN_DSETS, counts the number of open datasets
 * V65   2/10 *acm*- Call CPU_TIME rather than DTIME for clock symbols. Works
 *                   with gfortran as well as g77.
-* V68  *acm* 1/12  ifdef double_p for double-precision ferret.
 * V68   1/12 *acm*- Symbol FERRET_PRECISION is single or double.
 * V68   3/12 *acm*- Symbol SESSION_PID for the process ID
 * V68   2/13 *kms*- Symbol PROGRAM_NAME = Ferret or PyFerret
@@ -235,11 +234,7 @@
 
       IF (special(isi) .EQ. 'FERRET_PRECISION') THEN
 
-#ifdef double_p
         value = 'double'
-#else
-        value = 'single'
-#endif
 	slen = TM_LENSTR(value)
         RETURN
 
@@ -345,11 +340,8 @@
 
       IF (special(isi) .EQ. 'CURRENT_DATE') THEN
 
-#ifdef F90_DATE_TIME
-	CALL FDATE(current_date)
-#else
 	CALL GET_DATE_AND_TIME (current_date, current_time)
-#endif
+
         value = current_date
 	slen = 9
         RETURN
@@ -360,16 +352,12 @@
 
       IF (special(isi) .EQ. 'CURRENT_TIME') THEN
 
-#ifdef F90_DATE_TIME
-	CALL FTIME(current_time)
-#else
 	CALL GET_DATE_AND_TIME (current_date, current_time)  ! doesnt get seconds
 
 	CALL Date_and_Time(current_date, current_time, Zone, itimes)
         WRITE (current_time,1000) itimes(5), itimes(6), itimes(7)
  1000   FORMAT (2(I2.2,":"), I2.2)
 
-#endif
 	value = current_time
 	slen = 8
         RETURN

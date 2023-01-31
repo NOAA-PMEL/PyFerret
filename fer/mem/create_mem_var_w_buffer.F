@@ -44,7 +44,6 @@
 * V530   8/00 *sh* - double the memory allocation for string variables
 *			(to support 64 bit pointers)
 * V533   6/01 *sh* - use CGRID_SIZE_DELTA to allow mem vars with delta values
-* V68  *acm* 1/12  ifdef double_p for double-precision ferret.
 *        2/12 *kms* Add E and F dimensions (use nferdims in tmap_dims.parm)
 * V69+ *acm*  9/14 Ticket 1758. Memory request uses number of blocks not words
 * V702 11/16 *sh* based upon previous CREATE_MEM_VAR which had no nbuffer
@@ -78,11 +77,7 @@
 	rgrid_size = R_CGRID_SIZE_DELTA( cx ) * nbuffer  ! as a real
 
 * ... note: later we will want an array of word sizes indexed by type
-#ifdef double_p
 	IF (cx_type(cx) .EQ. ptype_string) rgrid_size = rgrid_size
-#else
-	IF (cx_type(cx) .EQ. ptype_string) rgrid_size = rgrid_size*2 ! 8 byte ptr
-#endif
 
 * claim the dynamic storage space needed
 	i8_size = rgrid_size

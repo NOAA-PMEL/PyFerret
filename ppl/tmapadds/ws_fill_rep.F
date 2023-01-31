@@ -95,13 +95,7 @@ C	data stmt added for linux *jd* 12.96
 	      if (shd_levels .eq. 1) goto 30
 *	      GO THRU AVAILABLE PATTERNS
 	      do 10 ndx = 1,shd_levels - 1
-#ifdef atc_gks
-	         call gspa (1.0,1.0)
-	         call gsparf (0.0,0.0)
-	         patt = 1 + ndx*9/(shd_levels-1)
-#else
 	         patt = 28 - ndx*14/(shd_levels-1)
-#endif
 	         call FGD_GSFAR(zwsid,ndx+2,gpattr,patt,1)
 10	      continue
 	   else

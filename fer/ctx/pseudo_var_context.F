@@ -330,10 +330,7 @@
 	   ENDIF
 
 * ... deallocate the (now unnecessary) implicit stack-based grid
-#ifdef debug_dyn_grids
-	   IF ( mode_diagnostic )  CALL DIAG_OP
-     .	  ('dealloc ', isact_class_impl_grid, impl_grid, 0)
-#endif
+
 	   CALL DEALLO_GRID(status)
 
 * the dynamic (managed) grid has now replaced the temporary (stack) grid

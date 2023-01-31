@@ -211,7 +211,6 @@
 *                  Write the calendar attribute, even if its the default Gregorian
 * V68 *acm* 1/12   Use the same micro-adjusting scheme as we are implementing for 
 *                  reading netCDF files (ticket 1910). Reset micro-adjust size if needed.
-* V68  *acm* 1/12  ifdef double_p for double-precision ferret.
 *       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
 *       *acm* 4/12 6D Ferret: time axis may be in t or f direction. 
 * V68  *acm* 5/12  Add DEFINE DATA/AGGREGATE

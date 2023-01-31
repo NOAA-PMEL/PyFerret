@@ -49,24 +49,6 @@
 
         INTEGER zwsid,zwstype
 
-* ifdef atc_gks
-*       if (zwstype/100 .eq. ws_xwindow/100 .or. zwstype .eq. ws_uis) then
-* else
-*       if (zwstype .eq. ws_xwindow .or. zwstype .eq. ws_uis) then
-* endif
-*          XWINDOW (OR UIS) WS
-*          call ws_fill_rep (zwsid,zwstype)
-*       else if (zwstype .eq. ws_ps_mono .or. zwstype .eq. ws_tek4014) then
-*          MONOCHROME HATCHING
-*          call hatch_fill_rep (zwsid)
-*       else if (zwstype .eq. ws_tek4107) then
-*          TEK 4107
-*          call tek4107_fill_rep (zwsid)
-*       else
-*          SETUP DEFAULT FILL AREA BUNDLES
-*          call ws_fill_rep (zwsid,zwstype)
-*       end if
-
         IF ( zwstype .EQ. 0 ) THEN
 *          MONOCHROME HATCHING
            CALL HATCH_FILL_REP(zwsid)

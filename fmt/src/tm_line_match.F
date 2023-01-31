@@ -49,7 +49,6 @@
 * V541 *sh* 2/02 - check line_modulo_len
 * V551 *acm*2/03 - check calendar type
 * V581 *acm* 6/05 - For fix to bug 1271, add flag line_shift_origin
-* V68  *acm* 1/12  ifdef double_p for double-precision ferret.
 
 * Include files
 	include 'tmap_dims.parm'

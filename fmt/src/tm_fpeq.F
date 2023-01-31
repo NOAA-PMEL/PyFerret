@@ -45,7 +45,6 @@
 *
 * revision 0.00 - 11/21/85
 * revision 0.10 - 10/23/87 - all variables explicitly declared
-* V68  *acm* 1/12  ifdef double_p for double-precision ferret.
 *      *kms*  3/12 modified to actually use the maximum absolute error
 *
 
@@ -57,21 +56,7 @@
 	REAL	   VAX_epsilon, eps
 	PARAMETER (VAX_epsilon = 4.E-7)
 
-#ifdef double_p
-
         TM_FPEQ = TM_DFPEQ(a, b)
-
-#else
-
-* determine the maximum relative error
-        eps = ABS(b) * VAX_epsilon
-* if close to zero, set the maximum absolute error
-        IF ( eps .LT. VAX_epsilon ) eps = VAX_epsilon
-
-* make the comparison
-        TM_FPEQ = ( ABS(a-b) .LE. eps )
-
-#endif
 
 	RETURN
 	END

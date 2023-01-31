@@ -58,11 +58,7 @@
 
 * internal parameter declarations
 	CHARACTER*1 tab
-#ifdef NO_INTRINSIC_IN_PARAMETER
-	PARAMETER     ( tab = o'011' )
-#else
 	PARAMETER     ( tab = CHAR(9))
-#endif
 
 * how long are the strings ?
 	slen = LEN( source )

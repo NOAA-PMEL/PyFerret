@@ -46,7 +46,6 @@ c*
 *  V665 *acm*/11/09 Fix ticket 1766, as in #762, if the axis is modulo
 *                   the year 0000 or 0001 returns as blank.  If not modulo
 *		    then we want to return the year correctly.
-* V68  *acm* 1/12  ifdef double_p for double-precision ferret.
 * v695 *acm* 2/15  Get axis dates from an F or T axis
 * v75  *acm* 3/18  Changes to allow for timesteps in fractional seconds
 

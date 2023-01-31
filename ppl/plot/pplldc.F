@@ -1,10 +1,6 @@
 	SUBROUTINE PPLLDC(K,Z,MX,MY,IMN,IMX,JMN,JMX,
      *		PI,PJ,NX1,NY1,XMIN1,YMIN1,DX1,DY1,pplmem)
-#ifdef double_p
 	REAL*8 PI(*),PJ(*),Z(MX,MY),DX1,DY1
-#else
-	REAL PI(*),PJ(*),Z(MX,MY)
-#endif
 	REAL pplmem(*)
 *
 *
@@ -58,7 +54,6 @@ C              Mod *sh* 3.7.97 *sh* replace limits if curvilinear plot
 *                  which checks pplmem_nsize (new name for NSIZE) and allocates 
 *                  more if needed.
 *      *acm* 10/01  remove VMS includes
-* V68  *acm* 1/12  changes for double-precision ferret, single-precision pplus
 * 11/2022 *acm* Code cleanup: Modernize DO-loop syntax.
 c
 c	k	=0 already on an equally spaced rectangular grid

@@ -130,11 +130,7 @@ C  Local declarations
 
 C     Curvilinear coordinates declarations
       INTEGER status
-#ifdef double_p
       REAL*8 x_curv, y_curv
-#else
-      REAL x_curv, y_curv
-#endif
 
 C First check that the curvilinear coordinate data is all present and accounted for.
 

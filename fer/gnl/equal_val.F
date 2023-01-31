@@ -57,9 +57,6 @@
 * internal variable declarations
 	LOGICAL		TM_DIGIT
 	INTEGER 	equal_pos, slen
-#ifdef AIX_XLF
-	CHARACTER	buff*64
-#endif
 
 	include 'ferret.parm'
 	include 'errmsg.parm'
@@ -81,12 +78,7 @@
 	   GOTO 5000				! "name = text"
 
 	ELSE
-#ifdef AIX_XLF
-	   buff = string(equal_pos+1:)
-	   READ ( buff, *, ERR=5000 ) val
-#else
 	   READ ( string(equal_pos+1:), *, ERR=5000 ) val
-#endif
 	ENDIF
 
 * success

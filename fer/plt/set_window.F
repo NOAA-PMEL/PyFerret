@@ -248,12 +248,7 @@ c 75        CONTINUE
 * ... use number given
 	   buffer = cmnd_buff(arg_start(1):arg_end(1))
 	   IF ( .NOT.TM_DIGIT( buffer ) ) GOTO 5040
-* *kob* 4/97
-#ifdef MANDATORY_FORMAT_WIDTHS
 	   READ ( buffer, *, ERR=5040 ) n
-#else
-	   READ ( buffer, '(I)', ERR=5040 ) n
-#endif
 	   chg_window = n .NE. wsid
 	ELSE
 	   chg_window = .FALSE.

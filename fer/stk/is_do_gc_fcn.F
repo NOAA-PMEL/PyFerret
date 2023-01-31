@@ -53,7 +53,6 @@
 *                  than defined in the current function. e.g. this lets the 
 *                  user reference XCAT with string arguments and Ferret will 
 *                  run XCAT_STR
-* V68  *acm* 1/12  ifdef double_p for double-precision ferret.
 *      *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 * V68   3/12 *KMS/ACM* see 6D branch: working on string bugs. Remove overloading
 *                   of argument/return-type variable and predimensional (data size)
@@ -122,13 +121,8 @@ c	include 'xtm_grid.cmn_text'  ! with line_name
 * ... ptpr_words   indicates that each pointer     in an array is 2 word
 * These are assigned to pdim values
 	INTEGER	    pfloat_words, pptr_words
-#ifdef double_p
 	PARAMETER  (pfloat_words = 1,
      .		    pptr_words   = 1 )
-#else
-	PARAMETER  (pfloat_words = 1,
-     .		    pptr_words   = 2 )
-#endif
 
 *        ... interpretation stack setup at the time this is called ...
 *	stack level		stack contents

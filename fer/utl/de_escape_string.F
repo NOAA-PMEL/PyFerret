@@ -64,11 +64,7 @@
  10	IF ( iin .GT. slen ) GOTO 50
 
 !    ... do not copy a slash -- but always copy the character that follows it
-#ifdef NO_DOUBLE_ESCAPE_SLASH
         IF (string(iin:iin) .EQ. '\' ) iin = iin + 1
-#else
-        IF (string(iin:iin) .EQ. '\\') iin = iin + 1
-#endif
 	
 	IF ( iin .LE. slen ) THEN
 	   string(iout:iout) = string(iin:iin)

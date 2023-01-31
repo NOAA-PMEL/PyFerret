@@ -69,18 +69,10 @@
      .          alen, true_len, i, spos, bpos, cpos, epos
 
         CHARACTER*1     tab
-#ifdef NO_INTRINSIC_IN_PARAMETER
-	PARAMETER     ( tab = o'011' )
-#else
 	PARAMETER     ( tab = CHAR(9))
-#endif
 
 	include 'ferret.parm'
 	include 'xcommand.cmn'
-
-#ifdef AIX_XLF
-	include 'xrisc.cmn'
-#endif
 
 * what is the alias command name length - terminated by "/" or " " (or tab or "=")
         alen = 8
@@ -108,12 +100,7 @@
 	   IF (alen .EQ. clen) THEN
 	      buffer = alias(i)
 	   ELSE
-#ifdef AIX_XLF
-	      risc_buff = buffer(alen+1:clen)
-	      buffer = alias(i)(:true_len)//risc_buff(:clen-alen)
-#else
 	      buffer = alias(i)(:true_len)//buffer(alen+1:clen)
-#endif
 	   ENDIF
 	   clen = clen + ( true_len - alen )	   
 	   RETURN 1    ! abnormal return if substitution

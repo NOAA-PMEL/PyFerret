@@ -48,8 +48,6 @@ C**
 C       Mod *JD* 3.19.91 for unix -- use environment variable PLOTFONTS
 C       *jd* 7.92 variable IF renamed to KIF for MACMAC
 *       *jd* 11.94 
-*       Modification uses TM_NUMBER to determine if "value" is a number rather
-*       than the ERR= branch of a READ which fails on AIX/xlf
 
 *	Mod *jd* 11.30.95 to fix ragged symbols to to precision loss
 *
@@ -135,8 +133,6 @@ C
 	DATA PENS/'1','2','3','4','5','6','7','8','9','A',
      *	'B','C','D','E','F','G'/
 	DATA READIR/.FALSE./
-
-        LOGICAL TM_NUMBER                ! ** TMAP mod 11/94 **
 
 * Mod to specify external references for SCALE and RANGE * Linux *kob* 1.97
         external scale, size
@@ -481,10 +477,6 @@ C
 C
 C           GET THE 3 DIGIT NUMBER
 C
-#ifdef AIX_XLF
-            IF ( .NOT.TM_NUMBER(STRING(JJ-2:JJ)) ) GOTO 169  
-!** TMAP mod 11/94 **
-#endif
             READ(STRING(JJ-2:JJ),'(I3)',ERR=169)K
             IF(.NOT.DOPLOT)GOTO 169
             CALL COLOR(K)

@@ -151,9 +151,7 @@
 	REAL*8		TM_WORLD
 	CHARACTER	good_fmt(max_intrp)*10, bad_fmt(max_intrp)*10,
      .			vcode(max_intrp)*128, tab_or_comma*1, b1*1
-#ifdef DEC_FORTRAN
-	INTEGER		ios
-#endif
+
 * convenience equivalence:
 	INTEGER		lo1, lo2, lo3, lo4, lo5, lo6, 
      .			hi1, hi2, hi3, hi4, hi5, hi6, 

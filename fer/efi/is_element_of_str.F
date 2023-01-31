@@ -35,7 +35,6 @@
 *
 * Ansley Manke
 * August 2005
-* V68  *acm* 1/12  ifdef double_p for double-precision ferret.
 * 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 *
 *  For string arguments, 
@@ -173,20 +172,12 @@
       INCLUDE 'EF_Util.cmn'
       INCLUDE 'EF_mem_subsc.cmn'
 
-      INTEGER strdf
-#ifdef double_p
-      PARAMETER (strdf = 1)
-#else
-      PARAMETER (strdf = 2)
-#endif
 
       INTEGER id
 
-      REAL arg_1(strdf,
-     .           mem1lox:mem1hix, mem1loy:mem1hiy, mem1loz:mem1hiz, 
+      REAL arg_1(mem1lox:mem1hix, mem1loy:mem1hiy, mem1loz:mem1hiz, 
      .           mem1lot:mem1hit, mem1loe:mem1hie, mem1lof:mem1hif)
-      REAL arg_2(strdf,
-     .           mem2lox:mem2hix, mem2loy:mem2hiy, mem2loz:mem2hiz, 
+      REAL arg_2(mem2lox:mem2hix, mem2loy:mem2hiy, mem2loz:mem2hiz, 
      .           mem2lot:mem2hit, mem2loe:mem2hie, mem2lof:mem2hif)
 
       REAL result(memreslox:memreshix, memresloy:memreshiy, 

@@ -73,14 +73,9 @@ C
 		OPEN(LUTK,FILE=FILET,STATUS='NEW')
 		TEKOPN=.TRUE.
 	    ENDIF
-#if defined unix && ! defined F90_NO_FPUTC 
 	    do 51 i=1,80
 		call fputc(LUTK,buf(i:i))
 51	    continue
-#else
-	    WRITE(LUTK,999)BUF
-999	    format(80a1)
-#endif
 	ENDIF
 	IPT=1
 	ENDIF
@@ -98,11 +93,7 @@ C
 		TEKOPN=.TRUE.
 	    ENDIF
 	    do 61 i=1,ipt-1
-#ifndef F90_NO_FPUTC
 		call fputc(LUTK,buf(i:i))
-#else
-		WRITE(LUTK,'(a1)')(BUF(I:I))
-#endif
 61	    continue
 	ENDIF
 

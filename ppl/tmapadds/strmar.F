@@ -54,11 +54,7 @@
 
 C     Curvilinear coordinates declarations
       INTEGER status
-#ifdef double_p
       real*8 x_curv, y_curv
-#else
-      real x_curv, y_curv
-#endif
       REAL addx1, addy1, addx2, addy2, xxc, yyc, xxd, yyd, xxe, yye
 
       DATA small/1.e-6/

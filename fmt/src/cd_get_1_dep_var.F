@@ -119,20 +119,7 @@
       INTEGER tt  ! nice short name
       EQUIVALENCE (tt,lunit_errors)
 
-
-* special equivalence (cannot include in tmap_format/xdset_info.cd_equiv because "BYTE"
-* isn't supported on DECstation
 * reorder loop logic because linux cpp didn't like it *kob* 10/96
-
-
-#ifdef NEED_BYTE
-      BYTE cd_data_type(maxvars)
-#else
-      INTEGER*1 cd_data_type(maxvars)
-#endif
-
-
-      EQUIVALENCE ( ds_precision, cd_data_type )
 
            its_epic = ds_type(dset) .EQ. 'ECDF'
 

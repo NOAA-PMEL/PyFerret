@@ -571,13 +571,9 @@
           ENDIF
 	ENDDO
 	GOTO 5230
-#ifdef MANDATORY_FORMAT_WIDTHS
 * no fixed field width works but "*" may cause problems too
 * such as "Y" being an unacceptable integer
  2320	READ (cmnd_buff(arg_start(4):arg_end(4)), *,ERR=5304) n ! delta
-#else
- 2320	READ (cmnd_buff(arg_start(4):arg_end(4)), '(I)',ERR=5304) n ! delta
-#endif
 	IF ( ww_given ) THEN
 	   axis = grid_line(t_dim, grid)
 	   cal_id = TM_GET_CALENDAR_ID ( line_cal_name(axis) )
@@ -586,13 +582,9 @@
 	   IF ( status .NE. ferr_ok ) GOTO 5315
 	   i = ISUBSCR_CX( lo, grid, dim, cx_last, round_sngl )
 	ELSE
-#ifdef MANDATORY_FORMAT_WIDTHS
 * no fixed field width works but "*" may cause problems too
 * such as "Y" being an unacceptable integer
 	   READ (cmnd_buff(arg_start(5):arg_end(5)), *,ERR=5305) i
-#else
-	   READ (cmnd_buff(arg_start(5):arg_end(5)), '(I)',ERR=5305) i
-#endif
 	ENDIF
 	i = MAX( i+n, 1 )
 	WRITE (risc_buff, fmt ) 1, queries(query), tag
@@ -632,13 +624,8 @@
 	  ENDIF
 	ENDDO
 	GOTO 5240
-#ifdef MANDATORY_FORMAT_WIDTHS
-* no fixed field width works but "*" may cause problems too
-* such as "Y" being an unacceptable integer
+
  2420	READ (cmnd_buff(arg_start(4):arg_end(4)), *,ERR=5304) n ! delta
-#else
- 2420	READ (cmnd_buff(arg_start(4):arg_end(4)), '(I)',ERR=5304) n ! delta
-#endif
 	IF ( ww_given ) THEN
 	   axis = grid_line(t_dim, grid)
 	   cal_id = TM_GET_CALENDAR_ID ( line_cal_name(axis) )
@@ -647,13 +634,7 @@
 	   IF ( status .NE. ferr_ok ) GOTO 5315
 	   i = ISUBSCR_CX( lo, grid, dim, cx_last, round_sngl )
 	ELSE
-#ifdef MANDATORY_FORMAT_WIDTHS
-* no fixed field width works but "*" may cause problems too
-* such as "Y" being an unacceptable integer
 	   READ (cmnd_buff(arg_start(5):arg_end(5)), *,ERR=5305) i
-#else
-	   READ (cmnd_buff(arg_start(5):arg_end(5)), '(I)',ERR=5305) i
-#endif	
 	ENDIF
 	i = MAX(i+n, 1)
 	lo = TM_WORLD( i, grid, dim, box_middle )

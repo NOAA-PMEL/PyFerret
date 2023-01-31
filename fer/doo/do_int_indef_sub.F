@@ -51,7 +51,6 @@
 *       8/10/92 - results were wrong for integration within a single box
 * 9/09 - Apply fix to the cos factor (previous versions of the fix had not
 *        been made), bug1348
-* V68  *acm* 1/12  ifdef double_p for double-precision ferret.
 *        2/12 *kms* Add E and F dimensions (use nferdims in tmap_dims.parm)
 * V71 12/16 *acm* For ticket 2158: working with true monthly time axes.
 * v741 *acm*  5/18 remove old unused ifdef

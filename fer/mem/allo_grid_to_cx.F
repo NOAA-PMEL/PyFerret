@@ -69,13 +69,6 @@
 	cx_has_impl_grid(cx) = .TRUE.
 	cx_impl_grid(cx) = grid
 
-
-* optional diagnostic message
-#ifdef debug_dyn_grids
-	IF ( mode_diagnostic )  CALL DIAG_OP
-     .		('allocate', isact_class_grid, grid, 0)
-#endif
-
  5000	RETURN
 	END
 

@@ -102,11 +102,7 @@
 
 	   IF (in_quote) THEN
 
-#ifdef NO_DOUBLE_ESCAPE_SLASH
-              IF (c .EQ. '\') THEN  ! ' char for emacs
-#else
-              IF (c .EQ. '\\') THEN
-#endif
+              IF (c .EQ. '\') THEN  
 	         i = i + 1   ! skip processing of next character 
 	      ELSEIF  (     doub_quote .AND. doub_atom
      .	               .OR. sing_quote .AND. sing_atom 

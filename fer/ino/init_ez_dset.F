@@ -71,7 +71,6 @@
 * v614 *acm* 11/08 robust fix for bug 287: filenames beginning with digits. 
 *                  Check if the filename contains characters other than digits.
 * V64  10/09 *acm* longer string length for grid_name
-* V68  *acm* 1/12  ifdef double_p for double-precision ferret.
 *       *acm* 3/12 cleanup old VMS ifdef
 * V687  2.14 *acm* fix ticket 2144: Make buffer for list of varnames longer
 * V692  7/14 *acm* fix ticket 2182: For ez datasets opened w/o a grid spec, 
@@ -138,12 +137,7 @@
 	   dset = cx_data_set(cx_last)
 	   GOTO 200
 	ELSEIF ( TM_DIGIT(dset_name) ) THEN
-* *kob* 4/97
-#ifdef MANDATORY_FORMAT_WIDTHS
 	   READ (dset_name,*,ERR=100) dset	! 10/95
-#else
-	   READ (dset_name,'(I)',ERR=100) dset	! 10/95
-#endif
 
 * Is this a dataset name that starts with a number ?
 * (some compilers get an error on the above read if
@@ -227,11 +221,7 @@
 	   IF (its_delimited) THEN
 	      type = ' '  ! to be determined in ez_init_dset
 	   ELSE
-#ifdef double_p
 	      type = 'R8'  ! default for stream reads
-#else
-	      type = 'R4'  ! default for stream reads
-#endif
 	   ENDIF
 	ELSE
 	   CALL EQUAL_STRING( cmnd_buff(qual_start(loc):qual_end(loc)),

@@ -144,7 +144,6 @@
 *                  XCHUNK,YCHUNK,ZCHUNK,TCHUNK,COMPRESSION,SHUFFLE,ENDIAN
 * V6.7  *acm* 3/11 Remove warning deprecating /RIGID. There are still valid reasons
 *                  to want to set the time axis to NOT be the record axis.
-* V68  *acm*  1/12 ifdef double_p for double-precision ferret.
 * V683 *acm*  8/12 add new SAVE/OUTTYPE=  
 * V685 *acm*  6/13 new qualifier SAVE/NOBOUNDS
 * V685 *acm*  6/13 Dont add SAVE/NOCOORDS
@@ -644,13 +643,8 @@ c     .		 .AND. .NOT.do_comma_del
 	            IF (status .EQ. ferr_ok) GOTO 5110
 		    status = NF_CLOSE(cdfid)
 	         ENDIF
-
-#ifdef NO_ACCESS_APPEND
-	         faccess = 'SEQUENTIAL'
-#else
 	         faccess = 'APPEND'
 		 fposition = 'APPEND'
-#endif
 	         fstatus = 'OLD'
 	      ELSEIF (do_stream) THEN
 	         IF ( do_stream_phase .EQ. 0 ) THEN
@@ -667,9 +661,6 @@ c     .		 .AND. .NOT.do_comma_del
 	      ELSEIF ( clobber ) THEN	! 11/96
 	         faccess = 'SEQUENTIAL'
 	         fstatus = 'REPLACE'
-#ifdef F90_OPEN_FILE_CLOBBER
-		 fposition = 'ASIS'
-#endif
 	      ELSE
 	         GOTO 5050	! attempt to clobber a file
 	      ENDIF
@@ -692,11 +683,7 @@ c     .		 .AND. .NOT.do_comma_del
 	      OPEN( UNIT	= default_list_lun,
      .		    FILE	= raw_name,
      .		    FORM	= fformatted,
-#ifdef F90_OPEN_FILE_APPEND
-     .		    POSITION    = fposition,
-#else
      .		    ACCESS	= faccess,
-#endif
      .		    STATUS	= fstatus,
      .		    ERR		= 5010 )
 	   ELSEIF ( do_stream .AND. do_stream_phase.EQ.0 ) THEN	! 12/94
@@ -719,11 +706,7 @@ c     .		 .AND. .NOT.do_comma_del
      .		    FORM	= 'UNFORMATTED',
      .		    ACCESS	= 'DIRECT',
      .		    STATUS	= fstatus,
-#ifdef reclen_in_bytes
      .	            RECL	= reclen,
-#else
-     .	            RECL	= reclen/4,
-#endif
      .		    ERR		= 5010 )
 	      do_stream_phase = 1		! for multi-variables
 	   ENDIF

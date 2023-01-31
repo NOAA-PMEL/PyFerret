@@ -35,8 +35,7 @@
 *
 * Steve Hankin
 * Dac, 2000
-* V68  *acm* 1/12  ifdef double_p for double-precision ferret.
-
+       
 * In this subroutine we provide information about
 * the function.  The user configurable information 
 * consists of the following:
@@ -153,12 +152,6 @@
       INCLUDE 'EF_Util.cmn'
       INCLUDE 'EF_mem_subsc.cmn'
 
-      INTEGER strdf
-#ifdef double_p
-      PARAMETER (strdf = 1)
-#else
-      PARAMETER (strdf = 2)
-#endif
 
       INTEGER id
 

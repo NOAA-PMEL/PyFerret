@@ -49,7 +49,6 @@
 * V230:  5/6/92 - COS correction checks that J location is defined
 *       8/10/92 - weights were wrong for integration within a single box
 *                 added "IF (point)" logic
-* V68  *acm* 1/12  ifdef double_p for double-precision ferret.
 *        2/12 *kms* Add E and F dimensions (use nferdims in tmap_dims.parm)
 * V71 12/16 *acm* For ticket 2158: working with true monthly time axes.
 * V702 *sh* 11/16 this routine now performs accumulation only.  Initialization

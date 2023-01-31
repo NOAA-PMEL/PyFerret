@@ -142,13 +142,6 @@
 * OPEN the file in preparation for reading commands from it
 	OPEN(	UNIT=temp_lun,
      .		FILE=cbuff,
-#ifdef READONLY_ALLOWED
-     .		READONLY,
-#endif
-#ifdef NO_OPEN_SHARED
-#else
-     .		SHARED,
-#endif
      .		STATUS='OLD',
      .		ERR=5010 )
 

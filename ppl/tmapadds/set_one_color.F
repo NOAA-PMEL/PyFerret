@@ -49,9 +49,7 @@
 * PyFr *kms* 5/13 Add alpha channel (opaque), allow background color (0) to be set
 
         IMPLICIT NONE
-#   ifndef atc_gks
-        include        'gkspar.inc'
-#   endif
+        include		'gkspar.inc'
 	include		'cmrd_inc.decl'
         include         'CMRD.INC'
 	include		'gkscm1_inc.decl'

@@ -68,21 +68,12 @@
 * calling argument declarations:
         LOGICAL first, xfield_is_modulo
 	INTEGER npt, status
-#ifdef double_p
 	REAL*4  xinv, yinv, xadd
 	REAL*8	xi(npt), yj(npt),
      .		xfield(xpos_loss_dim1:xpos_hiss_dim1,
      .		       xpos_loss_dim2:xpos_hiss_dim2),
      .		yfield(ypos_loss_dim1:ypos_hiss_dim1,
      .		       ypos_loss_dim2:ypos_hiss_dim2)
-#else
-	REAL    xi(npt), yj(npt),
-     .		xinv, yinv, xadd
-	REAL	xfield(xpos_loss_dim1:xpos_hiss_dim1,
-     .		       xpos_loss_dim2:xpos_hiss_dim2),
-     .		yfield(ypos_loss_dim1:ypos_hiss_dim1,
-     .		       ypos_loss_dim2:ypos_hiss_dim2)
-#endif
 
 * internal variable declarations:
 

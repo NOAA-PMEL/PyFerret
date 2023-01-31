@@ -56,10 +56,7 @@
 
 	include 'ferret.parm'
 	include 'errmsg.parm'
-!	include 'xprog_state.cmn'
-#ifdef NO_PASSED_CONCAT
 	include 'xrisc.cmn'
-#endif
 
 * check out user-specified format
 	left_paren  = INDEX( string, '(' )

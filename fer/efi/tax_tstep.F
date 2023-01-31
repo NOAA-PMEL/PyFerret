@@ -36,7 +36,6 @@
 * Jing Y. Li 
 * May 31 2006
 * Finished March 24, 2009, ACM
-* V68  *acm* 1/12  ifdef double_p for double-precision ferret.
 * v695  *acm 2/15  Time axis may be an F axis or a T axis.
 * v75  *acm* 3/18  Issue 1856, changes to allow for timesteps in fractional seconds
 * v745 *acm* 12/18  Issue 1909, option to write dates in ISO8601 format
@@ -178,20 +177,14 @@
       INCLUDE 'EF_Util.cmn'
       INCLUDE 'EF_mem_subsc.cmn'
 
-      INTEGER strdf
-#ifdef double_p
-      PARAMETER (strdf = 1)
-#else
-      PARAMETER (strdf = 2)
-#endif
 
       INTEGER id
 
       REAL arg_1(mem1lox:mem1hix, mem1loy:mem1hiy, mem1loz:mem1hiz, 
      .           mem1lot:mem1hit, mem1loe:mem1hie, mem1lof:mem1hif)
-      REAL arg_2(strdf, mem2lox:mem2hix, mem2loy:mem2hiy,
-     .                  mem2loz:mem2hiz, mem2lot:mem2hit,
-     .                  mem2loe:mem2hie, mem2lof:mem2hif)
+      REAL arg_2(mem2lox:mem2hix, mem2loy:mem2hiy,
+     .           mem2loz:mem2hiz, mem2lot:mem2hit,
+     .           mem2loe:mem2hie, mem2lof:mem2hif)
 
       REAL result(memreslox:memreshix, memresloy:memreshiy, 
      .            memresloz:memreshiz, memreslot:memreshit,

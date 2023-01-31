@@ -220,11 +220,7 @@
 * local parameter declarations:
 	INTEGER		grave_digits
 	CHARACTER*1	tab
-#ifdef NO_INTRINSIC_IN_PARAMETER
-	PARAMETER     ( tab = o'011' )
-#else
 	PARAMETER     ( tab = CHAR(9) )
-#endif
         PARAMETER ( grave_digits = 16 )
 
 * intialize
@@ -333,11 +329,7 @@
      .			surround_DQ_   = .NOT.surround_DQ_
               ELSEIF ( c1 .EQ. ';' ) THEN
 	         escape = i.GT.1
-#ifdef NO_DOUBLE_ESCAPE_SLASH
 	         IF (escape) escape = cmnd_buff(i-1:i) .EQ. '\;'
-#else
-	         IF (escape) escape = cmnd_buff(i-1:i) .EQ. '\\;'
-#endif
                  IF ( nparen.EQ.0
      .		.AND. .NOT.escape
      .		.AND. .NOT.surround_DQ_
@@ -458,12 +450,7 @@
 * Define a logical to stay away from cmnd_buff(ptr-1:ptr-1) when ptr = 1
            ptrslash = .FALSE.
 	   IF (ptr .GT. 1) THEN
-#ifdef NO_DOUBLE_ESCAPE_SLASH
 	      IF ( cmnd_buff(ptr-1:ptr-1) .EQ. '\' ) ptrslash = .TRUE.
-*                            '  closing single quote to make emacs happy
-#else
-	      IF ( cmnd_buff(ptr-1:ptr-1) .EQ. '\\' ) ptrslash = .TRUE.
-#endif
            ENDIF
 	   IF (ptrslash) THEN
 	      GOTO 410
@@ -471,11 +458,7 @@
 * ... double quote - skip past entire quotated string
               surround_quote = ptr .EQ. arg_start(word_num)
               DO i = ptr+1, cmnd_len
-#ifdef NO_DOUBLE_ESCAPE_SLASH
-                IF ( cmnd_buff(i-1:i-1) .EQ. '\'  ) CYCLE  ! ' for emacs
-#else
-                IF ( cmnd_buff(i-1:i-1) .EQ. '\\' ) CYCLE
-#endif
+                IF ( cmnd_buff(i-1:i-1) .EQ. '\'  ) CYCLE  
                 IF (cmnd_buff(i:i).EQ.'"' ) THEN
 	          ptr = i
                   quote_end = ptr
@@ -486,11 +469,7 @@
            ELSEIF ( cmnd_buff(ptr:ptr) .EQ. "'"  ) THEN
 * ... single quote - skip past entire quotated string
               DO ptr = ptr+1, cmnd_len
-#ifdef NO_DOUBLE_ESCAPE_SLASH
-                IF ( cmnd_buff(ptr-1:ptr-1) .EQ. '\'  ) CYCLE  ! ' for emacs
-#else
-                IF ( cmnd_buff(ptr-1:ptr-1) .EQ. '\\' ) CYCLE
-#endif
+                IF ( cmnd_buff(ptr-1:ptr-1) .EQ. '\'  ) CYCLE
                 IF (cmnd_buff(ptr:ptr).EQ."'" ) GOTO 410
 	      ENDDO
               GOTO 5010
@@ -527,12 +506,7 @@
 	   ELSEIF ( cmnd_buff(ptr:ptr) .EQ. '`' ) THEN
 * ... grave accent - skip past entire immediate mode expression
 	      DO 402 ptr = ptr+1, cmnd_len
-#ifdef NO_DOUBLE_ESCAPE_SLASH
 	         IF ( cmnd_buff(ptr-1:ptr-1) .EQ. '\'  ) GOTO 402
-*                            '  closing single quote to make emacs happy
-#else
-	         IF ( cmnd_buff(ptr-1:ptr-1) .EQ. '\\' ) GOTO 402
-#endif
 	         IF ( cmnd_buff(ptr:ptr) .EQ. '`' ) GOTO 410
  402	      CONTINUE
 	      GOTO 5010
@@ -540,12 +514,7 @@
 * ... embedded bracket - find matching right bracket
 	      nest = 1
 	      DO 403 ptr = ptr+1, cmnd_len
-#ifdef NO_DOUBLE_ESCAPE_SLASH
 	         IF ( cmnd_buff(ptr-1:ptr-1) .EQ. '\'  ) GOTO 403
-*                            '  closing single quote to make emacs happy
-#else
-	         IF ( cmnd_buff(ptr-1:ptr-1) .EQ. '\\' ) GOTO 403
-#endif
 	         IF ( cmnd_buff(ptr:ptr) .EQ. '[' ) THEN
 	            nest = nest + 1
 	         ELSEIF ( cmnd_buff(ptr:ptr) .EQ. ']' ) THEN
@@ -558,12 +527,7 @@
 * ... embedded paren - find matching right paren (10/95)
 	      nest = 1
 	      DO 404 ptr = ptr+1, cmnd_len
-#ifdef NO_DOUBLE_ESCAPE_SLASH
 	         IF ( cmnd_buff(ptr-1:ptr-1) .EQ. '\'  ) GOTO 404
-*                            '  closing single quote to make emacs happy
-#else
-	         IF ( cmnd_buff(ptr-1:ptr-1) .EQ. '\\' ) GOTO 404
-#endif
 	         IF ( cmnd_buff(ptr:ptr) .EQ. '(' ) THEN
 	            nest = nest + 1
 	         ELSEIF ( cmnd_buff(ptr:ptr) .EQ. ')' ) THEN
@@ -583,11 +547,7 @@
 
 * "/" can be escaped using "\/"
 	   IF (ptr .GT. 1) THEN
-#ifdef NO_DOUBLE_ESCAPE_SLASH
 	      IF (cmnd_buff(ptr-1:ptr) .EQ. '\/') GOTO 410
-#else
-	      IF (cmnd_buff(ptr-1:ptr) .EQ. '\\/') GOTO 410
-#endif
 	   ENDIF
 
 * "/" is not a terminator if we are not looking for more qualifiers
@@ -1066,7 +1026,6 @@ c           IF (known_qualifier .AND. len_test.LT.len_mchars .AND. len_mchars.GT
 * Ticket 2376: If the command is a REPEAT, this needs to wait until
 * the command is parsed within the execution of the loop.
 
-#ifdef NO_DOUBLE_ESCAPE_SLASH
 	IF (  ( cmnd_num .NE. cmnd_repeat ) .AND. 
      .		INDEX(cmnd_buff(:cmnd_len),'\') .GT. 0 ) THEN
 	   in  = 1
@@ -1083,24 +1042,6 @@ c           IF (known_qualifier .AND. len_test.LT.len_mchars .AND. len_mchars.GT
 	   ELSEIF (cmnd_buff(in:in+1) .EQ. '\/') THEN
 	      cmnd_buff(out:out) = '/'
 	      in = in + 2
-#else
-	IF ( ( cmnd_num .NE. cmnd_repeat ) .AND. 
-     .		INDEX(cmnd_buff(:cmnd_len),'\\') .GT. 0 ) THEN
-	   in  = 1
-	   out = 1
- 900	   IF (cmnd_buff(in:in+1) .EQ. '\\!') THEN
-	      cmnd_buff(out:out) = '!'
-	      in = in + 2
-	   ELSEIF (cmnd_buff(in:in+1) .EQ. '\\;') THEN
-	      cmnd_buff(out:out) = ';'
-	      in = in + 2
-	   ELSEIF (cmnd_buff(in:in+1) .EQ. '\\`') THEN
-	      cmnd_buff(out:out) = '`'
-	      in = in + 2
-	   ELSEIF (cmnd_buff(in:in+1) .EQ. '\\/') THEN
-	      cmnd_buff(out:out) = '/'
-	      in = in + 2
-#endif	
 	   ELSE
 	      cmnd_buff(out:out) = cmnd_buff(in:in)
 	      in = in + 1

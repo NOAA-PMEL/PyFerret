@@ -48,7 +48,6 @@
 * V581 *acm* 6/05 - For fix to bug 1271, add flag line_shift_origin
 *            and restore original t0 on output
 * V650  Write to show_lun which may be set to a file unit number rather than std out
-* V68  *acm* 1/12  ifdef double_p for double-precision ferret.
 *       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
 * V695+  *sh* 5/15 show T0 for forecast calendar axes, too
 * V697  12/15 *acm* Changes to add details on SHOW GRID uvar to indicate 

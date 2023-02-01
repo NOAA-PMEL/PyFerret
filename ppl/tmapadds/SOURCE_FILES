@@ -85,9 +85,7 @@ whoi2bc.F\
 ws_fill_rep.F\
 ws_line_bundles.F\
 ws_line_spectrum.F\
-ws_types_init.F\
-xgrinpt_blkdat.F\
-yabd.F 
+ws_types_init.F 
 SRCS_C = \
 its_gksm.c\
 pplcmd_c.c\

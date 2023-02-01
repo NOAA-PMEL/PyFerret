@@ -5,9 +5,6 @@ abplt.F\
 abplt_makedot.F\
 axis.F\
 axisl.F\
-baud.F\
-chin.F\
-chout.F\
 circle.F\
 clear_vp.F\
 color.F\

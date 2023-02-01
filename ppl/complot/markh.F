@@ -54,11 +54,7 @@ C        HEIGHT - HEIGHT OF A STANDARD DATA MARK IN INCHES (OR
 C                 MM).
 C
 C
-#ifdef unix
 	include 'PLTCOM.DAT'
-#else
-	include 'pplinc:PLTCOM.DAT'
-#endif
 C
       HMARK = HEIGHT * FACTOR / 8.0
       RETURN

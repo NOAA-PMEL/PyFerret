@@ -468,12 +468,7 @@
      .            tmatch*32, fmatch*32
 
         CHARACTER*1 tab
-#ifdef NO_INTRINSIC_IN_PARAMETER
-	PARAMETER     ( tab = o'011' )
-#else
 	PARAMETER     ( tab = CHAR(9))
-#endif
-
 	DATA	  basic_orients / 'WE','SN','UD','TI','E','F' /,
      .		  replmsg/'Replacing definition of '/
         DATA      reserved_flow_name / 'ELIF','ELSE','ENDI' /

@@ -57,12 +57,9 @@ C**
 	   IM=IMON+13
 	   IY=IYCEN-1
 	ENDIF
-#ifdef unix
+
 	JDAY=(INT(365.25*IY)+INT(30.6001*IM)+IDAY)*1440+
      *	IHR*60+IMIN
-#else
-	JDAY=(JINT(365.25*IY)+JINT(30.6001*IM)+IDAY)*1440+
-     *	IHR*60+IMIN
-#endif
+
 	RETURN
 	END

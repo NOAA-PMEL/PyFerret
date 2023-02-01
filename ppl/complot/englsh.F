@@ -54,11 +54,7 @@ C     DINARILY EXPECT TO RECEIVE PARAMETERS EXPRESSED IN INCHES
 C     WILL RESUME DOING SO.
 C
 C
-#ifdef unix
 	include 'PLTCOM.DAT'
-#else
-	include 'pplinc:PLTCOM.DAT'
-#endif
 C
       FACTOR = 1000.0
       RETURN

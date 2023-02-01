@@ -102,14 +102,10 @@ c	CHARACTER PLTFIL*80
 
         REAL XBASE, YBASE
         INTEGER IPT
-#ifdef unix
 	INTEGER*2 SX,SY
 
         integer       dirlen
         character*255 fontdir
-#else
-	byte sx,sy
-#endif
 	INTEGER*2 ICNT,IBASE,IRAST
 *added for linux port
 	INTEGER*4 IBASE4,IRAST4
@@ -120,8 +116,6 @@ c	CHARACTER PLTFIL*80
 	CHARACTER*265 err_msg
 	INTEGER status
 
-C
-C
 	INCLUDE 'PLTCOM.DAT'
         INCLUDE 'errmsg.parm'
 
@@ -154,7 +148,7 @@ C	IF(.NOT.READIR)GOTO 2020
 
 * kob 1/97 - old 2020 code region now contained w/in if-then below.
 	IF(.NOT.READIR) THEN
-#ifdef unix
+
 C *JD* Mod below fix for unix  -- use environment variable 3.19.91	
 C *ACM* For backwards compatibility (LAS setup etc) also look for PLOTFONTS
 
@@ -168,30 +162,17 @@ C *ACM* For backwards compatibility (LAS setup etc) also look for PLOTFONTS
 	   IF (dirlen .LE. 1) GOTO 5000
 
 C *kob* 1/02 - cygwin 1.3.x requires "\" for unix directory accesses
-#ifdef __CYGWIN__
-	   OPEN(LUSY,FILE=fontdir(:dirlen)//'\fondat.dat',
-     *	        STATUS='OLD')
-#else
+
 	   OPEN(LUSY,FILE=fontdir(:dirlen)//'/fondat.dat',
      *	        STATUS='OLD',ERR=5000)
-#endif
-
-#else
-	   open(lusy,file='plotfonts:fondat.dat',readonly,
-     *	       status='old',err=5000)
-#endif
 C
 C	FILE EXISTS
 C
 	   READ(LUSY,983,END=1009)(DNUM(IJ),DNME(IJ),DTYPE(IJ),
      *	   DLEN(IJ),DNAME(IJ),IJ=1,35)
-#ifdef unix
-C Mod here from A to A9 for read of DNAME *JD* 3.8.91
-C983	   FORMAT(1X,2A2,I2,I5,A)
+
 983	   FORMAT(1X,2A2,I2,I5,A9)
-#else
-983	   format(1x,2a2,i2,i5,a30)
-#endif
+
 1009	   NFNT=IJ-1
     	   CLOSE(LUSY)
 C
@@ -273,13 +254,9 @@ C
 	    GOTO 170
 	ENDIF
 	IF(ICHAR(ICHR) .EQ. 0)GOTO 180
-#ifdef unix
+
 	IF(.NOT.ASCFNT.AND.(ICHR.EQ.'@'.OR.
      *		(ICHR.GE.'\\'.AND.ICHR.LE.'_')))GOTO 80
-#else
-	IF(.NOT.ASCFNT.AND.(ICHR.EQ.'@'.OR.
-     *		(ICHR.GE.'\'.AND.ICHR.LE.'_')))GOTO 80
-#endif
 
 * Some compliers store '\\' as a single character, others see it
 * as '\'.  

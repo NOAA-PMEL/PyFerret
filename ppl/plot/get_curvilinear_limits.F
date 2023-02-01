@@ -46,10 +46,7 @@
 *                of linking difficulties w/ the newly organized source code
 *                it was deemed more apporpriate in this directory
 
-#ifdef unix
 	include 'xcurvilinear.cmn'
-#else
-#endif
 
 * calling argument declarations:
 	REAL xmin, xmax, ymin, ymax

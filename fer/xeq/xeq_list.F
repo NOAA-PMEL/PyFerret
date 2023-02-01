@@ -586,17 +586,10 @@ c     .		 .AND. .NOT.do_comma_del
            raw_name = ' '
            qfile = qual_given( slash_file )
            IF ( qfile .GT. 0 ) THEN
-#ifdef unix
 * preserve case of filename for unix
               CALL EQUAL_STR_LC(
      .			cmnd_buff(qual_start(qfile):qual_end(qfile)),
      .                  raw_name, status )
-#else
-* VMS filenames in upper case always
-              CALL EQUAL_STRING(
-     .			cmnd_buff(qual_start(qfile):qual_end(qfile)),
-     .                  raw_name, status )
-#endif
            ENDIF
            IF ( status .NE. ferr_ok ) GOTO 5000
 	   IF ( raw_name .EQ. ' ' .AND. do_stream_phase.EQ.0 ) THEN

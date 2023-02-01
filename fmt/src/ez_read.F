@@ -116,13 +116,8 @@
 *
 *internal parameter declarations *kob* 4apr94
         CHARACTER*1     cr,lf
-#ifdef NO_INTRINSIC_IN_PARAMETER
-        PARAMETER       ( cr = o'015',
-     .                    lf = o'012')
-#else
         PARAMETER       ( cr = CHAR(13),
      .                    lf = CHAR(10))
-#endif
 
 * Local definitions
 	CHARACTER*11	file_format

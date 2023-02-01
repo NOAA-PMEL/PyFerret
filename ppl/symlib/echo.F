@@ -61,11 +61,8 @@ C**		15-DEC-1985	by Donald W. Denbo
 C**	    Modified:
 C**
 C**
-#ifdef unix
 	include 'CMDCOM.INC'
-#else
-	INCLUDE 'cmdinc:CMDCOM.INC'
-#endif
+
 C *kob* 04/07/96 passed in character strings had to be declared 
 C                with "*(*)" for the linux port 
 

@@ -134,32 +134,21 @@ C
 C ^THE PERSPECTIVE REPRESENTATION OF FUNCTIONS OF TWO VARIABLES,^
 C J.ACM (VOL. 15, NO. 2) APRIL 1968. PP. 193-204.
       DIMENSION F(1)
-#ifdef unix
+
 	include 'plt_inc.decl'
 	include 'PLT.INC'
 	include 'miss_inc.decl'
 	include 'MISS.INC'
 	include 'axis_inc.decl'
 	include 'AXIS.INC'
-#else
-	INCLUDE 'TMAP_PPLV11INC:PLT_INC.DECL'
-	INCLUDE 'PPLV11INC:PLT.INC'
-	INCLUDE 'TMAP_PPLV11INC:MISS_INC.DECL'
-	INCLUDE 'PPLV11INC:MISS.INC'
-	INCLUDE 'TMAP_PPLV11INC:AXIS_INC.DECL'
-	INCLUDE 'PPLV11INC:AXIS.INC'
-#endif
+
 	LOGICAL SKIP
       COMMON /LAB1/ CX,CY,CZ,QX,QY,QZ,DCQ,CALPHA,CBETA,CGAMMA,
      1DSAOB,IFLG,XTEST,YTEST,ZTEST,DLTAX1,DLTAY1,DLTAX,DLTAY
      2,ZMIN,ZMAX,XM,YM,DLTAXI,DLTAYI,MM,NN
 
 * TMAP interrupt flag
-#ifdef unix
 	include 'xinterrupt.cmn'
-#else
-	INCLUDE 'tmap_pplv11inc:tmap_xinterrupt.cmn'
-#endif
 
 * Mod to specify external references for SCALE and RANGE * Linux *jd* 12.96
 	external scale, size
@@ -439,13 +428,10 @@ C        -1 IF THE POINT IS VIEWABLE FROM BELOW
 C         1 IF THE POINT IS VIEWABLE FROM ABOVE
 C  F   - THE ARRAY OF VALUES.
       DIMENSION F(1)
-#ifdef unix
+
 	include 'miss_inc.decl'
 	include 'MISS.INC'
-#else
-	INCLUDE 'TMAP_PPLV11INC:MISS_INC.DECL'
-	INCLUDE 'PPLV11INC:MISS.INC'
-#endif
+
       COMMON/LAB1/CX,CY,CZ,QX,QY,QZ,DCQ,CALPHA,CBETA,CGAMMA,
      1DSAOB,IFLG,XTEST,YTEST,ZTEST,DLTAX1,DLTAY1,DLTAX,DLTAY
      2,ZMIN,ZMAX,XMIN,YMIN,DLTAXI,DLTAYI,M,N

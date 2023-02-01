@@ -124,11 +124,7 @@
 	      ENDIF
 	      IF (bslash) THEN
 	         GOTO 190	! bypass looking at this character
-#ifdef NO_DOUBLE_ESCAPE_SLASH
-              ELSEIF (c1 .EQ. '\' ) THEN  ! ' char for emacs
-#else
-              ELSEIF (c1 .EQ. '\\') THEN
-#endif
+              ELSEIF (c1 .EQ. '\' ) THEN 
 	         bslash=.TRUE.  ! bypass looking at next character
 	         GOTO 200
 	      ELSEIF ( its_quote .AND. .NOT.DQ_quote ) THEN

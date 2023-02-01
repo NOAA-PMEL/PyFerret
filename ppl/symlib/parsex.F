@@ -163,9 +163,6 @@ C	Error trying to read a number
 C	clear the error and put the rest in LABEL
 C
 1000	continue
-#ifndef unix
-	CALL ERRTST(64,I)
-#endif
 	IF(FIRST)THEN
 	    FIRST=.FALSE.
 	    I=J

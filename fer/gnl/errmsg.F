@@ -239,11 +239,7 @@
 	ELSEIF ( status .EQ. ferr_erreq ) THEN
 
 	   len_string = TM_LENSTR1( risc_buff )
-#ifdef F90_SYSTEM_ERROR_CALLS
-	   call linux_perror('**ERROR: '//risc_buff(:len_string) )
-#else
            CALL PERROR( '**ERROR: '//risc_buff(:len_string) )
-#endif
 
 * interrupt processing ?
 	ELSEIF ( status .EQ. ferr_interrupt ) THEN

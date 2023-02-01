@@ -44,17 +44,11 @@ C**
 C***********************************************************************
 C**
 C**
-#ifdef unix
 	INCLUDE 'PARAMPL5.DAT'
 	INCLUDE 'AXIS.INC'
 	INCLUDE 'LABCOM.INC'
 	INCLUDE 'LINES.INC'
-#else
-	INCLUDE 'pplinc:PARAMPL5.DAT'
-	INCLUDE 'pplinc:AXIS.INC'
-	INCLUDE 'pplinc:LABCOM.INC'
-	INCLUDE 'pplinc:LINES.INC'
-#endif
+
 	IF(ICROSS.EQ.1)THEN
 	    IF(XLO.LT.0..AND.XHI.GT.0.)THEN
 		CALL PLOT(0.,YLO,0,0)

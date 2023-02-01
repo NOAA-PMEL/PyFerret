@@ -81,7 +81,6 @@
 	   endif
 	endif
 
-#ifdef xgks
 	pattern_ndx = mod((fill_ndx - 2),npat) + 1
 
 	if (patterns(pattern_ndx) .eq. solid) then
@@ -90,7 +89,6 @@
 	   call FGD_GSFAIS(GHATCH)
 	   call FGD_GSFASI(-1 * patterns(pattern_ndx))
 	end if
-#endif
 
 	return
 	end

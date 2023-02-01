@@ -46,13 +46,8 @@
 *
 * revision 0.0 - 1/24/89
 
-#ifdef unix
 	include 'errmsg.parm'
 	include 'xplot_state.cmn'
-#else
-	INCLUDE 'FERRET_CMN:ERRMSG.PARM'
-	INCLUDE 'FERRET_CMN:XPLOT_STATE.CMN'
-#endif
 
 * local variable declarations:
 	INTEGER	status

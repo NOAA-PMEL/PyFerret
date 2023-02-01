@@ -47,11 +47,8 @@ C**
 C
 C	PLOT WITH MARK REMOVED
 C
-#ifdef unix
 	INCLUDE 'PLTCOM.DAT'
-#else
-	include 'pltinc:pltcom.dat'
-#endif
+
 	IF(PMODE.EQ.ALPHA)PMODE=VECTOR
 	XTEMP=X*XSCALE
 	YTEMP=Y*YSCALE

@@ -53,9 +53,7 @@
         IMPLICIT NONE
 	include 'tmap_dims.parm'
 	include 'ferret.parm'
-#ifdef NO_PASSED_CONCAT
 	include 'xrisc.cmn'
-#endif
 
 * calling argument declarations:
 	INTEGER		lun
@@ -80,12 +78,8 @@
 	ENDIF
 
 * write one line
-#ifdef NO_PASSED_CONCAT
 	risc_buff = string(c1:clast)
 	CALL SPLIT_LIST(0, lun, '          '//risc_buff, 0)
-#else
-	CALL SPLIT_LIST(0, lun, '          '//string(c1:clast), 0)
-#endif
 
 * more ?
 	IF ( multiline ) THEN

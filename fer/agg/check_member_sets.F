@@ -131,11 +131,7 @@
 		IF ( .NOT. TM_DIGIT(buff1(ich:ich))) GOTO 740
 	      ENDDO
 	      READ (buff1,*) dset
-#ifdef MANDATORY_FORMAT_WIDTHS
 	      READ (buff1,*,ERR=740) dset
-#else
-	      READ (buff1,'(I)',ERR=740) dset
-#endif
 * ... check for valid number given
 	      IF   ( dset .LT. 1
      .	      .OR.   dset .GT. maxdsets )	  GOTO 5200

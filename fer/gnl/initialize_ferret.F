@@ -122,13 +122,8 @@
 	mode_GKS = GKS_WINDOWS()
 	mode_wait = .NOT.mode_GKS	! no wait after plot on window device
 
-* turn on segment-based screen refresh or screen updates dont always work
-#ifdef X_REFRESH
-      CALL TM_SET_FREE_EVENT(1)
-      mode_state( pmode_xwindows, 1 ) = .TRUE.
-#else
-      mode_state( pmode_xwindows, 1 ) = .FALSE.
-#endif
+	mode_state( pmode_xwindows, 1 ) = .FALSE.
+
         CONTINUE
 	
 *********************** Climatological axes ************************************

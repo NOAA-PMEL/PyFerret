@@ -58,11 +58,7 @@ C**		26-JAN-86	by Donald W. Denbo
 C**	    Modified:
 C**
 C**
-#ifdef unix
 	include 'CMDCOM.INC'
-#else
-	INCLUDE 'cmdinc:CMDCOM.INC'
-#endif
 C
 C	CALL ATEND REPEATEDLY
 C

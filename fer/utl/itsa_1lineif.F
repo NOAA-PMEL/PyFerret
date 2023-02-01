@@ -53,12 +53,7 @@
 	INTEGER i, pos_then
 
         CHARACTER*1     tab
-#ifdef NO_INTRINSIC_IN_PARAMETER
-	PARAMETER     ( tab = o'011' )
-#else
 	PARAMETER     ( tab = CHAR(9))
-#endif
-
 
 * NOTE: this code **ASSUMES*
 *  1) that the starting characters of the command string are "IF "

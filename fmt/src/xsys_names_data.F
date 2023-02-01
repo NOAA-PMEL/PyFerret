@@ -43,11 +43,7 @@
 *
 * revision 0.00 -  4/30/91
 
-#ifdef unix
-	include 'xsys_names.cmn_text'
-#else
-	INCLUDE 'TMAP_FORMAT:XSYS_NAMES.CMN_TEXT'
-#endif
+      include 'xsys_names.cmn_text'
 
       DATA	tmap_sets        / 'FER_DESCR' /,
      .          tmap_tsteps      / 'FER_DATA'  /,

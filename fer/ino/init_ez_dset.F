@@ -113,11 +113,7 @@
 
 * local parameter declarations
 	CHARACTER*1	tab
-#ifdef NO_INTRINSIC_IN_PARAMETER
-	PARAMETER     ( tab = o'011' )
-#else
 	PARAMETER     ( tab = CHAR(9))
-#endif
 
 * functions
 	INTEGER         br_set_type

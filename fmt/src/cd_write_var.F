@@ -339,15 +339,10 @@ c               slab_max(idim) = hi(idim)
 
                r100_8(1) = (old_box_hi + new_box_lo)/2.D0
 
-#ifdef FORTRAN_90
-            cdfstat = NF_PUT_VARA_DOUBLE(cdfid, recaxvar, 
-     .                 TRANSFER(start(cdrecax),start,1),
-     .                 TRANSFER(1,count,1), 
-     .		       TRANSFER(r100_8,r100_4))
-#else
-	    cdfstat = NF_PUT_VARA_DOUBLE(cdfid, recaxvar,
+
+               cdfstat = NF_PUT_VARA_DOUBLE(cdfid, recaxvar,
      .                 start(cdrecax), 1, r100_8)
-#endif
+
             IF ( cdfstat .NE. NF_NOERR ) GOTO 5300
 
 
@@ -435,16 +430,10 @@ c               slab_max(idim) = hi(idim)
      .                                  = r100_8(i-i100+1)
  300        CONTINUE
 
-#ifdef FORTRAN_90
-	    cdfstat = NF_PUT_VARA_DOUBLE(cdfid, recaxvar, 
-     .                 TRANSFER(i100-lorec+start(cdrecax),start,1),
-     .                 TRANSFER(hilim-i100+1,count,1), 
-     .		       TRANSFER(r100_8,r100_4) )
-#else
 	    cdfstat = NF_PUT_VARA_DOUBLE(cdfid, recaxvar, 
      .                 i100-lorec+start(cdrecax),
      .                 hilim-i100+1, r100_8)
-#endif
+
             IF ( cdfstat .NE. NF_NOERR ) GOTO 5300
  310     CONTINUE
 

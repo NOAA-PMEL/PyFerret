@@ -67,11 +67,7 @@ C        PRECSN - LENGTH OF THE INDIVIDUAL LINE SEGMENTS IN THE
 C                 ARC IN INCHES (OR MM).
 C
 C
-#ifdef unix
 	include 'PLTCOM.DAT'
-#else
-	include 'pplinc:PLTCOM.DAT'
-#endif
 C
 C     CONVERT THE INITIAL AND FINAL ANGLES TO RADIANS.
 C

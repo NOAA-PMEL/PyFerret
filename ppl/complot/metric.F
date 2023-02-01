@@ -54,11 +54,7 @@ C     INCHES WILL INSTEAD EXPECT TO RECEIVE THE PARAMETERS EX-
 C     PRESSED IN MILLIMETERS.
 C
 C
-#ifdef unix
 	include 'PLTCOM.DAT'
-#else
-	include 'pplinc:PLTCOM.DAT'
-#endif
 C
       FACTOR = 39.37
       RETURN

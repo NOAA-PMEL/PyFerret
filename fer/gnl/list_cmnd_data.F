@@ -290,12 +290,8 @@
      .			'             FILENAME : '//
      .			ds_des_name(dset)(i+1:slen), 24+(slen-i))
 * ... DODS URL BASE or ABSOLUTE PATH
-* *kob* v553 - CYGWIN paths are always preceded by '.'
-#ifdef __CYGWIN__
-	   IF (i.GT.0 .AND.  ds_des_name(dset)(2:2).EQ.'\')   ! ' for emacs
-#else
+
 	   IF (i.GT.0 .AND.  ds_des_name(dset)(1:1).NE.'.')
-#endif
      .			CALL SPLIT_LIST(pttmode_explct, list_lun,
      .			'             FILEPATH : '//
      .			 ds_des_name(dset)(:i), i+24)

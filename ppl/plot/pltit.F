@@ -213,9 +213,7 @@ C	SETUP AXIS FOR ALL PLOT TYPES.
 *	endif
 
 	IF(.NOT.SOVER .AND. .NOT.PLTOPN)CALL SIZE(WIDTH,HEIGHT)
-#ifdef unix
-*       call flush(lttout)
-#endif
+
 ***********************************************
 * TMAP check that output window is active
 	IF ( PPL_in_FERRET ) CALL CK_GKS_ACTIVE( *4999 )

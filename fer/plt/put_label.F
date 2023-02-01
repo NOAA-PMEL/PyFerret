@@ -112,11 +112,7 @@
 * local parameter declarations:
 	INTEGER		maxsym, len_in, i
 	CHARACTER*1	esc
-#ifdef NO_INTRINSIC_IN_PARAMETER
-	PARAMETER     ( esc = o'033' ,
-#else
 	PARAMETER     ( esc = CHAR(27),
-#endif
      .			maxsym = 102   )! max. symbol length for PPLUS (PPL bug)
 
 * data initialization

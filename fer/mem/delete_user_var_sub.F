@@ -103,13 +103,7 @@
 	CHARACTER*24	check_name
 
       PARAMETER (flen=128)      ! size of variable name string
-
-#ifdef sun
-      BYTE      fhol(flen)      ! c-type Hollerith string buffer
-#else
       INTEGER*1 fhol(flen)      ! c-type Hollerith string buffer
-#endif 
-
 
 * procedure:
 *	generate a list of all user variables depending on the named uvar

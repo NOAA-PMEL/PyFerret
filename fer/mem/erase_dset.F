@@ -67,12 +67,8 @@
 * local variable declarations:
 	INTEGER TM_LENSTR, mr, ii, slen, flen, dset_uvars
 
-      PARAMETER (flen=128)      ! size of variable name string
-#ifdef sun
-      BYTE      fhol(flen)      ! c-type Hollerith string buffer
-#else
-      INTEGER*1 fhol(flen)      ! c-type Hollerith string buffer
-#endif 
+	PARAMETER (flen=128)      ! size of variable name string
+	INTEGER*1 fhol(flen)      ! c-type Hollerith string buffer
 
 * eliminate memory resident data
 	CALL PURGE_DSET( dset )

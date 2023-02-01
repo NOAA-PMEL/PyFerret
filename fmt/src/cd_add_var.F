@@ -64,15 +64,9 @@
       CHARACTER*2048 buff
 
       PARAMETER (flen=2048)
-#ifdef sun
-      BYTE      vhol(flen)      ! c-type Hollerith string buffer
-      BYTE      thol(flen)
-      BYTE      uhol(flen)
-#else
       INTEGER*1 vhol(flen)      ! c-type Hollerith string buffer
       INTEGER*1 thol(flen)
       INTEGER*1 uhol(flen)
-#endif 
 
 * translate strings for C routine
 

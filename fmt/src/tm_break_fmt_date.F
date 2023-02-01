@@ -80,11 +80,7 @@
 	REAL	frac
 	PARAMETER ( slen = 32)
 	INTEGER TM_LENSTR1, TM_BREAK_FMT_DATE_C, dlen
-#ifdef sun
-	BYTE       dhol(slen)     !c-type Hollerith string buffers
-#else
 	INTEGER*1  dhol(slen)     !c-type Hollerith string buffers
-#endif
 
 	dlen = TM_LENSTR1( date)
 

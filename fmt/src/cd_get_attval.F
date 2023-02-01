@@ -89,11 +89,7 @@
 ! The ones without trailing underscore are declared in netcdf.inc
 #include "netcdf_declareUnderscore.inc"
 
-#  ifdef sun
-      BYTE i1buff(132)
-#  else
       INTEGER*1 i1buff(132)
-#  endif
 
 * internal variable declarations:
       INTEGER TM_LENSTR1, lena, attype, cdfstat, i

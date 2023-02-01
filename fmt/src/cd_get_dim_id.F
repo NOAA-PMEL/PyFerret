@@ -56,12 +56,7 @@
 
       INTEGER TM_LENSTR1, NCF_GET_DIM_ID, slen, flen, dset_num
       PARAMETER (flen=512)      ! size of variable name string
-
-#ifdef sun
-      BYTE      fhol(flen)      ! c-type Hollerith string buffer
-#else
       INTEGER*1 fhol(flen)      ! c-type Hollerith string buffer
-#endif 
 
 
       slen = TM_LENSTR1( dname )

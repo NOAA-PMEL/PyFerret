@@ -53,12 +53,7 @@
 
       INTEGER NCF_DELETE_VAR_ATT, TM_LENSTR1, slen, flen, dset_num
       PARAMETER (flen=512)      ! size of variable name string
-
-#ifdef sun
-      BYTE      fhol(flen)      ! c-type Hollerith string buffer
-#else
       INTEGER*1 fhol(flen)      ! c-type Hollerith string buffer
-#endif 
 
       slen = TM_LENSTR1( attname )
       CALL TM_FTOC_STRNG( attname(1:slen), fhol, flen )

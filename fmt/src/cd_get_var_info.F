@@ -96,12 +96,7 @@
 
       INTEGER TM_LENSTR1, NCF_INQ_VAR, slen, flen, rev(8), i, ndx, istat
       PARAMETER (flen=512)      ! size of variable name string
-
-#ifdef sun
-      BYTE      fhol(flen)      ! c-type Hollerith string buffer
-#else
       INTEGER*1 fhol(flen)      ! c-type Hollerith string buffer
-#endif 
 
       nvdims = 0
       nvatts = 0

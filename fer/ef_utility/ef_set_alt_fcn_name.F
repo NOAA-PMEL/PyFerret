@@ -60,12 +60,7 @@ c     internal parameter declarations:
       INTEGER      slen
       PARAMETER  ( slen = ef_max_name_length )
 
-#ifdef sun
-      BYTE      fhol(slen)      ! c-type Hollerith string buffer
-#else 
       INTEGER*1 fhol(slen)      ! c-type Hollerith string buffer
-#endif
-      
       INTEGER TM_LENSTR1, llen
       
 c     true string length

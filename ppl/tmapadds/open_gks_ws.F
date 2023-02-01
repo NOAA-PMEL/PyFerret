@@ -83,13 +83,8 @@
         external        gks_x_conid
         include        'gkspar.inc'
 
-#ifdef sun
-        BYTE      NULL
-        BYTE      cstring(64) ! c-type Hollerith string buffer
-#else
         INTEGER*1 NULL
         INTEGER*1 cstring(64) ! c-type Hollerith string buffer
-#endif
         PARAMETER ( NULL = 0 )
 
 

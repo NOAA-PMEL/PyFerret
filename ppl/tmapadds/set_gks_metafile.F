@@ -146,11 +146,8 @@
         IMPLICIT NONE
         INCLUDE 'gkscm2.cmn'
         INTEGER clen
-#ifdef sun
-        byte mname(clen) 
-#else   
         integer*1 mname(clen)
-#endif  
+
         CALL TM_CTOF_STRNG(mname, meta_file, clen)
         save_on_exit = .TRUE.
         imgname_sent = .FALSE.

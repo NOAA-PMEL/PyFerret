@@ -90,11 +90,7 @@
 	INTEGER status, wsid, slen, rlen, sho_file
 	PARAMETER (slen=1024)
 	CHARACTER tmpfile*1024
-#ifdef sun
-        BYTE      ctmpfile(slen)
-#else
         INTEGER*1 ctmpfile(slen)
-#endif
 	LOGICAL IS_SERVER
 
 * treat all text as a single argument

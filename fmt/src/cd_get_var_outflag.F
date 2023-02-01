@@ -52,12 +52,7 @@
      .        slen, flen, dset_num, iflag
 
       PARAMETER (flen=512)      ! size of variable name string
-
-#ifdef sun
-      BYTE      fhol(flen)      ! c-type Hollerith string buffer
-#else
       INTEGER*1 fhol(flen)      ! c-type Hollerith string buffer
-#endif 
 
       status = merr_ok
       iflag = 0

@@ -58,12 +58,7 @@
       LOGICAL coordvar
 
       PARAMETER (flen=512)      ! size of variable name string
-
-#ifdef sun
-      BYTE      fhol(flen)      ! c-type Hollerith string buffer
-#else
       INTEGER*1 fhol(flen)      ! c-type Hollerith string buffer
-#endif 
 
       CD_ISIT_COORDVAR = .FALSE.
 

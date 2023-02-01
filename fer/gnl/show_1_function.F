@@ -87,12 +87,7 @@
 	PARAMETER ( indent = '    ' )
         INTEGER      slen
         PARAMETER  ( slen = 128 )
-
-#ifdef sun
-        BYTE      fhol(slen)    ! c-type Hollerith string buffer
-#else
         INTEGER*1 fhol(slen)    ! c-type Hollerith string buffer
-#endif
  
 * initialize
 	len_rbuff = LEN(risc_buff)	! maximum length

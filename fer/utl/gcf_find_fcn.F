@@ -52,13 +52,7 @@
 * internal parameter declarations:
         INTEGER      slen
         PARAMETER  ( slen = 40 )
- 
-#ifdef sun
-        BYTE      fhol(slen)    ! c-type Hollerith string buffer
-#else
         INTEGER*1 fhol(slen)    ! c-type Hollerith string buffer
-#endif
-
  
 	include	'tmap_dims.parm'
 	include 'ferret.parm'

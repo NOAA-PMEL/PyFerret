@@ -94,11 +94,7 @@
         include 'xdset_info.cd_equiv'
         include 'xtm_grid.cmn_text'
         include 'xprog_state.cmn'
-#ifdef sun
-        include 'xmachine_byte.cmn'
-#else
         include 'xmachine_int1.cmn'
-#endif
         include 'xsys_names.cmn_text'
 
 

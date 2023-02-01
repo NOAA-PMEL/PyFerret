@@ -68,12 +68,7 @@
       CHARACTER*128 vname
 
       PARAMETER (flen=size_rbuff)      ! size of attribute string
-
-#ifdef sun
-      BYTE      fhol(flen), ghol(flen)      ! c-type Hollerith string buffer
-#else
       INTEGER*1 fhol(flen), ghol(flen)      ! c-type Hollerith string buffer
-#endif 
 
 
       slen = TM_LENSTR1( attname )

@@ -57,14 +57,8 @@
 
         INTEGER   TM_LENSTR1, llen, slen
         PARAMETER (slen=2048)
-
-#ifdef sun
-        BYTE        fhol_url(slen)      ! c-type Hollerith string buffer
-	BYTE      fhol_eurl(slen)
-#else
 	INTEGER*1 fhol_url(slen)      ! c-type Hollerith string buffer
 	INTEGER*1 fhol_eurl(slen)
-#endif
 
 * Save dataset info in GLOBAL_NCdsetList for attribute handling
 

@@ -72,14 +72,8 @@
       INTEGER NCF_GET_DSNUM, llen, slen1, slen2
       PARAMETER (slen1=2048)      ! size of ds_name string
       PARAMETER (slen2=2048)      ! size of ds_des_name string (should this be even longer??)
-
-#ifdef sun
-      BYTE      fhol_dsname(slen1)      ! c-type Hollerith string buffer
-      BYTE      fhol_dspath(slen2)
-#else
       INTEGER*1 fhol_dsname(slen1)      ! c-type Hollerith string buffer
       INTEGER*1 fhol_dspath(slen2)
-#endif
 
 * Successfully opened the dataset (stepfile). 
 * Save dataset info in GLOBAL_NCdsetList for attribute handling

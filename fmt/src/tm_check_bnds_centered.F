@@ -35,7 +35,12 @@
 *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE. 
 *
 * Checks whether data points are all centered within the bounds on an axis
-* Do this in single precision, as in the check for regular axis in cd_get_1_axis.
+* Do this using the same precision as the coordinates, as in cd_get_1_axis.
+*
+* Returns FALSE for any irregular axis, even if the coordinates are centered
+* in the irregular grid cells. This is for detecting an axis whose coordinates
+* are regularly spaced but the grid cells are off-center, in which case the
+* coordinates and bounds must be saved.
 
 * 4/2004 ACM 
 * V58+ *acm*  1/05 Fixes for irreg axes with bounds: This routine now checks
@@ -48,6 +53,11 @@
 * V745 12/18 *acm* Noticed that regular clim axes from clim_axes_gregorian.nc were 
 *                  shown as irregular ( MON_REG_GRG TIME 12mi). Use epsilon test 
 *                  for comparing  diff_hi and diff_last (!)
+* V65  2/23 *acm* Add a sanity-check on irregular axis check. The code checked
+*		  that the half-grid-box size is the same as the one from the 
+*		  previous cell.  Also check if the grid box is the same size as
+*		  the first grid box. A long axis with tiny variations could
+*		  appear regular with just the first check.
 
 	include 'tmap_dims.parm'
 	include 'xtm_grid.cmn_text'
@@ -62,7 +72,7 @@
         LOGICAL TM_FPEQ_EPS, TM_DFPEQ_TOL, equal
 	INTEGER i
         REAL diff_hi, diff_lo, diff_last
-        REAL pt, del, blo, bhi
+        REAL pt, del, blo, bhi, box_first
 	REAL epsilon_21, epsilon
 	REAL*8 depsilon_42, depsilon, first_delta
 
@@ -78,7 +88,7 @@
            pt = line_start(iaxis)
            del = line_delta(iaxis) 
 
-	   DO 100 i = 1, npts
+	   DO i = 1, npts
 
              blo = line_edges(2*(i-1)+1)
              bhi = line_edges(2*(i-1)+2)
@@ -108,17 +118,19 @@
              diff_last = diff_hi
              pt = float(i) * del + line_start(iaxis)
 
-  100	   CONTINUE
+	   ENDDO
 
         ELSE  ! not line_regular
    
-	   DO 200 i = 1, npts
+	   box_first = line_edges(2) - line_edges(1)
+	   DO  i = 1, npts
              blo = line_edges(2*(i-1)+1)
              bhi = line_edges(2*(i-1)+2)
 
              diff_hi = bhi - line(i)
              diff_lo = line(i)- blo
 
+* Check for centered coordinate 
 	     IF (doubletype) THEN
 	       equal = TM_DFPEQ_TOL(diff_lo, diff_hi, depsilon)
 	     ELSE
@@ -126,6 +138,8 @@
 	     ENDIF
 	     IF ( .NOT. equal ) GOTO 500
 
+* Further check on equal box sizes: Is the half grid-box size the same as 
+* the previous cell, and also is the box size is the same as the first box
 
              IF (i .GT. 1) THEN
 
@@ -135,11 +149,18 @@
 	           equal = TM_FPEQ_EPS(epsilon, diff_hi, diff_last) 
 		ENDIF
 	        IF ( .NOT. equal ) GOTO 500
+		
+		IF (doubletype) THEN
+	           equal = TM_DFPEQ_TOL(bhi-blo, box_first, depsilon) 
+		ELSE
+	           equal = TM_FPEQ_EPS(epsilon, bhi-blo, box_first) 
+		ENDIF
+	        IF ( .NOT. equal ) GOTO 500
 
 	     ENDIF
              diff_last = diff_hi
 
-  200	   CONTINUE
+	   ENDDO
 
         ENDIF
 

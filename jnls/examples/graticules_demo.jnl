@@ -93,7 +93,7 @@ cancel region
 !
 ! Now, some new behavior. Starting with V7.65, we may specify custom 
 ! colors for graticule lines, with different colors for horizontal, 
-! vertial lines as well as large and small tic intervals  
+! vertical lines as well as large and small tic intervals  
 ! 
 !   * * * * * ************ * * * * *
 ! 

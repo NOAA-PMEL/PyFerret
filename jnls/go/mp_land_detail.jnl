@@ -4,6 +4,7 @@
 ! Description: Plot outlines of continents, countries, and/or states
 ! History: Simplified 6/11/2012 to remove SET GRID commands, and to
 !	   handle longitude replications differently
+! 1/23 ACM     Allow for (r,g,b) syntax for line-color specifications
 
 ! usage:   go mp_land_detail arg1 [arg2] [arg3] [arg4] [arg5] [arg6] [arg7]
 !
@@ -14,56 +15,56 @@
 !    arg5 rivers_pen	Pen for largest rivers
 !    arg6 more_rivers	Pen for additional rivers 
 !    arg7 marine boundaries  Pen for marine boundaries in South Pacific, Bering Strait
-!
-! pens 	may be "0"(background), "1"(foreground), "thick"(same as pen 7),
-!	"black", "red", "green", "blue", or 2-18.
+
+! colors may be "0"(background), "1"(foreground), "thick"(same as pen 7),
+!	"black", "red", "green", "blue", or 2-18. (r,g,b) color specifications
+!	are also allowed if running PyFerret
 ! arg 2 may be "basemap", "overlay", "fast" (fast, 20e:20e overlay) or omitted
 
-!	Note 1: A pen color of "black" will actually pen number 1
-!		-- normally white if the window background is black
-!	Note 2: An "N" for the continent pen means no continents
-!		-- use this for the special case of geo-political
-!		   overlay without continents.
-! Example calls:
+!  1) A pen color of "black" will actually pen number 1
+!       -- normally white if the window background is black
+!  2) An "N" for the continent pen means no continents
+!       -- use this for the special case of geo-political
+!       overlay without continents.
+!  3) if a value is given for the country_pen or state_pen then the
+!	corresponding geopolitical boundaries will be drawn - else
+!	they will be omitted
+!  4) use  GO line_samples to view the first 6 pen numbers
+!  4) use  GO line_samples to view the first 6 pen numbers
+!       Higher pen numbers cycle with thicker lines (max 18)
+!       See also the documentation for the plot command for the use of
+!	(r,g,b) color specifications in PyFerret.
+!  5) For arguments 1, 3, AND 4, other line-style qualifiers such as /THICK may 
+!       be added after the pen number, color name, or (r,g,b) color 
+!       specifier. This capability is available only in PyFerret
+!  6) The option "fast" for argument 2 is obsolete AND has no effect but is 
+!       included for backwards compatibilityspecifier. This capability is available only in PyFerret
+
 !   GO mp_land_detail red	     - overlay continents using red pen (2)
-!   GO mp_land_detail  10           - overlay continents using pen number 10
+!   GO mp_land_detail 10            - overlay continents using pen number 10
 !   GO mp_land_detail 1 basemap     - basemap of continents outline in foreground color
+!                                     (this works if you have first drawn a projected plot)
 !   GO mp_land_detail 1 " " red     - overlay continents with countries in red
 !   GO mp_land_detail thick basemap black black - continents, countries, and states
 !   GO mp_land_detail thick " " red green blue lightblue purple - continents, countries, states, 
 !                                                 all rivers, and marine boundaries
 !   GO mp_land_detail N " " 1 1     - overlay: no continents; yes political boundaries
-! 
+!   GO mp_land_detail (0,30,0) " " (100,60,70) (100,75,0)
+!   GO mp_land_detail (55,55,55)/thick " " (55,0,0) (0,55,0) (0,0,70) (0,55,55) (80,60,0) 
+
 ! Example:
 !   USE coads_climatology
 !   SET REGION/X=0:360/Y=-90:90/L=1
-!   GO mp_orthographic 210 45
+!   GO mp_orthographic 250 45
 !   SET GRID sst
-!   GO mp_aspect
+!   set window/aspect=1/size=1.5
 !   LET masked_sst = sst * mp_mask
-!   FILL/TITLE="View From Space"/NOAXES masked_sst, x_page, y_page
+!   FILL/TITLE="View From Space"/NOAXES/palette=grayscale masked_sst, x_page, y_page
 !   GO mp_fland
-!   GO mp_land_detail thick overlay red green blue lightblue purple
-!
-! Notes:
-!  1) This script is SLOW! It computes the map projection for all the 
-!       boundary data, even when a small subset is being plotted.
-!  2) If a pen value is given for the country_pen or state_pen then the
-!	corresponding geopolitical boundaries will be drawn - else
-!	they will be omitted
-!  3) use  GO line_samples    to view the first 6 pen numbers
-!       Higher pen numbers cycle with thicker lines (max 18)
-!  3) For more control over basemaps use "GO basemap"
+!   GO mp_land_detail thick overlay (85,0,0) " " (0,0,70) (0,80,100) (80,0,80)
 
 ! test argument before performing any actions
-
-query/ignore $1%1|black|red|green|blue|lightblue|purple|white|thick|0|1|2|3|4|5|6|7|8|9|10|11|12|13|14|15|16|17|18|19|N|<go land_detail [pen or "N"] ["basemap"] [pen] [pen] with pen = 0(back), 1(fore), thick, 2-18 or a color%
 query/ignore $2%default|basemap|overlay|<argument 2 can be "basemap", "overlay"%
-query/ignore $3%1|black|red|green|blue|lightblue|purple|white|thick|0|1|2|3|4|5|6|7|8|9|10|11|12|13|14|15|16|17|18|19|N|<go land_detail [pen or "N"] ["basemap"] [pen] [pen] with pen = 0(back), 1(fore), thick, 2-18 or a color%
-query/ignore $4%1|black|red|green|blue|lightblue|purple|white|thick|0|1|2|3|4|5|6|7|8|9|10|11|12|13|14|15|16|17|18|19|N|<go land_detail [pen or "N"] ["basemap"] [pen] [pen] with pen = 0(back), 1(fore), thick, 2-18 or a color%
-query/ignore $5%1|black|red|green|blue|lightblue|purple|white|thick|0|1|2|3|4|5|6|7|8|9|10|11|12|13|14|15|16|17|18|19|N|<go land_detail [pen or "N"] ["basemap"] [pen] [pen] with pen = 0(back), 1(fore), thick, 2-18 or a color%
-query/ignore $6%1|black|red|green|blue|lightblue|purple|white|thick|0|1|2|3|4|5|6|7|8|9|10|11|12|13|14|15|16|17|18|19|N|<go land_detail [pen or "N"] ["basemap"] [pen] [pen] with pen = 0(back), 1(fore), thick, 2-18 or a color%
-query/ignore $7%1|black|red|green|blue|lightblue|purple|white|thick|0|1|2|3|4|5|6|7|8|9|10|11|12|13|14|15|16|17|18|19|N|<go land_detail [pen or "N"] ["basemap"] [pen] [pen] with pen = 0(back), 1(fore), thick, 2-18 or a color%
 
 ! introduce the outline data set
 set data/save
@@ -109,38 +110,68 @@ IF `landi_basemap EQ 0` THEN
 
 ENDIF
 
-! always do the continents
 
-! Add replication of longitudes if necessary to match whats on the map.
-IF `landi_addx NE 0` THEN 
-   SET VAR/NAME=continent_lon_in continent_lon
-   SET VAR/NAME=continent_lat_in continent_lat
-   LET continent_lon = XCAT(continent_lon_in, continent_lon_in + (landi_addx))
-   LET continent_lat = XCAT(continent_lat_in, continent_lat_in)
-ENDIF
+! always do the continents, unless they sent in N for the argment.
 
-LET/QUIET mp_x = x[gx=continent_lon]
-LET/QUIET mp_y = y[gy=continent_lon]
+define symbol land_setting = $1"1|black>1|red>2|green>3|blue>4|lightblue>5|purple>6|thick>7|\
+0>0|1>1|2>2|3>3|4>4|5>5|6>6|7>7|8>8|9>9|10>10|11>11|12>12|13>13|14>14|15>15|16>16|17>17|18>18|N>-1|*>-2"
 
-LET/QUIET mp_lambda = continent_lon * deg2rad
-LET/QUIET mp_phi = continent_lat * deg2rad
-LET/QUIET masked_x_page = mp_mask * x_page
-LET/QUIET masked_y_page = mp_mask * y_page
+if `($land_setting) ge 0` then
 
-$1"plot|N>QUERY/IGNORE stuff |*>plot"/set/vs/nolab/noax/line=1/$2"i=1:200826/overlay|basemap>i=1:200826/overly|*>i=1:200826/overlay" masked_x_page, masked_y_page
+   define symbol land_colorqual=/color=($land_setting)/line
 
-! select line style and plot
-ppl pen 1 $1"1|black>1|red>2|green>3|blue>4|lightblue>5|purple>6|white>19|thick>7|0>0|1>1|2>2|3>3|4>4|5>5|6>6|7>7|8>8|9>9|10>10|11>11|12>12|13>13|14>14|15>15|16>16|17>17|18>18|N>1|"
+elif `($land_setting) eq -2` then
 
-! draw it - as an overlay or as a basemap
+   define symbol land_arg = ($1)
+   go check_land_arg
 
-$1"ppl plot|N>QUERY/IGNORE stuff |*>ppl plot"$2"/overlay|basemap> |*>/overlay"
+endif
 
-CANCEL VAR continent*
+if `($land_setting) ne -1` then 
+
+   if `landi_basemap EQ 0` THEN define symbol land_colorqual = ($land_colorqual)/overlay
+
+
+   ! Add replication of longitudes if necessary to match whats on the map.
+   IF `landi_addx NE 0` THEN 
+      SET VAR/NAME=continent_lon_in continent_lon
+      SET VAR/NAME=continent_lat_in continent_lat
+      LET continent_lon = XCAT(continent_lon_in, continent_lon_in + (landi_addx))
+      LET continent_lat = XCAT(continent_lat_in, continent_lat_in)
+   ENDIF
+
+   LET/QUIET mp_x = x[gx=continent_lon]
+   LET/QUIET mp_y = y[gy=continent_lon]
+   
+   LET/QUIET mp_lambda = continent_lon * deg2rad
+   LET/QUIET mp_phi = continent_lat * deg2rad
+   LET/QUIET masked_x_page = mp_mask * x_page
+   LET/QUIET masked_y_page = mp_mask * y_page
+   
+   PLOT/vs/nolab/noax/($land_colorqual) masked_x_page, masked_y_page
+   
+   CANCEL VAR continent*
+
+endif
 
 
 ! **** now the optional country borders
-IF ($3%0|*>1%) THEN
+
+define symbol land_setting = $3"-1|black>1|red>2|green>3|blue>4|lightblue>5|purple>6|thick>7|\
+0>0|1>1|2>2|3>3|4>4|5>5|6>6|7>7|8>8|9>9|10>10|11>11|12>12|13>13|14>14|15>15|16>16|17>17|18>18|N>-1|*>-2"
+
+if `($land_setting) ge 0` then
+
+   define symbol land_colorqual=/color=($land_setting)/line
+
+elif `($land_setting) eq -2` then
+
+   define symbol land_arg = ($3)
+   go check_land_arg
+
+endif
+
+if `($land_setting) ne -1` then 
 
 ! Add replication of longitudes if necessary to match whats on the map.
    IF `landi_addx NE 0` THEN 
@@ -149,147 +180,179 @@ IF ($3%0|*>1%) THEN
       LET country_lon = XCAT(country_lon_in, country_lon_in + (landi_addx))
       LET country_lat = XCAT(country_lat_in, country_lat_in)
    ENDIF
+   
+   let/quiet mp_lambda = if (country_lon ge mp_xmin AND country_lon le mp_xmax AND \
+     country_lat ge mp_ymin AND country_lat le mp_ymax) then (country_lon * deg2rad)
+   let/quiet mp_phi = if (country_lon ge mp_xmin AND country_lon le mp_xmax AND \
+     country_lat ge mp_ymin AND country_lat le mp_ymax) then (country_lat * deg2rad)
 
-   LET/QUIET mp_x = x[gx=country_lon]
-   LET/QUIET mp_y = y[gy=country_lon]
+   let/quiet masked_x_page = mp_mask * x_page
+   let/quiet masked_y_page = mp_mask * y_page
 
-   LET/QUIET mp_lambda = country_lon * deg2rad
-   LET/QUIET mp_phi = country_lat * deg2rad
-
-   LET/QUIET masked_x_page = mp_mask * x_page
-   LET/QUIET masked_y_page = mp_mask * y_page
-   $3"query/ignore|*>plot/set/vs/nolab/line=1/overlay" masked_x_page, masked_y_page
-
-! select line style and plot
-   ppl pen 1 $3"1|black>1|red>2|green>3|blue>4|lightblue>5|purple>6|white>19|thick>7|0>0|1>1|2>2|3>3|4>4|5>5|6>6|7>7|8>8|9>9|10>10|11>11|12>12|13>13|14>14|15>15|16>16|17>17|18>18|"
-
-! draw it - as an overlay or as a basemap
-   $3"query/ignore|*>ppl plot/overlay"
+   PLOT($land_colorqual)/vs/nolab/overlay masked_x_page, masked_y_page
 
    CANCEL VAR country*
-ENDIF
+endif
 
 ! **** now the optional state borders
-IF ($4%0|*>1%) THEN
 
+define symbol land_setting = $4"-1|black>1|red>2|green>3|blue>4|lightblue>5|purple>6|thick>7|\
+0>0|1>1|2>2|3>3|4>4|5>5|6>6|7>7|8>8|9>9|10>10|11>11|12>12|13>13|14>14|15>15|16>16|17>17|18>18|N>-1|*>-2"
+
+if `($land_setting) ge 0` then
+
+   define symbol land_colorqual=/color=($land_setting)/line
+
+elif `($land_setting) eq -2` then
+
+   define symbol land_arg = ($4)
+   go check_land_arg
+
+endif
+
+if `($land_setting) ne -1` then 
+
+! Add replication of longitudes if necessary to match whats on the map.
    IF `landi_addx NE 0` THEN 
       SET VAR/NAME=state_lon_in state_lon
       SET VAR/NAME=state_lat_in state_lat
       LET state_lon = XCAT(state_lon_in, state_lon_in + (landi_addx))
       LET state_lat = XCAT(state_lat_in, state_lat_in)
    ENDIF
-
-   LET/QUIET mp_x = x[gx=state_lon]
-   LET/QUIET mp_y = y[gy=state_lon]
-
-   LET/QUIET mp_lambda = state_lon * deg2rad
-   LET/QUIET mp_phi = state_lat * deg2rad
    
-   LET/QUIET masked_x_page = mp_mask * x_page
-   LET/QUIET masked_y_page = mp_mask * y_page
-   $4"query/ignore|*>plot/set/vs/nolab/line=1/overlay" masked_x_page, masked_y_page
+   let/quiet mp_lambda = if (state_lon ge mp_xmin AND state_lon le mp_xmax AND \
+     state_lat ge mp_ymin AND state_lat le mp_ymax) then (state_lon * deg2rad)
+   let/quiet mp_phi = if (state_lon ge mp_xmin AND state_lon le mp_xmax AND \
+     state_lat ge mp_ymin AND state_lat le mp_ymax) then (state_lat * deg2rad)
 
-! select line style and plot
-   ppl pen 1 $4"1|black>1|red>2|green>3|blue>4|lightblue>5|purple>6|white>19|thick>7|0>0|1>1|2>2|3>3|4>4|5>5|6>6|7>7|8>8|9>9|10>10|11>11|12>12|13>13|14>14|15>15|16>16|17>17|18>18|"
+   let/quiet masked_x_page = mp_mask * x_page
+   let/quiet masked_y_page = mp_mask * y_page
 
-! draw it - as an overlay
-   $4"query/ignore|*>ppl plot/overlay"
+   PLOT($land_colorqual)/vs/nolab/overlay masked_x_page, masked_y_page
 
    CANCEL VAR state*
-ENDIF
+endif
 
 
 ! **** now the optional rivers (secondary ones first)
-IF ($6%0|*>1%) THEN
 
+define symbol land_setting = $6"-1|black>1|red>2|green>3|blue>4|lightblue>5|purple>6|thick>7|\
+0>0|1>1|2>2|3>3|4>4|5>5|6>6|7>7|8>8|9>9|10>10|11>11|12>12|13>13|14>14|15>15|16>16|17>17|18>18|N>-1|*>-2"
+
+if `($land_setting) ge 0` then
+
+   define symbol land_colorqual=/color=($land_setting)/line
+
+elif `($land_setting) eq -2` then
+
+   define symbol land_arg = ($6)
+   go check_land_arg
+
+endif
+
+if `($land_setting) ne -1` then 
+
+! Add replication of longitudes if necessary to match whats on the map.
    IF `landi_addx NE 0` THEN 
       SET VAR/NAME=river1_2_lon_in river1_2_lon
       SET VAR/NAME=river1_2_lat_in river1_2_lat
       LET river1_2_lon = XCAT(river1_2_lon_in, river1_2_lon_in + (landi_addx))
       LET river1_2_lat = XCAT(river1_2_lat_in, river1_2_lat_in)
    ENDIF
+   
+   let/quiet mp_lambda = if (river1_2_lon ge mp_xmin AND river1_2_lon le mp_xmax AND \
+     river1_2_lat ge mp_ymin AND river1_2_lat le mp_ymax) then (river1_2_lon * deg2rad)
+   let/quiet mp_phi = if (river1_2_lon ge mp_xmin AND river1_2_lon le mp_xmax AND \
+     river1_2_lat ge mp_ymin AND river1_2_lat le mp_ymax) then (river1_2_lat * deg2rad)
 
-   LET/QUIET mp_x = x[gx=river1_2_lon]
-   LET/QUIET mp_y = y[gy=river1_2_lon]
+   let/quiet masked_x_page = mp_mask * x_page
+   let/quiet masked_y_page = mp_mask * y_page
 
-   LET/QUIET mp_lambda = river1_2_lon * deg2rad
-   LET/QUIET mp_phi = river1_2_lat * deg2rad
-
-   LET/QUIET masked_x_page = mp_mask * x_page
-   LET/QUIET masked_y_page = mp_mask * y_page
-
-   $6"query/ignore|*>plot/set/vs/nolab/line=1/overlay" masked_x_page, masked_y_page
-
-! select line style and plot
-   ppl pen 1 $6"1|black>1|red>2|green>3|blue>4|lightblue>5|purple>6|white>19|thick>7|0>0|1>1|2>2|3>3|4>4|5>5|6>6|7>7|8>8|9>9|10>10|11>11|12>12|13>13|14>14|15>15|16>16|17>17|18>18|"
-
-! draw it - as an overlay or as a basemap
-   $6"query/ignore|*>ppl plot/overlay"
+   PLOT($land_colorqual)/vs/nolab/overlay masked_x_page, masked_y_page
 
    CANCEL VAR river1_2*
 ENDIF
 
 
 ! **** now the optional rivers (primary ones second)
-IF ($5%0|*>1%) THEN
 
+define symbol land_setting = $5"-1|black>1|red>2|green>3|blue>4|lightblue>5|purple>6|thick>7|\
+0>0|1>1|2>2|3>3|4>4|5>5|6>6|7>7|8>8|9>9|10>10|11>11|12>12|13>13|14>14|15>15|16>16|17>17|18>18|N>-1|*>-2"
+
+if `($land_setting) ge 0` then
+
+   define symbol land_colorqual=/color=($land_setting)/line
+
+elif `($land_setting) eq -2` then
+
+   define symbol land_arg = ($5)
+   go check_land_arg
+
+endif
+
+if `($land_setting) ne -1` then 
+
+! Add replication of longitudes if necessary to match whats on the map.
    IF `landi_addx NE 0` THEN 
       SET VAR/NAME=river1_lon_in river1_lon
       SET VAR/NAME=river1_lat_in river1_lat
       LET river1_lon = XCAT(river1_lon_in, river1_lon_in + (landi_addx))
       LET river1_lat = XCAT(river1_lat_in, river1_lat_in)
    ENDIF
-
-   LET/QUIET mp_x = x[gx=river1_lon]
-   LET/QUIET mp_y = y[gy=river1_lon]
-
-   LET/QUIET mp_lambda = river1_lon * deg2rad
-   LET/QUIET mp_phi = river1_lat * deg2rad
    
-   LET/QUIET masked_x_page = mp_mask * x_page
-   LET/QUIET masked_y_page = mp_mask * y_page
-$5"query/ignore|*>plot/set/vs/nolab/line=1/overlay" masked_x_page, masked_y_page
+   let/quiet mp_lambda = if (river1_lon ge mp_xmin AND river1_lon le mp_xmax AND \
+     river1_lat ge mp_ymin AND river1_lat le mp_ymax) then (river1_lon * deg2rad)
+   let/quiet mp_phi = if (river1_lon ge mp_xmin AND river1_lon le mp_xmax AND \
+     river1_lat ge mp_ymin AND river1_lat le mp_ymax) then (river1_lat * deg2rad)
 
-! select line style and plot
-ppl pen 1 $5"1|black>1|red>2|green>3|blue>4|lightblue>5|purple>6|white>19|thick>7|0>0|1>1|2>2|3>3|4>4|5>5|6>6|7>7|8>8|9>9|10>10|11>11|12>12|13>13|14>14|15>15|16>16|17>17|18>18|"
+   let/quiet masked_x_page = mp_mask * x_page
+   let/quiet masked_y_page = mp_mask * y_page
 
-! draw it - as an overlay or as a basemap
-$5"query/ignore|*>ppl plot/overlay"
+   PLOT($land_colorqual)/vs/nolab/overlay masked_x_page, masked_y_page
 
    CANCEL VAR river1*
-ENDIF
+endif
+
 
 
 ! **** now the optional marine boundaries
 
-IF ($7%0|*>1%) THEN
+define symbol land_setting = $7"-1|black>1|red>2|green>3|blue>4|lightblue>5|purple>6|thick>7|\
+0>0|1>1|2>2|3>3|4>4|5>5|6>6|7>7|8>8|9>9|10>10|11>11|12>12|13>13|14>14|15>15|16>16|17>17|18>18|N>-1|*>-2"
 
+if `($land_setting) ge 0` then
+
+   define symbol land_colorqual=/color=($land_setting)/line
+
+elif `($land_setting) eq -2` then
+
+   define symbol land_arg = ($7)
+   go check_land_arg
+
+endif
+
+if `($land_setting) ne -1` then 
+
+! Add replication of longitudes if necessary to match whats on the map.
    IF `landi_addx NE 0` THEN 
       SET VAR/NAME=marine_lon_in marine_lon
       SET VAR/NAME=marine_lat_in marine_lat
       LET marine_lon = XCAT(marine_lon_in, marine_lon_in + (landi_addx))
       LET marine_lat = XCAT(marine_lat_in, marine_lat_in)
    ENDIF
-
-   LET/QUIET mp_x = x[gx=marine_lon]
-   LET/QUIET mp_y = y[gy=marine_lon]
-
-   LET/QUIET mp_lambda = marine_lon * deg2rad
-   LET/QUIET mp_phi = marine_lat * deg2rad
    
-   LET/QUIET masked_x_page = mp_mask * x_page
-   LET/QUIET masked_y_page = mp_mask * y_page
+   let/quiet mp_lambda = if (marine_lon ge mp_xmin AND marine_lon le mp_xmax AND \
+     marine_lat ge mp_ymin AND marine_lat le mp_ymax) then (marine_lon * deg2rad)
+   let/quiet mp_phi = if (marine_lon ge mp_xmin AND marine_lon le mp_xmax AND \
+     marine_lat ge mp_ymin AND marine_lat le mp_ymax) then (marine_lat * deg2rad)
 
-   $7"query/ignore|*>plot/set/vs/nolab/line=1/overlay" masked_x_page, masked_y_page
+   let/quiet masked_x_page = mp_mask * x_page
+   let/quiet masked_y_page = mp_mask * y_page
 
-! select line style and plot
-   ppl pen 1 $7"1|black>1|red>2|green>3|blue>4|lightblue>5|purple>6|white>19|thick>7|0>0|1>1|2>2|3>3|4>4|5>5|6>6|7>7|8>8|9>9|10>10|11>11|12>12|13>13|14>14|15>15|16>16|17>17|18>18|"
-
-! draw it - as an overlay or as a basemap
-   $7"query/ignore|*>ppl plot/overlay"
+   PLOT($land_colorqual)/vs/nolab/overlay masked_x_page, masked_y_page
 
    CANCEL VAR marine*
-ENDIF
+endif
 
 
 cancel data geo_borders_intermed

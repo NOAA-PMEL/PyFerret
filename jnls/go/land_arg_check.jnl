@@ -1,10 +1,11 @@
-! Called by land.jnl, land_detail.jnl, mp_land.jnl, mp_graticule.jnl
-! Check an argument that specifies the line color and any line-style
-! qualifiers.
+! Called by land.jnl, land_detail.jnl, mp_land.jnl, mp_land_detail.jnl, mp_graticule.jnl
+! Check an argument that specifies the line color and any line-style qualifiers.
+! Define the symbol land_colorqual for use in drawing lines in these scripts
 
 ! These symbols have been defined by the calling script
 !  ($land_arg)  is the argument we are checking
-!  ($land_setting) is a number from -2 to 18, a pen number or a negative value 
+!  ($land_setting) is a number from -2 to 18, a pen number or a negative value,
+!   if that is how the user specified the pen-color argument.
 
 ! This script either sets the symbol ($land_colorqual) to be used by the PLOT command
 ! or exits to the command prompt with an error message.
@@ -33,7 +34,7 @@ elif `($land_setting) eq -2` then
       let ok = ok1 + ok2
    endif
    if `ok eq 0` then
-      say land_detail.jnl arg 1 must be a color: pen number, color name, or (r,g,b) values in parentheses
+      say land-drawing scripts: line style argument must be a color: pen number, color name, or (r,g,b) values in parentheses
       say invalid argument   $land_arg
       exit/prompt
    endif

@@ -56,12 +56,21 @@
 ! arg 8 - window flag: 1 to window lines at the axes, 0 not to, default 0
 !
 ! examples:
-!         go mp_graticule                         ! default - whole world in black
+!         go mp_graticule                         ! default - whole world, lines in black
 !         go mp_graticule 120 220 20 35 65 2.5 5  ! graticule over northern Pacific in cyan
+!         go mp_graticule 120 220 20 35 65 2.5 (50,50,50)/dash/thick  ! gray, dashed, thick graticule
 !
 ! Note:   If overlaying on a basemap or in any case where a SET GRID has
 !         not been issued, the current default region will determine
 !	  the region to be plotted.
+! For argument 7:
+!  1) Run "GO line_samples" to view the first 6 pen numbers
+!       Higher pen numbers cycle with thicker lines (max 18)
+!       See also the documentation for the PLOT command for the use of
+!	(r,g,b) color specifications in PyFerret.
+!  2) Other line-style qualifiers such as /THICK may be added after the 
+!       pen number, color name, or (r,g,b) color specifier. This 
+!       capability is available only in PyFerret
 
 define region/default save
 set grid/save
@@ -163,7 +172,23 @@ let/quiet mp_phi    = lon_field_j   * deg2rad
 let/quiet masked_x_page = mp_mask * x_page
 let/quiet masked_y_page = mp_mask * y_page
 
-plot/vs/over/nolab/line=$7"1" masked_x_page, masked_y_page
+
+
+define symbol land_setting = $7"1|black>1|red>2|green>3|blue>4|lightblue>5|purple>6|thick>7|\
+0>0|1>1|2>2|3>3|4>4|5>5|6>6|7>7|8>8|9>9|10>10|11>11|12>12|13>13|14>14|15>15|16>16|17>17|18>18|*>-2"
+
+if `($land_setting) ge 0` then
+
+   define symbol land_colorqual=($land_setting)/line
+
+elif `($land_setting) eq -2` then
+
+   define symbol land_arg = ($7)
+   go land_arg_check
+
+endif
+
+PLOT($land_colorqual)/vs/over/nolab masked_x_page, masked_y_page
 
 !
 ! Now for the appropriate longitude lines:
@@ -194,7 +219,7 @@ let/quiet mp_phi    = lat_field_i_2[g=lat_field_grid] * deg2rad	! acm - like Jon
 let/quiet masked_x_page = mp_mask * x_page
 let/quiet masked_y_page = mp_mask * y_page
 
-plot/vs/over/nolab/line=$7"1" masked_x_page, masked_y_page
+PLOT($land_colorqual)/vs/over/nolab masked_x_page, masked_y_page
 
 !
 ! Restore all the previous settings and variables
@@ -202,7 +227,7 @@ plot/vs/over/nolab/line=$7"1" masked_x_page, masked_y_page
 set region save
 set grid/restore
 
-ppl window on
+! ppl window on
 
 let/quiet mp_x = x
 let/quiet mp_y = y

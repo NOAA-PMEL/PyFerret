@@ -49,7 +49,7 @@
 !   GO mp_land_detail thick " " red green blue lightblue purple - continents, countries, states, 
 !                                                 all rivers, and marine boundaries
 !   GO mp_land_detail N " " 1 1     - overlay: no continents; yes political boundaries
-!   GO mp_land_detail (0,30,0) " " (100,60,70) (100,75,0)
+!   GO mp_land_detail (0,30,0) " " (100,20,0) (100,75,0)
 !   GO mp_land_detail (55,55,55)/thick " " (55,0,0) (0,55,0) (0,0,70) (0,55,55) (80,60,0) 
 
 ! Example:
@@ -123,7 +123,7 @@ if `($land_setting) ge 0` then
 elif `($land_setting) eq -2` then
 
    define symbol land_arg = ($1)
-   go check_land_arg
+   go land_arg_check
 
 endif
 
@@ -167,7 +167,7 @@ if `($land_setting) ge 0` then
 elif `($land_setting) eq -2` then
 
    define symbol land_arg = ($3)
-   go check_land_arg
+   go land_arg_check
 
 endif
 
@@ -206,7 +206,7 @@ if `($land_setting) ge 0` then
 elif `($land_setting) eq -2` then
 
    define symbol land_arg = ($4)
-   go check_land_arg
+   go land_arg_check
 
 endif
 
@@ -246,7 +246,7 @@ if `($land_setting) ge 0` then
 elif `($land_setting) eq -2` then
 
    define symbol land_arg = ($6)
-   go check_land_arg
+   go land_arg_check
 
 endif
 
@@ -286,7 +286,7 @@ if `($land_setting) ge 0` then
 elif `($land_setting) eq -2` then
 
    define symbol land_arg = ($5)
-   go check_land_arg
+   go land_arg_check
 
 endif
 
@@ -327,7 +327,7 @@ if `($land_setting) ge 0` then
 elif `($land_setting) eq -2` then
 
    define symbol land_arg = ($7)
-   go check_land_arg
+   go land_arg_check
 
 endif
 

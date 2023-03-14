@@ -46,7 +46,7 @@
 !   go land_detail N " " 1 1     - overlay: no continents; yes political boundaries
 
 !   GO land_detail (0,55,55)/thick=2 " " (40,20,65)		! Use a (r,g,b) specification
-!   GO land_detail (0,30,0) basemap (100,60,70) (100,75,0)
+!   GO land_detail (0,30,0) basemap (100,20,0) (100,75,0)
 !   go land_detail (33,0,55) " " (55,0,0) (0,55,0) (0,0,70) (0,55,55) (80,60,0) - all
 !
 ! Notes:
@@ -64,12 +64,13 @@ set data/save
 define region/default save
 cancel region
 
-! introduce the outline data set
-use geo_borders_intermed
-
 ! If they call for a basemap, draw an all-white underlay
 let landi_basemap = $2"0|basemap>1|*>0"
 IF `landi_basemap EQ 1` THEN GO basemap x=0:360 y=-90:90 20 white
+
+! introduce the outline data set
+use geo_borders_intermed
+
 
 ! Initialize - the geo_borders_intermed dataset has longitudes
 ! only between 0 and 360, so if the map is outside that range
@@ -83,7 +84,7 @@ let landi_mapxmax = 0
 let landi_datxmin = 0
 let landi_datxmax = 0
 
-! map extent
+	! mp extent
 let landi_mapxmin = ($xaxis_min)
 let landi_mapxmax = ($xaxis_max)
 
@@ -105,7 +106,7 @@ if `($land_setting) ge 0` then
 elif `($land_setting) eq -2` then
 
    define symbol land_arg = ($1)
-   go check_land_arg
+   go land_arg_check
 
 endif
 
@@ -137,7 +138,7 @@ if `($land_setting) ge 0` then
 elif `($land_setting) eq -2` then
 
    define symbol land_arg = ($3)
-   go check_land_arg
+   go land_arg_check
 
 endif
 
@@ -167,7 +168,7 @@ if `($land_setting) ge 0` then
 elif `($land_setting) eq -2` then
 
    define symbol land_arg = ($4)
-   go check_land_arg
+   go land_arg_check
 
 endif
 
@@ -199,7 +200,7 @@ if `($land_setting) ge 0` then
 elif `($land_setting) eq -2` then
 
    define symbol land_arg = ($6)
-   go check_land_arg
+   go land_arg_check
 
 endif
 
@@ -228,7 +229,7 @@ if `($land_setting) ge 0` then
 elif `($land_setting) eq -2` then
 
    define symbol land_arg = ($5)
-   go check_land_arg
+   go land_arg_check
 
 endif
 
@@ -259,7 +260,7 @@ if `($land_setting) ge 0` then
 elif `($land_setting) eq -2` then
 
    define symbol land_arg = ($7)
-   go check_land_arg
+   go land_arg_check
 
 endif
 

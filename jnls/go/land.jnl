@@ -41,7 +41,7 @@
 !   GO land N " " 1 1     - overlay: no continents; yes political boundaries
 !
 !   GO land (0,55,55)/thick=2 " " (40,20,65)	     ! (r,g,b) for arguments 1 and 3
-!   GO land (0,30,0) basemap (100,60,70) (100,75,0)  ! (r,g,b) for arguments 1, 3, 4
+!   GO land (0,30,0) basemap (100,20,0) (100,75,0)  ! (r,g,b) for arguments 1, 3, 4
 !
 !  4) 10/12/2004 ACM
 ! This script has additions similar to commands in land_detail
@@ -52,9 +52,6 @@
 
 query/ignore $2%default|basemap|overlay|fast|<argument 2 can be "basemap", "overlay", or "fast"%
 
-! introduce the outline data set
-set data/save
-use geo_borders
 
 let landi_basemap = $2"0|basemap>1|*>0"
 
@@ -62,6 +59,10 @@ IF `landi_basemap EQ 1` THEN GO basemap x=0:360 y=-90:90 60 white
 
 define region/default save
 cancel region
+
+! introduce the outline data set
+set data/save
+use geo_borders
 
 ! always do the continents
 
@@ -75,7 +76,7 @@ if `($land_setting) ge 0` then
 elif `($land_setting) eq -2` then
 
    define symbol land_arg = ($1)
-   go check_land_arg
+   go land_arg_check
 
 endif
 
@@ -99,7 +100,7 @@ if `($land_setting) ge 0` then
 elif `($land_setting) eq -2` then
 
    define symbol land_arg = ($3)
-   go check_land_arg
+   go land_arg_check
 
 endif
 
@@ -123,7 +124,7 @@ if `($land_setting) ge 0` then
 elif `($land_setting) eq -2` then
 
    define symbol land_arg = ($4)
-   go check_land_arg
+   go land_arg_check
 
 endif
 

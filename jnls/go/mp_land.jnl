@@ -98,7 +98,7 @@ if `($land_setting) ge 0` then
 elif `($land_setting) eq -2` then
 
    define symbol land_arg = ($1)
-   go check_land_arg
+   go land_arg_check
 
 endif
 
@@ -156,7 +156,7 @@ if `($land_setting) ge 0` then
 elif `($land_setting) eq -2` then
 
    define symbol land_arg = ($3)
-   go check_land_arg
+   go land_arg_check
 
 endif
 
@@ -216,7 +216,7 @@ if `($land_setting) ge 0` then
 elif `($land_setting) eq -2` then
 
    define symbol land_arg = ($4)
-   go check_land_arg
+   go land_arg_check
 
 endif
 

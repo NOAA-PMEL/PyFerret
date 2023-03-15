@@ -1,8 +1,10 @@
+! land_arg_check.jnl
+
 ! Called by land.jnl, land_detail.jnl, mp_land.jnl, mp_land_detail.jnl, mp_graticule.jnl
 ! Check an argument that specifies the line color and any line-style qualifiers.
-! Define the symbol land_colorqual for use in drawing lines in these scripts
+! Define the symbol land_colorqual for use in drawing lines in these scripts.
 
-! These symbols have been defined by the calling script
+! These symbols have been defined by the calling script:
 !  ($land_arg)  is the argument we are checking
 !  ($land_setting) is a number from -2 to 18, a pen number or a negative value,
 !   if that is how the user specified the pen-color argument.
@@ -14,13 +16,22 @@
 ! Do some sanity checking on the argument: if it starts with ( then assume its a (r,g,b)
 ! if it starts with a number or color name, it is ok
 ! if starts with something else (maybe a slash), issue error: must start with color
-
+! 
+! For the land-drawing scripts, thick is allowed as an argument, translating to
+! black/thick. If they used thick with a qualifier (maybe /dash or /opacity=), 
+! adjust so that it works as expected.
 
 if `($land_setting) ge 0` then
 
    define symbol land_colorqual=/color=($land_setting)/line
 
 elif `($land_setting) eq -2` then
+
+   let cq = "`substring("($land_arg%1%)", 1, 1)`"
+   if `strcmp(cq, "t") eq 0 or strcmp(cq, "T") eq 0` then 
+      define symbol cq = `upcase(substring("($land_arg%1%)", 1, 5))`
+      if `strcmp("($cq)", "THICK") EQ 0` then define symbol land_arg=1/($land_arg)
+   endif
 
    let ok = 0
    let cq = "`substring("($land_arg%1%)", 1, 1)`"
@@ -33,6 +44,8 @@ elif `($land_setting) eq -2` then
       let ok2 = ($cq"|re>1|bl>1|gr>1|bl>1|li>1|pu>1|*>0")
       let ok = ok1 + ok2
    endif
+      
+
    if `ok eq 0` then
       say land-drawing scripts: line style argument must be a color: pen number, color name, or (r,g,b) values in parentheses
       say invalid argument   $land_arg

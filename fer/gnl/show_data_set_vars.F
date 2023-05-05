@@ -99,6 +99,9 @@
 * V76  2/20 *acm* Clean up the SHOW DATA/FULL output for DSG grids -
 *                 coordinate info is only at the end of the listing
 * 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
+* V765 *acm* 5/23 PyFerret issue 135 When the dataset has 'coordinates' 
+*               attributes on variables, report there are auxiliary 
+*               (e.g. curvilinear) coordinates
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -642,6 +645,11 @@ c	IF ( full  .AND. grid_dsg) taxis = grid_line(t_dim, dsg_xlate_grid(dset))
 	  GOTO 700
  710	  CALL SPLIT_LIST(pttmode_explct, lun,
      .			  ' /DELIMITERS="'//line(:len)//'"', len+15) 
+	ENDIF
+
+	IF (ds_has_aux_coords(dset)) THEN 
+	   CALL SPLIT_LIST(pttmode_explct, lun, 
+     .      '--- Dataset variables have Auxiliary or Curvilinear Coordinates. Examine "coordinates" attributes.', 0)
 	ENDIF
 
 5000    RETURN

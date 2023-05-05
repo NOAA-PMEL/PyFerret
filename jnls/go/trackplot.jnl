@@ -6,7 +6,7 @@
 
 ! Usage:                  $1        $2     $3     $4     $5       $6        $7
 ! yes?  GO trackplot plot_command xtrack ytrack values [scale] [baseline] [smooth]
-! $1 - the plot command with qualifiers (eg PLOT/VS/OVER/LINE=2)
+! $1 - the plot command with qualifiers (eg PLOT/VS/OVER/COLOR=red)
 ! $2 - X coordinates of track to be plotted
 ! $3 - Y coordinates of track to be plotted
 ! $4 - variable whose values will be plotted along the track (eg SST)
@@ -28,12 +28,12 @@
 !
 ! Draw base map
 !       yes? go basemap x=130E:120W Y=10n:60n 20
-!       yes? plot/vs/over/line/title="track" xpts, ypts
+!       yes? plot/vs/over/line/thick/title="track" xpts, ypts
 !
 ! Auto-scaled plot, then manually scaled plot
-!	yes? GO trackplot plot/vs/over/line=2/title="my data" xpts, ypts, val
+!	yes? GO trackplot plot/vs/over/color=2/title="my data" xpts, ypts, val
 !       yes? SAY ($TRACKPLOTscale)     ! value is 3.356 units/inch
-!	yes? GO trackplot plot/vs/over/line=4/title="scaled" xpts, ypts, val 3
+!	yes? GO trackplot plot/vs/over/color=(0,55,0)/title="scaled" xpts, ypts, val 3
 
 ! argument check
 QUERY/IGNORE $1"<usage: yes? GO trackplot plot_command xtrack ytrack values [scale] [baseline] [smooth]"

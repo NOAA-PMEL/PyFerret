@@ -795,12 +795,6 @@ Replacing definition of axis XAX2
  **ERROR: invalid command: PATTERN style is not available in PyFerret
 shade/pal=black/lev=(10,30,5,-3)/line/key/pattern=4patterns/nolabel sst
 Executed by script: *** GO bn_pattern.jnl ***
- **ERROR: command syntax: LANDI_MAPXMIN = ???
-DEFINE VARIABLE landi_mapxmin =
-Executed by script: *** GO land thick ***
- **ERROR: command syntax: LANDI_MAPXMAX = ???
-DEFINE VARIABLE landi_mapxmax =
-Executed by script: *** GO land thick ***
            *** NOTE: the use of "SET MODE METAFILE" is deprecated;
            *** NOTE: instead use "FRAME /FILE=... /FORMAT=..."
  **ERROR: invalid command: PATTERN style is not available in PyFerret
@@ -3783,6 +3777,7 @@ Replacing definition of axis AXI_COARSE
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
+           *** NOTE:    Dataset variables have Auxiliary or Curvilinear Coordinates. Examine "coordinates" attributes.
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -4447,6 +4442,7 @@ LIST/PREC=7 tempz6d_unmatch
 Executed by script: *** GO bn_auxiliary.jnl ***
 Replacing definition of axis ZAX
 *** Running ferret script: bn_plot_ribbon_gaploc.jnl
+           *** NOTE:    Dataset variables have Auxiliary or Curvilinear Coordinates. Examine "coordinates" attributes.
  **ERROR: command syntax: PLOT/VS/RIBBON/GAPLOC plot needs 4 arguments
 plot/vs/thick/line/sym=21/siz=.3/ribbon/gap xpts, 10*ypts, color
 Executed by script: *** GO bn_plot_ribbon_gaploc.jnl ***
@@ -5253,8 +5249,8 @@ Replacing definition of axis TAX
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
-syntax error, unexpected WORD_WORD, expecting SCAN_ATTR or SCAN_DATASET or SCAN_ERROR
-context: <!DOCTYPE^ HTML PUBLIC "-//IETF//DTD HTML 2.0//EN"><html><head><title>503 Service Temporarily Unavailable</title></head><body><h1>Service Temporarily Unavailable</h1><p>The server is temporarily unable to service yourrequest due to maintenance downtime or capacityproblems. Please try again later.</p></body></html>
+syntax error, unexpected $end, expecting SCAN_ATTR or SCAN_DATASET or SCAN_ERROR
+context: ^
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -6282,6 +6278,7 @@ ooooooooooooooooooooooooooooooooooooooooooo
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
+           *** NOTE:    Dataset variables have Auxiliary or Curvilinear Coordinates. Examine "coordinates" attributes.
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -6728,6 +6725,7 @@ Executed by script: *** GO bn_dsg_save_uvars.jnl ***
 load sst[d=1,g=vari[d=2]]
 Executed by script: *** GO bn_dsg_point_data.jnl ***
 *** Running ferret script: bn_dsg_show_grid.jnl
+           *** NOTE:    Dataset variables have Auxiliary or Curvilinear Coordinates. Examine "coordinates" attributes.
 *** Running ferret script: bn_dsg_no_data.jnl
 *** Running ferret script: bn_dsg_orth_labels.jnl
 *** Running ferret script: bn_dsg_fcn_of_instance.jnl
@@ -6839,6 +6837,7 @@ ooooooooooooooooooooooooooooooooooooooooooo
            *** NOTE: They will not be convertible:
            *** NOTE: Units on axis "j" are not recognized: 1
            *** NOTE: They will not be convertible:
+           *** NOTE:    Dataset variables have Auxiliary or Curvilinear Coordinates. Examine "coordinates" attributes.
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo
@@ -6964,6 +6963,7 @@ ooooooooooooooooooooooooooooooooooooooooooo
           station
  LISTing to file a.nc
  LISTing to file a.nc
+           *** NOTE:    Dataset variables have Auxiliary or Curvilinear Coordinates. Examine "coordinates" attributes.
            *** NOTE: Using Timeseriesprofile data as Profile. Converting variables to profile dimension:
           station
            *** NOTE: Using Timeseriesprofile data as Profile. Converting variables to profile dimension:
@@ -6976,6 +6976,7 @@ ooooooooooooooooooooooooooooooooooooooooooo
           trajectory
  LISTing to file a.nc
  LISTing to file a.nc
+           *** NOTE:    Dataset variables have Auxiliary or Curvilinear Coordinates. Examine "coordinates" attributes.
            *** NOTE: Using Trajectoryprofile data as Profile. Converting variables to profile dimension:
           trajectory
            *** NOTE: Using Trajectoryprofile data as Profile. Converting variables to profile dimension:
@@ -7043,6 +7044,9 @@ ooooooooooooooooooooooooooooooooooooooooooo
            *** NOTE: Unspecified or unsupported ordering of axes in variable Tinz_d: T axis is in dimension # 5
            *** NOTE: Check the dimensions: can USE/ORDER= be applied?
            *** NOTE: The default ordering will be used
+           *** NOTE:    Dataset variables have Auxiliary or Curvilinear Coordinates. Examine "coordinates" attributes.
+           *** NOTE:    Dataset variables have Auxiliary or Curvilinear Coordinates. Examine "coordinates" attributes.
+           *** NOTE:    Dataset variables have Auxiliary or Curvilinear Coordinates. Examine "coordinates" attributes.
  PERMANENT data cleared from memory
  TEMPORARY data cleared from memory
 ooooooooooooooooooooooooooooooooooooooooooo

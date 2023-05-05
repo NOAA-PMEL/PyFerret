@@ -70,6 +70,9 @@
 * V701  7/16 *kms* Initialize ds_name and ds_des_name to pdsetalloc*char_init2048 
 *                  instead of pdsetalloc*char_init1024
 * V720   4/17 *sh* add DSG variables 
+* V765   5/23 *acm* for PyFerret issue 135 New flag ds_has_aux_coords - data has
+*                  coordinates attribute with aux coords such as curvilinear coordinates.
+
 
 #include "tmap_dset.parm"
 #include "gt_lib.parm"
@@ -141,6 +144,7 @@
 	DATA	ds_regsteps		/pdsetalloc*.TRUE./
 	DATA	ds_accepts_remote	/pdsetalloc*.FALSE./
 	DATA	ds_hide			/pdsetalloc*.FALSE./
+	DATA	ds_has_aux_coords	/pdsetalloc*.FALSE./
 	DATA	ds_basic_axes		/max6axes*int4_init/
 	DATA	ds_time_axis		/pdsetalloc*int4_init/
 

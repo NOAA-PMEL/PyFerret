@@ -120,6 +120,7 @@
      .		ds_open(pdsetalloc),
      .		ds_accepts_remote(pdsetalloc), 
      .		ds_hide(pdsetalloc), 
+     .		ds_has_aux_coords(pdsetalloc), 
      .		ds_regsteps(pdsetalloc), ds_basic_axes(6,pdsetalloc),
      .		ds_time_axis(pdsetalloc),
 **************************************************************************
@@ -170,7 +171,7 @@
 	CHARACTER*2048	ds_des_name
 	INTEGER*4	ds_open,ds_basic_axes,ds_time_axis
 	LOGICAL		ds_regsteps, ds_var_scaleit, ds_its_aux_coord, is_mc, 
-     .			ds_accepts_remote, ds_hide
+     .			ds_accepts_remote, ds_hide, ds_has_aux_coords
 	REAL*8		ds_1step,ds_lastep,ds_delstep,
      .			ds_file_info_ptr
         REAL            ds_var_scale, ds_var_off

@@ -83,6 +83,9 @@
 *                  datasets as such until revised FMRC handling is implemented.
 * V745 *acm*  5/20  added mode_dsg to control turning off all DSG ops
 * V7.6 *acm* 6/20 Issue 1980: When possible open invalid DSG datasets anyway with NOTES.
+* V765 *acm* 5/23 PyFerret issue 135 Scan the variables for coordinate attribute that 
+*                  point to auxiliary variable ssuch as curvilinear coordinate variables. 
+*                  Report thie now and will also be reported in the "SHOW DATA" listings.
 
 * include files
 #include "gt_lib.parm"
@@ -200,6 +203,13 @@
 * set use counts and clean up temporary grids and axes
       CALL TM_GARB_COL_GRIDS (dset)
 
+*  Scan the variables for coordinate attribute that point to auxiliary variables
+*  such as curvilinear coordinate variables. Skip when its a dsg dataset; the coord
+*  variables are automatically taken into account
+
+      IF (.NOT. dsg_ragged(dset)) 
+     .		CALL CD_SCAN_CURVI_COORDS( dset, cdfid, dset, status )
+
 * summarize the special axes in the data set
       CALL CD_GET_TIME_AXIS( dset, t_dim, status )
       IF ( status .NE. merr_ok ) GOTO 5900  ! *sh* ok after TM_GARB_COL_GRIDS?
@@ -210,6 +220,7 @@
          IF ( status .NE. merr_ok ) GOTO 5900! *sh* ok after TM_GARB_COL_GRIDS?
       ENDIF
 
+* 
 ! for multiple files ... maybe
 ! *kob* 11/97 - close cdf files which are a part of a multi-file netcdf set
 !* close the netCDF file

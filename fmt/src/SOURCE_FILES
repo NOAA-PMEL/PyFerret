@@ -107,6 +107,7 @@ cd_rename_var.F\
 cd_replace_attr.F\
 cd_replace_attr_dp.F\
 cd_scan_aux_coords.F\
+cd_scan_curvi_coords.F\
 cd_scan_vars.F\
 cd_set_att_axdir.F\
 cd_set_att_flag.F\

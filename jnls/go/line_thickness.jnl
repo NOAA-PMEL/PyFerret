@@ -9,7 +9,7 @@
 
 ! plot a sample of each /LINE= type
 plot/line=1/vlimits=1:18:1/hlimits=0:20:1/nolab/set i[i=1:20]*0+1
-ppl title .15 @SRLine color and thickness for qualifier /LINE= and command PPL PEN 1,n
+ppl title .15 @SRLine color and thickness for qualifier /LINE= 
 ppl axset 0,0,1,0;ppl yfor (I3); ppl axlint 1,1; ppl tics 0,0
 ppl plot
 repeat/j=2:18 plot/line=`j`/over/nolab i[i=1:20]*0+`j`

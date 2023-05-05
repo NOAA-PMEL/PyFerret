@@ -21,8 +21,8 @@
 ! Example - use some data from a dataset as the list of heights to plot
 !	yes? SET DATA coads_climatology
 !	yes? SET REGION/L=1/Y=40S:40N/X=180w
-!	yes? GO  bar_chart2 PLOT/LINE=1 sst Y
-!	yes? GO  bar_chart2 PLOT/LINE=2 sst[x=90w] Y overlay
+!	yes? GO  bar_chart2 PLOT/LINE/COLOR=black sst Y
+!	yes? GO  bar_chart2 PLOT/LINE/COLOR=red sst[x=90w] Y overlay
 
 ! Note: To use a T axis requires CANCEL MODE CALENDAR
 

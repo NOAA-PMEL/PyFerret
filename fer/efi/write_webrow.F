@@ -3,7 +3,6 @@
 *
 * Ansley Manke
 * April 2009
-* V68  *acm* 1/12  ifdef double_p for double-precision ferret.
 *
 * This function writes a special webrowset file for LAS
 *
@@ -138,27 +137,21 @@
       INCLUDE 'EF_Util.cmn'
       INCLUDE 'EF_mem_subsc.cmn'
 
-      INTEGER strdf
-#ifdef double_p
-      PARAMETER (strdf = 1)
-#else
-      PARAMETER (strdf = 2)
-#endif
 
       INTEGER id
 
-      REAL arg_1(strdf, mem1lox:mem1hix, mem1loy:mem1hiy,
-     .                  mem1loz:mem1hiz, mem1lot:mem1hit,
-     .                  mem1loe:mem1hie, mem1lof:mem1hif)
-      REAL arg_2(strdf, mem2lox:mem2hix, mem2loy:mem2hiy,
-     .                  mem2loz:mem2hiz, mem2lot:mem2hit,
-     .                  mem2loe:mem2hie, mem2lof:mem2hif)
-      REAL arg_3(       mem3lox:mem3hix, mem3loy:mem3hiy,
-     .                  mem3loz:mem3hiz, mem3lot:mem3hit,
-     .                  mem3loe:mem3hie, mem3lof:mem3hif)
-      REAL arg_4(strdf, mem4lox:mem4hix, mem4loy:mem4hiy,
-     .                  mem4loz:mem4hiz, mem4lot:mem4hit,
-     .                  mem4loe:mem4hie, mem4lof:mem4hif)
+      REAL arg_1(mem1lox:mem1hix, mem1loy:mem1hiy,
+     .           mem1loz:mem1hiz, mem1lot:mem1hit,
+     .           mem1loe:mem1hie, mem1lof:mem1hif)
+      REAL arg_2(mem2lox:mem2hix, mem2loy:mem2hiy,
+     .           mem2loz:mem2hiz, mem2lot:mem2hit,
+     .           mem2loe:mem2hie, mem2lof:mem2hif)
+      REAL arg_3(mem3lox:mem3hix, mem3loy:mem3hiy,
+     .           mem3loz:mem3hiz, mem3lot:mem3hit,
+     .           mem3loe:mem3hie, mem3lof:mem3hif)
+      REAL arg_4(mem4lox:mem4hix, mem4loy:mem4hiy,
+     .           mem4loz:mem4hiz, mem4lot:mem4hit,
+     .           mem4loe:mem4hie, mem4lof:mem4hif)
 
       REAL result(memreslox:memreshix, memresloy:memreshiy, 
      .            memresloz:memreshiz, memreslot:memreshit,

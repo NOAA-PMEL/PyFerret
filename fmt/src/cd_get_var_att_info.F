@@ -60,12 +60,7 @@ c        include 'netcdf.inc'
      .        i, dset_num, alen, flen
 
       PARAMETER (flen=128)      ! size of attribute name string
-
-#ifdef sun
-      BYTE      fhol(flen)      ! c-type Hollerith string buffer
-#else
       INTEGER*1 fhol(flen)      ! c-type Hollerith string buffer
-#endif 
 
       dset_num = dset
       IF (dset_num .LT. -2) dset_num = -2

@@ -125,16 +125,10 @@
 * Function is intended only for variables in the x direction
 
 * Single precision Ferret: string arg and result needed to be twice the length.
-      INTEGER strdf
-#ifdef double_p
-      PARAMETER (strdf = 1)
-#else
-      PARAMETER (strdf = 2)
-#endif
 
-      REAL arg_1(strdf,mem1lox:mem1hix)
+      REAL arg_1(mem1lox:mem1hix)
       REAL arg_2(mem2lox:mem2hix)
-      REAL result(strdf,memreslox:memreshix)
+      REAL result(memreslox:memreshix)
 
 * After initialization, the 'res_' arrays contain indexing information 
 * for the result axes.  The 'arg_' arrays will contain the indexing 
@@ -166,7 +160,7 @@
       
          IF (arg_2(i2) .NE. bad_flag(ARG2)) THEN  ! HELLO HELLO
             isample = INT(arg_2(i2))
-	    CALL EF_PUT_STRING_PTR(arg_1(1,isample), result(1,i) )
+	    CALL EF_PUT_STRING_PTR(arg_1(isample), result(i) )
 
 	 ENDIF
 	 i2 = i2 + arg_incr(X_AXIS,ARG2)

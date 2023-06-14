@@ -3,6 +3,7 @@
 *
 * Ansley Manke
 * March 2005
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 *
 * This function finds the indices of the bounding box for taking 
 * a subset of a variable defined on a curvilinear grid.
@@ -241,19 +242,24 @@ c      RETURN
       xmax_field = -1.* big
       ymin_field = big
       ymax_field = -1.* big
-      DO 50 n = arg_lo_ss(F_AXIS,ARG1), arg_hi_ss(F_AXIS,ARG1)
-      DO 50 m = arg_lo_ss(E_AXIS,ARG1), arg_hi_ss(E_AXIS,ARG1)
-      DO 50 l = arg_lo_ss(T_AXIS,ARG1), arg_hi_ss(T_AXIS,ARG1)
-      DO 50 k = arg_lo_ss(Z_AXIS,ARG1), arg_hi_ss(Z_AXIS,ARG1)
-      DO 50 j = arg_lo_ss(Y_AXIS,ARG1), arg_hi_ss(Y_AXIS,ARG1)
-      DO 50 i = arg_lo_ss(X_AXIS,ARG1), arg_hi_ss(X_AXIS,ARG1)
+      DO n = arg_lo_ss(F_AXIS,ARG1), arg_hi_ss(F_AXIS,ARG1)
+      DO m = arg_lo_ss(E_AXIS,ARG1), arg_hi_ss(E_AXIS,ARG1)
+      DO l = arg_lo_ss(T_AXIS,ARG1), arg_hi_ss(T_AXIS,ARG1)
+      DO k = arg_lo_ss(Z_AXIS,ARG1), arg_hi_ss(Z_AXIS,ARG1)
+      DO j = arg_lo_ss(Y_AXIS,ARG1), arg_hi_ss(Y_AXIS,ARG1)
+      DO i = arg_lo_ss(X_AXIS,ARG1), arg_hi_ss(X_AXIS,ARG1)
       
          xmin_field = MIN(xmin_field, arg_1(i,j,k,l,m,n))
          xmax_field = MAX(xmax_field, arg_1(i,j,k,l,m,n))
          ymin_field = MIN(ymin_field, arg_2(i,j,k,l,m,n))
          ymax_field = MAX(ymax_field, arg_2(i,j,k,l,m,n))
 
- 50   CONTINUE
+      ENDDO
+      ENDDO
+      ENDDO
+      ENDDO
+      ENDDO
+      ENDDO
 
       j = res_lo_ss(Y_AXIS)
       k = res_lo_ss(Z_AXIS)
@@ -352,12 +358,12 @@ c      RETURN
       xmax = -1.* big
       found_range = .FALSE.
 
-      DO 100 n = arg_lo_ss(F_AXIS,ARG1), arg_hi_ss(F_AXIS,ARG1)
-      DO 100 m = arg_lo_ss(E_AXIS,ARG1), arg_hi_ss(E_AXIS,ARG1)
-      DO 100 l = arg_lo_ss(T_AXIS,ARG1), arg_hi_ss(T_AXIS,ARG1)
-      DO 100 k = arg_lo_ss(Z_AXIS,ARG1), arg_hi_ss(Z_AXIS,ARG1)
-      DO 100 j = arg_lo_ss(Y_AXIS,ARG1), arg_hi_ss(Y_AXIS,ARG1)
-      DO 100 i = arg_lo_ss(X_AXIS,ARG1), arg_hi_ss(X_AXIS,ARG1)
+      DO n = arg_lo_ss(F_AXIS,ARG1), arg_hi_ss(F_AXIS,ARG1)
+      DO m = arg_lo_ss(E_AXIS,ARG1), arg_hi_ss(E_AXIS,ARG1)
+      DO l = arg_lo_ss(T_AXIS,ARG1), arg_hi_ss(T_AXIS,ARG1)
+      DO k = arg_lo_ss(Z_AXIS,ARG1), arg_hi_ss(Z_AXIS,ARG1)
+      DO j = arg_lo_ss(Y_AXIS,ARG1), arg_hi_ss(Y_AXIS,ARG1)
+      DO i = arg_lo_ss(X_AXIS,ARG1), arg_hi_ss(X_AXIS,ARG1)
 
          xx = arg_1(i,j,k,l,m,n)
          yy = arg_2(i,j,k,l,m,n)
@@ -375,7 +381,12 @@ c      RETURN
             xmax = MAX(xmin, xx)
          ENDIF
 
- 100  CONTINUE
+      ENDDO
+      ENDDO
+      ENDDO
+      ENDDO
+      ENDDO
+      ENDDO
 
 * If no range found, is the range strictly between two adjacent points
 * in either direction?
@@ -389,12 +400,12 @@ c      RETURN
          jlo = arg_hi_ss(Y_AXIS, ARG2)
          jhi = arg_lo_ss(y_AXIS, ARG2)
 
-         DO 200 n = arg_lo_ss(F_AXIS,ARG1), arg_hi_ss(F_AXIS,ARG1)
-         DO 200 m = arg_lo_ss(E_AXIS,ARG1), arg_hi_ss(E_AXIS,ARG1)
-         DO 200 l = arg_lo_ss(T_AXIS,ARG1), arg_hi_ss(T_AXIS,ARG1)
-         DO 200 k = arg_lo_ss(Z_AXIS,ARG1), arg_hi_ss(Z_AXIS,ARG1)
-         DO 200 j = arg_lo_ss(Y_AXIS,ARG1), arg_hi_ss(Y_AXIS,ARG1)-1
-         DO 200 i = arg_lo_ss(X_AXIS,ARG1), arg_hi_ss(X_AXIS,ARG1)-1
+         DO n = arg_lo_ss(F_AXIS,ARG1), arg_hi_ss(F_AXIS,ARG1)
+         DO m = arg_lo_ss(E_AXIS,ARG1), arg_hi_ss(E_AXIS,ARG1)
+         DO l = arg_lo_ss(T_AXIS,ARG1), arg_hi_ss(T_AXIS,ARG1)
+         DO k = arg_lo_ss(Z_AXIS,ARG1), arg_hi_ss(Z_AXIS,ARG1)
+         DO j = arg_lo_ss(Y_AXIS,ARG1), arg_hi_ss(Y_AXIS,ARG1)-1
+         DO i = arg_lo_ss(X_AXIS,ARG1), arg_hi_ss(X_AXIS,ARG1)-1
 
             xx = arg_1(i,j,k,l,m,n)
             xxp = arg_1(i+1,j,k,l,m,n)
@@ -428,7 +439,13 @@ c      RETURN
                jhi = MAX(j+1, jhi)
             ENDIF
 
- 200     CONTINUE
+         ENDDO
+         ENDDO
+         ENDDO
+         ENDDO
+         ENDDO
+         ENDDO
+
       ENDIF
 
       IF (xmodulo) THEN
@@ -441,7 +458,7 @@ c      RETURN
          IF (xmin .GT. xrange_lo) THEN
             nrep = NINT((xmin-xrange_lo)/360)
             xadd = 0.
-            DO 380 irep = 1, nrep
+            DO irep = 1, nrep
                xadd = xadd - 360.
 
 * Previous loop found no overlap of x coordinates and desired output range.
@@ -457,12 +474,12 @@ c      RETURN
                jlo = arg_hi_ss(Y_AXIS, ARG2)
                jhi = arg_lo_ss(y_AXIS, ARG2)
 
-               DO 320 n = arg_lo_ss(F_AXIS,ARG1), arg_hi_ss(F_AXIS,ARG1)
-               DO 320 m = arg_lo_ss(E_AXIS,ARG1), arg_hi_ss(E_AXIS,ARG1)
-               DO 320 l = arg_lo_ss(T_AXIS,ARG1), arg_hi_ss(T_AXIS,ARG1)
-               DO 320 k = arg_lo_ss(Z_AXIS,ARG1), arg_hi_ss(Z_AXIS,ARG1)
-               DO 320 j = arg_lo_ss(Y_AXIS,ARG1), arg_hi_ss(Y_AXIS,ARG1)
-               DO 320 i = arg_lo_ss(X_AXIS,ARG1), arg_hi_ss(X_AXIS,ARG1)
+               DO n = arg_lo_ss(F_AXIS,ARG1), arg_hi_ss(F_AXIS,ARG1)
+               DO m = arg_lo_ss(E_AXIS,ARG1), arg_hi_ss(E_AXIS,ARG1)
+               DO l = arg_lo_ss(T_AXIS,ARG1), arg_hi_ss(T_AXIS,ARG1)
+               DO k = arg_lo_ss(Z_AXIS,ARG1), arg_hi_ss(Z_AXIS,ARG1)
+               DO j = arg_lo_ss(Y_AXIS,ARG1), arg_hi_ss(Y_AXIS,ARG1)
+               DO i = arg_lo_ss(X_AXIS,ARG1), arg_hi_ss(X_AXIS,ARG1)
 
                   xx = arg_1(i,j,k,l,m,n) + xadd
                   yy = arg_2(i,j,k,l,m,n)
@@ -478,7 +495,12 @@ c      RETURN
                      xmax = MAX(xmin, xx)
                   ENDIF
 
- 320           CONTINUE
+               ENDDO
+               ENDDO
+               ENDDO
+               ENDDO
+               ENDDO
+               ENDDO
 
                IF (.NOT. found_range) THEN
                
@@ -487,17 +509,17 @@ c      RETURN
                   jlo = arg_hi_ss(Y_AXIS, ARG2)
                   jhi = arg_lo_ss(y_AXIS, ARG2)
 
-                  DO 340 n = arg_lo_ss(F_AXIS,ARG1), 
+                  DO n = arg_lo_ss(F_AXIS,ARG1), 
      .                       arg_hi_ss(F_AXIS,ARG1)
-                  DO 340 m = arg_lo_ss(E_AXIS,ARG1), 
+                  DO m = arg_lo_ss(E_AXIS,ARG1), 
      .                       arg_hi_ss(E_AXIS,ARG1)
-                  DO 340 l = arg_lo_ss(T_AXIS,ARG1), 
+                  DO l = arg_lo_ss(T_AXIS,ARG1), 
      .                       arg_hi_ss(T_AXIS,ARG1)
-                  DO 340 k = arg_lo_ss(Z_AXIS,ARG1), 
+                  DO k = arg_lo_ss(Z_AXIS,ARG1), 
      .                       arg_hi_ss(Z_AXIS,ARG1)
-                  DO 340 j = arg_lo_ss(Y_AXIS,ARG1), 
+                  DO j = arg_lo_ss(Y_AXIS,ARG1), 
      .                       arg_hi_ss(Y_AXIS,ARG1)
-                  DO 340 i = arg_lo_ss(X_AXIS,ARG1), 
+                  DO i = arg_lo_ss(X_AXIS,ARG1), 
      .                       arg_hi_ss(X_AXIS,ARG1)-1
 
                      xx = arg_1(i,j,k,l,m,n) + xadd
@@ -517,13 +539,18 @@ c      RETURN
                         xmax = MAX(xmin, xxp)
                      ENDIF
 
- 340              CONTINUE
+                  ENDDO
+                  ENDDO
+                  ENDDO
+                  ENDDO
+                  ENDDO
+                  ENDDO
                ENDIF
 
                IF (xmin .EQ. big) xmin = xmin_field + xadd
                IF (xmax .EQ. -1.*big) xmax = xmax_field + xadd
 
- 380        CONTINUE
+	    ENDDO ! irep = 1, nrep
 
 * If no range found, is the range strictly between two adjacent points
 * in either direction?
@@ -539,12 +566,12 @@ c      RETURN
                jlo = arg_hi_ss(Y_AXIS, ARG2)
                jhi = arg_lo_ss(y_AXIS, ARG2)
 
-               DO 400 n=arg_lo_ss(F_AXIS,ARG1),arg_hi_ss(F_AXIS,ARG1)
-               DO 400 m=arg_lo_ss(E_AXIS,ARG1),arg_hi_ss(E_AXIS,ARG1)
-               DO 400 l=arg_lo_ss(T_AXIS,ARG1),arg_hi_ss(T_AXIS,ARG1)
-               DO 400 k=arg_lo_ss(Z_AXIS,ARG1),arg_hi_ss(Z_AXIS,ARG1)
-               DO 400 j=arg_lo_ss(Y_AXIS,ARG1),arg_hi_ss(Y_AXIS,ARG1)-1
-               DO 400 i=arg_lo_ss(X_AXIS,ARG1),arg_hi_ss(X_AXIS,ARG1)-1
+               DO n=arg_lo_ss(F_AXIS,ARG1),arg_hi_ss(F_AXIS,ARG1)
+               DO m=arg_lo_ss(E_AXIS,ARG1),arg_hi_ss(E_AXIS,ARG1)
+               DO l=arg_lo_ss(T_AXIS,ARG1),arg_hi_ss(T_AXIS,ARG1)
+               DO k=arg_lo_ss(Z_AXIS,ARG1),arg_hi_ss(Z_AXIS,ARG1)
+               DO j=arg_lo_ss(Y_AXIS,ARG1),arg_hi_ss(Y_AXIS,ARG1)-1
+               DO i=arg_lo_ss(X_AXIS,ARG1),arg_hi_ss(X_AXIS,ARG1)-1
 
                   xx = arg_1(i,j,k,l,m,n)+xadd
                   xxp = arg_1(i+1,j,k,l,m,n)+xadd
@@ -578,7 +605,12 @@ c      RETURN
                      ihi = MAX(i+1, ihi)
                   ENDIF
 
- 400           CONTINUE
+               ENDDO
+               ENDDO
+               ENDDO
+               ENDDO
+               ENDDO
+               ENDDO
             ENDIF
 
          ENDIF
@@ -586,7 +618,7 @@ c      RETURN
          IF (xmax .LT. xrange_hi) THEN
             nrep = NINT((xrange_hi-xmax)/360.)
             xadd = 0.
-               DO 580 irep = 1, nrep
+               DO irep = 1, nrep
                xadd = xadd + 360.
 
 * Previous loop found no overlap of x coordinates and desired output range.
@@ -602,12 +634,12 @@ c      RETURN
                jlo = arg_hi_ss(Y_AXIS, ARG2)
                jhi = arg_lo_ss(y_AXIS, ARG2)
 
-               DO 520 n = arg_lo_ss(F_AXIS,ARG1), arg_hi_ss(F_AXIS,ARG1)
-               DO 520 m = arg_lo_ss(E_AXIS,ARG1), arg_hi_ss(E_AXIS,ARG1)
-               DO 520 l = arg_lo_ss(T_AXIS,ARG1), arg_hi_ss(T_AXIS,ARG1)
-               DO 520 k = arg_lo_ss(Z_AXIS,ARG1), arg_hi_ss(Z_AXIS,ARG1)
-               DO 520 j = arg_lo_ss(Y_AXIS,ARG1), arg_hi_ss(Y_AXIS,ARG1)
-               DO 520 i = arg_lo_ss(X_AXIS,ARG1), arg_hi_ss(X_AXIS,ARG1)
+               DO n = arg_lo_ss(F_AXIS,ARG1), arg_hi_ss(F_AXIS,ARG1)
+               DO m = arg_lo_ss(E_AXIS,ARG1), arg_hi_ss(E_AXIS,ARG1)
+               DO l = arg_lo_ss(T_AXIS,ARG1), arg_hi_ss(T_AXIS,ARG1)
+               DO k = arg_lo_ss(Z_AXIS,ARG1), arg_hi_ss(Z_AXIS,ARG1)
+               DO j = arg_lo_ss(Y_AXIS,ARG1), arg_hi_ss(Y_AXIS,ARG1)
+               DO i = arg_lo_ss(X_AXIS,ARG1), arg_hi_ss(X_AXIS,ARG1)
 
                   xx = arg_1(i,j,k,l,m,n) + xadd
                   yy = arg_2(i,j,k,l,m,n)
@@ -623,7 +655,12 @@ c      RETURN
                      xmax = MAX(xmin, xx)
                   ENDIF
 
- 520           CONTINUE
+               ENDDO
+               ENDDO
+               ENDDO
+               ENDDO
+               ENDDO
+               ENDDO
  
                IF (.NOT. found_range) THEN
                
@@ -632,17 +669,17 @@ c      RETURN
                   jlo = arg_hi_ss(Y_AXIS, ARG2)
                   jhi = arg_lo_ss(y_AXIS, ARG2)
 
-                  DO 540 n = arg_lo_ss(F_AXIS,ARG1), 
+                  DO n = arg_lo_ss(F_AXIS,ARG1), 
      .                       arg_hi_ss(F_AXIS,ARG1)
-                  DO 540 m = arg_lo_ss(E_AXIS,ARG1), 
+                  DO m = arg_lo_ss(E_AXIS,ARG1), 
      .                       arg_hi_ss(E_AXIS,ARG1)
-                  DO 540 l = arg_lo_ss(T_AXIS,ARG1), 
+                  DO l = arg_lo_ss(T_AXIS,ARG1), 
      .                       arg_hi_ss(T_AXIS,ARG1)
-                  DO 540 k = arg_lo_ss(Z_AXIS,ARG1), 
+                  DO k = arg_lo_ss(Z_AXIS,ARG1), 
      .                       arg_hi_ss(Z_AXIS,ARG1)
-                  DO 540 j = arg_lo_ss(Y_AXIS,ARG1), 
+                  DO j = arg_lo_ss(Y_AXIS,ARG1), 
      .                       arg_hi_ss(Y_AXIS,ARG1)
-                  DO 540 i = arg_lo_ss(X_AXIS,ARG1), 
+                  DO i = arg_lo_ss(X_AXIS,ARG1), 
      .                       arg_hi_ss(X_AXIS,ARG1)-1
 
                      xx = arg_1(i,j,k,l,m,n) + xadd
@@ -661,13 +698,19 @@ c      RETURN
                         xmax = MAX(xmin, xxp)
                      ENDIF
 
- 540              CONTINUE
+                  ENDDO
+                  ENDDO
+                  ENDDO
+                  ENDDO
+                  ENDDO
+                  ENDDO
+
                ENDIF
  
                IF (xmin .EQ. big) xmin = xmin_field + xadd
                IF (xmax .EQ. -1.*big) xmax = xmax_field + xadd
 
- 580        CONTINUE
+	    ENDDO  ! irep = 1, nrep
 
 
 * If no range found, is the range strictly between two adjacent points
@@ -684,12 +727,12 @@ c      RETURN
                jlo = arg_hi_ss(Y_AXIS, ARG2)
                jhi = arg_lo_ss(y_AXIS, ARG2)
 
-               DO 600 n =arg_lo_ss(F_AXIS,ARG1),arg_hi_ss(F_AXIS,ARG1)
-               DO 600 m =arg_lo_ss(E_AXIS,ARG1),arg_hi_ss(E_AXIS,ARG1)
-               DO 600 l =arg_lo_ss(T_AXIS,ARG1),arg_hi_ss(T_AXIS,ARG1)
-               DO 600 k =arg_lo_ss(Z_AXIS,ARG1),arg_hi_ss(Z_AXIS,ARG1)
-               DO 600 j =arg_lo_ss(Y_AXIS,ARG1),arg_hi_ss(Y_AXIS,ARG1)-1
-               DO 600 i =arg_lo_ss(X_AXIS,ARG1),arg_hi_ss(X_AXIS,ARG1)-1
+               DO n =arg_lo_ss(F_AXIS,ARG1),arg_hi_ss(F_AXIS,ARG1)
+               DO m =arg_lo_ss(E_AXIS,ARG1),arg_hi_ss(E_AXIS,ARG1)
+               DO l =arg_lo_ss(T_AXIS,ARG1),arg_hi_ss(T_AXIS,ARG1)
+               DO k =arg_lo_ss(Z_AXIS,ARG1),arg_hi_ss(Z_AXIS,ARG1)
+               DO j =arg_lo_ss(Y_AXIS,ARG1),arg_hi_ss(Y_AXIS,ARG1)-1
+               DO i =arg_lo_ss(X_AXIS,ARG1),arg_hi_ss(X_AXIS,ARG1)-1
 
                   xx = arg_1(i,j,k,l,m,n)+xadd
                   xxp = arg_1(i+1,j,k,l,m,n)+xadd
@@ -723,7 +766,13 @@ c      RETURN
                      ihi = MAX(i+1, ihi)
                   ENDIF
 
- 600           CONTINUE
+               ENDDO
+               ENDDO
+               ENDDO
+               ENDDO
+               ENDDO
+               ENDDO
+
             ENDIF
 
 
@@ -743,9 +792,9 @@ c      RETURN
       m = res_lo_ss(E_AXIS)
       n = res_lo_ss(F_AXIS)
 
-      DO 700 i = res_lo_ss(X_AXIS), res_hi_ss(X_AXIS)
+      DO i = res_lo_ss(X_AXIS), res_hi_ss(X_AXIS)
          result(i,j,k,l,m,n) = bad_flag_result
- 700  CONTINUE
+      ENDDO
 
       IF (found_range) THEN
          result(1,j,k,l,m,n) = MAX(ilo-2, arg_lo_ss(X_AXIS, ARG1) )

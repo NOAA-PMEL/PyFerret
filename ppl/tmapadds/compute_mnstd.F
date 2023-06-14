@@ -134,11 +134,8 @@ c Compute data mean.
 	   ENDIF
  100    CONTINUE
         IF (n .EQ. 0) GOTO 5000
-#ifdef double_p
+
         zmean = sum/DBLE(n)
-#else
-        zmean = sum/FLOAT(n)
-#endif
 
         IF (need_std) THEN
 
@@ -196,11 +193,7 @@ c Recompute data mean.
 	   IF (n2 .EQ. 0) GOTO 5000
 	   IF (n2 .EQ. n) GOTO 4900
 
-#ifdef double_p
 	   zmean2 = sum/DBLE(n2)
-#else
-	   zmean2 = sum/FLOAT(n2)
-#endif
 	   n2 = 0
 	   xmean = 0.D0
 	   sum2 = 0.D0
@@ -248,11 +241,7 @@ c Once more.
 	      ENDIF
   300      CONTINUE
            IF (n2 .EQ. 0) GOTO 5000
-#ifdef double_p
            zmean2 = sum/DBLE(n2)
-#else
-           zmean2 = sum/FLOAT(n2)
-#endif
 	   n2 = 0
 	   xmean = 0.D0
 	   sum2 = 0.D0

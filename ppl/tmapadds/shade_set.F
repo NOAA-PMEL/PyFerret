@@ -392,23 +392,6 @@
 	   there = .true.
 	   return
 	endif
-************** Modified to use tm_inq_path *jd* 3.1.93 ***************
-*#ifdef unix
-*        call getenv ('SPECTRA',specdir)
-*        speclen = lnblk (specdir,2048)
-*	sfile = specdir(:speclen)//'/'//str(beg+9:end)//'.spk'
-*	inquire (file=sfile,exist=there)
-*	if (there) goto 5
-
-*	sfile = str(beg+9:end)//'.spk'
-*	inquire (file=sfile,exist=there)
-*	if (.not.there) goto 100
-*#else
-*	sfile = 'spectra:'//str(beg+9:end)//'.spk'
-*	inquire (file=sfile,exist=there)
-*	if (.not.there) goto 100
-*#endif
-***************** end mod 3.1.93 **************************************
 
 	sfile = tm_inq_path (str(beg+9:end),'FER_PALETTE','.spk',
      .	.false.,status)
@@ -417,15 +400,8 @@
 	there = .true.
 
 *	OPEN THE FILE
-#ifdef atc_gks
- 5      open (70,file=sfile,status='old',err=100)
-#else
-#ifdef NO_OPEN_READONLY
- 5      open (70,file=sfile,status='old',err=100)
-#else
- 5      open (70,file=sfile,readonly,status='old',err=100)
-#endif
-#endif
+
+        open (70,file=sfile,status='old',err=100)
 
 *  CHECK IF NUMBER OF LEVELS IS LARGER THAN SPEC_SIZE, clr_ct=0
 
@@ -539,35 +515,14 @@
 	   goto 101
 	end if
 
-#ifdef unix
+
 	sfile = str(beg+5:end)//'.spk'
 
 *	OPEN THE FILE
 
-#   ifdef atc_gks
 	open (70,file=sfile,status='unknown',form='formatted',
      .	err=100)
-#   else
-#ifdef NO_OPEN_CARRIAGECONTROL
-	open (70,file=sfile,status='unknown',form='formatted',
-     .	err=100)
-#else
-	open (70,file=sfile,status='unknown',form='formatted',
-     .	carriagecontrol='list',err=100)
-#endif
-#   endif
-#else
-	sfile = 'fer_palette:'//str(beg+5:end)//'.spk'
 
-*	OPEN THE FILE
-#ifdef NO_OPEN_CARRIAGECONTROL
-	open (70,file=sfile,status='new',form='formatted',
-     .	err=100)
-#else
-	open (70,file=sfile,status='new',form='formatted',
-     .	carriagecontrol='list',err=100)
-#endif
-#endif
 *	WRITE OUT THE SPECTRUM
         if (rgb_mapping .eq. percent) then
            write(70,'(a/" "/"! SetPt    Red  Green   Blue  Opacity")') 

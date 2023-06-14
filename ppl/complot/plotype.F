@@ -38,6 +38,8 @@
 *	Modified 3.15.89 J Davison JISAO/PMEL/TMAP
 *	For GKS plots (pltype = 3 or 4) captures decision to write to
 *	GKS metafile, and sets up GKS as required.
+*  11/2022 *acm* Code cleanup: remove code having to do with Tektronix
+*		 and other terminals. In PyFerret pltype is 3
 *
 C**
 C**
@@ -73,51 +75,26 @@ C
 C
 	integer	icode
 
-#ifdef unix
 	include 'pltcom_dat.decl'
 	include 'PLTCOM.DAT'
 	include 'cmrdl_inc.decl'
 	include 'CMRDL.INC'
-#else
-	INCLUDE 'TMAP_PPLV11INC:PLTCOM_DAT.DECL'
-	INCLUDE 'PPLV11INC:PLTCOM.DAT'
-	INCLUDE 'TMAP_PPLV11INC:CMRDL_INC.DECL'
-	INCLUDE 'PPLV11INC:CMRDL.INC'
-#endif
 
 	IF(PLTFLG)THEN
 	    PEN=.FALSE.
-	    IF(PTYPE.LT.0)THEN
-		A=0.
-		B=0.
-		CALL HPABMV
-		CALL ZBUFFT('SP0;',4)
-		OLDHTA=0
-		CALL HFLUSH
-	    ELSE IF(PTYPE.EQ.0.OR.PTYPE.EQ.2.OR.PTYPE.EQ.4)THEN
-		CALL ZABMV
-		CALL BINFSH
-	    ENDIF
 	    PLTFLG=.FALSE.
 	ENDIF
       PTYPE = ICODE
-C
-C     CHECK FOR A LEGAL PLT TYPE.
-C
-      IF(IABS(PTYPE) .GT. 4)PTYPE = 0
 
 *     DETERMINE IF METAFILE WILL BE USED IN GKS, OPEN GKS IF NOT OPEN
-	if ((ptype .eq. 3 .or. ptype .eq. 4) .and. icom(1:6) .ne. 'CLSPLT') 
+	if ((ptype .eq. 3) .and. icom(1:6) .ne. 'CLSPLT') 
      .		call set_gks_metafile
-C
-C
+
 C     REINITIALIZE THE TEKTERMINAL TYPE IN CASE THIS IS NOT THE
 C     FIRST TIME THIS SUBROUTINE HAS BEEN CALLED.
-C
+
       CALL TKTYPE(4010)
-C
-C     INTIALIZE THE PRINTRONIX RASTER BUFFER IF NEEDED.
-C
+
       RETURN
 C
       END

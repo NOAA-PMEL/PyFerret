@@ -56,6 +56,7 @@
 * V695 *acm*  2/15 For Forecast aggregations, call the ds_type 'FCT'
 * V698 *acm* 1/16 Allow for Epic CDF files, ds_type = 'ECDF'
 * V7.6 *acm* 1/20 ds_time_axis initialized with int4_init
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 
         IMPLICIT NONE
 * calling argument declarations:
@@ -74,8 +75,9 @@
 	int4_init = -7777
 
 * insert default assumptions
-	DO 100 idim = 1, nferdims
- 100	ds_ax_speed( idim, dset ) = idim
+	DO idim = 1, nferdims
+	   ds_ax_speed( idim, dset ) = idim
+ 	ENDDO
 
 * netCDF
 	IF( ds_type(dset) .EQ. 'CDF' .OR. 
@@ -85,23 +87,24 @@
 * ... "record" axis is slowest (stored in ds_time_axis)
 * ... locate it in a grid to see what role it plays
            IF (ds_time_axis(dset).EQ.unspecified_int4 .OR. ds_time_axis(dset).EQ.int4_init) RETURN
-           DO 410 ivar = 1, maxvars
-              IF ( ds_var_setnum(ivar) .NE. dset ) GOTO 410
+           DO ivar = 1, maxvars
+              IF ( ds_var_setnum(ivar) .NE. dset ) CYCLE
               igrid = ds_grid_number(ivar)
-              DO 400 idim = 1, nferdims
- 400          IF (grid_line(idim,igrid).EQ.ds_time_axis(dset)) GOTO 450
- 410       CONTINUE
+              DO idim = 1, nferdims
+                 IF (grid_line(idim,igrid).EQ.ds_time_axis(dset)) GOTO 450
+	      ENDDO
+	   ENDDO
            RETURN
 
 * ... we found the record axis in a grid
  450       slowdim = idim
            ds_ax_speed(6,dset) = slowdim
            nexdim = 1
-	   DO 460 idim = 1, nferdims-1
+	   DO idim = 1, nferdims-1
               IF ( idim .EQ. slowdim ) nexdim = nexdim + 1
               ds_ax_speed(idim,dset) = nexdim
               nexdim = nexdim + 1
- 460       CONTINUE
+	   ENDDO
 
 	ENDIF
 

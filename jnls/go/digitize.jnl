@@ -39,6 +39,17 @@
 !	yes? GO digitize SST[L=1] interpolate brief 	    ! brief format
 !	yes? GO digitize SST[L=1] interpolate brief out.dat ! output to file
 
+
+
+IF ($program_name"0|PyFerret>1|*>0") THEN
+   say 
+   say This capability was available only in classic Ferret, not in PyFerret
+   say Exiting from digitize.jnl
+   say 
+   exit/script
+endif
+
+
 ! save the input expressions into simple variable definitions
 LET/QUIET DGTexpr = $1%<usage: GO digitize expression ["interpolate" "nearest" or n] ["full" "brief" or "quiet"] [out_filename]%
 

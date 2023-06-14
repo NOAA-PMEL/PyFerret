@@ -178,14 +178,6 @@
 
 * ... house-keeping
 	   has_new_mouse = .FALSE.		! RESET !!
-	   IF (jnl_out) THEN
-#ifdef AIX_XLF
-              CALL FLUSH(jrnl_lun)
-#endif
-#ifdef solaris
-              CALL FLUSH(jrnl_lun)
-#endif
-	   ENDIF
 	ENDIF
 
 	i = STR_UPCASE( vbuff, cmnd_buff(arg_start(1):arg_end(1)))

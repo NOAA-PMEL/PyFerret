@@ -81,6 +81,7 @@
 * V699 6/16 *sh* treat EX# variables just like other variables
 * V751 *acm*11/19  Ticket 1957: Deleting variable from linked-list structure
 *                  don't try to look in a dataset 
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
@@ -102,13 +103,7 @@
 	CHARACTER*24	check_name
 
       PARAMETER (flen=128)      ! size of variable name string
-
-#ifdef sun
-      BYTE      fhol(flen)      ! c-type Hollerith string buffer
-#else
       INTEGER*1 fhol(flen)      ! c-type Hollerith string buffer
-#endif 
-
 
 * procedure:
 *	generate a list of all user variables depending on the named uvar
@@ -130,8 +125,6 @@
 *	(unnecessary as of 2/91 but possibly lower case in future)
  100	check_name = uvar_name_code( du_list( kdu ) )	! upper case
 
-*	DO 200 uv = 1, max_uvar
-*	   IF ( uvar_num_items( uv ) .EQ. uvar_deleted ) GOTO 200
         CALL deleted_list_get_undel(uvar_num_items_head,
      .                              deleted_list_result(1),
      .                              max_uvar, num_indices )
@@ -157,8 +150,9 @@
 	IF ( kdu .LE. ndu ) GOTO 100
 
 * eliminate all memory grids for variables in the list
-	DO 300 i = 1, ndu
- 300	CALL PURGE_USER_VAR( du_list( i ) )
+	DO i = 1, ndu
+ 	   CALL PURGE_USER_VAR( du_list( i ) )
+ 	ENDDO
 
 * if this user variable is associated with any dynamic grids release them
 	CALL DEALLO_UVAR_GRIDS(uvar)
@@ -223,8 +217,9 @@
 	ENDIF
 	
 * Reinitialize any aux_uvar settings 
-        DO 400 i = 1, nferdims
- 400        uvar_aux_stat(uvar,i) = paux_stat_init
+        DO i = 1, nferdims
+ 	   uvar_aux_stat(uvar,i) = paux_stat_init
+ 	ENDDO
 
       
 	RETURN

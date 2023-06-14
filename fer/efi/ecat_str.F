@@ -138,25 +138,19 @@
       INCLUDE 'EF_Util.cmn'
       INCLUDE 'EF_mem_subsc.cmn'
 
-      INTEGER strdf
-#ifdef double_p
-      PARAMETER (strdf = 1)
-#else
-      PARAMETER (strdf = 2)
-#endif
 
       INTEGER id
 
-      REAL arg_1(strdf, mem1lox:mem1hix, mem1loy:mem1hiy,
-     .                  mem1loz:mem1hiz, mem1lot:mem1hit,
-     .                  mem1loe:mem1hie, mem1lof:mem1hif)
-      REAL arg_2(strdf, mem2lox:mem2hix, mem2loy:mem2hiy,
-     .                  mem2loz:mem2hiz, mem2lot:mem2hit,
-     .                  mem2loe:mem2hie, mem2lof:mem2hif)
+      REAL arg_1(mem1lox:mem1hix, mem1loy:mem1hiy,
+     .           mem1loz:mem1hiz, mem1lot:mem1hit,
+     .           mem1loe:mem1hie, mem1lof:mem1hif)
+      REAL arg_2(mem2lox:mem2hix, mem2loy:mem2hiy,
+     .           mem2loz:mem2hiz, mem2lot:mem2hit,
+     .           mem2loe:mem2hie, mem2lof:mem2hif)
 
-      REAL result(strdf, memreslox:memreshix, memresloy:memreshiy,
-     .                   memresloz:memreshiz, memreslot:memreshit,
-     .                   memresloe:memreshie, memreslof:memreshif)
+      REAL result(memreslox:memreshix, memresloy:memreshiy,
+     .            memresloz:memreshiz, memreslot:memreshit,
+     .            memresloe:memreshie, memreslof:memreshif)
 
 * After initialization, the 'res_' arrays contain indexing information
 * for the result axes.  The 'arg_' arrays will contain the indexing
@@ -202,7 +196,7 @@
 
             CALL EF_GET_STRING_ARG_ELEMENT_6D(id, ARG1, arg_1,
      .                             i1, j1, k1, l1, m1, n1, slen, buff)
-            CALL EF_PUT_STRING(buff, slen, result(1,i,j,k,l,m,n))
+            CALL EF_PUT_STRING(buff, slen, result(i,j,k,l,m,n))
 
             i = i + res_incr(X_AXIS)
  100     CONTINUE
@@ -243,7 +237,7 @@
 
             CALL EF_GET_STRING_ARG_ELEMENT_6D(id, ARG2, arg_2,
      .                             i2, j2, k2, l2, m2, n2, slen, buff)
-            CALL EF_PUT_STRING(buff, slen, result(1,i,j,k,l,m,n))
+            CALL EF_PUT_STRING(buff, slen, result(i,j,k,l,m,n))
 
             i = i + res_incr(X_AXIS)
  110     CONTINUE

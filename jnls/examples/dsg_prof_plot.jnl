@@ -1,8 +1,7 @@
+\cancel mode verify
+cancel mode logo
+
 ! DSG point data from ERDDAP  
-
-set mode verify
-can mode logo
-
 
 use dsg_profile_example
 
@@ -17,13 +16,13 @@ pause
 show grid temp
 pause
 
-set win/siz=0.6
+set window/size=1.5
 
 ! The default "PLOT" command draws depth plot for each profile, 
 ! varible-value vs depth.
 
 plot temp
-pause; ! frame/file=prof_plot.gif
+pause
 
 
 ! Waterfall plots are another useful style.  These are drawn as
@@ -31,14 +30,14 @@ pause; ! frame/file=prof_plot.gif
 ! the varible to use for the colors.  Depth is 
 
 ribbon/vs/thick time, depth, temp
-pause; ! frame/file=prof_time_depth_plot.gif
+pause
 
 ribbon/vs/thick longitude, depth, temp
-pause; ! frame/file=prof_lon_depth_plot.gif
-
+pause
 
 ! Where are the stations located?  This is a standard 
-! PLOT/VS plot.
-plot/vs/thick/color=blue/siz=0.2 longitude, latitude
+! longitude/latitude plot using the PLOT/VS command
+
+plot/vs/thick/color=blue/size=0.2 longitude, latitude
 
 

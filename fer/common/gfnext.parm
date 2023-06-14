@@ -1,6 +1,0 @@
-* GFNEXT_TEMP.PARM
-*	sh - temporary parameters for program development
-*	1/20/87
-*
-	INTEGER		ppsi
-	PARAMETER     (	ppsi = 8 )

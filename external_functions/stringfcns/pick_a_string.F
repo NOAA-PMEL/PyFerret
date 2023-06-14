@@ -129,20 +129,11 @@
 
       REAL bad_flag(1:EF_MAX_ARGS), bad_flag_result
 
-
-* Single precision Ferret: string arg and result need to be twice the length.
-      INTEGER strdf
-#ifdef double_p
-      PARAMETER (strdf = 1)
-#else
-      PARAMETER (strdf = 2)
-#endif
-
-      REAL arg_1(strdf,mem1lox:mem1hix, mem1loy:mem1hiy, 
+      REAL arg_1(mem1lox:mem1hix, mem1loy:mem1hiy, 
      .           mem1loz:mem1hiz, mem1lot:mem1hit)
       REAL arg_2(mem2lox:mem1hix, mem2loy:mem1hiy, 
      .           mem2loz:mem1hiz, mem2lot:mem1hit)
-      REAL result(strdf,memreslox:memreshix, memresloy:memreshiy,
+      REAL result(memreslox:memreshix, memresloy:memreshiy,
      .            memresloz:memreshiz, memreslot:memreshit)
 
 * After initialization, the 'res_' arrays contain indexing information 
@@ -191,10 +182,10 @@
 
 c                  CALL EF_GET_STRING_ARG_ELEMENT (id, ARG1, arg_1, 
 c     .                               i1,j1,k1,l1, slen, textstring)
-c                  CALL EF_PUT_STRING (textstring, slen, result(1,i,j,k,l))
+c                  CALL EF_PUT_STRING (textstring, slen, result(i,j,k,l))
 
-                   CALL EF_PUT_STRING_PTR(arg_1(1,i1,j1,k1,l1),
-     .                            result(1,i,j,k,l) )
+                   CALL EF_PUT_STRING_PTR(arg_1(i1,j1,k1,l1),
+     .                            result(i,j,k,l) )
 
                   l1 = l1 + arg_incr(T_AXIS,ARG1)
  100           CONTINUE

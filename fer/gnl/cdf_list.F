@@ -221,24 +221,9 @@
       DATA typnam/'NC_BYTE', 'NC_CHAR', 'NC_SHORT', 'NC_INT', 
      .            'NC_FLOAT', 'NC_DOUBLE'/
 
-* special equivalence (not in tmap_format/xdset_info.cd_equiv because 
-* "BYTE" isnt supported on DECstation)
 * reorder loop logic because linux cpp didnt like it *kob* 10/96
 
-#   ifdef sun
-      BYTE cd_data_type(maxvars)
-#   else
-      INTEGER*1 cd_data_type(maxvars)
-#   endif
-
-	EQUIVALENCE ( ds_precision, cd_data_type )
-
-* internal equivalence so to match data types for F90
-#   ifdef sun
-      BYTE ibuff1
-#   else
       INTEGER*1 ibuff1
-#   endif
 
 	REAL*4		rbuff4
 	REAL		vals(100), bad

@@ -435,11 +435,11 @@ C  Get first coordinates of output axes.
            CALL pickout4 (arg_1, arg_2, arg_3, arg_4, 
      .                         n, xx, yy, tt, ff)
             imask = INT(1+(xx-x1)/dx)
-            if (xx .LT. xax(imask,1,1,1) - dx/2) imask = imask - 1
-            if (xx .GT. xax(imask,1,1,1) + dx/2) imask = imask + 1
+            if (xx .LT. arg_5(imask,1,1,1) - dx/2) imask = imask - 1
+            if (xx .GT. arg_5(imask,1,1,1) + dx/2) imask = imask + 1
             jmask = INT(1+(yy-y1)/dy)
-            if (yy .LT. yax(jmask,1,1,1) - dy/2) jmask = jmask - 1
-            if (yy .GT. yax(jmask,1,1,1) + dy/2) jmask = jmask + 1
+            if (yy .LT. arg_6(jmask,1,1,1) - dy/2) jmask = jmask - 1
+            if (yy .GT. arg_6(jmask,1,1,1) + dy/2) jmask = jmask + 1
 
             IF (arg_8(imask,jmask,k8,l8) .NE. 1.) GOTO 300
 
@@ -521,11 +521,11 @@ C  Get first coordinates of output axes.
      .                         n, xx, yy, tt, ff)
      
             imask = INT(1+(xx-x1)/dx)
-            if (xx .LT. xax(imask,1,1,1) - dx/2) imask = imask - 1
-            if (xx .GT. xax(imask,1,1,1) + dx/2) imask = imask + 1
+            if (xx .LT. arg_5(imask,1,1,1) - dx/2) imask = imask - 1
+            if (xx .GT. arg_5(imask,1,1,1) + dx/2) imask = imask + 1
             jmask = INT(1+(yy-y1)/dy)
-            if (yy .LT. yax(jmask,1,1,1) - dy/2) jmask = jmask - 1
-            if (yy .GT. yax(jmask,1,1,1) + dy/2) jmask = jmask + 1
+            if (yy .LT. arg_6(jmask,1,1,1) - dy/2) jmask = jmask - 1
+            if (yy .GT. arg_6(jmask,1,1,1) + dy/2) jmask = jmask + 1
 
             IF (arg_8(imask,jmask,k8,l8) .NE. 1.) GOTO 800
 

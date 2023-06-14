@@ -34,9 +34,8 @@ PAUSE
 
 
 
-set data "http://ferret.pmel.noaa.gov/nvods/thredds/dodsC/las/COADS-climatology/data_coads_climatology.jnl"
+use "http://ferret.pmel.noaa.gov/pmel/thredds/dodsC/data/PMEL/coads_climatology.nc"
 show data
-
 
 
 ! SHOW DATA verifies that this is indeed a remote dataset
@@ -48,6 +47,7 @@ show data
 
 PAUSE
 !      *********************************************************
+set window/size=1.5
 
 fill/t="16-jul" sst
 go land
@@ -117,8 +117,7 @@ shade/x=80w:20e/y=0:80N/pal=black/levels/palette=cyan_light/t="15-jun-1989"/over
 ! Urls change, and some of these may no longer be available. Even if these
 ! commands yield errors, read the comments for techniquesto handle large datasets, 
 ! and ones that have grids with orientations different than what is expected. 
-! The commands are illustrated in the on-line version of this demo:
-! http://ferret.pmel.noaa.gov/documentation/how-to-use-ferret-and-opendap-to-access-and-analyze-remote-data-1
+! The commands are illustrated in the Ferret/PyFerret documentation; see OPeNDAP
 
 SET MODE ignore
 PAUSE

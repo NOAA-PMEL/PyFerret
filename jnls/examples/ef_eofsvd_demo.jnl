@@ -1,4 +1,6 @@
 \SET MODE VERIFY
+cancel mode logo
+
 ! ef_eofsvd_demo.jnl ( acm  9/2000)
 
 ! Description: Demonstration of computing EOFs using the
@@ -75,6 +77,7 @@ DEFINE VIEW/xlim=.66,1./ylim=.6,1./text=0.2 vur
 DEFINE VIEW/xlim=0.,.33/ylim=.1,.5/text=0.2 vll
 DEFINE VIEW/xlim=.33,.66/ylim=.1,.5/text=0.2 vlc
 DEFINE VIEW/xlim=.66,1./ylim=.1,.5/text=0.2 vlr
+set window/size=1.5
 
 SET VIEW vul; CONTOUR/TITLE="FCN1" fcn1[l=1:10@ave]
 SET VIEW vuc; CONTOUR/TITLE="FCN2" fcn2[l=1:10@ave]
@@ -127,9 +130,9 @@ CANCEL VARIABLE/ALL
 CANCEL REGION
 
 USE sst_clim_eofsvd_space.cdf
-SET VIEW ul; fill/l=1/TITLE="eof 1" eofsvd_xyfcn; go land
-SET VIEW ur; fill/l=2/TITLE="eof 2" eofsvd_xyfcn; go land
-SET VIEW ll; fill/l=3/TITLE="eof 3" eofsvd_xyfcn; go land
+SET VIEW ul; fill/l=1/TITLE="eof 1"/palette=blue_red_centered eofsvd_xyfcn; go land
+SET VIEW ur; fill/l=2/TITLE="eof 2"/palette=blue_red_centered eofsvd_xyfcn; go land
+SET VIEW ll; fill/l=3/TITLE="eof 3"/palette=blue_red_centered eofsvd_xyfcn; go land
 
 PAUSE
 CANCEL DATA/ALL

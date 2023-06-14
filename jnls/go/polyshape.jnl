@@ -31,7 +31,19 @@
 
 ! example:
 !	yes? GO polyshape star 2   ! define double-sized star
-
+!
+! The script polymark.jnl calls this script to define the shapes
+! that it uses. 
+! 
+! Example: call polymark to plot filled, colored shapes at locations on a map:
+!       yes? LET xpts = 180 + 50*COS(2*3.14*I[I=1:50]/60)
+!       yes? LET ypts = 15  + 20*SIN(2*3.14*I[I=1:50]/60)
+!       yes? LET vals = 25 - ypts + RANDN(ypts)
+!
+!       yes? GO basemap x=120:250 Y=25s:65n 20
+!
+!       yes? GO polymark polygon/over/key/title="Values"  xpts,ypts,vals,diamond, 0.8
+!
 ! check shape name
 
 query/ignore $1"|triangle|delta|square|diamond|pentagon|hexagon|circle\

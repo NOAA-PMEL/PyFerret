@@ -76,9 +76,9 @@
 *                         statements.  use character constant instead
 * v604 *acm* 7/07 increase length of ds_name, ds_des_name
 * V68  *acm* 1/12 The variables should be declared REAL (conversion to double prec.)
-* V68  *acm* 1/12  ifdef double_p for double-precision ferret.
 * V694 11/14 *acm* Ticket 2217: permuted ASCII reading in 6D
 * V701  7/16 *kms* Compare ds_name to char_init2048 instead of char_init1024
+* 10/2022 *acm* Code cleanup: Rewrite to avoid ASSIGN statements and computed GOTO
 
 * Arguments:
 *	dset	- data set number
@@ -116,13 +116,8 @@
 *
 *internal parameter declarations *kob* 4apr94
         CHARACTER*1     cr,lf
-#ifdef NO_INTRINSIC_IN_PARAMETER
-        PARAMETER       ( cr = o'015',
-     .                    lf = o'012')
-#else
         PARAMETER       ( cr = CHAR(13),
      .                    lf = CHAR(10))
-#endif
 
 * Local definitions
 	CHARACTER*11	file_format
@@ -131,8 +126,8 @@
 	CHARACTER*99	in_format
 	INTEGER		EZ_PERMUTED_INDEX
 	INTEGER*4	tpos, vpos, vcnt, sfcnt, lunit, scnt, rcnt, vfirst
-	INTEGER*4	skip_in, read_in, transloc, icol, nout, ncolmn
-	INTEGER*4	itemp, i, initloc, irec, ierr
+	INTEGER*4	icol, nout, ncolmn
+	INTEGER*4	itemp, i, irec, ierr
 	INTEGER*4	trans(0:maxezvars-1)
 	DATA 		(trans(i),i=0,maxezvars-1) /maxezvars*-1/
 	LOGICAL		unformatted, file_exists, file_open,
@@ -145,9 +140,9 @@
 	IF (ds_name(dset) .EQ. char_init2048) GOTO 9300
 *
 * Locate Step file entry
-	DO 10 sfcnt = 1,maxstepfiles
+	DO sfcnt = 1,maxstepfiles
 	  IF (sf_setnum(sfcnt) .EQ. dset) GOTO 20
-  10	CONTINUE
+	ENDDO
 	GOTO 9400
 
 * Initialize
@@ -161,10 +156,12 @@
 	  file_format = 'FORMATTED'
 	  in_format = ds_parm_text(1,dset)		! Run time format info
 	ENDIF
+
 *   load transfer array. vpos will end up with number of variables to read in
 *   from file, tpos will be number of useful variables to transfer to variable
 *   arrays. '-' in ds_var_code indicates unused variable
 *   4/94 - also capture the var # of the first var in the data set, vfirst
+
 	tpos = 0
 	vpos = 0
 	DO 100 vcnt = 1,maxvars
@@ -174,12 +171,13 @@
 	    IF (Index(ds_var_code(vcnt),'-') .EQ. 0) THEN
 	      trans(tpos) = vpos
 	      tpos = tpos + 1
-	      bad(tpos) = ds_bad_flag(vcnt)    ! 4/94
+	      bad(tpos) = ds_bad_flag(vcnt)
 	    ENDIF
 	  ENDIF
   100	CONTINUE
 
 * is the input permuted?
+
 	permuted = .FALSE.
 	DO 110 i = 1, nferdims
 	   IF ( ds_ordering(i,vfirst) .NE. i ) permuted = .TRUE.
@@ -187,86 +185,7 @@
 !	permuted = .TRUE.   ! debug statement
 	IF ( permuted ) CALL EZ_INIT_PERMUTE( vfirst )
 
-*   set up ASSIGN statements (for GOTO variable statements)
-	IF ( unformatted ) THEN
-	  ASSIGN 400 TO skip_in			! Goes to UNFORMATTED read
-	  ASSIGN 500 TO read_in			! Goes to UNFORMATTED read
-	ELSEIF ( in_format(:4) .EQ. 'FREE' ) THEN
-	  ASSIGN 450 TO skip_in			! Goes to FORMATTED read
-	  ASSIGN 610 TO read_in			! Goes to FORMATTED read
-	ELSEIF ( stream ) THEN			! "STREAM" direct access binary
-	  ASSIGN 499 TO skip_in
-	  ASSIGN 620 TO read_in
-	  irec = sf_skip(sfcnt) + 1     ! /SKIP=words
-	ELSE
-	  ASSIGN 450 TO skip_in			! Goes to FORMATTED read
-	  ASSIGN 600 TO read_in			! Goes to FORMATTED read
-	ENDIF
-	GOTO (150 ,151 ,152 ,153 ,154 ,155 ,156 ,157 ,158 ,159,
-     .	      1510,1511,1512,1513,1514,1515,1516,1517,1518,1519) tpos
-	ASSIGN 799 TO transloc			! transfers 0 variables
-	ASSIGN 390 TO initloc
-	GOTO 160
-  150	ASSIGN 790 TO transloc			! transfers 1 variable
-	ASSIGN 380 TO initloc
-	GOTO 160
-  151	ASSIGN 780 TO transloc			! transfers 2 variables
-	ASSIGN 381 TO initloc
-	GOTO 160
-  152	ASSIGN 770 TO transloc			! transfers 3 variables
-	ASSIGN 382 TO initloc
-	GOTO 160
-  153	ASSIGN 760 TO transloc			! transfers 4 variables
-	ASSIGN 383 TO initloc
-	GOTO 160
-  154	ASSIGN 750 TO transloc			! transfers 5 variables
-	ASSIGN 384 TO initloc
-	GOTO 160
-  155	ASSIGN 740 TO transloc			! transfers 6 variables
-	ASSIGN 385 TO initloc
-	GOTO 160
-  156	ASSIGN 730 TO transloc			! transfers 7 variables
-	ASSIGN 386 TO initloc
-	GOTO 160
-  157	ASSIGN 720 TO transloc			! transfers 8 variables
-	ASSIGN 387 TO initloc
-	GOTO 160
-  158	ASSIGN 710 TO transloc			! transfers 9 variables
-	ASSIGN 388 TO initloc
-	GOTO 160
-  159	ASSIGN 700 TO transloc			! transfers 10 variables
-	ASSIGN 389 TO initloc
-	GOTO 160
- 1510	ASSIGN 7910 TO transloc			! transfers 11 variable
-	ASSIGN 3810 TO initloc
-	GOTO 160
- 1511	ASSIGN 7810 TO transloc			! transfers 12 variables
-	ASSIGN 3811 TO initloc
-	GOTO 160
- 1512	ASSIGN 7710 TO transloc			! transfers 13 variables
-	ASSIGN 3812 TO initloc
-	GOTO 160
- 1513	ASSIGN 7610 TO transloc			! transfers 14 variables
-	ASSIGN 3813 TO initloc
-	GOTO 160
- 1514	ASSIGN 7510 TO transloc			! transfers 15 variables
-	ASSIGN 3814 TO initloc
-	GOTO 160
- 1515	ASSIGN 7410 TO transloc			! transfers 16 variables
-	ASSIGN 3815 TO initloc
-	GOTO 160
- 1516	ASSIGN 7310 TO transloc			! transfers 17 variables
-	ASSIGN 3816 TO initloc
-	GOTO 160
- 1517	ASSIGN 7210 TO transloc			! transfers 18 variables
-	ASSIGN 3817 TO initloc
-	GOTO 160
- 1518	ASSIGN 7110 TO transloc			! transfers 19 variables
-	ASSIGN 3818 TO initloc
-	GOTO 160
- 1519	ASSIGN 7010 TO transloc			! transfers 20 variables
-	ASSIGN 3819 TO initloc
-*
+
 * Check file validity if necessary
   160	IF (.NOT. sf_valid(sfcnt)) THEN
 !	  INQUIRE (	FILE = sf_name(sfcnt),	! sf_name is too short 10/89
@@ -285,35 +204,25 @@
 *
 * get free VMS logical unit #   
 	CALL LIB_GET_LUN (lunit)
+
+c	print *, 'ez_read file_format, permuted ',  file_format, ' ', permuted 
+
 *
 * open the file
-#ifdef sun 
-#  ifndef sgi
-#    define reclen_in_bytes
-#  endif
-#endif
 	IF ( stream ) THEN       ! 5/94
 	   OPEN	(UNIT = lunit,
      .		 FILE = ds_des_name(dset),
      .		 FORM = 'UNFORMATTED',
      .		 ACCESS = 'DIRECT',
-#ifdef reclen_in_bytes
      .		 RECL = 4,
-#else
-     .		 RECL = 1,
-#endif
      .		 STATUS = 'OLD',
      .		 ERR = 9000)
 	ELSE
-* added ifdef for READONLY_ALLOWED for IBM port *kob* 4apr94
 	   OPEN	(UNIT = lunit,
      .		 FILE = ds_des_name(dset),
      .		 FORM = file_format,
      .		 ACCESS = 'SEQUENTIAL',
      .		 STATUS = 'OLD',
-#ifdef READONLY_ALLOWED
-     .		 READONLY,
-#endif
      .		 ERR = 9000)
 	ENDIF
 	sf_lunit(sfcnt) = lunit    ! *sh* dset -> sfcnt 5/91
@@ -323,111 +232,136 @@
 * the file then the grid dimensions would imply ) will end
 * at a point in the middle of the output arrays.
 	IF ( permuted ) THEN
-	   DO 390 nout = 1, nmax
-	      GOTO initloc
- 3819	      d19(nout) = bad(trans(19))	      
- 3818	      d18(nout) = bad(trans(18))	      
- 3817	      d17(nout) = bad(trans(17))	      
- 3816	      d16(nout) = bad(trans(16))	      
- 3815	      d15(nout) = bad(trans(15))	      
- 3814	      d14(nout) = bad(trans(14))	      
- 3813	      d13(nout) = bad(trans(13))	      
- 3812	      d12(nout) = bad(trans(12))	      
- 3811	      d11(nout) = bad(trans(11))	      
- 3810	      d10(nout) = bad(trans(10))	      
- 389	      d9(nout) = bad(trans(9))	      
- 388	      d8(nout) = bad(trans(8))	      
- 387	      d7(nout) = bad(trans(7))	      
- 386	      d6(nout) = bad(trans(6))	      
- 385	      d5(nout) = bad(trans(5))	      
- 384	      d4(nout) = bad(trans(4))	      
- 383	      d3(nout) = bad(trans(3))	      
- 382	      d2(nout) = bad(trans(2))	      
- 381	      d1(nout) = bad(trans(1))	      
- 380	      d0(nout) = bad(trans(0))	      
- 390	   CONTINUE
+c	   print *, 'ez_read: tpos, nmax', tpos, nmax 
+	   DO nout = 1, nmax
+	      IF (tpos .GE. 20) d19(nout) = bad(trans(19))	      
+	      IF (tpos .GE. 19) d18(nout) = bad(trans(18))	      
+	      IF (tpos .GE. 18) d17(nout) = bad(trans(17))	      
+	      IF (tpos .GE. 17) d16(nout) = bad(trans(16))	      
+	      IF (tpos .GE. 16) d15(nout) = bad(trans(15))	      
+	      IF (tpos .GE. 15) d14(nout) = bad(trans(14))	      
+	      IF (tpos .GE. 14) d13(nout) = bad(trans(13))	      
+	      IF (tpos .GE. 13) d12(nout) = bad(trans(12))	      
+	      IF (tpos .GE. 12) d11(nout) = bad(trans(11))	      
+	      IF (tpos .GE. 11) d10(nout) = bad(trans(10))	      
+	      IF (tpos .GE. 10)  d9(nout) = bad(trans(9))	      
+	      IF (tpos .GE.  9)  d8(nout) = bad(trans(8))	      
+	      IF (tpos .GE.  8)  d7(nout) = bad(trans(7))	      
+	      IF (tpos .GE.  7)  d6(nout) = bad(trans(6))	      
+	      IF (tpos .GE.  6)  d5(nout) = bad(trans(5))	      
+	      IF (tpos .GE.  5)  d4(nout) = bad(trans(4))	      
+	      IF (tpos .GE.  4)  d3(nout) = bad(trans(3))	      
+	      IF (tpos .GE.  3)  d2(nout) = bad(trans(2))	      
+	      IF (tpos .GE.  2)  d1(nout) = bad(trans(1))	      
+	      IF (tpos .GE.  1)  d0(nout) = bad(trans(0))	      
+	   ENDDO
 	ENDIF
 
 *
 * read "SKIP" records and initialize records read counter
-	GOTO skip_in
-  400	DO 425 scnt = 1,sf_skip(sfcnt)
-  425	READ (lunit,END=9200,ERR=9000)
-	GOTO 499
-  450	DO 475 scnt = 1,sf_skip(sfcnt)
-  475	READ (lunit,'(1X)',END=9200,ERR=9000)
-  499	nout = 0		! is number of values (per var) read so far
+
+	IF ( unformatted ) THEN
+
+	   DO scnt = 1,sf_skip(sfcnt)
+	      READ (lunit,END=9200,ERR=9000)
+	   ENDDO 
+
+	ELSEIF ( in_format(:4) .EQ. 'FREE' ) THEN
+
+	   DO scnt = 1,sf_skip(sfcnt)
+	      READ (lunit,'(1X)',END=9200,ERR=9000)
+  	   ENDDO
+
+	ELSEIF ( stream ) THEN
+
+	  irec = sf_skip(sfcnt) + 1     ! /SKIP=words
+
+	ELSE
+
+	   DO scnt = 1,sf_skip(sfcnt)
+	      READ (lunit,'(1X)',END=9200,ERR=9000)
+  	   ENDDO
+
+	ENDIF
+
+	nout = 0		! is number of values (per var) read so far
 	ncolmn = columns
 	IF ( stream ) ncolmn = vpos
-*
+
 * Read depending on format, nrec counts number of records read
-	GOTO read_in
-* ... binary data
-* Note: neither IOSTAT= nor ERR= branch is effective on binary read of ASCII
-*	file ???? (tested on OSF only)
-  500	READ (lunit,END=800,ERR=9500) (buff(rcnt),rcnt=1,ncolmn)
-* if statement commented out 3/22/95 *kob*
-*	IF ( ierr .NE. 0 ) GOTO 9500
-	GOTO 690
-* ... fixed format data
-  600	READ (lunit,in_format,END=800,ERR=9500) (buff(rcnt),rcnt=1,ncolmn)
-	GOTO 690
-* ... free format data
-* 3/99 *kob* - Initialize buff before reading to prevent use of previous values
-  610   do 611 rcnt = 1,ncolmn
-	   buff(rcnt) = -1.E34
-  611	continue
-	READ (lunit,*,END=800,ERR=9500) (buff(rcnt),rcnt=1,ncolmn)
-	GOTO 690
+	DO WHILE (nout .lt. nmax)
+
+
+*   set up ASSIGN statements (for GOTO variable statements)
+	IF ( unformatted ) THEN
+
+	  READ (lunit,END=800,ERR=9500) (buff(rcnt),rcnt=1,ncolmn)
+
+	ELSEIF ( in_format(:4) .EQ. 'FREE' ) THEN
+	  
+           DO rcnt = 1,ncolmn
+	      buff(rcnt) = -1.E34
+           ENDDO
+	   READ (lunit,*,END=800,ERR=9500) (buff(rcnt),rcnt=1,ncolmn)
+
+	ELSEIF ( stream ) THEN			! "STREAM" direct access binary
+
 * ... STREAM format data
 *       Normally there will be only a single variable read so vpos=1 but
 *       we are allowing multiple variables spaced apart in the file by
 *       /COLUMNS= words (stored in ds_ntuple(dset)) 
 * Note: neither IOSTAT= nor ERR= branch is effective on read past EOF ????
 *	(tested on OSF only) (ok after all? - branch to 9500 no good *sh* 9/95)
-  620	DO 622 vcnt = 1, vpos
-  622	READ (lunit,rec=irec+(vcnt-1)*ds_ntuple(dset),ERR=9600) buff(vcnt)
-	irec = irec + 1
-!	GOTO 690
+
+	   DO vcnt = 1, vpos
+	      READ (lunit,rec=irec+(vcnt-1)*ds_ntuple(dset),ERR=9600) buff(vcnt)
+	   ENDDO
+	   irec = irec + 1
+
+	ELSE
+
+	   READ (lunit,in_format,END=800,ERR=9500) (buff(rcnt),rcnt=1,ncolmn)
+
+	ENDIF
 
 * Repeat the transfer operation if number of columns is a multiple of # vars
- 690	DO 795 icol = 0, ncolmn-vpos, vpos
+	DO icol = 0, ncolmn-vpos, vpos
 	   IF ( permuted ) THEN
 	      nout = EZ_PERMUTED_INDEX()    ! increment permuted fashion
 	   ELSE
 	      nout = nout + 1
 	   ENDIF
-	   GOTO transloc
 *
 * Transfer to variable arrays depending on how many variables
- 7010     d19(nout) = buff(trans(19)+icol)
- 7110     d18(nout) = buff(trans(18)+icol)
- 7210     d17(nout) = buff(trans(17)+icol)
- 7310     d16(nout) = buff(trans(16)+icol)
- 7410     d15(nout) = buff(trans(15)+icol)
- 7510     d14(nout) = buff(trans(14)+icol)
- 7610     d13(nout) = buff(trans(13)+icol)
- 7710     d12(nout) = buff(trans(12)+icol)
- 7810     d11(nout) = buff(trans(11)+icol)
- 7910     d10(nout) = buff(trans(10)+icol)
-  700      d9(nout) = buff(trans(9)+icol)
-  710      d8(nout) = buff(trans(8)+icol)
-  720      d7(nout) = buff(trans(7)+icol)
-  730      d6(nout) = buff(trans(6)+icol)
-  740      d5(nout) = buff(trans(5)+icol)
-  750      d4(nout) = buff(trans(4)+icol)
-  760      d3(nout) = buff(trans(3)+icol)
-  770      d2(nout) = buff(trans(2)+icol)
-  780      d1(nout) = buff(trans(1)+icol)
-  790      d0(nout) = buff(trans(0)+icol)
 
- 795	CONTINUE
+   	   IF (tpos .GE. 20) d19(nout) = buff(trans(19)+icol)
+   	   IF (tpos .GE. 19) d18(nout) = buff(trans(18)+icol)
+   	   IF (tpos .GE. 18) d17(nout) = buff(trans(17)+icol)
+   	   IF (tpos .GE. 17) d16(nout) = buff(trans(16)+icol)
+   	   IF (tpos .GE. 16) d15(nout) = buff(trans(15)+icol)
+   	   IF (tpos .GE. 15) d14(nout) = buff(trans(14)+icol)
+   	   IF (tpos .GE. 14) d13(nout) = buff(trans(13)+icol)
+   	   IF (tpos .GE. 13) d12(nout) = buff(trans(12)+icol)
+   	   IF (tpos .GE. 12) d11(nout) = buff(trans(11)+icol)
+   	   IF (tpos .GE. 11) d10(nout) = buff(trans(10)+icol)
+   	   IF (tpos .GE. 10) d9(nout) = buff(trans(9)+icol)
+   	   IF (tpos .GE.  9) d8(nout) = buff(trans(8)+icol)
+   	   IF (tpos .GE.  8) d7(nout) = buff(trans(7)+icol)
+   	   IF (tpos .GE.  7) d6(nout) = buff(trans(6)+icol)
+   	   IF (tpos .GE.  6) d5(nout) = buff(trans(5)+icol)
+   	   IF (tpos .GE.  5) d4(nout) = buff(trans(4)+icol)
+   	   IF (tpos .GE.  4) d3(nout) = buff(trans(3)+icol)
+   	   IF (tpos .GE.  3) d2(nout) = buff(trans(2)+icol)
+   	   IF (tpos .GE.  2) d1(nout) = buff(trans(1)+icol)
+	   IF (tpos .GE.  1) d0(nout) = buff(trans(0)+icol)
+	ENDDO
 
-  799   IF (nout .GE. nmax) GOTO 800
-	GOTO read_in
+	ENDDO		! READ loop: DO WHILE (nout .lt. nmax)
+
+  800	CONTINUE	! hit an END on read
 *
 * Finished, store records read and then exit
-  800	nread = nout / ncol
+	nread = nout / ncol
 	status = merr_ok
 	GOTO 9950
 *

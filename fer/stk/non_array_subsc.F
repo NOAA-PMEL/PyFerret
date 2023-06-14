@@ -45,6 +45,7 @@
 *
 * V200:  5/20/89
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -58,11 +59,12 @@
 * internal variable declarations:
 	INTEGER idim, mr
 
-	DO 100 idim = 1, nferdims
-	DO 100 mr   = 1, nmr
+	DO idim = 1, nferdims
+	DO mr   = 1, nmr
 	   lo_ss( mr, idim ) = mr_lo_ss( mr_list(mr), idim )
 	   hi_ss( mr, idim ) = mr_hi_ss( mr_list(mr), idim )
- 100	CONTINUE
+	ENDDO
+	ENDDO
 
 	RETURN
 	END

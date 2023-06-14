@@ -55,12 +55,7 @@
 	INTEGER NCF_INIT_AGG_DSET, TM_LENSTR1
 	INTEGER llen, slen1, slen2
 	PARAMETER (slen1=2048)      ! size of ds_name string
-
-#ifdef sun
-	BYTE      fhol_dsname(slen1)      ! c-type Hollerith string buffer
-#else
 	INTEGER*1 fhol_dsname(slen1)      ! c-type Hollerith string buffer
-#endif
 
 * Save dataset info in GLOBAL_NCdsetList for attribute handling
 

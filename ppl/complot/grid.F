@@ -36,6 +36,7 @@
 *
 *
 C**    @(#)grid.f	1.1    3/10/88
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax.
 C**
 C**
 C***********************************************************************
@@ -136,10 +137,11 @@ C     DRAW THE NEGATIVE Y-AXIS.
 C
           IF(NSTICY .EQ. 0)GO TO 30
    10     DO 20 J=1,NSTICY
-          Y = Y - SMY
-          IF(Y .LT. YLOW)GO TO 30
-   20     CALL PLOT(X,Y,1,5)
-          Y = Y - SMY
+            Y = Y - SMY
+            IF(Y .LT. YLOW)GO TO 30
+            CALL PLOT(X,Y,1,5)
+   20     CONTINUE
+	  Y = Y - SMY
           IF(Y .GT. YLOW)GO TO 10
    30     CALL PLOT(X,YLOW,1,0)
           Y = YORG
@@ -164,11 +166,12 @@ C
 C     DRAW THE POSITIVE Y-AXIS.
 C
           IF(NSTICY .EQ. 0)GO TO 80
-   60     DO 70 J=1,NSTICY
-          Y = Y + SMY
-          IF(Y .GT. YHIGH)GO TO 80
-   70     CALL PLOT(X,Y,1,5)
-          Y = Y + SMY
+   60     DO 70J=1,NSTICY
+            Y = Y + SMY
+            IF(Y .GT. YHIGH)GO TO 80
+            CALL PLOT(X,Y,1,5)
+   70     CONTINUE
+	  Y = Y + SMY
           IF(Y .LT. YHIGH)GO TO 60
    80     CALL PLOT(X,YHIGH,1,0)
           Y = YORG
@@ -206,10 +209,11 @@ C     DRAW THE NEGATIVE X-AXIS.
 C
           IF(NSTICX .EQ. 0)GO TO 130
   110     DO 120 J=1,NSTICX
-          X = X - SMX
-          IF(X .LT. XLOW)GO TO 130
-  120     CALL PLOT(X,Y,1,7)
-          X = X - SMX
+            X = X - SMX
+            IF(X .LT. XLOW)GO TO 130
+            CALL PLOT(X,Y,1,7)
+  120     CONTINUE
+	  X = X - SMX
           IF(X .GT. XLOW)GO TO 110
   130     CALL PLOT(XLOW,Y,1,0)
           X = XORG
@@ -235,10 +239,11 @@ C     DRAW THE POSITIVE X-AXIS.
 C
           IF(NSTICX .EQ. 0)GO TO 180
   160     DO 170 J=1,NSTICX
-          X = X + SMX
-          IF(X .GT. XHIGH)GO TO 180
-  170     CALL PLOT(X,Y,1,7)
-          X = X + SMX
+            X = X + SMX
+            IF(X .GT. XHIGH)GO TO 180
+            CALL PLOT(X,Y,1,7)
+  170     CONTINUE
+	  X = X + SMX
           IF(X .LT. XHIGH)GO TO 160
   180     CALL PLOT(XHIGH,Y,1,0)
           X = XORG

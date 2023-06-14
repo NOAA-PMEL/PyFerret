@@ -48,6 +48,8 @@ C *kob* 04/07/96 passed in character strings had to be declared
 C                with "*(*)" for the linux port
 C *acm* 11/05    Changes for deg-min-sec labelling. for these long
 C                labels make the character size a bit smaller.
+C 12/2022 *acm* Code cleanup: explicitly set type of arguments to SYMBEL
+
 	REAL*8 x,y,xf,yf
 	REAL   wid,wid1,wid2,wid3
         REAL charsize
@@ -134,8 +136,8 @@ c
       YL=Y-charsize*.5*C/YF 
 400   CALL SYMBEL(XL,YL,DEG,charsize,NC,ITMP) 
 	IF(NE.NE.0)THEN
-      CALL SYMBEL(XL+(WID1-WID2)*C/XF,YL+(WID1-WID2)*S/YF, 
-     *DEG,charsize,NE,'10') 
+      CALL SYMBEL(SNGL(XL+(WID1-WID2)*C/XF),
+     * SNGL(YL+(WID1-WID2)*S/YF), DEG,charsize,NE,'10') 
       XLT=XL+WID1*C/XF-charsize*.625*S/XF 
       YLT=YL+WID1*S/YF+charsize*.625*C/YF 
       CALL SYMBEL(XLT,YLT,DEG,charsize*.75,L,ITMP2) 

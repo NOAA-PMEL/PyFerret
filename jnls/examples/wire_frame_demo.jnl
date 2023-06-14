@@ -9,6 +9,8 @@
 
 ! ...in case of left-overs from previous commands
 CANCEL REGION
+cancel mode logo
+set window/siz=1.5
 
 ! Define a simple 2D Gaussian function in the XY plane.
 LET GAUSS = 2*EXP(-1*((x/2)^2 + y^2))

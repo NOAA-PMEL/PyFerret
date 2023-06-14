@@ -55,6 +55,7 @@
 * V745 *acm* 3/19 Issue 1914: comparison of single-precision data in uc() and the
 *                 coordinate data must be done in single precision using TM_FPEQ_SNGL
 *               * Also clean up old code.
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -96,11 +97,11 @@
         j2 = maxss_dim2
         IF (xpos_hiss_dim2 .EQ. unspecified_int4) j2 = xpos_hiss_dim2
 
-        DO 100 i = i1, i2
-        DO 100 j = j1, j2
+        DO i = i1, i2
+        DO j = j1, j2
            xx = xfield(i,j)
 	   IF ( xx .EQ. badxcurv) THEN
-              GOTO 100 
+              CYCLE
            ELSE
               IF ( xx .GE. dn.AND.  xx .LE. up ) THEN
                  ilo = MIN(i,ilo)
@@ -109,7 +110,8 @@
 	      IF (TM_FPEQ_SNGL(xx, dn)) ilo = MIN(i,ilo)
 	      IF (TM_FPEQ_SNGL(xx, up)) ihi = MAX(i,ihi)
            ENDIF
-  100   CONTINUE
+	ENDDO
+	ENDDO
 
         jlo = MAX(minss_dim2, maxss_dim2)
         jhi = MIN(minss_dim2, maxss_dim2)
@@ -130,11 +132,11 @@
         j2 = maxss_dim2
         IF (ypos_hiss_dim2 .EQ. unspecified_int4) j2 = ypos_hiss_dim2
 
-        DO 200 i = i1, i2
-        DO 200 j = j1, j2
+        DO i = i1, i2
+        DO j = j1, j2
            yy = yfield(i,j)
 	   IF ( yy .EQ. badycurv) THEN
-              GOTO 200 
+              CYCLE
            ELSE
               IF ( yy .GE. dn .AND. yy .LE. up ) THEN
                  jlo = MIN(j, jlo)
@@ -143,7 +145,8 @@
 	      IF (TM_FPEQ_SNGL(yy, dn)) jlo = MIN(j, jlo)
 	      IF (TM_FPEQ_SNGL(yy, up)) jhi = MAX(j, jhi)
            ENDIF
-  200   CONTINUE
+        ENDDO
+	ENDDO
 
 * successful completion
 	status = ferr_ok

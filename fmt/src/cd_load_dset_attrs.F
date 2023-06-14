@@ -59,6 +59,8 @@
 * V76  1/20 *acm* Orientation of Point-type data set to e_dim
 * V745 *acm*  5/20  added mode_dsg to control turning off all DSG ops
 * V7.6 *acm* 6/20 Issue 1980: When possible open invalid DSG datasets anyway with NOTES.
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
+C 12/2022 *acm* Code cleanup: Replace BOZ constant '40'X with 64.
 
 * argument definitions:
 *       dset    - pointer to TMAP data set
@@ -85,7 +87,6 @@
 ! kob 7/95
 	include 'xsys_names.cmn_text'	            
 
-
 * local variable declarations:
       INTEGER TM_HASH_NAME, TM_LENSTR1, STR_SAME, STR_CASE_BLIND_COMPARE,
      .        ndims, nvars, ngatts, recdim, cdfstat, 
@@ -94,11 +95,6 @@
       REAL val
       LOGICAL CD_ISIT_EPIC, NC_GET_ATTRIB, got_it, do_warn
       PARAMETER (do_warn = .TRUE. )
-
-#ifdef FORTRAN_90
-	INTEGER HEX40
-	DATA HEX40/Z'40'/
-#endif
 
 * Default contents as per TMAP "Background record"
 * if this is a MC data set, we don't want to reset these values
@@ -109,8 +105,9 @@
 		ds_t0time(dset)		= ' '
 		ds_ntegrate_tstep(dset)	= 1
 		ds_time_run(dset)	= ' '
-		DO 120 i = 1,num_aux
-  120		cd_what_isit(i,dset)= ' '
+		DO i = 1,num_aux
+  		   cd_what_isit(i,dset)= ' '
+  		ENDDO
 	ENDIF
 
 * time axis
@@ -283,13 +280,10 @@ c		    ENDIF
 * "unique" 2 letter code for this data set
         ds_prog_rev(dset) = ' '
         i = TM_HASH_NAME( ds_name(dset), 26*26-1 )
-#ifdef FORTRAN_90
-        ds_prog_rev(dset)(1:1) = CHAR( IOR(HEX40,i/26 + 1  ) )
-        ds_prog_rev(dset)(2:2) = CHAR( IOR(HEX40,MOD(i,26) + 1 ) )
-#else
-        ds_prog_rev(dset)(1:1) = CHAR( IOR('40'X,i/26 + 1  ) )
-        ds_prog_rev(dset)(2:2) = CHAR( IOR('40'X,MOD(i,26) + 1 ) )
-#endif
+* Replace BOZ constant '40'X with 64.
+	ds_prog_rev(dset)(1:1) = ACHAR( IOR(64,i/26 + 1  ) )
+        ds_prog_rev(dset)(2:2) = ACHAR( IOR(64,MOD(i,26) + 1 ) )
+
 * Allocate a "step file" slot to save CDF id and filename
 * Find the next storage position for stepfiles in common
 * only if the file is not a multi-file netcdf dataset
@@ -297,9 +291,9 @@ c		    ENDIF
 c commented out diagnostic write statements
 c	  write(6,*) 'sf_setnum......',sf_setnum(1)
 c	  write(6,*) 'set_not_open...',set_not_open
-          DO 190 istep = 1,maxstepfiles
+          DO istep = 1,maxstepfiles
             IF (sf_setnum(istep) .EQ. set_not_open) GOTO 200
- 190      CONTINUE
+	  ENDDO
 * No room left for new stepfiles
           GOTO 5200
 

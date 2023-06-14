@@ -1,7 +1,8 @@
 ! land_detail_demo.jnl
 ! Examples showing the lines drawn by the script land_detail.jnl
 
-SET WINDOW/SIZE=0.6
+CANCEL MODE LOGO
+SET WINDOW/size=1.5
 CAN MODE logo
 PPL AXLEN,7.8
 
@@ -15,7 +16,6 @@ set mode verify
 
 go fland 40 white basemap solid x=232:241 y=44:50
 go land_detail black overlay 8 9 blue lightblue
-! frame/file=land_detail_1.gif
 pause
 
 ! Showing national boundaries and rivers. 
@@ -37,13 +37,13 @@ SET MODE/LAST verify
 fill/lev=(0,10000,10000)/pal=tan/nokey/x=0:24/y=30:46 rose
 fill/over/nolab/lev=(-5000,-1000,500)(-1000,0,50)/key/pal=topo/x=0:24/y=30:46 rose
 go land_detail black overlay red green blue blue
-! frame/file=land_detail_2.gif
 
 can data/all
 
 pause
 ! Showing international marine boundaries
 
+set window/aspect=0.6/size=1.5
 use etopo20
 fill/x=80:240/y=-50:20/pal=land_sea/lev=(-9000,9000,500) rose
 
@@ -53,4 +53,3 @@ go land_detail black overlay red " " " " " " red
 
 can data/all
 
-! frame/file=land_detail_3.gif

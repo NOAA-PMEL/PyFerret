@@ -2,7 +2,6 @@
 * floatstr.F
 *
 * Ansley Manke 11/10
-* V68  *acm* 1/12  ifdef double_p for double-precision ferret.
 * V695 *acm* 9/15  Allow integer formats. Truncate Floating point data, write as integer
 * V697 *acm* 11/15 Fix for the zero-filled versions of these formats, so that I0 and F0.0 work
 *
@@ -84,23 +83,15 @@
       INCLUDE 'EF_Util.cmn'
       INCLUDE 'EF_mem_subsc.cmn'
 
-      INTEGER strdf
-#ifdef double_p
-      PARAMETER (strdf = 1)
-#else
-      PARAMETER (strdf = 2)
-#endif
 
       INTEGER id
 
       REAL arg_1(mem1lox:mem1hix, mem1loy:mem1hiy, mem1loz:mem1hiz, 
      .           mem1lot:mem1hit, mem1loe:mem1hie, mem1lof:mem1hif)
-      REAL arg_2(strdf,
-     .           mem2lox:mem2hix, mem2loy:mem2hiy, mem2loz:mem2hiz, 
+      REAL arg_2(mem2lox:mem2hix, mem2loy:mem2hiy, mem2loz:mem2hiz, 
      .           mem2lot:mem2hit, mem2loe:mem2hie, mem2lof:mem2hif)
 
-      REAL result(strdf,
-     .            memreslox:memreshix, memresloy:memreshiy, 
+      REAL result( memreslox:memreshix, memresloy:memreshiy, 
      .            memresloz:memreshiz, memreslot:memreshit,
      .            memresloe:memreshie, memreslof:memreshif)
 
@@ -218,13 +209,13 @@ C adjust the field width if requested by the user (from repl_exprns.F)
 	      END DO
 	   ENDIF
 
-            CALL EF_PUT_STRING(fstring, slen, result(1,i,j,k,l,m,n))
+            CALL EF_PUT_STRING(fstring, slen, result(i,j,k,l,m,n))
 
          ELSE
 
             fstring = nullstr
             slen = 0
-            CALL EF_PUT_STRING (fstring, slen, result(1,i,j,k,l,m,n))
+            CALL EF_PUT_STRING (fstring, slen, result(i,j,k,l,m,n))
          ENDIF
 
          i1 = i1 + arg_incr(X_AXIS,ARG1)

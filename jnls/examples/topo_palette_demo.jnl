@@ -9,6 +9,7 @@
  ! Access the detailed topography/bathymetry data in etopo5 if available
 
 CANCEL MODE verify
+cancel mode logo
 SET MODE ignore
 SET REDIRECT/CLOBBER/FILE=error_file_demo.out STDERR
 CANCEL SYMBOL fer_last_error
@@ -18,6 +19,8 @@ IF ($fer_last_error"0|*>1") THEN use etopo20
 CANCEL MODE ignore
 CANCEL REDIRECT
 sp rm error_file_demo.out
+
+set window/size=1.5
 SET MODE/LAST verify
 
 

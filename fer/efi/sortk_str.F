@@ -37,7 +37,6 @@
 * Ansley Manke
 * Nov 2008
 * V6.2 *acm* SORTI for strings
-* V68  *acm* 1/12  ifdef double_p for double-precision ferret.
 *
 * This function sorts data on the z axis in increasing order.
 * Returns index of sorted values. 
@@ -236,18 +235,12 @@
       INCLUDE 'EF_Util.cmn'
       INCLUDE 'EF_mem_subsc.cmn'
 
-      INTEGER strdf
-#ifdef double_p
-      PARAMETER (strdf = 1)
-#else
-      PARAMETER (strdf = 2)
-#endif
 
       INTEGER id
 
-      REAL arg_1(strdf, mem1lox:mem1hix, mem1loy:mem1hiy, 
-     .                  mem1loz:mem1hiz, mem1lot:mem1hit, 
-     .                  mem1loe:mem1hie, mem1lof:mem1hif)
+      REAL arg_1(mem1lox:mem1hix, mem1loy:mem1hiy, 
+     .           mem1loz:mem1hiz, mem1lot:mem1hit,
+     .           mem1loe:mem1hie, mem1lof:mem1hif)
 
       REAL result(memreslox:memreshix, memresloy:memreshiy, 
      .            memresloz:memreshiz, memreslot:memreshit,

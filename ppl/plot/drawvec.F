@@ -45,19 +45,11 @@ C***********************************************************************
 C**
 C**
 	
-#ifdef unix
 	INCLUDE 'AXIS.INC'
 	INCLUDE 'AXLWID.INC'
 	INCLUDE 'CMRD.INC'
 	INCLUDE 'LABCOM.INC'
 	INCLUDE 'TAXIS.INC'
-#else
-        INCLUDE 'pplinc:AXIS.INC'
-        INCLUDE 'pplinc:AXLWID.INC'
-        INCLUDE 'pplinc:CMRD.INC'
-        INCLUDE 'pplinc:LABCOM.INC'
-        INCLUDE 'pplinc:TAXIS.INC'
-#endif
 	
 	REAL minvec,maxarw,minarw,maxvel
 	

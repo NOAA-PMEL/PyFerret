@@ -53,6 +53,7 @@
 * PyFr *kms*  7/13 - add support for R,G,B and R,G,B,A (no parentheses);
 *                    return a color ID and the default pen thickness
 *                    instead of a pen ID; white is color ID 7
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 
         IMPLICIT NONE
 
@@ -104,8 +105,9 @@
 	ELSE
 
 * find first non-blank
-	   DO 100 strt = equal_pos+1, slen
- 100	   IF ( string(strt:strt) .NE. ' ' ) GOTO 110
+	   DO strt = equal_pos+1, slen
+	      IF ( string(strt:strt) .NE. ' ' ) GOTO 110
+ 	   ENDDO
 	   STOP '=_str'		! cannot occur
 
 * remove quotation marks
@@ -173,11 +175,11 @@
 	ELSE
 * ... compare with allowable colors
            len_test = TM_LENSTR(str)
-	   DO 200 icolor = 1, ncolor_string
+	   DO icolor = 1, ncolor_string
               len_mchars = TM_LENSTR(colors(icolor)(:4))
 	      IF ( MATCH4(str, len_test,
      .                    colors(icolor), len_mchars) ) GOTO 1000
- 200	   CONTINUE
+	   ENDDO
 	   GOTO 5100   ! unknown color
 	ENDIF
 

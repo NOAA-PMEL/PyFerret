@@ -55,7 +55,6 @@
 *                  netcdf3-style calls, which are also consistent with netcdf4.
 * V65  *acm* 1/10  Add #ifdef usingDODSf2cUnderscore, for 32-bit linux build
 *                  linked with OPeNDAP library.
-* V68  *acm* 1/12  ifdef double_p for double-precision ferret.
 * V674 2/12 *acm* 6D Ferret: use nferdims rather than 4 for dimension indexing
 * V686 4/13 *acm* Fix ticket 2064: use single-precision comparisons
 * v694 1/15 *acm* for ticket 2227: if a dimension from a nc file is not also a 
@@ -63,6 +62,8 @@
 * V698  4/16 *acm* Fix ticket 2241: If file has dimension but not a coordinate 
 *                  variable, do not write the coordinate variable, ONLY IF writing 
 *                  the full-span in that direction.
+C 12/2022 *acm* Code cleanup: Declare cvdim as an array to avoid rank-mismatch errors
+*               when compiling under gfortran v10.
 
 * argument definitions:
 *	cdfid   - id of currently open CDF file
@@ -99,7 +100,7 @@
       INTEGER TM_LENSTR1, TM_SUBSC, 
      .        idim, vartyp, nvdim,
      .        ndims, cdfstat, vdims(8), nvatts,
-     .	      cvartyp, ncvdims, cvdim, npts, alen, axid, offset
+     .	      cvartyp, ncvdims, cvdim(1), npts, alen, axid, offset
 * 4/99 *kob* 
       CHARACTER vname*128, axnam*128
       REAL*8 TM_WORLD, file_val, mem_val
@@ -168,11 +169,7 @@
 * ... get the vital statistics of the coordinate variable
 		 cdfstat = NF_INQ_VAR(cdfid, axid, axnam, 
      .			cvartyp, ncvdims,
-#ifdef FORTRAN_90
-     .			TRANSFER(cvdim,cvdim,1), nvatts)
-#else
      .                  cvdim, nvatts)
-#endif
 * ... read the first coordinate
                  CALL CD_RD_R8_1( cdfid, axid, 1, cvartyp,
      .                      'axis: '//axnam(:alen), file_val, status )

@@ -147,12 +147,6 @@
       INCLUDE 'EF_Util.cmn'
       INCLUDE 'EF_mem_subsc.cmn'
 
-      INTEGER strdf
-#ifdef double_p
-      PARAMETER (strdf = 1)
-#else
-      PARAMETER (strdf = 2)
-#endif
 
       INTEGER id
       REAL arg_1(mem1lox:mem1hix, mem1loy:mem1hiy, mem1loz:mem1hiz,
@@ -163,9 +157,9 @@
      .           mem3lot:mem3hit, mem3loe:mem3hie, mem3lof:mem3hif)
       REAL arg_4(mem4lox:mem4hix, mem4loy:mem4hiy, mem4loz:mem4hiz,
      .           mem4lot:mem4hit, mem4loe:mem4hie, mem4lof:mem4hif)
-      REAL arg_5(strdf,mem5lox:mem5hix, mem5loy:mem5hiy, mem5loz:mem5hiz,
+      REAL arg_5(mem5lox:mem5hix, mem5loy:mem5hiy, mem5loz:mem5hiz,
      .           mem5lot:mem5hit, mem5loe:mem5hie, mem5lof:mem5hif)
-      REAL result(strdf,memreslox:memreshix, memresloy:memreshiy,
+      REAL result(memreslox:memreshix, memresloy:memreshiy,
      .            memresloz:memreshiz, memreslot:memreshit,
      .            memresloe:memreshie, memreslof:memreshif)
 
@@ -234,7 +228,7 @@
 C     Get the string value of dates and put them in the result.
 
                outstring = '***'
-	       CALL EF_PUT_STRING (outstring, 3, result(1,i,j,k,l,m,n))
+	       CALL EF_PUT_STRING (outstring, 3, result(i,j,k,l,m,n))
 
             ELSE
 
@@ -270,7 +264,7 @@ cc	       ENDIF
 cc               outstring = lab(:slen)//'_'//ilab(:llen)
      
 	       outlen = TM_LENSTR(outstring)
-	       CALL EF_PUT_STRING (outstring, outlen, result(1,i,j,k,l,m,n))
+	       CALL EF_PUT_STRING (outstring, outlen, result(i,j,k,l,m,n))
 
             ENDIF
 

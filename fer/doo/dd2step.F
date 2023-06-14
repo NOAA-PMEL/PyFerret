@@ -45,10 +45,10 @@
 * written for VAX computer under VMS operating system
 *
 * V200:	10/11/89 - modified array declarations using XMEM_SUBSC.CMN
-* V230: 5/6/92 - COS correction checks that J location is defined         
-* V68  *acm* 1/12  ifdef double_p for double-precision ferret.
+* V230: 5/6/92 - COS correction checks that J location is defined  
 *       2/12 *kms* Include E and F dimensions (use nferdims in tmap_dims.parm)
 * V71 12/16 *acm* For ticket 2158: working with true monthly time axes.
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
@@ -102,55 +102,47 @@
 	bad_res = mr_bad_data( com_mr )
 
 * compute limits within which calculation is possible
-	DO 10 ii = 1, nferdims
+	DO ii = 1, nferdims
 	   lo_sub(ii) = cx_lo_ss(res_cx,ii)
 	   hi_sub(ii) = cx_hi_ss(res_cx,ii)
- 10	CONTINUE
+	ENDDO
 	lo_sub(idim) = com_lo + 1 
 	hi_sub(idim) = com_hi - 1
 
 * create an array of delta H increments
-	DO 20 ii = lo_sub(idim), hi_sub(idim)
+	DO ii = lo_sub(idim), hi_sub(idim)
 	   lo_ww = TM_WORLD( ii-1, grid, idim, box_middle )
 	   hi_ww = TM_WORLD( ii+1, grid, idim, box_middle )
 	   box(ii) = hi_ww - lo_ww
- 20	CONTINUE	   
+	ENDDO	   
 
 * perform differentiation in standard units if possible
 	unit = un_convert( line_unit_code(axis) )
 	IF (ITSA_TRUEMONTH_AXIS(axis)) unit = un_convert(pun_day)
-	DO 30 ii = lo_sub(idim), hi_sub(idim)
- 30	box(ii) = box(ii) * unit
+	DO ii = lo_sub(idim), hi_sub(idim)
+	   box(ii) = box(ii) * unit
+ 	ENDDO
 
 * DERIVATIVE ALONG X AXIS
 	IF ( idim .EQ. x_dim ) THEN
 	   need_cos = GEOG_COS_FACTOR( idim, grid )
      .                .AND. lo_s2.NE.unspecified_int4
-	   DO 110 j = lo_s2, hi_s2
+	   DO j = lo_s2, hi_s2
 	   IF ( need_cos ) THEN
-#ifdef double_p
 	      cos_factor = COS( deg2rad *       
      .            TM_WORLD(j, grid, y_dim, box_middle) ) 
               ybxlo = deg2rad* 
      .            TM_WORLD(j,grid,y_dim,box_lo_lim)
               ybxhi = deg2rad* 
      .            TM_WORLD(j,grid,y_dim,box_hi_lim)
-#else
-	      cos_factor = COS( deg2rad *       
-     .            SNGL( TM_WORLD(j, grid, y_dim, box_middle) ) ) 
-              ybxlo = deg2rad* 
-     .            SNGL( TM_WORLD(j,grid,y_dim,box_lo_lim) )
-              ybxhi = deg2rad* 
-     .            SNGL( TM_WORLD(j,grid,y_dim,box_hi_lim) )
-#endif
               bx = ABS(ybxhi - ybxlo)
 	      cos_factor = ABS( SIN(ybxhi) - SIN(ybxlo) )/ bx
 	   ENDIF
-	   DO 110 n = lo_s6, hi_s6
-	   DO 110 m = lo_s5, hi_s5
-	   DO 110 l = lo_s4, hi_s4
-	   DO 110 k = lo_s3, hi_s3
-	      DO 100 i = lo_s1, hi_s1
+	   DO n = lo_s6, hi_s6
+	   DO m = lo_s5, hi_s5
+	   DO l = lo_s4, hi_s4
+	   DO k = lo_s3, hi_s3
+	      DO i = lo_s1, hi_s1
 	         lo_com = com(i-1,j,k,l,m,n)
 	         hi_com = com(i+1,j,k,l,m,n)
 	         IF ( lo_com.EQ.bad_res .OR. hi_com.EQ.bad_res ) THEN
@@ -160,17 +152,21 @@
 	            IF ( need_cos )
      .                 res(i,j,k,l,m,n) = res(i,j,k,l,m,n)/cos_factor
 	         ENDIF
- 100	      CONTINUE
- 110	   CONTINUE
+	      ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
 
 * DERIVATIVE ALONG Y AXIS
 	ELSEIF ( idim .EQ. y_dim ) THEN
-	   DO 210 n = lo_s6, hi_s6
-	   DO 210 m = lo_s5, hi_s5
-	   DO 210 l = lo_s4, hi_s4
-	   DO 210 k = lo_s3, hi_s3
-	   DO 210 i = lo_s1, hi_s1
-	      DO 200 j = lo_s2, hi_s2
+	   DO n = lo_s6, hi_s6
+	   DO m = lo_s5, hi_s5
+	   DO l = lo_s4, hi_s4
+	   DO k = lo_s3, hi_s3
+	   DO i = lo_s1, hi_s1
+	      DO j = lo_s2, hi_s2
 	         lo_com = com(i,j-1,k,l,m,n)
 	         hi_com = com(i,j+1,k,l,m,n)
 	         IF ( lo_com.EQ.bad_res .OR. hi_com.EQ.bad_res ) THEN
@@ -178,17 +174,21 @@
 	         ELSE
 	            res(i,j,k,l,m,n) = (hi_com-lo_com) / box(j)
 	         ENDIF
- 200	      CONTINUE
- 210	   CONTINUE
+	      ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
 
 * DERIVATIVE ALONG Z AXIS
 	ELSEIF ( idim .EQ. z_dim ) THEN
-	   DO 310 n = lo_s6, hi_s6
-	   DO 310 m = lo_s5, hi_s5
-	   DO 310 l = lo_s4, hi_s4
-	   DO 310 j = lo_s2, hi_s2
-	   DO 310 i = lo_s1, hi_s1
-	      DO 300 k = lo_s3, hi_s3
+	   DO n = lo_s6, hi_s6
+	   DO m = lo_s5, hi_s5
+	   DO l = lo_s4, hi_s4
+	   DO j = lo_s2, hi_s2
+	   DO i = lo_s1, hi_s1
+	      DO k = lo_s3, hi_s3
 	         lo_com = com(i,j,k-1,l,m,n)
 	         hi_com = com(i,j,k+1,l,m,n)
 	         IF ( lo_com.EQ.bad_res .OR. hi_com.EQ.bad_res ) THEN
@@ -196,17 +196,21 @@
 	         ELSE
 	            res(i,j,k,l,m,n) = (hi_com-lo_com) / box(k)
 	         ENDIF
- 300	      CONTINUE
- 310	   CONTINUE
+	      ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
 
 * DERIVATIVE ALONG T AXIS
 	ELSEIF ( idim .EQ. t_dim ) THEN
-	   DO 410 n = lo_s6, hi_s6
-	   DO 410 m = lo_s5, hi_s5
-	   DO 410 k = lo_s3, hi_s3
-	   DO 410 j = lo_s2, hi_s2
-	   DO 410 i = lo_s1, hi_s1
-	      DO 400 l = lo_s4, hi_s4
+	   DO n = lo_s6, hi_s6
+	   DO m = lo_s5, hi_s5
+	   DO k = lo_s3, hi_s3
+	   DO j = lo_s2, hi_s2
+	   DO i = lo_s1, hi_s1
+	      DO l = lo_s4, hi_s4
 	         lo_com = com(i,j,k,l-1,m,n)
 	         hi_com = com(i,j,k,l+1,m,n)
 	         IF ( lo_com.EQ.bad_res .OR. hi_com.EQ.bad_res ) THEN
@@ -214,17 +218,21 @@
 	         ELSE
 	            res(i,j,k,l,m,n) = (hi_com-lo_com) / box(l)
 	         ENDIF
- 400	      CONTINUE
- 410	   CONTINUE
+	      ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
 
 * DERIVATIVE ALONG E AXIS
 	ELSEIF ( idim .EQ. e_dim ) THEN
-	   DO 510 n = lo_s6, hi_s6
-	   DO 510 l = lo_s4, hi_s4
-	   DO 510 k = lo_s3, hi_s3
-	   DO 510 j = lo_s2, hi_s2
-	   DO 510 i = lo_s1, hi_s1
-	      DO 500 m = lo_s5, hi_s5
+	   DO n = lo_s6, hi_s6
+	   DO l = lo_s4, hi_s4
+	   DO k = lo_s3, hi_s3
+	   DO j = lo_s2, hi_s2
+	   DO i = lo_s1, hi_s1
+	      DO m = lo_s5, hi_s5
 	         lo_com = com(i,j,k,l,m-1,n)
 	         hi_com = com(i,j,k,l,m+1,n)
 	         IF ( lo_com.EQ.bad_res .OR. hi_com.EQ.bad_res ) THEN
@@ -232,17 +240,21 @@
 	         ELSE
 	            res(i,j,k,l,m,n) = (hi_com-lo_com) / box(m)
 	         ENDIF
- 500	      CONTINUE
- 510	   CONTINUE
+	      ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
 
 * DERIVATIVE ALONG F AXIS
 	ELSEIF ( idim .EQ. f_dim ) THEN
-	   DO 610 m = lo_s5, hi_s5
-	   DO 610 l = lo_s4, hi_s4
-	   DO 610 k = lo_s3, hi_s3
-	   DO 610 j = lo_s2, hi_s2
-	   DO 610 i = lo_s1, hi_s1
-	      DO 600 n = lo_s6, hi_s6
+	   DO m = lo_s5, hi_s5
+	   DO l = lo_s4, hi_s4
+	   DO k = lo_s3, hi_s3
+	   DO j = lo_s2, hi_s2
+	   DO i = lo_s1, hi_s1
+	      DO n = lo_s6, hi_s6
 	         lo_com = com(i,j,k,l,m,n-1)
 	         hi_com = com(i,j,k,l,m,n+1)
 	         IF ( lo_com.EQ.bad_res .OR. hi_com.EQ.bad_res ) THEN
@@ -250,8 +262,12 @@
 	         ELSE
 	            res(i,j,k,l,m,n) = (hi_com-lo_com) / box(n)
 	         ENDIF
- 600	      CONTINUE
- 610	   CONTINUE
+	      ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
 
 	ENDIF
 

@@ -1,6 +1,11 @@
 
       SUBROUTINE STL2(X, Y, E, M, bad_y, bad_out, U, V, W, K, IP)
 
+
+* 11/2022 *acm* Code cleanup: 
+*              - Rework arithmetic IF statements 
+*              - GOTO statements remain. Overall organization of the routine unchanged.
+
 C PIECEWISE LINEAR APPROXIMATIONS OF FEWEST
 C LINE SEGMENTS WITHIN GIVEN TOLERANCES.
 
@@ -208,7 +213,9 @@ C TEST FOR NEW *MAX* SLOPE
       TEMP1 = (Y(I)+EPSLN-YEYE)/DX
       TEST = TEMP1 - SMAX
       IF (SGN.LE.0.0) TEST = -TEST
-      IF (TEST) 80, 90, 100
+      IF (TEST .LT. 0.0) GOTO 80 
+      IF (TEST .EQ. 0.0) GOTO 90
+      IF (TEST .GT. 0.0) GOTO 100
    80 CONTINUE
 C TEST FOR END OF CANDIDATE SEGMENT
       TEST = TEMP1 - SMIN
@@ -222,11 +229,15 @@ C TEST FOR NEW *MIN* SLOPE
       TEMP2 = (Y(I)-EPSLN-YEYE)/DX
       TEST = TEMP2 - SMAX
       IF (SGN.LE.0.0) TEST = -TEST
-      IF (TEST) 110, 120, 140
+      IF (TEST .LT. 0.0) GOTO 110
+      IF (TEST .EQ. 0.0) GOTO 120
+      IF (TEST .GT. 0.0) GOTO 140
   110 CONTINUE
       TEST = SMIN - TEMP2
       IF (SGN.LE.0.0) TEST = -TEST
-      IF (TEST) 120, 130, 60
+      IF (TEST .LT. 0.0) GOTO 120
+      IF (TEST .EQ. 0.0) GOTO 130
+      IF (TEST .GT. 0.0) GOTO 60
   120 CONTINUE
       SMIN = TEMP2
   130 CONTINUE
@@ -267,7 +278,9 @@ C CHECK FOR PIVOT AT NEW EYE POINT
         TEMP1 = (Y(L+1)-TEMP2)/DX
         TEST = TEMP1 - SMAX
         IF (SGN.LE.0.0) TEST = -TEST
-        IF (TEST) 180, 190, 200
+        IF (TEST .LT. 0.0) GOTO 180
+        IF (TEST .EQ. 0.0) GOTO 190
+        IF (TEST .GT. 0.0) GOTO 200
   180   CONTINUE
         SMAX = TEMP1
   190   CONTINUE
@@ -456,7 +469,8 @@ c http://en.wikibooks.org/wiki/Algorithm_Implementation/Sorting/Merge_sort#Fortr
 
 ! modified to return nout instead of assuming treating NC, length of C as known.
 
-      integer  NA,NB,NC,NOUT,NMAX
+      integer nout, nmax
+      integer  NA,NB,NC         
       REAL  A(*), B(*), C(*)
  
       integer I,J,K

@@ -13,6 +13,8 @@
 QUERY/IGNORE $1"<Usage: GO unlabel n,  where n is a PLOT+ movable label number"
 
 ! remove the label by setting its location to the origin with no text content
-PPL LABS/NOUSER $1,0,0 @AS
+
+PPL LABS/NOUSER $1,0,0," "
+IF ($program_name"0|Ferret>1|*>0") THEN PPL LABS/NOUSER $1,0,0,@AS
 
 set mode/last verify

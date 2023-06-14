@@ -129,11 +129,7 @@ C
 
 C     Curvilinear coordinates declarations
         integer status, ii
-#ifdef double_p
         real*8 x_curv(12), y_curv(12)
-#else
-        real x_curv(12), y_curv(12)
-#endif
         real curv_len, xxc, yyc, tail_i, tail_j, head_i, head_j, 
      .       head_len, tail_i_orig, tail_j_orig
 

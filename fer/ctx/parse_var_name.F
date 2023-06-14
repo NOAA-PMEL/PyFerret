@@ -78,6 +78,7 @@
 * v698 5/16  *acm* ticket 2413: New attribute keywords ncoordvars, coordnames
 *                  return info about coordinate-variables in datasets
 * V710 9/16  *acm* ticket 2465: Parsing expressions including attribute references.
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 
         IMPLICIT NONE
 	include	'tmap_dims.parm'
@@ -118,7 +119,7 @@
 * ... hunt for matching right bracket
 	   brac_nest = 1
 	   right_bracket = 0	! default to catch syntax errors
-	   DO 200 i = left_bracket+1,full_name_len
+	   DO i = left_bracket+1,full_name_len
 	      IF ( newname(i:i) .EQ. "[" ) THEN
 	         brac_nest = brac_nest + 1
 	      ELSEIF ( newname(i:i) .EQ. "]" ) THEN
@@ -128,7 +129,7 @@
 	            GOTO 210
 	         ENDIF
 	      ENDIF
- 200	   CONTINUE
+	   ENDDO
  210	   IF (   right_bracket .LE. left_bracket + 1
      .	     .OR. name_len      .LE. 0			) GOTO 5000
 	ENDIF
@@ -191,8 +192,9 @@
 * apply those context mods that don't need to know the grid
 * apply them now, before looking for the variable name, because the data set is
 * needed in the name search
-	DO 100 idim = 1, nferdims
- 100	cx_given(idim,var_cx) = .FALSE.			! *sh* 4/90 bug fix
+	DO idim = 1, nferdims
+	   cx_given(idim,var_cx) = .FALSE.			! *sh* 4/90 bug fix
+ 	ENDDO
 	CALL APPLY_CONTEXT_MODS ( mods_cx, var_cx, nest_context, status )
 	IF ( status .NE. ferr_ok ) GOTO 5900
 
@@ -204,11 +206,11 @@
 
 * always apply mods that describe the auxiliary regridding variables
 	cx_naux(var_cx) = cx_naux(mods_cx)
-	DO 102 idim = 1, nferdims
+	DO idim = 1, nferdims
 	   cx_aux_arg_start(idim,var_cx) = cx_aux_arg_start(idim,mods_cx)
 	   cx_aux_arg_end  (idim,var_cx) = cx_aux_arg_end  (idim,mods_cx)
 	   cx_aux_stat     (idim,var_cx) = cx_aux_stat     (idim,mods_cx) 
- 102	CONTINUE
+	ENDDO
 
 	IF ( cx_variable( var_cx ) .EQ. munknown_var_name ) THEN
 * bail out if this variable cannot be identified

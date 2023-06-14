@@ -11,13 +11,14 @@
 ! Usage:
 
 !	GO scattered_vectors filename haf_inch_value ["clock"] ["stick"]
-! 1 filename       - the ASCII fie containing the 4-tuple data
+! 1 filename       - the ASCII file containing the 4-tuple data
 ! 2 haf_inch_value - the scale value - value of a 1/2 inch vector
 ! 3 arrow center   - "clock" for clock-hand vectors or "centered" [default]
 ! 4 arrow head     - "stick" for no head or "head" [default]
 
 ! Example:
-!	see "centered_vectors.jnl" for a usage example
+!	"vector_demo.jnl" makes use of scattered_vectors.jnl
+!	Also see "centered_vectors.jnl" for a usage example
 
 ! Note: This procedure will grab the plot state from PLOT+ so that plot state
 !	must already exist.  If this procedure is used to generate an overlay

@@ -96,11 +96,7 @@
 
 	IF ( regular ) THEN
 * regularly spaced points all have same grid box size
-#ifdef double_p
 	   BOX_SIZE = ( line_delta( axis ) )
-#else
-	   BOX_SIZE = SNGL( line_delta( axis ) )
-#endif
 
 	ELSE
 * irregularly spaced points
@@ -140,19 +136,10 @@
 	         hi_point = (TM_WORLD(isub0,   grid, idim, box_middle) 
      .			  +  TM_WORLD(isub0+1, grid, idim, box_middle)) / 2
 	      ENDIF
-#ifdef double_p
 	      BOX_SIZE = (hi_point - lo_point)
-#else
-	      BOX_SIZE = SNGL(hi_point - lo_point)
-#endif
 	   ELSE
-#ifdef double_p
 	      BOX_SIZE = ( TM_WORLD(isub0, grid, idim, box_hi_lim)
      .		             - TM_WORLD(isub0, grid, idim, box_lo_lim) )
-#else
-	      BOX_SIZE = SNGL( TM_WORLD(isub0, grid, idim, box_hi_lim)
-     .		             - TM_WORLD(isub0, grid, idim, box_lo_lim) )
-#endif
 	   ENDIF
 
 	ENDIF

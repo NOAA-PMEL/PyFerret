@@ -85,11 +85,6 @@ C* v552 *acm* 3/03 Longer strings: changes for multi-line labels
 *
 *
 *     *jd* variable IF renamed to INTIF for MAC 7.92
-*     *jd* 11.94 -  modified for AIX port
-*       Modification uses TM_NUMBER to determine if "value" is a number rather
-*       than the ERR= branch of a READ which fails on AIX/xlf
-
-        LOGICAL TM_NUMBER                ! ** TMAP mod 11/94 **
         INTEGER i                        ! ** TMAP mod 6/03 to init INTIF
 C
 	LOGICAL FIRST
@@ -147,17 +142,11 @@ C
      *		.OR.(ITST.GE.48.AND.ITST.LE.57)))GOTO 1000
 	    IWID=J-I
 	    if(iwid.eq.1)then
-#ifdef AIX_XLF
-            IF ( .NOT.TM_NUMBER(LINE(I:J-1)) ) GOTO 1000  ! TMAP mod 11/94
-#endif
 		read(line(i:j-1),'(i1)',err=1000)jk
 		x(m)=jk
 	    else
 	    WRITE(FRMT,999)IWID
 999	    FORMAT('(F',I3.3,'.0)')
-#ifdef AIX_XLF
-            IF ( .NOT.TM_NUMBER(LINE(I:J-1)) ) GOTO 1000  ! TMAP mod 11/94
-#endif
 	    READ(LINE(I:J-1),FRMT,ERR=1000)X(M)
 	    endif
 	    INTIF(M)=1
@@ -174,9 +163,6 @@ C	Error trying to read a number
 C	clear the error and put the rest in LABEL
 C
 1000	continue
-#ifndef unix
-	CALL ERRTST(64,I)
-#endif
 	IF(FIRST)THEN
 	    FIRST=.FALSE.
 	    I=J

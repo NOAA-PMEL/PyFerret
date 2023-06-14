@@ -211,7 +211,6 @@
 *                  Write the calendar attribute, even if its the default Gregorian
 * V68 *acm* 1/12   Use the same micro-adjusting scheme as we are implementing for 
 *                  reading netCDF files (ticket 1910). Reset micro-adjust size if needed.
-* V68  *acm* 1/12  ifdef double_p for double-precision ferret.
 *       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
 *       *acm* 4/12 6D Ferret: time axis may be in t or f direction. 
 * V68  *acm* 5/12  Add DEFINE DATA/AGGREGATE
@@ -273,6 +272,9 @@
 *                  uer redefines the mask variable, verify and set the new mask.
 * v767 6/22 *acm* See issue 112: Detect whether axis length is too large for 
 *                 4-byte integer indexing
+* 12/2022 *acm* Code cleanup: Ensure consistent data types in subroutine calls 
+*  1/2023 *acm* Code cleanup: Replace the computed GOTO statement 
+*                  "GOTO ( 100,200, ... )  subcmnd_num"  with IF blocks
 
         IMPLICIT NONE
 	include	'tmap_errors.parm'
@@ -441,7 +443,7 @@
      .            dset_to_add, dir, type, attype, attid, ibuff, i0,  
      .            agg_dim, nagfiles, ivar, item, nlab, ierr, nlen,  
      .            llen, line, dstart, units, npts, ipt1, ipte, iline_b,
-     .            tline, fline, idx, vaxcode, toverlap
+     .            tline, fline, idx, vaxcode, toverlap, mr1(1)
 
 	REAL	  rbuff, bad_flag, yeardays, 
      .            val, dummy, val_buf, xloc, yloc, halign, angle, size,
@@ -466,12 +468,7 @@
      .            tmatch*32, fmatch*32
 
         CHARACTER*1 tab
-#ifdef NO_INTRINSIC_IN_PARAMETER
-	PARAMETER     ( tab = o'011' )
-#else
 	PARAMETER     ( tab = CHAR(9))
-#endif
-
 	DATA	  basic_orients / 'WE','SN','UD','TI','E','F' /,
      .		  replmsg/'Replacing definition of '/
         DATA      reserved_flow_name / 'ELIF','ELSE','ENDI' /
@@ -481,13 +478,15 @@
 	LOGICAL OUTSIDE_0_1
 	OUTSIDE_0_1( x ) = x.LT.0.0 .OR. x.GT.1.0
 
-* select subcommand
-	GOTO ( 100,200,300,400,500,600,700,800,900,1000,1100,1200 ) subcmnd_num
+* execute subcommand
 
 * DEFINE  '    ' - (no action)
 * arrival at this point usually means an illegal subcommand was given
 * and was assumed to be an argument by the command parser
- 100	IF ( num_args .GE. 1 ) THEN
+
+      IF (subcmnd_num .EQ. 1) THEN
+
+	IF ( num_args .GE. 1 ) THEN
 	   CALL ERRMSG( ferr_invalid_subcmnd, status,
      .			cmnd_buff( arg_start(1):arg_end(1) ), *5000 )
 	ELSE
@@ -495,10 +494,15 @@
      .			'DEFINE what ?', *5000 )
 	ENDIF
 
+      ENDIF
+
 **************************************************************************
 * DEFINE REGION
 * ... command syntax ok ?
- 200	IF ( num_args .EQ. 0 ) THEN
+
+      IF (subcmnd_num .EQ. 2) THEN
+
+	IF ( num_args .EQ. 0 ) THEN
 	   CALL ERRMSG( ferr_invalid_command, status,
      .			'DEFINE what region ?', *5000 )
 	ENDIF
@@ -534,9 +538,9 @@
 
 * ... if this region was not previously defined find a slot
 	   IF ( create ) THEN
-	      DO 240 islot = 0, min_context, -1
-	         IF ( cx_name(islot) .EQ. unspecified_name4 ) GOTO 245!fix 7/92
- 240	      CONTINUE
+	      DO islot = 0, min_context, -1
+	         IF ( cx_name(islot) .EQ. unspecified_name4 ) GOTO 245
+	      ENDDO
 * ... no free slots
 	      CALL ERRMSG( ferr_prog_limit,status,
      .			   'Cancel or redefine a region',*5000 )
@@ -546,20 +550,21 @@
 *     that are defined
  245       IF ( num_qualifiers .EQ. 0 
      .     .OR. qual_given( slash_dflt ) .GT. 0 ) THEN
-	      DO 210 idim = 1, nferdims
+	      DO idim = 1, nferdims
 	         IF (cx_by_ss(idim,cx_buff)
      .		   .AND. cx_lo_ss(cx_buff,idim) .NE. unspecified_int4
      .	        .OR..NOT.cx_by_ss(idim,cx_buff)
      .		   .AND. cx_lo_ww(idim,cx_buff) .NE. unspecified_val8)
      .				cx_given( idim, cx_buff ) = .TRUE.
- 210	      CONTINUE
+	      ENDDO
 * ... else flag only the dimensions named
 	   ENDIF
 	ENDIF
 
 * all unmodified axes must be set to unspecified
-	DO 230 idim = 1, nferdims
- 230	IF ( .NOT.cx_given(idim,cx_buff) ) CALL DEL_CX_DIM( idim, cx_buff )
+	DO idim = 1, nferdims
+	   IF ( .NOT.cx_given(idim,cx_buff) ) CALL DEL_CX_DIM( idim, cx_buff )
+ 	ENDDO
 
 * LET-defined variables may involve now-redefined @regions so wipe out
 * previously computed values and grids that may be obsolete(7/92)
@@ -573,10 +578,16 @@
 	cx_name( islot ) = reg_name
 	RETURN
 
+      ENDIF
+
 **************************************************************************
 * DEFINE GRID
 * ... DEFINE GRID/X/Y/Z/T/E/F /FILE /LIKE
- 300	iqual = qual_given( slash_file )
+
+ 300  continue
+      IF (subcmnd_num .EQ. 3) THEN
+
+	iqual = qual_given( slash_file )
 	IF ( iqual .GT. 0 ) THEN
 * ... note "err_string" is used to save space - this is not an error
 	   CALL EQUAL_STR_LC( cmnd_buff(qual_start(iqual):qual_end(iqual)),
@@ -607,15 +618,15 @@
 	   IF ( status .NE. ferr_ok ) RETURN
 	   CALL TM_COPY_GRID( grid, mgrid_buff )
 	ELSE
-	   DO 310 idim = 1, nferdims
+	   DO idim = 1, nferdims
 	      grid_line    (idim, mgrid_buff) = mnormal
               grid_out_prod(idim, mgrid_buff) = .TRUE.
- 310	   CONTINUE	
+	   ENDDO	
 	   grid_rotation( mgrid_buff ) = 0.0
 	ENDIF
 
 * axes named with /X=line_grid_or_var, /Y= ...
-	DO 320 idim = 1, nferdims
+	DO idim = 1, nferdims
 	   iqual = qual_given( idim )
 	   IF ( iqual .GT. 0 ) THEN
 	      CALL EQUAL_STRING( cmnd_buff(qual_start(iqual):qual_end(iqual)),
@@ -643,7 +654,7 @@
 	         grid_line(idim, mgrid_buff) = grid_line( idim, ax_grid )
 	      ENDIF
 	   ENDIF
- 320	CONTINUE
+	ENDDO
 
 * check for repeated definitions and illegal redefinitions
 	IF ( dup_name ) THEN
@@ -669,20 +680,25 @@
 	   CALL PURGE_MR_GRID( old_grid, status )
 	   IF ( status .NE. merr_ok ) GOTO 5000
 * ... deallocate dynamic axes used in previous definition of this grid
-	   DO 350 idim = 1,nferdims
+	   DO idim = 1,nferdims
 	      CALL TM_DEALLO_DYN_LINE( grid_line(idim,old_grid) )
- 350	   CONTINUE
+	   ENDDO
 	   grid_name( old_grid ) = char_init16
 	ENDIF
 
 	RETURN
+
+      ENDIF
 
 **************************************************************************
 * DEFINE VARIABLE
 * find name to define
 * 2 syntaxes are allowed: "DEFINE VAR NAME=TEXT", "DEFINE VAR NAME TEXT"
 * in the latter be careful that "TEXT" may contain "="
- 400	purge_all = .FALSE.  ! initialize
+
+      IF (subcmnd_num .EQ. 4) THEN
+
+	purge_all = .FALSE.  ! initialize
         IF ( num_args .LT. 1 ) GOTO 5300
 	CALL NAME_EQUAL_STRING( buff1, pos, status )
 	CALL NAME_EQUAL_STRING_LC( varname, pos, status )
@@ -815,19 +831,16 @@
 * do we need to delete a previous definition of this same-named var ?
 * Note: need to purge old defs ALSO if the same name is now redefined in a 
 *	new data set -- expressions using this name chg interpretation  
-*	DO 410 i1 = 1, max_uvar
-*	   IF ( uvar_num_items(i1) .EQ. uvar_deleted ) GOTO 410
-*	   vax_code = STR_CASE_BLIND_COMPARE( uvar_name_code(i1), buff1 )
-*	   IF ( vax_code .EQ. vms_str_success ) THEN
+
         CALL string_array_find_caseblind(uvar_name_code_head,
      .                                   buff1,
      .                                   LEN(buff1),
      .                                   string_array_result(1),
      .                                   max_uvar,
      .                                   num_indices)        
-        DO 410 j = 1, num_indices
+        DO j = 1, num_indices
               i1 = string_array_result(j)
-              IF ( uvar_num_items(i1) .EQ. uvar_deleted ) GOTO 410
+              IF ( uvar_num_items(i1) .EQ. uvar_deleted ) CYCLE
 * ... delete only if same name in same data set
 	      IF ( uvar_dset(i1) .EQ. dset ) THEN
 	         CALL DELETE_USER_VAR(i1, dset)
@@ -836,7 +849,7 @@
 *     Also invalidates any memory-cached results that used aux of this name
 	      purge_all = .TRUE.
 *	   ENDIF
- 410	CONTINUE
+	ENDDO
 
 
 * if this name is used as the target of an aux (curvilinear) coordinate var
@@ -891,8 +904,9 @@
       ENDIF
 
 * is there at least one slot blank ?
-	DO 430 i1 = 1, max_uvar
- 430	IF ( uvar_num_items(i1) .EQ. uvar_deleted ) RETURN
+	DO i1 = 1, max_uvar
+	   IF ( uvar_num_items(i1) .EQ. uvar_deleted ) RETURN
+ 	ENDDO
 
 * no - not allowed to fill the last slot !
 *	uvar_num_items(uvar) = uvar_deleted
@@ -902,10 +916,19 @@
      .		'too many user-defined variables'//pCR//
      .		'cancel or redefine some variables', *5000 )
 
+
+      ENDIF
+
 **************************************************************************
 * DEFINE AXIS
 * ... /FILE=
- 500	IF ( qual_given( slash_file ) .GT. 0 ) GOTO 300 ! like DEFINE GRID/FILE
+
+      IF (subcmnd_num .EQ. 5) THEN
+
+	IF ( qual_given( slash_file ) .GT. 0 ) THEN
+	   subcmnd_num = 3
+	   GOTO 300 ! like DEFINE GRID/FILE
+	ENDIF
 
 * initialize	
 	buff2 = ' '
@@ -1052,12 +1075,12 @@ c	IF ( .NOT.TM_LEGAL_NAME( buff3 ) ) GOTO 5100
 * orientation must be uniquely defined
 
 	orient = unspecified_int4
-	DO 510 idim = 1, nferdims
+	DO idim = 1, nferdims
 	   IF ( qual_given(slash_x0+idim) .GT. 0 ) THEN   !!!!!!!!
 	      IF ( orient .NE. unspecified_int4 ) GOTO 5510
 	      orient = idim
 	   ENDIF
- 510	CONTINUE
+	ENDDO
 
 	IF ( irreg  .AND. orient.EQ.unspecified_int4) THEN
 * ... orientation may be inferred from clues if irregular coord syntax is used
@@ -1409,7 +1432,8 @@ C /units=months  is 1/12 of the length of the year
            IF (has_bounds) THEN
               CALL NON_ARRAY_SUBSC( is_mr, 2 )
            ELSE
-              CALL NON_ARRAY_SUBSC( mr, 1 )
+              mr1(1) = mr
+	      CALL NON_ARRAY_SUBSC( mr1, 1 )
            ENDIF
 
 	   IF (its_edges) THEN
@@ -1422,11 +1446,11 @@ C /units=months  is 1/12 of the length of the year
 
 
 * ... monotonic?
-	      DO 527 i1 = 2, n
+	      DO i1 = 2, n
 	         vhi  = GET_LINE_COORD (lineedg(iline)%ptr, i1)
 	         vlo = GET_LINE_COORD (lineedg(iline)%ptr, i1-1)
 	         IF (.NOT. TM_FPEQ( vlo, vhi ) .AND. vhi .LT. vlo) GOTO 5570
- 527	      CONTINUE
+	      ENDDO
 
 * ... are there repeated values?
 
@@ -1449,11 +1473,11 @@ C /units=months  is 1/12 of the length of the year
 * ... store points: midway between box boundaries ...
 
 	      has_repeated = .FALSE.
-	      DO 528 i1 = 2, n+1
+	      DO i1 = 2, n+1
 	         vhi = GET_LINE_COORD (lineedg(iline)%ptr,i1)
 	         vlo = GET_LINE_COORD (lineedg(iline)%ptr,i1-1)
 	         CALL PUT_LINE_COORD(linemem(iline)%ptr, i1-1, (vlo+vhi)* 0.5)
- 528	      CONTINUE
+	      ENDDO
 
 * Fix ticket 2400: Def of start was pointing to the lower grid cell edge not the
 * lower coordinate. The loop start and stop were one off, so most axes detected
@@ -1462,13 +1486,13 @@ C /units=months  is 1/12 of the length of the year
 	      its_reg = .TRUE.	! until proven otherwise
 	      start = GET_LINE_COORD (linemem(iline)%ptr, 1)
               delta = GET_LINE_COORD (linemem(iline)%ptr, 2) - start
-              DO 530 i1 = 2, n+1
+              DO i1 = 2, n+1
 	         idel = GET_LINE_COORD (lineedg(iline)%ptr, i1) - GET_LINE_COORD (lineedg(iline)%ptr, i1-1)
 		 IF (.NOT.TM_FPEQ( (delta),idel) ) THEN
 		    its_reg = .FALSE.
 		    EXIT ! loop
 		 ENDIF
- 530	      CONTINUE
+	      ENDDO
 
 	   ELSE
 
@@ -1488,11 +1512,11 @@ C /units=months  is 1/12 of the length of the year
 	      
 * ... monotonic?	      
 
-	      DO 532 i1 = 2, npoints  
+	      DO i1 = 2, npoints  
 	         vhi  = GET_LINE_COORD (linemem(iline)%ptr, i1)
 	         vlo = GET_LINE_COORD (linemem(iline)%ptr, i1-1)
 	         IF (.NOT. TM_FPEQ( vlo, vhi ) .AND. vhi .LT. vlo) GOTO 5570
- 532	      CONTINUE
+	      ENDDO
 
 * ... are there repeated values?
 
@@ -1590,12 +1614,12 @@ C /units=months  is 1/12 of the length of the year
                 val = vlo - (vhi-vlo)/2.
 		CALL PUT_LINE_COORD (lineedg(iline)%ptr, 1, val)
 *    ... mid-axis box boundaries ...
-	         DO 539 i1 = 2, npoints
+	         DO i1 = 2, npoints
                     vlo = GET_LINE_COORD (linemem(iline)%ptr, i1-1)
                     vhi = GET_LINE_COORD (linemem(iline)%ptr, i1)
                     val = vlo + (vhi-vlo)/2.
                     CALL PUT_LINE_COORD (lineedg(iline)%ptr, i1, val)
- 539	         CONTINUE
+		 ENDDO
 
 *    ... upper-most box bound (end of axis)
 	         val = vhi + (vhi-vlo)/2.
@@ -1606,13 +1630,13 @@ C /units=months  is 1/12 of the length of the year
 	         its_reg = .TRUE.	! until proven otherwise
 	         start = GET_LINE_COORD (linemem(iline)%ptr, 1)
                  delta = GET_LINE_COORD (linemem(iline)%ptr, 2) - start
-                 DO 550 i1 = 2, npoints
+                 DO i1 = 2, npoints
 	            idel = GET_LINE_COORD (lineedg(iline)%ptr, i1) - GET_LINE_COORD (lineedg(iline)%ptr, i1-1)
 		    IF (.NOT.TM_FPEQ( (delta),idel) ) THEN
 		       its_reg = .FALSE.
 		       EXIT ! from loop
 		    ENDIF
- 550	         CONTINUE
+		 ENDDO
               ENDIF
 
 	   ENDIF  ! end of irreg
@@ -1887,7 +1911,7 @@ C /units=months  is 1/12 of the length of the year
 	     new_att_modulo_len = rmod_len
 	  ELSE IF (.NOT.has_bounds .AND. .NOT.line_regular(iline)) THEN 
 	    CALL TM_ADJUST_BOUNDS(iline, line_dim(iline), 
-     .       360, axwwlen, its_modulo)
+     .       360., axwwlen, its_modulo)
 
 	     IF (its_modulo) THEN
 	        rmod_len = 360.D0
@@ -1926,8 +1950,9 @@ C /units=months  is 1/12 of the length of the year
 	      delta = end - start
               IF ( (secs2start .LE.  2*secsperyear)
      .	           .AND. (delta*line_tunit(iline) .LE. secsperyear) ) THEN
-	         CALL TM_ADJUST_BOUNDS( iline, line_dim(iline), 
-     .              secsperyear/line_tunit(iline), axwwlen, okmod)
+	         rmod_len = secsperyear/line_tunit(iline)
+		 CALL TM_ADJUST_BOUNDS( iline, line_dim(iline), 
+     .              rmod_len, axwwlen, okmod)
 
 	         IF (okmod) THEN
 		    its_modulo = .TRUE.
@@ -2187,17 +2212,15 @@ c	ENDIF
 	line_name_orig( iline ) = varname
 	RETURN
 
+      ENDIF
+
+
 **************************************************************************
-* DEFINE VIEWPORT
+* DEFINE VIEWPORT 
 
-* main window opened yet ?
-	IF ( .NOT.pplus_started ) THEN
-	   CALL START_PPLUS(.TRUE.)
-*          this opens a window, so need to set physical_chg .TRUE. to resize it
-*           physical_chg = .TRUE.
-	ENDIF
+      IF (subcmnd_num .EQ. 6) THEN
 
- 600	IF ( num_args .NE. 1 ) GOTO 5300
+	IF ( num_args .NE. 1 ) GOTO 5300
  
 	r4_unspec = unspecified_val4
 * check out viewport name
@@ -2205,16 +2228,18 @@ c	ENDIF
 	ivp = VIEWPORT_NUMBER( buff1 )
 	IF ( ivp .EQ. unspecified_int4 ) THEN
 * ... new name - find an unused slot
-	   DO 610 ivp = 1, max_viewport
- 610	   IF ( vp_name(ivp) .EQ. unspecified_name4 ) GOTO 620
+	   DO ivp = 1, max_viewport
+	      IF ( vp_name(ivp) .EQ. unspecified_name4 ) GOTO 620
+ 	   ENDDO
 	   GOTO 5610	! no free slots
 	ELSE
 * ... name in use - flag segments in this viewport as deleted
 	   IF ( ivp .EQ. mvp_dflt ) GOTO 5640
 	   CALL SPLIT_LIST(pttmode_ops, err_lun,
      .			'Re-defining viewport '//vp_name(ivp), 0)
-	   DO 614 iseg = vp_seg0(ivp)+1 , vp_segn(ivp)
- 614	   CALL FGD_GDSG( iseg ) 
+	   DO iseg = vp_seg0(ivp)+1 , vp_segn(ivp)
+	      CALL FGD_GDSG( iseg ) 
+ 	   ENDDO
 	   vp_seg0 ( ivp ) = 0
 	   vp_segn ( ivp ) = 0
 *          make sure the change is immediately seen
@@ -2365,9 +2390,15 @@ c	ENDIF
 	IF ( ivp .EQ. vp_num ) CALL SET_VIEWPORT( ivp )
 	RETURN
 
+      ENDIF
+
+
 **************************************************************************
 * DEFINE ALIAS
- 700	IF ( num_args .LT. 1 ) GOTO 5300
+
+      IF (subcmnd_num .EQ. 7) THEN
+
+	IF ( num_args .LT. 1 ) GOTO 5300
 	CALL NAME_EQUAL_STRING( buff1, pos, status )
 	IF ( status .NE. ferr_ok )  GOTO 5000
 	IF ( pos .EQ. 0 ) GOTO 5400
@@ -2399,9 +2430,9 @@ c	ENDIF
 * find a slot to save this alias
         i1 = ALIAS_ID( buff1 )
         IF ( i1 .EQ. unspecified_int4 ) THEN
-	   DO 710 i1 = num_predefined_alias+1, total_num_alias
+	   DO i1 = num_predefined_alias+1, total_num_alias
 	      IF ( alias_name(i1) .EQ. unspecified_name4 ) GOTO 720
- 710	   CONTINUE
+	   ENDDO
            GOTO 5710
         ENDIF
 
@@ -2409,12 +2440,18 @@ c	ENDIF
  720    vax_code = STR_UPCASE( alias_name(i1), buff1 ) 
         alias(i1) = cmnd_buff(pos:arg_end(num_args))
         alias_len(i1) = TM_LENSTR1( alias(i1) )
+
 	RETURN
+
+      ENDIF
 
 
 **************************************************************************
 * DEFINE SYMBOL
- 800	IF ( num_args .LT. 1 ) GOTO 5300
+
+      IF (subcmnd_num .EQ. 8) THEN
+
+	IF ( num_args .LT. 1 ) GOTO 5300
 	CALL NAME_EQUAL_STRING( buff1, pos, status )
 	IF ( status .NE. ferr_ok )  GOTO 5000
 	IF ( pos .EQ. 0 ) GOTO 5400
@@ -2435,9 +2472,15 @@ c	ENDIF
 ! ... no check on returned error code (could be "internal error")
 	RETURN
 
+      ENDIF
+
+
 **************************************************************************
 * DEFINE ATTRIBUTE /D= /TYPE= /OUTPUT /QUIET
- 900	IF ( num_args .LT. 1 ) GOTO 5900
+
+      IF (subcmnd_num .EQ. 9) THEN
+
+	IF ( num_args .LT. 1 ) GOTO 5900
 	CALL NAME_EQUAL_STRING_VATT ( buff1, pos, status )
 	IF ( status .NE. ferr_ok )  GOTO 5000
 	IF ( pos .EQ. 0 ) GOTO 5400
@@ -2669,10 +2712,15 @@ c	ENDIF
             IF (status .NE. ferr_ok) GOTO 6500
 	RETURN
 
+      ENDIF
+
+
 **************************************************************************
 * DEFINE PYFUNC /NAME=<alias> python.module.name
 
- 1000   IF ( num_args .LT. 1 ) GOTO 6000
+      IF (subcmnd_num .EQ. 10) THEN
+
+	IF ( num_args .LT. 1 ) GOTO 6000
         IF ( num_args .GT. 1 ) GOTO 6010
 
         iqual = qual_given(slash_pyfunc_name)
@@ -2705,6 +2753,9 @@ c	ENDIF
 
         RETURN
 
+      ENDIF
+
+
 	
 **************************************************************************
 * DEFINE DATA /AGGREGATE /TITLE= /QUIET
@@ -2713,7 +2764,10 @@ c	ENDIF
 * where D1,D2 can be already-open Ferret dataset numbers, or dataset specs
 * that would allow Ferret to open the datset.
 
-1100	IF ( num_args .NE. 1 ) GOTO 5350
+
+      IF (subcmnd_num .EQ. 11) THEN
+
+	IF ( num_args .NE. 1 ) GOTO 5350
 
 
 * define data valid only with /AGGREGATE
@@ -3006,6 +3060,8 @@ c	ENDIF
 
 	RETURN
 
+      ENDIF
+
 
 **************************************************************************
 * DEFINE ANNOTATION /USER/NORM/NOUSER/XPOS/YPOS/HALIGN/VALIGN/ANGLE/SIZE/NLAB label_text
@@ -3013,7 +3069,10 @@ c	ENDIF
 *
 * Find label text
 
-1200	IF ( num_args .LT. 1 ) GOTO 6200
+
+      IF (subcmnd_num .EQ. 12) THEN
+
+	IF ( num_args .LT. 1 ) GOTO 6200
 
 	item = 1
 	buff1 = cmnd_buff(item_start(item):item_end(item))
@@ -3047,6 +3106,8 @@ c ?? if nlab=0, use next avail slot?
         IF (status .NE. ferr_ok) GOTO 5000 
 
 	RETURN
+
+      ENDIF
 **************************************************************************
 
 * error exit
@@ -3134,14 +3195,14 @@ c ?? if nlab=0, use next avail slot?
      .		'use CANCEL ALIAS to reclaim space', *5000 )
  5720	err_string = 'Invalid calendar name. Names are'
         t2 = ' '
-	DO 5721 i1=1, max_calendars
+	DO i1=1, max_calendars
            len_cal = TM_LENSTR1(err_string)
            slen = TM_LENSTR1(allowed_calendars(i1))
            err_string = err_string(:len_cal)//t2//
      .                   allowed_calendars(i1)(:slen)
            t2 = ', '
            len_cal = len_cal + slen
- 5721   CONTINUE
+	ENDDO
         CALL ERRMSG( ferr_syntax, status,err_string, *5000 )
 
 5730	CALL ERRMSG( ferr_syntax,status,

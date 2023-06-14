@@ -53,6 +53,7 @@ C V695  *acm*  5/15 Simplify: do not go through the motions of plotting blank la
 * V7    *acm* 6/16 Ticket 2434: command qualifiers /DEGMINSEC= /HALFSPAC
 *                  DEGMINSEC=1 for Deg-Min axis labels, =2 for Deg-Min-Sec. Default = 1
 *                  /HALFSPAC adds a half space between the degree sign and E/W or N/S
+* 10/2022 *acm* Code cleanup: GOTO 20 pointed into an IF block
 
 	INCLUDE 'PARAMPL5.DAT'
 	INCLUDE 'AXIS.INC'
@@ -60,9 +61,7 @@ C V695  *acm*  5/15 Simplify: do not go through the motions of plotting blank la
 	INCLUDE 'LABCOM.INC'
 	INCLUDE 'PLT.INC'
 	INCLUDE 'PLTL.INC'
-	INCLUDE 'HAB.INC'
 	INCLUDE 'LINES.INC'
-	INCLUDE 'MPLOT.INC'
 	INCLUDE 'TAXIS.INC'
 	INCLUDE 'TICS.INC'
 	INCLUDE 'TICS2.INC'
@@ -139,10 +138,12 @@ C  Set up to use any font settings from this line on subsequent lines.
 
 C  X label
 
+ 20	CONTINUE
+
 	IF (TM_LENSTR(xlab) .GT. 0) THEN
 	IF (pyfont .AND. pyf_set(ihlab)) igroup = ihlab
 
-20	IF(LABELX.EQ.0.OR.(ITFLG.EQ.1.OR.ITFLG.EQ.2))GOTO 40
+	IF(LABELX.EQ.0.OR.(ITFLG.EQ.1.OR.ITFLG.EQ.2)) GOTO 40
         CALL tm_break_lines (xlab, lnbeg, lnend, numlines)
 
 	IF(LABELX.LT.0)THEN
@@ -195,11 +196,13 @@ cc        ENDIF
 	ENDIF ! TM_LENSTR(xlab)
 
 C  Main label
+
+ 40	CONTINUE
 	
 	IF (TM_LENSTR(lab1) .GT. 0) THEN
 	IF (pyfont .AND. pyf_set(ititl)) igroup = ititl
 
-40      CALL tm_break_lines (lab1, lnbeg, lnend, numlines)
+	CALL tm_break_lines (lab1, lnbeg, lnend, numlines)
 
 * Adjust character size for the length of the longest line
 * This may have already been done in box_label, but not if

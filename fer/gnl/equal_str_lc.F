@@ -46,6 +46,7 @@
 * V200: revision 0.0 - 3/12/91 - for Unix/RISC port - based on EQUAL_SRING
 *       *acm* 3/12 cleanup ifdefs and unnecessary include files
 * V693+ *sh* 2/15 - added support for _DQ_ quotations
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 
         IMPLICIT NONE
 * calling argument declarations
@@ -71,8 +72,9 @@
 	ELSE
 
 * find first non-blank
-	   DO 100 strt = equal_pos+1, slen
- 100	   IF ( string(strt:strt) .NE. ' ' ) GOTO 110
+	   DO strt = equal_pos+1, slen
+	      IF ( string(strt:strt) .NE. ' ' ) GOTO 110
+	   ENDDO
 	   STOP '=_str'		! cannot occur
 
 * remove quotation marks

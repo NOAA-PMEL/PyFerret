@@ -1,6 +1,7 @@
 cancel mode verify
+cancel mode logo
 !
-! pointplots_demo.jnl
+! show_py_syms.jnl
 ! Demo of named symbols in PyFerret
 !
 
@@ -13,7 +14,7 @@ message/cont ...
 message/cont Now displaying all pre-defined PyFerret plotting symbols ...
 message/cont ...
 
-
+set window/size=1.5
 set text /font=helvetica
 define view/x=.02:0.99/y=0.1:0.98/axes vfull
 set v vfull
@@ -159,3 +160,5 @@ anno /xpos=7.15 /ypos=2.0 /valign=0 /size=0.1 "hline"
 plot /over /nokey /size=0.2 /symbol=vline     /vs {8.0},{2.0}
 anno /xpos=8.15 /ypos=2.0 /valign=0 /size=0.1 "vline"
 
+ppl axlabp,-1,-1
+go tics

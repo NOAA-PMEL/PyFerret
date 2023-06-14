@@ -307,11 +307,7 @@ C   Create a message saying arg1 values at index are duplicate
 	PARAMETER ( slen = 32)
 
 	REAL fsecond
-#ifdef sun
-	BYTE       dhol(slen)     !c-type Hollerith string buffers
-#else
 	INTEGER*1  dhol(slen)     !c-type Hollerith string buffers
-#endif
 
 *     If there is a T between the date and time (as in GRIB files) replace with a space.
         buff = indate

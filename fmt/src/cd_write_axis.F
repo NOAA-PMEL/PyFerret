@@ -141,6 +141,8 @@
 * V751 *acm* 11/19 *acm* new qualifier SAVE/NOCOORDS
 * V7.61 *acm* 7/20 See issue 334. If the test in cd_get_1_axis has decided the axis is
 *                  irregular, write attrib as point_spacing="uneven"
+C 12/2022 *acm* Code cleanup: Declare dimid as an array to avoid rank-mismatch errors
+*               when compiling under gfortran v10.
 *
 * argument definitions:
 *     dset    - dset (if netcdf file, for getting name and attribute 
@@ -193,7 +195,7 @@
      .       write_mod, dim_only_request
       PARAMETER (do_warn = .TRUE. )
       INTEGER TM_LENSTR1, CD_AXLEN, STR_SAME, STR_DNCASE, TM_LENSTR,
-     .        dimid, iaxis, axid, cdfstat, lo, hi,
+     .        dimid(1), iaxis, axid, cdfstat, lo, hi,
      .        nlen, elen, axlen, slen, edgid, bndid, npts, dim2d(2)
       INTEGER TM_GET_CALENDAR_ID, CD_WRITE_BNDSDIM, TM_UNIT_ID, TM_UNITS_CAL,
      .        cal_id, varid, llen, vartype, nvdims, nvatts, iatt, 
@@ -993,7 +995,7 @@
 
 * ... define the first dimension of bounds variable (what about record axis??)
 
-         dim2d(2) = dimid    ! Dimension already defined above for coordinates
+         dim2d(2) = dimid(1)    ! Dimension already defined above for coordinates
 
          IF ( cdfstat .NE. NF_NOERR ) GOTO 5200
 

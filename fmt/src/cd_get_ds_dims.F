@@ -55,12 +55,7 @@
 
       INTEGER NCF_INQ_DS_DIMS, slen, flen, dset_num
       PARAMETER (flen=128)      ! size of axis name string
-
-#ifdef sun
-      BYTE      fhol(flen)      ! c-type Hollerith string buffer
-#else
       INTEGER*1 fhol(flen)      ! c-type Hollerith string buffer
-#endif 
 
       dset_num = dset
       IF (dset_num .LT. -2) dset_num = -2

@@ -77,12 +77,7 @@
      .        NCF_GET_VAR_AXFLAG, FIND_DSET_NUMBER, STR_UPCASE,
      .        slen, flen, dir, dset_num, bkt1, bkt2, istrt, iend, iset
       PARAMETER (flen=512)      ! size of variable name string
-
-#ifdef sun
-      BYTE      fhol(flen)      ! c-type Hollerith string buffer
-#else
       INTEGER*1 fhol(flen)      ! c-type Hollerith string buffer
-#endif 
 
       varid = 0
       status = atom_not_found

@@ -62,11 +62,7 @@ C                with "*(*)" for the linux port
 
 C     THIS FUNCTION RETURNS NO. OF DAYS IN CURRENT MONTH
 
-#ifdef double_p
-	real*8 yeardays
-#else
-	real yeardays
-#endif
+      real*8 yeardays
       CHARACTER*(*) it
 
       call time3(it,iy,im,idd,ih,ix,isec,icen) 

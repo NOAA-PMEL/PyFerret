@@ -6,15 +6,22 @@
 ! Description: Draw a vertical bathymetry line showing a slice in the x or y direction
 
 ! usage:       arg1        arg2  arg3     arg4
-!  GO vland  [resolution] [pen]  x=val    y=lo:hi
+!  GO vland  [resolution] [color]  x=val    y=lo:hi
 !                                x=lo:hi  y=val
 
 
 ! arg 1 - resolution - may be 120,60,40,20,10, or 5     default=20
 !         To use resolution "nnn" the file etoponnn must exist.
-! arg 2 - pen or "thick" for thick black pen
+! arg 2 - color for line. May be "0"(background), "1"(foreground), "thick"(same as # 7),
+!         "black", "red", "green", "blue", "lightblue", "purple" or 2-18.
+!         Additionally may be a color (r,g,b) or (r,g,b,a) in parentheses (PyFerret only)
 ! arg 3 - longitude limits for the slice - specify as for FERRET longitude range or value
 ! arg 4 - latitude  limits for the slice - specify as for FERRET latitude  range or value
+!
+!
+!        Note : If a color is specified with an (r,g,b) color, then other
+!		qualifiers such as /THICK may be added after (r,g,b). This
+!		capability is available only in PyFerret
 
 ! See also vfland.jnl for filled vertical bathymetry overlays
 
@@ -22,16 +29,31 @@
 ! XZ slice
 !    use levitus_climatology
 !    shade/y=20/x=50e:150e  temp
-!    GO vland 20 thick x=50e:150e y=20
-
+!    GO vland 20 (0,55,55) x=50e:150e y=20
+!
 ! YZ slice
 !    use levitus_climatology
 !    shade/pal=grayscale/x=95w/y=15:30/z=0:4000 salt
 !    fill/pal=grayscale/over/nolab/lev/x=95w/y=15:30/z=0:4000 salt
 !    GO vland 5 green x=95w y=15:30
+!
+! 
+! Combined with vfland
+!    use levitus_climatology
+!    shade/y=15/x=50e:150e temp
+!    go vfland 5 tan  x=50e:150e y=15
+!    go vland 5 (60,0,20)/thick x=50e:150e y=15
 
-! Check the pen argument
-query/ignore $2%1|black|red|green|blue|thick|0|1|2|3|4|5|6|7|8|9|10|11|12|13|14|15|16|17|18|N|<GO land [pen or "N"] ["basemap"] [pen] [pen] with pen = 0(back), 1(fore), thick, 2-18 or a color%
+define symbol line_setting = $2"1|black>1|red>2|green>3|blue>4|lightblue>5|purple>6|thick>7|\
+0>0|1>1|2>2|3>3|4>4|5>5|6>6|7>7|8>8|9>9|10>10|11>11|12>12|13>13|14>14|15>15|16>16|17>17|18>18|*>-2"
+
+
+if `($line_setting) ge 0` then
+   define symbol line_colorqual=/color=($line_setting)/line
+else
+   define symbol line_colorqual=/color=($2)
+   IF `strindex("($line_colorqual)", "dash") EQ 0` then define symbol line_colorqual=($line_colorqual)/line
+endif
 
 ! Check for location arguments
 LET fv_xyloc = 1
@@ -67,9 +89,7 @@ SET DATA/SAVE
 USE etopo$1"20"
 LET fv_rosedepth = rose
 
-PLOT/NOLAB/overlay/VLIM=($ppl$ymax):($ppl$ymin)/SET  -1*fv_rosedepth[($fv_xyregion)]
-   PPL PEN 1 $2"1|black>1|red>2|green>3|blue>4|lightblue>5|purple>6|white>19|thick>7|0>0|1>1|2>2|3>3|4>4|5>5|6>6|7>7|8>8|9>9|10>10|11>11|12>12|13>13|14>14|15>15|16>16|17>17|18>18|19|N>1|"
-   PPL PLOT/OVERLAY
+PLOT/NOLAB/overlay/VLIM=($ppl$ymax):($ppl$ymin)($line_colorqual)  -1*fv_rosedepth[($fv_xyregion)]
 
 ! Clean up and exit
 CANCEL VAR fv*

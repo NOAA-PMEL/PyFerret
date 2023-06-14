@@ -83,6 +83,7 @@
 *                  done only in CD_TRANSLATE_ERROR 
 * V65  *acm* 2/10- all warnings and notes to std error not std out
 * V6.74 3/12 *acm* cleanup ifdefs and unnecessary include files
+* 12/2022 *acm* Code cleanup: remove obsolete declaration of HEX constant
 
 * argument definitions:
 *       dset    - pointer to TMAP data set
@@ -131,11 +132,6 @@
       CHARACTER*2048 TM_INQ_PATH, cdf_file, raw_file
       CHARACTER*1024 buff, upstr  ! for nf_ error message
       CHARACTER*30 buff30
-
-#ifdef FORTRAN_90
-	INTEGER HEX40
-	DATA HEX40/Z'40'/
-#endif
 
         buff = ' '
         upstr = ' '

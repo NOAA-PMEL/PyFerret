@@ -44,6 +44,7 @@
 * V420: 11/95
 *       *acm* 3/12 cleanup ifdefs and unnecessary include files
 *       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -61,8 +62,9 @@
 
 	grid = cx_grid(cx)
 
-	DO 100 idim = 1, nferdims
- 100 	modulo(idim) = line_modulo(grid_line(idim,grid))	
+	DO idim = 1, nferdims
+	   modulo(idim) = line_modulo(grid_line(idim,grid))	
+	ENDDO
 
 	RETURN
 	END

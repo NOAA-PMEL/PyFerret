@@ -122,13 +122,8 @@
 	mode_GKS = GKS_WINDOWS()
 	mode_wait = .NOT.mode_GKS	! no wait after plot on window device
 
-* turn on segment-based screen refresh or screen updates dont always work
-#ifdef X_REFRESH
-      CALL TM_SET_FREE_EVENT(1)
-      mode_state( pmode_xwindows, 1 ) = .TRUE.
-#else
-      mode_state( pmode_xwindows, 1 ) = .FALSE.
-#endif
+	mode_state( pmode_xwindows, 1 ) = .FALSE.
+
         CONTINUE
 	
 *********************** Climatological axes ************************************
@@ -142,19 +137,10 @@
 
 *************** TODAY'S DATE ***************************************************
 
-
-#ifdef AIX_XLF
-	CALL AIX_DATE( today_date )
-	CALL AIX_TIME( today_time )
-#elif F90_DATE_TIME
-	CALL FDATE(today_date)
-	CALL FTIME(today_time)
-#else
 *	CALL DATE( today_date )
 *	CALL TIME( today_time )
 * *kob*  try new routine for y2k fix
 	CALL GET_DATE_AND_TIME (today_date, today_time)
-#endif
 	today_time = today_time(:5)	! w/out seconds
 
 * DTIME returns a real number which is the running time for this 

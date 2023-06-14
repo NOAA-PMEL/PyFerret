@@ -1,6 +1,9 @@
 ! sigma_coordinate_demo_zaxreplace.jnl 9/96 *sh*
 !    updated 11/97 using ZAXREPLACE() function
 
+set mode verify
+cancel mode logo
+
 ! Description: demo of how to handle sigma coordinate output
 
 ! This demo will proceed in several steps:
@@ -31,7 +34,6 @@
 
 ! house-keeping for the demo
 cancel wind 2
-set wind 1
 define view/x=0.0:.33 v1
 define view/x=.33:.67 v2
 define view/x=.67:1.0 v3
@@ -76,8 +78,11 @@ set variable/title="non-physical flow field" flow
 let depth = h[k=@rsum]-h/2
 set variable/title="DEPTH function"/unit=meters depth
 
+
+palette rnb2
+
 ! * * * PLOT: a 3-frame plot to serve as a reference
-   set wind/asp=.4/size=.7 1
+   set window/aspect=.4/size=1.5 1
    set view v1
    go magnify 1.1
    wire/view=-30,-80,150 bathymetry	! from 150m above and 80 km upstream
@@ -86,16 +91,16 @@ set variable/title="DEPTH function"/unit=meters depth
    go magnify 1.1
    shade/y=0/l=1 depth
    contour/y=0/l=1/levels=(50)DARK(50)/over/nolab/palette=black depth
-   label 0 2 0,0,.15 @AC(50m depth marked)
+   label 0 2 0,0,.15 (50m depth marked)
 
    set view v3
    go magnify 1.1
    fill/y=0/l=1/levels=(0,320,20) flow
    contour/y=0/l=1/levels=(50)DARK(50)/over/nolab/palette=black depth
-   label 0 2.4 0,0,.15 @AC(50m depth marked)
+   label 0 2.4 0,0,.15 (50m depth marked)
 
-   label/nouser -1 -.65 0,0,.2 @ACMid-way
-   label/nouser -1 -.90 0,0,.2 @ACdown channel
+   label/nouser -1 -.65 0,0,.2 Mid-way
+   label/nouser -1 -.90 0,0,.2 down channel
 
    message
 
@@ -117,8 +122,8 @@ set variable/title="Flow at 50 meters" flow_at_50
 
 ! * * * PLOT: a 2-frame plot comparing flow field in a single layer
 !	with flow at fixed depth
-   set wind/asp=.5 2
-   set wind/clear
+   set window/aspect=.5/size=1.5 2
+   set window/clear
    set view left
    go magnify 1.2
 
@@ -134,16 +139,16 @@ set variable/title="Flow at 50 meters" flow_at_50
    shade/l=1/level flow_at_50
    shade/over/nolab/palette=black IF bathymetry GT (-50) then 1
    plot/vs/over/line x[g=gg], -1 * bathymetry[y=0]
-   label/nouser  -1 `($ppl$ylen)+0.2` 0,0,.25 @ACPlan View
+   label/nouser  -1 `($ppl$ylen)+0.2` 0,0,.25 Plan View
    message
 
 ! Make a time-series plot comparing flow in a layer with flow at a fixed depth
 ! (at the top of the rise along the channel mid-line)
    cancel view
-   set wind/asp=.5
+   set window/aspect=.5/size=1.5
    plot/x=0/y=0/l=1:20 flow[k=8], flow_at_50
 
-   label/nouser  `($ppl$xlen)/2` `($ppl$ylen)+0.3` 0,0,.25 @ACTime series
+   label/nouser  `($ppl$xlen)/2` `($ppl$ylen)+0.3` 0,0,.25 Time series
 
    message
 
@@ -154,8 +159,8 @@ set variable/title="Flow at 50 meters" flow_at_50
 
 ! * * * PLOT: across-channel flow field at the "rise" along the channel
 ! 	Compare flow as a function of layer with flow as a function of depth
-   set wind/clear
-   set wind/asp=.5
+   set window/clear
+   set window/aspect=.5/size=1.5
    set view left
    go magnify 1.2
 
@@ -172,12 +177,12 @@ set variable/title="Flow at 50 meters" flow_at_50
    shade/levels/z=0:180/Y=0/L=1 flow_on_depth
    plot/vs/over/line x[g=gg], -1 * bathymetry[y=0]
 
-   label/nouser  -1 `($ppl$ylen)+0.2` 0,0,.25 @ACCross-section: mid-way along channel
+   label/nouser  -1 `($ppl$ylen)+0.2` 0,0,.25 Cross-section: mid-way along channel
    message
 
 ! * * * PLOT: along-channel flow at mid-channel
 ! 	Compare flow as a function of layer with flow as a function of depth
-   set wind/clear
+   set window/clear
    set view left
    go magnify 1.2
 
@@ -191,4 +196,6 @@ set variable/title="Flow at 50 meters" flow_at_50
    shade/levels/z=0:180/X=0/L=1 flow_on_depth
    plot/vs/over/line y[g=gg], -1 * bathymetry[x=0]
 
-   label/nouser  -1 `($ppl$ylen)+0.2` 0,0,.25 @ACSection along channel axis
+   label/nouser  -1 `($ppl$ylen)+0.2` 0,0,.25 Section along channel axis
+
+palette default

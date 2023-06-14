@@ -2,24 +2,27 @@
 ! bar_chart.jnl   *sh* 11/93
 
 ! Description: Make a bar chart using color fill (not suitable for Z axis)
+!
+! Arguments:
+!   1   expression
+!   2   low-limit
+!   3   hith-limit
+!   4   color palette (optional)
 
 ! this routine will take a simple 1D line of data and represent it as a
 ! bar chart from FERRET
-
-! Note:  The line of data may be a line in X, Y, or T but not Z. The Z
-! location of the data to be plotted (if relevant) must be unambiguously
-! given as a part of the expression.  A simple modification of this routine
-! could make a Z-line plottable (at the sacrifice of one other axis).
 
 ! usage: GO bar_chart expression lo_limit hi_limit [color]
 !	"color" must be the name of a .spk file in the $FER_PALETTE list
 
 ! example 1 (abstract):
-!	yes? GO bar_chart sin(X[i=1:30]/6) -1 1 .05
+!	yes? GO bar_chart1 sin(X[i=1:30]/6) -1 1 .05
 ! example 2 (time series of sst):
-!	yes? SET DATA gt01mncoads
-!	yes? SET REGION/X=180/Y=0/t=1-jan-1980:1-jan-1990
-!	yes? GO bar_chart sst 27 31 red
+!	yes? SET DATA coads_climatoloty
+!	yes? GO bar_chart1 sst[x=180,L=1] 2 31 red
+! example 3 (Depth profile):
+!	yes? SET DATA levitus_climatoloty
+!	yes? GO bar_chart1 temp[x=180,y=15] 0 30 orange
 
 ! Had the variable in the data set been 4D temperature ("temp") instead of SST
 ! the correct command would have been "GO bar_chart temp[Z=0] 27 31"
@@ -33,24 +36,57 @@ QUERY/IGNORE $1"<usage: yes? GO bar_chart expression lo_limit hi_limit [color]"
 QUERY/IGNORE $2"<usage: yes? GO bar_chart expression lo_limit hi_limit [color]"
 QUERY/IGNORE $3"<usage: yes? GO bar_chart expression lo_limit hi_limit [color]"
 
-! define a 2D grid for the display
-DEFINE AXIS/Z=$2:$3/npoints=40 zbchart
-DEFINE GRID/z=zbchart gbchart
+LET/like=($1) bchart_data = $1"<usage: GO bar_chart [lo] [hi] [delta]"
+DEFINE SYMBOL bchart_shape = `bchart_data,return=shape`
+IF `STRLEN("($bchart_shape)") NE 1` THEN
+   say The first argument to bar_chart1.jnl must be 1 dimensional. Exiting.
+   exit/script
+ENDIF
+
+define symbol bar_chart1_palette = $4"gray"
 
 ! define a 2D field that has the desired bar chart shape
-LET bchart_data = $1"<usage: GO bar_chart [lo] [hi] [delta]"
-LET bchart = IF z[g=gbchart,Z=$2:$3] LT bchart_data THEN 0.0
 
-! grab the title and units string as PLOT+ symbols
-PLOT/SET $1
-ppl set savetitl 'labtit'
-ppl set saveylab 'laby'
+IF ($bchart_shape%|Z>0|*>1%) THEN
+   DEFINE AXIS/Z=$2:$3/npoints=40 gbchart
+   LET bchart = IF z[gz=gbchart,Z=$2:$3] LT bchart_data THEN 0.0
+ELSE
+   DEFINE AXIS/X=$2:$3/npoints=40 gbchart
+   LET bchart = IF x[gx=gbchart,X=$2:$3] LT bchart_data THEN 0.0
+ENDIF
+
+! grab the title and units string as PLOT+ symbols. The bc_no_units
+! logic is to handle variables or expressions with no units defined.
+
+DEFINE SYMBOL bc_title = `bchart_data,return=title` 
+DEFINE SYMBOL bc_units = `bchart_data,return=units`bc_no_units
+DEFINE SYMBOL bc_aunits = `bchart_data,return=($bchart_shape)units`bc_no_aunits
+
+IF ($bc_units%|bc_no_units>1|*>0%) THEN 
+   CANCEL SYMBOL bc_units
+ELSE
+   DEFINE SYMBOL bc_title = ($bc_title) (`bchart_data,return=units`)
+ENDIF
+
+IF ($bc_aunits%|bc_no_aunits>1|*>0%) THEN 
+   CANCEL SYMBOL bc_aunits
+ELSE
+   DEFINE SYMBOL bc_aunits = `bchart_data,return=($bchart_shape)units`
+ENDIF
 
 ! now to display it as a 2-D bar chart (color control not fully supported)
 ! palette defaults to gray.spk - other palettes are OK
-shade/nokey/palette=$4"gray"/SET bchart
-ppl TITLE @AC'savetitl'
-ppl YLAB  @AS'saveylab'
+
+shade/nokey/palette=($bar_chart1_palette)/SET bchart
+  IF ($bchart_shape%|Z>0|*>1%) THEN
+     ppl ylab "@AC($bc_title)"
+     ppl xlab "@AC($bc_aunits)"
+     ppl title 
+  ELSE
+     ppl xlab "@AC($bc_title)"
+     ppl ylab "@AC($bc_aunits)"
+     ppl title 
+  ENDIF   
 ppl shade
 
 ! cleanup
@@ -58,4 +94,6 @@ ppl shade
 !cancel region save
 SET MODE/LAST VERIFY
 
-
+cancel symbol savetitl
+cancel symbol saveylab
+cancel symbol bar_chart1_palette

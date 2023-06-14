@@ -2,6 +2,7 @@
 * ft_to_orthogonal.F
 *
 * Ansley Manke 2/2015
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 * 
 *
 * Given a variable from a Forecast-Time dataset, and
@@ -182,14 +183,8 @@
 
 * Fill the result with missing-flag
 
-      DO 50 n = res_lo_ss(F_AXIS), res_hi_ss(F_AXIS)
-      DO 50 m = res_lo_ss(E_AXIS), res_hi_ss(E_AXIS)
-      DO 50 l = res_lo_ss(T_AXIS), res_hi_ss(T_AXIS)
-      DO 50 k = res_lo_ss(Z_AXIS), res_hi_ss(Z_AXIS)
-      DO 50 j = res_lo_ss(Y_AXIS), res_hi_ss(Y_AXIS)
-      DO 50 i = res_lo_ss(X_AXIS), res_hi_ss(X_AXIS)
-         result(i,j,k,l,m,n) = bad_flag_result
-  50  CONTINUE
+      result = bad_flag_result
+
 
       i2 = arg_lo_ss(X_AXIS,ARG2)
       j2 = arg_lo_ss(Y_AXIS,ARG2)

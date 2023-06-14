@@ -1,8 +1,0 @@
-* XCVAR_CALCS.CMN
-* number of fields computed when a varianble is calculated
-* ( e.g. when HFLUX is called both QSEN and QEVA are computed )
-
-* 10/12/89
-	COMMON / XCVAR_CALCS / cvar_nres
-
-	INTEGER cvar_nres( max_calc_vars )

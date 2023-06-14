@@ -19,10 +19,10 @@ LET/QUIET xlims = X[($xrng)]
 LET/QUIET ylims = Y[($yrng)]
 
 ! draw the box
-PLOT/VS/LINE=$1/OVERLAY/NOLAB xlims, 0*xlims+ylims[y=@min]
-PLOT/VS/LINE=$1/OVERLAY/NOLAB xlims, 0*xlims+ylims[y=@max]
-PLOT/VS/LINE=$1/OVERLAY/NOLAB 0*ylims+xlims[x=@min], ylims
-PLOT/VS/LINE=$1/OVERLAY/NOLAB 0*ylims+xlims[x=@max], ylims
+PLOT/VS/LINE/COLOR=$1/OVERLAY/NOLAB xlims, 0*xlims+ylims[y=@min]
+PLOT/VS/LINE/COLOR=$1/OVERLAY/NOLAB xlims, 0*xlims+ylims[y=@max]
+PLOT/VS/LINE/COLOR=$1/OVERLAY/NOLAB 0*ylims+xlims[x=@min], ylims
+PLOT/VS/LINE/COLOR=$1/OVERLAY/NOLAB 0*ylims+xlims[x=@max], ylims
 
 ! clean up
 set mode/last verify

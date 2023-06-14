@@ -9,21 +9,28 @@ let svar = sst[l=1]
 
 set mode interp
 
+set window/size=1.5
+cancel mode logo
+
 ! unwrap January  SSTs into a 1-dimensional array
 let a = zsequence(svar)
 
 ! define a quantile axis
 let ngood = `a[k=@ngd]`
-def ax/z=0:1/np=`ngood` z_q
+define axis/z=0:1/np=`ngood` z_q
 
 ! sort the data (missing values will be last)
 let a_z = samplek(a,sortk(a))
+plot/title="All valid data, sorted by value" a_z
+pause
  
 ! place the sorted valid data onto the quantile axis
 let/title="quantiles of `sst,r=title`"/unit="`sst,r=unit`" a_q = a_z[gz=z_q@asn]
 
+
 ! plot the quantile function (inverse cumulative distribution function)
 plot/trans a_q
+pause
 
 ! list the min, 1st quartile, median, 3rd quartile, and max 
 list a_q[z=0],a_q[z=.25],a_q[z=.5],a_q[z=.75],a_q[z=1]

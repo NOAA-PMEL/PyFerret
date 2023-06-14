@@ -266,12 +266,7 @@
 	IF ( TM_DIGIT( attname ) ) THEN
 
 	   buff = attname(:alen)
-
-#ifdef MANDATORY_FORMAT_WIDTHS
 	   READ (buff,*, ERR=5200 ) attid
-#else
-	   READ (buff, '(I)', ERR=5200 ) attid
-#endif
            val = attid
            buff13 = TM_STRING(val)
            CALL TM_PACK_STRING(buff13, vbuff, 1, 13, short_len)

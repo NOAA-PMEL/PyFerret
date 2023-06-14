@@ -1,10 +1,10 @@
 ! graticules_demo.jnl
 ! 3/2004  ACM
 
-yes? SET WIN/SIZ=0.6
-yes? set mode verify
+set window/size=1.5
+set mode verify
+cancel mode logo
 
-! Ferret version 5.6 
 ! The /GRATICULE, /HGRATICULE and /VGRATICULE qualifiers for
 ! plot commands turn on and control the line type for graticule
 ! lines at the tic marks of the axes.
@@ -16,30 +16,30 @@ yes? set mode verify
 ! (White in Ferret only)
 ! and THICK=1,2, or 3 where 1 is thin and 3 is the thickest.
 
-yes? PLOT/COLOR=blue/THICK/GRAT=dash/i=1:40 sin(i/6)
+PLOT/COLOR=blue/THICK/GRAT=dash/i=1:40 sin(i/6)
 
 ! We can give multiple arguments to the /GRATICULE qualifier within parentheses
 PAUSE
 
-yes? USE coads_climatology
-yes? CONTOUR/COLOR=blue/THICk/GRAT=(line,COLOR=red) sst[X=130E:70W,y=30S:50N,L=1]
-yes? GO land thick
-yes? GO fland
+USE coads_climatology
+CONTOUR/COLOR=blue/THICk/GRAT=(line,COLOR=red) sst[X=130E:70W,y=30S:50N,L=1]
+GO land thick
+GO fland
 
 ! Here is another example of a simple /GRAT qualifier
 PAUSE
 
-yes? USE etopo20
-yes? SHADE/PAL=dark_land_sea/GRAT=(COLOR=green) rose
-yes? CANCEL REGION
-yes? CANCEL DATA/all
+USE etopo60
+SHADE/PAL=dark_land_sea/GRAT=(COLOR=green) rose
+
+CANCEL DATA/all
 
 ! Next, a time axis. 
 PAUSE
 
-yes? USE monthly_navy_winds
-yes? SET REGION/X=180/Y=0/T=1-may-1988:1-may-1992
-yes? PLOT/THICK=3/GRAT=(COLOR=blue,THICK) uwnd
+USE monthly_navy_winds
+SET REGION/X=180/Y=0/T=1-may-1988:1-may-1992
+PLOT/THICK=3/GRAT=(COLOR=blue,THICK) uwnd
 
 
 ! If there are large and small tics on the plot, each may have
@@ -50,8 +50,8 @@ yes? PLOT/THICK=3/GRAT=(COLOR=blue,THICK) uwnd
 ! "axis, PPLUS commands" in the Ferret Users Guide.
 
 PAUSE
-yes? PPL AXNMTC 2,2
-yes? PLOT/GRAT="large=(line),small=(color=blue,dash)"/i=1:40 sin(i/6)
+PPL AXNMTC 2,2
+PLOT/GRAT="large=(line),small=(color=blue,dash)"/i=1:40 sin(i/6)
 
 ! Sometimes we might want to make different settings for the
 ! horizontal and vertical graticules; when the two axes represent
@@ -61,29 +61,75 @@ yes? PLOT/GRAT="large=(line),small=(color=blue,dash)"/i=1:40 sin(i/6)
 ! Next we will show a plot with a logarithmic axis
 PAUSE
 
-yes? DEF AXIS/Z/DEPTH dlog=exp(k[k=1:10])
-yes? LET fcn = k[gz=dlog]
-yes? PLOT/VLOG/VLIMITS=1:10000/HGRAT="LARGE(COLOR=red),SMALL(COLOR=lightblue)"/VGRAT fcn
+DEF AXIS/Z/DEPTH dlog=exp(k[k=1:10])
+LET fcn = k[gz=dlog]
+PLOT/VLOG/VLIMITS=1:10000/HGRAT="LARGE(COLOR=red),SMALL(COLOR=lightblue)"/VGRAT fcn
 
 ! And, a time axis, with only the vertical graticules on and
 ! the small and large tics set differently.
 PAUSE
 
-yes? PPL AXNMTC 2,2
-yes? USE monthly_navy_winds
-yes? plot/thick/VGRAT="LARGE(COLOR=blue),SMALL(dash,COLOR=lightblue)" uwnd[X=180,Y=0,T=1-may-1989:1-may-1992]
+PPL AXNMTC 2,2
+USE monthly_navy_winds
+plot/thick/VGRAT="LARGE(COLOR=blue),SMALL(dash,COLOR=lightblue)" uwnd[X=180,Y=0,T=1-may-1989:1-may-1992]
 
 
 ! Here we set the axis tics with PPL commands and do a shade plot
 PAUSE
 
-yes? PPL AXNMTC 2,1
-yes? USE etopo05
-yes? SET REGION/X=130E:160E/y=30S:0S
-yes? SHADE/SET/HGRAT="LARGE=(THICK),SMALL"/VGRAT="LARGE=(THICK),SMALL"\
-yes? /PALETTE=topo/LEV=(-9000,-1000,1000)(-1000,-100,100)(-100,0,10) rose
-yes? PPL XAXIS 130,160,8
-yes? PPL YAXIS -30,0,10
-yes? PPL SHADE
-yes? GO fland 5
+PPL AXNMTC 2,1
+USE etopo05
+SET REGION/X=130E:160E/y=30S:0S
+SHADE/SET/HGRAT="LARGE=(THICK),SMALL"/VGRAT="LARGE=(THICK),SMALL"\
+/PALETTE=topo/LEV=(-9000,-1000,1000)(-1000,-100,100)(-100,0,10) rose
+PPL XAXIS 130,160,8
+PPL YAXIS -30,0,10
+PPL SHADE
+GO fland 5
+
+cancel region
+
+!   * * * * * ************ * * * * *
+!
+! Now, some new behavior. Starting with V7.65, we may specify custom 
+! colors for graticule lines, with different colors for horizontal, 
+! vertical lines as well as large and small tic intervals  
+! 
+!   * * * * * ************ * * * * *
+! 
+pause
+
+! A common case - gray graticule lines
+PLOT/COLOR=blue/THICK/GRAT=(dash,color=(60,60,60))/i=1:40 sin(i/6)
+pause
+
+! Here is another example of a simple /GRAT qualifier using white lines
+
+USE etopo60
+SHADE/PAL=dark_land_sea/GRAT=(COLOR=(100,100,100)) rose
+pause
+CANCEL REGION
+CANCEL DATA/all
+
+! A plot having different settings for the horizontal and vertical graticule 
+! lines, and using different settings in the horizontal for the large 
+! and small tics
+
+DEFINE AXIS/Z/DEPTH dlog=exp(k[k=1:10])
+LET fcn = k[gz=dlog]
+PLOT/VLOG/VLIMITS=1:10000/HGRAT="LARGE(COLOR=(100,0,100),SMALL(COLOR=(60,80,100))"/VGRAT fcn
+
+PAUSE
+
+! A time plot with small tics on the time axis drawn in a light gray
+
+USE monthly_navy_winds
+let/like=uwnd uplot = uwnd[X=180,Y=0,T=1-may-1989:1-may-1992]
+
+plot/thick/VGRAT="LARGE(COLOR=(0,50,100),SMALL(dash,COLOR=(60,60,60)"/HGRAT=(color=(0,50,100)) uplot
+pause
+
+! Finally, opacity for graticule lines may be set using the COLOR=(r,g,b,a) syntax
+
+fill/L=3/palette=magma/grat=(thick=3,color=50,50,50,30) uwnd
 

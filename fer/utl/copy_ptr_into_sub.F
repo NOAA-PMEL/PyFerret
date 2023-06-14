@@ -45,6 +45,7 @@
 *
 * V533 *sh* 6/01
 *       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 
         IMPLICIT NONE
 * calling argument declarations:
@@ -61,16 +62,21 @@
 
 * --- end of introductory code ---
 
-	DO 100 n = cxlo(6), cxhi(6)
-	DO 100 m = cxlo(5), cxhi(5)
-	DO 100 l = cxlo(4), cxhi(4)
-	DO 100 k = cxlo(3), cxhi(3)
-	DO 100 j = cxlo(2), cxhi(2)
-	DO 100 i = cxlo(1), cxhi(1)
+	DO n = cxlo(6), cxhi(6)
+	DO m = cxlo(5), cxhi(5)
+	DO l = cxlo(4), cxhi(4)
+	DO k = cxlo(3), cxhi(3)
+	DO j = cxlo(2), cxhi(2)
+	DO i = cxlo(1), cxhi(1)
 
 	   CALL COPY_C_STRING( src(i,j,k,l,m,n), dst(i,j,k,l,m,n) )
 
- 100	CONTINUE
+	ENDDO
+	ENDDO
+	ENDDO
+	ENDDO
+	ENDDO
+	ENDDO
 
 	RETURN
 	END 

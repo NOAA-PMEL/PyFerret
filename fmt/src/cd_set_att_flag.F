@@ -62,12 +62,7 @@
       CHARACTER*128 vname
 
       PARAMETER (flen=size_rbuff)      ! size of attribute string
-
-#ifdef sun
-      BYTE      fhol(flen)      ! c-type Hollerith string buffer
-#else
-      INTEGER*1 fhol(flen)      ! c-type Hollerith string buffer
-#endif 
+      INTEGER*1 fhol(flen)      ! c-type Hollerith string bufferen)      ! c-type Hollerith string buffer
 
       dset_num = dset
       IF (dset_num .LT. -2) dset_num = -2

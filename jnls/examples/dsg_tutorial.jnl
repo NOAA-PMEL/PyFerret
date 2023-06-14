@@ -80,7 +80,7 @@ show grid t_25
 pause
 
 ! Set up the plot window
-set window/size=1/aspect=.75:axis   ! default
+set window/size=1.5/aspect=.75:axis   ! default
 cancel viewports
 cancel mode logo
 
@@ -97,13 +97,13 @@ cancel mode logo
 ! This is nothing new, we draw a map and overlay the locations with PLOT/VS
 
 go basemap x=140:360 y=-40:40 20
-plot/vs/over/nolabel/color=blue/symbol=19/siz=0.2/thick longitude, latitude
+plot/vs/over/nolabel/color=blue/symbol=19/size=0.2/thick longitude, latitude
 
 !----------------------------------------
 pause
 
 
-set window/clear/siz=1/asp=0.6
+set window/clear/size=1.5/aspect=0.6
 
 ! Now plot the temperature variable for all of the time series in the
 ! collection at once. They are all plotted together, with a line key
@@ -160,7 +160,7 @@ plot/thick t_25
 !----------------------------------------
 
 pause
-set window/clear/siz=1/asp=0.8
+set window/clear/size=1.5/aspect=0.8
 
 cancel data/all
 cancel variable/all
@@ -206,7 +206,7 @@ pause
 
 cancel data/all
 cancel variable/all
-set window/clear/siz=1/asp=0.7
+set window/clear/size=1.5/aspect=0.7
 
 
 ! ********************************************************************
@@ -237,7 +237,7 @@ plot/over/nolabel/thick/palette=ten_by_levels/key=horiz expocode
 !----------------------------------------
 pause
 
-set window/clear/siz=1/asp=0.6
+set window/clear/size=1.5/aspect=0.6
 
 
 ! ********************************************************************
@@ -275,7 +275,7 @@ cancel variable/all
 
  
 !----------------------------------------
-set window/clear/siz=1/asp=1
+set window/clear/size=1.5/aspect=1
 
 
 ! ********************************************************************
@@ -336,7 +336,7 @@ cancel data/all
 sp rm my_southern_stations.nc
 
 
-set window/clear/siz=1/asp=0.6
+set window/clear/size=1.5/aspect=0.6
 
 
 ! ********************************************************************
@@ -433,7 +433,7 @@ show grid pottmp[d=2]
 !----------------------------------------
 pause
 
-set window/clear/siz=1/asp=0.6
+set window/clear/size=1.5/aspect=0.6
 
 ! Plot the gridded data sampled at the DSG space-time coordinates
 ! Note that if the amount of model data that must be accessed
@@ -471,3 +471,12 @@ plot/x=300:360/y=-15:15 diff
 
 
 ! dsg_tutorial is now completed.
+! For more detail run these scripts
+
+!  dsg_point_plot.jnl
+!  dsg_prof_plot.jnl
+!  dsg_timeseries_plot.jnl
+!  dsg_traj_plot.jnl
+!
+! In addition, the script "dsg_checker.jnl" tests the variables and
+! attributes of a file to see whether it is a valid DSG file.

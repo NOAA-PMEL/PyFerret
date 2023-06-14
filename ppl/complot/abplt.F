@@ -58,13 +58,9 @@ C     DIMENSION AMXMN(2),BMXMN(2)
       REAL AMXMN(2),BMXMN(2), binter, ainter
       EQUIVALENCE (AMXMN(1),AMAX),(BMXMN(1),BMAX)
 
-#ifdef unix
       include 'pltcom_dat.decl'
       include 'PLTCOM.DAT'
-#else
-      INCLUDE 'tmap_pplv11inc:tmap_PLTCOM.DAT'
-      INCLUDE 'pplv11inc:pltcom.dat'
-#endif
+
 C end of FERRET mod
 ******************************************************************
 
@@ -97,15 +93,8 @@ C     CHECK THE OLD AND NEW POINTS TO SEE IF THEY ARE BOTH OUT-
 C     SIDE THE BOUNDARY OF THE SCREEN IN THE SAME DIRECTION.  IF
 C     SO, NO INTERCEPT EXISTS.
 
-#ifdef unix
-# ifdef NEED_IAND
       IF(IAND(LOSFLG,OSFLG) .NE. 0)GO TO 100
-# else
-      IF(AND(LOSFLG,OSFLG) .NE. 0)GO TO 100
-# endif
-#else
-      IF(IAND(LOSFLG,OSFLG) .NE. 0)GO TO 100
-#endif
+
 C     CHECK THE OLD POINT TO SEE IF IT IS WITHIN THE BOUNDARY OF
 C     THE SCREEN.  IF NOT, COMPUTE THE INTERCEPT.
 
@@ -113,28 +102,13 @@ C     THE SCREEN.  IF NOT, COMPUTE THE INTERCEPT.
 
 C     CHECK THE HORIZONTAL LIMITS OF THE SCREEN.
 
-#ifdef unix
-# ifdef NEED_IAND
-        if(ishft(losflg,-2) .eq. 0)goto 10
-# else
-        if(rshift(losflg,2) .eq. 0)goto 10
-# endif
-#else
-        if(ishft(losflg,-2) .eq. 0)goto 10
-#endif
+      if(ishft(losflg,-2) .eq. 0)goto 10
 
 C    THE POINT IS OUTSIDE THE HORIZONTAL LIMITS OF THE SCREEN.
 C    CALCULATE THE INTERCEPT.
        
-#ifdef unix
-# ifdef NEED_IAND
-        binter = bmxmn(ishft(losflg,-2))
-# else
-        binter = bmxmn(rshift(losflg,2))
-# endif
-#else
-        binter = bmxmn(ishft(losflg,-2))
-#endif
+      binter = bmxmn(ishft(losflg,-2))
+
       AINTER = (ANEW - AOLD) * (BINTER - BOLD) / (BNEW - BOLD) +
      * AOLD
     
@@ -147,15 +121,8 @@ C     OF THE SCREEN.
 C     THE POINT IS OUTSIDE THE VERTICAL LIMITS OF THE SCREEN.
 C     CALCULATE THE INTERCEPT.
 
-#ifdef unix
-# ifdef NEED_IAND
- 10         ainter = amxmn(iand(losflg,3))
-# else
- 10         AINTER = AMXMN(AND(LOSFLG,3))
-# endif
-#else
- 10         ainter = amxmn(iand(losflg,3))
-#endif
+ 10   ainter = amxmn(iand(losflg,3))
+
       BINTER = (BNEW - BOLD) * (AINTER - AOLD) / (ANEW - AOLD) +
      * BOLD
 
@@ -188,35 +155,14 @@ C      THE SCREEN.  IF NOT, COMPUTE THE INTERCEPT.
   40  IF(OSFLG .EQ. 0)GO TO 70
 
 C     CHECK THE HORIZONTAL LIMITS OF THE SCREEN.
-#ifdef unix
-#if defined sun || defined sgi
-        if(rshift(osflg,2) .eq. 0)goto 50
-#else
-# ifdef NEED_IAND
-        IF(ISHFT(OSFLG,-2) .EQ. 0)GO TO 50
-# else
-        IF(LSHIFT(OSFLG,-2) .EQ. 0)GO TO 50
-# endif
-#endif
-#else
-        IF(ISHFT(OSFLG,-2) .EQ. 0)GO TO 50
-#endif
+
+      IF(ISHFT(OSFLG,-2) .EQ. 0)GO TO 50
 
 C     THE POINT IS OUTSIDE THE HORIZONTAL LIMITS OF THE SCREEN.
 C     CALCULATE THE INTERCEPT.
-#ifdef unix
-#if defined sun || defined sgi
-        binter = bmxmn(rshift(osflg,2))
-#else
-# ifdef NEED_IAND
-        BINTER = BMXMN(ISHFT(OSFLG,-2))
-# else
-        BINTER = BMXMN(LSHIFT(OSFLG,-2))
-# endif
-#endif
-#else
-        BINTER = BMXMN(ISHFT(OSFLG,-2))
-#endif
+
+      BINTER = BMXMN(ISHFT(OSFLG,-2))
+
       AINTER = (ANEW - AOLD) * (BINTER - BOLD) / (BNEW - BOLD) +
      * AOLD
 
@@ -228,15 +174,9 @@ C     OF THE SCREEN.
 
 C     THE POINT IS OUTSIDE THE VERTICAL LIMITS OF THE SCREEN.
 C     CALCULATE THE INTERCEPT.
-#ifdef unix
-# ifdef NEED_IAND
- 50    AINTER = AMXMN(IAND(OSFLG,3))
-# else
- 50    AINTER = AMXMN(AND(OSFLG,3))
-# endif
-#else
- 50    AINTER = AMXMN(IAND(OSFLG,3))
-#endif
+
+ 50   AINTER = AMXMN(IAND(OSFLG,3))
+
       BINTER = (BNEW - BOLD) * (AINTER - AOLD) / (ANEW - AOLD) +
      * BOLD
 

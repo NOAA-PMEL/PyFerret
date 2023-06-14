@@ -27,7 +27,8 @@
 !       yes? SET VIEW full
 !	yes? GO stick_vectors_key plot uwnd vwnd
 !  or
-!	yes? GO stick_vectors_key plot/title=test/line=2/vlimits=-5:5:1 uwnd vwnd
+!       yes? SET VIEW full
+!	yes? GO stick_vectors_key plot/title=test/color=2/vlimits=-5:5:1 uwnd vwnd
 
 
 ! 4/95 -- alternative approach using PLOTV
@@ -65,7 +66,7 @@ let xstart = ($ppl$xorg)/($VP_WIDTH)/($VP_SCALE)
 
 ! Define a viewport in which to put the key.
 let vht = ($ppl$yorg)/($VP_WIDTH)/($VP_SCALE)
-def view/axes/xlim=0.:1./ylim=0:`vht` keyview
+define view/axes/xlim=0.:1./ylim=0:`vht` keyview
 
 ! Make a dummy plot in the viewport to set the scaling, then draw and 
 ! label the stick.

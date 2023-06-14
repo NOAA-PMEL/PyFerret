@@ -60,6 +60,7 @@
 * V602  2/07 *acm* Fix bug 1492, changing attributes of coordinate variables 
 * V674 2/12 *acm* 6D Ferret: use nferdims rather than 4 for dimension indexing
 * TODO: initially leave this as 4D -- what to do with old files that have 4 slab min/max?
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 
 * argument definitions:
 *	dset	       - Ferret dataset number for already opened CDF file
@@ -166,10 +167,12 @@
 	  grid_cnt = num_tmp_grids    ! temporary name holder pointer
 	  cbuff = TM_CMPRSS(buff)
 	  DO 180 idim =1, 4
- 180      words(idim) = ' '
+            words(idim) = ' '
+ 180      CONTINUE
 	  CALL TM_BREAK_STR(cbuff, words, 4)
           DO 185 idim = 1, 4
- 185      istat = STR_UPCASE( temp_axnams(idim,grid_cnt), words(idim) )
+            istat = STR_UPCASE( temp_axnams(idim,grid_cnt), words(idim) )
+ 185      CONTINUE
 
 * flag the axes that are normal in the grid so grid associations can be made
           DO 186 idim = 1, 4
@@ -203,7 +206,8 @@
 * ... parse the inner/outer list and store it in the grid definition
 	     cbuff = TM_CMPRSS(buff)
 	     DO 190 idim =1, 4
- 190         words(idim) = ' '
+                words(idim) = ' '
+ 190	     CONTINUE
 	     CALL TM_BREAK_STR(cbuff, words, 4)
              DO 200 idim = 1, 4
                 istat = STR_CASE_BLIND_COMPARE('OUTER',words(idim))
@@ -217,7 +221,8 @@
  200         CONTINUE
           ELSE
              DO 210 idim = 1, 4
- 210         grid_out_prod(idim,igrid) = .TRUE.    ! default
+                 grid_out_prod(idim,igrid) = .TRUE.    ! default
+ 210	     CONTINUE
           ENDIF
 
  500    CONTINUE

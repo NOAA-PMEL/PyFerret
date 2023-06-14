@@ -47,15 +47,10 @@
         INCLUDE 'errmsg.parm'
         INCLUDE 'tmap_errors.parm'
         INCLUDE 'xprog_state.cmn'
-        
 
 * calling argument declarations:
         INTEGER clen, status
-#ifdef sun
-        BYTE name(clen) 
-#else   
         INTEGER*1 name(clen)
-#endif  
 
 * Local variable declarations
 

@@ -1,6 +1,5 @@
 SRCS_F = \
 arrow.F\
-box.F\
 box_centers.F\
 check_2d_size.F\
 clsppl.F\
@@ -10,8 +9,6 @@ daxis.F\
 daxis2.F\
 dellev.F\
 drawvec.F\
-dsflab.F\
-dsflim.F\
 ferret_plot_complete.F\
 get_curvilinear_limits.F\
 get_vp_from_ferret.F\
@@ -26,8 +23,6 @@ linear.F\
 linfit.F\
 stmnmx.F\
 rsmnmx.F\
-mplot.F\
-mult.F\
 opnppl.F\
 plotnm.F\
 plotxy.F\
@@ -40,13 +35,7 @@ ppldata.F\
 pplldc.F\
 pplldx.F\
 ppllist.F\
-pplus.F\
 prmtiv.F\
-rdseq.F\
-readsq.F\
-redsf.F\
-save.F\
-savezg.F\
 scale2.F\
 setax.F\
 setlab.F\

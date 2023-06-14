@@ -4,34 +4,40 @@
 !              This script, based on land.jnl, plot GMT intermediate-
 !              resolution coastline and boundary data and rivers.
 ! 8/11/03 ACM 
+! 1/23 ACM     Allow for (r,g,b) syntax for line-color specifications
 !
 ! usage:   go land_detail arg1 [arg2] [arg3] [arg4] [arg5] [arg6] [arg7]
 !
-!    arg1  continent_pen  
-!    arg2 "basemap" "overlay", or omitted for overlay
-!    arg3 country_pen	Pen for optional national boundaries 
-!    arg4 state_pen	Pen for optional state boundaries (Western hemisphere)
-!    arg5 rivers_pen	Pen for largest rivers
-!    arg6 more_rivers	Pen for additional rivers 
-!    arg7 marine boundaries  Pen for marine boundaries in South Pacific, Bering Strait
+!    arg1  continent_color specification: see note 3
+!    arg2 "basemap" "overlay", or blank for overlay
+!    arg3 country_color	Specification for optional national boundaries 
+!    arg4 state_color	Specification for optional state boundaries (Western hemisphere)
+!    arg5 rivers_color	Specification for largest rivers
+!    arg6 more_rivers	Specification for additional rivers 
+!    arg7 marine boundaries  Specification for marine boundaries in South Pacific, Bering Strait
 !
-!
-! pens 	may be "0"(background), "1"(foreground), "thick"(same as pen 7),
-!	"black", "red", "green", "blue", "lightblue" "purple" "white" or 2-19.
-!
-!	Note 1: A pen color of "black" will actually pen number 1
-!		-- normally white if the window background is black.
-!               White is always pen 19, white
+
+! colors	may be "0"(background), "1"(foreground), "thick"(same as # 7),
+!		"black", "red", "green", "blue", "lightblue", "purple" or 2-18.
+!		Additionally may be a color (r,g,b) or (r,g,b,a) in parentheses
+! arg 2 may be "basemap", "overlay", "fast" (fast, 20e:20e overlay) or omitted
+
+!	Note 1: A pen of "black" or 1 will actually pen number 1, 
+!		normally white if the window background is black.
+!               To draw a black line in this case, use a color of (0,0,0)
 !	Note 2: An "N" for the continent pen means no continents
-!		-- use this for the special case of geo-political 
-!		   overlay or rivers without continents
-!       Note 3: This script plots data in the longitude range -360:720. If you need
+!		-- use this for the special case of geo-political
+!		   overlay without continents.
+!	Note 3: I For arguments 1 and 3-7, other line-style qualifiers such as /THICK may 
+!		be added after the pen number, color name, or (r,g,b) color specifier. This 
+!		capability is available only in PyFerret
+!       Note 4: This script plots data in the longitude range -360:720. If you need
 !               longitudes outside that range, this script may easily be modified
 !               to add or subtract multiples of 360 from the longitude variables.
 
 ! examples:
 !   go land_detail red        	 - overlay continents using red pen (2)
-!   go land_detail  10           - overlay continents using pen number 10
+!   go land_detail 10            - overlay continents using pen number 10
 !   go land_detail 1 basemap     - basemap of continents outline in foreground color
 !   go land_detail 1 " " red     - overlay continents with countries in red
 !   go land_detail thick basemap black black - continents, countries, and states
@@ -39,31 +45,37 @@
 !                                                 all rivers, and marine boundaries
 !   go land_detail N " " 1 1     - overlay: no continents; yes political boundaries
 
+!   GO land_detail (0,55,55)/thick=2 " " (40,20,65)		! Use a (r,g,b) specification
+!   GO land_detail (0,30,0) basemap (100,20,0) (100,75,0)
+!   go land_detail (33,0,55) " " (55,0,0) (0,55,0) (0,0,70) (0,55,55) (80,60,0) - all
+!
 ! Notes:
-!  1) If a pen value is given for the country_pen or state_pen then the
+!  1) If a value is given for the country_pen or state_pen then the
 !	corresponding geopolitical boundaries will be drawn - else
 !	they will be omitted
-!  2) use  GO line_samples    to view the first 6 pen numbers
+!  2) use  GO line_samples to view the first 6 pen numbers
 !       Higher pen numbers cycle with thicker lines (max 18)
 !  3) For more control over basemaps use "GO basemap"
 
 ! test argument before performing any actions
-query/ignore $1%1|black|red|green|blue|lightblue|purple|white|thick|0|1|2|3|4|5|6|7|8|9|10|11|12|13|14|15|16|17|18|19|N|<go land_detail [pen or "N"] ["basemap"] [pen] [pen] with pen = 0(back), 1(fore), thick, 2-18 or a color%
 query/ignore $2%default|basemap|overlay|<argument 2 can be "basemap", "overlay"%
-query/ignore $3%1|black|red|green|blue|lightblue|purple|white|thick|0|1|2|3|4|5|6|7|8|9|10|11|12|13|14|15|16|17|18|19|N|<go land_detail [pen or "N"] ["basemap"] [pen] [pen] with pen = 0(back), 1(fore), thick, 2-18 or a color%
-query/ignore $4%1|black|red|green|blue|lightblue|purple|white|thick|0|1|2|3|4|5|6|7|8|9|10|11|12|13|14|15|16|17|18|19|N|<go land_detail [pen or "N"] ["basemap"] [pen] [pen] with pen = 0(back), 1(fore), thick, 2-18 or a color%
-query/ignore $5%1|black|red|green|blue|lightblue|purple|white|thick|0|1|2|3|4|5|6|7|8|9|10|11|12|13|14|15|16|17|18|19|N|<go land_detail [pen or "N"] ["basemap"] [pen] [pen] with pen = 0(back), 1(fore), thick, 2-18 or a color%
-query/ignore $6%1|black|red|green|blue|lightblue|purple|white|thick|0|1|2|3|4|5|6|7|8|9|10|11|12|13|14|15|16|17|18|19|N|<go land_detail [pen or "N"] ["basemap"] [pen] [pen] with pen = 0(back), 1(fore), thick, 2-18 or a color%
-query/ignore $7%1|black|red|green|blue|lightblue|purple|white|thick|0|1|2|3|4|5|6|7|8|9|10|11|12|13|14|15|16|17|18|19|N|<go land_detail [pen or "N"] ["basemap"] [pen] [pen] with pen = 0(back), 1(fore), thick, 2-18 or a color%
 
 set data/save
 define region/default save
 cancel region
 
+! If they call for a basemap, draw an all-white underlay
+let landi_basemap = $2"0|basemap>1|*>0"
+IF `landi_basemap EQ 1` THEN GO basemap x=0:360 y=-90:90 20 white
+
 ! introduce the outline data set
 use geo_borders_intermed
 
-! Initialize
+
+! Initialize - the geo_borders_intermed dataset has longitudes
+! only between 0 and 360, so if the map is outside that range
+! we need to draw those sections separately
+
 let landi_subx = 0
 let landi_addx = 0
 let landi_mapxmin = 0
@@ -72,157 +84,196 @@ let landi_mapxmax = 0
 let landi_datxmin = 0
 let landi_datxmax = 0
 
-let landi_basemap = $2"0|basemap>1|*>0"
-
-IF `landi_basemap EQ 1` THEN
-   GO  basemap " " " " " " white
-ENDIF
-
+	! mp extent
 let landi_mapxmin = ($xaxis_min)
 let landi_mapxmax = ($xaxis_max)
 
-let landi_datxmin = continent_LON[x=@min]
-let landi_datxmax = continent_LON[x=@max]
+let landi_datxmin = continent_lon[x=@min]
+let landi_datxmax = continent_lon[x=@max]
 IF `landi_mapxmin LT landi_datxmin` then let landi_subx = `landi_subx - 360`
 IF `landi_mapxmax GT landi_datxmax` then let landi_addx = `landi_addx + 360`
 
 
-! always do the continents
+! always do the continents (unless arg 1 is N)
 
-$1"plot|N>QUERY/IGNORE stuff |*>plot"/set/vs/nolab/line=1/$2"i=1:193518/overlay|basemap>i=1:193518/overlay|*>i=1:193518/overlay" CONTINENT_LON, CONTINENT_LAT
+define symbol land_setting = $1"1|black>1|red>2|green>3|blue>4|lightblue>5|purple>6|thick>7|\
+0>0|1>1|2>2|3>3|4>4|5>5|6>6|7>7|8>8|9>9|10>10|11>11|12>12|13>13|14>14|15>15|16>16|17>17|18>18|N>-1|*>-2"
 
-! select line style and plot
-ppl pen 1 $1"1|black>1|red>2|green>3|blue>4|lightblue>5|purple>6|white>19|thick>7|0>0|1>1|2>2|3>3|4>4|5>5|6>6|7>7|8>8|9>9|10>10|11>11|12>12|13>13|14>14|15>15|16>16|17>17|18>18|19>19|N>1|"
+if `($land_setting) ge 0` then
 
-! set up axis formatting in case it is a basemap
-ppl xfor (I7,''LONE'')
-ppl yfor (I7,''LAT'')
+   define symbol land_colorqual=/color=($land_setting)/line
 
-! draw it - as an overlay or as a basemap
-$1"ppl plot|N>QUERY/IGNORE stuff |*>ppl plot"$2"/overlay|basemap> |*>/overlay"
+elif `($land_setting) eq -2` then
+
+   define symbol land_arg = ($1)
+   go land_arg_check
+
+endif
+
+if `($land_setting) ne -1` then 
+
+   define symbol land_colorqual = ($land_colorqual)($over_setting)
+   plot($land_colorqual)/vs/overlay/nolab continent_lon, continent_lat
 
 ! Draw any lines outside 0 to 360
 
-IF `landi_addx NE 0` THEN 
-   plot/set/overlay/vs/nolab/line=1 CONTINENT_LON+landi_addx, CONTINENT_LAT
-   ppl pen 1 $1"1|black>1|red>2|green>3|blue>4|lightblue>5|purple>6|white>19|thick>7|0>0|1>1|2>2|3>3|4>4|5>5|6>6|7>7|8>8|9>9|10>10|11>11|12>12|13>13|14>14|15>15|16>16|17>17|18>18|19|N>1|"
-   ppl plot/overlay
-ENDIF
+   IF `landi_addx NE 0` THEN \
+      plot($land_colorqual)/vs/overlay/nolab continent_lon+landi_addx, continent_lat
 
-IF `landi_subx NE 0` THEN 
-   plot/set/overlay/vs/nolab/line=1 CONTINENT_LON+landi_subx, CONTINENT_LAT
-   ppl pen 1 $1"1|black>1|red>2|green>3|blue>4|lightblue>5|purple>6|white>19|thick>7|0>0|1>1|2>2|3>3|4>4|5>5|6>6|7>7|8>8|9>9|10>10|11>11|12>12|13>13|14>14|15>15|16>16|17>17|18>18|19|N>1|"
-   ppl plot/overlay
-ENDIF
+   IF `landi_subx NE 0` THEN \
+      plot($land_colorqual)/vs/overlay/nolab continent_lon+landi_subx, continent_lat
+
+endif
 
 ! **** now the optional country borders
-$3"query/ignore|*>plot/set/vs/nolab/line=1/overlay" COUNTRY_LON, COUNTRY_LAT
 
-! select line style and plot
-ppl pen 1 $3"1|black>1|red>2|green>3|blue>4|lightblue>5|purple>6|white>19|thick>7|0>0|1>1|2>2|3>3|4>4|5>5|6>6|7>7|8>8|9>9|10>10|11>11|12>12|13>13|14>14|15>15|16>16|17>17|18>18|"
+define symbol land_setting = $3"-1|black>1|red>2|green>3|blue>4|lightblue>5|purple>6|thick>7|\
+0>0|1>1|2>2|3>3|4>4|5>5|6>6|7>7|8>8|9>9|10>10|11>11|12>12|13>13|14>14|15>15|16>16|17>17|18>18|N>-1|*>-2"
 
-! draw it - as an overlay or as a basemap
-$3"query/ignore|*>ppl plot/overlay"
+if `($land_setting) ge 0` then
+
+   define symbol land_colorqual = ($land_colorqual)($land_over)
+   define symbol land_colorqual=/color=($land_setting)/line
+
+elif `($land_setting) eq -2` then
+
+   define symbol land_arg = ($3)
+   go land_arg_check
+
+endif
+
+
+if `($land_setting) ne -1` then 
+   $3"query/ignore|*>plot/($land_colorqual)/vs/overlay/nolab" COUNTRY_LON, COUNTRY_LAT
 
 ! Draw any lines outside 0 to 360
-IF `landi_addx NE 0` THEN 
-   $3"query/ignore|*>plot/set/vs/nolab/line=1/overlay" COUNTRY_LON+landi_addx, COUNTRY_LAT
-   ppl pen 1 $3"1|black>1|red>2|green>3|blue>4|lightblue>5|purple>6|white>19|thick>7|0>0|1>1|2>2|3>3|4>4|5>5|6>6|7>7|8>8|9>9|10>10|11>11|12>12|13>13|14>14|15>15|16>16|17>17|18>18|"
-   $3"query/ignore|*>ppl plot/overlay"
-ENDIF
-IF `landi_subx NE 0` THEN 
-   $3"query/ignore|*>plot/set/vs/nolab/line=1/overlay" COUNTRY_LON+landi_subx, COUNTRY_LAT
-   ppl pen 1 $3"1|black>1|red>2|green>3|blue>4|lightblue>5|purple>6|white>19|thick>7|0>0|1>1|2>2|3>3|4>4|5>5|6>6|7>7|8>8|9>9|10>10|11>11|12>12|13>13|14>14|15>15|16>16|17>17|18>18|"
-   $3"query/ignore|*>ppl plot/overlay"
-ENDIF
+   IF `landi_addx NE 0` THEN \
+      $3"query/ignore|*>plot($land_colorqual)/vs/overlay/nolab" COUNTRY_LON+landi_addx, COUNTRY_LAT
+   IF `landi_subx NE 0` THEN \
+     $3"query/ignore|*>plot($land_colorqual)/vs/overlay/nolab" COUNTRY_LON+landi_subx, COUNTRY_LAT
+
+endif
+
 
 ! **** now the optional state borders
-$4"query/ignore|*>plot/set/vs/nolab/line=1/overlay" STATE_LON, STATE_LAT
 
-! select line style and plot
-ppl pen 1 $4"1|black>1|red>2|green>3|blue>4|lightblue>5|purple>6|white>19|thick>7|0>0|1>1|2>2|3>3|4>4|5>5|6>6|7>7|8>8|9>9|10>10|11>11|12>12|13>13|14>14|15>15|16>16|17>17|18>18|"
+define symbol land_setting = $4"-1|black>1|red>2|green>3|blue>4|lightblue>5|purple>6|thick>7|\
+0>0|1>1|2>2|3>3|4>4|5>5|6>6|7>7|8>8|9>9|10>10|11>11|12>12|13>13|14>14|15>15|16>16|17>17|18>18|N>-1|*>-2"
 
-! draw it - as an overlay or as a basemap
-$4"query/ignore|*>ppl plot/overlay"
+if `($land_setting) ge 0` then
 
-IF `landi_addx NE 0` THEN 
-   $4"query/ignore|*>plot/set/vs/nolab/line=1/overlay" STATE_LON+landi_addx, STATE_LAT
-   ppl pen 1 $4"1|black>1|red>2|green>3|blue>4|lightblue>5|purple>6|white>19|thick>7|0>0|1>1|2>2|3>3|4>4|5>5|6>6|7>7|8>8|9>9|10>10|11>11|12>12|13>13|14>14|15>15|16>16|17>17|18>18|"
-   $4"query/ignore|*>ppl plot/overlay"
-ENDIF
-IF `landi_subx NE 0` THEN 
-   $4"query/ignore|*>plot/set/vs/nolab/line=1/overlay" STATE_LON+landi_subx, STATE_LAT
-   ppl pen 1 $4"1|black>1|red>2|green>3|blue>4|lightblue>5|purple>6|white>19|thick>7|0>0|1>1|2>2|3>3|4>4|5>5|6>6|7>7|8>8|9>9|10>10|11>11|12>12|13>13|14>14|15>15|16>16|17>17|18>18|"
-   $4"query/ignore|*>ppl plot/overlay"
-ENDIF
+   define symbol land_colorqual = ($land_colorqual)($land_over)
+   define symbol land_colorqual=/color=($land_setting)/line
 
-! **** now the optional major and minor rivers
-$6"query/ignore|*>plot/set/vs/nolab/line=1/overlay" RIVER1_2_LON, RIVER1_2_LAT
+elif `($land_setting) eq -2` then
 
-! select line style and plot
-ppl pen 1 $6"1|black>1|red>2|green>3|blue>4|lightblue>5|purple>6|white>19|thick>7|0>0|1>1|2>2|3>3|4>4|5>5|6>6|7>7|8>8|9>9|10>10|11>11|12>12|13>13|14>14|15>15|16>16|17>17|18>18|"
+   define symbol land_arg = ($4)
+   go land_arg_check
 
-! draw it - as an overlay or as a basemap
-$6"query/ignore|*>ppl plot/overlay"
+endif
+
+
+if `($land_setting) ne -1` then 
+   $4"query/ignore|*>plot($land_colorqual)/vs/overlay/nolab" STATE_LON, STATE_LAT
 
 ! Draw any lines outside 0 to 360
-IF `landi_addx NE 0` THEN 
-   $6"query/ignore|*>plot/set/vs/nolab/line=1/overlay" RIVER1_2_LON+landi_addx,RIVER1_2_LAT
-   ppl pen 1 $6"1|black>1|red>2|green>3|blue>4|lightblue>5|purple>6|white>19|thick>7|0>0|1>1|2>2|3>3|4>4|5>5|6>6|7>7|8>8|9>9|10>10|11>11|12>12|13>13|14>14|15>15|16>16|17>17|18>18|"
-   $6"query/ignore|*>ppl plot/overlay"
-ENDIF
-IF `landi_subx NE 0` THEN 
-   $6"query/ignore|*>plot/set/vs/nolab/line=1/overlay" RIVER1_2_LON+landi_subx,RIVER1_2_LAT
-   ppl pen 1 $6"1|black>1|red>2|green>3|blue>4|lightblue>5|purple>6|white>19|thick>7|0>0|1>1|2>2|3>3|4>4|5>5|6>6|7>7|8>8|9>9|10>10|11>11|12>12|13>13|14>14|15>15|16>16|17>17|18>18|"
-   $6"query/ignore|*>ppl plot/overlay"
-ENDIF
+   IF `landi_addx NE 0` THEN \
+     $4"query/ignore|*>plot($land_colorqual)/vs/overlay/nolab" STATE_LON+landi_addx, STATE_LAT
+   IF `landi_subx NE 0` THEN \
+      $4"query/ignore|*>plot($land_colorqual)/vs/overlay/nolab" STATE_LON+landi_subx, STATE_LAT
 
-! **** now the optional major rivers
-$5"query/ignore|*>plot/set/vs/nolab/line=1/overlay" RIVER1_LON, RIVER1_LAT
+endif
 
-! select line style and plot
-ppl pen 1 $5"1|black>1|red>2|green>3|blue>4|lightblue>5|purple>6|white>19|thick>7|0>0|1>1|2>2|3>3|4>4|5>5|6>6|7>7|8>8|9>9|10>10|11>11|12>12|13>13|14>14|15>15|16>16|17>17|18>18|"
+! **** now the optional major and minor rivers 
+!      (draw the major rivers over the minor ones if both are requested)
 
-! draw it - as an overlay or as a basemap
-$5"query/ignore|*>ppl plot/overlay"
+! **** the minor rivers
+
+define symbol land_setting = $6"-1|black>1|red>2|green>3|blue>4|lightblue>5|purple>6|thick>7|\
+0>0|1>1|2>2|3>3|4>4|5>5|6>6|7>7|8>8|9>9|10>10|11>11|12>12|13>13|14>14|15>15|16>16|17>17|18>18|N>-1|*>-2"
+
+if `($land_setting) ge 0` then
+
+   define symbol land_colorqual = ($land_colorqual)($land_over)
+   define symbol land_colorqual=/color=($land_setting)/line
+
+elif `($land_setting) eq -2` then
+
+   define symbol land_arg = ($6)
+   go land_arg_check
+
+endif
+
+if `($land_setting) ne -1` then 
+   $6"query/ignore|*>plot($land_colorqual)/vs/overlay/nolab" RIVER1_2_LON, RIVER1_2_LAT
+
+! Draw any lines outside 0 to 360
+   IF `landi_addx NE 0` THEN \
+      $6"query/ignore|*>plot($land_colorqual)/vs/overlay/nolab" RIVER1_2_LON+landi_addx, RIVER1_2_LAT
+   IF `landi_subx NE 0` THEN \
+      $6"query/ignore|*>plot($land_colorqual)/vs/overlay/nolab" RIVER1_2_LON+landi_subx, RIVER1_2_LAT
+
+endif
+
+! **** the major rivers
+
+define symbol land_setting = $5"-1|black>1|red>2|green>3|blue>4|lightblue>5|purple>6|thick>7|\
+0>0|1>1|2>2|3>3|4>4|5>5|6>6|7>7|8>8|9>9|10>10|11>11|12>12|13>13|14>14|15>15|16>16|17>17|18>18|N>-1|*>-2"
+
+
+if `($land_setting) ge 0` then
+
+   define symbol land_colorqual = ($land_colorqual)($land_over)
+   define symbol land_colorqual=/color=($land_setting)/line
+
+elif `($land_setting) eq -2` then
+
+   define symbol land_arg = ($5)
+   go land_arg_check
+
+endif
+
+if `($land_setting) ne -1` then 
+   $5"query/ignore|*>plot($land_colorqual)/vs/overlay/nolab" RIVER1_LON, RIVER1_LAT
 
 
 ! Draw any lines outside 0 to 360
-IF `landi_addx NE 0` THEN 
-   $5"query/ignore|*>plot/set/vs/nolab/line=1/overlay" RIVER1_LON+landi_addx,RIVER1_LAT
-   ppl pen 1 $5"1|black>1|red>2|green>3|blue>4|lightblue>5|purple>6|white>19|thick>7|0>0|1>1|2>2|3>3|4>4|5>5|6>6|7>7|8>8|9>9|10>10|11>11|12>12|13>13|14>14|15>15|16>16|17>17|18>18|"
-   $5"query/ignore|*>ppl plot/overlay"
-ENDIF
-IF `landi_subx NE 0` THEN 
-   $5"query/ignore|*>plot/set/vs/nolab/line=1/overlay" RIVER1_LON+landi_subx,RIVER1_LAT
-   ppl pen 1 $5"1|black>1|red>2|green>3|blue>4|lightblue>5|purple>6|white>19|thick>7|0>0|1>1|2>2|3>3|4>4|5>5|6>6|7>7|8>8|9>9|10>10|11>11|12>12|13>13|14>14|15>15|16>16|17>17|18>18|"
-   $5"query/ignore|*>ppl plot/overlay"
-ENDIF
+   IF `landi_addx NE 0` THEN \
+      $5"query/ignore|*>plot($land_colorqual)/vs/overlay/nolab" RIVER1_LON+landi_addx, RIVER1_LAT
+   IF `landi_subx NE 0` THEN \
+      $5"query/ignore|*>plot($land_colorqual)/vs/overlay/nolab" RIVER1_LON+landi_subx, RIVER1_LAT
 
-
+endif
 
 
 ! **** now the optional marine boundaries
-$7"query/ignore|*>plot/set/vs/nolab/line=1/overlay" MARINE_LON, MARINE_LAT
 
-! select line style and plot
-ppl pen 1 $7"1|black>1|red>2|green>3|blue>4|lightblue>5|purple>6|white>19|thick>7|0>0|1>1|2>2|3>3|4>4|5>5|6>6|7>7|8>8|9>9|10>10|11>11|12>12|13>13|14>14|15>15|16>16|17>17|18>18|"
+define symbol land_setting = $7"-1|black>1|red>2|green>3|blue>4|lightblue>5|purple>6|thick>7|\
+0>0|1>1|2>2|3>3|4>4|5>5|6>6|7>7|8>8|9>9|10>10|11>11|12>12|13>13|14>14|15>15|16>16|17>17|18>18|N>-1|*>-2"
 
-! draw it - as an overlay or as a basemap
-$7"query/ignore|*>ppl plot/overlay"
 
+if `($land_setting) ge 0` then
+
+   define symbol land_colorqual = ($land_colorqual)($land_over)
+   define symbol land_colorqual=/color=($land_setting)/line
+
+elif `($land_setting) eq -2` then
+
+   define symbol land_arg = ($7)
+   go land_arg_check
+
+endif
+
+if `($land_setting) ne -1` then 
+   $7"query/ignore|*>plot($land_colorqual)/vs/overlay/nolab" MARINE_LON, MARINE_LAT
 
 ! Draw any lines outside 0 to 360
-IF `landi_addx NE 0` THEN 
-   $7"query/ignore|*>plot/set/vs/nolab/line=1/overlay" MARINE_LON+landi_addx,MARINE_LAT
-   ppl pen 1 $7"1|black>1|red>2|green>3|blue>4|lightblue>5|purple>6|white>19|thick>7|0>0|1>1|2>2|3>3|4>4|5>5|6>6|7>7|8>8|9>9|10>10|11>11|12>12|13>13|14>14|15>15|16>16|17>17|18>18|"
-   $7"query/ignore|*>ppl plot/overlay"
-ENDIF
-IF `landi_subx NE 0` THEN 
-   $7"query/ignore|*>plot/set/vs/nolab/line=1/overlay" MARINE_LON+landi_subx,MARINE_LAT
-   ppl pen 1 $7"1|black>1|red>2|green>3|blue>4|lightblue>5|purple>6|white>19|thick>7|0>0|1>1|2>2|3>3|4>4|5>5|6>6|7>7|8>8|9>9|10>10|11>11|12>12|13>13|14>14|15>15|16>16|17>17|18>18|"
-   $7"query/ignore|*>ppl plot/overlay"
-ENDIF
+   IF `landi_addx NE 0` THEN \
+      $7"query/ignore|*>plot($land_colorqual)/vs/overlay/nolab" MARINE_LON+landi_addx, MARINE_LAT
+   IF `landi_subx NE 0` THEN \
+     $7"query/ignore|*>plot($land_colorqual)/vs/overlay/nolab" MARINE_LON+landi_subx, MARINE_LAT
+endif
+
 
 ! Restore data set and region
 cancel data geo_borders_intermed

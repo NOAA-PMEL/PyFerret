@@ -42,6 +42,7 @@
 * written for VAX computer under VMS operating system
 
 * for Unix/RISC port 9/91
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 
         IMPLICIT NONE
 
@@ -55,13 +56,15 @@
 
 * compute initial normalization
         sum = 0.0
-	DO 100 i = 1, wlen
- 100	sum = sum + wt(i)
+	DO i = 1, wlen
+	   sum = sum + wt(i)
+ 	ENDDO
 
 
 * normalize to unity
-        DO 200 i = 1, wlen
- 200    wt(i) = wt(i) / sum
+        DO i = 1, wlen
+	   wt(i) = wt(i) / sum
+	ENDDO
 
 	RETURN
 	END

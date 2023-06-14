@@ -168,6 +168,9 @@
 * V745 *acm*  5/20  added mode_dsg to control turning off all DSG ops
 * V7.6 *acm*  6/20 Set a second attribute __feature_mask_var when defining a 
 *                  mask variable, used if we go and redefine the mask variable.
+** 10/2022 *acm* Code cleanup: remove references to obsolete gui interface
+*   1/2023 *acm* Code cleanup: Replace the computed GOTO statement 
+*                  "GOTO ( 100, 200, ... )  subcmnd_num"  with IF blocks
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -234,56 +237,69 @@
 
 * command given with /ALL ?
 	slash_all = .FALSE.
-	DO 10 iqual = 1, num_qualifiers
-	IF ( qualifier_list( iqual ) .EQ. 1 ) slash_all = .TRUE.
- 10	CONTINUE
+	DO iqual = 1, num_qualifiers
+	   IF ( qualifier_list( iqual ) .EQ. 1 ) slash_all = .TRUE.
+	ENDDO
 
 * if the user entered a blank-separated list insteas of comma-separated
 * then make it behave like a comma-separated list (4/96)
 	CALL ARG_TO_ITEM
 
-* select subcommand
-	GOTO ( 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000,
-     .        1100,1200,1300,1400,1500,1600,1700, 1800, 1900, 2000 ) 
-     .       subcmnd_num
+* execute the given subcommand
 
 * CANCEL '    '
 * arrival at this point usually means an illegal subcommand was given
 * and was assumed to be an argument by the command parser
- 100	IF ( num_args .GE. 1 ) THEN
+
+      IF (subcmnd_num .EQ. 1) THEN
+
+	IF ( num_args .GE. 1 ) THEN
 	   CALL ERRMSG( ferr_invalid_subcmnd,status,
      .				cmnd_buff( arg_start(1):arg_end(1) ), *5000 )
 	ELSE
 	   GOTO 5010
 	ENDIF
+	
 	RETURN
+
+      ENDIF
 
 * CANCEL WINDOW
- 200	CALL CANCEL_WINDOW( status )
+
+      IF (subcmnd_num .EQ. 2) THEN
+
+	CALL CANCEL_WINDOW( status )
 	RETURN
 
+      ENDIF
+
 * CANCEL REGION[/ALL/X/Y/Z/T/E/F/I/J/K/L/M/N] [region_name]
- 300	IF ( slash_all .AND.
+
+      IF (subcmnd_num .EQ. 3) THEN
+
+	IF ( slash_all .AND.
      .	     (num_args.GT.0 .OR. num_qualifiers.GT.1) ) GOTO 5310
 	all_dims = num_qualifiers .EQ. 0
 	IF ( slash_all ) THEN
 * ... CANCEL REGION/ALL
-	   DO 302 idim = 1, nferdims
- 302	   CALL DEL_CX_DIM( idim, cx_last )
-	   DO 304 cx = 0, min_context, -1
- 304	   cx_name( cx ) = unspecified_name4
+	   DO idim = 1, nferdims
+	      CALL DEL_CX_DIM( idim, cx_last )
+	   ENDDO
+	   DO cx = 0, min_context, -1
+	      cx_name( cx ) = unspecified_name4
+	   ENDDO
 	ELSEIF ( num_args .EQ. 0 ) THEN
 * ... CANCEL REGION[/I/J/K/L/M/N]
-	   DO 310 idim = 1, nferdims
+	   DO idim = 1, nferdims
 	      IF ( all_dims
      .	      .OR. qual_given(idim+1) .GT. 0		! /I/J/K/L/M or /N
      .	      .OR. qual_given(idim+nferdims+1) .GT. 0 ) THEN	! /X/Y/Z/T/E or /F
 	         CALL DEL_CX_DIM( idim, cx_last )
 	      ENDIF
- 310	   CONTINUE
+	   ENDDO
 	ELSE
 * ... CANCEL REGION[/I/J/K/L/M/N] name
-	   DO 340 item = 1, num_items
+	   DO item = 1, num_items
 	      arg = cmnd_buff( item_start(item):item_end(item) )
 	      cx = REGION_NUMBER( arg )
 	      IF ( cx .EQ. unspecified_int4 ) CALL ERRMSG
@@ -291,23 +307,27 @@
 	      IF ( all_dims ) THEN
 	         cx_name( cx ) = unspecified_name4
 	      ELSE
-	         DO 320 idim = 1, nferdims
+	         DO idim = 1, nferdims
 	            IF ( qual_given(idim+1) .GT. 0		! /I/J/K/L/M or /N
      .	            .OR. qual_given(idim+nferdims+1) .GT. 0 ) THEN ! /X/Y/Z/T/E or /F
 	               CALL DEL_CX_DIM( idim, cx )
 	               cx_given( idim, cx ) = .FALSE.
 	            ENDIF
- 320	         CONTINUE
-	      ENDIF	         
- 340	   CONTINUE
+	         ENDDO
+	      ENDIF
+	   ENDDO
 	ENDIF
 	RETURN
 
+      ENDIF
+
 * CANCEL MEMORY /ALL /TEMP[default] or /PERM
- 400	del_perm = slash_all .OR. qual_given( slash_del_perm ) .GT. 0
+
+      IF (subcmnd_num .EQ. 4) THEN
+
+	del_perm = slash_all .OR. qual_given( slash_del_perm ) .GT. 0
 	del_temp = slash_all .OR. qual_given( slash_del_temp ) .GT. 0
      .			     .OR. .NOT.del_perm
-
 
 	   DO mr = 1,max_mr_avail
 	      IF ( mr_protected( mr ) .EQ. mr_deleted ) CYCLE
@@ -345,13 +365,23 @@
      .			' TEMPORARY data cleared from memory', 0) 
 	RETURN
 
+      ENDIF
+
 * CANCEL EXPRESSION
- 500	CALL DELETE_OLD_EXPR
+
+      IF (subcmnd_num .EQ. 5) THEN
+
+	CALL DELETE_OLD_EXPR
 	num_uvars_in_cmnd = cmnd_uvars_not_given
 	RETURN
 
+      ENDIF
+
 * CANCEL LIST
- 600	IF ( slash_all .OR. qual_given( slash_canc_list_prec   ) .GT. 0 )
+
+      IF (subcmnd_num .EQ. 6) THEN
+
+	IF ( slash_all .OR. qual_given( slash_canc_list_prec   ) .GT. 0 )
      .	   list_digits = default_output_precision
 	IF ( slash_all .OR. qual_given( slash_canc_list_out ) .GT. 0 ) THEN
 	   list_file       = 'AUTO'
@@ -375,8 +405,13 @@
 	IF (slash_all) CALL NETCDF4_CANCEL_SETTINGS
 	RETURN
 
+      ENDIF
+
 * CANCEL DATA_SET data_set_number1,number2,...
- 700	report_error = qual_given(slash_canc_data_noerr) .LE. 0      ! 5/93
+
+      IF (subcmnd_num .EQ. 7) THEN
+
+	report_error = qual_given(slash_canc_data_noerr) .LE. 0      ! 5/93
 
  	IF ( num_items .GT. 0 ) THEN
 	   DO 710 item = 1, num_items
@@ -386,12 +421,7 @@
 	      IF ( TM_DIGIT_TEST(buff) ) THEN
 	         argsym = buff(:blen)			! 10/95 for AIX
 
-*  (1/03 *acm*) See xeq_set
-#ifdef MANDATORY_FORMAT_WIDTHS
 	         READ ( argsym,*,ERR=610 ) iset
-#else
-	         READ ( argsym,'(I)',ERR=610 ) iset
-#endif
 
 * ... check for valid number given
 	         IF ( iset .LT. 1 .OR. iset .GT. maxdsets ) GOTO 5030
@@ -476,14 +506,14 @@
  710	   CONTINUE
 * ... if only one set remains then point to it
 	   iset = unspecified_int4
-	   DO 715 i = 1, maxdsets
-	     IF ( ds_name(i) .EQ. char_init2048) GOTO 715
+	   DO i = 1, maxdsets
+	     IF ( ds_name(i) .EQ. char_init2048) CYCLE
 	     IF ( iset .EQ. unspecified_int4 ) THEN
 	         iset = i
 	     ELSE
 	         GOTO 790
 	     ENDIF
- 715	   CONTINUE
+	   ENDDO
 	   cx_data_set( cx_last ) = iset
 
 	ELSEIF ( slash_all ) THEN
@@ -501,9 +531,14 @@
 	ENDIF
  790	RETURN
 
+      ENDIF
+
 * CANCEL MODE mode_name
 * loop through the list of mode names given
- 800	IF ( num_items .EQ. 0 ) GOTO 5010
+
+      IF (subcmnd_num .EQ. 8) THEN
+
+	IF ( num_items .EQ. 0 ) GOTO 5010
 	DO 820 item = 1, num_items
 * identify the specified mode to CANCEL
            len_test = TM_LENSTR(cmnd_buff( item_start(item):item_end(item) ))
@@ -517,12 +552,12 @@
      .	        .AND. mode_arg(mode,1).EQ.mode_set_always
      .	        .AND. csp .GT. 0 ) GOTO 820
 * ... push the mode stack adding on a FALSE (because it's CANCEL)
-	         DO 806 i = mode_stack_size, 2, -1
+	         DO i = mode_stack_size, 2, -1
 	            mode_state(mode,i) = mode_state(mode,i-1) 
 		    mode_arg  (mode,i) = mode_arg  (mode,i-1)
 		    IF (mode .EQ. pmode_time_lab) 
      .		      mode_state(pmode_f_lab,i-1) = mode_state(pmode_time_lab,i)
- 806	         CONTINUE
+	         ENDDO
 		 mode_state( mode,1 ) = .FALSE.
 * ... WAIT requires a string to communicate with PPLUS
 	         IF ( mode .EQ. pmode_wait ) THEN
@@ -570,7 +605,7 @@
 		    mode_state( mode,1 ) = .TRUE.
 
                     WRITE (show_str, 880) mode_arg(pmode_linecolors, 1)
- 880               FORMAT (I3)
+ 880                FORMAT (I3)
                     IF (no_plot_yet) THEN
                        CALL START_PPLUS(.FALSE.)
                        CALL PPLCMD (from, line, 0, 
@@ -606,12 +641,6 @@
 	              mode_state(mode,1) = .TRUE. 
 		      date_fmt_out = mode_arg(pmode_datefmt, 1)
 
-* ... mode pplgui - close reply pipe
-                 ELSEIF ( mode .EQ. pmode_gui ) THEN
-	            alt_messages = .FALSE.
-		    CONTINUE
-!	            CALL GUI_PIPE_CLOSE( status )
-!		    IF ( status .NE. ferr_ok ) GOTO 5000
 
                  ELSEIF ( mode .EQ. pmode_6d_lab ) THEN
 	            CALL WARN( 'MODE 6D_lab is deprecated. '//
@@ -646,35 +675,50 @@
  820	CONTINUE
 	RETURN
 
+      ENDIF
+
 * CANCEL MOVIE
- 900	frame_on = .FALSE.
+
+      IF (subcmnd_num .EQ. 9) THEN
+
+	frame_on = .FALSE.
 	RETURN
 
+      ENDIF
+
 * CANCEL VIEWPORT
- 1000	IF ( num_items .EQ. 0 ) THEN
+
+      IF (subcmnd_num .EQ. 10) THEN
+
+	IF ( num_items .EQ. 0 ) THEN
 * return to default(full) viewport
 	   CALL SET_VIEWPORT( mvp_dflt )
 	ELSE
 * cancel a viewport definition
-	   DO 1050 item = 1, num_items
+	   DO item = 1, num_items
 	      i1 = STR_UPCASE(buff,
      .			cmnd_buff(item_start(item):item_end(item)))
-	      DO 1040 ivp = 1, max_viewport
-	         IF ( vp_name(ivp).EQ.unspecified_name4 ) GOTO 1040
+	      DO ivp = 1, max_viewport
+	         IF ( vp_name(ivp).EQ.unspecified_name4 ) CYCLE
 	         IF ( MATCH_TEMPLATE(vp_name(ivp),buff) ) THEN
 	            IF (ivp.EQ.mvp_dflt) GOTO 5040
 	            vp_name( ivp ) = unspecified_name4
 	            IF ( vp_num .EQ. ivp ) vp_num = mvp_dflt
 	         ENDIF
- 1040	      CONTINUE
- 1050	   CONTINUE
+	      ENDDO
+	   ENDDO
 	ENDIF
 	RETURN
+
+      ENDIF
 
 * CANCEL VARIABLE
 * ... data set specified?
 * /D=xxx: has the user requested CANCEL VAR/D= ?
- 1100	iqual = qual_given( slash_canc_var_data )
+
+      IF (subcmnd_num .EQ. 11) THEN
+
+	iqual = qual_given( slash_canc_var_data )
 	IF ( iqual .GT. 0 ) THEN
 	   CALL EQUAL_STRING( cmnd_buff(qual_start(iqual):qual_end(iqual)),
      .			      buff, status )
@@ -721,10 +765,10 @@
 	IF ( slash_all
      .	.OR. (num_items.EQ.0 .AND. iset.NE.unspecified_int4) ) THEN
 	   CALL PURGE_ALL_UVARS
-	   DO 1110 ivar = 1, max_uvar
+	   DO ivar = 1, max_uvar
 	   IF (iset.EQ.unspecified_int4 .OR. iset.EQ.uvar_dset(ivar))
      .				CALL DELETE_USER_VAR(ivar, iset)     ! 7/97
- 1110	   CONTINUE
+	   ENDDO
 	   num_uvars_in_cmnd = cmnd_uvars_not_given  ! renders EX#n deleted 
 	ELSE
 	   IF (num_items .EQ. 0) GOTO 5010	
@@ -746,7 +790,7 @@
 *	    given twice will cancel both.  I regard this as acceptable -- the
 *	    case described here is pretty pathological, anyway.
 	      IF ( IS_TEMPLATE(buff) ) THEN
-	         DO 1115 ivar = 1, max_uvar
+	         DO ivar = 1, max_uvar
 	            IF ( uvar_name_code(ivar)(1:3) .NE. 'EX#'
      .	   .AND. (iset.EQ.unspecified_int4.OR.iset.EQ.uvar_dset(ivar)))
      .								THEN
@@ -757,7 +801,7 @@
 			  CALL DELETE_USER_VAR(ivar, iset)         ! 7/97
 	               ENDIF
 	            ENDIF
-1115	         CONTINUE
+		 ENDDO
 	      ELSE
 * If /D was not given, look first in the global user-vars, then at LET/D vars
 * in the default datset.
@@ -787,13 +831,18 @@
 	ENDIF
 	RETURN
 
+      ENDIF
+
 * CANCEL AXIS/MODULO
- 1200	IF ( qual_given(slash_canc_axis_modulo) .GT. 0 ) THEN
+
+      IF (subcmnd_num .EQ. 12) THEN
+
+	IF ( qual_given(slash_canc_axis_modulo) .GT. 0 ) THEN
 
            new_att_modulo = .FALSE.
            new_att_modulo_len = 0.
 
-	   DO 1220 item = 1, num_items
+	   DO item = 1, num_items
               axis = TM_GET_LINENUM(
      .				cmnd_buff(item_start(item):item_end(item)) )
               IF ( axis .EQ. unspecified_int4 ) GOTO 6210
@@ -802,11 +851,12 @@
 * ... wipe memory clear of stored variables - this could change all definitions
 *      ( could be more selective for efficiency by checking to see where this
 *      axis gets used )
-                 DO 1210 i = 1,max_mr_avail
- 1210            IF ( mr_protected( i ) .NE. mr_deleted ) 
+                 DO i = 1,max_mr_avail
+		   IF ( mr_protected( i ) .NE. mr_deleted ) 
      .                                CALL DELETE_VARIABLE( i )
+     		 ENDDO
               ENDIF
- 1220	   CONTINUE
+	   ENDDO
 
 * CANCEL AXIS/ALL
 
@@ -817,7 +867,7 @@
 
         ELSE IF ( qual_given(slash_canc_axis_depth) .GT. 0 ) THEN 
         
-	   DO 1222 item = 1, num_items
+	   DO item = 1, num_items
               axis = TM_GET_LINENUM(
      .				cmnd_buff(item_start(item):item_end(item)) )
               IF ( axis .EQ. unspecified_int4 ) GOTO 6210
@@ -825,7 +875,7 @@
                  line_direction(axis) = 'DU'
               ENDIF
 
- 1222	   CONTINUE
+	   ENDDO
 
 * CANCEL AXIS/STRIDE
         ELSE IF ( qual_given(slash_canc_axis_stride) .GT. 0 ) THEN
@@ -837,7 +887,7 @@
 *       uvar_grid 's 
            CALL PURGE_ALL_UVARS
 * ...   
-           DO 1223 item = 1, num_items 
+           DO item = 1, num_items 
               axis = TM_GET_LINENUM(
      .                          cmnd_buff(item_start(item):item_end(item)) )
 
@@ -857,7 +907,7 @@
 
  6001         CALL TM_NEXT_DYN_GRID( igrd, *6199)
 
-                 DO 6002 idim = 1, nferdims
+                 DO idim = 1, nferdims
                     iline = grid_line(idim,igrd)
 
                     IF ( iline .EQ. axis ) THEN
@@ -870,20 +920,18 @@
                        CALL TM_DEALLO_DYN_LINE(axis)
 
                     ENDIF
- 6002            CONTINUE
-
+                 ENDDO
 
               GOTO 6001
  6199         CONTINUE 
 
-
- 1223      CONTINUE 
+	   ENDDO
 
         ELSE
 
 * ... CANCEL AXIS
 	   num_protected_axes = TM_GET_LINENUM( 'EZ' )  ! top protected axis
-	   DO 1230 item = 1, num_items
+	   DO item = 1, num_items
               axis = TM_GET_LINENUM(
      .				cmnd_buff(item_start(item):item_end(item)) )
               IF ( axis .EQ. unspecified_int4 ) GOTO 6210
@@ -908,7 +956,7 @@
      .				'axis use count err', *5000)
 	         ENDIF
 	      ENDIF
- 1230	   CONTINUE
+	   ENDDO
         ENDIF
 
 * ... Check the attribute structure for this axis name and change 
@@ -924,9 +972,13 @@
 
 	RETURN
 
+      ENDIF
+
 * CANCEL GRID
- 1300   CONTINUE
-	DO 1330 item = 1, num_items
+
+      IF (subcmnd_num .EQ. 13) THEN
+
+	DO item = 1, num_items
            grid = TM_GET_GRIDNUM(
      .			cmnd_buff(item_start(item):item_end(item)) )
            IF (grid .EQ. unspecified_int4) GOTO 6215
@@ -935,18 +987,19 @@
 	      CALL PURGE_MR_GRID(grid, status)
 	      IF ( status .NE. ferr_ok ) THEN
 	          CALL WARN( 'Not deleted: '//grid_name(grid))
-	          GOTO 1330
+	          CYCLE
 	      ENDIF
 * ... grids created by data sets without associated vars may get deleted by
 *     PURGE_MR_GRID (e.g. handled as climatological_axes.cdf handles axes)
-	      IF (grid_name(grid) .EQ. char_init16) GOTO 1330
+	      IF (grid_name(grid) .EQ. char_init16) CYCLE
 	   ENDIF
 * ... remove the grid if possible
 	   IF (grid_use_cnt(grid) .LE. 0) THEN
 	      IF ( grid .LE. max_grids ) THEN
 	         grid_name(grid) = char_init16
-	         DO 1310 idim = 1, nferdims
- 1310		 CALL TM_DEALLO_DYN_LINE( grid_line(idim,grid))
+	         DO  idim = 1, nferdims
+		    CALL TM_DEALLO_DYN_LINE( grid_line(idim,grid))
+		 ENDDO
 	      ELSE
 	         CALL TM_DEALLO_DYN_GRID(grid)
 	      ENDIF
@@ -954,14 +1007,19 @@
 *     ... cannot delete - in use.
 	      CALL WARN( 'Not deleted: '//grid_name(grid))
 	   ENDIF
- 1330	CONTINUE
+	ENDDO
+
 	RETURN
+
+      ENDIF
 
 
 * CANCEL ATTRIBUTE  /OUTPUT[=all]
- 1400	 IF ( num_args .LT. 1 ) GOTO 5010
 
-!
+      IF (subcmnd_num .EQ. 14) THEN
+
+	 IF ( num_args .LT. 1 ) GOTO 5010
+
 * ... get dset number if present:  CANCEL ATT/D=dset ...
 	iqual = qual_given( slash_canc_attr_data ) 
         IF ( iqual .GT. 0 ) THEN
@@ -1031,12 +1089,12 @@
 
         buff = cmnd_buff(item_start(1):item_end(1))
 
-!! get dataset from varname.attname
 * ... evaluate the context without computing the expression to get the dataset
 
 	CALL GET_NEW_CX( cx_last, cx_cmnd, .TRUE., status )
         IF ( status .NE. ferr_ok ) GOTO 5000
  
+* get dataset from varname.attname
         IF (buff(1:1) .EQ. '(') THEN
            dset = cx_data_set(cx_cmnd)   ! initial value to try; will return dset
            CALL ISIT_COORD_VAR ( buff, dset, 
@@ -1051,22 +1109,6 @@
               ENDIF
            ENDIF
         ENDIF
-c
-c        ELSE
-c
-c* Get the dataset if given as [d=]
-c
-c	   IF ( INDEX(buff,'[') .GT. 0 ) THEN
-c               dset = pdset_irrelevant	! default (not used ...)
-c               CALL PARSE_NAM_DSET(buff, cx_last, dset,
-c     .				     cat, var, mods_cx, status)
-c           ELSE
-c              cx = is_cx( 1 )
-c              IF (cx .EQ. 0 .OR. cx .EQ. unspecified_int4)
-c     .             cx = cx_cmnd
-c             dset = cx_data_set(cx)
-c          ENDIF
-c	ENDIF
 
         IF (dset .EQ. pdset_irrelevant .OR. dset .EQ. unspecified_int4)
      .        dset = cx_data_set(cx_cmnd) 
@@ -1101,11 +1143,11 @@ c	ENDIF
 
 * Set all attribute output flags to 0
 
-              DO 1410 iatt = 1, nvatts
+              DO iatt = 1, nvatts
                  CALL CD_GET_VAR_ATT_NAME (dset, varid, iatt, attname, 
      .                                     status)
                  CALL CD_SET_ATT_FLAG(dset, varid, attname, iflag, status)
- 1410         CONTINUE
+	      ENDDO
 
            ELSE
 * Not /OUT=ALL. For single attribute, see if it exists and if so change the 
@@ -1157,9 +1199,10 @@ c	ENDIF
 * ... wipe memory clear of stored variables - this could change all definitions
 *      ( could be more selective for efficiency by checking to see where this
 *      axis gets used )
-                    DO 1420 i = 1,max_mr_avail
- 1420               IF ( mr_protected( i ) .NE. mr_deleted ) 
+                    DO i = 1,max_mr_avail
+		       IF ( mr_protected( i ) .NE. mr_deleted ) 
      .                                CALL DELETE_VARIABLE( i )
+     		    ENDDO
                  ENDIF
 
               ENDIF
@@ -1176,13 +1219,18 @@ c	ENDIF
         ENDIF
 
 	RETURN
+
+      ENDIF
         
 * CANCEL REDIRECT
- 1500   redir_cancel_stdout = .FALSE.
+
+      IF (subcmnd_num .EQ. 15) THEN
+
+	redir_cancel_stdout = .FALSE.
         redir_cancel_stderr = .FALSE.
         IF ( num_args .GT. 0 ) THEN
 *          Get all the redirect sources to cancel
-           DO 1510 i = 1,num_args
+           DO i = 1,num_args
               IF ( MATCH4( cmnd_buff(arg_start(i):arg_end(i) ), 
      .              arg_end(i) - arg_start(i) + 1, 'STDOUT', 6) ) THEN
                  redir_cancel_stdout = .TRUE.
@@ -1194,7 +1242,7 @@ c	ENDIF
                  CALL WARN('Ignored cancel redirect of unknown source: '
      .                   // cmnd_buff(arg_start(i):arg_end(i)) )
               ENDIF
- 1510      CONTINUE
+	   ENDDO
            IF ( redir_cancel_stdout .AND. 
      .          (redirect_stdout_flags .EQ. redirect_none) ) THEN
               CALL WARN('stdout is not redirected')
@@ -1251,27 +1299,38 @@ c	ENDIF
 *
         RETURN
 
+      ENDIF
+
 * CANCEL ALIAS
- 1600	IF ( slash_all ) THEN
-           DO 1610 i = num_predefined_alias+1, total_num_alias
- 1610      alias_name(i) = unspecified_name4
+
+      IF (subcmnd_num .EQ. 16) THEN
+
+	IF ( slash_all ) THEN
+           DO i = num_predefined_alias+1, total_num_alias
+	      alias_name(i) = unspecified_name4
+ 	   ENDDO
         ELSE
 	   IF ( num_items .EQ. 0 ) GOTO 5010
-	   DO 1630 item = 1, num_items
+	   DO item = 1, num_items
 	      i1 = STR_UPCASE(buff,
      .			cmnd_buff(item_start(item):item_end(item)))
-              DO 1620 i = 1, total_num_alias
-                 IF ( alias(i) .EQ. unspecified_name4 ) GOTO 1620
+              DO i = 1, total_num_alias
+                 IF ( alias(i) .EQ. unspecified_name4 ) CYCLE
                  IF ( MATCH_TEMPLATE(alias_name(i), buff) ) THEN
                     alias_name(i) = unspecified_name4
                  ENDIF
- 1620         CONTINUE
- 1630      CONTINUE
+	      ENDDO
+	   ENDDO
         ENDIF
 	RETURN
 
+      ENDIF
+
 * CANCEL SYMBOL
- 1700	IF ( slash_all ) THEN
+
+      IF (subcmnd_num .EQ. 17) THEN
+
+	IF ( slash_all ) THEN
 * cancel all symbols
 * (this lovely piece of code is borrowed from the PLOT+ routine getcmd.F)
 	   i=0
@@ -1289,19 +1348,23 @@ c	ENDIF
  1710   CALL LSTSYM(argsym,buff,blen,i,ier)	! get next symbol name (argsym)
         IF(ier.EQ.0)THEN
 * ... check the given templates 
-	   DO 1720 i1 = 1, num_items
+	   DO i1 = 1, num_items
 	      nth = STR_UPCASE(buff,
      .			cmnd_buff(item_start(i1):item_end(i1)))
 	      IF ( MATCH_TEMPLATE(argsym,buff) ) CALL DELSYM(argsym,ier)
- 1720	   CONTINUE
+	   ENDDO
            GOTO 1710
 	ENDIF
 	RETURN
 
+      ENDIF
+
 
 * CANCEL NCCACHE. Set all arguments of -1 to restore the default settings.
 
- 1800	cache_size = -1
+      IF (subcmnd_num .EQ. 18) THEN
+
+	cache_size = -1
 	cache_nelems = -1
 	cache_preemption = -1
 	CALL CD_SET_CHUNK_CACHE (cache_size, cache_nelems, 
@@ -1311,11 +1374,16 @@ c	ENDIF
 
 	RETURN
 
+      ENDIF
+
 
 * CANCEL PYVAR
 * modeled after CANCEL VAR
 *       /D=xxx: has the user requested CANCEL PYVAR/D= ?
- 1900   iqual = qual_given( slash_canc_var_data )
+
+      IF (subcmnd_num .EQ. 19) THEN
+
+	iqual = qual_given( slash_canc_var_data )
         IF ( iqual .GT. 0 ) THEN
            CALL EQUAL_STRING( cmnd_buff(qual_start(iqual):qual_end(iqual)),
      .                        buff, status )
@@ -1342,7 +1410,7 @@ c	ENDIF
            CALL DELETE_PYSTAT_DSET_VARS(iset)
         ELSE
            IF (num_items .EQ. 0) GOTO 5010
-           DO 1920 item = 1, num_items
+           DO item = 1, num_items
               i1 = STR_UPCASE(buff,
      .                 cmnd_buff(item_start(item):item_end(item)))
 *             Decode specified variable name of form VNAME[D=iset]
@@ -1354,23 +1422,26 @@ c	ENDIF
               CALL PURGE_ALL_UVARS
               CALL PURGE_PYSTAT_VAR(variable)
               CALL DELETE_PYSTAT_VAR(variable, buff, i1)
- 1920      CONTINUE
+	   ENDDO
         ENDIF
         RETURN
+
+      ENDIF
 	
 * CANCEL TEXT
 *      /FONT /BOLD /ITALIC /COLOR /ISIZ
- 2000   CONTINUE
+
+      IF (subcmnd_num .EQ. 20) THEN
 
 * No arguments, or argument ALL, cancel the global and group settings
 * Look for argument ALL
 
 	i1 = 0
 	IF (num_items .GT. 0) THEN
-	   DO 2010 item = 1, num_items
+	   DO item = 1, num_items
 	      buff2 = cmnd_buff(item_start(item):item_end(item))
 	      IF ( STR_SAME( buff2(1:3), "ALL") .EQ. 0) i1 = 1
- 2010	   CONTINUE
+	   ENDDO
 	ENDIF
 
 	IF (num_items.EQ.0 .OR. i1.GT.0) THEN 
@@ -1380,19 +1451,19 @@ c	ENDIF
 
 * CANCEL TEXT with argument(s) cancel settings on individual text groups
 
-	   DO 2040 item = 1, num_items
+	   DO item = 1, num_items
 
 	      arg = cmnd_buff(item_start(item):item_end(item))
 	      len_test = TM_LENSTR(arg)
 
-	      DO 2030 i = 1, ngp
+	      DO i = 1, ngp
                  len_mchars = TM_LENSTR(pyf_group_names(i)(:4))
 	         IF ( MATCH4( arg, len_test,
      .               pyf_group_names( i ),len_mchars) ) 
      .              CALL CANCEL_PYTEXT_GROUP (i)
- 2030	      CONTINUE
+	      ENDDO
 
- 2040	   CONTINUE
+	   ENDDO
 
  	ENDIF  ! CANCEL TEXT arguments
 
@@ -1401,6 +1472,8 @@ c	ENDIF
 	pyfont = (STR_SAME(pyfnt_fontname, 'Hershey') .NE. 0 )
 
 	RETURN
+
+      ENDIF
 
 
 * error exits

@@ -1,4 +1,5 @@
 \CANCEL MODE VERIFY    
+cancel mode logo
 
 ! histogram_pdf.jnl
 ! based on the old histogram.jnl
@@ -36,8 +37,9 @@ LET hcount = i[gx=hval,i=1:`ns`]
 ! larger delta i.
 ! e.g. LET hpdf = 50/((hval[i=@shf:+25]-hval[i=@shf:-25])*hcount[x=@max])
 
-LET hcdf = hcount/hcount[x=@max] ! normalized for cumulative prob. dens. fct
-LET hpdf = 10/((hval[i=@shf:+5]-hval[i=@shf:-5])*hcount[x=@max])
+LET/title="Cumulative Probability Density Function" hcdf = hcount/hcount[x=@max] ! normalized for cumulative prob. dens. fct
+
+LET/title="Approximate Probability Density Function" hpdf = 10/((hval[i=@shf:+5]-hval[i=@shf:-5])*hcount[x=@max])
 
 ! various results can be plotted from this
 ! plot/vs hval,hcdf              ! cumulative probability density function
@@ -48,6 +50,7 @@ LET hpdf = 10/((hval[i=@shf:+5]-hval[i=@shf:-5])*hcount[x=@max])
 
 LET/TITLE="Probability Density Function" vval = hpdf[i=@sbx:11]
 SET VAR/TITLE="`($1),return=title` (`$1,return=units`)" hval
+pause
 
 ! Do an "underlay" plot of the original variable (but with a /VLIM setting
 ! so that no data points are plotted). This puts the region information in 
@@ -63,16 +66,22 @@ PLOT/VS/NOAX/VLIM=`varmax+1`:`varmax+2` ($1),($1)
 
 SET VIEW hvp2
 
-PLOT/VS/NOLAB hval,vval
+PLOT/VS/NOLAB/COLOR=blue/symbol=19/siz=0.15 hval,vval
 
 ! Label the axes.
 LABEL/NOUSER `($ppl$xlen)/2`,-0.8, 0, 0, 0.12, @AC`($1),return=title` (`$1,return=units`)
 LABEL/NOUSER -0.8,`($ppl$ylen)/2`,0,90,0.12, @ACProbability Density Function
 
+SAY 
 SAY Other various results can be plotted from this:
-
-SAY PLOT/VS hval,hcdf              ! cumulative probability density function
-SAY PLOT/VS hval,hpdf              ! approximate probability density function
-SAY PLOT/VS hval,hpdf[i=@SBX:11]   ! histogram: smoothed PDF
+SAY 
+SAY  For cumulative probability density function
+SAY PLOT/VS hval,hcdf             
+SAY 
+SAY  For approximate probability density function
+SAY PLOT/VS hval,hpdf              
+SAY 
+SAY  For histogram: smoothed PDF
+SAY PLOT/VS hval,hpdf[i=@SBX:11] 
 
 SET MODE/LAST VERIFY

@@ -46,6 +46,7 @@
 * V580 *acm* 8/04  Allow for PPL POLYGON as well as PPL FILLPOL after a POLY/SET command.
 * V686 *acm* 11/13 Allow symbol names to be up to 120 characters long
 * v695 9/15 *acm* write values to PPL* symbols using 6 digits not 4
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax.
 
 	DIMENSION X(NSIZE)
 C**
@@ -113,7 +114,7 @@ c
 	    else
 		ivlen=nx*ny+nx+ny
 	    endif
-            DO 300 I=1,NX
+            DO 301 I=1,NX
             DO 300 J=1,NY
 		if(jtype.ge.0)then
 * TMAP mods begin:
@@ -128,7 +129,6 @@ c
                     xtt1=x(nx*(j-1)+i)
                     xtt2=x(ivlen+nx*(j-1)+i)
 *  ... LIMITS screening test for vector plots modified
-!	old code:   if (xtt1.ge.1.e35 .or. xtt2.ge.1.e35) goto 300
         	    IF(ZLE.AND.xtt1.LE.CMZLE)GOTO 300
         	    IF(ZEQ.AND.xtt1.EQ.CMZEQ)GOTO 300
         	    IF(ZGE.AND.xtt1.GE.CMZGE)GOTO 300
@@ -149,6 +149,7 @@ c
 		    imx=i
 		endif
 300         CONTINUE
+301         CONTINUE
 	    if(abs(jtype).eq.2)then
 		ivlen=nx*ny
 		xhigh=x(ivlen+imx)
@@ -158,12 +159,10 @@ c
 		yhigh=x(ivlen+jmx)
 		ylow=x(ivlen+jmn)
 	    else
-!*sh*		dx=(xmax-xmin)/(nx-1)
 		dx=(xmax-xmin)/MAX(nx-1,1)
 		xhigh=xmin+dx*(imx-1)
 		xlow=xmin+dx*(imn-1)
 c
-!*sh*		dy=(ymax-ymin)/(ny-1)
 		dy=(ymax-ymin)/MAX(ny-1,1)
 		yhigh=ymin+dy*(jmx-1)
 		ylow=ymin+dy*(jmn-1)

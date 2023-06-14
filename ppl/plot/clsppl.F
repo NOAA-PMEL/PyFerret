@@ -42,6 +42,8 @@
 * V602: *acm* 1/07 Changes for metafile-batch mode
 *       *kms* 10/11 set GKSOPN and GKS_OPEN flags to .FALSE.
 *                   after closing GKS
+*  12/2022 *acm* Code cleanup: remove code having to do with Tektronix
+*		 and other terminals
 
         include 'symkey_inc.decl'
         include 'SYMKEY.INC'
@@ -53,38 +55,14 @@
         include 'PLTCOM.DAT'
         include 'gkscm2.cmn'
 
-#ifdef core
-        include 'CORECM.INC'
-#endif
 C
 C       CLOSES FILES USED BY PLOT5+
 C
+	
         CALL ATFLSH
-#ifdef unix
         call dbmclose(keyln1)
-#ifndef F90_NO_UNLINK
-        call unlink('PPL$KEY.001.pag')
-        call unlink('PPL$KEY.001.dir')
-#endif
         call close_gks !See bottom of this file. J Davison 9.27.88
-#else
-        call close_gks !See bottom of this file. J Davison 9.27.88
-        CLOSE(KEYLN1,DISP='DELETE')
-#endif
-#ifdef core
-        if(gksopn)then
-            call closeretainseg()
-            call deselectvwsurf(vsurf)
-            call terminatecore()
-        endif
-#endif
  
-        IF(PLTFLG)THEN
-            PEN = .FALSE.
-            CALL ZABMV
-            CALL BINFSH
-            PLTFLG = .FALSE.
-        ENDIF
         GKSOPN = .FALSE.
         GKS_OPEN = .FALSE.
         RETURN
@@ -112,20 +90,22 @@ C
 
               member = 1
               call FGD_GQACWK(member,er_status,num_active,rmember)
-              if (num_active .lt. 1) goto 20
+              if (num_active .ge. 1) then
 
-              do 10 i = 1,num_active
-                 call FGD_GQACWK(1,er_status,j,rmember)
-                 call FGD_GDAWK(rmember)
- 10           continue
+                 do i = 1,num_active
+                    call FGD_GQACWK(1,er_status,j,rmember)
+                    call FGD_GDAWK(rmember)
+	         enddo
 
- 20           call FGD_GQOPWK(member,er_status,num_open,rmember)
+	      endif
+
+              call FGD_GQOPWK(member,er_status,num_open,rmember)
               if (num_open .lt. 1) goto 40
 
-              do 30 i = 1,num_open
+              do i = 1,num_open
                  call FGD_GQOPWK(1,er_status,j,rmember)
                  call FGD_GCLWK(rmember)
- 30           continue
+	      enddo
 
            endif    ! istate
  40        call FGD_GCLKS()

@@ -48,6 +48,7 @@
 * V550 *sh* 8/2/02 - support for modulo lengths. ensure that filling 
 *		    does not operate acros the subspan modulo void point
 *        2/12 *kms* Add E and F dimensions (use nferdims in tmap_dims.parm)
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
@@ -121,15 +122,15 @@
      .				idim, haf, dset, nfeatures, maxobs,
      .				com, com_mr, com_cx,
      .				res, res_mr, res_cx)
-
-	ELSE  !! not dsg
+	   GOTO 5000
+	ENDIF
 
 
 * compute limits within which calculation is straightforward
-	DO 10 ii = 1, nferdims
+	DO ii = 1, nferdims
 	   lo_sub(ii) = cx_lo_ss(res_cx,ii)
 	   hi_sub(ii) = cx_hi_ss(res_cx,ii)
- 10	CONTINUE
+	ENDDO
 	lo_com0 = cx_lo_ss(com_cx,idim)
 	hi_com0 = cx_hi_ss(com_cx,idim)
 	lo_com = lo_com0
@@ -144,17 +145,17 @@
 
 * FILL ALONG X AXIS
 	IF ( idim .EQ. x_dim ) THEN
-	   DO 110 n = lo_s6, hi_s6
-	   DO 110 m = lo_s5, hi_s5
-	   DO 110 l = lo_s4, hi_s4
-	   DO 110 k = lo_s3, hi_s3
-	   DO 110 j = lo_s2, hi_s2
-	   DO 110 i = lo_s1, hi_s1
+	   DO n = lo_s6, hi_s6
+	   DO m = lo_s5, hi_s5
+	   DO l = lo_s4, hi_s4
+	   DO k = lo_s3, hi_s3
+	   DO j = lo_s2, hi_s2
+	   DO i = lo_s1, hi_s1
 *  ... do not allow filling based upon values across a subspan modulo void
 	      IF (has_mod_void) THEN
 	         IF (MOD(i,modlen) .EQ. 0) THEN
 	            res(i,j,k,l,m,n) = com(i,j,k,l,m,n)
-	            GOTO 110
+	            CYCLE
 	         ENDIF
 	         nmod = (i-1)/modlen 
 	         IF (i.LE.0) nmod = nmod - 1
@@ -169,38 +170,45 @@
 * ... end of subspan modulo adjustment
 	      IF ( com(i,j,k,l,m,n) .NE. bad_res ) THEN
 	         res(i,j,k,l,m,n) = com(i,j,k,l,m,n)
-	         GOTO 110
+	         CYCLE
 	      ENDIF
 	      cnt = 0
 	      sum = 0.0
-	      DO 100 ii = -haf, haf
+	      DO ii = -haf, haf
 	         ii_com = i + ii
-	         IF ( ii_com.LT.lo_com .OR. ii_com.GT.hi_com ) GOTO 100
+	         IF ( ii_com.LT.lo_com .OR. ii_com.GT.hi_com ) CYCLE
 	         comp = com(ii_com,j,k,l,m,n)
 	         IF ( comp .NE. bad_res ) THEN
 	            cnt = cnt + 1
 	            sum = sum + comp
 	         ENDIF
- 100	      CONTINUE
+	      ENDDO
+	      
 	      IF ( cnt .GT. 0 ) THEN
 	         res(i,j,k,l,m,n) = sum / cnt
 	      ELSE
 	         res(i,j,k,l,m,n) = bad_res
 	      ENDIF
- 110	   CONTINUE
+
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
 
 * FILL ALONG Y AXIS
 	ELSEIF ( idim .EQ. y_dim ) THEN
-	   DO 220 n = lo_s6, hi_s6
-	   DO 220 m = lo_s5, hi_s5
-	   DO 220 l = lo_s4, hi_s4
-	   DO 220 k = lo_s3, hi_s3
-	   DO 220 j = lo_s2, hi_s2
+	   DO n = lo_s6, hi_s6
+	   DO m = lo_s5, hi_s5
+	   DO l = lo_s4, hi_s4
+	   DO k = lo_s3, hi_s3
+	   DO j = lo_s2, hi_s2
 *  ... do not allow filling based upon values across a subspan modulo void
 	      IF (has_mod_void) THEN
 	         IF (MOD(j,modlen) .EQ. 0) THEN
 	            res(i,j,k,l,m,n) = com(i,j,k,l,m,n)
-	            GOTO 220
+	            CYCLE
 	         ENDIF
 	         nmod = (j-1)/modlen 
 	         IF (j.LE.0) nmod = nmod - 1
@@ -213,41 +221,46 @@
 	         ENDIF
 	      ENDIF
 * ... end of subspan modulo adjustment
-	   DO 210 i = lo_s1, hi_s1
+	   DO i = lo_s1, hi_s1
 	      IF ( com(i,j,k,l,m,n) .NE. bad_res ) THEN
 	         res(i,j,k,l,m,n) = com(i,j,k,l,m,n)
-	         GOTO 210
+	         CYCLE
 	      ENDIF
 	      cnt = 0
 	      sum = 0.0
-	      DO 200 ii = -haf, haf
+	      DO ii = -haf, haf
 	         ii_com = j + ii
-	         IF ( ii_com.LT.lo_com .OR. ii_com.GT.hi_com ) GOTO 200
+	         IF ( ii_com.LT.lo_com .OR. ii_com.GT.hi_com ) CYCLE
 	         comp = com(i,ii_com,k,l,m,n)
 	         IF ( comp .NE. bad_res ) THEN
 	            cnt = cnt + 1
 	            sum = sum + comp
 	         ENDIF
- 200	      CONTINUE
+	      ENDDO
 	      IF ( cnt .GT. 0 ) THEN
 	         res(i,j,k,l,m,n) = sum / cnt
 	      ELSE
 	         res(i,j,k,l,m,n) = bad_res
 	      ENDIF
- 210	   CONTINUE
- 220	   CONTINUE
+	   ENDDO
+
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
 
 * FILL ALONG Z AXIS
 	ELSEIF ( idim .EQ. z_dim ) THEN
-	   DO 320 n = lo_s6, hi_s6
-	   DO 320 m = lo_s5, hi_s5
-	   DO 320 l = lo_s4, hi_s4
-	   DO 320 k = lo_s3, hi_s3
+	   DO n = lo_s6, hi_s6
+	   DO m = lo_s5, hi_s5
+	   DO l = lo_s4, hi_s4
+	   DO k = lo_s3, hi_s3
 *  ... do not allow filling based upon values across a subspan modulo void
 	      IF (has_mod_void) THEN
 	         IF (MOD(k,modlen) .EQ. 0) THEN
 	            res(i,j,k,l,m,n) = com(i,j,k,l,m,n)
-	            GOTO 320
+	            CYCLE
 	         ENDIF
 	         nmod = (k-1)/modlen 
 	         IF (k.LE.0) nmod = nmod - 1
@@ -260,41 +273,46 @@
 	         ENDIF
 	      ENDIF
 * ... end of subspan modulo adjustment
-	   DO 310 j = lo_s2, hi_s2
-	   DO 310 i = lo_s1, hi_s1
+	   DO j = lo_s2, hi_s2
+	   DO i = lo_s1, hi_s1
 	      IF ( com(i,j,k,l,m,n) .NE. bad_res ) THEN
 	         res(i,j,k,l,m,n) = com(i,j,k,l,m,n)
-	         GOTO 310
+	         CYCLE
 	      ENDIF
 	      cnt = 0
 	      sum = 0.0
-	      DO 300 ii = -haf, haf
+	      DO ii = -haf, haf
 	         ii_com = k + ii
-	         IF ( ii_com.LT.lo_com .OR. ii_com.GT.hi_com ) GOTO 300
+	         IF ( ii_com.LT.lo_com .OR. ii_com.GT.hi_com ) CYCLE
 	         comp = com(i,j,ii_com,l,m,n)
 	         IF ( comp .NE. bad_res ) THEN
 	            cnt = cnt + 1
 	            sum = sum + comp
 	         ENDIF
- 300	      CONTINUE
+	      ENDDO
 	      IF ( cnt .GT. 0 ) THEN
 	         res(i,j,k,l,m,n) = sum / cnt
 	      ELSE
 	         res(i,j,k,l,m,n) = bad_res
 	      ENDIF
- 310	   CONTINUE
- 320	   CONTINUE
+	   ENDDO
+	   ENDDO
+
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
 
 * FILL ALONG T AXIS
 	ELSEIF ( idim .EQ. t_dim ) THEN
-	   DO 420 n = lo_s6, hi_s6
-	   DO 420 m = lo_s5, hi_s5
-	   DO 420 l = lo_s4, hi_s4
+	   DO n = lo_s6, hi_s6
+	   DO m = lo_s5, hi_s5
+	   DO l = lo_s4, hi_s4
 *  ... do not allow filling based upon values across a subspan modulo void
 	      IF (has_mod_void) THEN
 	         IF (MOD(l,modlen) .EQ. 0) THEN
 	            res(i,j,k,l,m,n) = com(i,j,k,l,m,n)
-	            GOTO 420
+	            CYCLE
 	         ENDIF
 	         nmod = (l-1)/modlen 
 	         IF (l.LE.0) nmod = nmod - 1
@@ -307,41 +325,46 @@
 	         ENDIF
 	      ENDIF
 * ... end of subspan modulo adjustment
-	   DO 410 k = lo_s3, hi_s3
-	   DO 410 j = lo_s2, hi_s2
-	   DO 410 i = lo_s1, hi_s1
+	   DO k = lo_s3, hi_s3
+	   DO j = lo_s2, hi_s2
+	   DO i = lo_s1, hi_s1
 	      IF ( com(i,j,k,l,m,n) .NE. bad_res ) THEN
 	         res(i,j,k,l,m,n) = com(i,j,k,l,m,n)
-	         GOTO 410
+	         CYCLE
 	      ENDIF
 	      cnt = 0
 	      sum = 0.0
-	      DO 400 ii = -haf, haf
+	      DO ii = -haf, haf
 	         ii_com = l + ii
-	         IF ( ii_com.LT.lo_com .OR. ii_com.GT.hi_com ) GOTO 400
+	         IF ( ii_com.LT.lo_com .OR. ii_com.GT.hi_com ) CYCLE
 	         comp = com(i,j,k,ii_com,m,n)
 	         IF ( comp .NE. bad_res ) THEN
 	            cnt = cnt + 1
 	            sum = sum + comp
 	         ENDIF
- 400	      CONTINUE
+	      ENDDO
 	      IF ( cnt .GT. 0 ) THEN
 	         res(i,j,k,l,m,n) = sum / cnt
 	      ELSE
 	         res(i,j,k,l,m,n) = bad_res
 	      ENDIF
- 410	   CONTINUE
- 420	   CONTINUE
+	   ENDDO
+	   ENDDO
+	   ENDDO
+
+	   ENDDO
+	   ENDDO
+	   ENDDO
 
 * FILL ALONG E AXIS
 	ELSEIF ( idim .EQ. e_dim ) THEN
-	   DO 520 n = lo_s6, hi_s6
-	   DO 520 m = lo_s5, hi_s5
+	   DO n = lo_s6, hi_s6
+	   DO m = lo_s5, hi_s5
 *  ... do not allow filling based upon values across a subspan modulo void
 	      IF (has_mod_void) THEN
 	         IF (MOD(m,modlen) .EQ. 0) THEN
 	            res(i,j,k,l,m,n) = com(i,j,k,l,m,n)
-	            GOTO 520
+	            CYCLE
 	         ENDIF
 	         nmod = (m-1)/modlen 
 	         IF (m.LE.0) nmod = nmod - 1
@@ -354,41 +377,46 @@
 	         ENDIF
 	      ENDIF
 * ... end of subspan modulo adjustment
-	   DO 510 l = lo_s4, hi_s4
-	   DO 510 k = lo_s3, hi_s3
-	   DO 510 j = lo_s2, hi_s2
-	   DO 510 i = lo_s1, hi_s1
+	   DO l = lo_s4, hi_s4
+	   DO k = lo_s3, hi_s3
+	   DO j = lo_s2, hi_s2
+	   DO i = lo_s1, hi_s1
 	      IF ( com(i,j,k,l,m,n) .NE. bad_res ) THEN
 	         res(i,j,k,l,m,n) = com(i,j,k,l,m,n)
-	         GOTO 510
+	         CYCLE
 	      ENDIF
 	      cnt = 0
 	      sum = 0.0
-	      DO 500 ii = -haf, haf
+	      DO ii = -haf, haf
 	         ii_com = m + ii
-	         IF ( ii_com.LT.lo_com .OR. ii_com.GT.hi_com ) GOTO 500
+	         IF ( ii_com.LT.lo_com .OR. ii_com.GT.hi_com ) CYCLE
 	         comp = com(i,j,k,l,ii_com,n)
 	         IF ( comp .NE. bad_res ) THEN
 	            cnt = cnt + 1
 	            sum = sum + comp
 	         ENDIF
- 500	      CONTINUE
+	      ENDDO
 	      IF ( cnt .GT. 0 ) THEN
 	         res(i,j,k,l,m,n) = sum / cnt
 	      ELSE
 	         res(i,j,k,l,m,n) = bad_res
 	      ENDIF
- 510	   CONTINUE
- 520	   CONTINUE
+	   ENDDO
+	   ENDDO
+
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
 
 * FILL ALONG F AXIS
 	ELSEIF ( idim .EQ. f_dim ) THEN
-	   DO 620 n = lo_s6, hi_s6
+	   DO n = lo_s6, hi_s6
 *  ... do not allow filling based upon values across a subspan modulo void
 	      IF (has_mod_void) THEN
 	         IF (MOD(n,modlen) .EQ. 0) THEN
 	            res(i,j,k,l,m,n) = com(i,j,k,l,m,n)
-	            GOTO 620
+	            CYCLE
 	         ENDIF
 	         nmod = (n-1)/modlen 
 	         IF (n.LE.0) nmod = nmod - 1
@@ -401,41 +429,43 @@
 	         ENDIF
 	      ENDIF
 * ... end of subspan modulo adjustment
-	   DO 610 m = lo_s5, hi_s5
-	   DO 610 l = lo_s4, hi_s4
-	   DO 610 k = lo_s3, hi_s3
-	   DO 610 j = lo_s2, hi_s2
-	   DO 610 i = lo_s1, hi_s1
+	   DO m = lo_s5, hi_s5
+	   DO l = lo_s4, hi_s4
+	   DO k = lo_s3, hi_s3
+	   DO j = lo_s2, hi_s2
+	   DO i = lo_s1, hi_s1
 	      IF ( com(i,j,k,l,m,n) .NE. bad_res ) THEN
 	         res(i,j,k,l,m,n) = com(i,j,k,l,m,n)
-	         GOTO 610
+	         CYCLE
 	      ENDIF
 	      cnt = 0
 	      sum = 0.0
-	      DO 600 ii = -haf, haf
+	      DO ii = -haf, haf
 	         ii_com = n + ii
-	         IF ( ii_com.LT.lo_com .OR. ii_com.GT.hi_com ) GOTO 600
+	         IF ( ii_com.LT.lo_com .OR. ii_com.GT.hi_com ) CYCLE
 	         comp = com(i,j,k,l,m,ii_com)
 	         IF ( comp .NE. bad_res ) THEN
 	            cnt = cnt + 1
 	            sum = sum + comp
 	         ENDIF
- 600	      CONTINUE
+	      ENDDO
 	      IF ( cnt .GT. 0 ) THEN
 	         res(i,j,k,l,m,n) = sum / cnt
 	      ELSE
 	         res(i,j,k,l,m,n) = bad_res
 	      ENDIF
- 610	   CONTINUE
- 620	   CONTINUE
+	   ENDDO
+
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
 
 	ENDIF
 
-        ENDIF  !!  IF (TM_ITSA_DSG(grid))
-
-
 * always success
-	DO_FILL_AVE = ferr_ok
+ 5000	DO_FILL_AVE = ferr_ok
 	RETURN
 
 	END

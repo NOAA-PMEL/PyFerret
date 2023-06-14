@@ -43,6 +43,7 @@
 *                       Remove VMS include statements
 * V73  3/18 *kms*  For clarity, append MD to makedot.cmn values IPT, XDOT, 
 *                  and YDOT; make MDOT (99) a makedot.cmn parameter DOTSYMIM
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. Remove commented-out code
 
         IMPLICIT NONE
 
@@ -61,8 +62,6 @@ CCCCC	VIRTUAL X(NXS)		(*jd* 12.96 for linux port)
 	real		axmin,aymin,axmax,aymax
 	integer  	icnt,im,j,ibase,iy,a_line
 	logical		old_swait
-
-
 C	KTYPE = 1 -XY  0 -Z  2-VECTOR
 	include 'lines_inc.decl'
 	include 'LINES.INC'
@@ -80,8 +79,6 @@ C	KTYPE = 1 -XY  0 -Z  2-VECTOR
 	include 'PLT.INC'
 	include 'pltl_inc.decl'
 	include 'PLTL.INC'
-	include 'mplot_inc.decl'
-	include 'MPLOT.INC'
 	include 'cmrd_inc.decl'
 	include 'CMRD.INC'
 	include 'prmcom_inc.decl'
@@ -113,17 +110,12 @@ C	KTYPE = 1 -XY  0 -Z  2-VECTOR
 	IY=NXS/2
 	CS=COS(VANG*.01745329252)
 	SN=SIN(VANG*.01745329252)
-!	ZT=YF/XF
 	ICNT=1
 
 	old_swait = swait
 	swait = .false.
 	CALL MARKH(HMARK(a_line))
 	CALL COLOR(IPEN(a_line))
-
-c acm  Put back to old PPL  ACM 8/2000
-c acm	IF(ITYPE(a_line).GE.4 .and. .not.gks_open)THEN ! JD 3.22.89 NEW PPL
-c acm!	IF(ITYPE(a_line).GE.4) THEN ! OLD PPL (PRE JD 89 GKS)
 
 	IF(ITYPE(a_line).GE.4) THEN ! OLD PPL (PRE JD 89 GKS)
 	   CALL DASHSZ(DN1(a_line),UP1(a_line),DN2(a_line),UP2(a_line))
@@ -143,7 +135,8 @@ c acm!	IF(ITYPE(a_line).GE.4) THEN ! OLD PPL (PRE JD 89 GKS)
 	DO 60 J=1,2
 	   CALL TRANS(1,X(J),X(IY+J),XT,YT)
 	   CALL PLOT(XT,YT,1,0)
-60      CALL MARK(IM)
+           CALL MARK(IM)
+60	CONTINUE	
 	IF (ITYPE(a_line).EQ.2.OR.ITYPE(a_line).EQ.5) 
      .	CALL MARK(IMARK(a_line))
  	CALL COLOR(IPEN(0))
@@ -156,21 +149,7 @@ c acm!	IF(ITYPE(a_line).GE.4) THEN ! OLD PPL (PRE JD 89 GKS)
 
 	swait = old_swait
 
-!	CALL SCALE(XF,YF,XORG,YORG,XLO,YLO)
-C
 	CALL WINDOW(0.,0.,0.,0.)
-C
-!	IF(ITFLG.EQ.1)THEN
-!	    XHI=XTI
-!	    XLO=XTL
-!	ELSE IF(ITFLG.EQ.-1)THEN
-!	    YHI=XTI
-!	    YLO=XTL
-!	ENDIF
-
-
-c       CALL PPLGFLUSH
-c       CALL MAKEDOTFLUSH
 
 	RETURN
 	END

@@ -44,11 +44,7 @@ C**
 C***********************************************************************
 C**
 C**
-#ifdef unix
 	INCLUDE 'LABCOM.INC'
-#else
-	INCLUDE 'pplinc:LABCOM.INC'
-#endif
 	IF(IAT.EQ.0)RETURN
 	IF(XL+SHFT*CS/XF.GE.XL2)THEN
 	    AX=-HLABS*.5

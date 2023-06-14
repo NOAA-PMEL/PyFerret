@@ -23,14 +23,12 @@
 !  arg 6 (output)	- "LIST", "PLOT", or "BOTH" (default=BOTH)
 
 ! example (try it):
-!	yes? USE ocean_atlas_annual
-!	(yes? CANCEL MODE LONGITUDE	! optional )
-!	yes? SHADE  po4[k=1]		! Note Bull's eye at approx 30w 60S
-!	yes? GO bullseye po4[k=1] 175e 50n	! simple success
-
-!	yes? GO bullseye po4[k=1] 55e 20n 20 20	! OK with missing data inside
-
-!	yes? GO bullseye po4[k=1] 173e 50n	! failure -- extremum at edge
+!	yes? USE monthly_navy_winds
+!	yes? shade/l=30/x=30:90/y=20:60 vwnd	! Note Bull's eye at approx 45e 37n
+!	yes? go bullseye vwnd[L=30] 45e 37n	! simple success
+! 
+!	yes? GO bullseye vwnd[L=30] 70e 55n	! failure no particular extreme value
+!						! method returns an extremum at edge
 
 ! test validity of arguments
 query/ignore $1%<Usage: GO bullseye expression X=lo:hi  Y=lo:hi%
@@ -51,12 +49,13 @@ ENDIF
 !========================
 ! If no success report failure and exit
 IF `($success) NE 1` THEN
+  SAY
   SAY *****************************************************************
   SAY ***                                                           ***
   SAY *** Search failed:    ($failure_reason)
   SAY ***                                                           ***
   SAY *****************************************************************
-  SAY *** (Ignore the following message about the Unclosed IF statement)
+  SAY
   IF `($choice) GE 0` THEN
     GO bullseye_box 2      ! red box shows failure region
   ENDIF
@@ -66,12 +65,13 @@ ENDIF
 
 ! SUCCESS!!
 ! announce the results
+  SAY
 say **********************************************************************
-SAY ****                                                         ****
+SAY ****                                                              ****
 say **** Bullseye=`field[I=($iloc),J=($jloc)]` (($extreme)) at X=($xloc) (I=($iloc)), Y=`yloc` (J=($jloc)) ****
-SAY ****                                                         ****
+SAY ****                                                              ****
 say **********************************************************************
-
+say
 ! list a 7 by 7 block of the field centered on the bullseye 
 IF `($choice) GE 0` THEN
    SAY LIST/I=`($iloc)-3`:`($iloc)+3`/J=`($jloc)-3`:`($jloc)+3` field

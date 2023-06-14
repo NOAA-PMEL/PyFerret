@@ -2,11 +2,7 @@
 
 * this BLOCK DATA is generated automatically by the FERRET make routine
 
-#ifdef unix
 	include 'xmake_date.cmn'
-#else
-	INCLUDE 'FERRET_CMN:XMAKE_DATE.CMN'
-#endif
 
 	DATA make_date/'xxxxxxxx'/
 

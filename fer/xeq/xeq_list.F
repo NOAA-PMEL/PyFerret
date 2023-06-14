@@ -144,7 +144,6 @@
 *                  XCHUNK,YCHUNK,ZCHUNK,TCHUNK,COMPRESSION,SHUFFLE,ENDIAN
 * V6.7  *acm* 3/11 Remove warning deprecating /RIGID. There are still valid reasons
 *                  to want to set the time axis to NOT be the record axis.
-* V68  *acm*  1/12 ifdef double_p for double-precision ferret.
 * V683 *acm*  8/12 add new SAVE/OUTTYPE=  
 * V685 *acm*  6/13 new qualifier SAVE/NOBOUNDS
 * V685 *acm*  6/13 Dont add SAVE/NOCOORDS
@@ -168,6 +167,9 @@
 * v751 *acm*  8/19 Issue 1946, allow for user-set string dimension length, SAVE/STRLEN
 * v751 *acm*  8/19 SAVE/APPEND to dsg datasets
 * v76  *acm* 11/19 New LIST/NOCOORDS to write dimensions only not coord vars. 
+** 10/2022 *acm* Code cleanup: remove references to obsolete gui interface
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
+* 12/2022 *acm* Code cleanup: Ensure consistent arguments in subroutine calls 
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -243,6 +245,9 @@
 
 * *kob* 2/99 - did the user request a quiet listing
 	quiet = qual_given( slash_quiet ) .GT. 0
+	
+	as_global = .FALSE.
+	usr_maxstrlen = unspecified_int4
 
 * special trap to create DODS cache version of NetCDF file
         IF ( list_fmt_type .EQ. plist_cdf_cache ) THEN
@@ -260,7 +265,8 @@
      .                    .FALSE., 'N', nvars, is_mr, is_cx,
      .			   ' ', .TRUE., pcdf_mode_cache, clobber, 
      .                    edges_flag, do_bounds, keepax_flag, out_type,  
-     .                    status )
+     .                    quiet, as_global, usr_maxstrlen, do_coords, status )
+
 	   CALL DELETE_MRS_IN_PROGRESS		! remove temporary vars
 	   RETURN
 	ENDIF
@@ -291,9 +297,6 @@
      1	        'This command is not allowed.', 0)
 	   return
 	ENDIF
-
-* in GUI mode you cannot use LIST/FORMAT without /FILE
-	IF ( mode_gui.AND.list_format_given.AND.list_to_tty ) GOTO 5070
 
 	IF ( do_stream .AND. list_at_eof ) CALL ERRMSG
      .		( ferr_not_implemented, status,
@@ -434,8 +437,9 @@ c     .		 .AND. .NOT.do_comma_del
 	all_at_once  = do_multi.OR.do_epic.OR.do_cdf
 
 * permutation requested ?
-        DO 10 idim = 1, nferdims+1
- 10     perm(idim) = idim
+        DO idim = 1, nferdims+1
+	   perm(idim) = idim
+ 	ENDDO
 	IF ( permute ) THEN
 * ... user-specified permutation
 	   i = qual_given( slash_permute )
@@ -582,17 +586,10 @@ c     .		 .AND. .NOT.do_comma_del
            raw_name = ' '
            qfile = qual_given( slash_file )
            IF ( qfile .GT. 0 ) THEN
-#ifdef unix
 * preserve case of filename for unix
               CALL EQUAL_STR_LC(
      .			cmnd_buff(qual_start(qfile):qual_end(qfile)),
      .                  raw_name, status )
-#else
-* VMS filenames in upper case always
-              CALL EQUAL_STRING(
-     .			cmnd_buff(qual_start(qfile):qual_end(qfile)),
-     .                  raw_name, status )
-#endif
            ENDIF
            IF ( status .NE. ferr_ok ) GOTO 5000
 	   IF ( raw_name .EQ. ' ' .AND. do_stream_phase.EQ.0 ) THEN
@@ -639,13 +636,8 @@ c     .		 .AND. .NOT.do_comma_del
 	            IF (status .EQ. ferr_ok) GOTO 5110
 		    status = NF_CLOSE(cdfid)
 	         ENDIF
-
-#ifdef NO_ACCESS_APPEND
-	         faccess = 'SEQUENTIAL'
-#else
 	         faccess = 'APPEND'
 		 fposition = 'APPEND'
-#endif
 	         fstatus = 'OLD'
 	      ELSEIF (do_stream) THEN
 	         IF ( do_stream_phase .EQ. 0 ) THEN
@@ -662,9 +654,6 @@ c     .		 .AND. .NOT.do_comma_del
 	      ELSEIF ( clobber ) THEN	! 11/96
 	         faccess = 'SEQUENTIAL'
 	         fstatus = 'REPLACE'
-#ifdef F90_OPEN_FILE_CLOBBER
-		 fposition = 'ASIS'
-#endif
 	      ELSE
 	         GOTO 5050	! attempt to clobber a file
 	      ENDIF
@@ -687,16 +676,12 @@ c     .		 .AND. .NOT.do_comma_del
 	      OPEN( UNIT	= default_list_lun,
      .		    FILE	= raw_name,
      .		    FORM	= fformatted,
-#ifdef F90_OPEN_FILE_APPEND
-     .		    POSITION    = fposition,
-#else
      .		    ACCESS	= faccess,
-#endif
      .		    STATUS	= fstatus,
      .		    ERR		= 5010 )
 	   ELSEIF ( do_stream .AND. do_stream_phase.EQ.0 ) THEN	! 12/94
 	      reclen = 1  ! in bytes
-	      DO 60 i = 1, nvars2list
+	      DO i = 1, nvars2list
 	         IF ( mr_type(my_mr(i)) .EQ. ptype_string ) THEN
 	            reclen = MAX(reclen,
      .			GET_MAX_STRING_LEN(my_cx(i), my_mr(i),
@@ -705,7 +690,7 @@ c     .		 .AND. .NOT.do_comma_del
 	            reclen = MAX(reclen,8)
 	         ENDIF
 
- 60	      CONTINUE
+	      ENDDO
 
               IF (strmlen .GT. 0) reclen = strmlen
 
@@ -714,11 +699,7 @@ c     .		 .AND. .NOT.do_comma_del
      .		    FORM	= 'UNFORMATTED',
      .		    ACCESS	= 'DIRECT',
      .		    STATUS	= fstatus,
-#ifdef reclen_in_bytes
      .	            RECL	= reclen,
-#else
-     .	            RECL	= reclen/4,
-#endif
      .		    ERR		= 5010 )
 	      do_stream_phase = 1		! for multi-variables
 	   ENDIF
@@ -728,8 +709,9 @@ c     .		 .AND. .NOT.do_comma_del
 * reserve working arrays (different needs for each listing type)
 	IF ( do_epic ) THEN
 	   wsize = 1
-	   DO 110 ilist = 1, nvars2list
- 110	   wsize = MAX ( wsize, CX_DIM_LEN(t_dim,my_cx(ilist)) )
+	   DO ilist = 1, nvars2list
+	      wsize = MAX ( wsize, CX_DIM_LEN(t_dim,my_cx(ilist)) )
+ 	   ENDDO
 	   wsize = 3. * wsize
 	ELSEIF ( do_multi ) THEN
 	   wsize = nvars2list* (2*nferdims+6)
@@ -738,13 +720,15 @@ c     .		 .AND. .NOT.do_comma_del
 	ELSE
 * ... allocate enough space for the longest axis
 	   wsize = 1
-	   DO 112 idim = 1, nferdims
- 112	   wsize = MAX( wsize, CX_DIM_LEN(idim,cx))
+	   DO idim = 1, nferdims
+	      wsize = MAX( wsize, CX_DIM_LEN(idim,cx))
+ 	   ENDDO
 	   IF (do_dods)THEN
               wsize = 1
-              DO 113 idim = 1, nferdims
- 113	        IF (CX_DIM_LEN(idim,cx) .GE. 1) 
+              DO idim = 1, nferdims
+		 IF (CX_DIM_LEN(idim,cx) .GE. 1) 
      .             wsize = wsize * CX_DIM_LEN(idim,cx)
+     	      ENDDO
 	   ENDIF
 	ENDIF
 	i8_size = wsize
@@ -768,7 +752,7 @@ c     .		 .AND. .NOT.do_comma_del
 
 
 	   IF (.NOT.permute .AND. .NOT.do_cdf) CALL GET_CX_DIMS(cx,ndim, perm )
-	   DO 200 ilist = 1, nvars2list
+	   DO ilist = 1, nvars2list
 	      
               IF (.NOT.permute .AND.do_cdf) CALL GET_CX_DIMS(my_cx(ilist),ndim,perm)
               CALL SHRINK_FOR_MODULO (my_cx(ilist), my_mr(ilist), do_cdf,
@@ -779,7 +763,7 @@ c     .		 .AND. .NOT.do_comma_del
      .				      mr_perm(ilist), do_shrink, status )
               IF ( status .NE. ferr_ok ) GOTO 500
               npermuted = npermuted + 1
- 200	   CONTINUE
+	   ENDDO
  
 
 * w/ the above fix, mr_perm is correct but perm needs to be reset.
@@ -891,7 +875,7 @@ c     .		 .AND. .NOT.do_comma_del
 	IF ( normal_file ) CLOSE ( UNIT = list_lun, ERR = 5010 )
 
 * ... delete permuted data if it was created
-	DO 510 ilist = 1, npermuted
+	DO ilist = 1, npermuted
 	   mr = mr_perm(ilist)
 	   IF ( mr_protected(mr) .EQ. mr_temporary
      .	   .OR. mr_protected(mr) .EQ. mr_table_entry_only )
@@ -906,7 +890,7 @@ c     .		 .AND. .NOT.do_comma_del
 	         GOTO 1000
 	      ENDIF
 	   ENDIF
- 510	CONTINUE
+	ENDDO
 
  1000   list_fmt_type = plist_default ! restore for next command
 	list_format_given = .FALSE.
@@ -926,11 +910,7 @@ c     .		 .AND. .NOT.do_comma_del
  5060	CALL ERRMSG( ferr_invalid_command, status,
      .		'LIST/HEADING=enhanced needs a /FORMAT qualifier'//pCR//
      .		'	(format cannot be tab or comma)', *1000 )
- 5070	CALL ERRMSG( ferr_invalid_command, status,
-     .		'In GUI mode LIST/FORMAT reguires a named /FILE=', *1000 )
- 5080	CALL ERRMSG( ferr_invalid_command, status,
-     .			'/ORDER not allowed with V permutation (yet)', *1000 )
-     
+
  5090	CALL ERRMSG( ferr_prog_limit, status,
      .  'Cannot write to file w/ name longer than 256 characters: '//pCR//
      .  'Limitation of Fortran INQUIRE and OPEN calls '	

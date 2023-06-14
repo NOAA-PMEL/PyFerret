@@ -90,20 +90,12 @@
 
 	IF ( fexist ) THEN    
 	   IF ( append ) THEN
-
-#ifdef NO_ACCESS_APPEND
-	      faccess = 'SEQUENTIAL'
-#else
 	      faccess = 'APPEND'
 	      fposition = 'APPEND'
-#endif
 	      fstatus = 'OLD'
 	   ELSEIF ( clobber ) THEN
 	      faccess = 'SEQUENTIAL'
 	      fstatus = 'REPLACE'
-#ifdef F90_OPEN_FILE_CLOBBER
-	      fposition = 'ASIS'
-#endif
 	   ELSE
 	      GOTO 5050	 !attempt to clobber a file
 	   ENDIF
@@ -117,11 +109,7 @@
 	OPEN( UNIT	= default_list_lun,
      .	      FILE	= raw_name,
      .	      FORM	= fformatted,
-#ifdef F90_OPEN_FILE_APPEND
-     .	      POSITION    = fposition,
-#else
      .	      ACCESS	= faccess,
-#endif
      .	      STATUS	= fstatus,
      .	      ERR		= 5010 )
 

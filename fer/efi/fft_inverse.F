@@ -40,6 +40,10 @@
 *
 * v5.50  *acm* 10/02 Simplify the error message for missing data when the 
 *                    input is a simple 1-D time series.
+C  11/2022 *acm* Code cleanup: Update FFTPACK code to F90 standard, from
+C                https://github.com/fortran-lang/fftpack.git 
+*                Send an integer work array along with wft tom avoid 
+*                type-mismatch warnings
 *
 * This function computes inverse fft transform spectrum for each A,B,
 * where these are the real and imaginary part of the FFT coefficients.
@@ -299,6 +303,13 @@ C  The FFT code returns frequencies W(k) for k=1 to N/2, with N/2 rounded down
       INTEGER i1, j1, k1, l1, m1, n1
       CHARACTER*128 err_msg
 
+* In addition to the array wft, will allocate an integer array iwft.
+* Previously a portion of the work array wft was used for this, sending 
+* a real array into fftpack routines that want an integer array.
+
+
+      INTEGER iwft(15)
+
    40 FORMAT ('FFT_INVERSE encountered missing data at (i,j,k,l,m,n)',
      .        6I5)
    50 FORMAT ('FFT_INVERSE encountered missing data at L=', I5)
@@ -340,9 +351,9 @@ C  The FFT code returns frequencies W(k) for k=1 to N/2, with N/2 rounded down
          GOTO 999
       ENDIF
 
-*  Set WFT for fft; prime factorization of ntime and trig functions.
+* Set WFT and IWFT for fft; prime factorization of ntime and trig functions.
 
-      CALL rffti (ntime, wft)
+      CALL rffti (ntime, wft, iwft)
 
       n1 = arg_lo_ss(F_AXIS,ARG1)
       DO 600 n=res_lo_ss(F_AXIS), res_hi_ss(F_AXIS)
@@ -384,7 +395,7 @@ C  The FFT code returns frequencies W(k) for k=1 to N/2, with N/2 rounded down
                   l1 = l1 + arg_incr(T_AXIS,ARG1)
  400           CONTINUE
 
-               CALL FFTINV (ntime, ts, a, b, wft)
+               CALL FFTINV (ntime, ts, a, b, wft, iwft)
 
                DO 410 l = res_lo_ss(T_AXIS), res_hi_ss(T_AXIS) 
                    result(i,j,k,l,m,n) = ts(l,1,1,1,1,1)

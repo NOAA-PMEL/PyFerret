@@ -46,6 +46,7 @@
 * revision 0.1 - 7/26/88 - documentation re-write
 *       *acm* 3/12 cleanup ifdefs and unnecessary include files
 *       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -58,8 +59,9 @@
 * internal variable declarations:
 	INTEGER	idim
 
-	DO 100 idim = 1,nferdims
- 100	cx_given( idim, context ) = .FALSE.
+	DO idim = 1,nferdims
+ 	   cx_given( idim, context ) = .FALSE.
+	ENDDO
 
 	RETURN
 	END

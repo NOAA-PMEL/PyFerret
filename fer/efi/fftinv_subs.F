@@ -1,13 +1,17 @@
 
-      SUBROUTINE FFTINV (ND, X, a, b, WFT)
+      SUBROUTINE FFTINV (ND, X, a, b, WFT, IWFT)
       IMPLICIT NONE
-      real X(*), WFT(*)
-      real a(*), b(*)
-      integer nd, nf, i, j
+      real X(*), a(*), b(*), WFT(*)
+      integer nd, IWFT(*)
+      integer nf, i, j
 
 C  From snsr, by Jim Larsen, PMEL 
 C  Ansley Manke: 11/2001 Change to undo scaling in FOUR_RE
 c   calls NCAR FFT code
+C  11/2022 *acm* Code cleanup: Update FFTPACK code to F90 standard, from
+C                https://github.com/fortran-lang/fftpack.git
+C                with one change: instead of the module include  "use fftpack_kind",
+C                just define rk as done in rk.f90
 
 c   Calls:  RFFTB
 
@@ -24,12 +28,12 @@ c   Calls:  RFFTB
 
       X(ND) = a(nf)
 
-      CALL RFFTB (ND, X, WFT) 
+      CALL RFFTB (ND, X, WFT, IWFT) 
 
       RETURN 
       END
 
-C     SUBROUTINE RFFTB(N,R,WSAVE)                                               
+C     SUBROUTINE RFFTB(N,R,WSAVE, IWFT)                                               
 C                                                                               
 C     SUBROUTINE RFFTB COMPUTES THE REAL PERODIC SEQUENCE FROM ITS              
 C     FOURIER COEFFICIENTS (FOURIER SYNTHESIS). THE TRANSFORM IS DEFINED        
@@ -83,449 +87,470 @@ C     WSAVE   CONTAINS RESULTS WHICH MUST NOT BE DESTROYED BETWEEN
 C             CALLS OF RFFTB OR RFFTF.                                          
 C                                                                               
 C                                                                               
-      SUBROUTINE RFFTB (N,R,WSAVE)                                              
+      SUBROUTINE RFFTB (N,R,WSAVE, IWFT)                                              
       IMPLICIT NONE
-      INTEGER N
-      REAL       R(*)       ,WSAVE(*)     
+      INTEGER N, IWFT(*)
+      REAL R(*) ,WSAVE(*)     
 C                                                                               
       IF (N .EQ. 1) RETURN                                                      
-      CALL RFFTB1 (N,R,WSAVE,WSAVE(N+1),WSAVE(2*N+1))                           
+      CALL RFFTB1 (N,R,WSAVE,WSAVE(N+1),IWFT)                           
       RETURN                                                                    
-      END                                                                       
-      SUBROUTINE RFFTB1 (N,C,CH,WA,IFAC)                                        
-      IMPLICIT NONE
-      INTEGER N, NF, NA, L1, IW, K1, IP, L2, IDO, IDL1, I, IX2, IX3, IX4
-      REAL       CH(*)      ,C(*)       ,WA(*)      ,IFAC(*)   
-      NF = IFAC(2)                                                              
-      NA = 0                                                                    
-      L1 = 1                                                                    
-      IW = 1                                                                    
-      DO 116 K1=1,NF                                                            
-         IP = IFAC(K1+2)                                                        
-         L2 = IP*L1                                                             
-         IDO = N/L2                                                             
-         IDL1 = IDO*L1                                                          
-         IF (IP .NE. 4) GO TO 103                                               
-         IX2 = IW+IDO                                                           
-         IX3 = IX2+IDO                                                          
-         IF (NA .NE. 0) GO TO 101                                               
-         CALL RADB4 (IDO,L1,C,CH,WA(IW),WA(IX2),WA(IX3))                        
-         GO TO 102                                                              
-  101    CALL RADB4 (IDO,L1,CH,C,WA(IW),WA(IX2),WA(IX3))                        
-  102    NA = 1-NA                                                              
-         GO TO 115                                                              
-  103    IF (IP .NE. 2) GO TO 106                                               
-         IF (NA .NE. 0) GO TO 104                                               
-         CALL RADB2 (IDO,L1,C,CH,WA(IW))                                        
-         GO TO 105                                                              
-  104    CALL RADB2 (IDO,L1,CH,C,WA(IW))                                        
-  105    NA = 1-NA                                                              
-         GO TO 115                                                              
-  106    IF (IP .NE. 3) GO TO 109                                               
-         IX2 = IW+IDO                                                           
-         IF (NA .NE. 0) GO TO 107                                               
-         CALL RADB3 (IDO,L1,C,CH,WA(IW),WA(IX2))                                
-         GO TO 108                                                              
-  107    CALL RADB3 (IDO,L1,CH,C,WA(IW),WA(IX2))                                
-  108    NA = 1-NA                                                              
-         GO TO 115                                                              
-  109    IF (IP .NE. 5) GO TO 112                                               
-         IX2 = IW+IDO                                                           
-         IX3 = IX2+IDO                                                          
-         IX4 = IX3+IDO                                                          
-         IF (NA .NE. 0) GO TO 110                                               
-         CALL RADB5 (IDO,L1,C,CH,WA(IW),WA(IX2),WA(IX3),WA(IX4))                
-         GO TO 111                                                              
-  110    CALL RADB5 (IDO,L1,CH,C,WA(IW),WA(IX2),WA(IX3),WA(IX4))                
-  111    NA = 1-NA                                                              
-         GO TO 115                                                              
-  112    IF (NA .NE. 0) GO TO 113                                               
-         CALL RADBG (IDO,IP,L1,IDL1,C,C,C,CH,CH,WA(IW))                         
-         GO TO 114                                                              
-  113    CALL RADBG (IDO,IP,L1,IDL1,CH,CH,CH,C,C,WA(IW))                        
-  114    IF (IDO .EQ. 1) NA = 1-NA                                              
-  115    L1 = L2                                                                
-         IW = IW+(IP-1)*IDO                                                     
-  116 CONTINUE                                                                  
-      IF (NA .EQ. 0) RETURN                                                     
-      DO 117 I=1,N                                                              
-         C(I) = CH(I)                                                           
-  117 CONTINUE                                                                  
-      RETURN                                                                    
-      END                                                                       
-      SUBROUTINE RADB2 (IDO,L1,CC,CH,WA1)                                       
-      IMPLICIT NONE
-      INTEGER IDO, L1, K, IDP2, I, IC
-      REAL       CC(IDO,2,L1)           ,CH(IDO,L1,2)           ,          
-     1                WA1(*)          
-      REAL TR2, TI2
-      DO 101 K=1,L1                                                             
-         CH(1,K,1) = CC(1,1,K)+CC(IDO,2,K)                                      
-         CH(1,K,2) = CC(1,1,K)-CC(IDO,2,K)                                      
-  101 CONTINUE                                                                  
-      IF (IDO-2) 107,105,102                                                    
-  102 IDP2 = IDO+2                                                              
-      DO 104 K=1,L1                                                             
-         DO 103 I=3,IDO,2                                                       
-            IC = IDP2-I                                                         
-            CH(I-1,K,1) = CC(I-1,1,K)+CC(IC-1,2,K)                              
-            TR2 = CC(I-1,1,K)-CC(IC-1,2,K)                                      
-            CH(I,K,1) = CC(I,1,K)-CC(IC,2,K)                                    
-            TI2 = CC(I,1,K)+CC(IC,2,K)                                          
-            CH(I-1,K,2) = WA1(I-2)*TR2-WA1(I-1)*TI2                             
-            CH(I,K,2) = WA1(I-2)*TI2+WA1(I-1)*TR2                               
-  103    CONTINUE                                                               
-  104 CONTINUE                                                                  
-      IF (MOD(IDO,2) .EQ. 1) RETURN                                             
-  105 DO 106 K=1,L1                                                             
-         CH(IDO,K,1) = CC(IDO,1,K)+CC(IDO,1,K)                                  
-         CH(IDO,K,2) = -(CC(1,2,K)+CC(1,2,K))                                   
-  106 CONTINUE                                                                  
-  107 RETURN                                                                    
-      END                                                                       
-      SUBROUTINE RADB3 (IDO,L1,CC,CH,WA1,WA2)                                   
-      IMPLICIT NONE
-      INTEGER IDO, L1, K, IDP2, I, IC
-      REAL       CC(IDO,3,L1)           ,CH(IDO,L1,3)           ,          
-     1                WA1(*)     ,WA2(*)  
-      REAL TAUI, TAUR
-      REAL TR2, TI2, CR2, CI2, CR3, CI3, DR2, DI2, DI3, DR3
-      DATA TAUR,TAUI /-.5,.866025403784439/                                     
-      DO 101 K=1,L1                                                             
-         TR2 = CC(IDO,2,K)+CC(IDO,2,K)                                          
-         CR2 = CC(1,1,K)+TAUR*TR2                                               
-         CH(1,K,1) = CC(1,1,K)+TR2                                              
-         CI3 = TAUI*(CC(1,3,K)+CC(1,3,K))                                       
-         CH(1,K,2) = CR2-CI3                                                    
-         CH(1,K,3) = CR2+CI3                                                    
-  101 CONTINUE                                                                  
-      IF (IDO .EQ. 1) RETURN                                                    
-      IDP2 = IDO+2                                                              
-      DO 103 K=1,L1                                                             
-         DO 102 I=3,IDO,2                                                       
-            IC = IDP2-I                                                         
-            TR2 = CC(I-1,3,K)+CC(IC-1,2,K)                                      
-            CR2 = CC(I-1,1,K)+TAUR*TR2                                          
-            CH(I-1,K,1) = CC(I-1,1,K)+TR2                                       
-            TI2 = CC(I,3,K)-CC(IC,2,K)                                          
-            CI2 = CC(I,1,K)+TAUR*TI2                                            
-            CH(I,K,1) = CC(I,1,K)+TI2                                           
-            CR3 = TAUI*(CC(I-1,3,K)-CC(IC-1,2,K))                               
-            CI3 = TAUI*(CC(I,3,K)+CC(IC,2,K))                                   
-            DR2 = CR2-CI3                                                       
-            DR3 = CR2+CI3                                                       
-            DI2 = CI2+CR3                                                       
-            DI3 = CI2-CR3                                                       
-            CH(I-1,K,2) = WA1(I-2)*DR2-WA1(I-1)*DI2                             
-            CH(I,K,2) = WA1(I-2)*DI2+WA1(I-1)*DR2                               
-            CH(I-1,K,3) = WA2(I-2)*DR3-WA2(I-1)*DI3                             
-            CH(I,K,3) = WA2(I-2)*DI3+WA2(I-1)*DR3                               
-  102    CONTINUE                                                               
-  103 CONTINUE                                                                  
-      RETURN                                                                    
-      END    
-                                                 
-      SUBROUTINE RADBG (IDO,IP,L1,IDL1,CC,C1,C2,CH,CH2,WA)                      
-      IMPLICIT NONE
-      INTEGER IDO, IP, L1, IDL1, J, IC, L, LC
-      INTEGER IDP2, NBD, IPP2, IPPH, K, I, JC, J2, IK, IS, IDIJ
-      REAL            CH(IDO,L1,IP)          ,CC(IDO,IP,L1)          ,          
-     1                C1(IDO,L1,IP)          ,C2(IDL1,IP),                      
-     2                CH2(IDL1,IP)           ,WA(*)    
-      REAL PIMACH
-      REAL TPI, ARG, DCP, DSP , AR1, AI1, AR2, AR2H, DS2, DC2, DUM
-      REAL AR1H, AI2
+      END     
+      
+      subroutine rfftb1(n,c,Ch,Wa,Ifac)
 
+      implicit none
+      integer,parameter :: rk = kind(1.0d0)
+      real(rk) :: c , Ch , Wa
+      integer :: i , idl1 , ido , Ifac , ip , iw , ix2 , ix3 , ix4 , k1 , 
+     .       l1 , l2 , n , na , nf
+      dimension Ch(*) , c(*) , Wa(*) , Ifac(*)
+      nf = Ifac(2)
+      na = 0
+      l1 = 1
+      iw = 1
+      do k1 = 1 , nf
+         if (nf+2 .gt. 15) then
+            print *, 'fftinv_subs: array Ifac in FFTPACK too large for array', nf+2
+            stop
+         endif
+         ip = Ifac(k1+2)
+         l2 = ip*l1
+         ido = n/l2
+         idl1 = ido*l1
+         if ( ip==4 ) then
+            ix2 = iw + ido
+            ix3 = ix2 + ido
+            if ( na/=0 ) then
+               call radb4(ido,l1,Ch,c,Wa(iw),Wa(ix2),Wa(ix3))
+            else
+               call radb4(ido,l1,c,Ch,Wa(iw),Wa(ix2),Wa(ix3))
+            endif
+            na = 1 - na
+         elseif ( ip==2 ) then
+            if ( na/=0 ) then
+               call radb2(ido,l1,Ch,c,Wa(iw))
+            else
+               call radb2(ido,l1,c,Ch,Wa(iw))
+            endif
+            na = 1 - na
+         elseif ( ip==3 ) then
+            ix2 = iw + ido
+            if ( na/=0 ) then
+               call radb3(ido,l1,Ch,c,Wa(iw),Wa(ix2))
+            else
+               call radb3(ido,l1,c,Ch,Wa(iw),Wa(ix2))
+            endif
+            na = 1 - na
+         elseif ( ip/=5 ) then
+            if ( na/=0 ) then
+               call radbg(ido,ip,l1,idl1,Ch,Ch,Ch,c,c,Wa(iw))
+            else
+               call radbg(ido,ip,l1,idl1,c,c,c,Ch,Ch,Wa(iw))
+            endif
+            if ( ido==1 ) na = 1 - na
+         else
+            ix2 = iw + ido
+            ix3 = ix2 + ido
+            ix4 = ix3 + ido
+            if ( na/=0 ) then
+               call radb5(ido,l1,Ch,c,Wa(iw),Wa(ix2),Wa(ix3),Wa(ix4))
+            else
+               call radb5(ido,l1,c,Ch,Wa(iw),Wa(ix2),Wa(ix3),Wa(ix4))
+            endif
+            na = 1 - na
+         endif
+         l1 = l2
+         iw = iw + (ip-1)*ido
+      enddo
+      if ( na==0 ) return
+      do i = 1 , n
+         c(i) = Ch(i)
+      enddo
+      end subroutine rfftb1
+      
+      subroutine radb2(Ido,l1,Cc,Ch,Wa1)
+      implicit none
+      integer,parameter :: rk = kind(1.0d0)
+      real(rk) :: Cc , Ch , ti2 , tr2 , Wa1
+      integer :: i , ic , Ido , idp2 , k , l1
+      dimension Cc(Ido,2,l1) , Ch(Ido,l1,2) , Wa1(*)
+      do k = 1 , l1
+         Ch(1,k,1) = Cc(1,1,k) + Cc(Ido,2,k)
+         Ch(1,k,2) = Cc(1,1,k) - Cc(Ido,2,k)
+      enddo
+      if ( Ido<2 ) return
+      if ( Ido/=2 ) then
+         idp2 = Ido + 2
+         do k = 1 , l1
+            do i = 3 , Ido , 2
+               ic = idp2 - i
+               Ch(i-1,k,1) = Cc(i-1,1,k) + Cc(ic-1,2,k)
+               tr2 = Cc(i-1,1,k) - Cc(ic-1,2,k)
+               Ch(i,k,1) = Cc(i,1,k) - Cc(ic,2,k)
+               ti2 = Cc(i,1,k) + Cc(ic,2,k)
+               Ch(i-1,k,2) = Wa1(i-2)*tr2 - Wa1(i-1)*ti2
+               Ch(i,k,2) = Wa1(i-2)*ti2 + Wa1(i-1)*tr2
+            enddo
+         enddo
+         if ( mod(Ido,2)==1 ) return
+      endif
+      do k = 1 , l1
+         Ch(Ido,k,1) = Cc(Ido,1,k) + Cc(Ido,1,k)
+         Ch(Ido,k,2) = -(Cc(1,2,k)+Cc(1,2,k))
+      enddo
+      end subroutine radb2
 
-      TPI = 2.0*PIMACH(DUM)                                                     
-      ARG = TPI/FLOAT(IP)                                                       
-      DCP = COS(ARG)                                                            
-      DSP = SIN(ARG)                                                            
-      IDP2 = IDO+2                                                              
-      NBD = (IDO-1)/2                                                           
-      IPP2 = IP+2                                                               
-      IPPH = (IP+1)/2                                                           
-      IF (IDO .LT. L1) GO TO 103                                                
-      DO 102 K=1,L1                                                             
-         DO 101 I=1,IDO                                                         
-            CH(I,K,1) = CC(I,1,K)                                               
-  101    CONTINUE                                                               
-  102 CONTINUE                                                                  
-      GO TO 106                                                                 
-  103 DO 105 I=1,IDO                                                            
-         DO 104 K=1,L1                                                          
-            CH(I,K,1) = CC(I,1,K)                                               
-  104    CONTINUE                                                               
-  105 CONTINUE                                                                  
-  106 DO 108 J=2,IPPH                                                           
-         JC = IPP2-J                                                            
-         J2 = J+J                                                               
-         DO 107 K=1,L1                                                          
-            CH(1,K,J) = CC(IDO,J2-2,K)+CC(IDO,J2-2,K)                           
-            CH(1,K,JC) = CC(1,J2-1,K)+CC(1,J2-1,K)                              
-  107    CONTINUE                                                               
-  108 CONTINUE                                                                  
-      IF (IDO .EQ. 1) GO TO 116                                                 
-      IF (NBD .LT. L1) GO TO 112                                                
-      DO 111 J=2,IPPH                                                           
-         JC = IPP2-J                                                            
-         DO 110 K=1,L1                                                          
-            DO 109 I=3,IDO,2                                                    
-               IC = IDP2-I                                                      
-               CH(I-1,K,J) = CC(I-1,2*J-1,K)+CC(IC-1,2*J-2,K)                   
-               CH(I-1,K,JC) = CC(I-1,2*J-1,K)-CC(IC-1,2*J-2,K)                  
-               CH(I,K,J) = CC(I,2*J-1,K)-CC(IC,2*J-2,K)                         
-               CH(I,K,JC) = CC(I,2*J-1,K)+CC(IC,2*J-2,K)                        
-  109       CONTINUE                                                            
-  110    CONTINUE                                                               
-  111 CONTINUE                                                                  
-      GO TO 116                                                                 
-  112 DO 115 J=2,IPPH                                                           
-         JC = IPP2-J                                                            
-         DO 114 I=3,IDO,2                                                       
-            IC = IDP2-I                                                         
-            DO 113 K=1,L1                                                       
-               CH(I-1,K,J) = CC(I-1,2*J-1,K)+CC(IC-1,2*J-2,K)                   
-               CH(I-1,K,JC) = CC(I-1,2*J-1,K)-CC(IC-1,2*J-2,K)                  
-               CH(I,K,J) = CC(I,2*J-1,K)-CC(IC,2*J-2,K)                         
-               CH(I,K,JC) = CC(I,2*J-1,K)+CC(IC,2*J-2,K)                        
-  113       CONTINUE                                                            
-  114    CONTINUE                                                               
-  115 CONTINUE                                                                  
-  116 AR1 = 1.                                                                  
-      AI1 = 0.                                                                  
-      DO 120 L=2,IPPH                                                           
-         LC = IPP2-L                                                            
-         AR1H = DCP*AR1-DSP*AI1                                                 
-         AI1 = DCP*AI1+DSP*AR1                                                  
-         AR1 = AR1H                                                             
-         DO 117 IK=1,IDL1                                                       
-            C2(IK,L) = CH2(IK,1)+AR1*CH2(IK,2)                                  
-            C2(IK,LC) = AI1*CH2(IK,IP)                                          
-  117    CONTINUE                                                               
-         DC2 = AR1                                                              
-         DS2 = AI1                                                              
-         AR2 = AR1                                                              
-         AI2 = AI1                                                              
-         DO 119 J=3,IPPH                                                        
-            JC = IPP2-J                                                         
-            AR2H = DC2*AR2-DS2*AI2                                              
-            AI2 = DC2*AI2+DS2*AR2                                               
-            AR2 = AR2H                                                          
-            DO 118 IK=1,IDL1                                                    
-               C2(IK,L) = C2(IK,L)+AR2*CH2(IK,J)                                
-               C2(IK,LC) = C2(IK,LC)+AI2*CH2(IK,JC)                             
-  118       CONTINUE                                                            
-  119    CONTINUE                                                               
-  120 CONTINUE                                                                  
-      DO 122 J=2,IPPH                                                           
-         DO 121 IK=1,IDL1                                                       
-            CH2(IK,1) = CH2(IK,1)+CH2(IK,J)                                     
-  121    CONTINUE                                                               
-  122 CONTINUE                                                                  
-      DO 124 J=2,IPPH                                                           
-         JC = IPP2-J                                                            
-         DO 123 K=1,L1                                                          
-            CH(1,K,J) = C1(1,K,J)-C1(1,K,JC)                                    
-            CH(1,K,JC) = C1(1,K,J)+C1(1,K,JC)                                   
-  123    CONTINUE                                                               
-  124 CONTINUE                                                                  
-      IF (IDO .EQ. 1) GO TO 132                                                 
-      IF (NBD .LT. L1) GO TO 128                                                
-      DO 127 J=2,IPPH                                                           
-         JC = IPP2-J                                                            
-         DO 126 K=1,L1                                                          
-            DO 125 I=3,IDO,2                                                    
-               CH(I-1,K,J) = C1(I-1,K,J)-C1(I,K,JC)                             
-               CH(I-1,K,JC) = C1(I-1,K,J)+C1(I,K,JC)                            
-               CH(I,K,J) = C1(I,K,J)+C1(I-1,K,JC)                               
-               CH(I,K,JC) = C1(I,K,J)-C1(I-1,K,JC)                              
-  125       CONTINUE                                                            
-  126    CONTINUE                                                               
-  127 CONTINUE                                                                  
-      GO TO 132                                                                 
-  128 DO 131 J=2,IPPH                                                           
-         JC = IPP2-J                                                            
-         DO 130 I=3,IDO,2                                                       
-            DO 129 K=1,L1                                                       
-               CH(I-1,K,J) = C1(I-1,K,J)-C1(I,K,JC)                             
-               CH(I-1,K,JC) = C1(I-1,K,J)+C1(I,K,JC)                            
-               CH(I,K,J) = C1(I,K,J)+C1(I-1,K,JC)                               
-               CH(I,K,JC) = C1(I,K,J)-C1(I-1,K,JC)                              
-  129       CONTINUE                                                            
-  130    CONTINUE                                                               
-  131 CONTINUE                                                                  
-  132 CONTINUE                                                                  
-      IF (IDO .EQ. 1) RETURN                                                    
-      DO 133 IK=1,IDL1                                                          
-         C2(IK,1) = CH2(IK,1)                                                   
-  133 CONTINUE                                                                  
-      DO 135 J=2,IP                                                             
-         DO 134 K=1,L1                                                          
-            C1(1,K,J) = CH(1,K,J)                                               
-  134    CONTINUE                                                               
-  135 CONTINUE                                                                  
-      IF (NBD .GT. L1) GO TO 139                                                
-      IS = -IDO                                                                 
-      DO 138 J=2,IP                                                             
-         IS = IS+IDO                                                            
-         IDIJ = IS                                                              
-         DO 137 I=3,IDO,2                                                       
-            IDIJ = IDIJ+2                                                       
-            DO 136 K=1,L1                                                       
-               C1(I-1,K,J) = WA(IDIJ-1)*CH(I-1,K,J)-WA(IDIJ)*CH(I,K,J)          
-               C1(I,K,J) = WA(IDIJ-1)*CH(I,K,J)+WA(IDIJ)*CH(I-1,K,J)            
-  136       CONTINUE                                                            
-  137    CONTINUE                                                               
-  138 CONTINUE                                                                  
-      GO TO 143                                                                 
-  139 IS = -IDO                                                                 
-      DO 142 J=2,IP                                                             
-         IS = IS+IDO                                                            
-         DO 141 K=1,L1                                                          
-            IDIJ = IS                                                           
-            DO 140 I=3,IDO,2                                                    
-               IDIJ = IDIJ+2                                                    
-               C1(I-1,K,J) = WA(IDIJ-1)*CH(I-1,K,J)-WA(IDIJ)*CH(I,K,J)          
-               C1(I,K,J) = WA(IDIJ-1)*CH(I,K,J)+WA(IDIJ)*CH(I-1,K,J)            
-  140       CONTINUE                                                            
-  141    CONTINUE                                                               
-  142 CONTINUE                                                                  
-  143 RETURN                                                                    
-      END                                                                       
-
-                                                               
-      SUBROUTINE RADB4 (IDO,L1,CC,CH,WA1,WA2,WA3)                               
-      IMPLICIT NONE
-      INTEGER IDO, L1, K, I, IDP2, IC
-      REAL       CC(IDO,4,L1)           ,CH(IDO,L1,4)           ,          
-     1                WA1(*)     ,WA2(*)     ,WA3(*)      
-      REAL SQRT2
-      REAL TR1, TR2, TR3, TR4, TI1, TI2, TI3, TI4
-      REAL CR2, CR3, CR4, CI2, CI3, CI4
-      DATA SQRT2 /1.414213562373095/                                            
-      DO 101 K=1,L1                                                             
-         TR1 = CC(1,1,K)-CC(IDO,4,K)                                            
-         TR2 = CC(1,1,K)+CC(IDO,4,K)                                            
-         TR3 = CC(IDO,2,K)+CC(IDO,2,K)                                          
-         TR4 = CC(1,3,K)+CC(1,3,K)                                              
-         CH(1,K,1) = TR2+TR3                                                    
-         CH(1,K,2) = TR1-TR4                                                    
-         CH(1,K,3) = TR2-TR3                                                    
-         CH(1,K,4) = TR1+TR4                                                    
-  101 CONTINUE                                                                  
-      IF (IDO-2) 107,105,102                                                    
-  102 IDP2 = IDO+2                                                              
-      DO 104 K=1,L1                                                             
-         DO 103 I=3,IDO,2                                                       
-            IC = IDP2-I                                                         
-            TI1 = CC(I,1,K)+CC(IC,4,K)                                          
-            TI2 = CC(I,1,K)-CC(IC,4,K)                                          
-            TI3 = CC(I,3,K)-CC(IC,2,K)                                          
-            TR4 = CC(I,3,K)+CC(IC,2,K)                                          
-            TR1 = CC(I-1,1,K)-CC(IC-1,4,K)                                      
-            TR2 = CC(I-1,1,K)+CC(IC-1,4,K)                                      
-            TI4 = CC(I-1,3,K)-CC(IC-1,2,K)                                      
-            TR3 = CC(I-1,3,K)+CC(IC-1,2,K)                                      
-            CH(I-1,K,1) = TR2+TR3                                               
-            CR3 = TR2-TR3                                                       
-            CH(I,K,1) = TI2+TI3                                                 
-            CI3 = TI2-TI3                                                       
-            CR2 = TR1-TR4                                                       
-            CR4 = TR1+TR4                                                       
-            CI2 = TI1+TI4                                                       
-            CI4 = TI1-TI4                                                       
-            CH(I-1,K,2) = WA1(I-2)*CR2-WA1(I-1)*CI2                             
-            CH(I,K,2) = WA1(I-2)*CI2+WA1(I-1)*CR2                               
-            CH(I-1,K,3) = WA2(I-2)*CR3-WA2(I-1)*CI3                             
-            CH(I,K,3) = WA2(I-2)*CI3+WA2(I-1)*CR3                               
-            CH(I-1,K,4) = WA3(I-2)*CR4-WA3(I-1)*CI4                             
-            CH(I,K,4) = WA3(I-2)*CI4+WA3(I-1)*CR4                               
-  103    CONTINUE                                                               
-  104 CONTINUE                                                                  
-      IF (MOD(IDO,2) .EQ. 1) RETURN                                             
-  105 CONTINUE                                                                  
-      DO 106 K=1,L1                                                             
-         TI1 = CC(1,2,K)+CC(1,4,K)                                              
-         TI2 = CC(1,4,K)-CC(1,2,K)                                              
-         TR1 = CC(IDO,1,K)-CC(IDO,3,K)                                          
-         TR2 = CC(IDO,1,K)+CC(IDO,3,K)                                          
-         CH(IDO,K,1) = TR2+TR2                                                  
-         CH(IDO,K,2) = SQRT2*(TR1-TI1)                                          
-         CH(IDO,K,3) = TI2+TI2                                                  
-         CH(IDO,K,4) = -SQRT2*(TR1+TI1)                                         
-  106 CONTINUE                                                                  
-  107 RETURN                                                                    
-      END                             
-                                                    
-      SUBROUTINE RADB5 (IDO,L1,CC,CH,WA1,WA2,WA3,WA4)                           
-      IMPLICIT NONE
-      INTEGER IDO, L1, K, IDP2, I, IC
-      REAL       CC(IDO,5,L1)           ,CH(IDO,L1,5)           ,          
-     1                WA1(*)     ,WA2(*)     ,WA3(*)     ,WA4(*)     
-      REAL TR2, TR3, TR4, TR5, TI2, TI3, TI4, TI5
-      REAL CR2, CR3, CR4, CR5, CI2, CI3, CI4, CI5
-      REAL DR2, DR3, DR4, DR5, DI2, DI3, DI4, DI5
-
-      REAL TR11,TI11,TR12,TI12
-      DATA TR11,TI11,TR12,TI12 /.309016994374947,.951056516295154,              
-     1-.809016994374947,.587785252292473/       
-     
-      DO 101 K=1,L1                                                             
-         TI5 = CC(1,3,K)+CC(1,3,K)                                              
-         TI4 = CC(1,5,K)+CC(1,5,K)                                              
-         TR2 = CC(IDO,2,K)+CC(IDO,2,K)                                          
-         TR3 = CC(IDO,4,K)+CC(IDO,4,K)                                          
-         CH(1,K,1) = CC(1,1,K)+TR2+TR3                                          
-         CR2 = CC(1,1,K)+TR11*TR2+TR12*TR3                                      
-         CR3 = CC(1,1,K)+TR12*TR2+TR11*TR3                                      
-         CI5 = TI11*TI5+TI12*TI4                                                
-         CI4 = TI12*TI5-TI11*TI4                                                
-         CH(1,K,2) = CR2-CI5                                                    
-         CH(1,K,3) = CR3-CI4                                                    
-         CH(1,K,4) = CR3+CI4                                                    
-         CH(1,K,5) = CR2+CI5                                                    
-  101 CONTINUE                                                                  
-      IF (IDO .EQ. 1) RETURN                                                    
-      IDP2 = IDO+2                                                              
-      DO 103 K=1,L1                                                             
-         DO 102 I=3,IDO,2                                                       
-            IC = IDP2-I                                                         
-            TI5 = CC(I,3,K)+CC(IC,2,K)                                          
-            TI2 = CC(I,3,K)-CC(IC,2,K)                                          
-            TI4 = CC(I,5,K)+CC(IC,4,K)                                          
-            TI3 = CC(I,5,K)-CC(IC,4,K)                                          
-            TR5 = CC(I-1,3,K)-CC(IC-1,2,K)                                      
-            TR2 = CC(I-1,3,K)+CC(IC-1,2,K)                                      
-            TR4 = CC(I-1,5,K)-CC(IC-1,4,K)                                      
-            TR3 = CC(I-1,5,K)+CC(IC-1,4,K)                                      
-            CH(I-1,K,1) = CC(I-1,1,K)+TR2+TR3                                   
-            CH(I,K,1) = CC(I,1,K)+TI2+TI3                                       
-            CR2 = CC(I-1,1,K)+TR11*TR2+TR12*TR3                                 
-            CI2 = CC(I,1,K)+TR11*TI2+TR12*TI3                                   
-            CR3 = CC(I-1,1,K)+TR12*TR2+TR11*TR3                                 
-            CI3 = CC(I,1,K)+TR12*TI2+TR11*TI3                                   
-            CR5 = TI11*TR5+TI12*TR4                                             
-            CI5 = TI11*TI5+TI12*TI4                                             
-            CR4 = TI12*TR5-TI11*TR4                                             
-            CI4 = TI12*TI5-TI11*TI4                                             
-            DR3 = CR3-CI4                                                       
-            DR4 = CR3+CI4                                                       
-            DI3 = CI3+CR4                                                       
-            DI4 = CI3-CR4                                                       
-            DR5 = CR2+CI5                                                       
-            DR2 = CR2-CI5                                                       
-            DI5 = CI2-CR5                                                       
-            DI2 = CI2+CR5                                                       
-            CH(I-1,K,2) = WA1(I-2)*DR2-WA1(I-1)*DI2                             
-            CH(I,K,2) = WA1(I-2)*DI2+WA1(I-1)*DR2                               
-            CH(I-1,K,3) = WA2(I-2)*DR3-WA2(I-1)*DI3                             
-            CH(I,K,3) = WA2(I-2)*DI3+WA2(I-1)*DR3                               
-            CH(I-1,K,4) = WA3(I-2)*DR4-WA3(I-1)*DI4                             
-            CH(I,K,4) = WA3(I-2)*DI4+WA3(I-1)*DR4                               
-            CH(I-1,K,5) = WA4(I-2)*DR5-WA4(I-1)*DI5                             
-            CH(I,K,5) = WA4(I-2)*DI5+WA4(I-1)*DR5                               
-  102    CONTINUE                                                               
-  103 CONTINUE                                                                  
-      RETURN                                                                    
-      END                  
+      subroutine radb3(Ido,l1,Cc,Ch,Wa1,Wa2)
+      implicit none
+      integer,parameter :: rk = kind(1.0d0)
+      real(rk) :: Cc , Ch , ci2 , ci3 , cr2 , cr3 , di2 , di3 , 
+     .        dr2 , dr3 , ti2 , tr2 , Wa1 , Wa2
+      integer :: i , ic , Ido , idp2 , k , l1
+      dimension Cc(Ido,3,l1) , Ch(Ido,l1,3) , Wa1(*) , Wa2(*)
+      real(rk),parameter :: taur = - 0.5_rk
+      real(rk),parameter :: taui = sqrt(3.0_rk) / 2.0_rk
+      do k = 1 , l1
+         tr2 = Cc(Ido,2,k) + Cc(Ido,2,k)
+         cr2 = Cc(1,1,k) + taur*tr2
+         Ch(1,k,1) = Cc(1,1,k) + tr2
+         ci3 = taui*(Cc(1,3,k)+Cc(1,3,k))
+         Ch(1,k,2) = cr2 - ci3
+         Ch(1,k,3) = cr2 + ci3
+      enddo
+      if ( Ido==1 ) return
+      idp2 = Ido + 2
+      do k = 1 , l1
+         do i = 3 , Ido , 2
+            ic = idp2 - i
+            tr2 = Cc(i-1,3,k) + Cc(ic-1,2,k)
+            cr2 = Cc(i-1,1,k) + taur*tr2
+            Ch(i-1,k,1) = Cc(i-1,1,k) + tr2
+            ti2 = Cc(i,3,k) - Cc(ic,2,k)
+            ci2 = Cc(i,1,k) + taur*ti2
+            Ch(i,k,1) = Cc(i,1,k) + ti2
+            cr3 = taui*(Cc(i-1,3,k)-Cc(ic-1,2,k))
+            ci3 = taui*(Cc(i,3,k)+Cc(ic,2,k))
+            dr2 = cr2 - ci3
+            dr3 = cr2 + ci3
+            di2 = ci2 + cr3
+            di3 = ci2 - cr3
+            Ch(i-1,k,2) = Wa1(i-2)*dr2 - Wa1(i-1)*di2
+            Ch(i,k,2) = Wa1(i-2)*di2 + Wa1(i-1)*dr2
+            Ch(i-1,k,3) = Wa2(i-2)*dr3 - Wa2(i-1)*di3
+            Ch(i,k,3) = Wa2(i-2)*di3 + Wa2(i-1)*dr3
+         enddo
+      enddo
+      end subroutine radb3
+      
+      subroutine radb4(Ido,l1,Cc,Ch,Wa1,Wa2,Wa3)
+      implicit none
+      integer,parameter :: rk = kind(1.0d0)
+      real(rk) :: Cc , Ch , ci2 , ci3 , ci4 , cr2 , cr3 , cr4 , 
+     .        ti1 , ti2 , ti3 , ti4 , tr1 , tr2 , tr3, 
+     .        tr4 , Wa1 , Wa2 , Wa3
+      integer :: i , ic , Ido , idp2 , k , l1
+      dimension Cc(Ido,4,l1) , Ch(Ido,l1,4) , Wa1(*) , Wa2(*) , Wa3(*)
+      real(rk),parameter :: sqrt2 = sqrt(2.0_rk)
+      do k = 1 , l1
+         tr1 = Cc(1,1,k) - Cc(Ido,4,k)
+         tr2 = Cc(1,1,k) + Cc(Ido,4,k)
+         tr3 = Cc(Ido,2,k) + Cc(Ido,2,k)
+         tr4 = Cc(1,3,k) + Cc(1,3,k)
+         Ch(1,k,1) = tr2 + tr3
+         Ch(1,k,2) = tr1 - tr4
+         Ch(1,k,3) = tr2 - tr3
+         Ch(1,k,4) = tr1 + tr4
+      enddo
+      if ( Ido<2 ) return
+      if ( Ido/=2 ) then
+         idp2 = Ido + 2
+         do k = 1 , l1
+            do i = 3 , Ido , 2
+               ic = idp2 - i
+               ti1 = Cc(i,1,k) + Cc(ic,4,k)
+               ti2 = Cc(i,1,k) - Cc(ic,4,k)
+               ti3 = Cc(i,3,k) - Cc(ic,2,k)
+               tr4 = Cc(i,3,k) + Cc(ic,2,k)
+               tr1 = Cc(i-1,1,k) - Cc(ic-1,4,k)
+               tr2 = Cc(i-1,1,k) + Cc(ic-1,4,k)
+               ti4 = Cc(i-1,3,k) - Cc(ic-1,2,k)
+               tr3 = Cc(i-1,3,k) + Cc(ic-1,2,k)
+               Ch(i-1,k,1) = tr2 + tr3
+               cr3 = tr2 - tr3
+               Ch(i,k,1) = ti2 + ti3
+               ci3 = ti2 - ti3
+               cr2 = tr1 - tr4
+               cr4 = tr1 + tr4
+               ci2 = ti1 + ti4
+               ci4 = ti1 - ti4
+               Ch(i-1,k,2) = Wa1(i-2)*cr2 - Wa1(i-1)*ci2
+               Ch(i,k,2) = Wa1(i-2)*ci2 + Wa1(i-1)*cr2
+               Ch(i-1,k,3) = Wa2(i-2)*cr3 - Wa2(i-1)*ci3
+               Ch(i,k,3) = Wa2(i-2)*ci3 + Wa2(i-1)*cr3
+               Ch(i-1,k,4) = Wa3(i-2)*cr4 - Wa3(i-1)*ci4
+               Ch(i,k,4) = Wa3(i-2)*ci4 + Wa3(i-1)*cr4
+            enddo
+         enddo
+         if ( mod(Ido,2)==1 ) return
+      endif
+      do k = 1 , l1
+         ti1 = Cc(1,2,k) + Cc(1,4,k)
+         ti2 = Cc(1,4,k) - Cc(1,2,k)
+         tr1 = Cc(Ido,1,k) - Cc(Ido,3,k)
+         tr2 = Cc(Ido,1,k) + Cc(Ido,3,k)
+         Ch(Ido,k,1) = tr2 + tr2
+         Ch(Ido,k,2) = sqrt2*(tr1-ti1)
+         Ch(Ido,k,3) = ti2 + ti2
+         Ch(Ido,k,4) = -sqrt2*(tr1+ti1)
+      enddo
+      end subroutine radb4
+      
+      subroutine radb5(Ido,l1,Cc,Ch,Wa1,Wa2,Wa3,Wa4)
+      implicit none
+      integer,parameter :: rk = kind(1.0d0)
+      real(rk) :: Cc , Ch , ci2 , ci3 , ci4 , ci5 , cr2 , cr3 , 
+     .        cr4 , cr5 , di2 , di3 , di4 , di5 , dr2 , dr3 , 
+     .        dr4 , dr5
+      real(rk) :: ti2 , ti3 , ti4 , ti5 , tr2 , tr3, 
+     .        tr4 , tr5 , Wa1 , Wa2 , Wa3 , Wa4
+      integer :: i , ic , Ido , idp2 , k , l1
+      dimension Cc(Ido,5,l1) , Ch(Ido,l1,5) , Wa1(*) , Wa2(*) , Wa3(*), 
+     .      Wa4(*)
+      real(rk),parameter :: pi = acos(-1.0_rk)
+      real(rk),parameter :: tr11 = cos(2.0_rk * pi / 5.0_rk)
+      real(rk),parameter :: ti11 = sin(2.0_rk * pi / 5.0_rk)
+      real(rk),parameter :: tr12 = cos(4.0_rk * pi / 5.0_rk)
+      real(rk),parameter :: ti12 = sin(4.0_rk * pi / 5.0_rk)
+      do k = 1 , l1
+         ti5 = Cc(1,3,k) + Cc(1,3,k)
+         ti4 = Cc(1,5,k) + Cc(1,5,k)
+         tr2 = Cc(Ido,2,k) + Cc(Ido,2,k)
+         tr3 = Cc(Ido,4,k) + Cc(Ido,4,k)
+         Ch(1,k,1) = Cc(1,1,k) + tr2 + tr3
+         cr2 = Cc(1,1,k) + tr11*tr2 + tr12*tr3
+         cr3 = Cc(1,1,k) + tr12*tr2 + tr11*tr3
+         ci5 = ti11*ti5 + ti12*ti4
+         ci4 = ti12*ti5 - ti11*ti4
+         Ch(1,k,2) = cr2 - ci5
+         Ch(1,k,3) = cr3 - ci4
+         Ch(1,k,4) = cr3 + ci4
+         Ch(1,k,5) = cr2 + ci5
+      enddo
+      if ( Ido==1 ) return
+      idp2 = Ido + 2
+      do k = 1 , l1
+         do i = 3 , Ido , 2
+            ic = idp2 - i
+            ti5 = Cc(i,3,k) + Cc(ic,2,k)
+            ti2 = Cc(i,3,k) - Cc(ic,2,k)
+            ti4 = Cc(i,5,k) + Cc(ic,4,k)
+            ti3 = Cc(i,5,k) - Cc(ic,4,k)
+            tr5 = Cc(i-1,3,k) - Cc(ic-1,2,k)
+            tr2 = Cc(i-1,3,k) + Cc(ic-1,2,k)
+            tr4 = Cc(i-1,5,k) - Cc(ic-1,4,k)
+            tr3 = Cc(i-1,5,k) + Cc(ic-1,4,k)
+            Ch(i-1,k,1) = Cc(i-1,1,k) + tr2 + tr3
+            Ch(i,k,1) = Cc(i,1,k) + ti2 + ti3
+            cr2 = Cc(i-1,1,k) + tr11*tr2 + tr12*tr3
+            ci2 = Cc(i,1,k) + tr11*ti2 + tr12*ti3
+            cr3 = Cc(i-1,1,k) + tr12*tr2 + tr11*tr3
+            ci3 = Cc(i,1,k) + tr12*ti2 + tr11*ti3
+            cr5 = ti11*tr5 + ti12*tr4
+            ci5 = ti11*ti5 + ti12*ti4
+            cr4 = ti12*tr5 - ti11*tr4
+            ci4 = ti12*ti5 - ti11*ti4
+            dr3 = cr3 - ci4
+            dr4 = cr3 + ci4
+            di3 = ci3 + cr4
+            di4 = ci3 - cr4
+            dr5 = cr2 + ci5
+            dr2 = cr2 - ci5
+            di5 = ci2 - cr5
+            di2 = ci2 + cr5
+            Ch(i-1,k,2) = Wa1(i-2)*dr2 - Wa1(i-1)*di2
+            Ch(i,k,2) = Wa1(i-2)*di2 + Wa1(i-1)*dr2
+            Ch(i-1,k,3) = Wa2(i-2)*dr3 - Wa2(i-1)*di3
+            Ch(i,k,3) = Wa2(i-2)*di3 + Wa2(i-1)*dr3
+            Ch(i-1,k,4) = Wa3(i-2)*dr4 - Wa3(i-1)*di4
+            Ch(i,k,4) = Wa3(i-2)*di4 + Wa3(i-1)*dr4
+            Ch(i-1,k,5) = Wa4(i-2)*dr5 - Wa4(i-1)*di5
+            Ch(i,k,5) = Wa4(i-2)*di5 + Wa4(i-1)*dr5
+         enddo
+      enddo
+      end subroutine radb5
+      
+      subroutine radbg(Ido,Ip,l1,Idl1,Cc,c1,c2,Ch,Ch2,Wa)
+      implicit none
+      integer,parameter :: rk = kind(1.0d0)
+      real(rk) :: ai1 , ai2 , ar1 , ar1h , ar2 , ar2h , arg , c1 , 
+     .        c2 , Cc , Ch , Ch2 , dc2 , dcp , ds2 , dsp , 
+     .        Wa
+      integer :: i , ic , idij , Idl1 , Ido , idp2 , ik , Ip , ipp2 , 
+     .       ipph , is , j , j2 , jc , k , l , l1 , lc , nbd
+      dimension Ch(Ido,l1,Ip) , Cc(Ido,Ip,l1) , c1(Ido,l1,Ip) , 
+     .      c2(Idl1,Ip) , Ch2(Idl1,Ip) , Wa(*)
+      real(rk),parameter :: tpi = 2*acos(-1.0_rk) ! 2 * pi
+      arg = tpi/real(Ip, rk)
+      dcp = cos(arg)
+      dsp = sin(arg)
+      idp2 = Ido + 2
+      nbd = (Ido-1)/2
+      ipp2 = Ip + 2
+      ipph = (Ip+1)/2
+      if ( Ido<l1 ) then
+         do i = 1 , Ido
+            do k = 1 , l1
+               Ch(i,k,1) = Cc(i,1,k)
+            enddo
+         enddo
+      else
+         do k = 1 , l1
+            do i = 1 , Ido
+               Ch(i,k,1) = Cc(i,1,k)
+            enddo
+         enddo
+      endif
+      do j = 2 , ipph
+         jc = ipp2 - j
+         j2 = j + j
+         do k = 1 , l1
+            Ch(1,k,j) = Cc(Ido,j2-2,k) + Cc(Ido,j2-2,k)
+            Ch(1,k,jc) = Cc(1,j2-1,k) + Cc(1,j2-1,k)
+         enddo
+      enddo
+      if ( Ido/=1 ) then
+         if ( nbd<l1 ) then
+            do j = 2 , ipph
+               jc = ipp2 - j
+               do i = 3 , Ido , 2
+                  ic = idp2 - i
+                  do k = 1 , l1
+                     Ch(i-1,k,j) = Cc(i-1,2*j-1,k) + Cc(ic-1,2*j-2,k)
+                     Ch(i-1,k,jc) = Cc(i-1,2*j-1,k) - Cc(ic-1,2*j-2,k)
+                     Ch(i,k,j) = Cc(i,2*j-1,k) - Cc(ic,2*j-2,k)
+                     Ch(i,k,jc) = Cc(i,2*j-1,k) + Cc(ic,2*j-2,k)
+                  enddo
+               enddo
+            enddo
+         else
+            do j = 2 , ipph
+               jc = ipp2 - j
+               do k = 1 , l1
+                  do i = 3 , Ido , 2
+                     ic = idp2 - i
+                     Ch(i-1,k,j) = Cc(i-1,2*j-1,k) + Cc(ic-1,2*j-2,k)
+                     Ch(i-1,k,jc) = Cc(i-1,2*j-1,k) - Cc(ic-1,2*j-2,k)
+                     Ch(i,k,j) = Cc(i,2*j-1,k) - Cc(ic,2*j-2,k)
+                     Ch(i,k,jc) = Cc(i,2*j-1,k) + Cc(ic,2*j-2,k)
+                  enddo
+               enddo
+            enddo
+         endif
+      endif
+      ar1 = 1.0_rk
+      ai1 = 0.0_rk
+      do l = 2 , ipph
+         lc = ipp2 - l
+         ar1h = dcp*ar1 - dsp*ai1
+         ai1 = dcp*ai1 + dsp*ar1
+         ar1 = ar1h
+         do ik = 1 , Idl1
+            c2(ik,l) = Ch2(ik,1) + ar1*Ch2(ik,2)
+            c2(ik,lc) = ai1*Ch2(ik,Ip)
+         enddo
+         dc2 = ar1
+         ds2 = ai1
+         ar2 = ar1
+         ai2 = ai1
+         do j = 3 , ipph
+            jc = ipp2 - j
+            ar2h = dc2*ar2 - ds2*ai2
+            ai2 = dc2*ai2 + ds2*ar2
+            ar2 = ar2h
+            do ik = 1 , Idl1
+               c2(ik,l) = c2(ik,l) + ar2*Ch2(ik,j)
+               c2(ik,lc) = c2(ik,lc) + ai2*Ch2(ik,jc)
+            enddo
+         enddo
+      enddo
+      do j = 2 , ipph
+         do ik = 1 , Idl1
+            Ch2(ik,1) = Ch2(ik,1) + Ch2(ik,j)
+         enddo
+      enddo
+      do j = 2 , ipph
+         jc = ipp2 - j
+         do k = 1 , l1
+            Ch(1,k,j) = c1(1,k,j) - c1(1,k,jc)
+            Ch(1,k,jc) = c1(1,k,j) + c1(1,k,jc)
+         enddo
+      enddo
+      if ( Ido/=1 ) then
+         if ( nbd<l1 ) then
+            do j = 2 , ipph
+               jc = ipp2 - j
+               do i = 3 , Ido , 2
+                  do k = 1 , l1
+                     Ch(i-1,k,j) = c1(i-1,k,j) - c1(i,k,jc)
+                     Ch(i-1,k,jc) = c1(i-1,k,j) + c1(i,k,jc)
+                     Ch(i,k,j) = c1(i,k,j) + c1(i-1,k,jc)
+                     Ch(i,k,jc) = c1(i,k,j) - c1(i-1,k,jc)
+                  enddo
+               enddo
+            enddo
+         else
+            do j = 2 , ipph
+               jc = ipp2 - j
+               do k = 1 , l1
+                  do i = 3 , Ido , 2
+                     Ch(i-1,k,j) = c1(i-1,k,j) - c1(i,k,jc)
+                     Ch(i-1,k,jc) = c1(i-1,k,j) + c1(i,k,jc)
+                     Ch(i,k,j) = c1(i,k,j) + c1(i-1,k,jc)
+                     Ch(i,k,jc) = c1(i,k,j) - c1(i-1,k,jc)
+                  enddo
+               enddo
+            enddo
+         endif
+      endif
+      if ( Ido==1 ) return
+      do ik = 1 , Idl1
+         c2(ik,1) = Ch2(ik,1)
+      enddo
+      do j = 2 , Ip
+         do k = 1 , l1
+            c1(1,k,j) = Ch(1,k,j)
+         enddo
+      enddo
+      if ( nbd>l1 ) then
+         is = -Ido
+         do j = 2 , Ip
+            is = is + Ido
+            do k = 1 , l1
+               idij = is
+               do i = 3 , Ido , 2
+                  idij = idij + 2
+                  c1(i-1,k,j) = Wa(idij-1)*Ch(i-1,k,j) - Wa(idij) 
+     .                      *Ch(i,k,j)
+                  c1(i,k,j) = Wa(idij-1)*Ch(i,k,j) + Wa(idij) 
+     .                    *Ch(i-1,k,j)
+               enddo
+            enddo
+         enddo
+      else
+         is = -Ido
+         do j = 2 , Ip
+            is = is + Ido
+            idij = is
+            do i = 3 , Ido , 2
+               idij = idij + 2
+               do k = 1 , l1
+                  c1(i-1,k,j) = Wa(idij-1)*Ch(i-1,k,j) - Wa(idij) 
+     .                      *Ch(i,k,j)
+                  c1(i,k,j) = Wa(idij-1)*Ch(i,k,j) + Wa(idij) 
+     .                    *Ch(i-1,k,j)
+               enddo
+            enddo
+         enddo
+      endif
+      end subroutine radbg

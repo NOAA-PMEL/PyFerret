@@ -41,16 +41,12 @@
 * each message must be associated with a unique, arbitrary cookie.
 
 * V690 12/13 *sh*
+** 10/2022 *acm* Code cleanup: remove references to obsolete gui interface
 
         IMPLICIT NONE
-!#ifdef NO_PASSED_CONCAT
-!	include 'xrisc.cmn'
-!#endif
 	include 'tmap_dims.parm'
 	include 'ferret.parm'
-!        include 'gui.parm'
 	include 'xprog_state.cmn'
-!        include 'xgui.cmn'
 
 * calling argument declarations:
 	INTEGER		ncycle, cookie

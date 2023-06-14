@@ -158,16 +158,6 @@
       INCLUDE 'ferret_cmn/EF_Util.cmn'
       INCLUDE 'ferret_cmn/EF_mem_subsc.cmn'
 
-* String arrays are always viewed as double precision arrays
-* Thus the initial dimension of one or two depending on whether
-* REAL is REAL*8 or REAL*4
-      INTEGER strdf
-#ifdef double_p
-      PARAMETER (strdf = 1)
-#else
-      PARAMETER (strdf = 2)
-#endif
-
       INTEGER id
 
       REAL arg_1(mem1lox:mem1hix, mem1loy:mem1hiy, mem1loz:mem1hiz,
@@ -175,9 +165,9 @@
       REAL arg_2(mem2lox:mem2hix, mem2loy:mem2hiy, mem2loz:mem2hiz,
      .           mem2lot:mem2hit, mem2loe:mem2hie, mem2lof:mem2hif)
 
-      REAL result(strdf, memreslox:memreshix, memresloy:memreshiy,
-     .                   memresloz:memreshiz, memreslot:memreshit,
-     .                   memresloe:memreshie, memreslof:memreshif)
+      REAL result(memreslox:memreshix, memresloy:memreshiy,
+     .            memresloz:memreshiz, memreslot:memreshit,
+     .            memresloe:memreshie, memreslof:memreshif)
 
 * Ignore the unused singleton Y, Z, T, E, and F dimensions in the work arrays
       REAL*8 taxdat(wrk1lox:wrk1hix/2)
@@ -307,7 +297,7 @@
             ENDIF
 
 *           Put the date string (or empty string) into the string array
-            CALL ef_put_string(datebuf, dlen, result(1,i,j,k,l,m,n))
+            CALL ef_put_string(datebuf, dlen, result(i,j,k,l,m,n))
 
             i1 = i1 + arg_incr(X_AXIS,ARG1)
  100       CONTINUE

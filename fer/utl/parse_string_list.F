@@ -63,11 +63,7 @@
 
 * internal parameter declarations
 	CHARACTER*1     tab
-#ifdef NO_INTRINSIC_IN_PARAMETER
-	PARAMETER     ( tab = o'011' )
-#else
 	PARAMETER     ( tab = CHAR(9))
-#endif
 
 	include	'tmap_dims.parm'
 	include 'ferret.parm'
@@ -115,11 +111,7 @@
 
 	   IF (in_quote) THEN
 * ... possibly escape the next character
-#ifdef NO_DOUBLE_ESCAPE_SLASH
-              IF (c .EQ. '\') THEN  ! ' sing quote char for emacs sanity
-#else
-              IF (c .EQ. '\\') THEN
-#endif
+              IF (c .EQ. '\') THEN  
 	         i = i + 1   ! skip processing of next character 
 	      ELSEIF  (doub_atom .AND. doub_quote
      .	         .OR.  sing_atom .AND. sing_quote 

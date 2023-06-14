@@ -2,6 +2,7 @@
 * expnd_by_len_str.F
 *
 * Ansley Manke 08/2013
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 *
 * This function takes a string variable and a set of lengths
 * and returns the variable with element 1 repeated len1 times,
@@ -139,19 +140,12 @@
       INCLUDE 'EF_Util.cmn'
       INCLUDE 'EF_mem_subsc.cmn'
 
-      INTEGER strdf
-#ifdef double_p
-      PARAMETER (strdf = 1)
-#else
-      PARAMETER (strdf = 2)
-#endif
 
 
       INTEGER id
 
       REAL bad_flag(1:EF_MAX_ARGS), bad_flag_result
-      REAL arg_1(strdf,
-     .           mem1lox:mem1hix, mem1loy:mem1hiy, 
+      REAL arg_1(mem1lox:mem1hix, mem1loy:mem1hiy, 
      .           mem1loz:mem1hiz, mem1lot:mem1hit, 
      .           mem1loe:mem1hie, mem1lof:mem1hif)
       REAL arg_2(mem2lox:mem2hix, mem2loy:mem2hiy, 
@@ -160,8 +154,7 @@
       REAL arg_3(mem3lox:mem3hix, mem3loy:mem3hiy, 
      .           mem3loz:mem3hiz, mem3lot:mem3hit, 
      .           mem3loe:mem3hie, mem3lof:mem3hif)
-      REAL result(strdf, 
-     .            memreslox:memreshix, memresloy:memreshiy,
+      REAL result(memreslox:memreshix, memresloy:memreshiy,
      .            memresloz:memreshiz, memreslot:memreshit,
      .            memresloe:memreshiz, memreslof:memreshif)
 
@@ -224,12 +217,12 @@
       m = res_lo_ss(E_AXIS)
       n = res_lo_ss(F_AXIS)
 
-      DO 200 n1 = arg_lo_ss(F_AXIS,ARG1), arg_hi_ss(F_AXIS,ARG1)
-      DO 200 m1 = arg_lo_ss(E_AXIS,ARG1), arg_hi_ss(E_AXIS,ARG1)
-      DO 200 l1 = arg_lo_ss(T_AXIS,ARG1), arg_hi_ss(T_AXIS,ARG1)
-      DO 200 k1 = arg_lo_ss(Z_AXIS,ARG1), arg_hi_ss(Z_AXIS,ARG1)
-      DO 200 j1 = arg_lo_ss(Y_AXIS,ARG1), arg_hi_ss(Y_AXIS,ARG1)
-      DO 200 i1 = arg_lo_ss(X_AXIS,ARG1), arg_hi_ss(X_AXIS,ARG1)
+      DO n1 = arg_lo_ss(F_AXIS,ARG1), arg_hi_ss(F_AXIS,ARG1)
+      DO m1 = arg_lo_ss(E_AXIS,ARG1), arg_hi_ss(E_AXIS,ARG1)
+      DO l1 = arg_lo_ss(T_AXIS,ARG1), arg_hi_ss(T_AXIS,ARG1)
+      DO k1 = arg_lo_ss(Z_AXIS,ARG1), arg_hi_ss(Z_AXIS,ARG1)
+      DO j1 = arg_lo_ss(Y_AXIS,ARG1), arg_hi_ss(Y_AXIS,ARG1)
+      DO i1 = arg_lo_ss(X_AXIS,ARG1), arg_hi_ss(X_AXIS,ARG1)
          IF ( arg_2(i2,j2,k2,l2,m2,n2) .NE. bad_flag(2) ) THEN
 	    
             CALL ef_get_string_arg_element_6d(id, ARG1, arg_1, 
@@ -237,10 +230,10 @@
 
             count = INT(arg_2(i2,j2,k2,l2,m2,n2))    ! number to replicate
 
-            DO 100 indx = 1, count
-               CALL EF_PUT_STRING(buff, slen, result(1,i,j,k,l,m,n))
+            DO indx = 1, count
+               CALL EF_PUT_STRING(buff, slen, result(i,j,k,l,m,n))
                i = i + 1
- 100        CONTINUE
+            ENDDO
 
          ENDIF  ! arg_2 bad
 
@@ -250,10 +243,15 @@
       l2 = l2 + arg_incr(T_AXIS,ARG2)
       m2 = m2 + arg_incr(E_AXIS,ARG2)
       n2 = n2 + arg_incr(F_AXIS,ARG2)
- 200  CONTINUE
 
- 300  CONTINUE
-      
+      ENDDO
+      ENDDO
+      ENDDO
+      ENDDO
+      ENDDO
+      ENDDO
+
+
 *                                                                      ^
 *                                                                      |
 *                                            USER CONFIGURABLE PORTION |

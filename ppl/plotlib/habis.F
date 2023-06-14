@@ -35,6 +35,8 @@
 *
 *
 C**    @(#)habis.F	1.1    3/10/88
+* 11/2022 *acm* Code cleanup: Remove ref to pause, bell, etc. Not used
+*               by modern code.
 C**
 C**
 C***********************************************************************
@@ -44,14 +46,8 @@ C**
 C***********************************************************************
 C**
 C**
-#ifdef unix
 	INCLUDE 'PLTCOM.DAT'
 	INCLUDE 'SYSTEM.INC'
-#else
-	include '[-.complot]pltcom.dat'
-	include 'cmdinc:system.inc'
-	byte in
-#endif
 	CHARACTER INS*1
 C
 C     THIS ROUTINE IS OUR ALTERNATIVE TO PLOTEND.
@@ -64,25 +60,17 @@ C                = 1 FOR A  PAUSE
 C         IHDCPY= 0 FOR NO HARDCOPY
 C                = 1 FOR A HARD COPY
 C
-	CALL ALPHAS
-	CALL PAGE
-	IF(IHDCPY.EQ.1) CALL HDCOPY(IPLOT)
-	IF(IPAUSE.EQ.1.AND.(PTYPE.EQ.1.OR.IABS(PTYPE).GE.2)) THEN
-	    CALL CHOUT(BEL,1)
-	    CALL CHOUT(BEL,1)
-	    CALL CHDMP
-	    IF(PTYPE.GE.3)THEN
-#ifdef unix
-		OPEN(99,FILE='/dev/tty',STATUS='UNKNOWN')
-#else
-		OPEN(99,FILE='TT:',STATUS='UNKNOWN')
-#endif
- 99		READ(99,'(A1)',ERR=99,END=100)INS
-100		IN=ICHAR(INS)
-	    ELSE
-		CALL CHIN(IN,1,0)
-	    ENDIF
-	ENDIF
+C
+c ( call alphas, call page, which boil down to these calls)
+
+C     SET THE PLOTTING MODE.
+C
+      PMODE = ALPHA
+
+C     IF THE LAST POINT WAS NOT PLOTTED BECAUSE THE PEN WAS UP,
+C     PLOT THE POINT NOW.
+
+      IF(SAVEF)CALL XYZPLT
 	call clsdev(termf,sover)
 	RETURN
 	END

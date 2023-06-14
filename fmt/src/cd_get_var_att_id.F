@@ -66,12 +66,7 @@
      .        NCF_GET_VAR_ATTR_ID_CASE, STR_SAME, 
      .        slen, flen, dset_num
       PARAMETER (flen=512)      ! size of variable name string
-
-#ifdef sun
-      BYTE      fhol(flen)      ! c-type Hollerith string buffer
-#else
       INTEGER*1 fhol(flen)      ! c-type Hollerith string buffer
-#endif 
 
       attid = 0
       status = atom_not_found

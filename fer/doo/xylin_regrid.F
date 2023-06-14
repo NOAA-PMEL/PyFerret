@@ -71,6 +71,7 @@
 *		   It was dimensioned using the mr size instead of the cx
 *		   which is wrong when a larger object is re-used from cache
 *                  To address it we turned isrc_lo, isrc_hi into call arguments
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
@@ -139,14 +140,14 @@
 C LINEAR INTERPOLATION IN Y THEN X
 
 * loop over Z, T, E, and F ranges of 6-D data
-	DO 300 n = cx_lo_s6(cx_lims), cx_hi_s6(cx_lims)
-	DO 300 m = cx_lo_s5(cx_lims), cx_hi_s5(cx_lims)
-	DO 300 l = cx_lo_s4(cx_lims), cx_hi_s4(cx_lims)
-	DO 300 k = cx_lo_s3(cx_lims), cx_hi_s3(cx_lims)
+	DO n = cx_lo_s6(cx_lims), cx_hi_s6(cx_lims)
+	DO m = cx_lo_s5(cx_lims), cx_hi_s5(cx_lims)
+	DO l = cx_lo_s4(cx_lims), cx_hi_s4(cx_lims)
+	DO k = cx_lo_s3(cx_lims), cx_hi_s3(cx_lims)
 
 * first in J direction.
 
-	   DO 210 j = jdst_lo,jdst_hi
+	   DO j = jdst_lo,jdst_hi
 
 * interpolation coefficients
 	      jss = jss12(j)
@@ -155,13 +156,14 @@ C LINEAR INTERPOLATION IN Y THEN X
 
 * special case: exact overlap of source and dest points
 	      IF ( TM_FPEQ(c1j,1.) ) THEN
-	         DO 200 i = isrc_lo, isrc_hi
- 200	            work(i,j) = src(i,jss,k,l,m,n)
-	         GOTO 210
+	         DO i = isrc_lo, isrc_hi
+		    work(i,j) = src(i,jss,k,l,m,n)
+	         ENDDO
+		 CYCLE
 	      ENDIF
 
 * regular interpolation
-	      DO 205 i = isrc_lo, isrc_hi
+	      DO i = isrc_lo, isrc_hi
 
 * surrounding source data points
 	         z1 = src(i,jss  ,k,l,m,n)
@@ -174,12 +176,12 @@ C LINEAR INTERPOLATION IN Y THEN X
 	            work(i,j) = c1j*z1 + c2j*z2
 	         ENDIF
 
- 205	      CONTINUE
- 210	   CONTINUE
+	      ENDDO
+	   ENDDO
 
 * Now interpolate that in the x direction.
 
-	   DO 110 i = idst_lo, idst_hi
+	   DO i = idst_lo, idst_hi
 
 * interpolation coefficients
 	      iss = iss12(i)
@@ -188,13 +190,14 @@ C LINEAR INTERPOLATION IN Y THEN X
 
 * special case: exact overlap of source and dest points
 	      IF ( TM_FPEQ(c1i,1.) ) THEN
-	         DO 100 j = jdst_lo, jdst_hi
- 100	         dst(i,j,k,l,m,n) = work(iss,j)
-	         GOTO 110
+	         DO j = jdst_lo, jdst_hi
+		    dst(i,j,k,l,m,n) = work(iss,j)
+	         ENDDO
+		 CYCLE
 	      ENDIF
 
 * regular interpolation
-	      DO 105 j = jdst_lo, jdst_hi
+	      DO j = jdst_lo, jdst_hi
 
 * surrounding source data points
 	         z1 = work(iss  ,j)
@@ -207,10 +210,13 @@ C LINEAR INTERPOLATION IN Y THEN X
 	            dst(i,j,k,l,m,n) = c1i*z1 + c2i*z2
 	         ENDIF
 
- 105	      CONTINUE
- 110	   CONTINUE
+	      ENDDO
+	   ENDDO
 
- 300	CONTINUE
+	ENDDO  ! Close loops over Z, T, E, and F
+	ENDDO
+	ENDDO
+	ENDDO
 
 	RETURN
 	END

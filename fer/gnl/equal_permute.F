@@ -53,6 +53,7 @@
 *                         statements.  use an octal constant instead
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 * V693+ *sh* 2/15 - added support for _DQ_ quotations
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 
       IMPLICIT NONE
 
@@ -130,7 +131,8 @@
 	            IF (ndim .EQ. pmax) GOTO 5100
 *   ... check for duplicates
 	            DO 210 i = 1, ndim
- 210		    IF ( idim .EQ. ABS(perm(i)) ) GOTO 5100
+ 		       IF ( idim .EQ. ABS(perm(i)) ) GOTO 5100
+ 210		    CONTINUE
 *  ... save the axis
 	            ndim = ndim + 1
 	            perm(ndim) = idim * rev
@@ -146,8 +148,9 @@
 	IF (fill) THEN
 	  DO 350 j = ndim+1, nferdims+1
 	     DO 320 idim = 1, nferdims+1
-	        DO 310 i = 1, j-1   ! slots already set (4/92 bug fix)
- 310	        IF ( idim .EQ. ABS(perm(i)) ) GOTO 320
+	        DO i = 1, j-1   ! slots already set (4/92 bug fix)
+		   IF ( idim .EQ. ABS(perm(i)) ) GOTO 320
+	        ENDDO
 	        perm(j) = idim
 	        GOTO 350
  320	     CONTINUE

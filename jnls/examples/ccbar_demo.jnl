@@ -1,85 +1,57 @@
+\cancel mode verify
+cancel mode logo
+
 ! ccbar_demo.jnl (acm 5/02)
 
 ! Description: demonstrate continuous colorbar on plots that use 
 ! color fill and shade.
-cancel mode verify
+
 SAY **************************
-SAY *****  NOTE: 
-SAY *****  Modern Ferret verions have /KEY=CONTINUOUS option.
-SAY *****  The ccbar.jnl script is obsolete.
+SAY *****  Demonstrate the /KEY=CONTINUOUS option for color-filled plots
 SAY **************************
 pause
 set mode verify
+set window/size=1.5
 
-! EXAMPLE 1:
-! Define a variable ranging from 0 to 6 and plot it in fine
-! detail with the default colorbar.  Note it doesn't look good 
-! at all, particularly on a small plot!
+SAY 
+SAY EXAMPLE 1:
+SAY Define a variable ranging from 0 to 6 and plot it in fine
+SAY detail with the default colorbar. It does not look good 
+SAY at all, particularly on a small plot
+SAY 
 
+set view ul
 DEFINE axis/x=0:200:1 xax 
 DEFINE axis/y=0:100:1 yax
 LET var=6*(X[GX=xax]+Y[GY=yax])/300
 FILL/LEV=(0,6,0.06)/TITLE="Default Colorbar" var  
 
 
-!We will replot the variable defined above, but hold off on the colorbar
-! First SET VIEW, so that the key can be added as a viewport 
+SAY 
+SAY We will replot the variable, using /KEY=CONTINUOUS
+SAY 
 
 PAUSE
-SET VIEW full           ! this holds the actual plot
-FILL/LEV=(0,6,0.06)/TITLE="Continuous Colorbar"/NOKEY var
+set view ur
+FILL/LEV=(0,6,0.06)/TITLE="Continuous Colorbar"/KEY=CONT var
 
-! Plot the continuous colorbar, taking up the fraction of the window
-! from  x=0.93 to 0.96, y=0.2 to 0.8, and showing levels from 0 to 6,
-! with increments of 0.06.  Orient it vertically.
-
-GO ccbar  0.93,0.96,  0.2,0.8,  0,6,0.06, v 
-
-! EXAMPLE2:
-! Next a plot with a different palette, and a horizontal colorbar
+SAY 
+SAY EXAMPLE2:
+SAY Next a plot with a different palette, and a horizontal colorbar
+SAY 
 PAUSE
-CAN VIEW
-PPL SHASET RESET
+cancel view
 
 USE etopo60
+SHADE/LEV=(-inf)(-6000,6000,100)(inf)/AXES=1,1,1,1/KEY=cont,horiz/PALETTE=land_sea rose
 
-SET VIEW full
-SHADE/LEV=(-6000,6000,100)/AXES=1,1,1,1/NOKEY/PALETTE=land_sea rose
-
-! Locate the colorbar in x=0.12 to 0.6; y=0.9 to 0.94, and the range 
-! of data and palette matches what was used to plot the data.
-
-GO ccbar  0.12,0.6  0.9,0.94, -6000,6000,100, h, land_sea
-
-! EXAMPLE 3:
-! Next demonstrate the continuous colorbars on plots with viewports.
+SAY 
+SAY EXAMPLE 3:
+SAY Next demonstrate the continuous colorbars for a trajectory or ribbon plot
+SAY 
 PAUSE
-CAN VIEW
-PPL SHASET RESET
 
-! Let's go back to the variable created for the first plot,
-! and put that plot in two pre-defined viewports, UL and LR.
+use dsg_trajectory_example.nc
 
-DEFINE axis/x=0:200:1 xax 
-DEFINE axis/y=0:100:1 yax
-LET var=6*(X[GX=xax]+Y[GY=yax])/300
-  
-SET VIEW ul
-FILL/LEV=(0,6,0.06)/TITLE="Continuous Colorbar"/NOKEY/AXES=1,1,1,1/pal var
-
-SHOW VIEW ul
- 
-! The viewport UL takes the fraction of the page from 
-! x=0 to 0.5, y=.5 to 1. Locate and size the key inside this.
-
-GO ccbar  0.44,0.46, 0.62,0.88,  0, 6, 0.06, v 
-
-! Similarly for a second viewport
-
-SET VIEW lr
-FILL/LEV=(0,6,0.06)/TITLE="Continuous Colorbar Demo"/NOKEY/AXES=1,1,1,1/pal var
-SHOW VIEW lr
-
-GO ccbar  0.94,0.96,  0.12,0.38  0,6,0.06,  v 
-
-
+plot/thick=3/lev=40v/key=cont fco2_recommended
+go fland 5

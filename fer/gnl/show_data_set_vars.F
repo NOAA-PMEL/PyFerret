@@ -98,6 +98,10 @@
 *                 to its own routine, also called by SHOW GRID.
 * V76  2/20 *acm* Clean up the SHOW DATA/FULL output for DSG grids -
 *                 coordinate info is only at the end of the listing
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
+* V765 *acm* 5/23 PyFerret issue 135 When the dataset has 'coordinates' 
+*               attributes on variables, report there are auxiliary 
+*               (e.g. curvilinear) coordinates
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -143,11 +147,7 @@
 
 * internal parameter declarations:
         CHARACTER*1     tab
-#ifdef NO_INTRINSIC_IN_PARAMETER
-	PARAMETER     ( tab = o'011' )
-#else
 	PARAMETER     ( tab = CHAR(9))
-#endif
 
 
 * initialize
@@ -486,25 +486,17 @@
 	      line = '             '//ds_var_units(ivar)(:dlen)//
      .		' on grid '//grid_name(grid)
 	      dlen = TM_LENSTR1( line )
-#ifdef NO_PREPEND_STRING
 *             Appending space just to get rid of a nonsense compiler warning
 	      risc_buff = line(:dlen)//' '
 	      len_rbuff = dlen
 	      line = risc_buff(:len_rbuff)//' with '//
-#else
-	      line = line(:dlen)//' with '//
-#endif
      .				TM_FMT(ds_bad_flag(ivar),7,14,dlen)
 	      dlen = TM_LENSTR1( line )
 	      IF ( ds_bad_flag(ivar) .NE. ds_missing_flag(ivar) ) THEN
-#ifdef NO_PREPEND_STRING
 *             Appending space just to get rid of a nonsense compiler warning
 	      risc_buff = line(:dlen)//' '
 	      len_rbuff = dlen
 	      line = risc_buff(:len_rbuff)//' & '//
-#else
-	         line = line(:dlen)//' & '//
-#endif
      .				TM_FMT(ds_missing_flag(ivar),7,14,dlen)
 	         dlen = TM_LENSTR1( line )
 	      ENDIF
@@ -526,14 +518,10 @@
 
 		       ndec = -5  ! 
 		       IF (i .EQ. y_dim) ndec = -3
-#ifdef NO_PREPEND_STRING
 *                      Appending space just to get rid of a nonsense compiler warning
 	               risc_buff = line(:len)//' '
  	               len_rbuff = len
 		       line = risc_buff(:len_rbuff)// ww_dim_name(i) // '=' //
-#else
-		       line = line(:len) // ww_dim_name(i) // '=' //
-#endif
      .			 LOHI_STRING( lo,hi,i,grid,':',ndec,dlen )
      .			 // '  '
 	               len = MIN( 128, len+4+dlen )
@@ -557,8 +545,9 @@
 c	IF ( full  .AND. grid_dsg) taxis = grid_line(t_dim, dsg_xlate_grid(dset))
 
 * ... check among the static grids
-        DO 500 grid = 1, max_grids
- 500    IF ( grid_line(t_dim,grid) .EQ. taxis ) GOTO 520
+        DO grid = 1, max_grids
+           IF ( grid_line(t_dim,grid) .EQ. taxis ) GOTO 520
+ 	ENDDO
 * ... check among the dynamic grids
 	grid = 0
  510	CALL TM_NEXT_DYN_GRID( grid, *515)
@@ -640,18 +629,10 @@ c	IF ( full  .AND. grid_dsg) taxis = grid_line(t_dim, dsg_xlate_grid(dset))
 	      GOTO 710
 	    ELSEIF (c.EQ.tab) THEN
 	      len = len + 2
-#ifdef NO_DOUBLE_ESCAPE_SLASH
               line(len-1:len) = '\'//'t'
-#else
-              line(len-1:len) = '\\'//'t'
-#endif	     
 	    ELSEIF (c.EQ.',') THEN
 	      len = len + 2
-#ifdef NO_DOUBLE_ESCAPE_SLASH
               line(len-1:len) = '\'//','
-#else
-              line(len-1:len) = '\\'//','
-#endif	     
 	    ELSEIF ( (c.GE.' ' .AND. c.LE.'~') )THEN
 	      len = len + 1
 	      line(len:len) = c  ! printable character
@@ -664,6 +645,11 @@ c	IF ( full  .AND. grid_dsg) taxis = grid_line(t_dim, dsg_xlate_grid(dset))
 	  GOTO 700
  710	  CALL SPLIT_LIST(pttmode_explct, lun,
      .			  ' /DELIMITERS="'//line(:len)//'"', len+15) 
+	ENDIF
+
+	IF (ds_has_aux_coords(dset)) THEN 
+	   CALL SPLIT_LIST(pttmode_explct, lun, 
+     .      '--- Dataset variables have Auxiliary or Curvilinear Coordinates. Examine "coordinates" attributes.', 0)
 	ENDIF
 
 5000    RETURN

@@ -98,6 +98,7 @@
 * V6.87 4/14 *acm* ticket 2146: if invalid bounds, make bounds a depend. var
 * V695+ 4/15 *sh* support for auxiliary vars (coordinates attributes)
 * v7.6 *acm* 5/20 Issue 1876: can read string-typed data, write as char.
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 
 
 * argument definitions:
@@ -165,28 +166,15 @@
 
       INTEGER tt  ! nice short name
       EQUIVALENCE (tt,lunit_errors)
-* special equivalence (cannot include in tmap_format/xdset_info.cd_equiv because "BYTE"
-* isn't supported on DECstation
+
 * reorder loop logic because linux cpp didn't like it *kob* 10/96
-
-#ifdef unix
-#ifdef sun
-      BYTE cd_data_type(maxvars)
-#else
-      INTEGER*1 cd_data_type(maxvars)
-#endif
-#else
-      BYTE cd_data_type(maxvars)
-#endif
-
-
-      EQUIVALENCE ( ds_precision, cd_data_type )
 
 * initialize: save the state of grid memory prior to any new definitions
 
 * ... flag all axes as non-reversed as the default
-	DO 10 i = max_lines, line_ceiling
- 10	reversed(i) = .FALSE.
+	DO i = max_lines, line_ceiling
+ 	   reversed(i) = .FALSE.
+ 	ENDDO
 
 !* ... how many grid spaces used before we start ?
 !	status = TM_FIND_GRID_SLOT ( firstgrid )

@@ -84,6 +84,7 @@
 *                  string/numeric expressions with logic operators. See bn_strings.jnl
 * V720 5/17 *sh*  added support for operations on DSG ragged arrays 
 * V76  1/20 *acm* Implementing Point-type DSG datasets 
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -198,13 +199,13 @@
 	ENDIF
 	arg_type =  cx_type(is_cx(frame_bottom+i1-1))
 	arg_types_matched = .TRUE.
-	DO 100 icom = i1, num_com
+	DO icom = i1, num_com
 	   com_cx  = is_cx(frame_bottom+icom-1)
 	   IF (arg_type .NE. cx_type(com_cx) ) THEN
 	     arg_types_matched = .FALSE.
 	     arg_type = ptype_float
 	   ENDIF
- 100	CONTINUE
+	ENDDO
 
 * allocate context space for the result
 	CALL STACK_PTR_UP( cx_stack_ptr, max_context, status )
@@ -222,9 +223,10 @@
 * e.g. temp[k=1] + temp[K=1:3] needs 3 in the K direction
 * also - if there is a meaningful axis then use it
 * e.g. I[i=1] + J[j=1]   --> use the J axis although it is only length 1
-	DO 210 idim = 1, nferdims
+
+	DO idim = 1, nferdims
 	   res_len = CX_DIM_LEN( idim, res_cx )
-	   DO 200 icom = 2, num_com
+	   DO icom = 2, num_com
 	      com_cx  = is_cx(frame_bottom+icom-1)
 	      com_len = CX_DIM_LEN( idim, com_cx )
 	      IF ( com_len .GT. res_len
@@ -233,8 +235,8 @@
 	         CALL TRANSFER_AXIS( idim, com_cx, res_cx )
 	         res_len = com_len
 	      ENDIF
- 200	   CONTINUE
- 210	CONTINUE
+	   ENDDO
+	ENDDO
 
 * Fix up the DSG result context
 * A DSG ragged array may appear as a 2D obs X E grid at this point
@@ -264,10 +266,12 @@
 
 * point to the memory resident components
 * (if fewer than 4 components default extras to dummy)
-	DO 300 icom = 1, num_com
- 300	com(icom) = is_mr(frame_bottom+icom-1)
-	DO 310 icom = num_com+1, 4
- 310	com(icom) = dummy_mr
+	DO icom = 1, num_com
+	   com(icom) = is_mr(frame_bottom+icom-1)
+ 	ENDDO
+	DO icom = num_com+1, 4
+	   com(icom) = dummy_mr
+ 	ENDDO
 
 * set up 4D array limits as unsubscripted variables in COMMON
 	CALL NON_ARRAY_SUBSC( com, 5 )
@@ -350,12 +354,13 @@
 
 * ... if any components were un_cached we must uncache the result
 	not_reusable = .FALSE.
-	DO 2050 icom = isp, frame_bottom, -1
- 2050	IF ( ITS_UN_CACHED(is_mr(icom)) ) not_reusable = .TRUE.
+	DO icom = isp, frame_bottom, -1
+	   IF ( ITS_UN_CACHED(is_mr(icom)) ) not_reusable = .TRUE.
+ 	ENDDO
 	IF ( not_reusable ) CALL UN_CACHE( res_mr )
 
 * ...release component cx stack space
-	DO 2100 isp = isp, frame_bottom, -1
+	DO isp = isp, frame_bottom, -1
 	   IF ( is_cx(isp) .NE. cx_stack_ptr ) WRITE (6,*) 'OP_STK??'	! temp
 	   cx_stack_ptr = cx_stack_ptr - 1
 	   mr  = is_mr( isp )
@@ -374,16 +379,10 @@
 	   com_cx = is_cx(isp)
 	   IF ( cx_has_impl_grid(com_cx) ) THEN
 	      impl_grid = cx_grid(com_cx)
-!	      IF ( cx_grid(res_cx) .EQ. impl_grid ) THEN
-! 10/5	         IF ( cx_has_impl_grid(res_cx) )
-! idea    .				CALL DEALLO_DYN_GRID(impl_grid)
-!	         cx_has_impl_grid(res_cx) = .TRUE.	!inherit responsibility
-!	      ELSE
 	         CALL DEALLO_DYN_GRID(impl_grid)
-!	      ENDIF
 	      cx_has_impl_grid(com_cx) = .FALSE.
 	   ENDIF
- 2100	CONTINUE
+	ENDDO
 
 * collapse the interp stack frame
 	isp = frame_bottom
@@ -392,10 +391,6 @@
 * save the result context at the cx level previously used by the 1st component
 	cx_stack_ptr = cx_stack_ptr + 1
 	CALL TRANSFER_CONTEXT( res_cx, cx_stack_ptr )
-!	IF ( cx_has_impl_grid(res_cx) ) THEN
-! 10/5 	   cx_has_impl_grid(cx_stack_ptr) = .TRUE.
-! idea	   cx_has_impl_grid(res_cx)       = .FALSE.
-!	ENDIF
 	is_cx( isp ) = cx_stack_ptr
 
 	RETURN

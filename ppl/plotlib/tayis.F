@@ -56,6 +56,8 @@ C V695  *acm*  9/15 Changes for hour:min labeling on time axes
 C V697  *acm* 12/15 For short-time plots do the time axis in a separate
 C                   routine tayis4
 * *acm* - 8/16   ticket 1787: restore pen 0 correctly after graticule
+* 12/2022 *acm* Code cleanup: Rewrite to replace the computed GOTO statement 
+*                             "GOTO (10,20,20,30)IT+1"  with IF logic
 
 C If graticule lines are to be drawn across the plot at the tics
 C then only do them for one horizontal and one vertical axis.  
@@ -71,19 +73,28 @@ C sides. HLINE and VLINE control this.
 
 	CHARACTER*(*) IT1,IT2
 
-	GOTO (10,20,20,30)IT+1
-10	IF (is_hours_axis .EQ. 0) THEN
-	   CALL TAYIS0(TLO,IT1,IT2,DT,NMTCT,LTT,IFDB,ISDB,YF,XHI,XF,TCSIZE,
-     .              xacross,hgrat,hcolor,hline,color0)
-	ELSE
-	   CALL TAYIS4(TLO,IT1,IT2,DT,NMTCT,LTT,IFDB,ISDB,YF,XHI,XF,TCSIZE,
-     .              xacross,hgrat,hcolor,hline,color0,is_hours_axis)
-	ENDIF
-	RETURN
-20	CALL TAYIS1(TLO,IT1,IT2,DT,NMTCT,LTT,IFDB,ISDB,YF,XHI,XF,TCSIZE,
-     .              xacross,hgrat,hcolor,hline,color0)
-	RETURN
-30	CALL TAYIS3(TLO,IT1,IT2,DT,NMTCT,LTT,IFDB,ISDB,YF,XHI,XF,TCSIZE,
-     .              xacross,hgrat,hcolor,hline,color0)
+	IF (IT .EQ. 0) THEN
+
+	   IF (is_hours_axis .EQ. 0) THEN
+	      CALL TAYIS0(TLO,IT1,IT2,DT,NMTCT,LTT,IFDB,ISDB,YF,XHI,XF,TCSIZE,
+     .			  xacross,hgrat,hcolor,hline,color0)
+	   ELSE
+	      CALL TAYIS4(TLO,IT1,IT2,DT,NMTCT,LTT,IFDB,ISDB,YF,XHI,XF,TCSIZE,
+     .			  xacross,hgrat,hcolor,hline,color0,is_hours_axis)
+	   ENDIF
+
+	ELSE IF (IT.EQ.1 .OR. IT.EQ.2) THEN
+
+	   CALL TAYIS1(TLO,IT1,IT2,DT,NMTCT,LTT,IFDB,ISDB,YF,XHI,XF,TCSIZE,
+     .		       xacross,hgrat,hcolor,hline,color0)
+
+
+	ELSE IF (IT .EQ. 3) THEN
+
+	   CALL TAYIS3(TLO,IT1,IT2,DT,NMTCT,LTT,IFDB,ISDB,YF,XHI,XF,TCSIZE,
+     .		       xacross,hgrat,hcolor,hline,color0)
+
+     	ENDIF
+
 	RETURN
 	END

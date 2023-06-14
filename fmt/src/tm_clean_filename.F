@@ -51,6 +51,7 @@
 *               Note this may change the names of dynamic grids, which are
 *               generated from dataset names
 * 10/18 - *acm* Call TM_LENSTR1 not the LEN fucnction. Remove old cygwin stuff.
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 
 #include "gt_lib.parm"
 
@@ -64,9 +65,10 @@
         plen = TM_LENSTR1( pathname )
 
 * locate the last dot in the name
-        DO 100 idot = plen, 1, -1
- 100    IF ( pathname(idot:idot) .EQ. '.' ) GOTO 190
-        idot = plen + 1    ! no dot
+        DO idot = plen, 1, -1
+           IF ( pathname(idot:idot) .EQ. '.' ) GOTO 190
+        ENDDO
+	idot = plen + 1    ! no dot
  190    idot = idot - 1
 
 * 5/93 other than .des or .cdf should not be cleaned off 
@@ -81,8 +83,9 @@
 
 * locate the last slash in the name
 
-        DO 200 islash = plen, 1, -1
- 200    IF ( pathname(islash:islash) .EQ. PathSeparator ) GOTO 290
+        DO islash = plen, 1, -1
+           IF ( pathname(islash:islash) .EQ. PathSeparator ) GOTO 290
+        ENDDO
         islash = 0    ! no slash
  290    islash = islash + 1
 

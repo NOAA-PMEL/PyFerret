@@ -53,11 +53,7 @@
 
 * calling argument declarations:
 	REAL*8 bcsecs
-#ifdef sun
-        BYTE hdate(*)
-#else
         INTEGER*1 hdate(*)
-#endif
 
 * local variable declarations
 	INTEGER	  TM_LENSTR1, slen, cal_id

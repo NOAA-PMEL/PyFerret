@@ -55,12 +55,7 @@
       INTEGER NCF_GET_VAR_ATTR_NAME, flen, dset_num
 
       PARAMETER (flen=128)      ! size of variable name string
-
-#ifdef sun
-      BYTE      fhol(flen)      ! c-type Hollerith string buffer
-#else
       INTEGER*1 fhol(flen)      ! c-type Hollerith string buffer
-#endif 
 
       dset_num = dset
       IF (dset_num .LT. -2) dset_num = -2

@@ -35,6 +35,7 @@
 * 
 * Ansley Manke
 * August 1998
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 *
 * This function compresses data on J axis, ending with missing data.
 *

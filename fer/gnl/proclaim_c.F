@@ -49,11 +49,7 @@
 	INTEGER lun, quiet_flag
 	INTEGER	slen
         PARAMETER  ( slen = 32 )
-#ifdef sun
-        BYTE      leader(slen) ! c-type Hollerith string buffer
-#else
         INTEGER*1 leader(slen) ! c-type Hollerith string buffer
-#endif
 
 * internal variable declarations:
 	INTEGER	TM_LENSTR1, flen

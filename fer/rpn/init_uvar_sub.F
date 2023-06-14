@@ -87,6 +87,8 @@
 *                 include EX# and child vars in the LIST structures
 * V710 *acm* 10/16 Ticket 2422: remove unneeded call to DEALLO_UVAR_GRIDS. 
 *                  Also clean up long-unused lines that were commented out.
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
+* 12/2022 *acm* Code cleanup: Update code for up-casing strings
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -109,7 +111,7 @@
 	LOGICAL		inquote, toolong
 	INTEGER	        TM_LENSTR1, TM_LENSTR, STR_SAME, i, idim,
      .                  natom_rpn, rpn_order(maxatoms), i2, quote_type,
-     .                  dset_to_add, slen, iat, varid, type, coordvar
+     .                  dset_to_add, slen, iat, varid, type, coordvar, ic
 	CHARACTER	buff*255, c*1
 ! 6/16 -- declared but never used: CHARACTER attname*128
 
@@ -119,13 +121,6 @@
      .			p_double_quote = 2,
      .			p__DQ_         = 3,
      .			p__SQ_         = 4 )
-
-* kob 9/30/98 This needed for 7/7/98 code addition
-#ifdef FORTRAN_90
-      INTEGER HEXDF
-      DATA HEXDF/Z'DF'/
-#endif
-
 
 * initialize
 
@@ -205,22 +200,11 @@ cc     .                                  name, LEN(name))
 	   IF ( inquote .OR. (c .LT. 'a' .OR. c .GT. 'z' ) ) THEN
 	      uvar_text(uvar)(i2:i2) = c   ! preserve case
 	   ELSE
-* ... convert lower case character to upper case
-#if defined unix  && ! defined NEED_IAND
-	      uvar_text(uvar)(i2:i2) = CHAR( AND('DF'X, ICHAR(c)) )
-#else
-# ifdef FORTRAN_90
-	      uvar_text(uvar)(i2:i2) = CHAR( IAND(HEXDF, ICHAR(c)) )
-# elif defined gfortran
-	      uvar_text(uvar)(i2:i2) = CHAR( AND('DF'X, ICHAR(c)) )
-#else
-* VMS needs IAND
-* bug fix - forgot (uvar) in var reference
-	      uvar_text(uvar)(i2:i2) = CHAR( IAND('DF'X, ICHAR(c)) )
-# endif
-#endif
+	      uvar_text(uvar)(i2:i2) = ACHAR( IACHAR(c) - upcase_off)
 	   ENDIF
+
 	ENDDO
+
 	IF (toolong) uvar_text(uvar)(uvar_text_len-2:uvar_text_len) = '...'
 
 * (7/98) end of quote-sensitive case changing loop
@@ -266,11 +250,12 @@ c* copy title, units, dset, and missing flag into buffers
 	uvar_parent( uvar ) = parent_uvar
 
 * place the list of atoms into the uvar in RPN order.
-	DO 300 i = 1, natom_rpn
+	DO i = 1, natom_rpn
 	   uvar_item_start(i,uvar) = at_start(rpn_order(i)) - txstart + 1
 	   uvar_item_end  (i,uvar) = at_end  (rpn_order(i)) - txstart + 1
 	   uvar_item_type (i,uvar) = at_type (rpn_order(i))
- 300	CONTINUE
+	ENDDO
+
         uvar_ifv(uvar) = .FALSE.
         IF ( STR_SAME( uvar_text(uvar)(1:3), 'IFV' ) .EQ. 0 )  
      .      uvar_ifv(uvar) = .TRUE.
@@ -284,21 +269,23 @@ c* copy title, units, dset, and missing flag into buffers
 	uvar_need_dset( uvar ) = .TRUE.
 
 * by default assume that all limits are irrelevant
-	DO 320 idim = 1, nferdims
+	DO idim = 1, nferdims
 	   uvar_lo_ss ( uvar, idim )  = unspecified_int4
 	   uvar_hi_ss ( uvar, idim )  = unspecified_int4
 	   uvar_lo_ww ( idim, uvar )  = unspecified_val8
 	   uvar_hi_ww ( idim, uvar )  = unspecified_val8
 	   uvar_by_ss ( idim, uvar )  = .FALSE.             !for bookkeeping
   	   uvar_given ( idim, uvar )  = uvlim_irrelevant
- 320	CONTINUE
+	ENDDO
 
 * by default assume that there are no pseudo-variables involved
-	DO 330 idim = 1, nferdims
- 330	uvar_mod_pseudo(idim,uvar) = .FALSE.
+	DO idim = 1, nferdims
+	   uvar_mod_pseudo(idim,uvar) = .FALSE.
+ 	ENDDO
 
 * successful completion
 	status = ferr_ok
+
 	RETURN
 
 * error exit

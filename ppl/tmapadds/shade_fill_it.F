@@ -66,12 +66,7 @@
       INTEGER nothing
       LOGICAL BAD_XY_COORD, first, xfield_is_modulo
       CHARACTER*128 buff
-
-#ifdef double_p
       real*8 x_curv(200), y_curv(200)
-#else
-      real x_curv(200), y_curv(200)
-#endif
 
       big = ABS(CMZGE)
 

@@ -46,7 +46,6 @@
 
 * for FERRET V2.00: 12/21/89
 * V3.00 changed REAL FUNCTION to SUBROUTINE (noticed by f77 3.2)
-* V68  *acm* 1/12  ifdef double_p for double-precision ferret.
 * V73+ 1/18 *acm*  Changes for Issue 1009; precsision in time info sent to pplus for 2D plots
 *             scaling for axis coords and box edges
 * V766  4/22 *acm* For Issue 1009 the scaling of incoming val1 was incorrect

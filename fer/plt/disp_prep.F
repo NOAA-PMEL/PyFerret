@@ -105,11 +105,7 @@
 	INTEGER	TM_LENSTR1,TM_LENSTR, lev_loc, len_loc, str_1, str_len, 
      .          ii, ilen, ier, ist, nc, set_default_levs
 	REAL	val
-#ifdef double_p
 	REAL*4  rbad_val4
-#else
-	REAL  rbad_val4
-#endif
 
 * v500 - 1/26/99 *kob* double buffer size for /levels text
 * v532 - 5/11/01 *kob* increase buffer size for /levels text to 1028

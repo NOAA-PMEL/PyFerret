@@ -31,18 +31,21 @@ LET/QUIET     YTRACK = IF L LE 70 THEN YSTRAIGHT ELSE YLEG3
 LET/QUIET     SST = 25 - YTRACK/3
 LET/QUIET     wind = ytrack/20 * RANDN(ytrack)
 SET REGION/L=1:120
+
+set window/size=1.5
+cancel mode logo
  
 ! Plot SST and indicate the ship track
 go basemap x=120:260 Y=25s:65n 20
 go polytube polygon/over/key/title="SST" xtrack ytrack SST
 plot/vs/line/sym/over/nolab xtrack, ytrack
-\PAUSE
+pause
 
 ! a similar plot, but a thinner "tube" with a different palette, and another
 ! variable drawn dith it
 go basemap x=120:260 Y=25s:65n 20
 go polytube polygon/over/key/pal=no_green xtrack ytrack SST 0.3
-label/nouser `1.05*($ppl$xlen)`,-.5,0,0,.15 @CRSST
+label/nouser `1.05*($ppl$xlen)`,-.5,0,0,.15 SST
 go trackplot plot/vs/line/over/color=green/thickness=2/title="wind" xtrack ytrack wind
 
 

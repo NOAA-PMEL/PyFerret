@@ -1,0 +1,90 @@
+
+\cancel mode verify
+! fill_between.jnl
+! 6/99 *sh*
+! From Weimin Wang/Steve Hankin emails  July 2000
+! cleanup Ansley Manke 10/2000
+! Bug fix: 3/2004 for depth axis polygon overlay was not drawn.
+! 04/2019 Extend axis references to allow E or F axis
+
+! Description: Fill between two curves or a curve and a constant value
+
+! Usage:                   $1         $2   $3    $4
+! yes?  GO fill_between polygon_command data axis [base]
+! $1 - the polygon command with qualifiers (eg POLYGON/OVER/PALETTE=GREEN
+! $2 - a variable -- as if it were being plotted
+! $3 - the axis name for variable "data"
+! $4 - base curve or offset value.  If omitted, shade between "data" and 0.
+
+! example
+!  define axis/t=1-jan-1990:1-mar-1990:1/unit=days tday
+!  let a = SIN(T[gt=tday]/10)
+!  let b = 0.4*cos(T[gt=tday]/4) - 2
+!  plot a, b
+!  go fill_between poly/over/nolab/palette=red/line a tday b
+!  go fill_between poly/over/nolabpalette=yellow a tday 1.
+!  go fill_between poly/over/nolabpalette=green b tday -3
+
+! example with a depth axis
+!  use levitus_climatology
+!  let a = temp[y=0,x=180]
+!  let b = temp[y=60,x=180]
+!  plot a,b
+!  go fill_between poly/over/palette=green/line/nolab a zaxlevitr b
+
+! argument check
+QUERY/IGNORE $1"<usage: yes? GO  fill_between polygon_command data axis [base]"
+QUERY/IGNORE $2"<usage: yes? GO  fill_between polygon_command data axis [base]"
+QUERY/IGNORE $3"<usage: yes? GO  fill_between polygon_command data axis [base]"
+
+! save the input expressions into simple variable definitions
+LET/QUIET FBy = $2
+LET/QUIET FBbase = $4"0"
+
+! determine the orientation of the data (and check that it is 1D)
+DEFINE SYMBOL FBax `FBy,return=shape`
+DEFINE SYMBOL FBiax ($FBax"|X>i|Y>j|Z>k|T>l|E>m|F>n|<error: data is not a line")
+DEFINE SYMBOL FBbar_ax ($FBax"|X>Z|Y>Z|Z>Y|T>Z|E>Z|F>Z|<error: data is not a line")
+
+DEFINE SYMBOL FBbase_ax `FBbase,return=shape`
+DEFINE SYMBOL FBbase_iax ($FBbase_ax"|X>i|Y>j|Z>k|T>l|E>m|F>n|POINT>i|<error: base is not a line")
+DEFINE SYMBOL FBbase_bar_ax ($FBbase_ax"|X>Z|Y>Z|Z>Z|T>Z|E>Z|F>Z|POINT>Z|<error: base is not a line")
+
+! get the independent axis out as a separate variable
+DEFINE SYMBOL FBilo `FBy,return=($FBiax)start`
+DEFINE SYMBOL FBihi `FBy,return=($FBiax)end`
+
+! Define a new non-depth axis in case of a depth axis: the poly overlay 
+! with /transpose is incorrect on a depth axis.
+
+define axis/($FBax) FBaxis=_($FBax)[G($FBax)=$3] 
+LET/QUIET FBx = _($FBax)[G($FBax)=FBaxis,($FBiax)=($FBilo):($FBihi)]   ! FBx=X[GX=ax,i=lo:hi]
+LET/QUIET FBx = _($FBax)[G($FBax)=$3,($FBiax)=($FBilo):($FBihi)]   ! FBx=X[GX=ax,i=lo:hi]
+! assemble the vertices above and below
+LET/QUIET FBxup  = FBx
+LET/QUIET FByup  = FBy
+LET/QUIET FBxdn  = FBx
+LET FBydn  = 0.*FBy + FBbase
+
+
+LET/QUIET FBpindex = ($FBbar_ax)[($FBbar_ax)=1:4]
+
+LET/QUIET FBx4_0 = IF FBpindex EQ 1 OR FBpindex EQ 4 then FBxdn ELSE FBxup
+LET/QUIET FBy4_0 = IF FBpindex EQ 1 OR FBpindex EQ 4 then FBydn ELSE FByup
+LET/QUIET FBx4_1 = IF FBpindex LE 2 then FBx4_0 ELSE FBx4_0[($FBax)=@shf:-1]
+LET/QUIET FBy4_1 = IF FBpindex LE 2 then FBy4_0 ELSE FBy4_0[($FBax)=@shf:-1]
+
+! for Z -axis plot, transpose the overlay
+! if it is a depth axis, need to also multiply by -1.
+DEFINE SYMBOL FB_orient ($FBax"|X>fill|Y>fill|T>fill|Z>transpose|E>fill|F>fill|")
+DEFINE SYMBOL FB_mult ($FBax"|X>1|Y>1|T>1|Z>-1|E>1|F>1|")
+
+$1/($FB_orient)/coord_ax=($FBbar_ax) FBx4_1, FBy4_1
+
+IF `($FB_mult) LT 0` THEN $1/nolab/($FB_orient)/coord_ax=($FBbar_ax)  ($FB_mult)*FBx4_1, ($FB_mult)*FBy4_1
+! In case of a POLY/LINE command, also overlay with the opposite sign.
+IF `($FB_mult) LT 0` THEN $1/over/nolab/($FB_orient)/coord_ax=($FBbar_ax)  FBx4_1, ($FB_mult)*FBy4_1
+
+cancel symbol FB*
+cancel variable FB*
+set mode/last verify

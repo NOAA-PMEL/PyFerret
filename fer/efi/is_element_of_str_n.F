@@ -36,10 +36,10 @@
 * Ansley Manke
 * August 2005
 *
-* V68  *acm* 1/12  ifdef double_p for double-precision ferret.
 *  For string arguments, 
 *  Return logical value (integer 1 or 0); If argument 1 takes on any of 
 *  the values of the second argument, return 1, else 0.
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 
 *
 *
@@ -172,20 +172,12 @@
       INCLUDE 'EF_Util.cmn'
       INCLUDE 'EF_mem_subsc.cmn'
 
-      INTEGER strdf
-#ifdef double_p
-      PARAMETER (strdf = 1)
-#else
-      PARAMETER (strdf = 2)
-#endif
 
       INTEGER id
 
-      REAL arg_1(strdf,
-     .           mem1lox:mem1hix, mem1loy:mem1hiy, mem1loz:mem1hiz, 
+      REAL arg_1(mem1lox:mem1hix, mem1loy:mem1hiy, mem1loz:mem1hiz, 
      .           mem1lot:mem1hit, mem1loe:mem1hie, mem1lof:mem1hif)
-      REAL arg_2(strdf,
-     .           mem2lox:mem2hix, mem2loy:mem2hiy, mem2loz:mem2hiz, 
+      REAL arg_2(mem2lox:mem2hix, mem2loy:mem2hiy, mem2loz:mem2hiz, 
      .           mem2lot:mem2hit, mem2loe:mem2hie, mem2lof:mem2hif)
 
       REAL result(memreslox:memreshix, memresloy:memreshiy, 
@@ -236,12 +228,12 @@ C  Returns a single value, so no incrementing result indices
 C Initialize to no match since case-insensitive match does not immediately return
       result(i,j,k,l,m,n) = 0.
 
-      DO 100 n1=arg_lo_ss(F_AXIS,ARG1), arg_hi_ss(F_AXIS, ARG1)
-      DO 100 m1=arg_lo_ss(E_AXIS,ARG1), arg_hi_ss(E_AXIS, ARG1)
-      DO 100 l1=arg_lo_ss(T_AXIS,ARG1), arg_hi_ss(T_AXIS, ARG1)
-      DO 100 k1=arg_lo_ss(Z_AXIS,ARG1), arg_hi_ss(Z_AXIS, ARG1)
-      DO 100 j1=arg_lo_ss(Y_AXIS,ARG1), arg_hi_ss(Y_AXIS, ARG1)
-      DO 100 i1=arg_lo_ss(X_AXIS,ARG1), arg_hi_ss(X_AXIS, ARG1)
+      DO n1=arg_lo_ss(F_AXIS,ARG1), arg_hi_ss(F_AXIS, ARG1)
+      DO m1=arg_lo_ss(E_AXIS,ARG1), arg_hi_ss(E_AXIS, ARG1)
+      DO l1=arg_lo_ss(T_AXIS,ARG1), arg_hi_ss(T_AXIS, ARG1)
+      DO k1=arg_lo_ss(Z_AXIS,ARG1), arg_hi_ss(Z_AXIS, ARG1)
+      DO j1=arg_lo_ss(Y_AXIS,ARG1), arg_hi_ss(Y_AXIS, ARG1)
+      DO i1=arg_lo_ss(X_AXIS,ARG1), arg_hi_ss(X_AXIS, ARG1)
 
          arg = 1
          CALL ef_get_string_arg_element_6d(id, arg, arg_1, 
@@ -251,12 +243,12 @@ C Initialize to no match since case-insensitive match does not immediately retur
 
             status = STR_UPCASE(text1up,text1)
 
-            DO 200 n2=arg_lo_ss(F_AXIS,ARG2), arg_hi_ss(F_AXIS, ARG2)
-            DO 200 m2=arg_lo_ss(E_AXIS,ARG2), arg_hi_ss(E_AXIS, ARG2)
-            DO 200 l2=arg_lo_ss(T_AXIS,ARG2), arg_hi_ss(T_AXIS, ARG2)
-            DO 200 k2=arg_lo_ss(Z_AXIS,ARG2), arg_hi_ss(Z_AXIS, ARG2)
-            DO 200 j2=arg_lo_ss(Y_AXIS,ARG2), arg_hi_ss(Y_AXIS, ARG2)
-            DO 200 i2=arg_lo_ss(X_AXIS,ARG2), arg_hi_ss(X_AXIS, ARG2)
+            DO n2=arg_lo_ss(F_AXIS,ARG2), arg_hi_ss(F_AXIS, ARG2)
+            DO m2=arg_lo_ss(E_AXIS,ARG2), arg_hi_ss(E_AXIS, ARG2)
+            DO l2=arg_lo_ss(T_AXIS,ARG2), arg_hi_ss(T_AXIS, ARG2)
+            DO k2=arg_lo_ss(Z_AXIS,ARG2), arg_hi_ss(Z_AXIS, ARG2)
+            DO j2=arg_lo_ss(Y_AXIS,ARG2), arg_hi_ss(Y_AXIS, ARG2)
+            DO i2=arg_lo_ss(X_AXIS,ARG2), arg_hi_ss(X_AXIS, ARG2)
 
                arg = 2
                CALL ef_get_string_arg_element_6d(id, arg, arg_2, 
@@ -277,11 +269,21 @@ C Case-insensitive match found; mark it but continue searching for an exact matc
 
                ENDIF
 
- 200        CONTINUE
+            ENDDO
+            ENDDO
+            ENDDO
+            ENDDO
+            ENDDO
+            ENDDO
 
          ENDIF
 
- 100  CONTINUE
+      ENDDO
+      ENDDO
+      ENDDO
+      ENDDO
+      ENDDO
+      ENDDO
 
 C Either no match or case-insensitive match found; already marked appropriately
       RETURN

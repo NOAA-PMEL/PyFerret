@@ -18,8 +18,9 @@ c
 	else
 	read(1,985)(ascii(ij),ij=1,icnt+1)
 	ilen=ascii(icnt+1)
-	do 1010 ij=icnt+1,128
-1010	ascii(ij)=1
+	do ij=icnt+1,128
+	  ascii(ij)=1
+        enddo
 	endif
 985	format(1x,20i4)
 	read(1,984)(x(ij),ij=1,ilen)

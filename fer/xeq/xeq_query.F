@@ -46,6 +46,7 @@
 *			  because it needed a preprocessor.
 * V66   *kms* 5/10 LIB_GET_LUN is a subroutine, not a function
 *       *acm* 3/12 cleanup ifdefs and unnecessary include files
+** 10/2022 *acm* Code cleanup: remove references to obsolete gui interface
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
@@ -59,7 +60,6 @@
 	include 'errmsg.parm'
 	include 'xprog_state.cmn'
 	include 'xcommand.cmn'
-	include 'xgui.cmn'
 
 * local parameter declarations:
 	INTEGER	    slash_all, slash_file, slash_ignore
@@ -73,8 +73,9 @@
 	LOGICAL	do_all, fileout, its_ppl
 	INTEGER	TM_LENSTR1, STR_UPCASE, vax_code,
      .		chout, flen, qfile, status, i, query, n
-	CHARACTER fname*132, qry4*4
+	CHARACTER fname*132, qry4*4, q_fmt1*20
 
+	DATA q_fmt1 / '(I3, 1X, A4, 1x, A)' /
 
 * initialize
 	fileout = .FALSE.
@@ -124,11 +125,7 @@
 	ENDIF
 
 * do it
-	IF ( its_ppl ) THEN
-!	   QRY_PPL( chout, gui_fmt1, qry4, status ) 	   
-	ELSE
-	   CALL DO_QUERY( chout, gui_fmt1, query, NO_TAG, status )
-	ENDIF
+	IF ( .NOT. its_ppl ) CALL DO_QUERY( chout, q_fmt1, query, NO_TAG, status )
 	IF ( status .NE. ferr_ok ) GOTO 5000
 	
 * exit

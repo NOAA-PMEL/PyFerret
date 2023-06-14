@@ -8,7 +8,7 @@
 
 ! Usage:                   $1       $2   $3       $4           $5
 ! yes?  GO error_bars plot_command base errors [err_down] ["transpose"]
-! $1 - the plot command with qualifiers (eg PLOT/VS/OVER/LINE=2)
+! $1 - the plot command with qualifiers (eg PLOT/VS/OVER/LINE/COLOR=2)
 ! $2 - underlying points to be marked with error bars
 ! $3 - error values associated with points (or error limit above)
 ! $4 - [optional] error limit below (if different that $4)
@@ -26,9 +26,9 @@
 !	yes? let errdn = 0.6 * RANDU(xpts+1)
 !
 !	yes? plot/hlimits=0:6/vlimits=-2:2/vs/line xpts, ypts
-!	yes? GO error_bars poly/line=2 ypts errup 
+!	yes? GO error_bars poly/LINE/COLOR=red ypts errup 
 
-!       yes? GO error_bars poly/line=3 ypts errup errdn
+!       yes? GO error_bars poly/LINE/COLOR=blue ypts errup errdn
 
 
 ! 2) Use a data set, but create some dummy error numbers
@@ -44,7 +44,7 @@
 !       yes? let errdn = 0.2 + 0*sst_ave
 !
 !	yes? plot sst_ave
-!	yes? GO error_bars poly/line=2 sst_ave, errup, errdn
+!	yes? GO error_bars poly/LINE/COLOR=2 sst_ave, errup, errdn
 
 ! argument check
 QUERY/IGNORE $1%<usage: yes? GO error_bars plot_command base errors [err_down] ["transpose"]%

@@ -19,29 +19,21 @@
 ! arg 5 - flag determining whether mp_go_land is turned on[1] or off[0]
 
 ! Example:
-!   use coads_clmatology
+!   use coads_climatology
 !   go mp_sinusoidal
 !   set grid sst
-!   go mp_ocean_stripmap sst lev=(-2,20,4)(20,34,2) no_green 1 0
+!   go mp_ocean_stripmap_tn sst[L=3] lev=(-2,20,4)(20,34,2) no_green 1 0
 !
 
-!define view/xlim=.101,.914/ylim=.692,.828 vboxo
+! Example:
+! use levitus_climatology
+! go mp_mcbryde_fpp
+! go my_ocean_stripmap_tn missing(temp[L=1,z=1],-6), "levels=(-14,32,2)" pale_green_blue_rev 1 1
 
-!define viewport/xlim=0,.333/ylim=0,.5 mp_ll
-!define viewport/xlim=.333,.75/ylim=0,.5 mp_lm
-!define viewport/xlim=.75,.999/ylim=0,.5 mp_lr
-!define viewport/xlim=0,.25/ylim=.5,1 mp_ul
-!define viewport/xlim=.25,.667/ylim=.5,1 mp_um
-!define viewport/xlim=.667,.999/ylim=.5,1 mp_ur
 
-!define viewport/xlim=.100,.350/ylim=.385,.510 mp_ll
-!define viewport/xlim=.350,.662/ylim=.385,.510 mp_lm
-!define viewport/xlim=.662,.850/ylim=.385,.510 mp_lr
-!define viewport/xlim=.100,.288/ylim=.510,.635 mp_ul
-!define viewport/xlim=.288,.600/ylim=.510,.635 mp_um
-!define viewport/xlim=.600,.850/ylim=.510,.635 mp_ur
+query/ignore $1%|<This script needs arguments: type go/help my_ocean_stripmap for examples%
 
-! move to the right by 0.04, since for thumbnail we dont plot the key.
+set window/size=1.5/aspect=0.6
 
 define viewport/xlim=.140,.390/ylim=.385,.511 mp_ll
 define viewport/xlim=.390,.702/ylim=.385,.511 mp_lm
@@ -76,8 +68,8 @@ set region/x=140:290
 go margins 0,0,0,0
 shade/set_up/nolab/$2 $1, x_page, y_page
 ppl axset,0,0,0,0
-!ppl axlabp,0,0
 ppl box,OFF
+
 ! Key defined here because we have the full range of values
 
 ! For thumbnail turn off key with 1st arg = 0,

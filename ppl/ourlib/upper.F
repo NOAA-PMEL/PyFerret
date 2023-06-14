@@ -55,8 +55,6 @@ C                with "*(*)" for the linux port
 C *kms* 07/2010 unix version cleaned up and NC made the *maximum* 
 C               number of characters to convert
 
-#ifdef unix
-
         CHARACTER STRING*(*)
         INTEGER DELTA, EXACTN, I
         DELTA = ICHAR('A') - ICHAR('a')
@@ -67,15 +65,6 @@ C               number of characters to convert
                 STRING(I:I) = CHAR(ICHAR(STRING(I:I)) + DELTA)
             ENDIF
  100    CONTINUE
-
-#else
-
-	CHARACTER STRING*80
-	INTEGER*4 STR$UPCASE,ISTAT
-	ISTAT = STR$UPCASE(STRING(1:NC),STRING(1:NC))
-	IF(.NOT.ISTAT)CALL SYS$EXIT(%VAL(ISTAT))
-
-#endif
 
 	RETURN
 	END

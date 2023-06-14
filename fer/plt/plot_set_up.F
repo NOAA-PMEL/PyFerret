@@ -238,7 +238,7 @@
 * v767 6/22 *acm* See issue 112: Detect whether axis is too large for 4-byte integer indexing -
 *		  Data would be too large to plot
 * v767 6/22 *acm* Issue 113: Differences between PLOT/SYM/LINE=n and PLOT/SYM/LINE/COLOR=c/THICK=t 
-*		  when overlaying multiple lines 
+*      1/23 *acm* Issue 131 plot/step=conntected has wrong independent axis
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -766,6 +766,8 @@ c	      ul_dolab(t_dim) = .FALSE.  ! why was this added?
 	         dep_dat(3*i-2) = dep_dat(i)
 	      END DO
 	   ENDIF
+
+	   npts = nload
 
 * set up corresponding independent axis
 * ( note - each variable may have different points on the indep. axis )

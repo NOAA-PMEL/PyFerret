@@ -56,6 +56,7 @@
 
 * V692 7/14 *acm* new transform @WGT, ticket 2180
 * V71 12/16 *acm* For ticket 2158: working with true monthly time axes.
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 
 	IMPLICIT NONE
         include 'tmap_dims.parm'
@@ -139,10 +140,10 @@
 	one_y = .FALSE.
 
 * determine the axes to be transformed
-	DO 10 idim = 1, nferdims
+	DO idim = 1, nferdims
 	  yes_ax(idim) = cx_trans(idim,res_cx) .EQ. action
 	  no_ax (idim) = .NOT.yes_ax(idim)
- 10	CONTINUE
+	ENDDO
 
 * get and save grid box sizes (weights) just once for efficiency
 * ... save all axes in one long array with offsets to find the starts
@@ -150,7 +151,7 @@
 *    for the axes starting above index = 1
 
 	offset = 0
-	DO 90 idim = 1, nferdims
+	DO idim = 1, nferdims
 	  IF (yes_ax(idim)) THEN
 	    box_offset(idim) = offset - cx_lo_ss(com_cx,idim) + 1 ! pre-comp'ed
 	    offset = offset + 
@@ -158,12 +159,12 @@
 	  ELSE
 	    box_offset(idim) = -9999
 	  ENDIF
- 90	CONTINUE
+	ENDDO
 ! COS(latitudes) also stored in the box array (8/96)
 	cos_offset = offset - cx_lo_s2(com_cx) + 1
 
 * ... save the box sizes
-	DO 100 idim = 1, nferdims
+	DO idim = 1, nferdims
 	  ind_lo = cx_lo_ss(com_cx,idim)
 	  ind_hi = cx_hi_ss(com_cx,idim)
 	  offset = box_offset(idim)
@@ -179,8 +180,9 @@
      .				 - cx_lo_ww(idim,res_cx)
 
 * ... complete boxes mid-axis
-	      DO 40 i = ind_lo+1, ind_hi-1
- 40	      boxes(i+offset)  = BOX_SIZE( i, grid, idim )
+	      DO i = ind_lo+1, ind_hi-1
+	         boxes(i+offset)  = BOX_SIZE( i, grid, idim )
+ 	      ENDDO
 * ... partial box at upper end
 	      boxes(ind_hi+offset) = cx_hi_ww(idim,res_cx)
      .		   - TM_WORLD(ind_hi, grid, idim, box_lo_lim)
@@ -191,12 +193,12 @@
 	    IF (ITSA_TRUEMONTH_AXIS(grid_line(idim,grid))) 
      .		  unit = un_convert(pun_day)
 
-	    DO 50 i = ind_lo, ind_hi
+	    DO i = ind_lo, ind_hi
  	      boxes(i+offset) = boxes(i+offset) * unit
- 50         continue
+	    ENDDO
  	    IF (point) boxes(ind_lo+offset) = 1.
 	  ENDIF
- 100	CONTINUE
+	ENDDO
 
 * impose cosine factors if latitude and longitude are involved
 * 5/97 - only use COS(y) if X integration is involved and Y axis lims are VALID
@@ -214,24 +216,17 @@ C http://mathworld.wolfram.com/Zone.html. Fix for @DIN too.
         one_y = (cx_lo_ww(y_dim,res_cx) .EQ. cx_hi_ww(y_dim,res_cx))
 
 	IF ( need_cos ) THEN
-	   DO 120 j = cx_lo_s2(com_cx), cx_hi_s2(com_cx)
+	   DO j = cx_lo_s2(com_cx), cx_hi_s2(com_cx)
 
 C Compute the y boxes if there is a y axis; the computation may be 
 C avgs in other directions but we need the ybox size at a given y
 C The top and bottom boxes extend only to the coordinate locations,
 C (Unless there is just one grid cell in the y direction.)
 
-#ifdef double_p
 	      ybxlo = deg2rad* 
      .                TM_WORLD(j, grid, y_dim, box_lo_lim)
 	      ybxhi = deg2rad* 
      .                TM_WORLD(j, grid, y_dim, box_hi_lim)
-#else
-	      ybxlo = deg2rad* 
-     .                SNGL( TM_WORLD(j, grid, y_dim, box_lo_lim) )
-	      ybxhi = deg2rad* 
-     .                SNGL( TM_WORLD(j, grid, y_dim, box_hi_lim) )
-#endif
 	      IF (j .EQ. cx_lo_s2(com_cx) .AND. .NOT.one_y)
      .                ybxlo = deg2rad* cx_lo_ww(y_dim,res_cx)
 
@@ -241,10 +236,11 @@ C (Unless there is just one grid cell in the y direction.)
 	      yh = ybxhi-ybxlo  
 	      boxes(j+cos_offset) = ABS( SIN(ybxhi) - SIN(ybxlo) )/yh
 
- 120       CONTINUE
+	   ENDDO
 	ELSE
-	   DO 121 j = cx_lo_s2(com_cx), cx_hi_s2(com_cx)
- 121	      boxes(j+cos_offset)  = 1.0
+	   DO j = cx_lo_s2(com_cx), cx_hi_s2(com_cx)
+	      boxes(j+cos_offset)  = 1.0
+	   ENDDO
 	ENDIF
 
 * do the transformation: return box size 
@@ -274,31 +270,36 @@ C (Unless there is just one grid cell in the y direction.)
 	i_hi = cx_hi_s1(res_cx)
 
 * Set the range of loop indices for the component data on the transformed axes
-	DO 150 idim = 1, nferdims
+	DO idim = 1, nferdims
 	  IF (yes_ax(idim)) THEN
 	    com_lo(idim) = cx_lo_ss(com_cx,idim)
 	    com_hi(idim) = cx_hi_ss(com_cx,idim)
 	  ENDIF
- 150	CONTINUE
+	ENDDO
 	
-	DO 220 nc = n_lo, n_hi
+	DO nc = n_lo, n_hi
 	IF (yes_fax) fbox = boxes(nc+noffset)
-	DO 220 mc = m_lo, m_hi
+	DO mc = m_lo, m_hi
 	IF (yes_eax) ebox = boxes(mc+moffset)
-	DO 220 lc = l_lo, l_hi
+	DO lc = l_lo, l_hi
 	IF (yes_tax) tbox = boxes(lc+loffset)
-	DO 220 kc = k_lo, k_hi
+	DO kc = k_lo, k_hi
 	IF (yes_zax) zbox = boxes(kc+koffset)
-	DO 220 jc = j_lo, j_hi
+	DO jc = j_lo, j_hi
 	IF (yes_yax) ybox = boxes(jc+joffset)
-	DO 220 ic = i_lo, i_hi
+	DO ic = i_lo, i_hi
 	IF (yes_xax) xbox = boxes(ic+ioffset)
 
 	    box = xbox * ybox * zbox * tbox * ebox * fbox
 	    IF (need_cos) box = box * boxes(jc+cos_offset)
 	    res(ic,jc,kc,lc,mc,nc) = box
 
- 220	CONTINUE
+	ENDDO
+	ENDDO
+	ENDDO
+	ENDDO
+	ENDDO
+	ENDDO
 
 	RETURN
 

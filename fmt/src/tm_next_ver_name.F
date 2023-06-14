@@ -60,11 +60,7 @@
 
         INTEGER slen,plen
         PARAMETER  ( slen = 128 )
-#ifdef sun
-        BYTE      nhol(slen), vhol(slen),phol(slen) ! c-type Hollerith string buffers
-#else
         INTEGER*1 nhol(slen), vhol(slen),phol(slen) ! c-type Hollerith string buffers
-#endif
 
 * initialize
         nlen = TM_LENSTR1(name)

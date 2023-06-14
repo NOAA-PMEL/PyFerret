@@ -44,15 +44,10 @@ C**
 C***********************************************************************
 C**
 C**
-#ifdef unix
 	INCLUDE 'PARAMPL5.DAT'
 	INCLUDE 'AXIS.INC'
 	INCLUDE 'LINES.INC'
-#else
-        INCLUDE 'pplinc:PARAMPL5.DAT'
-        INCLUDE 'pplinc:AXIS.INC'
-        INCLUDE 'pplinc:LINES.INC'
-#endif
+
       XT=X*XFCT(I)+XOFF(I) 
       YT=Y*YFCT(I)+YOFF(I) 
       IF(ITYPEX.NE.1)XT=ALOG10(ABS(XT)) 

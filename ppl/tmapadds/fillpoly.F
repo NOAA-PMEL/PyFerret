@@ -85,11 +85,7 @@ C
 * V698 *acm* 3/16 Ticket 2374: missing color when FILL extends over entire 
 *                 modulo region
 
-#ifdef double_p
       real*8 x(128),y(128), xplus
-#else
-      real x(128),y(128), xplus
-#endif
       real xt(128),yt(128),xc(128),yc(128),xtrns,ytrns, temp_hi
       integer i,nout,fill_ndx
       real xadd, lmin, lmax
@@ -144,15 +140,10 @@ C
 *     so copy all of the values to the x() and y() arrays.
 *
 *     pplmod_fillpoly doesn't use the 'inverse' flag.  (Should it?)
-         DO 1 i=1,npts
-#ifdef double_p
+         DO i=1,npts
             x(i) = DBLE(xarg(i))
             y(i) = DBLE(yarg(i))
-#else
-            x(i) = xarg(i)
-            y(i) = yarg(i)
-#endif
- 1       CONTINUE 
+         ENDDO
          
 *     Curvilinear section
       IF (curvilinear) THEN

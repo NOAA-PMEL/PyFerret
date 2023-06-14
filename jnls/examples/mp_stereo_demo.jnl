@@ -3,8 +3,9 @@
 ! Description: demonstrate fancy map projection techniques
 ! ACM June 15, 2001
 
-SET WINDOW/SIZE=0.6
-USE etopo40
+cancel mode logo
+
+USE etopo20
 SET GRID rose
 
 !  Define a region in the northern hemisphere.
@@ -17,12 +18,13 @@ LET mid_lon = `xmin+(xmax-xmin)/2`
 LET mid_lat = `ymin+(ymax-ymin)/2`
 SET REGION/X=`xmin`:`xmax`/Y=`ymin`:`ymax`
 
-!   Set up the map projection parameters and apply the 
-!   correct aspect ratio.
+!   Set up the map projection parameters and apply the correct
+!   aspect ratio. Resize the window after calling mp_aspect
 
 GO mp_stereographic_north `mid_lon` `mid_lat`
 LET masked_rose = rose * mp_mask
 GO mp_aspect
+set window/size=1.5
 
 !   Plot the data.  Use SHAKEY to make the color key at the top of the plot and
 !   control its size and location.  For a description of SHAKEY see the on-line
@@ -35,7 +37,7 @@ GO mp_aspect
 !   are at 7.5, 8.2
 
 FILL/NOAXES/NOLAB/PALETTE=land_sea/SET_UP masked_rose, x_page, y_page
-PPL SHAKEY 1, 0, 0.1, 2, , , 2.5, 8.5, 7.5, 7.8
+PPL SHAKEY 1, 0, 0.1, 2, , , 2.5, 8.5, 7.7, 8.
 PPL FILL
 
 GO mp_land
@@ -54,21 +56,21 @@ GO mp_graticule `xmin` `xmax` `xdel` `ymin` `ymax` `ydel`
 
 !  Label the graticules  every X line and every second Y line.
 
-REPEAT/K=`xmin`:`xmax`:`xdel` (GO mp_label `k` `ymin-2` 0 `k-mid_lon` 0.12 "@CR`k`")
-REPEAT/K=`ymin+ydel`:`ymax-ydel`:`2*ydel` (GO mp_label `xmin-2` `k`  1 `xmin-mid_lon` 0.12 "@CR`k`")
-REPEAT/K=`ymin+ydel`:`ymax-ydel`:`2*ydel` (GO mp_label `xmax+2` `k` -1 `xmax-mid_lon` 0.12 "@CR`k`")
+REPEAT/K=`xmin`:`xmax`:`xdel` (GO mp_label `k` `ymin-2` 0 `k-mid_lon` 0.12 "`k`")
+REPEAT/K=`ymin+ydel`:`ymax-ydel`:`2*ydel` (GO mp_label `xmin-2` `k`  1 `xmin-mid_lon` 0.12 "`k`")
+REPEAT/K=`ymin+ydel`:`ymax-ydel`:`2*ydel` (GO mp_label `xmax+2` `k` -1 `xmax-mid_lon` 0.12 "`k`")
 
 !  Note: in the Southern Hemisphere these commands would be as follows.
 !        The index K needs to be positive so we use -1* k for the latitude labels.
 !        Also the 4th argument to mp_label, the angle at which the label is drawn, is 
 !        "mid_lon - longitude"  for the Southern Hemisphere
 
-! REPEAT/K=`xmin`:`xmax`:`xdel` (GO mp_label `k` `ymax+2` 0 `mid_lon-k` 0.12 "@CR`k`")
-! REPEAT/K=`-1*(ymin+ydel)`:`-1*(ymax-ydel)`:`2*ydel` (GO mp_label `xmin-2` `-1*k` -1 `mid_lon-xmin` 0.12 "@CR`-1*k`")
-! REPEAT/K=`-1*(ymin+ydel)`:`-1*(ymax-ydel)`:`2*ydel` (GO mp_label `xmax+2` `-1*k`  1 `mid_lon-xmax` 0.12 "@CR`-1*k`")
+! REPEAT/K=`xmin`:`xmax`:`xdel` (GO mp_label `k` `ymax+2` 0 `mid_lon-k` 0.12 "`k`")
+! REPEAT/K=`-1*(ymin+ydel)`:`-1*(ymax-ydel)`:`2*ydel` (GO mp_label `xmin-2` `-1*k` -1 `mid_lon-xmin` 0.12 "`-1*k`")
+! REPEAT/K=`-1*(ymin+ydel)`:`-1*(ymax-ydel)`:`2*ydel` (GO mp_label `xmax+2` `-1*k`  1 `mid_lon-xmax` 0.12 "`-1*k`")
 
 
 !  Add labels in world coordinates.
 
-GO mp_label `xmin-2*xdel` `ymax-ydel` 1 0 0.14 "@CRETOPO Topography"
-GO mp_label mid_lon `ymin-0.5*ydel` 0 0 .18 "@CRObservation Sites"
+GO mp_label `xmin-2*xdel` `ymax-2*ydel` 1 0 0.14 "ETOPO Topography"
+GO mp_label mid_lon `ymin-0.5*ydel` 0 0 .18 "Observation Sites"

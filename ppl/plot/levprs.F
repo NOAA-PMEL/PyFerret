@@ -87,12 +87,7 @@ C                with "*(*)" for the linux port
                    RETURN
                 ENDIF
 		PRSE(ISTPP:ISTPP)=','
-
-#ifdef AIX_XLF
-		READ(PRSE(:ISTPP),996,ERR=1000)VAL(I)
-#else
 		READ(PRSE(:ISTPP-1),996,ERR=1000)VAL(I)
-#endif
 996		FORMAT(E20.0)
 	ENDIF
 20	ISTPP=ISTPP+1

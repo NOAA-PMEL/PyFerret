@@ -66,9 +66,6 @@ C**
 *
 *
 ** TMAP mod **
-* *sh* 10/27/94 - modified for AIX port
-*	Modification uses TM_NUMBER to determine if "value" is a number rather
-*	than the ERR= branch of a READ which fails on AIX/xlf
 * *jd* 11.3.94 Fixed(?) the fix -- permit read if text is a number
 **************
 C *kob* 04/07/96 passed in character strings had to be declared 
@@ -77,8 +74,7 @@ C                with "*(*)" for the linux port
 C* v552 *acm* 3/03 Longer strings: changes for multi-line labels
 * V686 *acm* 11/13 Allow symbol names to be up to 120 characters long
 * v695 9/15 *acm* write values to PPL* symbols using 6 digits not 4
-* v721 8/17 *kms* always do TM_NUMBER check (not just #ifdef AIX_XLF) 
-*                 for newer gfortran (Mac)
+* v721 8/17 *kms* always do TM_NUMBER check for newer gfortran (Mac)
 
 
 	CHARACTER LINE*(*),VALUE*2048,SYM*120,OPR*1,ARG(4)*120

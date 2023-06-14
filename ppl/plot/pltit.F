@@ -152,8 +152,6 @@
 	include 'PLT.INC'
 	include 'pltl_inc.decl'
 	include 'PLTL.INC'
-	include 'mplot_inc.decl'
-	include 'MPLOT.INC'
 	include 'cmrd_inc.decl'
 	include 'CMRD.INC'
 	include 'prmcom_inc.decl'
@@ -202,7 +200,7 @@ CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
      *		.OR.MAKEP.EQ.'VECTOR'.or.makep.eq.'SHADE'   
      *          .or.makep.eq.'FLOWLINE'
      *          .or.makep.eq.'FILL'.or.makep.eq.'PIXEL'
-	CLEAR = .NOT.SOVER .AND. IMCNT.LE.1 .AND. .NOT.PLTOPN
+	CLEAR = .NOT.SOVER .AND. .NOT.PLTOPN
 C	SETUP AXIS FOR ALL PLOT TYPES.
 
 *below	no_vpt_flag = .not.(vpt_was_set .and. ppl_viewports_active)!12.1.89 JD
@@ -215,9 +213,7 @@ C	SETUP AXIS FOR ALL PLOT TYPES.
 *	endif
 
 	IF(.NOT.SOVER .AND. .NOT.PLTOPN)CALL SIZE(WIDTH,HEIGHT)
-#ifdef unix
-*       call flush(lttout)
-#endif
+
 ***********************************************
 * TMAP check that output window is active
 	IF ( PPL_in_FERRET ) CALL CK_GKS_ACTIVE( *4999 )

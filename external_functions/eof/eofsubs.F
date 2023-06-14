@@ -769,14 +769,9 @@ c      REAL BI,BI1,Z1,LAMBDA,U,S,V,H,EPS,ETA
 
 * In single-precision these were 1.e10 and 1.e20
 * Determined by trial and error.
-	
-#ifdef double_p
+
       big = 1.E20
       bigger = 1.E30
-#else
-      big = 1.E10
-      bigger = 1.E20
-#endif
 
       IF (N-1)10,20,30
    20 Z(1,1)=1.

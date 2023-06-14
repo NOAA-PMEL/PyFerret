@@ -4,11 +4,7 @@
 * V4.02 8/95 - added initialization of progname_mod and len_progname_mod
 *		which were formerly handled in XREVISION_DATA.F
 
-#ifdef unix
 	include 'xrevision_type.cmn'
-#else
-	INCLUDE 'FERRET_CMN:XREVISION_TYPE.CMN'
-#endif
 
 	DATA revision_type	/ 'mmmmmmmm' /
 

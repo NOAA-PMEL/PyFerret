@@ -36,6 +36,7 @@
 *
 *
 C**    @(#)axisl.f	1.1    3/10/88
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax.
 C**
 C**
 C***********************************************************************
@@ -121,11 +122,8 @@ C
       INTEGER SXFLAG,SYFLAG,CFLAG,SMXTIC,SMYTIC,SMXTC1,SMYTC1
 C
 	CHARACTER IFMT*6,XLAB*8,YLAB*8
-#ifdef unix
 	include 'PLTCOM.DAT'
-#else
-	include 'pplinc:PLTCOM.DAT'
-#endif
+
 C
 C******************************************************************
 C   AXISL MAKES SEVERAL CHECKS ON THE PARAMETERS TO MAKE SURE THAT
@@ -237,9 +235,10 @@ C   DO THE SMALL TICK MARKS, IF ANY.
 C
 70    IF(SMXTIC .EQ. 0) GO TO 85
       DO 80 I=1,SMXTIC
-      XPT=XPT+XINC
-      IF(XPT .GT. XHIGH) GO TO 90
-80    CALL PLOT(XPT,YPT,1,7)
+        XPT=XPT+XINC
+        IF(XPT .GT. XHIGH) GO TO 90
+        CALL PLOT(XPT,YPT,1,7)
+80    CONTINUE
 C
 C   NOW DO THE LARGE TICK MARK.
 C
@@ -271,10 +270,11 @@ C   COMPUTE THE INCREMENTS FOR A LOG AXIS.
 C
 200   AINC=1.
       BINC=2.
-      DO 205 I=1,9
-      INC(I)=ALOG10(BINC)-ALOG10(AINC)
-      AINC=AINC+1.
-205   BINC=BINC+1.
+      DO 205I=1,9
+        INC(I)=ALOG10(BINC)-ALOG10(AINC)
+        AINC=AINC+1.
+        BINC=BINC+1.
+205   CONTINUE
       CFLAG=1
       YPT=YORG
       IF(LOGY.EQ.1) YPT=ALOG10(YPT)
@@ -322,9 +322,10 @@ C
 C   DO THE MINOR TICK MARKS.
 C
 240   DO 250 I=1,8
-      XPT=XPT+INC(I)
-      IF(XPT .GT. XHI) GO TO 260
-250   CALL PLOT(XPT,YPT,1,7)
+        XPT=XPT+INC(I)
+        IF(XPT .GT. XHI) GO TO 260
+        CALL PLOT(XPT,YPT,1,7)
+250   CONTINUE
 C
 C   NOW THE MAJOR TICK MARK.
 C
@@ -390,9 +391,10 @@ C   DO THE SMALL TICK MARKS, IF ANY.
 C
 330   IF(SMYTIC .EQ. 0) GO TO 345
       DO 340 I=1,SMYTIC
-      YPT=YPT+YINC
-      IF(YPT .GT. YHIGH) GO TO 350
-340   CALL PLOT(XPT,YPT,1,5)
+        YPT=YPT+YINC
+        IF(YPT .GT. YHIGH) GO TO 350
+        CALL PLOT(XPT,YPT,1,5)
+340   CONTINUE
 C
 C   NOW DO THE LARGE TICK MARK.
 C
@@ -426,9 +428,10 @@ C
       AINC=1.
       BINC=2.
       DO 405 I=1,9
-      INC(I)=ALOG10(BINC)-ALOG10(AINC)
-      AINC=AINC+1.
-405   BINC=BINC+1.
+        INC(I)=ALOG10(BINC)-ALOG10(AINC)
+        AINC=AINC+1.
+        BINC=BINC+1.
+405   CONTINUE
 406   XPT=XORG
       IF(LOGX.EQ.1) XPT=ALOG10(XPT)
       XPOS=XORG-XOFF
@@ -463,10 +466,10 @@ C
       TEMP=IFIX(YPT)
       IF(TEMP .GT. YPT) TEMP=TEMP-1.
       DO 430 I=1,8
-      TEMP=TEMP+INC(I)
-      IF(TEMP .LT. YPT) GO TO 430
-      IF(TEMP .GE. YHI) GO TO 460
-      CALL PLOT(XPT,TEMP,1,5)
+        TEMP=TEMP+INC(I)
+        IF(TEMP .LT. YPT) GO TO 430
+        IF(TEMP .GE. YHI) GO TO 460
+        CALL PLOT(XPT,TEMP,1,5)
 430   CONTINUE
       YPT=TEMP
       SYFLAG=1
@@ -475,9 +478,10 @@ C
 C   DO THE MINOR TICK MARKS.
 C
 440   DO 450 I=1,8
-      YPT=YPT+INC(I)
-      IF(YPT .GT. YHI) GO TO 460
-450   CALL PLOT(XPT,YPT,1,5)
+        YPT=YPT+INC(I)
+        IF(YPT .GT. YHI) GO TO 460
+        CALL PLOT(XPT,YPT,1,5)
+450   CONTINUE
 C
 C   NOW THE MAJOR TICK MARK.
 C

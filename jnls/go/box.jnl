@@ -16,6 +16,8 @@
 ! examples
 !      GO box -180 -120 -45 45 2		  ! red box
 !      GO box  300  345  25 45 black/thick/dash   ! black box drawn with thick, dashed lines
+!      go box  -90   90 200 400 green 		  ! green box on an x-z plot
+!       
 
 ! Notes:
 !  1) use  GO line_samples    to view the first 6 pen numbers

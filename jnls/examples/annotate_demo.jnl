@@ -22,6 +22,7 @@ endif
 pause
 
 define symbol makemap = go basemap   " "  " "   " "    gray_light
+set window/size=1.5
 
 ($makemap)
 annotate/user/xpos=180/ypos=0/halign=0/valign=0/siz=0.12 "Center of Pacific"

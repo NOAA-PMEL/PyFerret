@@ -41,6 +41,7 @@
 * 1/18/08  Ansley Manke 
 *         Result is abstract on the x axis, normal on the y and t axes,
 *         and keeps the z, e, f axes of the input 6-d data.
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 *
 *
 * In this subroutine we provide information about
@@ -391,14 +392,14 @@ C  variables for checking axis characteristics (modulo axes)
       ndimx = 0
       ndimy = 0
       ndimt = 0
-      DO 10 i = X_AXIS,F_AXIS
+      DO i = X_AXIS,F_AXIS
          IF ( arg_hi_ss(i,ARG2) .GT. arg_lo_ss(i,ARG2) )
      .       ndimx = ndimx + 1
          IF ( arg_hi_ss(i,ARG3) .GT. arg_lo_ss(i,ARG3) )
      .       ndimy = ndimy + 1
          IF ( arg_hi_ss(i,ARG4) .GT. arg_lo_ss(i,ARG4) )
      .       ndimt = ndimt + 1
-   10 CONTINUE
+      ENDDO
 
       IF ((nx .NE. ny) .OR. (nx .NE. nt) .OR. 
      .    (ndimx .GT. 1) .OR. (ndimy .GT. 1) .OR. (ndimt .GT. 1)) THEN
@@ -520,11 +521,13 @@ C  variables for checking axis characteristics (modulo axes)
          IF ( xpt .EQ. bad_flag(ARG2) .OR.
      .        ypt .EQ. bad_flag(ARG3) .OR.
      .        tpt .EQ. bad_flag(ARG4) ) THEN
-            DO 30 n = res_lo_ss(F_AXIS), res_hi_ss(F_AXIS)
-            DO 30 m = res_lo_ss(E_AXIS), res_hi_ss(E_AXIS)
-            DO 30 k = res_lo_ss(Z_AXIS), res_hi_ss(Z_AXIS)
+            DO n = res_lo_ss(F_AXIS), res_hi_ss(F_AXIS)
+            DO m = res_lo_ss(E_AXIS), res_hi_ss(E_AXIS)
+            DO k = res_lo_ss(Z_AXIS), res_hi_ss(Z_AXIS)
                result(i,j,k,l,m,n) = bad_flag_result
-   30       CONTINUE
+            ENDDO
+            ENDDO
+            ENDDO
 *           Go to the next triplet of coordinates
             GOTO 690
          ENDIF
@@ -542,14 +545,14 @@ C  variables for checking axis characteristics (modulo axes)
 * Check if tpt is in the T-axis range.
          lbot = ef_unspecified_int4
          lmatch = ef_unspecified_int4
-         DO 410 l1 = arg_lo_ss(T_AXIS,ARG1), arg_hi_ss(T_AXIS,ARG1)
+         DO l1 = arg_lo_ss(T_AXIS,ARG1), arg_hi_ss(T_AXIS,ARG1)
             IF ( TM_FPEQ(tpt, taxdat(l1)) ) THEN
                lmatch = l1
                GOTO 420
             ELSE IF ( tpt .GE. tboxlo(l1) ) THEN
                lbot = l1
             ENDIF
-  410    CONTINUE
+         ENDDO
 
 * Check that tpt is not beyond the upper end of the T-axis range.
          IF ( tpt .GT. tboxhi(thi) ) THEN
@@ -565,11 +568,13 @@ C  variables for checking axis characteristics (modulo axes)
             ltop = lbot
          ELSE
 *           tpt outside the grid
-            DO 430 n = res_lo_ss(F_AXIS), res_hi_ss(F_AXIS)
-            DO 430 m = res_lo_ss(E_AXIS), res_hi_ss(E_AXIS)
-            DO 430 k = res_lo_ss(Z_AXIS), res_hi_ss(Z_AXIS)
+            DO n = res_lo_ss(F_AXIS), res_hi_ss(F_AXIS)
+            DO m = res_lo_ss(E_AXIS), res_hi_ss(E_AXIS)
+            DO k = res_lo_ss(Z_AXIS), res_hi_ss(Z_AXIS)
                result(i,j,k,l,m,n) = bad_flag_result
-  430       CONTINUE
+            ENDDO
+            ENDDO
+            ENDDO
 *           Go to the next triplet of coordinates
             GOTO 690
          ENDIF
@@ -642,7 +647,7 @@ C  variables for checking axis characteristics (modulo axes)
             ENDIF
          ENDIF
 
-         DO 120 i1 = arg_lo_ss(X_AXIS,ARG1), arg_hi_ss(X_AXIS,ARG1)
+         DO i1 = arg_lo_ss(X_AXIS,ARG1), arg_hi_ss(X_AXIS,ARG1)
             IF ( TM_FPEQ(xpt, xaxdat(i1)) ) THEN
                imatch = i1
                GOTO 130
@@ -654,7 +659,7 @@ C  variables for checking axis characteristics (modulo axes)
             ELSE IF ( xpt .GE. xaxdat(i1) ) THEN
                ibot = i1
             ENDIF
- 120     CONTINUE
+         ENDDO
 
          IF ( .NOT. modulo(1) .OR. (modulo(1) .AND..NOT.full_span )) THEN
             IF ( xpt .GT. xaxdat(ihi) .AND.
@@ -685,11 +690,13 @@ C  variables for checking axis characteristics (modulo axes)
             itop = ibot + 1
          ELSE
 *           xpt is outside the grid
-            DO 140 n = res_lo_ss(F_AXIS), res_hi_ss(F_AXIS)
-            DO 140 m = res_lo_ss(E_AXIS), res_hi_ss(E_AXIS)
-            DO 140 k = res_lo_ss(Z_AXIS), res_hi_ss(Z_AXIS)
+            DO n = res_lo_ss(F_AXIS), res_hi_ss(F_AXIS)
+            DO m = res_lo_ss(E_AXIS), res_hi_ss(E_AXIS)
+            DO k = res_lo_ss(Z_AXIS), res_hi_ss(Z_AXIS)
                result(i,j,k,l,m,n) = bad_flag_result
-  140       CONTINUE
+            ENDDO
+            ENDDO
+            ENDDO
 *           Go to the next triplet of coordinates
             GOTO 690
          ENDIF
@@ -714,14 +721,14 @@ C  variables for checking axis characteristics (modulo axes)
          jbot = ef_unspecified_int4
          jmatch = ef_unspecified_int4
 
-         DO 210 j1 = arg_lo_ss(Y_AXIS,ARG1), arg_hi_ss(Y_AXIS,ARG1)
+         DO j1 = arg_lo_ss(Y_AXIS,ARG1), arg_hi_ss(Y_AXIS,ARG1)
             IF ( TM_FPEQ(ypt, yaxdat(j1)) ) THEN
                jmatch = j1
                GOTO 220
             ELSE IF ( ypt .GT. yaxdat(j1) ) THEN
                jbot = j1
             ENDIF
-  210    CONTINUE
+         ENDDO
 
 * Check that ypt is not beyond the upper end of the Y-axis range.
          IF ( ypt .GT. yaxdat(yhi) ) THEN
@@ -735,11 +742,13 @@ C  variables for checking axis characteristics (modulo axes)
             jtop = jbot + 1
          ELSE
 *           ypt outside the grid
-            DO 230 n = res_lo_ss(F_AXIS), res_hi_ss(F_AXIS)
-            DO 230 m = res_lo_ss(E_AXIS), res_hi_ss(E_AXIS)
-            DO 230 k = res_lo_ss(Z_AXIS), res_hi_ss(Z_AXIS)
+            DO n = res_lo_ss(F_AXIS), res_hi_ss(F_AXIS)
+            DO m = res_lo_ss(E_AXIS), res_hi_ss(E_AXIS)
+            DO k = res_lo_ss(Z_AXIS), res_hi_ss(Z_AXIS)
                result(i,j,k,l,m,n) = bad_flag_result
-  230       CONTINUE
+            ENDDO
+            ENDDO
+            ENDDO
 *           Go to the next triplet of coordinates
             GOTO 690
          ENDIF

@@ -43,6 +43,7 @@
 *
 * Ferret v5.54 9/4/06
 *       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 
 * change this comment, so that the checkin under branch FDSv1
 * will occur.
@@ -61,13 +62,7 @@
         INTEGER TM_LENSTR1, i, j, k, l, m, n, size, swap_flag,
      .          clobber_flag, slen
 
-
-* #ifdef for endianness info.
-#ifdef sun
-	include 'xmachine_byte.cmn'
-#else
 	include 'xmachine_int1.cmn'
-#endif
 
 
 * BYTEORDER - get byteorder of this architecture
@@ -79,16 +74,21 @@
 
         size = 0
 
-	DO 100 n = m1lof,m1hif
-	DO 100 m = m1loe,m1hie
-	DO 100 l = m1lot,m1hit
-	DO 100 k = m1loz,m1hiz
-	DO 100 j = m1loy,m1hiy
-	DO 100 i = m1lox,m1hix
+	DO n = m1lof,m1hif
+	DO m = m1loe,m1hie
+	DO l = m1lot,m1hit
+	DO k = m1loz,m1hiz
+	DO j = m1loy,m1hiy
+	DO i = m1lox,m1hix
 
            size = size + 1
            workspace(size) = data(i,j,k,l,m,n)
-  100   CONTINUE
+	ENDDO
+	ENDDO
+	ENDDO
+	ENDDO
+	ENDDO
+	ENDDO
 
          slen = TM_LENSTR1(filename)
          clobber_flag = 0

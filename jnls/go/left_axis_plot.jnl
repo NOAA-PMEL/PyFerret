@@ -22,6 +22,15 @@
 !	yes? GO left_axis_plot temp
 !	yes? GO right_axis_plot salt
 
+! These scripts only work when the independent axis is the horizontal axis
+
+define symbol varshape = `($1),return=shape`
+if strindex("($varshape)", "Z") THEN
+   say `left_axis_plot and right_axis plot do not work with variables on a Z axis
+   exit/script
+endif
+
+
 ! reset axis sizes and positions (also cancels viewports)
 ! GO magnify 1
 ppl origin 1.2, 1.4

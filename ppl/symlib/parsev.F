@@ -73,6 +73,8 @@ C* v552 *acm* 3/03 Longer strings: changes for multi-line labels
 * v580 *acm* 8/04 Change use of 256 to buflen+1, 
 *                 where buflen is defined in cmndlen.inc
 * V686 *acm* 11/13 Allow symbol names to be up to 120 characters long
+* 12/2022 *acm* Code cleanup: Rewrite to replace the computed GOTO statement 
+*                             "GOTO(201,202,203,...)ISW"  with IF's
 
         INCLUDE 'cmndlen.inc'
 
@@ -152,33 +154,23 @@ C
 C	DO TEST
 C
 	IF(NUM)THEN
-	    GOTO(201,202,203,204,205,206)ISW
-201	    RESULT=X1.EQ.X2
-     	    GOTO 210
-202	    RESULT=X1.NE.X2
-	    GOTO 210
-203	    RESULT=X1.LT.X2
-	    GOTO 210
-204	    RESULT=X1.GT.X2
-	    GOTO 210
-205	    RESULT=X1.LE.X2
-	    GOTO 210
-206	    RESULT=X1.GE.X2
-210	    CONTINUE
+
+	   IF (ISW .EQ. 1) RESULT=X1.EQ.X2
+	   IF (ISW .EQ. 2) RESULT=X1.NE.X2
+	   IF (ISW .EQ. 3) RESULT=X1.LT.X2
+	   IF (ISW .EQ. 4) RESULT=X1.GT.X2
+	   IF (ISW .EQ. 5) RESULT=X1.LE.X2
+	   IF (ISW .EQ. 6) RESULT=X1.GE.X2
+
 	ELSE
-	    GOTO(301,302,303,304,305,306)ISW
-301	    RESULT=EXP1(:LEN1).EQ.EXP2(:LEN2)
-	    GOTO 310
-302	    RESULT=EXP1(:LEN1).NE.EXP2(:LEN2)
-	    GOTO 310
-303	    RESULT=EXP1(:LEN1).LT.EXP2(:LEN2)
-	    GOTO 310
-304	    RESULT=EXP1(:LEN1).GT.EXP2(:LEN2)
-	    GOTO 310
-305	    RESULT=EXP1(:LEN1).LE.EXP2(:LEN2)
-	    GOTO 310
-306	    RESULT=EXP1(:LEN1).GE.EXP2(:LEN2)
-310	    CONTINUE
+
+	   IF (ISW .EQ. 1) RESULT=EXP1(:LEN1).EQ.EXP2(:LEN2)
+	   IF (ISW .EQ. 2) RESULT=EXP1(:LEN1).NE.EXP2(:LEN2)
+	   IF (ISW .EQ. 3) RESULT=EXP1(:LEN1).LT.EXP2(:LEN2)
+	   IF (ISW .EQ. 4) RESULT=EXP1(:LEN1).GT.EXP2(:LEN2)
+	   IF (ISW .EQ. 5) RESULT=EXP1(:LEN1).LE.EXP2(:LEN2)
+	   IF (ISW .EQ. 6) RESULT=EXP1(:LEN1).GE.EXP2(:LEN2)
+
 	ENDIF
 	RETURN
 	END
@@ -279,19 +271,11 @@ C
 C	CHECK FOR NUMBER
 C
 	    if(slen.eq.1)then
-
-#ifdef AIX_XLF
-            IF ( .NOT.TM_NUMBER(string) ) GOTO 100 ! TMAP Mod
-#endif
 		read(string,'(i1)',err=100)jk
 		x=jk
 	    else
 	        WRITE(FRMT,999)SLEN
 999	    FORMAT('(E',I3.3,'.0)')
-
-#ifdef AIX_XLF
-            IF ( .NOT.TM_NUMBER(string) ) GOTO 100 ! TMAP Mod
-#endif
 	    READ(STRING,FRMT,ERR=100)X
 	    endif
 	    NUM=.TRUE.
@@ -299,16 +283,10 @@ C
 	ENDIF
 200	IF(SLEN.EQ.0)GOTO 300
 	if(slen.eq.1)then
-#ifdef AIX_XLF
-            IF ( .NOT.TM_NUMBER(temp) ) GOTO 300 ! TMAP Mod
-#endif
 	    read(temp,'(i1)',err=300)jk
 	    x=jk
 	else
 	    WRITE(FRMT,999)SLEN
-#ifdef AIX_XLF
-            IF ( .NOT.TM_NUMBER(temp) ) GOTO 300 ! TMAP Mod
-#endif
 	    READ(TEMP,FRMT,ERR=300)X
 	endif
 	NUM=.TRUE.

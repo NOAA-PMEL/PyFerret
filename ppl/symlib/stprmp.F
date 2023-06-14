@@ -63,8 +63,8 @@ C**
 C**
 C *kob* 04/07/96 passed in character strings had to be declared 
 C                with "*(*)" for the linux port 
+C 12/2022 *acm* code cleanup, removing unused ifdefs
 
-#ifdef unix
 	INCLUDE 'CMDCOM.INC'
 	CHARACTER PMT*(*)
 	IF(N.NE.0)THEN
@@ -74,21 +74,5 @@ C                with "*(*)" for the linux port
 	    PRMPT='*'
 	    INP=1
 	ENDIF
-#else
-	INCLUDE 'cmdinc:CMDCOM.INC'
-        CHARACTER PMT*30,FRMT*12,LF*1
-        BYTE CRB,LFB
-        EQUIVALENCE (LFB,LF)
-        DATA LFB/10/
-        IF(N.NE.0)THEN
-            PRMPT=LF
-            PRMPT(2:)=PMT
-            INP=N+1
-        ELSE
-            PRMPT=LF
-            PRMPT(2:2)='*'
-            INP=2
-        ENDIF
-#endif
 	RETURN
 	END

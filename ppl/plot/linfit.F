@@ -43,6 +43,7 @@ C**
 * V694  *acm*  1/15 Changes to allow two time axes on plot (F-T)
 * V695  *acm*  9/15 Changes for hour:min labeling on time axes
 * v695 9/15 *acm* write values to PPL* symbols using 6 digits not 4
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax.
 C**
 C***********************************************************************
 C**
@@ -149,21 +150,14 @@ C
 	END
 	SUBROUTINE GETFIT(X,NSIZE,IBASE,XIMIN,XIMAX,A,B,PBUF)
 	DIMENSION X(NSIZE)
-#ifdef  unix
+
 	INCLUDE 'PARAMPL5.DAT'
 	INCLUDE 'LINES.INC'
 	INCLUDE 'DATA.INC'
 	INCLUDE 'CMRD.INC'
 	INCLUDE 'LUNITS.INC'
 	INCLUDE 'SYSTEM.INC'
-#else
-        INCLUDE 'pplinc:PARAMPL5.DAT'
-        INCLUDE 'pplinc:LINES.INC'
-        INCLUDE 'pplinc:DATA.INC'
-        INCLUDE 'pplinc:CMRD.INC'
-        INCLUDE 'pplinc:LUNITS.INC'
-        INCLUDE 'CMDINC:SYSTEM.INC'
-#endif
+
 	CHARACTER OUT*80
 	LINEN=LINEN+1
 	XMIN=XIMIN
@@ -197,11 +191,7 @@ C
 	RETURN
 	END
       SUBROUTINE CORREL (X,NSIZE,IBASE,N,XMN,XMX,R,A,B,AS,BS,VAR,STD)
-#ifdef  unix
 	INCLUDE 'MISS.INC'
-#else
-	INCLUDE 'pplinc:MISS.INC'
-#endif
 C
 C     COMPUTES THE SAMPLE CORRELATION, R, BETWEEN TWO ARRAYS OF VALUES
 C     (X,Y) WITH N DATA POINTS. CALCULATES CORRELATION SIGNIFICANCE
@@ -295,7 +285,8 @@ C
 	ENDIF
 100	JBASE=0
 	DO 10 J=1,ILNE-1
-10	JBASE=JBASE+LLENG(J)
+	   JBASE=JBASE+LLENG(J)
+10	CONTINUE
 C
 	N=LLENG(ILNE)
 C

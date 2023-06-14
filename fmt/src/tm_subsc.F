@@ -49,7 +49,6 @@
 * *kob* 10/96   - Linux port.  Linux didn't like tabs between "include"
 *                 and what was being included.  removed them
 * V542 2/02 *sh* - added support for modulo length > axis length
-* V68  *acm* 1/12  ifdef double_p for double-precision ferret.
 * V6.74 3/12 *acm* cleanup ifdefs and unnecessary include files
 * V71  3/16 *acm* Ticket 2158: working with true monthly time axes.
 * V71  1/17 *acm* Ticket 2496: make the result index consistent with the
@@ -157,11 +156,7 @@
 
 * quick sol'n if axis points are regularly spaced
 	ELSEIF ( regular ) THEN
-#ifdef double_p
 	   subsc  = ( (wcoord-first)/line_delta(axis) ) + .5
-#else
-	   subsc  = SNGL( (wcoord-first)/line_delta(axis) ) + .5
-#endif
 	   isubsc = INT( subsc ) + 1		! round up if ambiguous
 
 	ELSE

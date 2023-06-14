@@ -71,17 +71,9 @@
 
       INTEGER id
 
-* Single precision Ferret: string arg and result need to be twice the length.
-      INTEGER strdf
-#ifdef double_p
-      PARAMETER (strdf = 1)
-#else
-      PARAMETER (strdf = 2)
-#endif
-
       REAL bad_flag(EF_MAX_ARGS), bad_flag_result
-      REAL arg_1(strdf,mem1lox:mem1hix, mem1loy:mem1hiy, 
-     .     mem1loz:mem1hiz, mem1lot:mem1hit)
+      REAL arg_1(mem1lox:mem1hix, mem1loy:mem1hiy, 
+     .           mem1loz:mem1hiz, mem1lot:mem1hit)
       REAL result(memreslox:memreshix, memresloy:memreshiy, 
      .     memresloz:memreshiz, memreslot:memreshit)
 

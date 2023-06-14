@@ -66,12 +66,7 @@ c     internal parameter declarations:
       PARAMETER  ( slen = ef_max_description )
       CHARACTER*(EF_MAX_NAME_LENGTH) GCF_NAME
 
-#ifdef sun
-      BYTE      fhol(slen)      ! c-type Hollerith string buffer
-#else 
       INTEGER*1 fhol(slen)      ! c-type Hollerith string buffer
-#endif
-      
       INTEGER TM_LENSTR1, llen
       
 c     true string length

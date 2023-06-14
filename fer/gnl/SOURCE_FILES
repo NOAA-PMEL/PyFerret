@@ -45,8 +45,6 @@ get_dsg_mask_title.F\
 get_input_varname.F\
 get_mode_arg.F\
 get_ppl_memory_size.F\
-get_scriptfile_name.F\
-get_upcase_flag.F\
 get_uvars_list_by_attname_and_val.F\
 init_journal.F\
 init_memory.F\
@@ -63,7 +61,6 @@ list_multi_sub.F\
 load_dsg_maskvar.F\
 load_dsg_mask_ftrset_var.F\
 mem_to_bytes.F\
-mouse_command.F\
 name_equal_string.F\
 name_equal_string_lc.F\
 name_equal_string_vatt.F\
@@ -124,9 +121,7 @@ symbol_command.F\
 translate_lat_long.F\
 translate_limit.F\
 turnoff_verify.F\
-turnon_verify_always.F\
 var_stat.F\
-version_only.F\
 warn.F\
 write_dods_fmt.F \
 write_multi.F 

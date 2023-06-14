@@ -41,6 +41,8 @@
 *     message (a positive value).  If successful, lenerrmsg will be
 *     zero on return.
 *         axiscoords is a array of 6 integer time values per coordinate
+C 12/2022 *acm* Code cleanup: Fixes to calls to routine TM_RM_TMP_LINE
+
 
       SUBROUTINE GET_TIME_AXIS_NUM(axisnum, axisstart, axisend,
      .                             axisname, caltype, axiscoords,
@@ -281,7 +283,7 @@
      .           delta, eps, reg, modu, modulen, axucode, base) ) THEN
               axisnum = k
 *             Do not need the line created above
-              CALL TM_RM_TMP_LINE(q)
+              CALL TM_RM_TMP_LINE(q, sts)
               GOTO 500
           ENDIF
       ENDIF
@@ -298,7 +300,7 @@
      .           delta, eps, reg, modu, modulen, axucode, base) ) THEN
                   axisnum = k
 *                 Do not need the line created above
-                  CALL TM_RM_TMP_LINE(q)
+                  CALL TM_RM_TMP_LINE(q, sts)
                   GOTO 500
               ENDIF
           ENDIF

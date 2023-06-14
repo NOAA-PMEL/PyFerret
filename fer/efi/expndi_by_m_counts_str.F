@@ -3,6 +3,7 @@
 * 
 *  Ansley Manke (from expndi_by_z_counts)
 *  4/2014
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 * 
 * Expand argument 1 by creating a 2D XE structure from it with the 
 * separation between X rows given by the lengths specified in 
@@ -152,41 +153,44 @@
 
 * sum of counts in arg 2 must be length of x-dimension of arg1
 
-      do 20 i2 = arg_lo_ss(X_AXIS,ARG2), arg_hi_ss(X_AXIS,ARG2)
-      do 20 j2 = arg_lo_ss(Y_AXIS,ARG2), arg_hi_ss(Y_AXIS,ARG2)
-      do 20 k2 = arg_lo_ss(Z_AXIS,ARG2), arg_hi_ss(Z_AXIS,ARG2)
-      do 20 L2 = arg_lo_ss(T_AXIS,ARG2), arg_hi_ss(T_AXIS,ARG2)
-      do 20 n2 = arg_lo_ss(F_AXIS,ARG2), arg_hi_ss(F_AXIS,ARG2)
+      do i2 = arg_lo_ss(X_AXIS,ARG2), arg_hi_ss(X_AXIS,ARG2)
+      do j2 = arg_lo_ss(Y_AXIS,ARG2), arg_hi_ss(Y_AXIS,ARG2)
+      do k2 = arg_lo_ss(Z_AXIS,ARG2), arg_hi_ss(Z_AXIS,ARG2)
+      do L2 = arg_lo_ss(T_AXIS,ARG2), arg_hi_ss(T_AXIS,ARG2)
+      do n2 = arg_lo_ss(F_AXIS,ARG2), arg_hi_ss(F_AXIS,ARG2)
          isum = 0
-         DO 10 m2 = arg_lo_ss(E_AXIS,ARG2), arg_hi_ss(E_AXIS,ARG2)
+         DO m2 = arg_lo_ss(E_AXIS,ARG2), arg_hi_ss(E_AXIS,ARG2)
             IF  (arg_2(i2,j2,k2,l2,m2,n2) .EQ. bad_flag(ARG2) .OR. 
      .           INT(arg_2(i2,j2,k2,l2,m2,n2)) .LT. 0)
      .          CALL EF_BAIL_OUT(id, 'arg 2 must be non-missing counts GE zero')
             isum = isum + INT(arg_2(i2,j2,k2,l2,m2,n2))
- 10   CONTINUE
+         enddo
          IF (isum .NE. (arg_hi_ss(X_AXIS,ARG1)-arg_lo_ss(X_AXIS,ARG1)+1) )
      .       CALL EF_BAIL_OUT(id, 
      .         'arg 2 values (counts) must sum to x-dimension length of of arg1 ')
- 20   CONTINUE
-
+      enddo
+      enddo
+      enddo
+      enddo
+      enddo
 
 * fill in the points as specified by the counts
 
       n1 = arg_lo_ss(F_AXIS,ARG1)
       n2 = arg_lo_ss(F_AXIS,ARG2)
-      DO 400 n=res_lo_ss(F_AXIS), res_hi_ss(F_AXIS)
+      DO n=res_lo_ss(F_AXIS), res_hi_ss(F_AXIS)
 
       l1 = arg_lo_ss(T_AXIS,ARG1)
       l2 = arg_lo_ss(T_AXIS,ARG2)
-      DO 400 l=res_lo_ss(T_AXIS), res_hi_ss(T_AXIS)
+      DO l=res_lo_ss(T_AXIS), res_hi_ss(T_AXIS)
 
       k1 = arg_lo_ss(Z_AXIS,ARG1)
       k2 = arg_lo_ss(Z_AXIS,ARG2)
-      DO 400 k=res_lo_ss(Z_AXIS), res_hi_ss(Z_AXIS)
+      DO k=res_lo_ss(Z_AXIS), res_hi_ss(Z_AXIS)
 
       j1 = arg_lo_ss(Y_AXIS,ARG1)
       j2 = arg_lo_ss(Y_AXIS,ARG2)
-      DO 400 j=res_lo_ss(Y_AXIS), res_hi_ss(Y_AXIS)
+      DO j=res_lo_ss(Y_AXIS), res_hi_ss(Y_AXIS)
 
          i1 = arg_lo_ss(X_AXIS,ARG1)
          i2 = arg_lo_ss(X_AXIS,ARG2)
@@ -195,16 +199,16 @@
          m2 = arg_lo_ss(E_AXIS,ARG2)
  
             i1 = 1
-            DO 200 mout=arg_lo_ss(E_AXIS,ARG2),arg_hi_ss(E_AXIS,ARG2)
-               DO 100 iout = 1, NINT(arg_2(i2,j2,k2,l2,mout,n1))
+            DO mout=arg_lo_ss(E_AXIS,ARG2),arg_hi_ss(E_AXIS,ARG2)
+               DO iout = 1, NINT(arg_2(i2,j2,k2,l2,mout,n1))
                   CALL EF_GET_STRING_ARG_ELEMENT_6D(id, ARG1, arg_1,
      .                             i1,j1,k1,l1,m1,n1, slen, buff)
                   CALL EF_PUT_STRING(buff, slen, result(iout,j,k,l,mout,n))
 
                   i1 = i1 + 1
- 100           CONTINUE
+               ENDDO
 
- 200        CONTINUE
+            ENDDO
 
          j1 = j1 + arg_incr(Y_AXIS,ARG1)
          j2 = j2 + arg_incr(Y_AXIS,ARG2)
@@ -214,8 +218,12 @@
          l2 = l2 + arg_incr(T_AXIS,ARG2)
          n1 = n1 + arg_incr(F_AXIS,ARG1)
          n2 = n2 + arg_incr(F_AXIS,ARG2)
- 400  CONTINUE
-      
+
+      ENDDO
+      ENDDO
+      ENDDO
+      ENDDO
+
          
 *                                                                      ^
 *                                                                      |

@@ -50,6 +50,7 @@
 *              - (cleaned up unused variables)
 * V530  1/01 *acm* cal_id for alternative calendar axis types
 *       *acm* 3/12 cleanup ifdefs and unnecessary include files
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 
         IMPLICIT NONE
 * calling argument declarations:
@@ -69,8 +70,9 @@
 	external xgt_grid_data
 
 * base it on first variable in data set
-	DO 100 i = 1, maxvars
- 100	IF ( ds_var_setnum(i) .EQ. dset ) GOTO 110
+	DO i = 1, maxvars
+	   IF ( ds_var_setnum(i) .EQ. dset ) GOTO 110
+ 	ENDDO
 	RETURN	! no vars in set
 
 * check lowest time step value on axis

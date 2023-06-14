@@ -10,7 +10,8 @@
 #  ACM 2/2001  debug macros
 #  ACM 2/2002  change targets to all and extras; somehow standard
 #               not working well w/ linux.
-
+#  ACM 12/2022 earth_distance is linked into the PyFerret program
+#               remove it from the targets to build
 #
 # include site specific macro definitions
 #
@@ -40,7 +41,7 @@ include ../ef_utility/platform_specific.mk.$(BUILDTYPE)
 #
 
 all:	add_9.so appende.so avet.so dates.so factorial.so pass_thru.so percent_good_t.so \
-	storage.so string_arg.so subtract.so earth_distance.so
+	storage.so string_arg.so subtract.so
 
 debug:
 	$(MAKE) "FFLAGS = $(FFLAGS) $(FFLAGS_DEBUG)" "CFLAGS = $(CFLAGS) $(CFLAGS_DEBUG)" all

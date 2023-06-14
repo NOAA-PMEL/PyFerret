@@ -6,6 +6,9 @@
 
 set mode verify
 cancel region
+cancel mode logo
+set window/size=1.5
+
 use coads_climatology
 
 ! coordinates of a unit square
@@ -36,8 +39,14 @@ plot/vs/over/color=blue/thickness=2/line/nolab t1+500*xcircle,0.05*ycircle+val1
 plot/vs/over/nolab/sym=2/color=blue/thickness=2 t1,val1	! mark point with an "X"
 \pause
 
-! *** mark-up over a Hovmoller diagram ***
-shade/x=180 sst
+! *** mark-up over a Hovmoller diagram (Note the use of opacity)***
+
+shade/x=180/pal=rnb sst
 let y0 = 30
-polygon/over/color=black/thickness=2/pal=gray/pat=lite_up_left_to_right t0+500*xsqr, y0+15*ysqr
+IF ($program_name"0|PyFerret>1|Ferret>0") THEN
+   polygon/over/color=black/thickness=2/pal=gray/opacity=50 t0+500*xsqr, y0+15*ysqr
+ELSE
+   polygon/over/color=black/thickness=2/pal=gray/pattern=lite_up_left_to_right t0+500*xsqr, y0+15*ysqr
+ENDIF
+
 plot/vs/over/color=black/thickness=2/line/nolab t0+900*xcircle,y0+25*ycircle

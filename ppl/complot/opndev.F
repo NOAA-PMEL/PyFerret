@@ -58,6 +58,8 @@ C**
 * *jd* 10.26.93 Mod to eliminate private GCLRWK for xgks
 * *jd* 12.96 Numerous comments including control characters of various
 * 	nature (eg ^) eliminated.  They confuse the linux F90 compiler
+*  11/2022 *acm* Code cleanup: remove code having to do with Tektronix
+*		 and other terminals
 
 
 *****************************************************
@@ -74,32 +76,22 @@ C	CLEAR -- LOGICAL IF TRUE CLEAR THE DEVICE  (I.E. START NEW)
 C
 C
 * TMAP mod 8/26/88
-!	include 'PLTCOM.DAT'
-!	include 'GKSCM1.INC'
-#ifdef unix
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. Remove obsolete ifdefs
+* 12/2022 *acm* Code cleanup: Remove references to Tektronix and other terminals
+
 	include 'pltcom_dat.decl'
 	include 'PLTCOM.DAT'
 	include 'gkscm1_inc.decl'
 	include 'GKSCM1.INC'
 	include 'gkscm2.cmn' !jd 3.20.89 for private gclrwk
-#else
-	INCLUDE 'TMAP_PPLV11INC:PLTCOM_DAT.DECL'
-	INCLUDE 'PPLV11INC:PLTCOM.DAT'
-	INCLUDE 'TMAP_PPLV11INC:GKSCM1_INC.DECL'
-	INCLUDE 'PPLV11INC:GKSCM1.INC'
-	INCLUDE 'tmap_pplv11inc:tmap_gkscm2.inc' !JD 3.20.89 for private GCLRWK
-#endif
 
 	INTEGER	iseg, ivp, lens, itype, i, j, nterm, ndelay ! local declarations
 	integer	control_flag ! For private GCLRWK
 
 * special COMMON to let this routine know if FERRET is in control
 
-#ifdef unix
+
 	include 'ppl_in_ferret.cmn'
-#else
-	INCLUDE 'TMAP_PPLV11INC:PPL_IN_FERRET.CMN'
-#endif
 
 * end of TMAP mods 8/26/88 & 1/20/89
 C
@@ -107,14 +99,9 @@ C	THIS IS A VAX/VMS SUBROUTINE AT THIS TIME
 C
 	LOGICAL CLEAR,TERMF
 	LOGICAL FRST,TRMOPN
-#ifndef unix
 	integer*4 lib$get_symbol,len,stat
 	byte FIRSTB(20,12),SECNDB(20,12),FIRST(20),SECND(20)
 	byte ER4010(2),ER41XX(8)
-#else
-        INTEGER FIRSTB(20,12),SECNDB(20,12),FIRST(20),SECND(20)
-        INTEGER ER4010(2),ER41XX(8)
-#endif
 	CHARACTER TERM(12)*10,TYPE*10
 	INTEGER ITERM(12),FIRSTL(12),SECNDL(12)
 	LOGICAL SEGMNL(12),SEGMN,FCLOSL(12),FCLOS
@@ -181,85 +168,44 @@ C
      *		  2*.FALSE./
 	DATA FIRSTL/6,1,4,0,13,1,8,6,13,1,2*0/
 	DATA SECNDL/6,1,4,0,16,4,8,2,13,1,2*0/
+
 C
 C	SET UP FOR SPECIFIC TERMINAL TYPE
 C
 	IF(FRST)THEN
-#ifdef unix
             call getenv('GRAPHTERM',TYPE)
             LENS=lnblk(type,10)
             IF(lens.le.0)then
-#else
-	    stat=lib$get_symbol('GRAPHTERM',type,len)
-	    lens=len
-	    if(.not.stat)then
-#endif
 		ITYPE=1
 	    ELSE
-		DO 14 I=1,NTERM
-		IF(TYPE(1:LENS).EQ.TERM(I))GOTO 11
-14		CONTINUE
+		DO I=1,NTERM
+		   IF(TYPE(1:LENS).EQ.TERM(I))GOTO 11
+		ENDDO
 		I=1
 11		ITYPE=ITERM(I)
 	    ENDIF
-	    DO 12 I=1,20
-12	    FIRST(I)=FIRSTB(I,ITYPE)
-	    DO 13 I=1,20
-13	    SECND(I)=SECNDB(I,ITYPE)
+	    DO I=1,20
+	      FIRST(I)=FIRSTB(I,ITYPE)
+	    ENDDO
+	    DO I=1,20
+	      SECND(I)=SECNDB(I,ITYPE)
+	    ENDDO
 	    FRST=.FALSE.
 	    SEGMN=SEGMNL(ITYPE)
 	    FCLOS=FCLOSL(ITYPE)
 	ENDIF
-C
-C
+
 	PMODE = ALPHA
 	IF(SAVEF)CALL XYZPLT
 C
 C	CHECK FOR PLOT-TYPE
 C
-	IF(PTYPE.EQ.1.OR.PTYPE.EQ.2)THEN
-C
-C	DEVICE IS A TEK TERMINAL COMPATIBLE
-C
-	    IF(.NOT.TRMOPN)THEN
-C
-C	OPEN DEVICE FOR GRAPHICS AND ERASE THE SCREEN
-C
-		if (firstl(itype) .gt. 0) CALL CHOUT(FIRST,FIRSTL(ITYPE))
-		TRMOPN=.TRUE.
-	    ENDIF
-	    IF(CLEAR)THEN
-		IF(SEGMN)THEN
-		    CALL CHOUT(ER41XX,8)
-		ELSE
-	            CALL CHOUT(ER4010,2)
-C
-C	TRANSMIT SYNC CHARACTERS FOR PHOSPHORE COOL DOWN.
-C
-c		    NDELAY=IFIX(0.7*FLOAT(BAUDR/10))
-c		    DO 30 J=1,NDELAY
-c30		    CALL CHOUT(SYN,1)
-		ENDIF
-	    ENDIF
-	    CALL CHDMP
-	ELSE IF(PTYPE.EQ.3.OR.PTYPE.EQ.4)THEN
+	IF(PTYPE.EQ.3) THEN
 C
 C	DEVICE IS A GKS DEVICE
 C
 	    CALL PPLGFLUSH
-#ifdef core
-            if(.not.gksopn)then
-                call crinit
-                gksopn=.true.
-            endif
-c
-            if(clear)then
-                call delallretainsegs()
-                call newframe()
-                call createretainseg(1)
-            endif
-#else
-* TMAP mod 8/26/88, PPL_in_FERRET added 1/20/89
+
 	    IF(CLEAR) THEN
 	       IF ( PPL_in_FERRET ) THEN
 	         CALL CLEAR_VP
@@ -268,25 +214,9 @@ c
 	         CALL FGD_GCLRWK(WSID,control_flag)
 	       ENDIF
 	    ENDIF
-* end of TMAP mods 8/26/88
-#endif
+
 	ENDIF
-	IF(PTYPE.EQ.0.OR.PTYPE.EQ.2.OR.PTYPE.EQ.4)THEN
-C
-C	THE OUTPUT IS A BINARY FILE
-C
-	    IF(PLTFLG)THEN
-C
-C	MOVE TO A NEW PLOTTING AREA
-C
-		PEN = .FALSE.
-		CALL ZABMV
-		IF(CLEAR)THEN
-		    CALL BINFSH
-		    PLTFLG = .FALSE.
-		ENDIF
-	    ENDIF
-	ENDIF
+
 	LPEN = .FALSE.
 C
 C     INITIALIZE THE DATA VARIABLES FOR THE NEXT PLOT.
@@ -309,9 +239,6 @@ C
 	    PLTOTA=TSCLA/(TWIDTH*FACTOR)
 	    PLTOTB=TSCLB/(THIGHT*FACTOR)
 	ENDIF
-C
-C     RECOMPUTE THE HP PLOTTER CONVERSION FACTORS.
-C
 C
 C     RESTORE THE DEFAULT MINIMUM AND MAXIMUM ALLOWABLE VALUES OF
 C     A AND B.
@@ -349,39 +276,13 @@ C
 C
 C	THIS ROUTINE CLOSES THE DEVICE DEPENDING ON THE SITUATION
 C
-	IF(PTYPE.EQ.1.OR.PTYPE.EQ.2)THEN
-C
-C	DEVICE IS TEK TERMINAL COMPATIBLE
-C
-	    IF(FCLOS.OR.CLEAR)THEN
-C
-C	DEVICE REQUIRES THE TERMINAL CLEARED
-C
-		CALL CHOUT(ER4010,2)
-c		NDELAY=IFIX(0.7*FLOAT(BAUDR/10))
-c		DO 40 J=1,NDELAY
-c40		CALL CHOUT(SYN,1)
-	    ENDIF
-C
-C	GO TO COMMAND SCREEN
-C
-	    if (secndl (itype) .gt. 0) CALL CHOUT(SECND,SECNDL(ITYPE))
-	    TRMOPN=.FALSE.
-	    CALL CHDMP
-	ELSE IF(PTYPE.EQ.3.OR.PTYPE.EQ.4)THEN
+	IF(PTYPE.EQ.3) THEN
 C
 C	DEVICE IS GKS
 C
 	    CALL PPLGFLUSH
-	ELSE IF((PTYPE.EQ.0.OR.PTYPE.EQ.2.OR.PTYPE.EQ.4)
-     *		.AND.CLEAR)THEN
-	    IF(PLTFLG)THEN
-		PEN=.FALSE.
-		CALL ZABMV
-		CALL BINFSH
-		PLTFLG=.FALSE.
-	    ENDIF
 	ENDIF
+
 	RETURN
 C
 	END

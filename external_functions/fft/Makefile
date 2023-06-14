@@ -12,6 +12,8 @@
 # 1/2002  need $(FC) in .F.so rule
 #         and compile ffta_sample, fftp_sample functions
 # 7/2012  Do not need a special platform_specific file.
+# 12/2022 Remove from targets list routines and functions that
+#         are linked into the PyFerret program
 
 #
 # include site specific macro definitions
@@ -30,7 +32,8 @@ include ../ef_utility/platform_specific.mk.$(BUILDTYPE)
 
 .SUFFIXES: .so
 
-SUB_OBJS = fftinv_subs.o fftsubs.o
+SUB_OBJS = fftsubs.o
+
 
 #
 # Rules
@@ -44,7 +47,7 @@ SUB_OBJS = fftinv_subs.o fftsubs.o
 # Targets
 #
 
-all:	fftinv_subs.o fftsubs.o fft_amp.so fft_phas.so ffta_sample.so
+all:	fftsubs.o ffta_sample.so
 
 debug:
 	$(MAKE) "FFLAGS = $(FFLAGS) $(FFLAGS_DEBUG)" "CFLAGS = $(CFLAGS) $(CFLAGS_DEBUG)" all

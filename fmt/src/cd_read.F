@@ -75,7 +75,6 @@
 *                  linked with OPeNDAP library.
 * V67  *acm* 1/11  Choose between routinesi from the NetCDF API: varm if permutations,
 *                  vars if strides but no perm, var if no strides or perm.
-* V68  *acm* 1/12  ifdef double_p for double-precision ferret.
 * V674 2/12 *acm* 6D Ferret: use nferdims rather than 4 for dimension indexing
 * v73+ *acm* 12/2017 Issue # 1846, writing user-variables with scale_factor, add_offset
 *                    changes to tm_scale_nobad call.
@@ -85,6 +84,7 @@
 *                    things as if missing_value = 0 ! 
 * V751 *acm*  8/2019 Issue # 1948. Correct the logic for when there is scaled variable that has
 *                    a missing_value but no _FillValue.
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 
 * include files
         include 'netcdf.inc'
@@ -96,11 +96,7 @@
 	include 'xstep_files.cmn_text'	! step file common
 	external xstep_files_data
         include 'xdset_info.cd_equiv'
-#ifdef sun
-        include 'xmachine_byte.cmn'
-#else
         include 'xmachine_int1.cmn'
-#endif
 
 
 * arguments:
@@ -147,20 +143,8 @@
 	DATA  		dimnam/'I','J','K','L','M','N'/
 	CHARACTER*1024 ebuff, upstr  ! for nf_ error message
 
-* special equivalence (cannot include in tmap_format/xdset_info.cd_equiv 
-* because "BYTE" isn't supported on DECstation)
 * 10/96 reorder the if def because linux cpp didn't like it
 
-#ifdef unix
-#ifdef sun
-      BYTE cd_data_type(maxvars)
-#else
-      INTEGER*1 cd_data_type(maxvars)
-#endif
-#else
-      BYTE cd_data_type(maxvars)
-#endif
-      EQUIVALENCE ( ds_precision, cd_data_type )
 
 * initialize
         cdfid = sf_lunit(sf_num)
@@ -228,8 +212,9 @@
            IF ( dim_lo(idim) .NE. use_lo(idim)
      .     .OR. dim_hi(idim) .NE. use_hi(idim) ) THEN
               DO 50 idim2 = idim+1, nferdims
- 50           IF ( dim_lo(idim2) .NE. dim_hi(idim2) ) GOTO 5400
-           ENDIF
+                IF ( dim_lo(idim2) .NE. dim_hi(idim2) ) GOTO 5400
+ 50           CONTINUE
+	   ENDIF
  60     CONTINUE
 
 * determine size from the low/hi limits requested
@@ -257,7 +242,8 @@
 
 * compute the map vector (for strides, reversals, and permutations)
 	DO 210 idim = 1, nferdims
- 210	imap(idim) = 0
+ 	   imap(idim) = 0
+ 210	CONTINUE
 * for netCDF V3 the imap array is set up in number of array elements, not bytes
 	imap(trans(1)) = 1
 
@@ -299,38 +285,9 @@
 
         already_scaled = .FALSE.
         status = merr_ok
-#ifndef double_p 
 
-        IF (ds_var_scaleit( ivar ) ) THEN   ! reads data as double precision, if available.
-           CALL CD_READ_SCALE(cdfid, varid, ndim, 
-     .             ds_var_off(ivar), ds_var_scale(ivar), 
-     .             ds_bad_flag(ivar),
-     .             start, count,
-     .		   filstride, imap,
-     .             var(use_lo(1),
-     .                 use_lo(2),
-     .                 use_lo(3),
-     .                 use_lo(4),
-     .                 use_lo(5),
-     .                 use_lo(6)), 
-     .             permuted, strided, already_scaled, cdfstat, status)
-           IF ( cdfstat .NE. NF_NOERR ) GOTO 5500           
+c  Hack was here
 
-           IF (status .NE. merr_ok) THEN   ! try to read as single precision floats
-           
-	      CALL CD_READ_SUB(cdfid, varid, ndim, start, count,
-     .		   filstride, imap,
-     .             var(use_lo(1),
-     .                 use_lo(2),
-     .                 use_lo(3),
-     .                 use_lo(4),
-     .                 use_lo(5),
-     .                 use_lo(6)), permuted, strided, cdfstat)
-	      IF ( cdfstat .NE. NF_NOERR ) GOTO 5500
-           ENDIF
-
-        ELSE
-#endif
 	   CALL CD_READ_SUB(cdfid, varid, ndim, start, count,
      .		   filstride, imap,
      .             var(use_lo(1),
@@ -340,9 +297,6 @@
      .                 use_lo(5),
      .                 use_lo(6)), permuted, strided, cdfstat)
 	   IF ( cdfstat .NE. NF_NOERR ) GOTO 5500
-#ifndef double_p
-        ENDIF
-#endif
 
 * if data has mean or range removed rescale it.
 * Do not scale missing data.

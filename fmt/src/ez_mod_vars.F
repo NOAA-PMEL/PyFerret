@@ -57,7 +57,6 @@
 * V65  *acm* 1/10  Change all netcdf2-style calls and parameter names to 
 *                  netcdf3-style calls, which are also consistent with netcdf4.
 * V68  *acm* 1/12 The variables should be declared REAL (conversion to double prec.)
-* V68  *acm* 1/12  ifdef double_p for double-precision ferret.
 * V701  7/16 *kms* Compare ds_name to char_init2048 instead of char_init1024
 
 * Arguments:

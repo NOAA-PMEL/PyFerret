@@ -49,6 +49,7 @@
 * V600 *acm* 3/06  fixing bugs nferdims39&1390, use apply_cx to say whether
 *                  to apply command context to grave-accent expressions.
 *       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -88,9 +89,10 @@
 	IF ( status .NE. ferr_ok ) GOTO 5000
 
 * transformation given on command line ?
-	DO 100 idim = 1, nferdims
- 100	IF (cx_trans(idim,cmnd_mods_cx) .NE. trans_no_transform)
-     .        GOTO 5010
+	DO idim = 1, nferdims
+ 	   IF (cx_trans(idim,cmnd_mods_cx) .NE. trans_no_transform)
+     .         GOTO 5010
+     	ENDDO
 
         IF (apply_cx) THEN
 

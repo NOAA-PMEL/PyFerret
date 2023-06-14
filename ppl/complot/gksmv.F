@@ -72,15 +72,7 @@ C                   Increase the maximum back up to 10000.
 
 *jd*	SUBROUTINE GKPLOT(XN,YN,IP,II) Number of args reduced to 3 for MAC 7.92
 	SUBROUTINE GKPLOT(XN,YN,IP)
-#ifdef core
-        if(ip.ne.0)then
-            call lineabs2(xn,yn)
-        else
-            call moveabs2(xn,yn)
-        endif
-        RETURN
-        END
-#else
+
         INCLUDE 'gkplot.cmn'
         DATA ipline/0/
 
@@ -129,6 +121,3 @@ C                   Increase the maximum back up to 10000.
 	CALL FGD_GPL(IPT,X,Y)
 	RETURN
 	END
-
-#endif
-

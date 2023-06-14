@@ -52,11 +52,7 @@ C     WHICH SPECIFY THE LENGTHS OF THE INDIVIDUAL SEGMENTS OF
 C     A DASHED LINE.
 C
 C
-#ifdef unix
 	include 'PLTCOM.DAT'
-#else
-	include 'pplinc:PLTCOM.DAT'
-#endif
 C
 C     SAVE THE NEW PARAMETERS IN AN ARRAY.
 C

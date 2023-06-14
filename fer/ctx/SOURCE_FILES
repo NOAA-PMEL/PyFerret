@@ -16,7 +16,6 @@ create_new_context.F\
 cs_set_context.F\
 cx_dim_len.F\
 cx_dim_len_zero.F\
-cx_ww_pos.F\
 del_cx_dim.F\
 flesh_out_axis.F\
 forget_past_context_mods.F\
@@ -50,5 +49,4 @@ pseudo_var_context.F\
 reconcile_com_dst_cx.F\
 region_class.F\
 restrict_file_limits.F\
-set_doc_flag.F\
 transfer_context.F 

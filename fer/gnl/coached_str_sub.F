@@ -109,12 +109,11 @@
      .		iptr, len_in, vax_code, errstat,
      .		dstart, ostart, estart, dend, oend, eend, ostart1, oend1,
      .		rstart, rend, right_star
-#ifdef NO_PASSED_CONCAT
+
 * Additional temp character buffer needed for concatenating error messages
 *    required by g77 *kob* 1/03
 
 	CHARACTER tmp_buff*2048
-#endif
 
 	include 'ferret.parm'
 	include 'errmsg.parm'
@@ -279,7 +278,7 @@
      .       'both default and error strings given: '//risc_buff, *5000 )
 
 * display the supplied error string or list the allowed options
-#ifdef NO_PASSED_CONCAT
+
  5900   risc_buff = coaching(ostart:oend)
 	tmp_buff = sym_name
 	IF ( errtxt ) THEN
@@ -304,23 +303,5 @@
      .	         //' choices are: '//coaching(ostart:oend))
 	ENDIF
 	GOTO 5000
-#else
- 5900	IF ( errtxt ) THEN
-	   CALL ERRMSG( ferr_nomessge, status,
-     .       coaching(estart:eend), *5000)
-!	   CALL WARN( coaching(estart:eend) )
-	ELSEIF ( options ) THEN
-	   CALL WARN
-     .	('Aggument  '//sym_name//' received was: '
-     .					//in_str(:len_out))
-	   CALL WARN
-     .	('Valid '//sym_name//' choices are: '
-     .					//coaching(ostart:oend))
-	   CALL WARN
-     .	('Valid '//sym_name//' choices are: '
-     .					//coaching(ostart:oend))
-	ENDIF
-	GOTO 5000
-#endif
 
 	END

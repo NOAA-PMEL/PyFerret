@@ -48,6 +48,7 @@
 * V200:  3/29/90
 * V6.8 for double-precision Ferret do the RANDU calculation
 *      with a real*4 argument. Gives consistent results with single-p.
+* 12/2022 *acm* Code cleanup: Argument to RANDU is of type integer
 
         IMPLICIT NONE
 * calling argument declarations:
@@ -56,9 +57,9 @@
 * internal variable declarations:
 	LOGICAL saved
 	REAL	RANDU, v1, v2, r, fac, rsave
-	REAL*4	rzero
+	INTEGER izero
 
-	rzero = 0.
+	izero = 0
 
 * initialize the uniform and this random generator
 	IF ( jd.NE.0 ) THEN
@@ -73,8 +74,8 @@
 
 	ELSE
 * ... compute 2 normal from 2 uniforms, return 1, save 1
- 10	   v1 = 2. * RANDU(rzero) - 1.
-	   v2 = 2. * RANDU(rzero) - 1.
+ 10	   v1 = 2. * RANDU(izero) - 1.
+	   v2 = 2. * RANDU(izero) - 1.
 	   r  = v1**2 + v2**2
 	   IF ( r .GE. 1 ) GOTO 10	! not inside unit circle ?
 	   fac = SQRT(-2.*LOG(r)/r)	   

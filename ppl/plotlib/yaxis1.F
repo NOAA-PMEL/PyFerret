@@ -62,7 +62,7 @@ C              after applying an offset.)
 * *acm* - 11/16  ticket 2477: incomplete axis on some plots
 * V745 *acm* 3/19 Draw tic marks on top of any graticule lines so 
 *                 dashes or color are covered up by the tic mark
-
+* V766 *acm*11/22 Fix issue 129: 1st graticule line was not drawn
 
 C**
 C**    @(#)yaxis1.f	1.1    3/10/88
@@ -161,7 +161,7 @@ C
 	IF ( interrupted ) RETURN		! TMAP interrupt
 	CALL SMY1(X,XFACT,YFACT,Y,YHI,YTIC,NSMTCY,
      .     xacross,hgrat,hcolor,hline)
-        IF ((solid.OR.dashed) .AND. hline .AND. y.GT.yt) THEN ! make line across
+        IF ((solid.OR.dashed) .AND. hline .AND. y.GT.ylo) THEN ! make line across
            CALL COLOR(hcolor(1))
            IF (dashed) THEN
               CALL DASHSZ(dash1,dash2,dash3,dash4)

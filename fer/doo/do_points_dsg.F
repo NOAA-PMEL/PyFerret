@@ -54,10 +54,11 @@
 *                                   Note that the f-mask includes any subseting done for world coordinates, as well
 *                                   as any mask defined for profiles  (Defining a mask with SET DATA/FMASK=mask1_var )
 *                                   or for selecting trajectory or timeseries (Defining a mask with SET DATA/SMASK=mask2_var)
+* 10/2022 *acm* Code cleanup: remove comment after # include statement
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
-#	include	"tmap_dset.parm"  ! with feature-type 
+#	include	"tmap_dset.parm" 
 	include	'ferret.parm'
 	include	'interp_stack.parm'
 	include	'xcontext.cmn'

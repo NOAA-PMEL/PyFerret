@@ -59,18 +59,11 @@
 	   call FGD_GSFAR(zwsid,1,gsolid,1,1)
 
 *	   GO THRU AVAILABLE HATCHING LEVELS 
-	   do 10 ndx = 1,shd_levels
-#ifdef atc_gks
-	      patt = -1000 - (ndx-1)*9/(shd_levels)
-#else
+	   do ndx = 1,shd_levels
 	      patt = -1 - (ndx-1)*9/(shd_levels)
-#endif
 	      call FGD_GSFAR(zwsid,ndx+1,ghatch,patt,1)
-10	   continue
+	   enddo
 	else
-#ifdef atc_gks
-	   call guesc020 (zwsid,gsalws)
-#endif
 	   call FGD_GSFAIS(ghatch)
 	   call FGD_GSFACI(1)
 	endif

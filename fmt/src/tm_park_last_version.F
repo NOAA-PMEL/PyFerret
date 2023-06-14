@@ -65,7 +65,6 @@
       INTEGER       status
       CHARACTER*(*) fname
 
-#ifdef unix
       include 'tmap_errors.parm'
 #include "gt_lib.parm"
       include 'xrisc_buff.cmn'
@@ -106,8 +105,5 @@
       ENDIF
 
       RETURN
-#else
-      STOP 'TM_PARK_LAST_VERSION is for Unix systems, only'
-#endif
       END
 

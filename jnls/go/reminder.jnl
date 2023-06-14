@@ -2,31 +2,28 @@
 ! reminder.jnl  (12/94)
 
 ! Description: Place a reminder string on the upper left corner of a plot
-
-! Note: A known "bug" of this procedure is that the PLOT+ symbol GO_FILE
-!       gets defined only **after** PLOT+ has already placed a window on
-!       the screen and a GO command is executed.  This means that if the
-!       GO file to create a plot contains the first command that opens
-!       an output window the symbol GO_FILE will **not** be defined.
-
 ! usage: GO reminder "string" [xpos] [ypos] [size] [rotation]
 
 ! example:  yes? GO reminder "Am. Jnl. of Hagiology fig. 3"
 
 ! arguments
-! xpos - inches from left    	(default 0.0)
-! ypos - inches from top	(default 0.0)
-! size - size in inches 	(default 0.1)
-! rotation                      (default 0.0)
+! 1	string - the string to add, in quotes
+! 2	xpos - inches from left		(default 0.0)
+! 3	ypos - inches from top		(default 0.0)
+! 4	size - size in inches		(default 0.1)
+! 5	rotation			(default 0.0)
 
 ! locate the position of the label start
-ppl set temp 'vp_height' - 'PPL$YORG'
-ppl set temp 'temp' - $4"0.1"           ! drop down by text size
-ppl set remind_yloc 'temp' - $3"0.0"
-ppl set remind_xloc $2"0.1" - 'PPL$XORG'
+
+let remind_temp = `($vp_height) - ($PPL$YORG)`
+let remind_temp = `remind_temp - 1.1* $4"0.1" `          ! drop down by text size
+let remind_yloc = `remind_temp - $3"0.0"`
+let remind_xloc = `$2"0.1" - ($PPL$XORG)`
 
 ! insert the label (left justified, 0.0 rotation)
-LABEL/NOUSER 'remind_xloc' 'remind_yloc' -1 $5"0"  $4"0.1" $1"@AS'go_file'"
+
+IF ($1%0|*>1%) THEN LABEL/NOUSER `remind_xloc` `remind_yloc` -1 $5"0"  $4"0.1" $1
 
 ! clean up
 set mode/last verif
+cancel var remind_*

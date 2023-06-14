@@ -1,8 +1,11 @@
+\set mode verify
+
 ! test_linekey.jnl
 ! Examples using the "linekey.jnl" script for legend lines.
 
 
 cancel mode logo
+set window/size=1.5
 go margins 1.4  1.4  1.2  1.2
 
 ! Draw an example pair of lines, and show all of the different legend

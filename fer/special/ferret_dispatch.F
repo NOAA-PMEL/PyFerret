@@ -120,17 +120,15 @@
 * V685 *acm* 11/13 Issue an ERROR not a NOTE if USER command is tried.
 * V695 *acm*  6/16 New ANNOTATE command.
 * V702 *sh*   2/17 dynamic memory management - no return for SET MEMORY
+** 10/2022 *acm* Code cleanup: remove references to obsolete gui interface
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
-	include 'xalt_messages.cmn_text'
 	include 'ferret.parm'
 	include 'errmsg.parm'
-	include 'gui.parm'
 	include 'command.parm'
 	include 'xprog_state.cmn'
 	include 'xvariables.cmn'
-	include 'xgui.cmn'
 	include 'xplot_state.cmn'
 
 * EXTERNAL references to force the LINKER to look for BLOCK DATA SUBROUTINES
@@ -149,7 +147,6 @@
      .		XVARIABLES_DATA,
      .		XFR_GRID_DATA,
      .		XGKS_DEVICES_DATA,
-     .		XGUI_DATA,
      .		XREVISION_DATA
 
         EXTERNAL XGT_GRID_DATA      ! 2/93
@@ -166,20 +163,11 @@
 * temporarily we simply declare the "memory" array right here
 * calling argument declarations
 	INTEGER nflags, nchars, rtn_flags(nflags), nerrlines
-#ifdef NEED_BYTE
-        BYTE       command(*), rtn_chars(nchars)
-#else
-#   ifdef ultrix
-        BYTE       command(*), rtn_chars(nchars)	! 9/95 Ultrix, only
-#   else
         INTEGER*1  command(*), rtn_chars(nchars)
-#   endif
-#endif
 
 * local variable declarations:
 	INTEGER	TM_LENSTR1,
-     .		cmnd_stack_level, reconfig, status, i, gui_action,
-     .		insert_pt
+     .		cmnd_stack_level, reconfig, status, i, insert_pt
 
 * local parameter declarations
 	INTEGER		slash_msg_continue
@@ -187,147 +175,92 @@
 
 * transfer the c-style string into a FORTRAN string
 	cmnd_buff = ' '
-c	DO 2 i = 1, 200
-	DO 2 i = 1, cmnd_buff_len
+	DO i = 1, cmnd_buff_len
 	   IF ( command(i) .EQ. 0 ) GOTO 5
- 2	cmnd_buff(i:i) = CHAR( command(i) )
+ 	cmnd_buff(i:i) = CHAR( command(i) )
+	ENDDO
 
  5	CALL GET_FER_COMMAND(  cmnd_buff, status, *300 )
 
-	GOTO (	 10, 20, 30, 40, 50, 60, 70, 80, 90,100,
-     .		110,120,130,140,150,160,170,180,190,200,
-     .          210,220,230,240,250,260,270,280 ) cmnd_num
-
- 10	CALL XEQ_SET
-	GOTO 300
- 20	CALL XEQ_SHOW
-	GOTO 300
- 30	CALL XEQ_CANCEL
-	GOTO 300
- 40	CALL XEQ_CONTOUR	! after rev 1.00 1/5/87
-	GOTO 300
- 50	CALL XEQ_LIST
-	GOTO 300
- 60	CALL XEQ_PLOT
-	GOTO 300
- 70	CALL XEQ_GO
-	GOTO 300
- 80	CALL XEQ_HELP
-	GOTO 300
- 90	CALL XEQ_LOAD
-	GOTO 300
- 100	CALL XEQ_DEFINE
-	GOTO 300
- 110	CALL XEQ_EXIT( *500, *450 )
-	GOTO 300			! command file xit or error
- 120	CALL XEQ_MESSAGE
-	GOTO 300
- 130	CALL XEQ_VECTOR
-	GOTO 300
- 140	CALL XEQ_PPLUS
-	GOTO 300
- 150	CALL XEQ_FRAME
-	GOTO 300
- 160	CALL XEQ_REPEAT
-	GOTO 300
- 170	CALL XEQ_STAT
-	GOTO 300
- 180	CALL XEQ_SHADE
-	GOTO 300
- 190	CALL XEQ_SPAWN
-	GOTO 300
- 200	CONTINUE! CALL XEQ_USER_COMMAND
-        CALL ERRMSG(ferr_syntax, status, 
-     .    'USER command not available in this Ferret version ', *300)
- 210	CALL XEQ_WIRE
-	GOTO 300
- 220	CALL XEQ_QUERY
-	GOTO 300
- 230	CALL XEQ_IF
-	GOTO 300
- 240	CALL XEQ_ELSE
-	GOTO 300
- 250	CALL XEQ_ELIF
-	GOTO 300
- 260	CALL XEQ_ENDIF
-	GOTO 300
- 270	CALL XEQ_POLYGON
-	GOTO 300
- 280	CALL XEQ_ANNOTATE
-	GOTO 300
+	IF (cmnd_num .EQ. 1) THEN
+	   CALL XEQ_SET
+	ELSE IF (cmnd_num .EQ. 2) THEN
+	   CALL XEQ_SHOW
+	ELSE IF (cmnd_num .EQ. 3) THEN
+	   CALL XEQ_CANCEL
+	ELSE IF (cmnd_num .EQ.  4) THEN
+	   CALL XEQ_CONTOUR
+	ELSE IF (cmnd_num .EQ.  5) THEN
+	   CALL XEQ_LIST
+	ELSE IF (cmnd_num .EQ.  6) THEN
+	   CALL XEQ_PLOT
+	ELSE IF (cmnd_num .EQ.  7) THEN
+	   CALL XEQ_GO
+	ELSE IF (cmnd_num .EQ.  8) THEN
+	   CALL XEQ_HELP
+	ELSE IF (cmnd_num .EQ.  9) THEN
+	   CALL XEQ_LOAD
+	ELSE IF (cmnd_num .EQ. 10) THEN
+	   CALL XEQ_DEFINE
+	ELSE IF (cmnd_num .EQ. 11) THEN
+	   CALL XEQ_EXIT( *500, *450 )
+	ELSE IF (cmnd_num .EQ. 12) THEN
+	   CALL XEQ_MESSAGE
+	ELSE IF (cmnd_num .EQ. 13) THEN
+	   CALL XEQ_VECTOR
+	ELSE IF (cmnd_num .EQ. 14) THEN
+	   CALL XEQ_PPLUS
+	ELSE IF (cmnd_num .EQ. 15) THEN
+	   CALL XEQ_FRAME
+	ELSE IF (cmnd_num .EQ. 16) THEN
+	   CALL XEQ_REPEAT
+	ELSE IF (cmnd_num .EQ. 17) THEN
+	   CALL XEQ_STAT
+	ELSE IF (cmnd_num .EQ. 18) THEN
+	   CALL XEQ_SHADE
+	ELSE IF (cmnd_num .EQ. 19) THEN
+	   CALL XEQ_SPAWN
+	ELSE IF (cmnd_num .EQ. 20) THEN
+	   CALL ERRMSG(ferr_syntax, status,
+     .   'USER command not available in this Ferret version ', *300)
+	ELSE IF (cmnd_num .EQ. 21) THEN
+	   CALL XEQ_WIRE
+	ELSE IF (cmnd_num .EQ. 22) THEN
+	   CALL XEQ_QUERY
+	ELSE IF (cmnd_num .EQ. 23) THEN
+	   CALL XEQ_IF
+	ELSE IF (cmnd_num .EQ. 24) THEN
+	   CALL XEQ_ELSE
+	ELSE IF (cmnd_num .EQ. 25) THEN
+	   CALL XEQ_ELIF
+	ELSE IF (cmnd_num .EQ. 26) THEN
+	   CALL XEQ_ENDIF
+	ELSE IF (cmnd_num .EQ. 27) THEN
+	   CALL XEQ_POLYGON
+	ELSE IF (cmnd_num .EQ. 28) THEN
+	   CALL XEQ_ANNOTATE
+	ENDIF
 
 * finished a single command
- 300	gui_action = factn_no_action	! default
-	IF (    (cmnd_num    .EQ. cmnd_set
-     .	   .AND. subcmnd_num .EQ. subcmnd_set_data)
-     . .OR.     (cmnd_num    .EQ. cmnd_cancel
-     .	   .AND. subcmnd_num .EQ. subcmnd_canc_data) ) THEN
-* ... need to synchronize data sets with GUI
-	   gui_action = factn_synch_set_data
-	ELSEIF ( cmnd_num    .EQ. cmnd_message
-     .	   .AND. qual_given(slash_msg_continue) .EQ. 0 ) THEN
-	   gui_action = factn_pause
-	ELSE
-* ... need to synchronize output window creation/destruction with GUI
-* ... creation may be from any (initial) plot command or from SET WINDOW
-	   DO 302 i = 1, max_windows
-	      IF ( wn_open(i) .NEQV. gui_window_reported(i) ) THEN
-	         gui_action = factn_synch_window
-	         rtn_flags(frtn_idata1)  = i
-	         IF (wn_open(i)) THEN 
-	            rtn_flags(frtn_idata2)  = 1   ! 1 means "creation"
-	            gui_window_reported(i) = .TRUE.
-	         ELSE
-	            rtn_flags(frtn_idata2)  = -1  ! -1 means "destruction"
-	            gui_window_reported(i) = .FALSE.
-	         ENDIF
-	      ENDIF	         
- 302	   CONTINUE
-	ENDIF
+ 300	CONTINUE
 
-* ... prepare error buffer to pass back to calling (GUI?) program
-	IF ( mode_gui .AND. gui_status .NE. ferr_ok ) THEN
-	   gui_action = factn_display_error
-	   insert_pt = 1
-	   DO 310 i = 1, alt_nlines
-	      nerrlines = i
-	      CALL CSTRING_INSERT(alt_text(i), TM_LENSTR1(alt_text(i)),
-     .				  rtn_chars, nchars, insert_pt )
-	      IF ( insert_pt .GT. nchars ) GOTO 320
- 310	   CONTINUE
-	ELSE
-	   nerrlines = 0
-	ENDIF
- 320	alt_nlines = 0
+* ... prepare error buffer to pass back to calling program
+	nerrlines = 0
 	CALL CLEANUP_LAST_CMND( cmnd_stack_level )
-	IF ( .NOT.mode_gui ) THEN
-           IF ( one_cmnd_mode .AND. (cmnd_stack_level .EQ. 0) ) THEN
-              GOTO 450
-           ENDIF
-	   GOTO 5
-	ELSEIF ( cmnd_stack_level .GT. 0 ) THEN
-	   rtn_flags(frtn_control) = fctrl_in_ferret  ! command not yet finished
-	   rtn_flags(frtn_status)  = gui_status
-	   rtn_flags(frtn_action)  = gui_action
-	   RETURN
-	ELSE
-	   rtn_flags(frtn_control) = fctrl_back_to_gui
-	   rtn_flags(frtn_status)  = gui_status
-	   rtn_flags(frtn_action)  = gui_action
-	   RETURN
-	ENDIF
+        IF ( one_cmnd_mode .AND. (cmnd_stack_level .EQ. 0) ) GOTO 450
+	GOTO 5
 	   
 * exit the dispatch loop - if from PyFerret, return control to python
 *                          if from Ferret, just re-enter the dispatch loop
- 450    rtn_flags(frtn_control) = fctrl_in_ferret
-        rtn_flags(frtn_status) = gui_status
-        rtn_flags(frtn_action) = factn_no_action
+ 450    rtn_flags(1) = 2  ! fctrl_in_ferret   = 2
+        rtn_flags(2) = ferr_ok
+        rtn_flags(3) = 0  ! factn_no_action = 0
         RETURN
 
 * exit the program
- 500	rtn_flags(frtn_control) = fctrl_back_to_gui
-	rtn_flags(frtn_status)  = gui_status
-	rtn_flags(frtn_action)  = factn_exit
+ 500	rtn_flags(1) = 2  ! fctrl_in_ferret   = 2
+	rtn_flags(2) = ferr_ok
+	rtn_flags(3) = 2  ! factn_exit = 2
 	RETURN
 
 	END

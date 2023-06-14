@@ -51,34 +51,17 @@
 *                 FORTRAN_90 ifdef to accomplish this. 
 *               - Needs to use IAND rather than AND
 * V63  *acm* 10/09 Changes for gfortran build
-
+* 12/2022 *acm* Code cleanup: Update code for up-casing strings
 
         IMPLICIT NONE
-	CHARACTER*1 input_char
+	include 'ferret.parm'	
 
-* kob 12/96
-#ifdef FORTRAN_90
-      INTEGER HEXDF
-      DATA HEXDF/Z'DF'/
-#endif
+	CHARACTER*1 input_char
 
 	IF ( input_char .LT. 'a' .OR. input_char .GT. 'z' ) THEN
 	   upper_case = input_char
 	ELSE
-* modify if logic for linux - also vms needs iand - like that
-* matters anymore - just to keep it clean *kob* 12/96
-
-#if defined unix  && !defined NEED_IAND
-           upper_case = CHAR( AND('DF'X , ICHAR( input_char ) ) )
-#else
-#  ifdef FORTRAN_90 			
-	   upper_case = CHAR( IAND(HEXDF, ICHAR( input_char ) ) )
-# elif defined gfortran
-           upper_case = CHAR( AND('DF'X , ICHAR( input_char ) ) )
-#  else
-	   upper_case = CHAR( IAND('DF'X , ICHAR( input_char ) ) )
-#  endif
-#endif
+	   upper_case = ACHAR( IACHAR(input_char) - upcase_off)
 	ENDIF
 
 	RETURN

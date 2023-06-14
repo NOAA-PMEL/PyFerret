@@ -3,6 +3,30 @@
 
 ! Description: Continuous colorbar script: uses a shade plot in a viewport to make a colorbar
 ! 
+! 
+SAY
+SAY  ****************************************************************
+SAY  NOTE: This script is obsolete. use /KEY=CONTINUOUS on the color 
+SAY        plot command to get the same effect.
+SAY  ****************************************************************
+SAY
+SAY
+set mode verify
+!
+! EXAMPLE:
+!   yes? SET VIEW full
+!   yes? SHADE/i=1:50/y=1:50/KEY=CONT i+j
+!
+
+! EXAMPLE:
+!   yes? SET VIEW ur
+!   yes? FILL/I=1:50/J=1:50/LEV=(0,110,2)/KEY=CONT/PAL=no_green i+j
+!
+!
+! The old script continues below
+pause
+!
+CANCEL MODE verify
 
 !          arg 1  arg 2  arg 3  arg 4  arg 5  arg 6  arg 7  arg 8
 ! GO ccbar  x1     x2     y1     y2     v1     v2     dv     orient

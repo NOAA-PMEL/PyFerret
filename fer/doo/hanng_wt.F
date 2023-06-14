@@ -42,6 +42,7 @@
 * written for VAX computer under VMS operating system
 
 * for Unix/RISC port 8/91 - based on BINOM_WT
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 
         IMPLICIT NONE
 
@@ -59,8 +60,9 @@
 * What is provided by FERRET will technically be a Hanning window of length N+2
         use_len = wlen + 2
         c = 2. * 3.1415926 / (use_len - 1)
-	DO 100 i = 1, wlen
- 100	wt(i) = 0.5 * ( 1.0 - COS(c*i) )
+	DO  i = 1, wlen
+	   wt(i) = 0.5 * ( 1.0 - COS(c*i) )
+ 	ENDDO
 
 * normalize to 1
         CALL NORMALIZE( wt, wlen )

@@ -56,12 +56,7 @@
      .        vartype, nvdims, outflag, dset_num
       LOGICAL coordvar
       PARAMETER (flen=512)      ! size of variable name string
-
-#ifdef sun
-      BYTE      fhol(flen)      ! c-type Hollerith string buffer
-#else
       INTEGER*1 fhol(flen)      ! c-type Hollerith string buffer
-#endif 
 
       nvatts = 0
       status = merr_ok

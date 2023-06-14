@@ -2,7 +2,8 @@
 \CAN MODE verify
 
 ! compress_str.jnl
-! Compresses a 1D string variable along its axis
+! Compresses a 1D string variable along its axis. This moves
+! any null strings to the end of the list.
 
 ! Programmed by Ansley Manke & E.D. Cokelet, NOAA/PMEL, 2 Nov 2017
 ! Last modified 2 Nov 2017

@@ -1,6 +1,6 @@
 \cancel mode verify
 ! vfland.jnl - Draw a filled vertical bathymetry slice in the x or y direction
-! (overlay or "basemap" (default 20 minute resolution)
+! Drawn as an overlay on an existing x-z or y-z plot
 ! 8/12
 
 ! Description: Draw a filled vertical bathymetry slice in the x or y direction
@@ -23,17 +23,20 @@
 ! Examples:
 ! XZ slice
 !    use levitus_climatology
-!    shade/y=20/x=50e:150e  temp
-!    GO vfland 60 blue_dark x=50e:150e y=20
-
-! Just the bathymetry of a YZ slice
-!    GO vfland 20 black x=180 y=-90:90
+!    shade/y=20/x=50e:150e/pal=rnb2  temp
+!    GO vfland 60 black x=50e:150e y=20
 
 ! YZ slice with default topo resolution and gray palette
 !    use levitus_climatology
 !    shade/x=95w/y=15:30/z=0:4000 salt
 !    fill/over/nolab/lev/x=95w/y=15:30/z=0:4000 salt
 !    GO vfland "" "" x=95w y=15:30
+! 
+! Combined with vland
+!    use levitus_climatology
+!    shade/y=15/x=50e:150e temp
+!    go vfland 5 tan  x=50e:150e y=15
+!    go vland 5 (60,0,20)/thick x=50e:150e y=15
 
 ! Check for location arguments
 LET fv_xyloc = 1

@@ -215,7 +215,8 @@ C       data statement of my_trans added for linux port *jd* 12.96
 * ... User gave Ferret edge points as coords -- set indices to point to them
 * 	e.g. 1, 2, 3, ..., N+1
 	         DO 11 i = 1, nx
- 11	         xs(i) = xc(i)
+	           xs(i) = xc(i)
+11	         CONTINUE
 	         xs(nx+1) = xs(nx) + 1
 	      ELSE
 * ... User gave Ferret grid points as coords -- set indices to index midpoints
@@ -254,7 +255,8 @@ C       data statement of my_trans added for linux port *jd* 12.96
 	   IF ( curvilinear ) THEN
 	      IF ( ITS_CURV_EDGES(2) ) THEN
 	         DO 21 i = 1, ny
- 21	         ys(i) = yc(i)
+ 	           ys(i) = yc(i)
+21	         CONTINUE
 	         ys(ny+1) = ys(ny) + 1
 	      ELSE
 	         ys(1) = (yc(1) - (yc(2) - yc(1))/2.0)
@@ -329,10 +331,10 @@ c*       side from xeq_shade.
         plot_cell = .TRUE.
         DO 60 i = 1, nx
            IF (xc(i) .GE. cx1 .AND. xc(i) .LE. cx2) mx = mx + 1
-  60    CONTINUE
+60	CONTINUE
         DO 65 j = 1, ny
            IF (yc(j) .GE. cy1 .AND. yc(j) .LE. cy2) my = my + 1
-  65    CONTINUE
+65	CONTINUE
 
 * none of the data is in the range of the axes we are plotting; 
 * dont make the cellarray call.
@@ -374,8 +376,8 @@ c*       side from xeq_shade.
 
            ENDIF
 
-70         CONTINUE
-80      CONTINUE
+70	  CONTINUE
+80	CONTINUE
 
 c If all the data is missing don't make the cellarray call
 
@@ -446,7 +448,7 @@ c If all the data is missing don't make the cellarray call
      .                         xinv, yinv,  xadd, lmin, lmax, ilo, 
      .                         ihi, jlo, jhi, maxpt_ov2, status)
                  IF (status .EQ. ferr_interrupt) GOTO 3333
- 100          CONTINUE
+100	      CONTINUE
            ENDIF
 
            IF (nright .GT. 0) THEN
@@ -457,7 +459,7 @@ c If all the data is missing don't make the cellarray call
      .                         xinv, yinv,  xadd, lmin, lmax, ilo, 
      .                         ihi, jlo, jhi, maxpt_ov2, status)
                  IF (status .EQ. ferr_interrupt) GOTO 3333
- 110          CONTINUE
+110	      CONTINUE
            ENDIF
 
 

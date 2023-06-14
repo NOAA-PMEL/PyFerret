@@ -3,16 +3,15 @@ alg_break_up.F\
 alg_class.F\
 alg_id.F\
 alg_trans_code.F\
-break_up_expr.F\
 break_varattname.F\
 break_varname.F\
+break_up_expr.F\
 delete_all_uvar_grids.F\
 dflt_trans_arg.F\
 expr_name.F\
 init_counter_var.F\
 init_uvar.F\
 init_uvar_sub.F\
-not_rpn.F\
 ok_juxtapo.F\
 prcd.F\
 rpn.F 

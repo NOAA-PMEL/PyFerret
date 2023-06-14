@@ -93,15 +93,9 @@
 
 
 * local valiable declarations
-#ifdef AIX_XLF
-        CHARACTER TM_PATH_LIST*8190, path_list*8190
-#else
         CHARACTER TM_PATH_LIST*8192, path_list*8192
-#endif
         INTEGER TM_LENSTR1, STR_SAME, plen,flen,i,postslash
 	LOGICAL is_http
-
-!!!! bug 2/93        EQUIVALENCE ( path_list, risc_buff )
 
 * path may be an environment variable (UNIX) with a path list or
 * a logical name (VMS).  Failing that, it is ignored.

@@ -1,0 +1,93 @@
+set mode verify
+! color_datekey_demo.jnl
+!
+! Description: Demonstrate the color_datekey.jnl script
+!              color_datekey labels the color key with dates when coloring
+!              a plot according to time, such as a ship track
+!
+!  color_datekey.jnl is run when drawing an overlay plot.  It requires a full plot of 
+!  the region to have been drawn so it can use automatically generated information
+!  to locate the plot-key labels. It is run after PLOT/SET has been issued. Examples:
+!
+!  
+! This dsg trajectory dataset has "time" as the time coordinate variable
+
+USE dsg_trajectory_example.nc
+
+! First draw the trajectory time with a horizontal key.  
+! Draw an underlay map 
+pause
+
+set window/size=1.5
+GO basemap x=120:260 y=30:75 5
+
+! Draw the trajectory, colored by time. 
+!  When using a DSG trajectory dataset, the PLOT command draws 
+!  a ribbon plot by default
+! 
+PLOT/OVER/THICK/NOLAB/KEY/SET time
+   GO color_datekey "H" time
+   PPL PLOT/OVER
+
+! The color_datekey script checks for duplicate time labels. If the
+! time range is short then the labels need hours/ minutes/ seconds
+! to differentiate times and those are automatically added as needed.
+! Or, to force further resolution send a third argument hr, min, or sec
+! to the script.
+pause
+
+GO basemap x=120:260 y=30:75 5
+
+! Add 3rd argument min so that HH:MM will be added to the time labels
+
+PLOT/OVER/THICK/NOLAB/KEY/SET time
+   GO color_datekey "H" time min
+   PPL PLOT/OVER
+
+
+! Now draw a plot with a vertical key. Draw this plot in a viewport 
+! so there is room on the page for the long time labels
+pause
+
+DEFINE VIEWPORT/X=0:0.9/Y=0:1 xyview
+SET VIEW xyview
+
+USE dsg_trajectory_example.nc
+GO basemap x=120:260 y=30:75 5
+
+PLOT/OVER/THICK/NOLAB/KEY/SET time
+   GO color_datekey "v" time
+   PPL PLOT/OVER
+
+
+! color_datekey.jnl has optional arg
+
+USE dsg_trajectory_example.nc
+
+! First draw the trajectory time using a horizontal key.  
+! Draw an underlay map 
+pause
+
+set window/size=1.5
+GO basemap x=120:260 y=30:75 5
+
+! Draw the trajectory, colored by time. 
+!  When using a DSG trajectory dataset, the PLOT command draws 
+!  a ribbon plot by default
+! 
+PLOT/OVER/THICK/NOLAB/KEY/SET time
+   GO color_datekey "H" time
+   PPL PLOT/OVER
+ ! NOAA/PMEL TMAP
+ ! PyFerret v7.65 (debug)
+ ! Linux 4.4.0-22621-Microsoft - 01/10/23
+ ! 15-Jan-23 16:14     
+
+set mode verify
+USE dsg_trajectory_example.nc
+set window/size=1.5
+GO basemap x=120:260 y=30:75 5
+PLOT/OVER/t=23-jun-2015:27-jun-2015/THICK/NOLAB/KEY/SET time
+GO color_datekey "H" time min
+ppl plot/over
+q

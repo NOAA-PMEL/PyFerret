@@ -1,57 +1,99 @@
 ! symbol_demo.jnl  6/95 *sh*
-
-!Description: Demonstration of symbols to customize plot layout
-
-! usage:
-!	yes? GO symbol_demo  variable time
-
-! e.g.	yes? GO symbol_demo SLP L=6
-
-
-set data coads_climatology
+cancel mode verify
 
 ppl/reset
-set wind/asp=1.5
+set window/aspect=1.5/size=1.5
+cancel mode logo
+IF ($program_name"0|PyFerret>1|*>0") THEN set text/font=arial
 set mode calendar:days
-set region /$2"l=1"
+
+set mode verify
+! Description: Demonstration of working with PPLUS-defined
+! symbols to customize plot layout
+
+! usage:
+!	yes? GO symbol_demo 
+! 
+
+! Some setup:
+!-----
+
+ppl/reset
+set window/aspect=1.5/size=1.5
+set mode verify
+!-----
+
+
+! Some datasets have a title. Or, one may be set upon opening it
+
+set data/title="Dataset Title" coads_climatology
+define symbol var = sst[L=3]
+
+pause
 
 ! ==========================
 ! +++++ upper panel ++++++++
 ! ==========================
 set view upper
-shade $1"sst"
+shade ($var)
+
 
 ! diagonal remark about the plot
-label/nouser `($ppl$xlen)/2` `($ppl$ylen)/2` 0,45,.28 @TRNORMAL LAYOUT
+label/nouser `($ppl$xlen)/2` `($ppl$ylen)/2` 0,45,.28 NORMAL LAYOUT
+
+!
+!  An ordinary plot: shade slp[L=3]
+!
+message
+
+set mode verify
+
+show symbol lab*
+!  
+!   The symbols lab1, lab2, etc are automatically defined when a plot
+!   is drawn or when the plot command is given with /set_up. 
+!   Symbols labnum_t, labnum_dset give the label numbers for these 
+!   standard labels, making it possibleto manipulate the labels in a 
+!   sscript. For instance to move, or remove, the dataset label, the 
+!   script can refer to ($lab($labnum_dset))
+!  
+pause
 
 ! ==========================
 ! +++++ lower panel ++++++++
 ! ==========================
+
+!  
+!   Now make a new plot using SHADE/SET and apply PPL labs commands 
+!   to move the time label, the dataset label and the dataset title
+!  
 set view lower
+shade/set ($var)
 ppl origin ,2	! shift plot rectangle upwards
 
-! remove Ferret logo
-GO unlabel 1
-GO unlabel 2
-GO unlabel 3
-
 ! move the time label to the bottom left
-ppl labs/nouser ($labnum_t) 0,-0.6,-1 @P2@AC($lab4)
 
-! move the data set label to the bottom right and
-! remove "DATA SET:" from the string "DATA SET: coads_climatology"
-PPL SET dset_len $LENGTH( lab($labnum_datitl) )   ! "$LENGTH(lab5)"
-PPL SET new_dset $EXTRACT(11,($dset_len),lab($labnum_dset))
-ppl labs/nouser ($labnum_dset) ($ppl$xlen),-0.6,+1 @P2@AC($new_dset)
+ppl labs/nouser ($labnum_t) 0,-0.6,-1 ($lab($labnum_t))
 
-! use data set title as a second plot title at the bottom
-ppl labs/nouser ($labnum_datitl) `($ppl$xlen)/2`,-1.3,0 @P4@AC<<($lab($labnum_datitl))>>
-ppl hlabs ($labnum_datitl), .18
+! move the data set name to the bottom right and change its size
+
+LET dset_name =  "`($var),return=dset`"
+ppl labs/nouser ($labnum_dset) ($ppl$xlen),-0.6,1 `dset_name`
+ppl hlabs ($labnum_dset), 0.12
+
+! Add the data set title, if any, as a second plot title at the bottom
+if ($labnum_datitl"0|*>1") then
+   ppl labs/nouser ($labnum_datitl) `($ppl$xlen)/2`,-1.4,0 <<($lab($labnum_datitl))>>
+   ppl hlabs ($labnum_datitl), .18
+endif
 
 ! actually draw it
 ppl shade
+
+pause
+
 ! diagonal remark about the plot
-label/nouser `($ppl$xlen)/2` `($ppl$ylen)/2` 0,45,.28 @TRSPECIAL LAYOUT
+label/nouser `($ppl$xlen)/2` `($ppl$ylen)/2` 0,45,.28 SPECIAL LAYOUT
 
 ! clean up
 ppl origin 1.2,1.4

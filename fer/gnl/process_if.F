@@ -87,11 +87,7 @@
 * internal parameter declarations:
 	INTEGER		TM_LENSTR1
         CHARACTER*1     tab
-#ifdef NO_INTRINSIC_IN_PARAMETER
-	PARAMETER     ( tab = o'011' )
-#else
 	PARAMETER     ( tab = CHAR(9))
-#endif
 
 * sanity check
 	IF ( ifstk.LT.1 .OR. ifstk.GT.max_ifstk ) GOTO 5000

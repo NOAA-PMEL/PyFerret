@@ -54,20 +54,8 @@
 * revision 0.00 - 03/25/91
 * V6.74 3/12 *acm* cleanup ifdefs and unnecessary include files
 
-#ifdef sun
-        include 'xmachine_byte.cmn'
-#else
-                include 'xmachine_int1.cmn'
-#endif
+        include 'xmachine_int1.cmn'
 
-#ifdef sun
-        DATA    active_cpu  /cptype_sun/    
-#else
-#	if unix
-        	DATA	active_cpu  /cptype_dec/   ! DECstation
-#	else
-        	DATA    active_cpu  /cptype_vax/   ! VAX
-#	endif
-#endif
+	DATA	active_cpu  /cptype_dec/   ! DECstation
 
 	END

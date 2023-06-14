@@ -36,41 +36,9 @@
 ** Ansley Manke
 * January 2008
 *
-* This function implements the pnpoly code from W. Randolph Franklin found
-* in his web pages. The exact code from these web pages is preserved at the end of
-* this file; changes to it are the responsibility of Ferret program developers.
-
-* Copyright (c) 1970-2003, Wm. Randolph Franklin
-*
-* Permission is hereby granted, free of charge, to any person obtaining a 
-* copy of this software and associated documentation files (the "Software"), 
-* to deal in the Software without restriction, including without limitation 
-* the rights to use, copy, modify, merge, publish, distribute, sublicense, 
-* and/or sell copies of the Software, and to permit persons to whom the 
-* Software is furnished to do so, subject to the following conditions:
-
-*  1. Redistributions of source code must retain the above copyright notice, 
-* this list of conditions and the following disclaimers.
-*   2. Redistributions in binary form must reproduce the above copyright 
-* notice in the documentation and/or other materials provided with the 
-* distribution.
-*   3. The name of W. Randolph Franklin may not be used to endorse or 
-* promote products derived from this Software without specific prior 
-* written permission. 
-*
-* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS 
-* OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
-* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL 
-* THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
-* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING 
-* FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS 
-* IN THE SOFTWARE. 
-*
-C W. Randolph Franklin
-C http://www.ecse.rpi.edu/Homepages/wrf/pmwiki/
-C http://www.ecse.rpi.edu/Homepages/wrf/Research/Short_Notes/pnpoly.html#The%20C%20Code
-C http://www.ecse.rpi.edu/Homepages/wrf/Research/Short_Notes/pnpoly.html#Fortran%20Code%20for%20the%20Point%20in%20Polygon%20Test
-
+C 11/2022 replace the pnpoly function with an f90 code which is used without any
+C         revisions.
+C
 C  RETURNS:
 C           -1 IF THE POINT IS OUTSIDE OF THE POLYGON, 
 C            0 IF THE POINT IS ON AN EDGE OR AT A VERTEX, 
@@ -88,9 +56,8 @@ C            1 IF THE POINT IS INSIDE OF THE POLYGON.
 
       CHARACTER*100 fcn_desc
 
-      WRITE (fcn_desc, 10)
-   10 FORMAT 
-     . ('Return -1 outside, 0 if on edge, 1 if inside polygon')
+      fcn_desc =
+     . 'Return -1 outside, 0 if on edge, 1 if inside polygon'
       CALL ef_set_desc(id, fcn_desc)
 
       CALL ef_set_num_args(id, 3)
@@ -151,7 +118,7 @@ C            1 IF THE POINT IS INSIDE OF THE POLYGON.
 
       CALL ef_get_arg_subscripts_6d(id, arg_lo_ss, arg_hi_ss, arg_incr)
 
-* Coordinate data from argument 1
+* Work arrays contain the coordinate data from argument 1
 
       array_num = 1
       CALL ef_set_work_array_dims_6d(id, array_num,
@@ -163,51 +130,14 @@ C            1 IF THE POINT IS INSIDE OF THE POLYGON.
      .                               arg_lo_ss(Y_AXIS,ARG1), 1, 1, 1, 1, 1,
      .                               arg_hi_ss(Y_AXIS,ARG1), 1, 1, 1, 1, 1)
 
-
-* Set two arrays the size of the number of vertices.
-
-      nv = arg_hi_ss(X_AXIS,ARG2) - arg_lo_ss(X_AXIS,ARG2) + 1 
-      nv = MAX(nv, arg_hi_ss(Y_AXIS,ARG2) - arg_lo_ss(Y_AXIS,ARG2) + 1 )
-      nv = MAX(nv, arg_hi_ss(Z_AXIS,ARG2) - arg_lo_ss(Z_AXIS,ARG2) + 1 )
-      nv = MAX(nv, arg_hi_ss(T_AXIS,ARG2) - arg_lo_ss(T_AXIS,ARG2) + 1 )
-
-      array_num = 3
-      CALL ef_set_work_array_dims_6d(id, array_num,
-     .                                1, 1, 1, 1, 1, 1,
-     .                               nv, 1, 1, 1, 1, 1)
-
-      array_num = 4
-      CALL ef_set_work_array_dims_6d(id, array_num,
-     .                                1, 1, 1, 1, 1, 1,
-     .                               nv, 1, 1, 1, 1, 1)
-
       RETURN 
       END
 
 * **********************************************************************
 
       SUBROUTINE pt_in_poly_compute (id, arg_1, arg_2, arg_3, result, 
-     .   xcoords, ycoords, workx, worky)
-C 
-C REMARKS 
-C   THE VERTICES MAY BE LISTED CLOCKWISE OR ANTICLOCKWISE. 
-C   THE FIRST MAY OPTIONALLY BE REPEATED, IF SO N MAY 
-C   OPTIONALLY BE INCREASED BY 1. 
-C   THE INPUT POLYGON MAY BE A COMPOUND POLYGON CONSISTING 
-C   OF SEVERAL SEPARATE SUBPOLYGONS. IF SO, THE FIRST VERTEX 
-C   OF EACH SUBPOLYGON MUST BE REPEATED, AND WHEN CALCULATING 
-C   N, THESE FIRST VERTICES MUST BE COUNTED TWICE. 
-C   INOUT IS THE ONLY PARAMETER WHOSE VALUE IS CHANGED. 
-C   THE SIZE OF THE ARRAYS MUST BE INCREASED IF N > MAXDIM 
-C   WRITTEN BY RANDOLPH FRANKLIN, UNIVERSITY OF OTTAWA, 7/70. 
-C   
-C SUBROUTINES AND FUNCTION SUBPROGRAMS REQUIRED 
-C   NONE 
-C 
-C METHOD 
-C   A VERTICAL LINE IS DRAWN THRU THE POINT IN QUESTION. IF IT 
-C   CROSSES THE POLYGON AN ODD NUMBER OF TIMES, THEN THE 
-C   POINT IS INSIDE OF THE POLYGON. 
+     .   xcoords, ycoords)
+
 C 
 C Originally written as an external function, this version uses
 C internal Ferret functions STR_UPCASE and TM_HAS_STRING to upcase
@@ -236,8 +166,6 @@ C
 
       REAL*8 xcoords(wrk1lox:wrk1hix)
       REAL*8 ycoords(wrk2lox:wrk2hix)
-      REAL workx(wrk3lox:wrk3hix)
-      REAL worky(wrk4lox:wrk4hix)
 
 * After initialization, the 'res_' arrays contain indexing information 
 * for the result axes.  The 'arg_' arrays will contain the indexing 
@@ -357,7 +285,7 @@ C
             IF (px .GE. xvmin .AND. px .LE. xvmax .AND.
      .          py .GE. yvmin .AND. py .LE. yvmax ) THEN
                CALL PNPOLY (px, py, arg_2, arg_3, nv, 
-     .                      workx, worky, inout )
+     .                      inout )
                result(i,j,k,l,m,n)= FLOAT(inout)
             ELSE
                result(i,j,k,l,m,n) = -1
@@ -367,7 +295,7 @@ C
             IF (px-360 .GE. xvmin .AND. px-360 .LE. xvmax .AND.
      .          py .GE. yvmin .AND. py .LE. yvmax ) THEN
                CALL PNPOLY (px-360, py, arg_2, arg_3, nv, 
-     .                      workx, worky, inout )
+     .                      inout )
                result(i,j,k,l,m,n)= FLOAT(inout)
             ELSE
                result(i,j,k,l,m,n) = -1
@@ -378,7 +306,7 @@ C
             IF (px+360 .GE. xvmin .AND. px+360 .LE. xvmax .AND.
      .          py .GE. yvmin .AND. py .LE. yvmax ) THEN
                CALL PNPOLY (px+360, py, arg_2, arg_3, nv, 
-     .                      workx, worky, inout )
+     .                      inout )
                result(i,j,k,l,m,n)= FLOAT(inout)
             ELSE
                result(i,j,k,l,m,n) = -1
@@ -423,227 +351,127 @@ C ..................................................................
       
       END
 
+!  11/2022 replace pnpoly with this f90 version:
+! Source File : PNPOLY.f90 
+! https://fortran.uk/HyperKWIC/AERMOD/_kwic/src/236.htm
+! 
+!----------------------------------------------------------------------
+!     Courtesy: Jay Sandhu
+!               email: jsandhu@esri.com
+!
+!
+! Please cite David H. Douglas, COLLECTED ALGORITHMS, Cambridge MA:
+! Harvard Laboratory for Computer Graphics, 1974
+!
+! This is my reinvention buster.
+! 1974 1974 1974 1974 1974 1974 1974 1974 1974 1974 1974 1974
+!
+!>>>PNPY
+!     .................................................................
+!
+!        SUBROUTINE PNPOLY
+!
+!        PURPOSE
+!           TO DETERMINE WHETHER A POINT IS INSIDE A POLYGON
+!
+!        USAGE
+!           CALL PNPOLY (PX, PY, X, Y, N, INOUT )
+!
+!        DESCRIPTION OF THE PARAMETERS
+!           PX      - X-COORDINATE OF POINT IN QUESTION.
+!           PY      - Y-COORDINATE OF POINT IN QUESTION.
+!           X       - N LONG VECTOR CONTAINING X-COORDINATES OF
+!                     VERTICES OF POLYGON.
+!           Y       - N LONG VECTOR CONTAINING Y-COORDINATES OF
+!                     VERTICES OF POLYGON.
+!           N       - NUMBER OF VERTICES IN THE POLYGON.
+!           INOUT   - THE SIGNAL RETURNED:
+!                     -1 IF THE POINT IS OUTSIDE OF THE POLYGON,
+!                      0 IF THE POINT IS ON AN EDGE OR AT A VERTEX,
+!                      1 IF THE POINT IS INSIDE OF THE POLYGON.
+!
+!        REMARKS
+!           THE VERTICES MAY BE LISTED IN CLOCKWISE OR ANTICLOCKWISE
+!           ORDER.  FOR THIS SUBROUTINE A POINT IS CONSIDERED INSIDE
+!           THE POLYGON IF IT IS LOCATED IN THE ENCLOSED AREA DEFINED
+!           BY THE LINE FORMING THE POLYGON.
+!           THE INPUT POLYGON MAY BE A COMPOUND POLYGON CONSISTING
+!           OF SEVERAL SEPARATE SUBPOLYGONS. IF SO, THE FIRST VERTEX
+!           OF EACH SUBPOLYGON MUST BE REPEATED, AND WHEN CALCULATING
+!           N, THESE FIRST VERTICES MUST BE COUNTED TWICE.
+!           INOUT IS THE ONLY PARAMETER WHOSE VALUE IS CHANGED.
+!           PNPOLY CAN HANDLE ANY NUMBER OF VERTICES IN THE POLYGON.
+!           WRITTEN BY RANDOLPH FRANKLIN, UNIVERSITY OF OTTAWA, 6/72.
+!
+!        SUBROUTINES AND FUNCTION SUBPROGRAMS REQUIRED
+!           NONE
+!
+!        METHOD
+!           A VERTICAL SEMI-INFINITE LINE IS DRAWN UP FROM THE POINT
+!           IN QUESTION. IF IT CROSSES THE POLYGON AN ODD NUMBER OF
+!           TIMES, THE POINT IS INSIDE THE POLYGON.
+!
+!     .................................................................
+!
+      SUBROUTINE PNPOLY(PX,PY,X,Y,N,INOUT)
 
-C .................................................................. 
-C 
-C SUBROUTINE PNPOLY 
-C 
-C PURPOSE 
-C   TO DETERMINE WHETHER A POINT IS INSIDE A POLYGON 
-C 
-C USAGE 
-C   CALL PNPOLY (PX, PY, XX, YY, N, workx, worky, INOUT ) 
-C 
-C DESCRIPTION OF THE PARAMETERS 
-C   PX    - X-COORDINATE OF POINT IN QUESTION. 
-C   PY    - Y-COORDINATE OF POINT IN QUESTION. 
-C   XX    - N LONG VECTOR CONTAINING X-COORDINATES OF 
-C           VERTICES OF POLYGON. 
-C   YY    - N LONG VECTOR CONTAING Y-COORDINATES OF 
-C           VERTICES OF POLYGON. 
-C   N     - NUMBER OF VERTICES IN THE POLYGON. 
-C   workx - work array
-C   worky - work array
-C   INOUT - THE SIGNAL RETURNED: 
-C           -1 IF THE POINT IS OUTSIDE OF THE POLYGON, 
-C            0 IF THE POINT IS ON AN EDGE OR AT A VERTEX, 
-C            1 IF THE POINT IS INSIDE OF THE POLYGON. 
-C 
-C REMARKS 
-C   THE VERTICES MAY BE LISTED CLOCKWISE OR ANTICLOCKWISE. 
-C   THE FIRST MAY OPTIONALLY BE REPEATED, IF SO N MAY 
-C   OPTIONALLY BE INCREASED BY 1. 
-C   THE INPUT POLYGON MAY BE A COMPOUND POLYGON CONSISTING 
-C   OF SEVERAL SEPARATE SUBPOLYGONS. IF SO, THE FIRST VERTEX 
-C   OF EACH SUBPOLYGON MUST BE REPEATED, AND WHEN CALCULATING 
-C   N, THESE FIRST VERTICES MUST BE COUNTED TWICE. 
-C   INOUT IS THE ONLY PARAMETER WHOSE VALUE IS CHANGED. 
-C   THE SIZE OF THE ARRAYS MUST BE INCREASED IF N > MAXDIM 
-C   WRITTEN BY RANDOLPH FRANKLIN, UNIVERSITY OF OTTAWA, 7/70. 
-C   
-C SUBROUTINES AND FUNCTION SUBPROGRAMS REQUIRED 
-C   NONE 
-C 
-C METHOD 
-C   A VERTICAL LINE IS DRAWN THRU THE POINT IN QUESTION. IF IT 
-C   CROSSES THE POLYGON AN ODD NUMBER OF TIMES, THEN THE 
-C   POINT IS INSIDE OF THE POLYGON. 
-C 
-C .................................................................. 
-C 
-      SUBROUTINE PNPOLY(PX,PY,XX,YY,N,X,Y,INOUT) 
-      REAL PX,PY,X(*),Y(*),XX(*),YY(*) 
-      INTEGER N, INOUT
+      IMPLICIT NONE
 
-      LOGICAL TM_FPEQ, MX,MY,NX,NY, b
-      INTEGER I, J, INOUT1, INOUT2
-      INOUT1 = 0
-      INOUT2 = 0
+      INTEGER I , J , N , INOUT
+      REAL X(N) , Y(N) , XI , YI , XJ , YJ , PX , PY
+      LOGICAL IX , IY , JX , JY , EOR
 
-* Change the original to see if X(J)=Y(J)=0. This loop finds matches 
-* for points on the left-hand edges 
+!     EXCLUSIVE OR STATEMENT FUNCTION.
+      EOR(IX,IY) = (IX .OR. IY) .AND. .NOT.(IX .AND. IY)
 
-    6 DO 1 I=1,N 
-      X(I)=XX(I)-PX 
-    1 Y(I)=YY(I)-PY 
-      INOUT1=-1 
-      DO 2 I=1,N 
-      J=1+MOD(I,N) 
-      MX=X(I).GE.0.0 
-      NX=X(J).GE.0.0 
-      MY=Y(I).GE.0.0 
-      NY=Y(J).GE.0.0 
+      INOUT = -1                                               
 
-      IF (TM_FPEQ(X(J),0.) .AND. TM_FPEQ(Y(J),0.)) GOTO 4
-
-      IF(.NOT.((MY.OR.NY).AND.(MX.OR.NX)).OR.(MX.AND.NX)) GO TO 2 
-      IF(.NOT.(MY.AND.NY.AND.(MX.OR.NX).AND..NOT.(MX.AND.NX))) GO TO 3 
-      INOUT1=-INOUT1 
-      GO TO 2
-    3 CONTINUE
-      IF ( TM_FPEQ(X(J),Y(J)) ) THEN
-         IF(TM_FPEQ((Y(I)*X(J)-X(I)*Y(J)),0.)) THEN  
-            INOUT1 = 0
-            INOUT2 = 0
-            GOTO 50
+      DO I = 1 , N
+         XI = X(I) - PX                                        
+         YI = Y(I) - PY
+!        CHECK WHETHER THE POINT IN QUESTION IS AT THIS VERTEX.
+         IF ( XI.EQ.0.0 .AND. YI.EQ.0.0 ) THEN
+            INOUT = 0                                          
+            RETURN
          ENDIF
-      ENDIF
-      IF( TM_FPEQ((Y(I)*X(J)-X(I)*Y(J))/(X(J)-X(I)), 0.) ) GOTO 4
-      IF((Y(I)*X(J)-X(I)*Y(J))/(X(J)-X(I))) 2,4,5 
-    4 INOUT1 = 0
-      INOUT2 = 0
-      GOTO 50
-    5 INOUT1=-INOUT1 
-    2 CONTINUE 
-
-* Now do the same with the order of subtraction reversed when 
-* computing arrays X(I) and Y(I). This finds matches for points 
-* on the right-hand edges.
-
-      DO 11 I=1,N 
-      X(I)=PX-XX(I)
-   11 Y(I)=PY-YY(I) 
-      INOUT2=-1 
-      DO 12 I=1,N 
-      J=1+MOD(I,N) 
-      MX=X(I).GE.0.0 
-      NX=X(J).GE.0.0 
-      MY=Y(I).GE.0.0 
-      NY=Y(J).GE.0.0 
-
-      IF (TM_FPEQ(X(J),0.) .AND. TM_FPEQ(Y(J),0.)) GOTO 14
-
-      IF(.NOT.((MY.OR.NY).AND.(MX.OR.NX)).OR.(MX.AND.NX)) GO TO 12 
-      IF(.NOT.(MY.AND.NY.AND.(MX.OR.NX).AND..NOT.(MX.AND.NX))) GO TO 13 
-      INOUT2=-INOUT2 
-      GO TO 12
-   13 CONTINUE
-      IF ( TM_FPEQ(X(J),Y(J)) ) THEN
-         IF(TM_FPEQ(Y(I)*X(J)-X(I)*Y(J), 0.)) THEN  
-            INOUT1 = 0
-            INOUT2 = 0
-            GOTO 50
+!        J IS NEXT VERTEX NUMBER OF POLYGON.
+         J = 1 + MOD(I,N)                                      
+         XJ = X(J) - PX
+         YJ = Y(J) - PY
+!        IS THIS LINE OF 0 LENGTH ?
+         IF ( XI.EQ.XJ .AND. YI.EQ.YJ ) GOTO 100
+         IX = XI.GE.0.0                                        
+         IY = YI.GE.0.0
+         JX = XJ.GE.0.0
+         JY = YJ.GE.0.0
+!        CHECK WHETHER (PX,PY) IS ON VERTICAL SIDE OF POLYGON.
+         IF ( XI.EQ.0.0 .AND. XJ.EQ.0.0 .AND. EOR(IY,JY) ) THEN
+            INOUT = 0                                          
+            RETURN
          ENDIF
-      ENDIF
-      IF( TM_FPEQ((Y(I)*X(J)-X(I)*Y(J))/(X(J)-X(I)), 0.) ) GOTO 14
-      IF((Y(I)*X(J)-X(I)*Y(J))/(X(J)-X(I))) 12,14,15 
-   14 INOUT1 = 0
-      INOUT2 = 0
-      GOTO 50
-   15 INOUT2=-INOUT2 
-   12 CONTINUE 
+!        CHECK WHETHER (PX,PY) IS ON HORIZONTAL SIDE OF POLYGON.
+         IF ( YI.EQ.0.0 .AND. YJ.EQ.0.0 .AND. EOR(IX,JX) ) THEN
+            INOUT = 0                                          
+            RETURN
+         ENDIF
+!        CHECK WHETHER BOTH ENDS OF THIS SIDE ARE COMPLETELY 1) TO RIGHT
+!        OF, 2) TO LEFT OF, OR 3) BELOW (PX,PY).
+         IF ( .NOT.((IY .OR. JY) .AND. EOR(IX,JX)) ) GOTO 100  
+!        DOES THIS SIDE OBVIOUSLY CROSS LINE RISING VERTICALLY FROM (PX,PY)
+         IF ( .NOT.(IY .AND. JY .AND. EOR(IX,JX)) ) THEN       
+            IF ( (YI*XJ-XI*YJ)/(XJ-XI).LT.0.0 ) THEN           
+               GOTO 100                                        
+            ELSEIF ( (YI*XJ-XI*YJ)/(XJ-XI).EQ.0.0 ) THEN
+               INOUT = 0                                       
+               RETURN
+            ELSE
+               INOUT = -INOUT                                  
+            ENDIF
+         ELSE
+            INOUT = -INOUT                                     
+         ENDIF
 
-* Combine the results: -1 outside the polygon, 0 
-* on the edges or vertices, 1 inside the polygon.
+ 100  ENDDO
 
-   50 CONTINUE
-      INOUT = (INOUT2 + INOUT1)/2
-      RETURN
-
-      END 
-
-*** ORIG  C >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-*** ORIG  C Here is the exact code from W. Randolph Franklin pages.
-*** ORIG  C Fortran Code for the Point in Polygon Test
-*** ORIG  
-*** ORIG  C>>>PNP1 
-*** ORIG  C 
-*** ORIG  C .................................................................. 
-*** ORIG  C 
-*** ORIG  C SUBROUTINE PNPOLY 
-*** ORIG  C 
-*** ORIG  C PURPOSE 
-*** ORIG  C   TO DETERMINE WHETHER A POINT IS INSIDE A POLYGON 
-*** ORIG  C 
-*** ORIG  C USAGE 
-*** ORIG  C   CALL PNPOLY (PX, PY, XX, YY, N, INOUT ) 
-*** ORIG  C 
-*** ORIG  C DESCRIPTION OF THE PARAMETERS 
-*** ORIG  C   PX    - X-COORDINATE OF POINT IN QUESTION. 
-*** ORIG  C   PY    - Y-COORDINATE OF POINT IN QUESTION. 
-*** ORIG  C   XX    - N LONG VECTOR CONTAINING X-COORDINATES OF 
-*** ORIG  C           VERTICES OF POLYGON. 
-*** ORIG  C   YY    - N LONG VECTOR CONTAING Y-COORDINATES OF 
-*** ORIG  C           VERTICES OF POLYGON. 
-*** ORIG  C   N     -  NUMBER OF VERTICES IN THE POLYGON. 
-*** ORIG  C   INOUT - THE SIGNAL RETURNED: 
-*** ORIG  C           -1 IF THE POINT IS OUTSIDE OF THE POLYGON, 
-*** ORIG  C            0 IF THE POINT IS ON AN EDGE OR AT A VERTEX, 
-*** ORIG  C            1 IF THE POINT IS INSIDE OF THE POLYGON. 
-*** ORIG  C 
-*** ORIG  C REMARKS 
-*** ORIG  C   THE VERTICES MAY BE LISTED CLOCKWISE OR ANTICLOCKWISE. 
-*** ORIG  C   THE FIRST MAY OPTIONALLY BE REPEATED, IF SO N MAY 
-*** ORIG  C   OPTIONALLY BE INCREASED BY 1. 
-*** ORIG  C   THE INPUT POLYGON MAY BE A COMPOUND POLYGON CONSISTING 
-*** ORIG  C   OF SEVERAL SEPARATE SUBPOLYGONS. IF SO, THE FIRST VERTEX 
-*** ORIG  C   OF EACH SUBPOLYGON MUST BE REPEATED, AND WHEN CALCULATING 
-*** ORIG  C   N, THESE FIRST VERTICES MUST BE COUNTED TWICE. 
-*** ORIG  C   INOUT IS THE ONLY PARAMETER WHOSE VALUE IS CHANGED. 
-*** ORIG  C   THE SIZE OF THE ARRAYS MUST BE INCREASED IF N > MAXDIM 
-*** ORIG  C   WRITTEN BY RANDOLPH FRANKLIN, UNIVERSITY OF OTTAWA, 7/70. 
-*** ORIG  C   
-*** ORIG  C SUBROUTINES AND FUNCTION SUBPROGRAMS REQUIRED 
-*** ORIG  C   NONE 
-*** ORIG  C 
-*** ORIG  C METHOD 
-*** ORIG  C   A VERTICAL LINE IS DRAWN THRU THE POINT IN QUESTION. IF IT 
-*** ORIG  C   CROSSES THE POLYGON AN ODD NUMBER OF TIMES, THEN THE 
-*** ORIG  C   POINT IS INSIDE OF THE POLYGON. 
-*** ORIG  C 
-*** ORIG  C .................................................................. 
-*** ORIG  C 
-*** ORIG        SUBROUTINE PNPOLY(PX,PY,XX,YY,N,INOUT) 
-*** ORIG        REAL X(200),Y(200),XX(N),YY(N) 
-*** ORIG        LOGICAL MX,MY,NX,NY 
-*** ORIG        INTEGER O 
-*** ORIG  
-*** ORIG  C OUTPUT UNIT FOR PRINTED MESSAGES 
-*** ORIG        DATA O/6/ 
-*** ORIG        MAXDIM=200 
-*** ORIG        IF(N.LE.MAXDIM)GO TO 6 
-*** ORIG        WRITE(O,7)  
-*** ORIG      7 FORMAT('0WARNING:',I5,' TOO GREAT FOR THIS VERSION OF pt_in_poly. 
-*** ORIG       1 RESULTS INVALID')
-*** ORIG        RETURN
-*** ORIG      6 DO 1 I=1,N 
-*** ORIG        X(I)=XX(I)-PX 
-*** ORIG      1 Y(I)=YY(I)-PY 
-*** ORIG        INOUT=-1 
-*** ORIG        DO 2 I=1,N 
-*** ORIG        J=1+MOD(I,N) 
-*** ORIG        MX=X(I).GE.0.0 
-*** ORIG        NX=X(J).GE.0.0 
-*** ORIG        MY=Y(I).GE.0.0 
-*** ORIG        NY=Y(J).GE.0.0 
-*** ORIG        IF(.NOT.((MY.OR.NY).AND.(MX.OR.NX)).OR.(MX.AND.NX)) GO TO 2 
-*** ORIG        IF(.NOT.(MY.AND.NY.AND.(MX.OR.NX).AND..NOT.(MX.AND.NX))) GO TO 3 
-*** ORIG        INOUT=-INOUT 
-*** ORIG        GO TO 2
-*** ORIG      3 IF((Y(I)*X(J)-X(I)*Y(J))/(X(J)-X(I))) 2,4,5 
-*** ORIG      4 INOUT=0   
-*** ORIG        RETURN 
-*** ORIG      5 INOUT=-INOUT 
-*** ORIG      2 CONTINUE 
-*** ORIG        RETURN 
-*** ORIG        END 
+      CONTINUE                                                 
+      END

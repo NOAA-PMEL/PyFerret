@@ -263,15 +263,28 @@
 
 * take appropriate action
 *		S1  S2  S3  S4  S5  S6  S7  S8   S9  S10 S11  S12  S13  S14 S15  S16
-	GOTO (9999,100,100,100,500,100,700,100, 900,1000,1100,1200,1300,1400,100,100)
-     .								state
+c	GOTO (9999,100,100,100,500,100,700,100, 900,1000,1100,1200,1300,1400,100,100)
+c     .								state
+
+6      IF (state .EQ. 1) GOTO 9999
 
 * continue to next character
- 100	GOTO 5
+
+      IF (state .EQ. 2 .OR. 
+     .    state .EQ.  3 .OR. 
+     .    state .EQ.  4 .OR. 
+     .    state .EQ.  6 .OR. 
+     .    state .EQ.  8 .OR.
+     .    state .EQ. 15 .OR.
+     .    state .EQ. 16 ) THEN 
+	   GOTO 5
 
 * flag the last character of an atom - begin search for next atom
- 500	at_end(natom) = p
-	state = 1
+
+      ELSEIF (state .EQ. 5) THEN
+
+	 at_end(natom) = p
+	 state = 1
 	
 * reset - previous atoms may have had a quote not a pair of quotes inside curly braces
 	curly_brace_nest = 0
@@ -279,9 +292,12 @@
 
 	atom_open = .FALSE.
 	GOTO 5
-	
-* flag the last character of an atom one back - begin search for next atom
- 700	at_end(natom) = p-1
+
+* flag the last character of an atom one back - begin search for next atom	
+
+      ELSEIF (state .EQ. 7) THEN
+
+	at_end(natom) = p-1
 	last_state = 1
 	atom_open = .FALSE.
 	GOTO 50
@@ -290,7 +306,10 @@
 * this probably violates the theoretical underpinnings of the finite state
 * engine but ... what the heck, it's an easy hack
 * stay in this state until the matching "]" is found
- 900	IF (class .EQ. 4) THEN		! increase nesting
+
+      ELSEIF (state .EQ. 9) THEN
+
+	IF (class .EQ. 4) THEN		! increase nesting
 	   brkt_nest_level = brkt_nest_level + 1
 	ELSEIF ( class .EQ. 5 ) THEN	! decrease nesting
 	   brkt_nest_level = brkt_nest_level - 1
@@ -303,8 +322,11 @@
 * engine but ... what the heck, it's an easy hack
 * stay in this state until the matching \' is found
 * Note: this crude code cannot deal with nested quotations or escaped quotes
+      ELSEIF (state .EQ. 10) THEN
+
 *    Also, quoted names inside of square brackets will not be handled here
- 1000	IF (class .EQ. 11) THEN		! quote found
+	IF (class .EQ. 11) THEN		! quote found
+
 	   IF (last_state .EQ. 10) THEN      
 	      state = 4                 ! closing quote (?why not GOTO 500?)
 *       ... note that we may still be interpreting names like 'X'[stuff]
@@ -317,8 +339,11 @@
 	GOTO 5
 
 * Curly braces inside quotes inside curly braces
-* Hack to work around the case in ticket 2296
- 1100	IF (class .EQ. 14 .AND. q_in_curly_brace.EQ.0) ! quote inside curly braces
+* Work around for the case in ticket 2296
+
+      ELSEIF (state .EQ. 11) THEN
+
+	IF (class .EQ. 14 .AND. q_in_curly_brace.EQ.0) ! quote inside curly braces
      .    q_in_curly_brace = q_in_curly_brace + 1
 
 	IF (class.EQ.12 .AND. q_in_curly_brace.GT.0)   ! further curly brace start found
@@ -335,13 +360,18 @@
 * engine but ... what the heck, it's an easy hack
 * stay in this state until the matching \" is found
 * Note: this crude code cannot deal with nested quotations or escaped quotes
- 1200	IF (class .EQ. 14) THEN		! quote found
+
+      ELSEIF (state .EQ. 12) THEN
+
+	IF (class .EQ. 14) THEN		! quote found
            IF (last_state .EQ. 11 .AND. q_in_curly_brace.GT.0) THEN
 	      state = 11
 	      q_in_curly_brace = q_in_curly_brace - 1
 	   ENDIF
 	   IF (last_state .EQ. 12) THEN      
-	      GOTO 500                 ! closing quote found
+	      state = 5                 ! closing quote found
+	      GOTO 6
+
 *       ... note that we may still be interpreting names like 'X'[stuff]
 	   ELSE
 	      atom_open = .TRUE.        ! opening quote
@@ -352,11 +382,17 @@
 	GOTO 5
 
 * digit part of exponent
- 1300	state = 3
+
+      ELSEIF (state .EQ. 13) THEN
+
+	state = 3
 	GOTO 5
 
 * "_" underscore -- possible indicator of _DQ_ or _SQ_ 
- 1400	IF ( p .GT. tlen-3 ) THEN
+
+      ELSEIF (state .EQ. 14) THEN
+
+	IF ( p .GT. tlen-3 ) THEN
 	   GOTO 1410                ! cant be _DQ_ or _SQ_
 	ELSEIF (text(p:p+3) .EQ. p_DQ_quote) THEN
 	   IF (atom_open. AND. p.EQ.at_start(natom)) THEN
@@ -367,7 +403,8 @@
 	   ELSEIF (last_state .EQ. 15) THEN
 * ... this is a closing quote.  We have been inside of _DQ_ enclosed string
 	      p = p+3
-	      GOTO 500
+	      state = 5			 ! closing quote found 
+	      GOTO 6
 	   ELSE
 * ... the characters "_DQ_", but not start or end of string
 	      GOTO 1410
@@ -394,6 +431,7 @@
 	   class = 3  ! a letter
 	   GOTO 50
 
+      ENDIF
 
 * error exits
  5000	status = ferr_syntax

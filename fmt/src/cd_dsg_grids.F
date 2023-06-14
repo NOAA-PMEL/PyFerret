@@ -53,6 +53,7 @@
 * V76  1/20 *acm* Fix access to rowsize variable. 
 *                 Handle point datasets. 
 * V76  1/20 *acm* Orientation of Point-type data set to e_dim
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 
 * argument definitions:
 *       dset        - TMAP data set pointer
@@ -325,7 +326,8 @@
 * basic defaults
           grid_rotation(igrid) = 0.0
           DO 340 idim = 1, nferdims
- 340      grid_out_prod(idim,igrid) = .TRUE.
+             grid_out_prod(idim,igrid) = .TRUE.
+ 340      CONTINUE     
 
 * save a pointer to this grid for the TMAP variable
  350      ds_grid_number(tmvar) = igrid

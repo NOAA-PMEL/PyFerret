@@ -71,6 +71,7 @@
 * V72  *acm*  6/17 - add ferr_ppl_error to call errmsg routine for syntax
 *                    errors calling PPLUS, see ticket 2543
 * V76:  1/2020 -     Remove obsolete ferr_ODR_error 
+** 10/2022 *acm* Code cleanup: lengths of strings not to overflow length of character variable
 
         IMPLICIT NONE
 	include 'errmsg.parm'	! parameter definitions
@@ -112,7 +113,7 @@
 	DATA err_text( ferr_unknown_qualifier - greport )
      .		/ 'unknown command qualifier'			/
 	DATA report_err_code( ferr_unknown_qualifier- greport )
-     .		/ 'unknown_qualifier' /
+     .		/ 'unknown_qualifie' /
 
 	DATA err_text( ferr_unknown_variable - greport )
      .		/ 'variable unknown or not in data set'		/
@@ -238,7 +239,7 @@
 	DATA err_text( ferr_unknown_file_type - greport )
      .		/ 'class of data set is unknown'		/
 	DATA report_err_code( ferr_unknown_file_type - greport )
-     .		/ 'unknown_file_type' /
+     .		/ 'unknown_file_typ' /
 
 	DATA err_text( ferr_limits - greport )
      .		/ 'illegal limits'				/
@@ -282,7 +283,7 @@
 	DATA err_text( ferr_unknown_attribute - greport )
      .		/ 'attribute undefined or invalid attribute name'/
 	DATA report_err_code( ferr_unknown_attribute - greport )
-     .		/ 'unknown_attribute' /
+     .		/ 'unknown_attribut' /
 
 	DATA err_text( ferr_not_attribute - greport )
      .		/ 'error specifying attribute'/

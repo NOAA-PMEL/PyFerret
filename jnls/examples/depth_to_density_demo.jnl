@@ -1,3 +1,5 @@
+cancel mode logo
+
 ! depth_to_density_axis.jnl - S.Hankin 8/25/92 
 !   Updated to use ZAXREPLACE rather than @WEQ  - Ansley Manke 1/10/2000
 
@@ -27,9 +29,11 @@ message/quiet  ! pause to read
 set data levitus_climatology
 set region/y=0/x=130e:80w/z=0:1000
 
+set window/size=1.5
+
 ! define a new variable for density (dens) and contour it just for a look
 let/title=density dens = rho_un(salt,temp,z)
-contour dens
+contour/color=blue dens
 message/quiet  ! pause to look at the plot
 
 ! Define the density axis
@@ -39,5 +43,4 @@ define axis/z=1022:1032:1/unit="density"/depth zdens
 let temp_dens = ZAXREPLACE(temp, dens, z[gz=zdens])
 
 ! contour the new variable
-contour/z=1022:1032 temp_dens
-message/quiet  ! pause to look at the plot
+contour/color=blue/z=1022:1032 temp_dens

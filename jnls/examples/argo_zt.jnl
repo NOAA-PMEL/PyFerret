@@ -17,12 +17,14 @@
 !          yes? define axis/z/units=decibars/depth z7 = {5,100,200,300,400,800,1200}
 !          yes? go argo_zt 900622_prof.nc psal z7
 !
-
+!
+! NOTE: This kind of data might be downloaded from an ERDDAP server as a colletion of
+!       profiles. If this is the case, see the documentation about using DSG (Discrete
+!	sampling Geometries) datsets in PyFerret.
 
 CANCEL DATA/ALL
 CAN MODE logo
 CANCEL MODE depth_label ! changes label on vertical axis from DEPTH to just Z
-SET WINDOW/SIZ=0.6
 
 USE/ORDER=ZT $1
 

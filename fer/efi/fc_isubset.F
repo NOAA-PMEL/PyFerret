@@ -3,6 +3,7 @@
 *
 * Ansley Manke 11/28/2011
 * See ticket 1897
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 *
 * This function returns a subset of data given start indices and
 * sizes of features in a 1D array.
@@ -244,10 +245,11 @@
 
       i = res_lo_ss(X_AXIS)
 
-      DO 500 i1 = arg_lo_ss(X_AXIS,ARG1), arg_hi_ss(X_AXIS,ARG1)
-      DO 500 j1 = arg_lo_ss(Y_AXIS,ARG1), arg_hi_ss(Y_AXIS,ARG1)
-      DO 500 k1 = arg_lo_ss(Z_AXIS,ARG1), arg_hi_ss(Z_AXIS,ARG1)
-      DO 500 l1 = arg_lo_ss(T_AXIS,ARG1), arg_hi_ss(T_AXIS,ARG1)
+      DO i1 = arg_lo_ss(X_AXIS,ARG1), arg_hi_ss(X_AXIS,ARG1)
+      DO j1 = arg_lo_ss(Y_AXIS,ARG1), arg_hi_ss(Y_AXIS,ARG1)
+      DO k1 = arg_lo_ss(Z_AXIS,ARG1), arg_hi_ss(Z_AXIS,ARG1)
+      DO l1 = arg_lo_ss(T_AXIS,ARG1), arg_hi_ss(T_AXIS,ARG1)
+
          IF ( arg_1(i1,j1,k1,l1) .EQ. bad_flag(1) ) GOTO 600  ! done
          IF ( arg_2(i2,j2,k2,l2) .EQ. bad_flag(2) ) GOTO 600
 
@@ -255,31 +257,35 @@
          count = INT(arg_2(i2,j2,k2,l2))  ! number to put
 
          l4 = arg_lo_ss(T_AXIS,ARG4)
-         DO 400 l=res_lo_ss(T_AXIS), res_hi_ss(T_AXIS)
+         DO l=res_lo_ss(T_AXIS), res_hi_ss(T_AXIS)
 	    k4 = arg_lo_ss(Z_AXIS,ARG2)
-            DO 300 k=res_lo_ss(Z_AXIS), res_hi_ss(Z_AXIS)
+            DO k=res_lo_ss(Z_AXIS), res_hi_ss(Z_AXIS)
                j4 = res_lo_ss(Y_AXIS)
-	       DO 200 j=res_lo_ss(Y_AXIS), res_hi_ss(Y_AXIS)
+	       DO j=res_lo_ss(Y_AXIS), res_hi_ss(Y_AXIS)
 
-                  DO 100 n = 1, count
+                  DO n = 1, count
                      result(i,j,k,l) = arg_4(i4,j4,k4,l4)
                      i4 = i4 + 1
                      i = i + 1
- 100              CONTINUE
+                  ENDDO
  
                   j4 = j4 + arg_incr(Y_AXIS,ARG4)
- 200           CONTINUE
+               ENDDO
                k4 = k4 + arg_incr(Z_AXIS,ARG4)
- 300        CONTINUE
+            ENDDO
 
             l4 = l4 + arg_incr(T_AXIS,ARG4)
- 400     CONTINUE
+        ENDDO
 
       i2 = i2 + arg_incr(X_AXIS,ARG2)
       j2 = j2 + arg_incr(Y_AXIS,ARG2)
       k2 = k2 + arg_incr(Z_AXIS,ARG2)
       l2 = l2 + arg_incr(T_AXIS,ARG2)
- 500  CONTINUE
+
+      ENDDO
+      ENDDO
+      ENDDO
+      ENDDO
 
  600  CONTINUE
       

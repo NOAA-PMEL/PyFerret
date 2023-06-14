@@ -8,6 +8,7 @@
 
 ! Usage:		arg 1	2   3   4    5         6	
 !	GO bullseye expression xpt ypt xwid ywid "MIN" or "MAX"
+MESSAGE/CONTINUE find_bullseye vwnd[L=30] 45e 37n 10 10 MAX
 
 !  arg 1 (expression)	- name of variable or expression with bullseye
 !  arg 2 (xpt)		- approximate X location of bull's eye
@@ -17,8 +18,8 @@
 !  arg 6 (MIN or MAX)	- look for local "MIN" or "MAX"
 
 ! example:
-!	yes? USE ocean_atlas_annual
-!	yes? GO find_bullseye po4[k=1] 175e 50n 10 10 MAX
+!	yes? USE  monthly_navy_winds
+!	yes? GO find_bullseye find_bullseye vwnd[L=30] 45e 37n 10 10 MAX
 !	yes? show symbol success
 !	yes? show symbol failure_reason
 

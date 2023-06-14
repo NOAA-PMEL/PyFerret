@@ -72,11 +72,8 @@ C                with "*(*)" for the linux port
 	PMPT=PRMPT
 	K=1
 100	IN=' '
-#ifdef unix
+
 	IF(CMDFIL(1:8).EQ.'/dev/tty')THEN
-#else
-	if(cmdfil(1:3).eq.'TT:')then
-#endif
 	    CALL CHARIN(IN,2048,PMPT,IP)
 	ELSE
 	    READ(CMDLUN,999,END=901)IN

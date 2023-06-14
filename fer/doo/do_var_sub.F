@@ -89,6 +89,7 @@
 * v702 *sh* 11/16 -  mods for trac #2428 - calculation in gathered fragments
 * v73+ *acm*12/17 -  issue #1849, if box size 0 skip it - resulted in missing
 *                    result where result should be computed
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
@@ -130,8 +131,9 @@
 	bad_res = mr_bad_data( res_mr )
 
 * get and save grid box sizes (weights) just once for efficiency
-	DO 100 i = lo, hi
- 100	box(i)  = BOX_SIZE( i, grid, idim )
+	DO i = lo, hi
+	   box(i)  = BOX_SIZE( i, grid, idim )
+	ENDDO
 * 11/16 ... end boxes may be only partial cells
 	IF  (TM_WORLD(lo, grid, idim, box_lo_lim)
      .  .LT. cx_lo_ww(idim,res_cx)                ) box(lo) = 
@@ -149,11 +151,11 @@
 
 * ALONG X AXIS
 	IF ( idim .EQ. x_dim ) THEN
-	   DO 210 n = cx_lo_s6(com_cx), cx_hi_s6(com_cx)
-	   DO 210 m = cx_lo_s5(com_cx), cx_hi_s5(com_cx)
-	   DO 210 l = cx_lo_s4(com_cx), cx_hi_s4(com_cx)
-	   DO 210 k = cx_lo_s3(com_cx), cx_hi_s3(com_cx)
-	   DO 210 j = cx_lo_s2(com_cx), cx_hi_s2(com_cx)
+	   DO n = cx_lo_s6(com_cx), cx_hi_s6(com_cx)
+	   DO m = cx_lo_s5(com_cx), cx_hi_s5(com_cx)
+	   DO l = cx_lo_s4(com_cx), cx_hi_s4(com_cx)
+	   DO k = cx_lo_s3(com_cx), cx_hi_s3(com_cx)
+	   DO j = cx_lo_s2(com_cx), cx_hi_s2(com_cx)
 	      wsum_chunk = wsum(pt,j,k,l,m,n)
 	      mean_chunk = res (pt,j,k,l,m,n)
 	      s_chunk    = s   (pt,j,k,l,m,n)
@@ -170,16 +172,20 @@
 	      wsum(pt,j,k,l,m,n) = wsum_chunk
 	      res (pt,j,k,l,m,n) = mean_chunk
 	      s   (pt,j,k,l,m,n) = s_chunk
- 210	   CONTINUE
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
 
 * ALONG Y AXIS
 	ELSEIF ( idim .EQ. y_dim ) THEN
 
-	   DO 310 n = cx_lo_s6(com_cx), cx_hi_s6(com_cx)
-	   DO 310 m = cx_lo_s5(com_cx), cx_hi_s5(com_cx)
-	   DO 310 l = cx_lo_s4(com_cx), cx_hi_s4(com_cx)
-	   DO 310 k = cx_lo_s3(com_cx), cx_hi_s3(com_cx)
-	   DO 310 i = cx_lo_s1(com_cx), cx_hi_s1(com_cx)
+	   DO n = cx_lo_s6(com_cx), cx_hi_s6(com_cx)
+	   DO m = cx_lo_s5(com_cx), cx_hi_s5(com_cx)
+	   DO l = cx_lo_s4(com_cx), cx_hi_s4(com_cx)
+	   DO k = cx_lo_s3(com_cx), cx_hi_s3(com_cx)
+	   DO i = cx_lo_s1(com_cx), cx_hi_s1(com_cx)
 	      wsum_chunk = wsum(i,pt,k,l,m,n)
 	      mean_chunk = res (i,pt,k,l,m,n)
 	      s_chunk    = s   (i,pt,k,l,m,n)
@@ -196,16 +202,20 @@
 	      wsum(i,pt,k,l,m,n) = wsum_chunk
 	      res (i,pt,k,l,m,n) = mean_chunk
 	      s   (i,pt,k,l,m,n) = s_chunk
- 310	   CONTINUE
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
 
 
 * ALONG Z AXIS
 	ELSEIF ( idim .EQ. z_dim ) THEN
-	   DO 410 n = cx_lo_s6(com_cx), cx_hi_s6(com_cx)
-	   DO 410 m = cx_lo_s5(com_cx), cx_hi_s5(com_cx)
-	   DO 410 l = cx_lo_s4(com_cx), cx_hi_s4(com_cx)
-	   DO 410 j = cx_lo_s2(com_cx), cx_hi_s2(com_cx)
-	   DO 410 i = cx_lo_s1(com_cx), cx_hi_s1(com_cx)
+	   DO n = cx_lo_s6(com_cx), cx_hi_s6(com_cx)
+	   DO m = cx_lo_s5(com_cx), cx_hi_s5(com_cx)
+	   DO l = cx_lo_s4(com_cx), cx_hi_s4(com_cx)
+	   DO j = cx_lo_s2(com_cx), cx_hi_s2(com_cx)
+	   DO i = cx_lo_s1(com_cx), cx_hi_s1(com_cx)
 	      wsum_chunk = wsum(i,j,pt,l,m,n)
 	      mean_chunk = res (i,j,pt,l,m,n)
 	      s_chunk    = s   (i,j,pt,l,m,n)
@@ -222,15 +232,19 @@
 	      wsum(i,j,pt,l,m,n) = wsum_chunk
 	      res (i,j,pt,l,m,n) = mean_chunk
 	      s   (i,j,pt,l,m,n) = s_chunk
- 410	   CONTINUE
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
 
 * ALONG T AXIS
 	ELSEIF ( idim .EQ. t_dim ) THEN
-	   DO 510 n = cx_lo_s6(com_cx), cx_hi_s6(com_cx)
-	   DO 510 m = cx_lo_s5(com_cx), cx_hi_s5(com_cx)
-	   DO 510 k = cx_lo_s3(com_cx), cx_hi_s3(com_cx)
-	   DO 510 j = cx_lo_s2(com_cx), cx_hi_s2(com_cx)
-	   DO 510 i = cx_lo_s1(com_cx), cx_hi_s1(com_cx)
+	   DO n = cx_lo_s6(com_cx), cx_hi_s6(com_cx)
+	   DO m = cx_lo_s5(com_cx), cx_hi_s5(com_cx)
+	   DO k = cx_lo_s3(com_cx), cx_hi_s3(com_cx)
+	   DO j = cx_lo_s2(com_cx), cx_hi_s2(com_cx)
+	   DO i = cx_lo_s1(com_cx), cx_hi_s1(com_cx)
 
 	      wsum_chunk = wsum(i,j,k,pt,m,n)
 	      mean_chunk = res (i,j,k,pt,m,n)
@@ -248,15 +262,19 @@
 	      wsum(i,j,k,pt,m,n) = wsum_chunk
 	      res (i,j,k,pt,m,n) = mean_chunk
 	      s   (i,j,k,pt,m,n) = s_chunk
- 510	   CONTINUE
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
 
 * ALONG E AXIS
 	ELSEIF ( idim .EQ. e_dim ) THEN
-	   DO 610 n = cx_lo_s6(com_cx), cx_hi_s6(com_cx)
-	   DO 610 l = cx_lo_s4(com_cx), cx_hi_s4(com_cx)
-	   DO 610 k = cx_lo_s3(com_cx), cx_hi_s3(com_cx)
-	   DO 610 j = cx_lo_s2(com_cx), cx_hi_s2(com_cx)
-	   DO 610 i = cx_lo_s1(com_cx), cx_hi_s1(com_cx)
+	   DO n = cx_lo_s6(com_cx), cx_hi_s6(com_cx)
+	   DO l = cx_lo_s4(com_cx), cx_hi_s4(com_cx)
+	   DO k = cx_lo_s3(com_cx), cx_hi_s3(com_cx)
+	   DO j = cx_lo_s2(com_cx), cx_hi_s2(com_cx)
+	   DO i = cx_lo_s1(com_cx), cx_hi_s1(com_cx)
 	      wsum_chunk = wsum(i,j,k,l,pt,n)
 	      mean_chunk = res (i,j,k,l,pt,n)
 	      s_chunk    = s   (i,j,k,l,pt,n)
@@ -273,15 +291,19 @@
 	      wsum(i,j,k,l,pt,n) = wsum_chunk
 	      res (i,j,k,l,pt,n) = mean_chunk
 	      s   (i,j,k,l,pt,n) = s_chunk
- 610	   CONTINUE
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
 
 * ALONG F AXIS
 	ELSEIF ( idim .EQ. f_dim ) THEN
-	   DO 710 m = cx_lo_s5(com_cx), cx_hi_s5(com_cx)
-	   DO 710 l = cx_lo_s4(com_cx), cx_hi_s4(com_cx)
-	   DO 710 k = cx_lo_s3(com_cx), cx_hi_s3(com_cx)
-	   DO 710 j = cx_lo_s2(com_cx), cx_hi_s2(com_cx)
-	   DO 710 i = cx_lo_s1(com_cx), cx_hi_s1(com_cx)
+	   DO m = cx_lo_s5(com_cx), cx_hi_s5(com_cx)
+	   DO l = cx_lo_s4(com_cx), cx_hi_s4(com_cx)
+	   DO k = cx_lo_s3(com_cx), cx_hi_s3(com_cx)
+	   DO j = cx_lo_s2(com_cx), cx_hi_s2(com_cx)
+	   DO i = cx_lo_s1(com_cx), cx_hi_s1(com_cx)
 	      wsum_chunk = wsum(i,j,k,l,m,pt)
 	      mean_chunk = res (i,j,k,l,m,pt)
 	      s_chunk    = s   (i,j,k,l,m,pt)
@@ -298,7 +320,11 @@
 	      wsum(i,j,k,l,m,pt) = wsum_chunk
 	      res (i,j,k,l,m,pt) = mean_chunk
 	      s   (i,j,k,l,m,pt) = s_chunk
- 710	   CONTINUE
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
 
 	ENDIF
 

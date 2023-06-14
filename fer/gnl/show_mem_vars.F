@@ -60,6 +60,7 @@
 *               declaration line.
 * V650  Write to show_lun which may be set to a file unit number rather than std out*       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -108,9 +109,10 @@
 
 * display permanent variables
 	IF ( show_perm ) THEN
-	   DO 100 mr = 1, max_mr_avail
+	   DO mr = 1, max_mr_avail
 	      IF ( interrupted ) CALL ERRMSG( ferr_interrupt,status,' ',*5000 )
- 100	   IF (mr_protected(mr).EQ.mr_perm_protected) CALL SHOW_1_MR(mr,status)
+	      IF (mr_protected(mr).EQ.mr_perm_protected) CALL SHOW_1_MR(mr,status)
+ 	   ENDDO
 	ENDIF
 
 * display deletable variables

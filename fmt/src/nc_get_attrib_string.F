@@ -96,11 +96,7 @@
 
       INTEGER slen, flen
       PARAMETER (flen=10240)        ! size of attribute string, match size_rbuff
-#ifdef sun
-      BYTE      fhol(flen), ghol(flen)      ! c-type Hollerith string buffer
-#else
       INTEGER*1 fhol(flen), ghol(flen)     ! c-type Hollerith string buffer
-#endif 
 
        NC_GET_ATTRIB_STRING = .FALSE.
        IF (dset .EQ. unspecified_int4) RETURN

@@ -53,6 +53,8 @@
 * V63  *acm* 10/09 Changes for gfortran build
 * V6.74 3/12 *acm* cleanup ifdefs and unnecessary include files
 * 5/2020 Issue 1906: treat Proleptic-Gregorian identically to Gregorian
+* 1/2023 *acm* Code cleanup: Replace the computed GOTO statement 
+*                  "GOTO ( GOTO (100,100,, ... ) in_state"  with IF blocks
 
 * ARGUMENT DEFINITIONS
 *  date  - date to process
@@ -108,48 +110,84 @@
 	hour = 0
 	minute = 0
 	second = 0
-	fill_in = '01-'//month_names(1)//'-0000:00:00:00'
+	fill_in = '01-JAN-0000:00:00:00'
 	in_state = 1
 	pos = 0
 
-* read in next char
+* Look at next char
   100	pos = pos + 1
+
 * . Calc next state
 	in_state = out_state(Class(date,pos),in_state)
-* . Process next character unless this is a change of class, THEN output
-* STATUS       1   2   3   4   5   6   7   8   9   10  11  12  13  14
-	GOTO (100,100,100,100,120,100,100,100,100,130,140,100,150,100,
-     .	      100,160,100,100,170,100,100,180,190,9000) in_state
-* STATUS       15  16  17  18  19  20  21  22  23  24
 
+* . Process next character unless this is a change of class, THEN output
+
+      IF (in_state .EQ.  1 .OR.
+     .    in_state .EQ.  2 .OR.
+     .    in_state .EQ.  3 .OR.
+     .    in_state .EQ.  4 .OR.
+     .    in_state .EQ.  6 .OR.
+     .    in_state .EQ.  7 .OR.
+     .    in_state .EQ.  8 .OR.
+     .    in_state .EQ.  9 .OR.
+     .    in_state .EQ. 12 .OR.
+     .    in_state .EQ. 14 .OR.
+     .    in_state .EQ. 15 .OR.
+     .    in_state .EQ. 17 .OR.
+     .    in_state .EQ. 18 .OR.
+     .    in_state .EQ. 20 .OR.
+     .    in_state .EQ. 21) GOTO 100  ! get next character
+	
 * month found
-120	fill_in(4:6) = date(pos-2:pos)
+      IF (in_state .EQ. 5) THEN
+	fill_in(4:6) = date(pos-2:pos)
 	GOTO 100
+      ENDIF
+
 * 1 digit day found
-130	fill_in(2:2) = date(pos-1:pos-1)
+      IF (in_state .EQ. 10) THEN
+	fill_in(2:2) = date(pos-1:pos-1)
 	GOTO 100
+      ENDIF
+
 * 2 digit day found
-140	fill_in(1:2) = date(pos-2:pos-1)
+      IF (in_state .EQ. 11) THEN
+	fill_in(1:2) = date(pos-2:pos-1)
 	GOTO 100
+      ENDIF
+
 * year found
-150	fill_in(8:11) = date(pos-3:pos)
+      IF (in_state .EQ. 13) THEN
+	fill_in(8:11) = date(pos-3:pos)
 	GOTO 100
+      ENDIF
+
 * hour found
-160	fill_in(13:14) = date(pos-1:pos)
+      IF (in_state .EQ. 16) THEN
+	fill_in(13:14) = date(pos-1:pos)
 	GOTO 100
+      ENDIF
+
 * minute found
-170	fill_in(16:17) = date(pos-1:pos)
+      IF (in_state .EQ. 19) THEN
+	fill_in(16:17) = date(pos-1:pos)
 	GOTO 100
+      ENDIF
+
 * second found
-180	fill_in(19:20) = date(pos-1:pos)
+      IF (in_state .EQ. 22) THEN
+	fill_in(19:20) = date(pos-1:pos)
 	GOTO 100
+      ENDIF
 
 * End of string; break into parts
-190	READ (fill_in(1:2),'(I2)') day
+      IF (in_state .EQ. 23) THEN
+	READ (fill_in(1:2),'(I2)') day
 	READ (fill_in(8:11),'(I4)') year
 	READ (fill_in(13:14),'(I2)') hour
 	READ (fill_in(16:17),'(I2)') minute
 	READ (fill_in(19:20),'(I2)') second
+      ENDIF
 
 C  Get calendar attributes
 
@@ -157,11 +195,11 @@ C  Get calendar attributes
      .                    num_days, yeardays, month_names, 
      .                    days_in_month, days_before_month,
      .                    month_by_day)
-	DO 200 month = 1,12
+	DO month = 1,12
 	  istat = STR_CASE_BLIND_COMPARE( fill_in(4:6), 
      .       month_names(month) )
 	  IF (istat .EQ. str_match) GOTO 210
-200	CONTINUE
+	ENDDO
 	GOTO 9000
 
  210	continue

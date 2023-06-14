@@ -4,6 +4,7 @@
 *  Steve Hankin
 *  2/22/2001
 *  ACM v6.85 3/2013 Fix handling of bad-flags coming in on Arg 1
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 * 
 *  Expand argument 1 by createing a 2D XT structure from it with the 
 * separation between T columns given by the location of non-missing values in
@@ -222,14 +223,8 @@
 
 * pre-fill the entire output result with missing value flags
 *  (since each I-sequence in mask may have different number of valid pts)
-      DO 10 n=res_lo_ss(F_AXIS), res_hi_ss(F_AXIS)
-      DO 10 m=res_lo_ss(E_AXIS), res_hi_ss(E_AXIS)
-      DO 10 l=res_lo_ss(T_AXIS), res_hi_ss(T_AXIS)
-      DO 10 j=res_lo_ss(Y_AXIS), res_hi_ss(Y_AXIS)
-      DO 10 k=res_lo_ss(Z_AXIS), res_hi_ss(Z_AXIS)
-      DO 10 i=res_lo_ss(X_AXIS), res_hi_ss(X_AXIS)
-         result(i,j,k,l,m,n) = bad_flag_result
- 10   CONTINUE
+      
+      result = bad_flag_result
 
 * fill in the points as specified by the mask
       l1 = arg_lo_ss(T_AXIS,ARG1)

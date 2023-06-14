@@ -82,6 +82,7 @@
 *  1/2014 acm -- Fix ticket 2137: use correct indices when computing dx, dy.
 *  7/2016 acm -- Allocate the length of the axes for REAL*8 work arrays. 
 *                Use the argument subscript limits, so subsets are handled correctly.
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 
 *
 * In this subroutine we provide information about
@@ -403,12 +404,12 @@ C  variables for checking axis characteristics (modulo axes)
 
       ndimx = 0
       ndimy = 0
-      DO 10 i = X_AXIS,F_AXIS
+      DO i = X_AXIS,F_AXIS
          IF (arg_hi_ss(i,ARG2) - arg_lo_ss(i,ARG2) .GT.0) 
      .       ndimx = ndimx + 1
          IF (arg_hi_ss(i,ARG3) - arg_lo_ss(i,ARG3) .GT.0) 
      .       ndimy = ndimy + 1
-   10 CONTINUE
+      ENDDO
 
       IF ( (nx .NE. ny) .OR. (ndimx .GT. 1) .OR. (ndimy .GT.1) ) THEN
          err_msg = 
@@ -497,12 +498,15 @@ C  variables for checking axis characteristics (modulo axes)
          xpt = arg_2(i2,j2,k2,l2,m2,n2)
          ypt = arg_3(i3,j3,k3,l3,m3,n3)
          IF (xpt .EQ. bad_flag(ARG2) .OR. ypt .EQ. bad_flag(ARG3)) THEN
-            DO 80 n = res_lo_ss(F_AXIS), res_hi_ss(F_AXIS)
-            DO 80 m = res_lo_ss(E_AXIS), res_hi_ss(E_AXIS)
-            DO 80 l = res_lo_ss(T_AXIS), res_hi_ss(T_AXIS)
-            DO 80 k = res_lo_ss(Z_AXIS), res_hi_ss(Z_AXIS)
+            DO n = res_lo_ss(F_AXIS), res_hi_ss(F_AXIS)
+            DO m = res_lo_ss(E_AXIS), res_hi_ss(E_AXIS)
+            DO l = res_lo_ss(T_AXIS), res_hi_ss(T_AXIS)
+            DO k = res_lo_ss(Z_AXIS), res_hi_ss(Z_AXIS)
                result(i,j,k,l,m,n) = bad_flag_result
-   80       CONTINUE
+            ENDDO
+            ENDDO
+            ENDDO
+            ENDDO
 *           Go to the next pair of coordinates
             GOTO 690
          ENDIF
@@ -556,7 +560,7 @@ C  variables for checking axis characteristics (modulo axes)
             ENDIF
          ENDIF
 
-         DO 120 i1 = arg_lo_ss(X_AXIS,ARG1), arg_hi_ss(X_AXIS,ARG1)
+         DO i1 = arg_lo_ss(X_AXIS,ARG1), arg_hi_ss(X_AXIS,ARG1)
             IF ( TM_FPEQ(xpt, xaxdat(i1)) ) THEN
                imatch = i1
                GOTO 130
@@ -568,7 +572,7 @@ C  variables for checking axis characteristics (modulo axes)
             ELSE IF ( xpt .GE. xaxdat(i1) ) THEN
                ibot = i1
             ENDIF
-  120    CONTINUE
+         ENDDO
 
          IF ( .NOT. modulo(1) .OR. (modulo(1) .AND..NOT.full_span )) THEN
             IF ( xpt .GT. xaxdat(ihi) .AND.
@@ -601,12 +605,15 @@ C  variables for checking axis characteristics (modulo axes)
 
          IF ( ibot .EQ. ef_unspecified_int4 ) THEN
 *           Coordinate outside the grid
-            DO 140 n = res_lo_ss(F_AXIS), res_hi_ss(F_AXIS)
-            DO 140 m = res_lo_ss(E_AXIS), res_hi_ss(E_AXIS)
-            DO 140 l = res_lo_ss(T_AXIS), res_hi_ss(T_AXIS)
-            DO 140 k = res_lo_ss(Z_AXIS), res_hi_ss(Z_AXIS)
+            DO n = res_lo_ss(F_AXIS), res_hi_ss(F_AXIS)
+            DO m = res_lo_ss(E_AXIS), res_hi_ss(E_AXIS)
+            DO l = res_lo_ss(T_AXIS), res_hi_ss(T_AXIS)
+            DO k = res_lo_ss(Z_AXIS), res_hi_ss(Z_AXIS)
                result(i,j,k,l,m,n) = bad_flag_result
-  140       CONTINUE
+            ENDDO
+            ENDDO
+            ENDDO
+            ENDDO
 *           Go to the next pair of coordinates
             GOTO 690
          ENDIF
@@ -617,7 +624,7 @@ cbf      analogously in y direction
          jbot = ef_unspecified_int4
          jmatch = ef_unspecified_int4
 
-         DO 220 j1 = arg_lo_ss(Y_AXIS,ARG1), arg_hi_ss(Y_AXIS,ARG1)
+         DO j1 = arg_lo_ss(Y_AXIS,ARG1), arg_hi_ss(Y_AXIS,ARG1)
             IF ( TM_FPEQ(ypt, yaxdat(j1)) ) THEN
                jmatch = j1
                GOTO 230
@@ -628,7 +635,7 @@ cbf      analogously in y direction
             ELSE IF ( ypt .GE. yaxdat(j1) ) THEN
                jbot = j1
             ENDIF
-  220    CONTINUE
+         ENDDO
 
          IF ( ypt .GT. yaxdat(jhi) .AND.
      .        ypt .LT. yaxdat(jhi) + dyhi ) THEN
@@ -647,12 +654,15 @@ cbf      analogously in y direction
 
          IF ( jbot .EQ. ef_unspecified_int4 ) THEN
 *           Coordinate outside the grid
-            DO 240 n = res_lo_ss(F_AXIS), res_hi_ss(F_AXIS)
-            DO 240 m = res_lo_ss(E_AXIS), res_hi_ss(E_AXIS)
-            DO 240 l = res_lo_ss(T_AXIS), res_hi_ss(T_AXIS)
-            DO 240 k = res_lo_ss(Z_AXIS), res_hi_ss(Z_AXIS)
+            DO n = res_lo_ss(F_AXIS), res_hi_ss(F_AXIS)
+            DO m = res_lo_ss(E_AXIS), res_hi_ss(E_AXIS)
+            DO l = res_lo_ss(T_AXIS), res_hi_ss(T_AXIS)
+            DO k = res_lo_ss(Z_AXIS), res_hi_ss(Z_AXIS)
                result(i,j,k,l,m,n) = bad_flag_result
-  240       CONTINUE
+            ENDDO
+            ENDDO
+            ENDDO
+            ENDDO
 *           Go to the next pair of coordinates
             GOTO 690
          ENDIF

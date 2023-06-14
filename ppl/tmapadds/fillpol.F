@@ -83,6 +83,7 @@ C
 *                  when rescaling time for precision.
 * V745 *acm* 3/19  The fix for 2542 (issue 1814) needs to be applied only for
 *                  filled polygons in PyFerret.
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 
         IMPLICIT NONE
         include         'xinterrupt.cmn' ! 1/89 *sh*
@@ -177,9 +178,10 @@ C       Check switches
 *     "zpolybase" is the offset to the ycolor array
 	xpolybase = 1
         ptsbase = ibase - lnum 
-	DO 2010  I=1,nl
-        llen = x(ptsbase+i-1)
- 2010	xpolybase = xpolybase+llen
+	DO 2010 I=1,nl
+          llen = x(ptsbase+i-1)
+ 	  xpolybase = xpolybase+llen
+ 2010	CONTINUE	
 
         llen = x(ibase-1)      ! Length of color array
 
@@ -239,12 +241,6 @@ C *jd*
 	zzmin = 1e33
 	zzmax = -1e33
 	nlm1  = nl - 1
-
-cc	do 100 i = 0, nlm1 	      
-cc	   if (ZEQ.AND.x(zpolybase+i).EQ.CMZEQ) GOTO 100
-cc	   if (x(zpolybase+i) .gt. zzmax) zzmax = x(zpolybase+i)
-cc	   if (x(zpolybase+i) .lt. zzmin) zzmin = x(zpolybase+i)
-cc 100	end do
 
 	do 100 i = 0, nlm1 	      
 	   if (ZEQ.AND.x(zpolybase+1+i).EQ.CMZEQ) GOTO 101

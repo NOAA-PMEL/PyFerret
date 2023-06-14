@@ -51,18 +51,12 @@
 * calling argument declarations:
         CHARACTER*(*) prompt, buff
 
-#ifdef unix
-
 * internal variable declarations:
 ! "blen" must exceed the longest read
         INTEGER plen, blen
         PARAMETER (plen = 8, blen = 2048 )
 
-#ifdef sun
-        BYTE      hprompt(plen), hbuff(blen)
-#else
         INTEGER*1 hprompt(plen), hbuff(blen)
-#endif
 
 * translate to null-terminated c-type strings
         CALL TM_FTOC_STRNG( prompt, hprompt, plen )
@@ -76,9 +70,6 @@
 * null string returned means that EOF (^D) was entered
         IF ( hbuff(1) .EQ. 4 ) RETURN 1     ! ^D passed
 
-#else
-        STOP 'TM_FRIENDLY_READ isn't used by VMS'
-#endif
 	RETURN
 	END
 

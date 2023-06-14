@@ -52,11 +52,7 @@ C     DONE WITH THE PEN DOWN TO BE IN THE FORM OF DOTS AT EACH
 C     OF THE SPECIFIED COORDINATES.
 C
 C
-#ifdef unix
 	include 'PLTCOM.DAT'
-#else
-	include 'pplinc:PLTCOM.DAT'
-#endif
 C
 C     SET THE PLOTTING MODE.
 C

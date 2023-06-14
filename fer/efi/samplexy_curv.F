@@ -5,6 +5,7 @@
 * 4/03 
 * ???  Note: does not currently deal with modulo data  ???
 * 1/06 Remove calls to SIGN to compile with f90 on IRIX.
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 
 * This function samples 4-d curvlinear data on the x and y axes 
 * indicated by args 4 and 5
@@ -336,10 +337,10 @@ C Check that sample x and y are simple lists of points - same length
 
       ndimx = 0
       ndimy = 0
-      DO 10 i = X_AXIS,F_AXIS
+      DO i = X_AXIS,F_AXIS
          IF ( arg_hi_ss(i,ARG4) .GT. arg_lo_ss(i,ARG4) ) ndimx=ndimx + 1
          IF ( arg_hi_ss(i,ARG5) .GT. arg_lo_ss(i,ARG5) ) ndimy=ndimy + 1
-   10 CONTINUE
+      ENDDO
 
       IF ( (nx .NE. ny) .OR. (ndimx .GT. 1) .OR. (ndimy .GT.1) ) THEN
          err_msg = 
@@ -349,14 +350,7 @@ C Check that sample x and y are simple lists of points - same length
       
 * Initialize result
 
-      DO 15 n=res_lo_ss(F_AXIS), res_hi_ss(F_AXIS)
-      DO 15 m=res_lo_ss(E_AXIS), res_hi_ss(E_AXIS)
-      DO 15 l=res_lo_ss(T_AXIS), res_hi_ss(T_AXIS)
-      DO 15 k=res_lo_ss(Z_AXIS), res_hi_ss(Z_AXIS)
-      DO 15 j=res_lo_ss(Y_AXIS), res_hi_ss(Y_AXIS)
-      DO 15 i=res_lo_ss(X_AXIS), res_hi_ss(X_AXIS)
-         result(i,j,k,l,m,n) = bad_flag_result
-  15  CONTINUE
+      result = bad_flag_result
 
 * Get range of arg_2, longitude coordinates, and arg_4, xpts to sample.
 * is modulo-ing needed?  Also checking for bad values.
@@ -370,8 +364,8 @@ C Check that sample x and y are simple lists of points - same length
       xcoordmin = ABS(bad_flag(ARG2))
       xcoordmax = -1. * xcoordmin
 
-      DO 20 j2 = arg_lo_ss(Y_AXIS,ARG2), arg_hi_ss(Y_AXIS,ARG2)
-      DO 20 i2 = arg_lo_ss(X_AXIS,ARG2), arg_hi_ss(X_AXIS,ARG2)
+      DO j2 = arg_lo_ss(Y_AXIS,ARG2), arg_hi_ss(Y_AXIS,ARG2)
+      DO i2 = arg_lo_ss(X_AXIS,ARG2), arg_hi_ss(X_AXIS,ARG2)
          IF (arg_2(i2,j2,k2,l2,m2,n2) .NE. bad_flag(ARG2)) THEN
             xcoordmin = MIN(arg_2(i2,j2,k2,l2,m2,n2), xcoordmin)
             xcoordmax = MAX(arg_2(i2,j2,k2,l2,m2,n2), xcoordmax)
@@ -380,17 +374,18 @@ C Check that sample x and y are simple lists of points - same length
      .      'Arg 2, curvilinear X coordinates, contains missing values'
             GOTO 999
          ENDIF
-   20 CONTINUE
+      ENDDO
+      ENDDO
 
       xptmin = ABS(bad_flag(ARG4))
       xptmax = -1.* xptmin
 
-      DO 40 n4 = arg_lo_ss(F_AXIS,ARG4), arg_hi_ss(F_AXIS,ARG4)
-      DO 40 m4 = arg_lo_ss(E_AXIS,ARG4), arg_hi_ss(E_AXIS,ARG4)
-      DO 40 l4 = arg_lo_ss(T_AXIS,ARG4), arg_hi_ss(T_AXIS,ARG4)
-      DO 40 k4 = arg_lo_ss(Z_AXIS,ARG4), arg_hi_ss(Z_AXIS,ARG4)
-      DO 40 j4 = arg_lo_ss(Y_AXIS,ARG4), arg_hi_ss(Y_AXIS,ARG4)
-      DO 40 i4 = arg_lo_ss(X_AXIS,ARG4), arg_hi_ss(X_AXIS,ARG4)
+      DO n4 = arg_lo_ss(F_AXIS,ARG4), arg_hi_ss(F_AXIS,ARG4)
+      DO m4 = arg_lo_ss(E_AXIS,ARG4), arg_hi_ss(E_AXIS,ARG4)
+      DO l4 = arg_lo_ss(T_AXIS,ARG4), arg_hi_ss(T_AXIS,ARG4)
+      DO k4 = arg_lo_ss(Z_AXIS,ARG4), arg_hi_ss(Z_AXIS,ARG4)
+      DO j4 = arg_lo_ss(Y_AXIS,ARG4), arg_hi_ss(Y_AXIS,ARG4)
+      DO i4 = arg_lo_ss(X_AXIS,ARG4), arg_hi_ss(X_AXIS,ARG4)
          IF (arg_4(i4,j4,k4,l4,m4,n4) .NE. bad_flag(ARG4)) THEN
             xptmin = MIN(arg_4(i4,j4,k4,l4,m4,n4), xptmin)
             xptmax = MAX(arg_4(i4,j4,k4,l4,m4,n4), xptmax)
@@ -399,7 +394,12 @@ C Check that sample x and y are simple lists of points - same length
      .      'Arg 4, sample X points, contains missing values'
             GOTO 999
          ENDIF
-   40 CONTINUE
+      ENDDO
+      ENDDO
+      ENDDO
+      ENDDO
+      ENDDO
+      ENDDO
 
       IF (xptmin .LT. xcoordmin) THEN
          need_modulo = .TRUE.
@@ -418,27 +418,33 @@ C Check that sample x and y are simple lists of points - same length
       l3 = arg_lo_ss(T_AXIS,ARG2)
       k3 = arg_lo_ss(Z_AXIS,ARG2)
 
-      DO 30 j3 = arg_lo_ss(Y_AXIS,ARG3), arg_hi_ss(Y_AXIS,ARG3)
-      DO 30 i3 = arg_lo_ss(X_AXIS,ARG3), arg_hi_ss(X_AXIS,ARG3)
+      DO j3 = arg_lo_ss(Y_AXIS,ARG3), arg_hi_ss(Y_AXIS,ARG3)
+      DO i3 = arg_lo_ss(X_AXIS,ARG3), arg_hi_ss(X_AXIS,ARG3)
          IF (arg_3(i3,j3,k3,l3,m3,n3) .EQ. bad_flag(ARG3)) THEN
             err_msg =
      .      'Arg 3, curvilinear Y coordinates, contains missing values'
             GOTO 999
          ENDIF
-   30 CONTINUE
+      ENDDO
+      ENDDO
 
-      DO 50 n5 = arg_lo_ss(F_AXIS,ARG5), arg_hi_ss(F_AXIS,ARG5)
-      DO 50 m5 = arg_lo_ss(E_AXIS,ARG5), arg_hi_ss(E_AXIS,ARG5)
-      DO 50 l5 = arg_lo_ss(T_AXIS,ARG5), arg_hi_ss(T_AXIS,ARG5)
-      DO 50 k5 = arg_lo_ss(Z_AXIS,ARG5), arg_hi_ss(Z_AXIS,ARG5)
-      DO 50 j5 = arg_lo_ss(Y_AXIS,ARG5), arg_hi_ss(Y_AXIS,ARG5)
-      DO 50 i5 = arg_lo_ss(X_AXIS,ARG5), arg_hi_ss(X_AXIS,ARG5)
+      DO n5 = arg_lo_ss(F_AXIS,ARG5), arg_hi_ss(F_AXIS,ARG5)
+      DO m5 = arg_lo_ss(E_AXIS,ARG5), arg_hi_ss(E_AXIS,ARG5)
+      DO l5 = arg_lo_ss(T_AXIS,ARG5), arg_hi_ss(T_AXIS,ARG5)
+      DO k5 = arg_lo_ss(Z_AXIS,ARG5), arg_hi_ss(Z_AXIS,ARG5)
+      DO j5 = arg_lo_ss(Y_AXIS,ARG5), arg_hi_ss(Y_AXIS,ARG5)
+      DO i5 = arg_lo_ss(X_AXIS,ARG5), arg_hi_ss(X_AXIS,ARG5)
          IF (arg_5(i5,j5,k5,l5,m5,n5) .EQ. bad_flag(ARG5)) THEN
             err_msg =
      .      'Arg 5, sample Y points, contains missing values'
             GOTO 999
          ENDIF
-   50 CONTINUE
+      ENDDO
+      ENDDO
+      ENDDO
+      ENDDO
+      ENDDO
+      ENDDO
 
 *  For each (xpt,ypt) pair, search the data arrays arg2,arg3
 *  for the nearest higher (x,y) lat-lon coordinates.  Interpolate 
@@ -512,7 +518,7 @@ C Check that sample x and y are simple lists of points - same length
          ydiff = ABS(bad_flag_result)
          ptloc = 1
 
-         DO 250 iloc = 1, nloc
+         DO iloc = 1, nloc
             i3 = xlocations(iloc,1,1,1,1,1)
             j3 = xlocations(iloc,2,1,1,1,1)
 
@@ -523,7 +529,7 @@ C Check that sample x and y are simple lists of points - same length
                ydiff = yd
                ptloc = iloc
             ENDIF
-  250    CONTINUE
+         ENDDO
 
          ibot = xlocations(ptloc,1,1,1,1,1)
          jbot = xlocations(ptloc,2,1,1,1,1)

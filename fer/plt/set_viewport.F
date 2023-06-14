@@ -56,6 +56,7 @@
 *                  in PyFerret; FGD_GCLRWK deletes them all in PyFerret.
 *                  No need to protect colors in PyFerret.
 *                  Send an update to make sure the changes are immediately seen.
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -106,8 +107,9 @@ C  clipping indicator (lines from VMS SYS$LIBRARY:GKSDEFS.BND)
 	   CALL CLEAR_WINDOW( wsid )
 	ELSE
 * set new viewport - delete any segments showing in this viewport
-	   DO 200 iseg = vp_seg0(vp_num)+1, vp_segn(vp_num)
- 200	   CALL FGD_GDSG( iseg ) 
+	   DO iseg = vp_seg0(vp_num)+1, vp_segn(vp_num)
+	      CALL FGD_GDSG( iseg ) 
+ 	   ENDDO
 	ENDIF
 
 * indicate where new segments in this viewport of this window begin

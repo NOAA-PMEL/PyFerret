@@ -95,6 +95,8 @@
 * V697 2/16 *acm* DO NOT Increase length of cmnd buffer to 20480 but keep related
 *                   changes here
 * V7.6 1/20 *acm*  See issue 1966: Sketch out adding the script-name when error message written.
+** 10/2022 *acm* Code cleanup: remove references to obsolete gui interface
+*                TM_SPLIT_MESSAGE replaced by SPLIT_LIST
 
 
         IMPLICIT NONE
@@ -105,7 +107,6 @@
 	include 'xcontrol.cmn'
 	include 'xerrmsg_text.cmn'
         include 'xrisc.cmn'
-        include 'xgui.cmn'
 	include 'xplot_setup.cmn'
         include 'xinterrupt.cmn'
 	include 'command.parm'
@@ -136,7 +137,6 @@
 	last_error = status			! save it for "HELP"
 	status_out = status			! transfer error code to output
 	IF (allowed_err) GOTO 500		! error condition ignored
-	gui_status = status
 
 * initialize string for symbol FER_LAST_ERROR
 
@@ -149,9 +149,8 @@
 	IF ( status .GT. greport .AND. (.NOT.silent_err) ) THEN
 	   len_text = TM_LENSTR1( err_text(status - greport) ) 
 	   IF ( err_string .EQ. ' ' ) THEN
-	      CALL TM_SPLIT_MESSAGE( err_lun, ' **ERROR: '//
-     .				err_text(status-greport)(:len_text) )
-     
+	      CALL SPLIT_LIST(0, err_lun, ' **ERROR: '//
+     .				err_text(status-greport)(:len_text), 0 )
               IF (len_symbuf + len_text + 10 .GT. max_len_symbuf) 
      .			len_symbuf = len_symbuf - (len_text + 10)
 	      symbuf(len_symbuf:) = ' **ERROR: '//
@@ -169,9 +168,8 @@
 	      ENDIF
 
               IF (err_text(status-greport) .EQ. ' ') THEN
- 	         CALL TM_SPLIT_MESSAGE( err_lun, ' **ERROR: '//
-     .			        risc_buff(:len_string) )
-!     .				': '//err_string(:len_string) )  !11/93 SUN bug
+ 	         CALL SPLIT_LIST(0, err_lun, ' **ERROR: '//
+     .			        risc_buff(:len_string), 0)
 
                  IF (len_symbuf + len_string + 10 .GT. max_len_symbuf) 
      .			len_symbuf = len_symbuf - (len_string + 10)
@@ -184,10 +182,9 @@
                  ier = greport
                  ier = status - greport
                  len_text = TM_LENSTR1(err_text(status-greport))
-	         CALL TM_SPLIT_MESSAGE( err_lun, ' **ERROR: '//
+	         CALL SPLIT_LIST(0, err_lun, ' **ERROR: '//
      .				err_text(status-greport)(:len_text)//
-     .				': '//risc_buff(:len_string) )
-!     .				': '//err_string(:len_string) )  !11/93 SUN bug
+     .				': '//risc_buff(:len_string), 0)
 
                  
                  IF (len_symbuf + len_text + len_string + 13 .GT. max_len_symbuf )
@@ -242,15 +239,11 @@
 	ELSEIF ( status .EQ. ferr_erreq ) THEN
 
 	   len_string = TM_LENSTR1( risc_buff )
-#ifdef F90_SYSTEM_ERROR_CALLS
-	   call linux_perror('**ERROR: '//risc_buff(:len_string) )
-#else
            CALL PERROR( '**ERROR: '//risc_buff(:len_string) )
-#endif
 
 * interrupt processing ?
 	ELSEIF ( status .EQ. ferr_interrupt ) THEN
-	   CALL TM_SPLIT_MESSAGE( ttout_lun, '** INTERRUPTED! **')
+	   CALL SPLIT_LIST(0, ttout_lun, '** INTERRUPTED! **', 0)
            INTERRUPTED = .FALSE.
 * *kob*	if animating during an interrupt, lets clean up
 	   IF ( animate ) THEN
@@ -264,7 +257,7 @@
 
 	ELSE
 * unrecognized error code ?
-	   CALL TM_SPLIT_MESSAGE( err_lun, 'unknown error code:')              
+	   CALL SPLIT_LIST(0, err_lun, 'unknown error code:', 0)              
            symbuf(len_symbuf:) = 'unknown error code:'
            len_symbuf = MAX(max_len_symbuf, len_symbuf + 19)
 
@@ -283,11 +276,11 @@
 * ... display the offending command
            IF (len_cmnd .GT. max_len_symbuf) THEN
               len_cmnd = MIN(len_cmnd, max_len_symbuf)
-	      IF (status.NE.ferr_silent) CALL TM_SPLIT_MESSAGE( err_lun,
-     .					cmnd_buff(1:len_cmnd)//'...')
+	      IF (status.NE.ferr_silent) CALL SPLIT_LIST(0, err_lun,
+     .					cmnd_buff(1:len_cmnd)//'...', 0)
            ELSE
-	      IF (status.NE.ferr_silent) CALL TM_SPLIT_MESSAGE( err_lun,
-     .					cmnd_buff(1:len_cmnd))
+	      IF (status.NE.ferr_silent) CALL SPLIT_LIST(0, err_lun,
+     .					cmnd_buff(1:len_cmnd), 0)
            ENDIF
 
 	   cs_lev = csp
@@ -300,10 +293,10 @@
 	         GOTO 1100
 	      ENDIF
 * ... inform the operator.  If running in -script mode, exit from Ferret.
-	      CALL TM_SPLIT_MESSAGE( err_lun,
-     .   'Command file, command group, or REPEAT execution aborted')
+	      CALL SPLIT_LIST(0,  err_lun,
+     .   'Command file, command group, or REPEAT execution aborted', 0)
               IF (its_script) THEN
-	         CALL TM_SPLIT_MESSAGE( err_lun, 'ERROR RUNNING SCRIPT')
+	         CALL SPLIT_LIST(0,  err_lun, 'ERROR RUNNING SCRIPT', 0)
 	         status = 1
 		 CALL EXIT(status)
 	      ENDIF
@@ -314,8 +307,8 @@
 	   DO ics = cs_lev, 1, -1
 	      IF (cs_cmnd_num(ics) .EQ. cmnd_go) THEN
 		 indx = TM_LENSTR1(cs_text(ics))
-		 IF (ist .EQ. 0) CALL TM_SPLIT_MESSAGE( err_lun,
-     .		 'Executed by script: *** GO '//cs_text(ics)(1:indx)//' ***')
+		 IF (ist .EQ. 0) CALL SPLIT_LIST(0,  err_lun,
+     .		 'Executed by script: *** GO '//cs_text(ics)(1:indx)//' ***', 0)
 		 ist = ist + 1
 	      ENDIF
 	   ENDDO
@@ -357,7 +350,7 @@
 
 c! If want tree of script calls, along with the "Running script" message
 c!	   IF (ist .GT. 1) THEN
-c!	      CALL TM_SPLIT_MESSAGE( err_lun, 'Tree of script calls: ')
+c!	      CALL SPLIT_LIST(0, err_lun, 'Tree of script calls: ', 0)
 c!
 c!	      ndnt = '                '
 c!	      ib = 1
@@ -367,7 +360,7 @@ c!
 c!                 IF (cs_cmnd_num(ics) .EQ. cmnd_go) THEN
 c!                    indx = TM_LENSTR1(cs_text(ics))
 c!                    risc_buff = ndnt(:ib)// cs_text(ics)(:indx)//'.jnl'
-c!		      CALL TM_SPLIT_MESSAGE( err_lun,risc_buff(:indx+ib+4) )
+c!		      CALL SPLIT_LIST(0, err_lun,risc_buff(:indx+ib+4), 0)
 c!                    ib = ib + 3
 c!                 ENDIF
 c!              ENDDO

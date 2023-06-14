@@ -52,6 +52,7 @@
 * for Ferret v685+
 * v695+ *sh* 3/15 - support for TF (FMRC) regridding added
 * V698 *sh* 1/16 - bug fix: cx_regrid_trans were getting clobbered in dst_cx
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 
 	IMPLICIT NONE
 
@@ -134,19 +135,11 @@
 * set pointers to the auxiliary variables
 * (if we are have more aux variables to get some of these pointers will be wrong)
 * ... first pre-fill with known values
-	DO 5 i = 1, 3
+	DO i = 1, 3
 	   aux_mr_list(i) = dummy_mr
 	   aux_cx_list(i) = unspecified_int4 
- 5	CONTINUE
-!**************
-!* remove these lines
-!	im1 = mr1
-!	im2 = mr2
-!	im3 = mr3
-!	ic1 = cx1
-!	ic2 = cx2
-!	ic3 = cx3
-!**************
+ 	ENDDO
+
         i = 0
         DO idim = 1, nferdims
            IF (cx_aux_var(idim,lo_cx) .NE. unspecified_int4) THEN
@@ -165,15 +158,7 @@
 	      ENDIF
           ENDIF
 	ENDDO
-!**************
-!* remove these lines
-!	im1 = mr1
-!	im2 = mr2
-!	im3 = mr3
-!	ic1 = cx1
-!	ic2 = cx2
-!	ic3 = cx3
-!**************
+
 * ... TF-regridding (FMRC) introduces the idea that the number of axes being
 *     regridded (T&F) may differ from the number of aux variables (time2d)
 	naxis = i
@@ -205,16 +190,6 @@
 
 * set up 4D array limits as unsubscripted variables in COMMON
               CALL NON_ARRAY_SUBSC( aux_mr_list, naux )
-
-!**************
-!* remove these lines
-!	im1 = mr1
-!	im2 = mr2
-!	im3 = mr3
-!	ic1 = cx1
-!	ic2 = cx2
-!	ic3 = cx3
-!**************
 
 * create the context for the source data needed to perform the regrid
               CALL AUX_REGRID_LIMS( lo_cx, hi_cx, axis_list, naxis,
@@ -390,12 +365,13 @@
 
 * ... if any components were un_cached we must uncache the result
 	   not_reusable = .FALSE.
-	   DO 410 icom = isp, frame_bottom, -1
- 410	   IF ( ITS_UN_CACHED(is_mr(icom)) ) not_reusable = .TRUE.
+	   DO icom = isp, frame_bottom, -1
+	      IF ( ITS_UN_CACHED(is_mr(icom)) ) not_reusable = .TRUE.
+	   ENDDO
 	   IF ( not_reusable ) CALL UN_CACHE( dst_mr )
 
 * ...release component cx stack space
-	   DO 420 isp = hi_isp, frame_bottom, -1
+	   DO isp = hi_isp, frame_bottom, -1
 	      IF ( is_cx(isp) .NE. cx_stack_ptr ) WRITE (6,*) 'OP_STK??'	! temp
 	      cx_stack_ptr = cx_stack_ptr - 1
 	      mr  = is_mr( isp )
@@ -413,7 +389,7 @@
 	         CALL DEALLO_DYN_GRID(impl_grid)
 	         cx_has_impl_grid(com_cx) = .FALSE.
 	      ENDIF
- 420	   CONTINUE
+	   ENDDO
 
 * collapse the interp stack frame
 	   isp = frame_bottom

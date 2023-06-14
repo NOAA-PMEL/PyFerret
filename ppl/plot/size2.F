@@ -157,12 +157,8 @@ C
 * special COMMON to let this routine know if FERRET is in control
         include 'ppl_in_ferret.cmn'
 
-* If fortran 90, initialize in block data yabb *jd* Linux port 12.96
-#ifdef FORTRAN_90
-        external yabd
-#else
         DATA ppl_in_ferret / .FALSE. /
-#endif
+
         REAL width, height
 
         LOGICAL TM_FPEQ_SNGL

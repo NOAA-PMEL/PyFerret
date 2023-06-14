@@ -39,6 +39,7 @@
 * 12/12/02 *acm* bug fix: define the REAL*8 parameter  psecsto1900 using a 
 *                double precision constant .D0; the constant lost precision
 *                under linux.
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 
 * This function converts a Julian day from 1-jan-1900 to a trio of 3 values
 * on the Z axis: year, month, day
@@ -218,8 +219,9 @@
 
                   IF ( arg_1(i,j,k1,l,m,n) .EQ. bad_flag(1) ) THEN
 
-                    DO 90 k = 1, 6
- 90                 result(i,j,k,l,m,n) = bad_flag_result
+                    DO k = 1, 6
+                       result(i,j,k,l,m,n) = bad_flag_result
+                    ENDDO
 
                   ELSE
 

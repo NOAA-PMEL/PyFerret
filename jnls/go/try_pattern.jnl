@@ -2,6 +2,11 @@
 
 ! Description: View 4 plots to illustrate patterns
 
+IF ($program_name"0|PyFerret>1|*>0") THEN
+   say PATTERN style is not available in PyFerret. Exiting.
+   exit/script
+ENDIF
+
 query/ignore $1"<usage:  GO try_pattern patt_name"
 
 set wind/clear

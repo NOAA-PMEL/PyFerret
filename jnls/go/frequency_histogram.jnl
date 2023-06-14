@@ -101,3 +101,5 @@ ELSE
 ENDIF
 
 set mode/last verify
+sp rm frequency_h.raw frequency_h.dat
+

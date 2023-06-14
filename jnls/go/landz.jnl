@@ -18,6 +18,8 @@
 !
 ! Rivers and marine boundaries are only available as part of the higher-resolution dataset.
 ! Arguments 5, 6, and 7 will be ignored for ranges delta-x over 60 and delta-y over 30 degrees.
+!
+! See the notes at the start of land_detail.jnl for details on color specifications
 
 !Examples
 
@@ -31,13 +33,8 @@
 !                                                 all rivers, and marine boundaries
 
 ! test argument before performing any actions
-query/ignore $1%1|black|red|green|blue|lightblue|purple|white|thick|0|1|2|3|4|5|6|7|8|9|10|11|12|13|14|15|16|17|18|19|N|<go land_detail [pen or "N"] ["basemap"] [pen] [pen] with pen = 0(back), 1(fore), thick, 2-18 or a color%
+query/ignore 
 query/ignore $2%default|basemap|overlay|<argument 2 can be "basemap", "overlay"%
-query/ignore $3%1|black|red|green|blue|lightblue|purple|white|thick|0|1|2|3|4|5|6|7|8|9|10|11|12|13|14|15|16|17|18|19|N|<go land_detail [pen or "N"] ["basemap"] [pen] [pen] with pen = 0(back), 1(fore), thick, 2-18 or a color%
-query/ignore $4%1|black|red|green|blue|lightblue|purple|white|thick|0|1|2|3|4|5|6|7|8|9|10|11|12|13|14|15|16|17|18|19|N|<go land_detail [pen or "N"] ["basemap"] [pen] [pen] with pen = 0(back), 1(fore), thick, 2-18 or a color%
-query/ignore $5%1|black|red|green|blue|lightblue|purple|white|thick|0|1|2|3|4|5|6|7|8|9|10|11|12|13|14|15|16|17|18|19|N|<go land_detail [pen or "N"] ["basemap"] [pen] [pen] with pen = 0(back), 1(fore), thick, 2-18 or a color%
-query/ignore $6%1|black|red|green|blue|lightblue|purple|white|thick|0|1|2|3|4|5|6|7|8|9|10|11|12|13|14|15|16|17|18|19|N|<go land_detail [pen or "N"] ["basemap"] [pen] [pen] with pen = 0(back), 1(fore), thick, 2-18 or a color%
-query/ignore $7%1|black|red|green|blue|lightblue|purple|white|thick|0|1|2|3|4|5|6|7|8|9|10|11|12|13|14|15|16|17|18|19|N|<go land_detail [pen or "N"] ["basemap"] [pen] [pen] with pen = 0(back), 1(fore), thick, 2-18 or a color%
 
 ! Determine which land-line script to call
 

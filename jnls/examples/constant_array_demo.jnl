@@ -1,14 +1,8 @@
-define alias pause message
+cancel mode logo
 
 ! constant_array_demo.jnl (4/99)
-
 ! Description: Demonstration of the {1, 3, 5} "constant array"  syntax 
-
-! Constant array syntax introduced into Ferret in V5.0
-
 ! *acm* 7/01 update /pen= to /color=/thickness=
-
-
 
 ! ** Constant arrays allow you quickly to enter lists of constant values.
 
@@ -29,6 +23,7 @@ pause
 pause
 
 ! EXAMPLES
+set window/size=1.5
 
 ! Ex 1) plot a triangle
 

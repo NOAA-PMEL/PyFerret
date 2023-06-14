@@ -2,6 +2,10 @@
 ! Description: create an overlay of YT graticule lines to show the axis values
 
 ! Note: you may need to change the PPL LEV commands to contour over the
+!
+! Note: the /GRATICULE qualifier on plot commands supersedes this script
+!	with more-flexible control of graticule lines
+!
 !       range of the axes for your data.  Here we contour L rather than T 
 ! Example:
 !     yes? use coads_climatology

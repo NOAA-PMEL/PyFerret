@@ -35,6 +35,9 @@
 *                   The attribute points to the time or trajectory dimension, and 
 *                   the variable is a timeseries-index var or trajectory-index var, 
 *                   pointing to the timeseries or trajectory which profiles belong to.
+* 12/2022 *acm* Code cleanup: Declare ds_var_code_head etc as REAL*8 for consistency
+*		with such pointers elsewhere
+
 
 **************************************************************************
 * V720
@@ -117,6 +120,7 @@
      .		ds_open(pdsetalloc),
      .		ds_accepts_remote(pdsetalloc), 
      .		ds_hide(pdsetalloc), 
+     .		ds_has_aux_coords(pdsetalloc), 
      .		ds_regsteps(pdsetalloc), ds_basic_axes(6,pdsetalloc),
      .		ds_time_axis(pdsetalloc),
 **************************************************************************
@@ -158,16 +162,16 @@
 *    - only in TS sets
 	INTEGER*4	min_ds_tstart,max_ds_tend,ds_tdelta
 	INTEGER*4	ds_var_type
-        INTEGER         ds_var_code_head,
-     .                  ds_var_code_padding,
-     .                  string_array_result1
+        REAL*8          ds_var_code_head,
+     .                  ds_var_code_padding
+        INTEGER          string_array_result1
 
 * additional calculated or derived values pertaining to data sets
 	CHARACTER*2048	ds_name
 	CHARACTER*2048	ds_des_name
 	INTEGER*4	ds_open,ds_basic_axes,ds_time_axis
 	LOGICAL		ds_regsteps, ds_var_scaleit, ds_its_aux_coord, is_mc, 
-     .			ds_accepts_remote, ds_hide
+     .			ds_accepts_remote, ds_hide, ds_has_aux_coords
 	REAL*8		ds_1step,ds_lastep,ds_delstep,
      .			ds_file_info_ptr
         REAL            ds_var_scale, ds_var_off

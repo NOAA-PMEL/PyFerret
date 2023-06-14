@@ -48,6 +48,7 @@
 * v552  *acm* 3/03 new param IAXSET to restore axes after PLOT/AXES/set plot.
 *       *acm* 4/12 6D Ferret: time axis may be in t or f direction.
 * v744 *acm* 11/18 Issue 1786: graticule lines & axes drawn if PLOT/OVER/AXES given
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 
 
         IMPLICIT NONE
@@ -67,8 +68,9 @@
 
 * save previous axis state (top,bottom,left,right)
 
-	DO 10 i = 1, 4
- 10	save_iaxon(i) = iaxon(i)
+	DO i = 1, 4
+	   save_iaxon(i) = iaxon(i)
+ 	ENDDO
         save_labx = labelx
         save_laby = labely
 

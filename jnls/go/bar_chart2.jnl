@@ -5,6 +5,7 @@
 !		  use "ppl xaxis" to make X axis wide enough
 ! bug fix  12.98: overlay/vs -> overlay>overlay/vs *jd* per *sh*
 ! 04/2019 Extend axis references to allow E or F axis
+!  1/2023 change example: prevent missing data from being used
 
 ! Description: Make a bar chart using hollow rectangles
 
@@ -17,11 +18,11 @@
 ! 4 overlay	   - "OVERLAY" or " " or "CLEAR"
 ! 5 lower_bound	   - the bottom of the bar chart (default = below min data)
 
-! Example:
+! Example - use some data from a dataset as the list of heights to plot
 !	yes? SET DATA coads_climatology
-!	yes? SET REGION/L=1/Y=40S:40N/X=110W
-!	yes? GO  bar_chart2 PLOT/LINE=1 sst Y
-!	yes? GO  bar_chart2 PLOT/LINE=2 sst[x=90w] Y overlay
+!	yes? SET REGION/L=1/Y=40S:40N/X=180w
+!	yes? GO  bar_chart2 PLOT/LINE/COLOR=black sst Y
+!	yes? GO  bar_chart2 PLOT/LINE/COLOR=red sst[x=90w] Y overlay
 
 ! Note: To use a T axis requires CANCEL MODE CALENDAR
 
@@ -78,9 +79,8 @@ LET/QUIET y3 = IF y3_9999 NE (-9999) THEN y3_9999 !screen out REAL missing data
 
 
 ! Define the region "bar" to be the number of points x3
-LIST/NOHEAD/APPEND/FORMAT=("DEFINE REGION/I=1:",1PG11.6," bar")/FILE=bar_commands.jnl (bar_expr[$3"X|X|Y|Z|T|E|F"=@ngd]+1)*3 + 1
-GO bar_commands.jnl
-sp rm -f bar_commands.jnl     ! clean up
+define symbol bar_define "DEFINE REGION/I=1:`(bar_expr[$3"X|X|Y|Z|T|E|F"=@ngd]+1)*3+1` bar"
+($bar_define)
 
 ! define the pieces of each "bar" - 3 points
 ! for a data point i (Xi,Yi), the 3 points are 
@@ -110,3 +110,5 @@ SET REGION save
 
 
 set mode/last verify
+cancel data bar_plot.dat
+sp rm bar_plot.dat

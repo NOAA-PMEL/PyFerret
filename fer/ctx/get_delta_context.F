@@ -48,6 +48,7 @@
 * V420 (IBM/AIX port of V411): 10/5/95 - buffer for "READ(var,*"
 *       *acm* 3/12 cleanup ifdefs and unnecessary include files
 *       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 
 * specifiers may give coordinate in subscript units (/DI,/DJ,/DK,/DL) or
 * may give coordinate in "world" units (/DX,/DY,/DZ,/DT)
@@ -73,8 +74,9 @@
 
 * initialize
 	delta_given = .FALSE.
-	DO 10 idim = 1, nferdims
- 10	dcx_given( idim ) = .FALSE.
+	DO idim = 1, nferdims
+ 	   dcx_given( idim ) = .FALSE.
+	ENDDO
 
 * decode the delta qualifiers
 	DO 200 wworss = 0, (nferdims+1), nferdims

@@ -277,15 +277,7 @@
 	there = .true.
 
 *	OPEN THE FILE
-#ifdef atc_gks
  5      open (70,file=sfile,status='old',err=100)
-#else
-#ifdef NO_OPEN_READONLY
- 5      open (70,file=sfile,status='old',err=100)
-#else
- 5      open (70,file=sfile,readonly,status='old',err=100)
-#endif
-#endif
 *	READ IN THE PATTERNS AND SET THEM
         npat = 0
 10	read (70,'(a)',end=30,err=90) instr
@@ -361,35 +353,13 @@
 	   goto 101
 	end if
 
-#ifdef unix
 	sfile = str(beg+5:end)//'.pat'
 
-*	OPEN THE FILE
+*	OPEN THE FILEOL
 
-#   ifdef atc_gks
 	open (70,file=sfile,status='unknown',form='formatted',
      .	err=100)
-#   else
-#ifdef NO_OPEN_CARRIAGECONTROL
-	open (70,file=sfile,status='unknown',form='formatted',
-     .	err=100)
-#else
-	open (70,file=sfile,status='unknown',form='formatted',
-     .	carriagecontrol='list',err=100)
-#endif
-#   endif
-#else
-	sfile = 'fer_palette:'//str(beg+5:end)//'.spk'
 
-*	OPEN THE FILE
-#ifdef NO_OPEN_CARRIAGECONTROL
-	open (70,file=sfile,status='new',form='formatted',
-     .	err=100)
-#else
-	open (70,file=sfile,status='new',form='formatted',
-     .	carriagecontrol='list',err=100)
-#endif
-#endif
 *	WRITE OUT THE SPECTRUM
 	do i = 1,npat
 	   write (70,'(i3,2x,a25)') i, pattern_list(patterns(i))

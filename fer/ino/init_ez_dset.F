@@ -71,13 +71,13 @@
 * v614 *acm* 11/08 robust fix for bug 287: filenames beginning with digits. 
 *                  Check if the filename contains characters other than digits.
 * V64  10/09 *acm* longer string length for grid_name
-* V68  *acm* 1/12  ifdef double_p for double-precision ferret.
 *       *acm* 3/12 cleanup old VMS ifdef
 * V687  2.14 *acm* fix ticket 2144: Make buffer for list of varnames longer
 * V692  7/14 *acm* fix ticket 2182: For ez datasets opened w/o a grid spec, 
 *                  count the records and define an axis
 * V701  7/16 *acm* Ticket 2454. If the user gives lower-case names when opening
 *                  an EZ dataset, keep those names on output, etc.
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -113,11 +113,7 @@
 
 * local parameter declarations
 	CHARACTER*1	tab
-#ifdef NO_INTRINSIC_IN_PARAMETER
-	PARAMETER     ( tab = o'011' )
-#else
 	PARAMETER     ( tab = CHAR(9))
-#endif
 
 * functions
 	INTEGER         br_set_type
@@ -137,12 +133,7 @@
 	   dset = cx_data_set(cx_last)
 	   GOTO 200
 	ELSEIF ( TM_DIGIT(dset_name) ) THEN
-* *kob* 4/97
-#ifdef MANDATORY_FORMAT_WIDTHS
 	   READ (dset_name,*,ERR=100) dset	! 10/95
-#else
-	   READ (dset_name,'(I)',ERR=100) dset	! 10/95
-#endif
 
 * Is this a dataset name that starts with a number ?
 * (some compilers get an error on the above read if
@@ -153,9 +144,9 @@
 	   IF (dset .GE. 10) ndigits = 2
 	   IF (slen .GT. ndigits) THEN
               s1 = ndigits + 1
-              DO 80, i = s1,slen
+              DO i = s1,slen
 	         IF (.NOT. TM_DIGIT(dset_name(i:i)) ) GOTO 100
-  80	      CONTINUE
+              ENDDO
            ENDIF
 	      
 	   by_number = .TRUE.
@@ -165,13 +156,9 @@
 
 * open data set by name
  100	by_number = .FALSE.
-#ifdef unix
+
         path_name = TM_INQ_PATH( dset_name, 'FER_DATA', '    ',
      .                                   .TRUE., TMAP_status )
-#else
-	path_name = TM_INQ_PATH( dset_name, 'FER_DATA', 'data.dat', .TRUE.,
-     .					  TMAP_status )
-#endif
 	IF ( TMAP_status .EQ. merr_notmounted ) GOTO 5400
 	IF ( TMAP_status .NE. merr_ok ) GOTO 5900
 	dset = TM_DSET_NUMBER( path_name )
@@ -230,11 +217,7 @@
 	   IF (its_delimited) THEN
 	      type = ' '  ! to be determined in ez_init_dset
 	   ELSE
-#ifdef double_p
 	      type = 'R8'  ! default for stream reads
-#else
-	      type = 'R4'  ! default for stream reads
-#endif
 	   ENDIF
 	ELSE
 	   CALL EQUAL_STRING( cmnd_buff(qual_start(loc):qual_end(loc)),
@@ -298,8 +281,9 @@
      .                         .TRUE., .TRUE., .FALSE., order, status )
            IF ( status .NE. ferr_ok ) RETURN
 	ELSE
-	   DO 500 idim = 1,nferdimsp1
- 500	   order(idim) = idim
+	   DO idim = 1,nferdimsp1
+	      order(idim) = idim
+ 	   ENDDO
 	ENDIF
 	loc = qual_given( slash_set_data_grid )
 	IF ( loc .GT. 0 ) THEN

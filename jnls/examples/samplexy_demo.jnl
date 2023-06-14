@@ -1,6 +1,10 @@
 ! samplexy_demo.jnl
 ! 5/27/03 *acm*
 
+set mode verify
+set window/size=1.5
+cancel mode logo
+
 ! Set up some viewports.
 
 DEF VIEW/AXES/X=0.1:0.9/Y=0.65:0.95 bigup

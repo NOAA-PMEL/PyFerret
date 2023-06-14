@@ -99,6 +99,7 @@
 * V741 *acm*  4/18 Issue 1878: Ferret error if the WRITE results in an error
 * V74+ *acm* 10/18 routine minmax returns count of valid data
 * V751 6/19 *acm* TM_FMT rewrite: formatting of lon/lat coordinate strings
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -289,12 +290,8 @@
      .			'             FILENAME : '//
      .			ds_des_name(dset)(i+1:slen), 24+(slen-i))
 * ... DODS URL BASE or ABSOLUTE PATH
-* *kob* v553 - CYGWIN paths are always preceded by '.'
-#ifdef __CYGWIN__
-	   IF (i.GT.0 .AND.  ds_des_name(dset)(2:2).EQ.'\')   ! ' for emacs
-#else
+
 	   IF (i.GT.0 .AND.  ds_des_name(dset)(1:1).NE.'.')
-#endif
      .			CALL SPLIT_LIST(pttmode_explct, list_lun,
      .			'             FILEPATH : '//
      .			 ds_des_name(dset)(:i), i+24)
@@ -343,11 +340,13 @@
 	ENDIF
 
 * ... which axes require labels
-	DO 35 idim = 1, nferdims
- 35	need_doc(idim) = .TRUE.
+	DO idim = 1, nferdims
+	   need_doc(idim) = .TRUE.
+ 	ENDDO
 	IF ( .NOT.(do_unform.OR.do_dods.OR.list_format_given) ) THEN
-	   DO 36 idim = 1, ndim
- 36	   need_doc(idim) = CX_DIM_LEN( perm(idim), cx ) .EQ. 1
+	   DO idim = 1, ndim
+	      need_doc(idim) = CX_DIM_LEN( perm(idim), cx ) .EQ. 1
+ 	   ENDDO
 	ENDIF
 
 * ... if not indicated in time label show a nonstandard calendar name
@@ -581,11 +580,11 @@
 	      ALLOCATE(bytedata(n_alloc))
 	   ENDIF
 
-	   DO 300 n = lo6, hi6, del6
-	   DO 300 m = lo5, hi5, del5
-	   DO 300 l = lo4, hi4, del4
-	   DO 300 k = lo3, hi3, del3
-	   DO 300 j = lo2, hi2, del2
+	   DO n = lo6, hi6, del6
+	   DO m = lo5, hi5, del5
+	   DO l = lo4, hi4, del4
+	   DO k = lo3, hi3, del3
+	   DO j = lo2, hi2, del2
 	      IF ( interrupted ) RETURN
 ! ----- start string handler -------------
 	      IF (itsa_string) THEN
@@ -619,8 +618,8 @@
      .							line_buff(:slen)
  272		    CONTINUE
 	         ENDIF
-	         GOTO 300
-	      ENDIF
+	         CYCLE
+	      ENDIF  ! string
 ! ----- end string handler -------------
 	      IF ( do_unform ) THEN
 	         WRITE (list_lun, ERR=5010)
@@ -696,7 +695,11 @@
      		 ENDIF
 
 	      ENDIF
- 300	   CONTINUE
+ 	   ENDDO
+ 	   ENDDO
+ 	   ENDDO
+ 	   ENDDO
+ 	   ENDDO
  
 	   IF (n_alloc .GE. 1) THEN
 	       IF (out_type(1:3) .EQ. 'FLO') DEALLOCATE(floatdata)
@@ -792,7 +795,7 @@
 
 * As for non-comma or -tab listings, turn off these labels if /norow was given
 
-	   DO 350 n = lo6, hi6, del6
+	   DO 355 n = lo6, hi6, del6
 * ... label the block of blocks (6th dimension)
 	      IF ( ndim .GE. 6 .AND. valid(6) .AND. 
      .               (.NOT.norow) ) THEN
@@ -801,7 +804,7 @@
 	         CALL SPLIT_LIST(pttmode_explct, list_lun,
      .			' ---- '//line_buff(:alen), 6+alen )
 	      ENDIF
-	   DO 350 m = lo5, hi5, del5
+	   DO 354 m = lo5, hi5, del5
 * ... label the block of blocks (5th dimension)
 	      IF ( ndim .GE. 5 .AND. valid(5) .AND. 
      .               (.NOT.norow) ) THEN
@@ -810,7 +813,7 @@
 	         CALL SPLIT_LIST(pttmode_explct, list_lun,
      .			' ---- '//line_buff(:alen), 6+alen )
 	      ENDIF
-	   DO 350 l = lo4, hi4, del4
+	   DO 353 l = lo4, hi4, del4
 * ... label the block of blocks (4th dimension)
 	      IF ( ndim .GE. 4 .AND. valid(4) .AND. 
      .               (.NOT.norow) ) THEN
@@ -819,7 +822,7 @@
 	         CALL SPLIT_LIST(pttmode_explct, list_lun,
      .			' ---- '//line_buff(:alen), 6+alen )
 	      ENDIF
-	   DO 350 k = lo3, hi3, del3
+	   DO 352 k = lo3, hi3, del3
 * ... label a single block (3rd dimension)
 	      IF ( ndim .GE. 3 .AND. valid(3) .AND. 
      .               (.NOT.norow) ) THEN
@@ -828,7 +831,7 @@
 	         CALL SPLIT_LIST(pttmode_explct, list_lun,
      .			' ---- '//line_buff(:alen), 6+alen )
 	      ENDIF
-	   DO 350 j = lo2, hi2, del2
+	   DO 351 j = lo2, hi2, del2
 	      IF ( interrupted ) RETURN
 * ...  create label for this row
 	         IF ( ndim .GE. 2 .AND. valid(2) .AND. 
@@ -876,7 +879,12 @@
  340	         CONTINUE
  341	         CALL SPLIT_LIST(pttmode_explct, list_lun,
      .				line_buff(:alen), alen )
- 350	   CONTINUE
+
+ 351	   CONTINUE
+ 352	   CONTINUE
+ 353	   CONTINUE
+ 354	   CONTINUE
+ 355	   CONTINUE
 * done - go home
 	   RETURN
 	ENDIF

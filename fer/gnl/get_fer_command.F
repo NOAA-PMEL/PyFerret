@@ -109,13 +109,11 @@
 * V7+  6/16 *acm* Ticket 2446: Include the script name in warnings about 
 *                 unclosed IF blocks
 * V75+ 4/19 *acm* Issue 1927 (and 228!) initialize qual_given before parsing.
-*          
+** 10/2022 *acm* Code cleanup: remove references to obsolete gui interface
+* 12/2022 *acm* Code cleanup: Replace the computed GOTO statement with IF blocks
+*                  GOTO (100,200,300) input_source
 
         IMPLICIT NONE
-
-#ifdef MIXING_NAG_F90_AND_C
-	USE F90_UNIX
-#endif
 
 * calling argument declarations:
 	INTEGER		status
@@ -134,13 +132,8 @@
         CHARACTER*1 backslash, tab
 	CHARACTER*5 dprefix
 	PARAMETER ( dprefix = ' !-> ') 
-#ifdef NO_INTRINSIC_IN_PARAMETER
-        PARAMETER ( backslash = o'134' )
-	PARAMETER ( tab = o'011' )
-#else
         PARAMETER ( backslash = char(92) )
 	PARAMETER ( tab = CHAR(9) )
-#endif
 
 	include 'tmap_dims.parm'
 	include 'errmsg.parm'
@@ -151,10 +144,8 @@
 	include 'xcontrol.cmn'
 	include 'xinterrupt.cmn'
 	include 'xcontext.cmn'
-	include 'xgui.cmn'
 
 * initialize
-	gui_status = ferr_ok	! start w/ a clean bill o' health
 	error_count = 0
 	max_context = max_noframe_context  ! 2/2014
 	len_cmnd_copy = 0
@@ -194,41 +185,27 @@
  20     IF ( one_cmnd_mode .AND. (input_source .EQ. 1) ) THEN
            RETURN 1
         ENDIF
-        GOTO (100,200,300) input_source
 
 
 ************** OPERATOR AS SOURCE OF COMMAND LINE ****************************
 
- 100	IF (mode_gui) THEN
+      IF (input_source .EQ. 1) THEN
 
-* operator using mouse input device
-	   CALL MOUSE_COMMAND (cmnd_buff)
-	   cmnd_len_w_cmnt = TM_LENSTR( cmnd_buff )
+* operator sitting at their keyboard
 
-	ELSE
-
-* operator sitting at his keyboard
-!	   WRITE (ttout_lun,3000) prompt(1:prompt_len)
-! 3000	   FORMAT (1X,A,$)	! vms
-! 3000	   FORMAT (A,$)         ! unix
-!	   READ  ( ttin_lun,'(A)',END=2000 ) cmnd_buff
-!	   cmnd_len_w_cmnt = TM_LENSTR( cmnd_buff )
-
-           error_count = error_count + 1
-           IF (error_count .GT. 2) THEN
+	error_count = error_count + 1
+	IF (error_count .GT. 2) THEN
 * orderly shutdown on multiple errors
               cmnd_buff = 'EXIT /PROGRAM'
-           ELSE IF ( appending_cmnd ) THEN
+	ELSE IF ( appending_cmnd ) THEN
               CALL TM_FRIENDLY_READ('...? ',cmnd_buff,*20)
-           ELSE
+	ELSE
               CALL TM_FRIENDLY_READ(prompt(:prompt_len),cmnd_buff,*20)
-           ENDIF
-* clear interrupted if Ctrl-C was entered while typing command
-           INTERRUPTED = .FALSE.
-           cmnd_len_w_cmnt = TM_LENSTR( cmnd_buff )
-           error_count = 0      ! in case comment or blank line returns here
-
 	ENDIF
+* clear interrupted if Ctrl-C was entered while typing command
+	INTERRUPTED = .FALSE.
+	cmnd_len_w_cmnt = TM_LENSTR( cmnd_buff )
+	error_count = 0      ! in case comment or blank line returns here
 
 * echo command line to journal file
 
@@ -243,11 +220,12 @@
 	      
 	ENDIF
 	do_verify = .FALSE.
-	GOTO 1000
 
 *************** COMMAND FILE AS SOURCE OF COMMAND LINE ***********************
 
- 200	READ  (cmnd_lun, '(A)', END=210) cmnd_buff
+      ELSE IF (input_source .EQ. 2) THEN
+
+	READ  (cmnd_lun, '(A)', END=210) cmnd_buff
 
 	cmnd_len_w_cmnt = TM_LENSTR1( cmnd_buff )
 	IF (cmnd_buff(cmnd_len_w_cmnt:cmnd_len_w_cmnt) .EQ. pCR ) THEN
@@ -278,22 +256,20 @@
 	   ENDIF
 	ENDIF
 	CALL POP_CS
-	IF ( csp.EQ.0 .AND. mode_gui ) THEN		! GUI code ...
-	   gui_status = ferr_ok	! a clean bill o' health at GO termination
-	   RETURN 1
-	ELSE
 *          Consider an update of the graphics
            CALL FGD_CONSIDER_UPDATE(.FALSE.)
 	   GOTO 20
-	ENDIF
 
 *************** COMMAND STACK AS SOURCE OF COMMAND LINE ***********************
 
- 300	CALL CS_COMMAND( cmnd_buff, *20 )
+      ELSE IF (input_source .EQ. 3) THEN
+      
+	CALL CS_COMMAND( cmnd_buff, *20 )
 	cmnd_len_w_cmnt = TM_LENSTR1( cmnd_buff )
 	do_verify =  mode_verify .AND. mode_arg(pmode_verify,1).GE.2
 	prefix = dprefix
 
+      ENDIF
 
 *********** SAVE THE RAW COMMAND TO USE FOR ECHOING *************
  1000	raw_cmnd_buff = cmnd_buff

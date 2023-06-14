@@ -101,7 +101,6 @@
 * V65  *acm* 2/10- all warnings and notes to std error not std out
 * V68  *acm* 1/12- added use_strict argument for ticket 1910: micro-adjusting on 
 *                  repeated coordinates in netCDF/OPeDNAP datasets
-* V68  *acm* 1/12  ifdef double_p for double-precision ferret.
 * V674 2/12 *acm* 6D Ferret: use nferdims rather than 4 for dimension indexing
 * V683 9/12 *acm* Fix ticket 1531: nc is the default dataset type if not given 
 *                 with the command qualifier or the extension is not recognized.
@@ -123,6 +122,7 @@
 * v76  2/20 *acm*  If the specified /FEATURETYPE doesn't change the current setting 
 *                  then do not reinitialize the dataset
 * V745 *acm*  5/20  added mode_dsg to control turning off all DSG ops
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax.
 
 * arguments:
 *	dset_name	- filename of DESCRIPTOR file (input)
@@ -437,9 +437,6 @@
 * Open descriptor file for reading
 	OPEN   (UNIT		= lunit,
      .		FILE		= des_name,
-#ifdef READONLY_ALLOWED
-     .		READONLY,
-#endif
      .		STATUS		= 'OLD',
      .		ERR 		= 5000)
         opened = .TRUE.
@@ -494,12 +491,14 @@
 * 6/94 initialize d_time_modulo with .FALSE instead of 0 for IBM *kob*
 	d_time_modulo = .FALSE.
 	DO 170 cnt = 1,num_aux
-  170	d_aux_modnum(cnt)    = ' '
+  	   d_aux_modnum(cnt)    = ' '
+  170	CONTINUE
 	DO 180 cnt = 1,num_parm
-  180	d_add_parm(cnt)      = ' '
+  	   d_add_parm(cnt)      = ' '
+  180	CONTINUE
 	DO 190 cnt = 1,num_gridfiles
-  190	d_grid_filename(cnt) = ' '
-
+  	   d_grid_filename(cnt) = ' '
+  190	CONTINUE
 
         d_caltype       = 'GREGORIAN'
 
@@ -571,32 +570,21 @@
 * Call specific _INIT_DSET's now
 	IF (d_type .EQ. '  GT') THEN
 
-#ifdef double_p
-	GOTO 5600
-#endif
-	  CALL GT_INIT_DSET(dset_num, lunit, status)
-	  IF (status .NE. merr_ok) GOTO 9900
-	  CALL TM_MAKE_4D_GRIDS(dset_num, status)
-* ... bump the use counts on grids and axes used by variables in this data set
-	  CALL TM_DSET_USE_GRIDS( dset_num )
+	   GOTO 5600
+
 	ELSE IF (d_type .EQ. '  TS') THEN
 
-#ifdef double_p
-	GOTO 5600
-#endif
-	  CALL TS_INIT_DSET(dset_num, lunit, status)
-	  IF (status .NE. merr_ok) GOTO 9900
-	  CALL TM_MAKE_4D_GRIDS(dset_num, status)
-* ... bump the use counts on grids and axes used by variables in this data set
-	  CALL TM_DSET_USE_GRIDS( dset_num )
-!*kob*
+	   GOTO 5600
+
 	ELSE IF (d_type .EQ. '  MC') THEN
+
 	  CALL MC_INIT_DSET(dset_num, lunit, perm, tregular, 
      .      use_strict, do_dsg, status)
 	  IF (status .NE. merr_ok) GOTO 9900
 	  CALL TM_MAKE_4D_GRIDS(dset_num,status)
 * 1/00 - need to do this for remote mc aggregations
 	  CALL TM_DSET_USE_GRIDS( dset_num )
+
 	ENDIF
 	IF (status .NE. merr_ok) GOTO 9900
 

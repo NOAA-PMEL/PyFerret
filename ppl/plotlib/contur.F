@@ -2,7 +2,6 @@
      *	zlev,ndecl,lwgtl,lclr,nlev,hgt,narc,ang,xct,yct,xadd,lmin,lmax)
 
 *
-*
 *  This software was developed by the Thermal Modeling and Analysis
 *  Project(TMAP) of the National Oceanographic and Atmospheric
 *  Administration's (NOAA) Pacific Marine Environmental Lab(PMEL),
@@ -73,6 +72,12 @@ C  v67  2/2011 *acm* Fix ticket 1799; do contouring in larger sections.
 * V7.2  *acm* 6/17 Fix ticket bug2544 for depth-axis plots the above needs
 *                  different tests. If clipping is implented we can get rid of
 *                  the changes for 2328 and 2544.
+* 11/2022 *acm* Code cleanup: 
+*              - Fix loops with DO termination statement which is not 
+*                  END DO or CONTINUE, and loops that share termination statements
+*              - Rework arithmetic IF statements 
+*              - Remove blocks of code that are commented out 
+*              - GOTO statements remain. Overall organization of the routine unchanged. 
 
 ****************************************************************************
 C**
@@ -139,7 +144,8 @@ c     oceanography emr   dec/69
         INCLUDE 'pyfonts.cmn'
 	include 'axis_inc.decl'
 	include 'AXIS.INC'
-
+	include 'miss_inc.decl'
+	include 'MISS.INC'
 
 * TMAP interrupt flag
 
@@ -167,18 +173,13 @@ C	Place init into data stmt *jd* 12.96 linux
 
 C     Curvilinear coordinates declarations
         integer icurv, status
-#ifdef double_p
 	real*8 x_curv(6000), y_curv(6000)
-#else
-	real x_curv(6000), y_curv(6000)
-#endif
 c
 c     initialize
 c*******************************************************************************
 c
-	if(nlev)1200,1200,12
-12	pi=3.1415926
-
+	if (nlev.le.0) goto 1200
+	pi=3.1415926
 
 	igroup = fnt_all
         IF (pyfont .AND. pyf_set(icont)) igroup = icont
@@ -225,40 +226,48 @@ c	dslab=5.
 	hhgt = hgt /2.
 	ny10=(ny-1)/10+1
 	do 17 jbit=1,10
-17	ixpon(jbit)=4**(jbit-1)
+	   ixpon(jbit)=4**(jbit-1)
+17	continue	
 c
 c     get zmax,zmin,zrng,weezee
 c*******************************************************************************
 c
 	iblk=max0(nx/10+1,5)
 	jblk=max0(ny/10+1,5)
-	zmax=-1.e35
-	zmin=1.e35
+	zmax=-1.* cmzge
+	zmin=cmzge
 	ib=0
-	do 55 istrt=1,nx,iblk
-	ib=ib+1
-	iend=min0(istrt+iblk,nx)
-	jb=0
-	do 55 jstrt=1,ny,jblk
-	jb=jb+1
-	jend=min0(jstrt+jblk,ny)
-	zmaxbl=-1.e35
-	zminbl=1.e35
-	do 50 i=istrt,iend
-	do 50 j=jstrt,jend
-	zij=z(i,j)
-	if(zij.gt.big) go to 50
-	zmaxbl=amax1(zij,zmaxbl)
-	zminbl=amin1(zminbl,zij)
-50	continue
-	zmax=amax1(zmaxbl,zmax)
-	zmin=amin1(zminbl,zmin)
-	zmaxb(ib,jb)=zmaxbl
-	zminb(ib,jb)=zminbl
-55	continue
-	zrng=(zmax-zmin)*1.1
-	if(zrng)1200,1200,60
-60	weezee = zrng*.0002
+
+ 	do 56 istrt=1,nx,iblk
+ 	   ib=ib+1
+ 	   iend=min0(istrt+iblk,nx)
+ 	   jb=0
+ 
+ 	   do 55 jstrt=1,ny,jblk
+ 	      jb=jb+1
+ 	      jend=min0(jstrt+jblk,ny)
+ 	      zmaxbl=-1*cmzge
+ 	      zminbl=cmzge
+ 
+ 	      do 51 i=istrt,iend
+ 	         do 50 j=jstrt,jend
+ 	            zij=z(i,j)
+ 	            if(zij.gt.big) cycle
+ 	            zmaxbl=amax1(zij,zmaxbl)
+ 	            zminbl=amin1(zminbl,zij)
+50	         continue
+51 	      continue
+ 	      zmax=amax1(zmaxbl,zmax)
+ 	      zmin=amin1(zminbl,zmin)
+ 	      zmaxb(ib,jb)=zmaxbl
+ 	      zminb(ib,jb)=zminbl
+55	   continue
+56 	continue
+ 
+ 	zrng=(zmax-zmin)*1.1
+ 	if(zrng .le. 0) goto 1200
+ 	weezee = zrng*.0002
+
 c
 c     main loop over all contour levels
 c*******************************************************************************
@@ -269,7 +278,7 @@ c
 ! these will be compared to the location of labels on the current line to
 ! determine any conflicts.
 	if (draftsman) then
-	  do 1102, k1=1,nlabc
+	  do 1102 k1=1,nlabc
 	    xlabp(k1)=xlabc(k1)
 	    ylabp(k1)=ylabc(k1)
 1102	  continue
@@ -279,16 +288,16 @@ c
 	endif
 	IF ( interrupted ) GOTO 1200		! TMAP interrupt processing
 	zc = zlev(lev)
-c**	if((zmax-zc)*(zc-zmin))1100,1100,70
-c** replace with a less prone to overflow calculation
-c**
-	if(zc.ge.zmax .or. zc.le.zmin)goto 1100
-70	ndec = ndecl(lev)
+
+	if(zc.ge.zmax .or. zc.le.zmin) goto 1100
+	ndec = ndecl(lev)
 	icolr=lclr(lev)
 	lwgt = lwgtl(lev)
-	do 75 i=1,nx
-	do 75 j=1,ny10
-75	ind10(i,j)=0
+	do 71 i=1,nx
+	   do 70 j=1,ny10
+	      ind10(i,j)=0
+70	   continue
+71	continue
 c
 c     get label width
 c*******************************************************************************
@@ -312,25 +321,13 @@ c
 	    endif
 	    icolro=icolr
 	endif
-c	nchar = ndec+2
-c	if(nchar)120,120,100
-c100	abzrnd = abs(zc)+.5/10.**max0(0,ndec)
-c	do 110 k=1,10
-c	if(abzrnd-10**k)120,110,110
-c110	nchar=nchar+1
-c120	nchar=nchar+1
-c	if(ndec.lt.0)cthen
-c	    width= hgt *(nchar*9.+8.)/8.
-c	else
-c	    width= hgt *((nchar-1)*9.+13.)/8.
-c	endif
-c
+
 c     loop over the grid searching for a contour entering square ii,jj
 c     thru side 1 or 4.      (the contour must be unused)
 c*******************************************************************************
 c
 	ib=0
-	do 1010 istrt=1,nx,iblk
+	do 1011 istrt=1,nx,iblk
 	iend=min0(istrt+iblk,nx+1)
 	ib=ib+1
 	jb=0
@@ -338,24 +335,32 @@ c
 	jb=jb+1
 	if(zmaxb(ib,jb).lt.zc .or. zminb(ib,jb).gt.zc) go to 1010
 	jend=min0(jstrt+jblk,ny+1)
-	do 200 i=istrt,iend
-	ikab=i-istrt+1
-	do 200 j=jstrt,jend
-	jkab=j-jstrt+1
-	kabij=10
-	if(i.gt.nx .or. j.gt.ny) go to 200
-	zij=z(i,j)
-	if(zij.gt.big) go to 200
-	if(abs(zij-zc).le.weezee) zij=zc+sign(weezee,zij-zc)
-	kabij=-1
-	if(zij.gt.zc) kabij=1
-200	kab(ikab,jkab)=kabij
+
+	do i=istrt,iend
+	   ikab=i-istrt+1
+	   do j=jstrt,jend
+	      jkab=j-jstrt+1
+	      kabij=10
+	      if(i.gt.nx .or. j.gt.ny) goto 200
+	      zij=z(i,j)
+	      if(zij.gt.big) goto 200
+	      if(abs(zij-zc).le.weezee) zij=zc+sign(weezee,zij-zc)
+	      kabij=-1
+	      if(zij.gt.zc) kabij=1
+ 200	      continue
+	      kab(ikab,jkab)=kabij
+	   enddo
+	enddo
+
 	iendm1=iend-1
 	jendm1=jend-1
-	do 1000 ii=istrt,iendm1
+
+	do 1001 ii=istrt,iendm1
 	ikab=ii-istrt+1
+
 	do 1000 jj=jstrt,jendm1
 	jkab=jj-jstrt+1
+
 	i=ii
 	j=jj
 	kabij=kab(ikab,jkab)
@@ -373,8 +378,10 @@ c
 	ll=4
 	if(kabij+kabjp1+lused4.eq.0) go to 540
 	go to 1000
+
 300	continue
-340	lin = ll
+
+	lin = ll
 	k=1
 	nseg = 1
 c
@@ -385,41 +392,47 @@ c
 350	lp1 = lin+1-(lin/4)*4
 	lp2 = lp1+1-(lp1/4)*4
 	lm1 = lp2+1-(lp2/4)*4
-	if(iretrn-360)355,360,360
-355	k=k+1
-	frac = (zc-zz(lin))/(zz(lp1)-zz(lin))
-	x(k) = xx(lin)+ (xx(lp1)-xx(lin))*frac
-	y(k) = yy(lin)+ (yy(lp1)-yy(lin))*frac
-	iind=i+lp2/4
-	jind=j+lp1/4
-	lhor = lin-(lin/2)*2
-	jwrd=(jind-1)/10+1
-	j2bit=jind-(jwrd-1)*10
-#ifdef unix
-        ind10(iind,jwrd)=ind10(iind,jwrd)+int(2.-lhor)*ixpon(j2bit)
-#else
-	ind10(iind,jwrd)=ind10(iind,jwrd)+jint(2.-lhor)*ixpon(j2bit)
-#endif
+	if(iretrn .lt. 360) then 
+	   k=k+1
+	   frac = (zc-zz(lin))/(zz(lp1)-zz(lin))
+	   x(k) = xx(lin)+ (xx(lp1)-xx(lin))*frac
+	   y(k) = yy(lin)+ (yy(lp1)-yy(lin))*frac
+	  iind=i+lp2/4
+	   jind=j+lp1/4
+	   lhor = lin-(lin/2)*2
+	   jwrd=(jind-1)/10+1
+	   j2bit=jind-(jwrd-1)*10
+           ind10(iind,jwrd)=ind10(iind,jwrd)+int(2.-lhor)*ixpon(j2bit)
+	endif 
 c
-c     see if an exit exists on side l-1,l+1,or l+2. if so choose the one
+c     see if an exit exists on side L-1,L+1,OR L+2. if so choose the one
 c     closest to side l. if the exit is already used terminate x,y.
 c*******************************************************************************
 c
 360	iretrn = 350
 	lexit = lm1
-	if(kabov(lin)+kabov(lm1))380,370,380
-370	if(kabov(lp1)+kabov(lp2))450,390,450
-380	if(kabov(lp1)+kabov(lp2))410,400,410
-390	flm1 = (zc-zz(lin))/(zz(lm1)-zc)
-	flp1 = (zc-zz(lp1))/(zz(lp2)-zc)
-	if(lused(lp1).eq.1) go to 450
-	if(flm1.le.flp1 .and. lused(lm1).eq.0) go to 450
-400	lexit = lp1
-	go to 450
-410	lexit = lp2
-	if(kabov(lp2)+kabov(lm1))470,450,470
-450	if(lused(lexit))530,530,460
-460	kmax=k+1
+
+	if(kabov(lin)+kabov(lm1) .eq. 0) then  
+	   if(kabov(lp1)+kabov(lp2) .eq. 0) then
+	      flm1 = (zc-zz(lin))/(zz(lm1)-zc)
+	      flp1 = (zc-zz(lp1))/(zz(lp2)-zc)
+	      if(lused(lp1).eq.1) go to 450
+	      if(flm1.le.flp1 .and. lused(lm1).eq.0) go to 450
+	      lexit = lp1
+	   endif
+	else
+	   if(kabov(lp1)+kabov(lp2) .eq. 0) then
+	      lexit = lp1
+	   else
+	      lexit = lp2
+	      if(kabov(lp2)+kabov(lm1) .ne. 0) goto 470
+	   endif
+	endif
+
+450	continue
+	if(lused(lexit) .le. 0) goto 530
+	kmax=k+1
+
 	x(kmax)=x(2)
 	y(kmax)=y(2)
 	x(1) = x(k)
@@ -428,89 +441,113 @@ c
 	y(k+2)=y(3)
 	klosed=1
 	go to 700
+
 c
 c     no exit.  if nseg=1 reverse x,y and continue.
 c               if nseg=2 terminate x,y.
 c*******************************************************************************
 c
-470	if(kabov(lp2)+kabov(lm1)-15)480,480,500
-480	kda=lin
-	kdb=lp2
-	if(kabov(lp2)-5)495,495,490
-490	kda = lm1
-	kdb = lp1
-495	k=k+1
-	frac = (zc-zz(kda))/(zz(kdb)-zz(kda))
-	x(k) = xx(kda) + (xx(kdb)-xx(kda))*frac
-	y(k) = yy(kda) + (yy(kdb)-yy(kda))*frac
-500	if(nseg-1)510,510,505
-505	kmax=k
-	x(1)=x(2)
-	y(1)=y(2)
-	x(k+1)=x(k)
-	y(k+1)=y(k)
-	klosed=0
-	go to 700
-510	iretrn=360
+
+470	continue
+
+	if(kabov(lp2)+kabov(lm1) .le. 15) then
+	   kda=lin
+	   kdb=lp2
+	   if(kabov(lp2) .gt. 5) then
+	      kda = lm1
+	      kdb = lp1
+	   endif
+	   k=k+1
+	   frac = (zc-zz(kda))/(zz(kdb)-zz(kda))
+	   x(k) = xx(kda) + (xx(kdb)-xx(kda))*frac
+	   y(k) = yy(kda) + (yy(kdb)-yy(kda))*frac
+
+	endif
+
+	if(nseg .gt. 1) then
+	   kmax=k
+	   x(1)=x(2)
+	   y(1)=y(2)
+	   x(k+1)=x(k)
+	   y(k+1)=y(k)
+	   klosed=0
+	   go to 700
+	endif
+
+	iretrn=360
 	nseg = 2
 	kh = 1+k/2
 	do 520 kk=2,kh
-	kkr = k+2-kk
-	xkk=x(kk)
-	ykk=y(kk)
-	x(kk)= x(kkr)
-	y(kk)= y(kkr)
-	x(kkr)=xkk
-520	y(kkr)=ykk
+	   kkr = k+2-kk
+	   xkk=x(kk)
+	   ykk=y(kk)
+	   x(kk)= x(kkr)
+	   y(kk)= y(kkr)
+	   x(kkr)=xkk
+	   y(kkr)=ykk
+520	continue	
+
 	i=ii
 	j=jj
 	lexit=ll
+
 c
 c     find square entered by present exit. get xx,yy,zz,kabov for each
 c     corner and lused for each side.
 c*******************************************************************************
 c
+
 530	i= i+ isin(lexit)
 	jsub=5-lexit
 	j= j +isin(jsub)
 	lin=lexit+2 - ((lexit+1)/4)*4
 c
 c
-540	do 620 l=1,4
-	jl=j+(l-1)/2
-	lp1=l+1-(l/4)*4
-	il=i+(lp1-1)/2
-	ind(l)=0
-	zz(l)=1.e35
-	kabov(l)=10
-	if(il*(nx+1-il))610,610,550
-550	if(jl*(ny+1-jl))610,610,560
-560	if(z(il,jl)-big)570,610,610
-570	jwrd=(jl-1)/10+1
-	j2bit=jl-(jwrd-1)*10
-	indl=ind10(il,jwrd)/ixpon(j2bit)
-	ind(l)=indl-(indl/4)*4
-	zz(l)=z(il,jl)
-	if(abs(zz(l)-zc)-weezee)580,580,590
-580	zz(l)=zc+sign(weezee,zz(l)-zc)
-590	kabov(l)=-1
-	if(zz(l)-zc)610,610,600
-600	kabov(l)=1
- 610    xx(l)= px(il)*xf + xoff
-620	yy(l)= py(jl)*yf + yoff
+540	continue
+	do 620 l=1,4
+	   jl=j+(l-1)/2
+	   lp1=l+1-(l/4)*4
+	   il=i+(lp1-1)/2
+	   ind(l)=0
+	   zz(l)=cmzge
+	   kabov(l)=10
+	   if(il*(nx+1-il) .gt. 0) then 
+	   if(jl*(ny+1-jl) .gt. 0) then
+	      if(z(il,jl) .lt. big) then
+	         jwrd=(jl-1)/10+1
+	         j2bit=jl-(jwrd-1)*10
+	         indl=ind10(il,jwrd)/ixpon(j2bit)
+	         ind(l)=indl-(indl/4)*4
+	         zz(l)=z(il,jl)
+	         if(abs(zz(l)-zc) .le. weezee) zz(l)=zc+sign(weezee,zz(l)-zc)
+	         kabov(l)=-1
+	         if(zz(l) .gt. zc) kabov(l)=1
+	      endif 
+	   endif 
+	   endif 
+ 	
+	   xx(l)= px(il)*xf + xoff
+	   yy(l)= py(jl)*yf + yoff
+620	continue
+
 	lused(4) = ind(1)/2
 	lused(1) = ind(1)-2*lused(4)
 	lused(2) = ind(2)/2
 	lused(3) = ind(4)-(ind(4)/2)*2
-	if(iretrn-350) 300,350,350
+	if(iretrn .lt. 350) then
+	   goto 300
+	else
+	   goto 350
+	endif
 c
 c     the arrays x,y are now complete. calculate distance s along
 c     the contour. start plotting the contour
 c*******************************************************************************
 c
-700	s(2)=0.
-	if(kmax-2)1000,1000,720
+700	continue
 
+	s(2)=0.
+	if(kmax .le. 2) goto 1000
 c
 c     For the three argument contour command, the px and py arrays contain
 c     fractional indices instead of axis values.  At this point in the code,
@@ -519,34 +556,36 @@ c     factor(xf/yf) and offset(xoff/yoff) calculations to retrieve the fractiona
 c     indices, call CURV_COORD() to converts these indices into the transformed
 c     axis values, and then reapply the offset and factor.
 c
- 720    IF (curvilinear) THEN
-           DO 722 icurv=1, kmax
+	IF (curvilinear) THEN
+           do 722 icurv=1, kmax
               x_curv(icurv)=(x(icurv)-xoff)/xf
               y_curv(icurv)=(y(icurv)-yoff)/yf
- 722       CONTINUE
+722	   continue
 
            CALL CURV_COORD(x_curv, y_curv, kmax, 1.0, 1.0, status) ! xform the pts
 	   IF (curv_missing) GOTO 1000
 
-           DO 724 icurv=1, kmax
+           do 724 icurv=1, kmax
               x(icurv)=(x_curv(icurv)+xadd)*xf + xoff
               y(icurv)=y_curv(icurv)*yf + yoff
               lmin = MIN(lmin, x_curv(icurv))
               lmin = MAX(lmax, x_curv(icurv))
- 724       CONTINUE
+724	   continue
         ENDIF
 
         do 750 k=3,kmax
-	dxx = x(k)-x(k-1)
-	dyy = y(k)-y(k-1)
-750	s(k) = s(k-1)+ sqrt(dxx*dxx+dyy*dyy)
+	   dxx = x(k)-x(k-1)
+	   dyy = y(k)-y(k-1)
+	   s(k) = s(k-1)+ sqrt(dxx*dxx+dyy*dyy)
+750	continue	
 	smax = s(kmax)
 	slab1 = smax*slab1f
+
 ! TMAP mod, spline fit:
 ! initialize spline work arrays if using spline under tension fit.
 	if (spline_tension.ne.0.) then
 	  call kurv1(kmax-1,x(2),y(2),0.,0.,3,splxp,splyp,
-     ,      spltmp,spls,spline_tension,splier)
+     .      spltmp,spls,spline_tension,splier)
 	  if (splier.ne.0) then
 	  endif
 	endif
@@ -556,18 +595,6 @@ c
 ! dslab as might be expected.  modify the stest line to get something you like.
 	if (draftsman) then
 	  stest = max1(0.0,dslab-slab1)                 ! original code
-c
-c	  stest = max1(0.0,dslab-dslab*0.5*		! shifted by 1/2 the
-c     .      (smax/dslab-float(int(smax/dslab))))	! excess of n dslab labels
-c
-c	  call itime(iatime)				! more of a random
-c	  slab1 = smax*0.4*rand(iatime(3)*k)+0.1	! starting point
-c	  stest = max1(0.0,dslab-slab1)			! iatime(3) is sec
-c
-c	  stest = max1(0.0,dslab-width)			! inset width
-c
-c	  stest = max1(0.0,dslab*(1.0-0.2))		! inset 0.2 * dslab
-c
 	else
 	  stest = max1(0.0,dslab-slab1)
 	endif
@@ -577,25 +604,27 @@ c
 c     check conditions for labelling.
 c*******************************************************************************
 c
-755	if(ndec+2)900,900,760
-760	km1= max0(k-1,2)
+	do while ( k .lt. kmax)
+ 	if(ndec .le. -2) goto 900
+
+	km1= max0(k-1,2)
 	stest = stest + s(k)-s(km1)
-	if(stest-dslab)900,770,770
-770	if(smax-s(k)-2.0*width)900,900,780
-780	kp1=k+1
+	if(stest .lt. dslab) goto 900
+	if(smax-s(k)-2.0*width .le. 0) goto 900
+	kp1=k+1
 	if(lev.eq.1) go to 785
 	dlev=abs(zlev(lev)-zlev(lev-1))
 	xt = (x(k) - xoff)/xf
 	yt = (y(k) - yoff)/yf
 	do 781 i=1,nx-1
-	if(xt.ge.px(i) .and. xt.le.px(i+1))goto 782
-781	continue
-782	do 783 j=1,ny-1
-! TMAP mod 4/19/89 - applied fixes from DON
-!	if(yt.ge.py(i) .and. yt.le.py(i+1))goto 784	! original code
-	if(yt.ge.py(j) .and. yt.le.py(j+1))goto 784
+	   if(xt.ge.px(i) .and. xt.le.px(i+1)) exit
+781	continue	
+
+	do 783 j=1,ny-1
+	   if(yt.ge.py(j) .and. yt.le.py(j+1)) exit
 783	continue
-784	i=min0(i,nx-1)
+
+	i=min0(i,nx-1)
 	j=min0(j,ny-1)
 	dx=(px(i+1)-px(i))*xf
 	dy=(py(j+1)-py(j))*yf
@@ -609,6 +638,7 @@ c
 	else
 	    dzdy=(z(i,j+1)-z(i,j))/dy
 	endif
+
 c**	dzdg=sqrt(dzdx*dzdx+dzdy*dzdy)
 c** replace with a less prone to overflow calculation
 c**
@@ -637,6 +667,7 @@ c**
 	  if(cspace.lt.hgt*.90) go to 900
         endif
 785	continue
+
 	do 800 kk = kp1,kmax
 	dxx = x(kk)-x(k)
 	dyy = y(kk)-y(k)
@@ -652,17 +683,25 @@ c**
 ! appropriate y space but this doesn't work so well.  adding a little extra
 ! hgt was necessary and then the slope of the contour line needed to be taken
 ! into account.  this was found by trial and error.
+
 	if (draftsman) then
 	  spacey=hgt+0.4*hgt+hgt*abs(dyy/space)*abs(dyy/space)
 	  spacex=width
-	  if(abs(dyy)-spacey)791,792,792
-791	  if(abs(dxx)-spacex)800,792,792
-792	  if(space/ark-.95)900,810,810
+	  if (abs(dyy) .lt. spacey) then
+	     if(abs(dxx) .lt. spacex) cycle  ! 800 loop
+	  endif
 	else
-	  if(space-width)800,790,790
-790	  if(space/ark-.95)900,810,810
+	  if(space .lt. width)  cycle  ! 800 loop
         endif
+
+        if(space/ark .lt. .95) then
+           goto 900
+        else 
+           goto 810
+        endif
+
 800	continue
+
 	go to 900
 c
 c     draw the label
@@ -675,17 +714,9 @@ c
 ! label to be written dslab distance over while not reseting stest indicates
 ! that the label was not written and that there should only be a minor shift
 ! before trying to write the label again.
-!810	stest=0.
+
 810	continue
-c	do 812 kkk=1,5
-c	dxx=x(kk-1)+(x(kk)-x(kk-1))*.2*kkk-x(k)
-c	dyy=y(kk-1)+(y(kk)-y(kk-1))*.2*kkk-y(k)
-c	space=sqrt(dxx*dxx+dyy*dyy)
-c	if(space-width)812,812,815
-c812	continue
-c815	continue
-c	xendl = x(k) + width*dxx/space
-c	yendl = y(k) + width*dyy/space
+
 	xa=x(kk-1)-x(k)
 	xb=x(kk)-x(kk-1)
 	ya=y(kk-1)-y(k)
@@ -752,9 +783,9 @@ c	yendl = y(k) + width*dyy/space
 ! leads to labels looking poor, a fix will be needed.
 	if (narc.gt.1.and.spline_tension.ne.0.) then
           splt=(spls(kk-1)-((x(kk)-xendl)**2+(y(kk)-yendl)**2)**0.5)/
-     /         spls(kmax-1)
+     .         spls(kmax-1)
           call kurv2(splt,xs,ys,kmax-1,x(2),y(2),
-     *               splxp,splyp,spls,spline_tension)
+     .               splxp,splyp,spls,spline_tension)
 	  xendl=xs
 	  yendl=ys
 	endif
@@ -770,14 +801,16 @@ c**
 c
 ! TMAP mod, horz contour labels:
 ! set angle, xlab, and ylab where xlab,ylab is the starting position where
-! the label should be written.  also, loops 818 and 819 make sure that the
+! the label should be written.  also, loops in this block make sure that the
 ! contour label won't hit it's own contour line somewhere else.  this is not 
 ! an issue with non-draftsman labels because the label is always along a 
 ! segment of the contour line.  with draftsman labels, the label may only cut 
 ! into a small segment of the contour line.  then later, the contour line may 
 ! turn sharply, come back, and cross over the just written label.  if this is
 ! the case, don't write the label.
+
 	if (draftsman) then
+
 	  angle = 0.
 	  xlab = (xst+xstp)*0.5-0.5*width+0.5*hhgt
 	  ylab = (yst+ystp)*0.5-0.5*hgt
@@ -787,43 +820,44 @@ c
 	    if ((abs(x(k1)  -xcen).lt.(width*0.5)).or.
      .	        (abs(x(k1+1)-xcen).lt.(width*0.5))) then
 	      if ((ycen-y(k1))*(ycen-y(k1+1)).lt.0.) goto 900
-c	      if (abs(y(k1)-ycen).lt.hgt*0.5) goto 900
-c	      if (abs(y(k1+1)-ycen).lt.hgt*0.5) goto 900
 	    endif
-818	  continue
+818	  continue	  
 	  do 819 k1=kk+1,kmax
 	    if ((abs(x(k1)  -xcen).lt.(width*0.5)).or.
      .	        (abs(x(k1-1)-xcen).lt.(width*0.5))) then
 	      if ((ycen-y(k1))*(ycen-y(k1-1)).lt.0.) goto 900
-c	      if (abs(y(k1)-ycen).lt.hgt*0.5) goto 900
-c	      if (abs(y(k1-1)-ycen).lt.hgt*0.5) goto 900
 	    endif
-819	  continue
+819	  continue	  
+
 	else
+
 	  angle = 90. 
+
 ! TMAP patch - Don's version of ARCSIN fix - 4/19/89
           if(dyy.lt.0.0)angle=-90.
 ! end of TMAP patch 4/19/89
-	  if(dxx)820,830,820 
-820	  angle = atan(dyy/dxx)*180./pi 
-830	  if(dxx) 850,840,840 
-840	  if (width .eq. 0.0) then
-	     xlab = xst
+	  if(dxx .ne. 0) angle = atan(dyy/dxx)*180./pi 
+
+	  if(dxx .ge. 0) then 
+	     if (width .eq. 0.0) then
+	        xlab = xst
              ylab = yst
-          else
-             xlab = xst+ hhgt*(0.5*dxx+dyy)/width
-	     ylab = yst+ hhgt*(0.5*dyy-dxx)/width
-	  endif
-	  go to 860
-850	  if (width .eq. 0.0) then
-	     xlab = xstp
-             ylab = ystp
-          else
-	     xlab = xstp-hhgt*(0.5*dxx+dyy)/width
+             else
+                xlab = xst+ hhgt*(0.5*dxx+dyy)/width
+	        ylab = yst+ hhgt*(0.5*dyy-dxx)/width
+	     endif
+	  else
+
+	     if (width .eq. 0.0) then
+	        xlab = xstp
+                ylab = ystp
+             else
+	        xlab = xstp-hhgt*(0.5*dxx+dyy)/width
 	     ylab = ystp-hhgt*(0.5*dyy-dxx)/width
+	     endif
 	  endif
 	endif
-c
+
 ! TMAP mod, horz contour labels:
 ! this loop checks to make sure the current label is not going to conflict
 ! with a label written on the previous contour line.  the current contour
@@ -833,10 +867,8 @@ c
 ! ydelp where the labels are about width/widthp wide and hgt/hgt tall.  the
 ! c at the end of the variable represents 'current' and the p represents the
 ! previous contour line.  cen is where the center of the label is and del is
-! the amount of space from the center that the label wants all to itself.  line
-! 860 was altered from the original contur.F.  it used to point to the call
-! symbel line below.
-860	continue
+! the amount of space from the center that the label wants all to itself. 
+
 	if (draftsman) then
 	  xcenc=(xst+xstp)*0.5
 	  ycenc=(yst+ystp)*0.5
@@ -851,12 +883,11 @@ c
      .	        ((xcenc+xdelc).gt.(xcenp-xdelp)).and.
      .	        ((ycenc+ydelc).gt.(ycenp-ydelp)).and.
      .	        ((ycenc-ydelc).lt.(ycenp+ydelp))) goto 900
-861	  continue
+861	  enddo	   
 	endif
 ! TMAP mod, horz contour labels:
 ! draw the label and reset stest to 0. which indicates that the label has
 ! been drawn.  the next label should be dslab distance over.
-!860	call symbel(xlab,ylab,angle,hgt,nchar,str)	! original code (860)
 
 * PyFerret Fonts locate the label by user units
 * check if the start and end of the label will be inside the 
@@ -906,13 +937,13 @@ c
         else
 	  k=kk-1					! start of new code
 	  call arc(x(k-1),y(k-1),narc+1,.001,xc,yc,npt,
-     ,      k-1,kmax-1,x(2),y(2),splxp,splyp,spls,spline_tension)
+     .      k-1,kmax-1,x(2),y(2),splxp,splyp,spls,spline_tension)
 c
 	  dendl=(xendl-x(k))**2+(yendl-y(k))**2
 	  do 911 kk1 = 2,npt-1
 	    if (((xc(kk1)-x(k))**2+(yc(kk1)-y(k))**2).gt.dendl)
      .        call plotny(xc(kk1),yc(kk1),2,lwgt)
-911	  continue
+911	  continue	  
 	  call plotny(x(kk),y(kk),2,lwgt)
 	  k=k+1
 	  goto 920					! end of new code
@@ -923,8 +954,10 @@ c*******************************************************************************
 c
 ! TMAP mod, spline fit:
 ! call arc with the ability to call the spline fit.  pass lots more variables.
-900	call arc(x(k-1),y(k-1),narc+1,.001,xc,yc,npt,
-     ,      k-1,kmax-1,x(2),y(2),splxp,splyp,spls,spline_tension)
+
+900	continue
+	call arc(x(k-1),y(k-1),narc+1,.001,xc,yc,npt,
+     .      k-1,kmax-1,x(2),y(2),splxp,splyp,spls,spline_tension)
 c
 c check for lines crossing the branch cut in curvilinear grids. Pick up the pen.
 	IF (curvilinear) THEN
@@ -933,14 +966,25 @@ c check for lines crossing the branch cut in curvilinear grids. Pick up the pen.
 	ENDIF
 
 	do 910 kk1 = 2,npt
-910	call plotny(xc(kk1),yc(kk1),2,lwgt)
+	   call plotny(xc(kk1),yc(kk1),2,lwgt)
+910	continue	
 	k=k+1
-920	if(k-kmax)755,1000,1000
-1000	continue
-1010	continue
-c
-1100	continue
-1200	if(colour.ne.colold)call color(colold)
+
+920	continue
+	
+	enddo  ! do while (k .lt. kmax)
+
+1000	continue   ! do 1000 jj=jstrt,jendm1
+1001	continue   ! do 1001 ii=istrt,iendm1
+
+1010	continue   ! do 1010 jstrt=1,ny,jblk
+1011	continue   ! do 1011 istrt=1,nx,iblk
+
+1100	continue   ! do 1100  lev=1,nlev
+
+1200	continue
+
+	if(colour.ne.colold)call color(colold)
 
         IF (pyfont .AND. pyf_set(icont)) igroup = fnt_all
 

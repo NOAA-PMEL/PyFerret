@@ -6,6 +6,8 @@
 ! updated 10/93 *sh* for Ferret V3.01
 ! updated 4/95 to increase SHAKEY numbering size
 
+! Settings apply to the Hershey font
+
 ! Complex Roman font
 can mode ascii
 ppl dfltfnt TR

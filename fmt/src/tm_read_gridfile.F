@@ -93,8 +93,6 @@
 
         include 'tmap_errors.parm'
 
-c GET RID OF THIS ROUTINE?  Otherwise work out dynamic line allocation.
-
 	CALL TM_ERRMSG (merr_notsupport, status, 'TM_READ_GRIDFILE',
      .			no_descfile, no_stepfile,
      .			'Gridfiles no longer supported', no_errstring, *5000)

@@ -46,6 +46,7 @@
 * Unix/RISC port - 2/13/91 - .AND. always produces a logical result
 
 * V510: 3/00 *sh*
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 
         IMPLICIT NONE
 * calling argument declarations
@@ -63,11 +64,7 @@
  10	IF ( iin .GT. slen ) GOTO 50
 
 !    ... do not copy a slash -- but always copy the character that follows it
-#ifdef NO_DOUBLE_ESCAPE_SLASH
         IF (string(iin:iin) .EQ. '\' ) iin = iin + 1
-#else
-        IF (string(iin:iin) .EQ. '\\') iin = iin + 1
-#endif
 	
 	IF ( iin .LE. slen ) THEN
 	   string(iout:iout) = string(iin:iin)
@@ -77,8 +74,9 @@
 	ENDIF
 
 !   blank out any remaining characters
- 50	DO 100 iin = iout, slen
- 100	string(iin:iin) = " " 
+ 50	DO iin = iout, slen
+	   string(iin:iin) = " " 
+ 	ENDDO
 	slen = MAX(iout-1, 1)	! new string length
 	RETURN
 

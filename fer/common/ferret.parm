@@ -70,7 +70,10 @@
 *                 point vs range of points
 * V761 *acm* 7/20 Pull out the definition of pCR (carriage return character to put
 *                 into output messages that go thorough LIST_MULTI) into a separate
-*                 incude file to let it be easily included under fmt/src/
+*                 include file to let it be easily included under fmt/src/
+*  *acm* 12/2022  Code cleanup: modernizing upcasing of characters: upcase_off is
+*                 the offset in the ASCII collating sequence between lowercase
+*                 and uppercase letters
 
 * this should always match maxdsets in TMAP_FORMAT:
 	INTEGER		max_gfdl_dsets
@@ -83,6 +86,12 @@
      .			m_radius = radius / 100.,	! meters
      .			deg2km = deg2rad * radius * 1.E-5,
      .			deg2m  = deg2km * 1000.  )
+
+* Offset in ASCII collating sequence between lowercase
+* and uppercase letters Lowercase a is 98, uppercase A is 66
+
+	INTEGER		upcase_off
+	PARAMETER     ( upcase_off = 32 )
 
 * names of dimensions
         INTEGER     x_dim,   y_dim,   z_dim,

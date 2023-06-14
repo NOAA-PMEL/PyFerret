@@ -123,7 +123,6 @@
 
 * Convert to single precision and reverse order if a depth plot on Y axis
 
-#ifdef double_p
 	IF ( plot_ax .EQ. 'Y'  .AND. .NOT.versus .AND. BKWD_AXIS(dat_ax, grid) ) THEN
 	   x2 = (first)
 	   x1 = (last)
@@ -131,15 +130,6 @@
 	   x1 = (first)
 	   x2 = (last)
 	ENDIF
-#else	
-	IF ( plot_ax .EQ. 'Y'  .AND. NOT.versus .AND. BKWD_AXIS(dat_ax, grid) ) THEN
-	   x2 = SNGL(first)
-	   x1 = SNGL(last)
-	ELSE
-	   x1 = SNGL(first)
-	   x2 = SNGL(last)
-	ENDIF
-#endif
 
 * use Denbo's PPLUS routine to calculate the tic interval, dint
 	IF ( delta .EQ. unspecified_val8 ) THEN

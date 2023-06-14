@@ -7,7 +7,7 @@
 ! Jonathan Callahan
 ! 4/99
 
-! Description:  Calculate the appropriate aspect ration
+! Description:  Calculate the appropriate aspect ratio
 !
 ! Usage:             arg1
 !  go mp_aspect [aspect action]
@@ -23,6 +23,7 @@
 !  set grid sst
 !  go mp_mercator
 !  go mp_aspect
+!  set window/size=1.5  ! Any settings other than aspect are made after call to mp_aspect.
 !  shade sst[l=1], x_page, y_page
 !
 

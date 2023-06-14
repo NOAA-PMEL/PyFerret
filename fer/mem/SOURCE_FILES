@@ -31,7 +31,6 @@ find_var_name.F\
 free_line_dynmem.F\
 free_mr_dynmem.F\
 free_ws_dynmem.F\
-fvar_number.F\
 get_dyn_work_space.F\
 get_line_dynmem.F\
 get_mr_dynmem.F\
@@ -49,7 +48,7 @@ mr_available.F\
 mr_dim_len.F\
 mr_in_use.F\
 mr_not_in_use.F\
-mvar_num_dims.F\
+mr_num_dims.F\
 new_mr_w_edges.F\
 purge_all_memory.F\
 purge_all_pystat_vars.F\

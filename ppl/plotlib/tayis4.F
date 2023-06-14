@@ -48,6 +48,7 @@ C V7.1 *acm* 8/2016 Ticket 2466: Graticule lines too dense
 * V74  *acm* -11/18 Issue #1900 Fixes for tic marks and PLOT/OVERLAY with short-interval time
 * V745 *acm* 3/19 Draw tic marks on top of any graticule lines so 
 *                 dashes or color are covered up by the tic mark
+C 12/2022 *acm* Code cleanup: Set the data type of color0
 C
 C**
 C**    @(#)tayis4.f	1.1   12/09/15
@@ -101,7 +102,7 @@ C
 	REAL*8  DIFF, difft
 	REAL*8  td, xtemp1, tfact_d, xfact_d
 	REAL    delt, rem, angl, t_max
-	INTEGER is_hours_axis, labint, ticint, hrint, i_ticint
+	INTEGER is_hours_axis, labint, ticint, hrint, i_ticint, color0
 	LOGICAL hvytic, labsecs, datelabel
 
 * Parameters for drawing tics across plot

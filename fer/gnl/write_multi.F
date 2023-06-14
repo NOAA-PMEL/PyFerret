@@ -47,13 +47,13 @@
 * V314: 8/22/94 *kob* IBM port - need to use risc buff for char. concat 
 * V320: 2/28/95 - SPLIT_GUI_MESSAGE --> TM_SPLIT_MESSAGE
 *       *acm* 3/12 6D Ferret (common uses nferdims in tmap_dims.parm)
+** 10/2022 *acm* Code cleanup: remove references to obsolete gui interface
+*                TM_SPLIT_MESSAGE replaced by SPLIT_LIST
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
 	include 'ferret.parm'
-#ifdef NO_PASSED_CONCAT
 	include 'xrisc.cmn'
-#endif
 
 * calling argument declarations:
 	INTEGER		lun
@@ -78,12 +78,8 @@
 	ENDIF
 
 * write one line
-#ifdef NO_PASSED_CONCAT
 	risc_buff = string(c1:clast)
-	CALL TM_SPLIT_MESSAGE(lun, '          '//risc_buff)
-#else
-	CALL TM_SPLIT_MESSAGE(lun, '          '//string(c1:clast))
-#endif
+	CALL SPLIT_LIST(0, lun, '          '//risc_buff, 0)
 
 * more ?
 	IF ( multiline ) THEN

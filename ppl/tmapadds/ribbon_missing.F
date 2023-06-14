@@ -125,11 +125,7 @@
 
 *	OPEN THE FILE
 
-#ifdef NO_OPEN_READONLY
- 5      open (70,file=sfile,status='old',err=100)
-#else
- 5      open (70,file=sfile,readonly,status='old',err=100)
-#endif
+        open (70,file=sfile,status='old',err=100)
 
 	rgb_mapping = percent  ! always: 
 

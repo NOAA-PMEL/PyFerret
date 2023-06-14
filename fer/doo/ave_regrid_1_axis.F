@@ -82,6 +82,7 @@
 * v685 *acm*  7/13 Fix bug in F axis loop, and fix nonX directions in the
 *                  code for source cell enclosing dest cell.
 * V741  5/18 *acm* issue 1868: gridding transforms that will grid to same axis
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
@@ -146,11 +147,11 @@
 
 * along X axis
         IF ( axis .EQ. x_dim ) THEN
-           DO 190 n = cx_lo_s6(cx_lims), cx_hi_s6(cx_lims)
-           DO 190 m = cx_lo_s5(cx_lims), cx_hi_s5(cx_lims)
-           DO 190 l = cx_lo_s4(cx_lims), cx_hi_s4(cx_lims)
-           DO 190 k = cx_lo_s3(cx_lims), cx_hi_s3(cx_lims)
-           DO 190 j = cx_lo_s2(cx_lims), cx_hi_s2(cx_lims)
+           DO n = cx_lo_s6(cx_lims), cx_hi_s6(cx_lims)
+           DO m = cx_lo_s5(cx_lims), cx_hi_s5(cx_lims)
+           DO l = cx_lo_s4(cx_lims), cx_hi_s4(cx_lims)
+           DO k = cx_lo_s3(cx_lims), cx_hi_s3(cx_lims)
+           DO j = cx_lo_s2(cx_lims), cx_hi_s2(cx_lims)
 
 * loop through the each destination grid box
 	   DO 160 dstss = dstss_lo,dstss_hi
@@ -220,16 +221,21 @@
 
 
  160	   CONTINUE
- 190	   CONTINUE
+
+ 	   ENDDO  ! Close loops over all dimensions
+ 	   ENDDO
+ 	   ENDDO
+ 	   ENDDO
+ 	   ENDDO
 
 * along Y axis
         ELSEIF ( axis .EQ. Y_dim ) THEN
 
-           DO 290 n = cx_lo_s6(cx_lims), cx_hi_s6(cx_lims)
-           DO 290 m = cx_lo_s5(cx_lims), cx_hi_s5(cx_lims)
-           DO 290 l = cx_lo_s4(cx_lims), cx_hi_s4(cx_lims)
-           DO 290 k = cx_lo_s3(cx_lims), cx_hi_s3(cx_lims)
-           DO 290 i = cx_lo_s1(cx_lims), cx_hi_s1(cx_lims)
+           DO n = cx_lo_s6(cx_lims), cx_hi_s6(cx_lims)
+           DO m = cx_lo_s5(cx_lims), cx_hi_s5(cx_lims)
+           DO l = cx_lo_s4(cx_lims), cx_hi_s4(cx_lims)
+           DO k = cx_lo_s3(cx_lims), cx_hi_s3(cx_lims)
+           DO i = cx_lo_s1(cx_lims), cx_hi_s1(cx_lims)
 
 * loop through the each destination grid box
 	   DO 260 dstss = dstss_lo,dstss_hi
@@ -298,16 +304,20 @@
 	      ENDIF
 
  260	   CONTINUE
- 290	   CONTINUE
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
 
 * along Z axis
         ELSEIF ( axis .EQ. z_dim ) THEN
 
-           DO 390 n = cx_lo_s6(cx_lims), cx_hi_s6(cx_lims)
-           DO 390 m = cx_lo_s5(cx_lims), cx_hi_s5(cx_lims)
-           DO 390 l = cx_lo_s4(cx_lims), cx_hi_s4(cx_lims)
-           DO 390 j = cx_lo_s2(cx_lims), cx_hi_s2(cx_lims)
-           DO 390 i = cx_lo_s1(cx_lims), cx_hi_s1(cx_lims)
+           DO n = cx_lo_s6(cx_lims), cx_hi_s6(cx_lims)
+           DO m = cx_lo_s5(cx_lims), cx_hi_s5(cx_lims)
+           DO l = cx_lo_s4(cx_lims), cx_hi_s4(cx_lims)
+           DO j = cx_lo_s2(cx_lims), cx_hi_s2(cx_lims)
+           DO i = cx_lo_s1(cx_lims), cx_hi_s1(cx_lims)
 
 * loop through the each destination grid box
 	   DO 360 dstss = dstss_lo,dstss_hi
@@ -376,16 +386,20 @@
 	      ENDIF
 
  360	   CONTINUE
- 390	   CONTINUE
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
 
 * along T axis
         ELSEIF ( axis .EQ. T_dim ) THEN
 
-           DO 490 n = cx_lo_s6(cx_lims), cx_hi_s6(cx_lims)
-           DO 490 m = cx_lo_s5(cx_lims), cx_hi_s5(cx_lims)
-           DO 490 k = cx_lo_s3(cx_lims), cx_hi_s3(cx_lims)
-           DO 490 j = cx_lo_s2(cx_lims), cx_hi_s2(cx_lims)
-           DO 490 i = cx_lo_s1(cx_lims), cx_hi_s1(cx_lims)
+           DO n = cx_lo_s6(cx_lims), cx_hi_s6(cx_lims)
+           DO m = cx_lo_s5(cx_lims), cx_hi_s5(cx_lims)
+           DO k = cx_lo_s3(cx_lims), cx_hi_s3(cx_lims)
+           DO j = cx_lo_s2(cx_lims), cx_hi_s2(cx_lims)
+           DO i = cx_lo_s1(cx_lims), cx_hi_s1(cx_lims)
 
 * loop through the each destination grid box
 	   DO 460 dstss = dstss_lo,dstss_hi
@@ -457,16 +471,20 @@
 	      ENDIF
 
  460	   CONTINUE
- 490	   CONTINUE
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
 
 * along E axis
         ELSEIF ( axis .EQ. e_dim ) THEN
 
-           DO 590 n = cx_lo_s6(cx_lims), cx_hi_s6(cx_lims)
-           DO 590 l = cx_lo_s4(cx_lims), cx_hi_s4(cx_lims)
-           DO 590 k = cx_lo_s3(cx_lims), cx_hi_s3(cx_lims)
-           DO 590 j = cx_lo_s2(cx_lims), cx_hi_s2(cx_lims)
-           DO 590 i = cx_lo_s1(cx_lims), cx_hi_s1(cx_lims)
+           DO n = cx_lo_s6(cx_lims), cx_hi_s6(cx_lims)
+           DO l = cx_lo_s4(cx_lims), cx_hi_s4(cx_lims)
+           DO k = cx_lo_s3(cx_lims), cx_hi_s3(cx_lims)
+           DO j = cx_lo_s2(cx_lims), cx_hi_s2(cx_lims)
+           DO i = cx_lo_s1(cx_lims), cx_hi_s1(cx_lims)
 
 * loop through the each destination grid box
 	   DO 560 dstss = dstss_lo,dstss_hi
@@ -537,16 +555,20 @@
 	      ENDIF
 
  560	   CONTINUE
- 590	   CONTINUE
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
 
 * along F axis
         ELSEIF ( axis .EQ. f_dim ) THEN
 
-           DO 690 m = cx_lo_s5(cx_lims), cx_hi_s5(cx_lims)
-           DO 690 l = cx_lo_s4(cx_lims), cx_hi_s4(cx_lims)
-           DO 690 k = cx_lo_s3(cx_lims), cx_hi_s3(cx_lims)
-           DO 690 j = cx_lo_s2(cx_lims), cx_hi_s2(cx_lims)
-           DO 690 i = cx_lo_s1(cx_lims), cx_hi_s1(cx_lims)
+           DO m = cx_lo_s5(cx_lims), cx_hi_s5(cx_lims)
+           DO l = cx_lo_s4(cx_lims), cx_hi_s4(cx_lims)
+           DO k = cx_lo_s3(cx_lims), cx_hi_s3(cx_lims)
+           DO j = cx_lo_s2(cx_lims), cx_hi_s2(cx_lims)
+           DO i = cx_lo_s1(cx_lims), cx_hi_s1(cx_lims)
 
 * loop through the each destination grid box
 	   DO 660 dstss = dstss_lo,dstss_hi
@@ -617,7 +639,11 @@
 	      ENDIF
 
  660	   CONTINUE
- 690	   CONTINUE
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
 
 * TODO: along E and F axes?
 
@@ -635,11 +661,11 @@
 	
 * along X axis
         IF ( axis .EQ. x_dim ) THEN
-           DO 1190 n = cx_lo_s6(cx_lims), cx_hi_s6(cx_lims)
-           DO 1190 m = cx_lo_s5(cx_lims), cx_hi_s5(cx_lims)
-           DO 1190 l = cx_lo_s4(cx_lims), cx_hi_s4(cx_lims)
-           DO 1190 k = cx_lo_s3(cx_lims), cx_hi_s3(cx_lims)
-           DO 1190 j = cx_lo_s2(cx_lims), cx_hi_s2(cx_lims)
+           DO n = cx_lo_s6(cx_lims), cx_hi_s6(cx_lims)
+           DO m = cx_lo_s5(cx_lims), cx_hi_s5(cx_lims)
+           DO l = cx_lo_s4(cx_lims), cx_hi_s4(cx_lims)
+           DO k = cx_lo_s3(cx_lims), cx_hi_s3(cx_lims)
+           DO j = cx_lo_s2(cx_lims), cx_hi_s2(cx_lims)
 
 * loop through the each destination grid box
 	   DO 1160 dstss = dstss_lo,dstss_hi
@@ -691,16 +717,20 @@
 	      ENDIF
 
  1160	   CONTINUE
- 1190	   CONTINUE
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
 
 * along Y axis
         ELSEIF ( axis .EQ. Y_dim ) THEN
 
-           DO 1290 n = cx_lo_s6(cx_lims), cx_hi_s6(cx_lims)
-           DO 1290 m = cx_lo_s5(cx_lims), cx_hi_s5(cx_lims)
-           DO 1290 l = cx_lo_s4(cx_lims), cx_hi_s4(cx_lims)
-           DO 1290 k = cx_lo_s3(cx_lims), cx_hi_s3(cx_lims)
-           DO 1290 i = cx_lo_s1(cx_lims), cx_hi_s1(cx_lims)
+           DO n = cx_lo_s6(cx_lims), cx_hi_s6(cx_lims)
+           DO m = cx_lo_s5(cx_lims), cx_hi_s5(cx_lims)
+           DO l = cx_lo_s4(cx_lims), cx_hi_s4(cx_lims)
+           DO k = cx_lo_s3(cx_lims), cx_hi_s3(cx_lims)
+           DO i = cx_lo_s1(cx_lims), cx_hi_s1(cx_lims)
 
 * loop through the each destination grid box
 	   DO 1260 dstss = dstss_lo,dstss_hi
@@ -752,16 +782,20 @@
 	      ENDIF
 
  1260	   CONTINUE
- 1290	   CONTINUE
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
 
 * along Z axis
         ELSEIF ( axis .EQ. z_dim ) THEN
 
-           DO 1390 n = cx_lo_s6(cx_lims), cx_hi_s6(cx_lims)
-           DO 1390 m = cx_lo_s5(cx_lims), cx_hi_s5(cx_lims)
-           DO 1390 l = cx_lo_s4(cx_lims), cx_hi_s4(cx_lims)
-           DO 1390 j = cx_lo_s2(cx_lims), cx_hi_s2(cx_lims)
-           DO 1390 i = cx_lo_s1(cx_lims), cx_hi_s1(cx_lims)
+           DO n = cx_lo_s6(cx_lims), cx_hi_s6(cx_lims)
+           DO m = cx_lo_s5(cx_lims), cx_hi_s5(cx_lims)
+           DO l = cx_lo_s4(cx_lims), cx_hi_s4(cx_lims)
+           DO j = cx_lo_s2(cx_lims), cx_hi_s2(cx_lims)
+           DO i = cx_lo_s1(cx_lims), cx_hi_s1(cx_lims)
 
 * loop through the each destination grid box
 	   DO 1360 dstss = dstss_lo,dstss_hi
@@ -813,16 +847,20 @@
 	      ENDIF
 
  1360	   CONTINUE
- 1390	   CONTINUE
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
 
 * along T axis
         ELSEIF ( axis .EQ. T_dim ) THEN
 
-           DO 1490 n = cx_lo_s6(cx_lims), cx_hi_s6(cx_lims)
-           DO 1490 m = cx_lo_s5(cx_lims), cx_hi_s5(cx_lims)
-           DO 1490 k = cx_lo_s3(cx_lims), cx_hi_s3(cx_lims)
-           DO 1490 j = cx_lo_s2(cx_lims), cx_hi_s2(cx_lims)
-           DO 1490 i = cx_lo_s1(cx_lims), cx_hi_s1(cx_lims)
+           DO n = cx_lo_s6(cx_lims), cx_hi_s6(cx_lims)
+           DO m = cx_lo_s5(cx_lims), cx_hi_s5(cx_lims)
+           DO k = cx_lo_s3(cx_lims), cx_hi_s3(cx_lims)
+           DO j = cx_lo_s2(cx_lims), cx_hi_s2(cx_lims)
+           DO i = cx_lo_s1(cx_lims), cx_hi_s1(cx_lims)
 
 * loop through the each destination grid box
 	   DO 1460 dstss = dstss_lo,dstss_hi
@@ -878,16 +916,20 @@
 	      ENDIF
 
  1460	   CONTINUE
- 1490	   CONTINUE
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
 
 * along E axis
         ELSEIF ( axis .EQ. e_dim ) THEN
 
-           DO 1590 n = cx_lo_s6(cx_lims), cx_hi_s6(cx_lims)
-           DO 1590 l = cx_lo_s4(cx_lims), cx_hi_s4(cx_lims)
-           DO 1590 k = cx_lo_s3(cx_lims), cx_hi_s3(cx_lims)
-           DO 1590 j = cx_lo_s2(cx_lims), cx_hi_s2(cx_lims)
-           DO 1590 i = cx_lo_s1(cx_lims), cx_hi_s1(cx_lims)
+           DO n = cx_lo_s6(cx_lims), cx_hi_s6(cx_lims)
+           DO l = cx_lo_s4(cx_lims), cx_hi_s4(cx_lims)
+           DO k = cx_lo_s3(cx_lims), cx_hi_s3(cx_lims)
+           DO j = cx_lo_s2(cx_lims), cx_hi_s2(cx_lims)
+           DO i = cx_lo_s1(cx_lims), cx_hi_s1(cx_lims)
 
 * loop through the each destination grid box
 	   DO 1560 dstss = dstss_lo,dstss_hi
@@ -943,17 +985,21 @@
 	      ENDIF
 
  1560	   CONTINUE
- 1590	   CONTINUE
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
 
 
 * along F axis
         ELSEIF ( axis .EQ. f_dim ) THEN
 
-           DO 1690 m = cx_lo_s5(cx_lims), cx_hi_s5(cx_lims)
-           DO 1690 l = cx_lo_s4(cx_lims), cx_hi_s4(cx_lims)
-           DO 1690 k = cx_lo_s3(cx_lims), cx_hi_s3(cx_lims)
-           DO 1690 j = cx_lo_s2(cx_lims), cx_hi_s2(cx_lims)
-           DO 1690 i = cx_lo_s1(cx_lims), cx_hi_s1(cx_lims)
+           DO m = cx_lo_s5(cx_lims), cx_hi_s5(cx_lims)
+           DO l = cx_lo_s4(cx_lims), cx_hi_s4(cx_lims)
+           DO k = cx_lo_s3(cx_lims), cx_hi_s3(cx_lims)
+           DO j = cx_lo_s2(cx_lims), cx_hi_s2(cx_lims)
+           DO i = cx_lo_s1(cx_lims), cx_hi_s1(cx_lims)
 
 * loop through the each destination grid box
 	   DO 1660 dstss = dstss_lo,dstss_hi
@@ -1009,7 +1055,11 @@
 	      ENDIF
 
  1660	   CONTINUE
- 1690	   CONTINUE
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
+	   ENDDO
         ENDIF
 
 	RETURN

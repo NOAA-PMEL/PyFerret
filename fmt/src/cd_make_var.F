@@ -99,6 +99,8 @@
 * v745 *acm* 12/18 Issue 1909, option to write dates in ISO8601 format
 * v751 *acm*  8/19 Issue 1946, allow for user-set string dimension length, SAVE/STRLEN
 * V751 *acm* 11/19 *acm* new qualifier SAVE/NOCOORDS
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
+C 12/2022 *acm* Code cleanup: Consistent argument types in the calls to CD_WRITE_AXIS
 
 * argument definitions:
 *     cdfid   - netCDF id number for already opened CDF file
@@ -204,8 +206,9 @@
 	   cdfstat = NF_INQ_DIMLEN(cdfid, strdim, slen)
 	   IF (maxstrlen .GT. slen) GOTO 5300
 
-	   DO 10 idim = 1, 5
- 10	   vdims(idim) = vdims(idim+1)
+	   DO idim = 1, 5
+ 	      vdims(idim) = vdims(idim+1)
+	   ENDDO
 	   nvdims = nvdims - 1
 	 ENDIF
          dims = 0
@@ -267,11 +270,12 @@
          IF ( status .NE. merr_ok ) RETURN
 
 * create child axes where this variable doesn't run full-span on an axis
-         DO 250 idim = 1, nferdims
+         ii = 0  ! do_bounds is zero for this case
+	 DO 250 idim = 1, nferdims
             IF ( need_child(idim) ) THEN
                CALL CD_WRITE_AXIS( cdfid, dset, grid, idim, .FALSE.,
      .                   lo(idim), hi(idim), pcdf_child_span, 
-     .                   .FALSE., .FALSE., mode_upcase_output, 
+     .                   .FALSE., ii, mode_upcase_output, 
      .                   keepax_flag, name_from_grid(idim), dim_only(idim), 
      .                   date_fmt_out, status)
                IF ( status .NE. merr_ok ) GOTO 5900

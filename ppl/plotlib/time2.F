@@ -52,13 +52,8 @@ C**
       CHARACTER ITIME*(*),SYM*(*)
 C                                                                        
 
-#ifdef unix
         include 'calendar.decl' 
         include 'calendar.cmn'
-#else
-        INCLUDE 'TMAP_PPLV11INC:CALENDAR.CMN'
-#endif
-
 
 C     THIS ROUTINE TRANSLATES enhanced WOODSHOLE FORMATTED TIME
 C     INTO A PLOTABLE TYPE FORMAT.                                       

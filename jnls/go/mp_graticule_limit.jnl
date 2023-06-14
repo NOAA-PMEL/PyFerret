@@ -46,8 +46,8 @@
 !   go mp_stereographic_north
 !   set grid rose
 !   go mp_aspect
-!   shade/l=1/hlim=-1:1/vlim=-1:1/noax/nolab rose,x_page,y_page
-!   go mp_graticule_limit " ", " ", " ", " ", " ", " ", " ", -1,1,-1,1, dash=(.1,.18,.1,.18)
+!   shade/l=1/hlim=-1:1/vlim=-1:1/noax/nolab/palette=bluescale rose,x_page,y_page
+!   go mp_graticule_limit " ", " ", " ", " ", " ", " ", " ", -1,1,-1,1, dash=(.05,.08,.05,.08)
 !   plot/over/vs/line/nolabel/color=black {-1,1,1,-1,-1}, {-1,-1,1,1,-1}
 !
 !
@@ -179,7 +179,22 @@ ELSE
   let limit_y_page = masked_y_page
 ENDIF
 
-plot/vs/over/nolab/line=$7"1"($dashline) limit_x_page, limit_y_page
+
+define symbol land_setting = $7"1|black>1|red>2|green>3|blue>4|lightblue>5|purple>6|thick>7|\
+0>0|1>1|2>2|3>3|4>4|5>5|6>6|7>7|8>8|9>9|10>10|11>11|12>12|13>13|14>14|15>15|16>16|17>17|18>18|*>-2"
+
+if `($land_setting) ge 0` then
+
+   define symbol land_colorqual=($land_setting)/line
+
+elif `($land_setting) eq -2` then
+
+   define symbol land_arg = ($7)
+   go land_arg_check
+
+endif
+
+PLOT($land_colorqual)($dashline)/vs/over/nolab limit_x_page, limit_y_page
 
 !
 ! Now for the appropriate longitude lines:
@@ -222,7 +237,21 @@ ELSE
   let limit_y_page = masked_y_page
 ENDIF
 
-plot/vs/over/nolab/line=$7"1"($dashline) limit_x_page, limit_y_page
+define symbol land_setting = $7"1|black>1|red>2|green>3|blue>4|lightblue>5|purple>6|thick>7|\
+0>0|1>1|2>2|3>3|4>4|5>5|6>6|7>7|8>8|9>9|10>10|11>11|12>12|13>13|14>14|15>15|16>16|17>17|18>18|*>-2"
+
+if `($land_setting) ge 0` then
+
+   define symbol land_colorqual=($land_setting)/line
+
+elif `($land_setting) eq -2` then
+
+   define symbol land_arg = ($7)
+   go land_arg_check
+
+endif
+
+PLOT($land_colorqual)($dashline)/vs/over/nolab limit_x_page, limit_y_page
 
 
 !

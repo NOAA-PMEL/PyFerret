@@ -48,8 +48,6 @@ C**
 C       Mod *JD* 3.19.91 for unix -- use environment variable PLOTFONTS
 C       *jd* 7.92 variable IF renamed to KIF for MACMAC
 *       *jd* 11.94 
-*       Modification uses TM_NUMBER to determine if "value" is a number rather
-*       than the ERR= branch of a READ which fails on AIX/xlf
 
 *	Mod *jd* 11.30.95 to fix ragged symbols to to precision loss
 *
@@ -73,8 +71,9 @@ C              when making encapsulated postscript from postscript.
 C *acm* 10/14  Ticket 2203: on the 64-bit machines, the \\ for backspace
 C              should be \ .
 C *kms* 06-2017 - change from PLOTFONTS to FER_FONTS
-C *acm* 07-2017 - ticket 2556 Look for FER_FONTS if not defined also check PLOTFONTS 
-C
+C *acm* 07-2017 - ticket 2556 Look for FER_FONTS if not defined also check PLOTFONTS C
+** 10/2022 *acm* Code cleanup: lengths of strings not to overflow length of character variable
+
 C	CALL SYMBEL(X,Y,DEGRES,HEIGHT,NCHAR,STRING)
 C
 C	THIS SUBROUTINE DRAWS A STRING OF CHARACTERS.
@@ -103,14 +102,10 @@ c	CHARACTER PLTFIL*80
 
         REAL XBASE, YBASE
         INTEGER IPT
-#ifdef unix
 	INTEGER*2 SX,SY
 
         integer       dirlen
         character*255 fontdir
-#else
-	byte sx,sy
-#endif
 	INTEGER*2 ICNT,IBASE,IRAST
 *added for linux port
 	INTEGER*4 IBASE4,IRAST4
@@ -121,24 +116,17 @@ c	CHARACTER PLTFIL*80
 	CHARACTER*265 err_msg
 	INTEGER status
 
-C
-C
 	INCLUDE 'PLTCOM.DAT'
         INCLUDE 'errmsg.parm'
 
 C
 	DATA DNUM,DNME/35*'@@',35*'@@'/
-#ifdef unix
-	DATA KSUB,KSUPER,KBKSP,KCALL/'_','^','\\','@'/
-#else
 	DATA KSUB,KSUPER,KBKSP,KCALL/'_','^','\','@'/
-#endif
+
 	DATA KIF,IFN/'SR','SG','@@','@@','01','12','@@','@@'/
 	DATA PENS/'1','2','3','4','5','6','7','8','9','A',
      *	'B','C','D','E','F','G'/
 	DATA READIR/.FALSE./
-
-        LOGICAL TM_NUMBER                ! ** TMAP mod 11/94 **
 
 * Mod to specify external references for SCALE and RANGE * Linux *kob* 1.97
         external scale, size
@@ -160,7 +148,7 @@ C	IF(.NOT.READIR)GOTO 2020
 
 * kob 1/97 - old 2020 code region now contained w/in if-then below.
 	IF(.NOT.READIR) THEN
-#ifdef unix
+
 C *JD* Mod below fix for unix  -- use environment variable 3.19.91	
 C *ACM* For backwards compatibility (LAS setup etc) also look for PLOTFONTS
 
@@ -174,30 +162,17 @@ C *ACM* For backwards compatibility (LAS setup etc) also look for PLOTFONTS
 	   IF (dirlen .LE. 1) GOTO 5000
 
 C *kob* 1/02 - cygwin 1.3.x requires "\" for unix directory accesses
-#ifdef __CYGWIN__
-	   OPEN(LUSY,FILE=fontdir(:dirlen)//'\fondat.dat',
-     *	        STATUS='OLD')
-#else
+
 	   OPEN(LUSY,FILE=fontdir(:dirlen)//'/fondat.dat',
      *	        STATUS='OLD',ERR=5000)
-#endif
-
-#else
-	   open(lusy,file='plotfonts:fondat.dat',readonly,
-     *	       status='old',err=5000)
-#endif
 C
 C	FILE EXISTS
 C
 	   READ(LUSY,983,END=1009)(DNUM(IJ),DNME(IJ),DTYPE(IJ),
      *	   DLEN(IJ),DNAME(IJ),IJ=1,35)
-#ifdef unix
-C Mod here from A to A9 for read of DNAME *JD* 3.8.91
-C983	   FORMAT(1X,2A2,I2,I5,A)
+
 983	   FORMAT(1X,2A2,I2,I5,A9)
-#else
-983	   format(1x,2a2,i2,i5,a30)
-#endif
+
 1009	   NFNT=IJ-1
     	   CLOSE(LUSY)
 C
@@ -279,13 +254,9 @@ C
 	    GOTO 170
 	ENDIF
 	IF(ICHAR(ICHR) .EQ. 0)GOTO 180
-#ifdef unix
+
 	IF(.NOT.ASCFNT.AND.(ICHR.EQ.'@'.OR.
      *		(ICHR.GE.'\\'.AND.ICHR.LE.'_')))GOTO 80
-#else
-	IF(.NOT.ASCFNT.AND.(ICHR.EQ.'@'.OR.
-     *		(ICHR.GE.'\'.AND.ICHR.LE.'_')))GOTO 80
-#endif
 
 * Some compliers store '\\' as a single character, others see it
 * as '\'.  
@@ -450,14 +421,16 @@ C
 C
 C	    CLEAR ALL FONTS FROM THE BUFFERS
 C
-	    DO 1002 II=1,4
+	    DO II=1,4
 	    IOFF(II)=12000
 	    IFLEN(II)=0
 	    KIF(II)='@@'
 	    IFN(II)='@@'
 	    ITYPE(II)=0
 	    BASE(II)=-9.
-1002	    RAST(II)=1.
+	    RAST(II)=1.
+	    ENDDO
+
 	    IOFF(1)=0
 	    GOTO 169
         ELSE IF(ICOM(1:1).EQ.'C')THEN
@@ -481,10 +454,6 @@ C
 C
 C           GET THE 3 DIGIT NUMBER
 C
-#ifdef AIX_XLF
-            IF ( .NOT.TM_NUMBER(STRING(JJ-2:JJ)) ) GOTO 169  
-!** TMAP mod 11/94 **
-#endif
             READ(STRING(JJ-2:JJ),'(I3)',ERR=169)K
             IF(.NOT.DOPLOT)GOTO 169
             CALL COLOR(K)

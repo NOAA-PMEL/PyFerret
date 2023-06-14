@@ -7,7 +7,7 @@
 !  2          :hh:mm
 !  3          :hh:mm:sss
 
-let dayfrac = `TAX_DAYFRAC(ttime, tpts)`
+let dayfrac = `TAX_DAYFRAC(ttime, ck_tpts)`
 DEFINE SYMBOL hou = `INT(dayfrac*24)`
 DEFINE SYMBOL min = `INT( (dayfrac*24 - ($hou))* 60)`
 DEFINE SYMBOL sec = `INT( ( (dayfrac*24 - ($hou)) *60 - ($min)) *60)`

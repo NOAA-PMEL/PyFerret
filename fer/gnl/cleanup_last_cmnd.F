@@ -45,6 +45,7 @@
 * V320:  11/94   - dont process error message buffer -- done in ferret_dispatch
 * V531:  4/01 *sh* - cleanup incomplete continuation lines
 *       *acm* 3/12 cleanup ifdefs and unnecessary include files
+* 10/2022 *acm* Code cleanup: remove references to obsolete gui interface
 
         IMPLICIT NONE
 * calling argument declarations: (none)
@@ -61,7 +62,6 @@
 	include 'xplot_state.cmn'
 	include 'xcontrol.cmn'
 	include 'xinterrupt.cmn'
-	include 'xgui.cmn'
 
 * re-store ^C interrupt handler following interrupt
  10	IF ( interrupted ) CALL ERRMSG

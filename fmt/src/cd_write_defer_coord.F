@@ -53,6 +53,10 @@
 * V65  *acm* 1/10  Make sure parameters values are consistent with 
 *                              whats in netcdf.inc from netcdf4.
 * V65  *acm* 2/10- all warnings and notes to std error not std out
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
+C 12/2022 *acm* Code cleanup: Declare variables start1d and count1d for call to 
+*               NF_PUT_VARA_DOUBLE to avoid rank-mismatch errors when compiling 
+*               under gfortran v10.
 
 * argument declarations:
 	INTEGER cdfid, status
@@ -71,7 +75,7 @@
 
 * local variable declarations:
 	INTEGER	 iax, i, i1000, hilim, cdfstat, box_loc,
-     .           start(2), count(2)
+     .           start(2), count(2), start1d(1), count1d(2)
 	REAL*8   buff(1000)
 	REAL*8   TM_WORLD
 
@@ -81,7 +85,7 @@
         IF ( status .NE. merr_ok ) RETURN
 
 * loop over all of the deferred axes
-	DO 500 iax = 1, dfr_num
+	DO iax = 1, dfr_num
 
 *   write the coordinates -- buffer 1000 at a time
 	  IF (dfr_axis_type(iax) .EQ. pcd_defer_points) THEN
@@ -98,15 +102,18 @@
 
           IF (dfr_axis_type(iax) .EQ. pcd_defer_points .OR.
      .        dfr_axis_type(iax) .EQ. pcd_defer_edges) THEN
-             DO 110 i1000 = dfr_lo(iax), dfr_hi(iax), 1000
+             DO i1000 = dfr_lo(iax), dfr_hi(iax), 1000
                hilim = MIN((i1000-1)+1000, dfr_hi(iax))
-               DO 100 i = i1000, hilim
- 100           buff(i-i1000+1) = TM_WORLD(i, dfr_grid(iax), 
+               DO i = i1000, hilim
+                  buff(i-i1000+1) = TM_WORLD(i, dfr_grid(iax), 
      .			              dfr_idim(iax), box_loc)
+	       ENDDO
+	       start1d(1) = i1000-dfr_lo(iax)+1
+	       count1d(1) = hilim-i1000+1
                cdfstat = NF_PUT_VARA_DOUBLE (cdfid, dfr_cdaxis(iax), 
-     .		       i1000-dfr_lo(iax)+1, hilim-i1000+1, buff)
+     .		       start1d, count1d, buff)
                IF (cdfstat .NE. NF_NOERR) GOTO 5010
- 110         CONTINUE
+	    ENDDO
 
 * ... for edge defn tag on the upper bound of the top grid box
 	     IF (dfr_axis_type(iax) .EQ. pcd_defer_edges) THEN
@@ -120,15 +127,16 @@
 * Write bounds as N by 2, 1000 sets buffered at a time.
 
           ELSEIF (dfr_axis_type(iax) .EQ. pcd_defer_bounds) THEN
-             DO 210 i1000 = dfr_lo(iax), dfr_hi(iax), 500
+             DO i1000 = dfr_lo(iax), dfr_hi(iax), 500
                 hilim = MIN((i1000-1)+500, dfr_hi(iax))
                 buff(1) = TM_WORLD(i1000, dfr_grid(iax), 
      .			              dfr_idim(iax), box_lo_lim)
-                DO 200 i = i1000, hilim
+                DO  i = i1000, hilim
                    buff(2*(i-i1000+1)-1) = TM_WORLD(i, dfr_grid(iax), 
      .			              dfr_idim(iax), box_lo_lim)
- 200               buff(2*(i-i1000+1)) = TM_WORLD(i, dfr_grid(iax), 
+                   buff(2*(i-i1000+1)) = TM_WORLD(i, dfr_grid(iax), 
      .			              dfr_idim(iax), box_hi_lim)
+     	        ENDDO
 
 
                 start(1) = 1
@@ -139,10 +147,10 @@
                 cdfstat = NF_PUT_VARA_DOUBLE (cdfid, dfr_cdaxis(iax), start,
      .		          count, buff)
                IF (cdfstat .NE. NF_NOERR) GOTO 5010
- 210           CONTINUE
+	     ENDDO
            ENDIF
 
- 500	CONTINUE
+	ENDDO
 
 	dfr_num = 0   ! just house-keeping to be on the safe side
 

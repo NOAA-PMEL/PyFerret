@@ -53,6 +53,7 @@
 * Compute NGD NBD for string variables.
 *
 *        2/12 *kms* Add E and F dimensions (use nferdims in tmap_dims.parm)
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
 
         IMPLICIT NONE
         include 'tmap_dims.parm'
@@ -124,10 +125,10 @@
 	at_ngd = trans .EQ. trans_4d_good_pt
 
 * determine the axes to be transforomed
-	DO 10 idim = 1, nferdims
+	DO idim = 1, nferdims
 	  yes_ax(idim) = cx_trans(idim,res_cx) .EQ. trans
 	  no_ax (idim) = .NOT. yes_ax(idim)
- 10	CONTINUE
+	ENDDO
 
 * do the transformation:  ngood, nbad only
 * Write a note about missing values of strings 
@@ -146,43 +147,42 @@
 * "r" refers to result, "c" refers to component
 
 * Set the range of loop indices for the component data on the transformed axes
-	DO 150 idim = 1, nferdims
+	DO idim = 1, nferdims
 	  IF (yes_ax(idim)) THEN
 	    com_lo(idim) = cx_lo_ss(com_cx,idim)
 	    com_hi(idim) = cx_hi_ss(com_cx,idim)
 	  ENDIF
- 150	CONTINUE
-
+	ENDDO
 
 * LOOP OVER THE FULL RANGE OF THE RESULT
 * ... also set up loop indices for non-transformed axes
 *     (component loop to include only the single result point on "no" axes)
-	DO 300 nr = cx_lo_s6(res_cx), cx_hi_s6(res_cx)
+	DO nr = cx_lo_s6(res_cx), cx_hi_s6(res_cx)
 	IF (no_fax) THEN
 	   n_lo = nr
 	   n_hi = nr
 	ENDIF
-	DO 300 mr = cx_lo_s5(res_cx), cx_hi_s5(res_cx)
+	DO mr = cx_lo_s5(res_cx), cx_hi_s5(res_cx)
 	IF (no_eax) THEN
 	   m_lo = mr
 	   m_hi = mr
 	ENDIF
-	DO 300 lr = cx_lo_s4(res_cx), cx_hi_s4(res_cx)
+	DO lr = cx_lo_s4(res_cx), cx_hi_s4(res_cx)
 	IF (no_tax) THEN
 	   l_lo = lr
 	   l_hi = lr
 	ENDIF
-	DO 300 kr = cx_lo_s3(res_cx), cx_hi_s3(res_cx)
+	DO kr = cx_lo_s3(res_cx), cx_hi_s3(res_cx)
 	IF (no_zax) THEN
 	  k_lo = kr
 	  k_hi = kr
 	ENDIF
-	DO 300 jr = cx_lo_s2(res_cx), cx_hi_s2(res_cx)
+	DO jr = cx_lo_s2(res_cx), cx_hi_s2(res_cx)
 	IF (no_yax) THEN
 	  j_lo = jr
 	  j_hi = jr
 	ENDIF
-	DO 300 ir = cx_lo_s1(res_cx), cx_hi_s1(res_cx)
+	DO ir = cx_lo_s1(res_cx), cx_hi_s1(res_cx)
 	IF (no_xax) THEN
 	  i_lo = ir
 	  i_hi = ir
@@ -195,19 +195,24 @@
 
 * now loop over the component data accumulating results along relevant axes
 
-	  DO 210 nc = n_lo, n_hi
-	  DO 210 mc = m_lo, m_hi
-	  DO 210 lc = l_lo, l_hi
-	  DO 210 kc = k_lo, k_hi
-	  DO 210 jc = j_lo, j_hi
-	  DO 210 ic = i_lo, i_hi
+	  DO nc = n_lo, n_hi
+	  DO mc = m_lo, m_hi
+	  DO lc = l_lo, l_hi
+	  DO kc = k_lo, k_hi
+	  DO jc = j_lo, j_hi
+	  DO ic = i_lo, i_hi
              slen = GET_C_STRING_LEN(com(ic,jc,kc,lc,mc,nc))
              IF ( slen .GT. 0 ) THEN
                 ngd = ngd + 1
              ELSE
                 nbd = nbd + 1
              ENDIF
- 210	  CONTINUE
+	ENDDO
+	ENDDO
+	ENDDO
+	ENDDO
+	ENDDO
+	ENDDO
 
 * compute result from accumulators
 	  IF (at_ngd) THEN
@@ -216,7 +221,12 @@
 	     res(ir,jr,kr,lr,mr,nr) = nbd
 	  ENDIF
 
- 300	CONTINUE
+	ENDDO  ! Loops over full range of result
+	ENDDO
+	ENDDO
+	ENDDO
+	ENDDO
+	ENDDO
 
 	RETURN
  

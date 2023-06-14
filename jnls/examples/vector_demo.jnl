@@ -1,12 +1,12 @@
 \cancel mode verify
+cancel mode logo
+
 ! Description: Demonstration of various vector plotting options
 ! 4/94 *sh*
 ! updated 9/96 for Ferret V4.4
 
 ! *acm* 7/01 update /LINE= to /COLOR=/THICKNESS=
 ! *ACM* 2/13 when calling stick_vectors, works best w/o quoted string in title
-
-define alias wait message
 
 say **** Welcome to the vector plotting demo ****
 say .
@@ -17,49 +17,48 @@ say
 say .   yes? [command]
 say
 say 
-WAIT
+pause
 
 ! clean up from any previous activity
 define region/default save
 cancel region
-set wind/asp=.75:ax
+set window/aspect=.75:ax/size=1.5
 go white
 
 ! ***********************************************************
 say ...
 say We will begin by examining the global FNOC winds on Jan. 1, 1990
 say The FNOC data set (monthly_navy_winds) has variables "uwnd", and "vwnd"
-say We will overlay the continentintal boundaries in red.
+say We will overlay the continentintal boundaries.
 say ...
 
 say .    yes? set data monthly_navy_winds
 say .    yes? set region/t=1-jan-1990
-say .    yes? vector uwnd,vwnd
-say .    yes? go land red
+say .    yes? vector/color=blue uwnd,vwnd
+say .    yes? go land thick
 
 
 set data monthly_navy_winds
 set region/t=1-jan-1990
-vector uwnd,vwnd
-go land red
+vector/color=blue uwnd,vwnd
+go land thick
 
-WAIT
+pause
 
 ! ***********************************************************
 say ...
 say Now the same plot done a little nicer ...
-say (Pen number 2 is red.)
 say ...
 
-say .    yes? go fland 60 red basemap
-say .    yes? vector/overlay/length=10/title="wind speed"  uwnd,vwnd
+say .    yes? go fland 20 gray basemap
+say .    yes? vector/overlay/color=blue/length=10/title="wind speed"  uwnd,vwnd
 
 
-go fland 60 red basemap
-vector/overlay/length=10/title="wind speed"  uwnd,vwnd
+go fland 20 gray basemap
+vector/overlay/color=blue/length=10/title="wind speed"  uwnd,vwnd
 
 
-WAIT
+pause
 
 ! ***********************************************************
 say ...
@@ -68,15 +67,15 @@ say By altering the spacing we can bring out the zonal structure of the winds.
 say ...
 
 
-say .    yes? go fland 60 black basemap
-say .    yes? vector/over/len=10/title="wind speed"/xskip=5/yskip=1/pen=2 uwnd,vwnd
+say .    yes? go fland 20 gray basemap
+say .    yes? vector/over/color=blue/len=10/title="wind speed"/xskip=5/yskip=1 uwnd,vwnd
 
-go fland 60 black basemap
-vector/overlay/length=10/title="wind speed"/xskip=5/yskip=1/pen=2 uwnd,vwnd
+go fland 20 gray basemap
+vector/overlay/color=blue/length=10/title="wind speed"/xskip=5/yskip=1 uwnd,vwnd
 
 
 
-WAIT
+pause
 
 ! ***********************************************************
 say ...
@@ -89,27 +88,27 @@ say ...
  
 say .    yes? set view upper
 say .    yes? set region/y=10s:10n
-say .    yes? go fland 60 red basemap
-say .    yes? vector/over/len=10/title="wind speed"/xskip=1/yskip=1 uwnd,vwnd
+say .    yes? go fland 20 gray basemap
+say .    yes? vector/over/color=blue/len=10/title="wind speed"/xskip=1/yskip=1 uwnd,vwnd
 say
 say .    yes? set view lower
-say .    yes? go fland 60 red basemap
-say .    yes? vector/over/len=10/title="wind speed"/xskip=1/yskip=1/aspect uwnd,vwnd
+say .    yes? go fland 20 gray basemap
+say .    yes? vector/over/color=blue/len=10/title="with VECTOR/ASPECT"/xskip=1/yskip=1/aspect uwnd,vwnd
 
 
 set view upper
 set region/y=10s:10n
 go magnify 1.5
-go fland 60 red basemap
+go fland 20 gray basemap
 vector/overlay/length=10/title="wind speed"/xskip=1/yskip=1 uwnd,vwnd
 
 set view lower
 go magnify 1.5
-go fland 60 red basemap
-vector/overlay/length=10/title="wind speed"/xskip=1/yskip=1/aspect uwnd,vwnd
+go fland 20 gray basemap
+vector/overlay/length=10/title="with VECTOR/ASPECT"/xskip=1/yskip=1/aspect uwnd,vwnd
 
 
-WAIT
+pause
 
 ! ***********************************************************
 say ...
@@ -121,43 +120,41 @@ say ...
 
 
 say .    yes? set view upper
-say .    yes? go fland 60 red basemap
+say .    yes? go fland 20 gray basemap
 say .    yes? go centered_vectors vector/overlay/title="wind speed" uwnd,vwnd 10 
 
 
 set view upper
 go magnify 1.5
-go fland 60 red basemap
-go centered_vectors vector/overlay/title="wind speed" uwnd,vwnd 10 
+go fland 20 gray basemap
+go centered_vectors vector/overlay/title="w-speed, centered" uwnd,vwnd 10 
 go magnify 1     ! return to normal
 
 
-WAIT
+pause
 
 ! ***********************************************************
 say ...
 say Oceanographers commonly want to look at a line of vectors with a
 say "stick" plot.  The GO tool "GO stick_vectors" can provide this.
+say PPL CROSS causes a line to be drawn across the plot at y=0 
 say ...
 
 
-say .    yes? set wind/asp=.4/siz=.4
+say .    yes? ppl cross 1
 say .    yes? set region/x=180/y=0
 say .    yes? set region/t=1-jan-1982:31-jan-1992
 say .    yes? GO stick_vectors plot/COLOR=red/title=FNOC_winds uwnd vwnd
+say .    yes? ppl cross 0
 
-
-set wind/asp=.4/siz=.4
+ppl cross 1
+set window/aspect=.4/size=1.5
 set region/x=180/y=0
 set region/t=1-jan-1982:31-jan-1992
 GO stick_vectors plot/COLOR=red/title=FNOC_winds uwnd vwnd
+ppl cross 0
 
-
-WAIT
-set wind/asp=.75:ax/siz=.6
-set region/t=1-jan-1990
-sp rm -f vdtmp_*
-
+pause
 ! ***********************************************************
 say ...
 say To complete the demonstration we will try a more challenging display.
@@ -176,19 +173,53 @@ say
 say Now we will create a data file of scattered X,Y,U,V quadruples
 say to be plotted.  Use "Fgo -more vector_demo.jnl" to see the FERRET commands
 
+set window/aspect=0.667/size=1.5
 set region/x=100w:10w/y=0:60     		! North Atlantic
 set data etopo60		 		! 60 minute bathymetry data set
 FILL/PALETTE=land_sea/TITLE="Coastal Winds"/level=(-10000,0,1000)(0,3000,300) rose
 
+! create a data file of scattered X,Y,U,V quadruples to be plotted
+
+! A list of (x,y) points along the coast
+let coastmask = if rose[d=etopo60] ge 0 and rose[d=etopo60] le 20 then 1
+let xx = x[gx=rose[d=etopo60]]
+let yy = y[gy=rose[d=etopo60]]
+let xx2d = xx + 0*yy
+let yy2d = 0*xx + yy
+let xx1d = COMPRESSI(XSEQUENCE(xx2d*coastmask))
+let yy1d = COMPRESSI(XSEQUENCE(yy2d*coastmask))
+let npts = `xx1d[x=@ngd]`
+let xpts = xx1d[x=1:`npts`]
+let ypts = yy1d[i=1:`npts`]
+
+! Sample uwnd and vwnd at those (x,y) locations
+set region/t=1-jan-1982:31-jan-1992
+let upts = samplexy(uwnd[d=monthly_navy_winds], xpts, ypts)
+let vpts = samplexy(vwnd[d=monthly_navy_winds], xpts, ypts)
+
+! Write a file in the form expected by the script "scattered_vectors.jnl"
+list/clobber/nohead/file=vdtmp_uv.dat/format=(4f10.4)/i=1:`npts` xpts, ypts, upts, vpts
+sp echo "0 0 0 0" >> vdtmp_uv.dat
+pause
+
+say .    yes? ! now overlay the vectors
+say .    yes? go scattered_vectors  vdtmp_uv.dat 15 clock
+say .    yes? PLOT/VS/D=vdtmp_uv.dat/@aros/OVERLAY/LINE/COLOR=lack/THICK=2/nolab arrow_x,arrow_y
+
+! now overlay the vectors 
+go scattered_vectors  vdtmp_uv.dat 15 clock
+PLOT/VS/D=vdtmp_uv.dat/@aros/OVERLAY/LINE/COLOR=black/THICKNESS=2/nolabels arrow_x,arrow_y
+GO land blue
 
 say ...
-say Finally, please also run the demo script poly_vec_demo.jnl for
-say a new way to plot color-filled vector arrows in both rectangular
-say and curvilinear coordinates.
+say ...
+say Finally, please also run the demo script poly_vec_demo.jnl fora way to plot 
+say color-filled vector arrows in both rectangular and curvilinear coordinates.
+say ...
 say ...
 
 ! clean up
-cancel data vdtmp_u.dat, vdtmp_v.dat, vdtmp_uv.dat
+cancel data vdtmp_uv.dat
 sp rm -f vdtmp_*
 set region save
 set mode/last verify

@@ -70,9 +70,7 @@
 
 	include 'ferret.parm'
 	include 'errmsg.parm'
-#ifdef NO_PASSED_CONCAT
 	include 'xrisc.cmn'
-#endif
 
 * initialize
 	status = ferr_ok
@@ -196,12 +194,7 @@
 
 * errors
  5000	CALL ERRMSG( ferr_syntax, status, string, *1000 )
-#ifdef NO_PASSED_CONCAT	
  5100	risc_buff= string
  	CALL ERRMSG( ferr_invalid_command, status,
      .		'Must give a range: '//risc_buff, *1000 )
-#else
- 5100	CALL ERRMSG( ferr_invalid_command, status,
-     .		'Must give a range: '//string, *1000 )
-#endif
 	END

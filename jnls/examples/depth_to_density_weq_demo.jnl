@@ -1,3 +1,4 @@
+cancel mode logo
 ! depth_to_density_axis.jnl - S.Hankin 8/25/92 
 
 ! Description: show contour with a user-defined variable as an axis
@@ -47,9 +48,11 @@ message/quiet  ! pause to read
 set data levitus_climatology
 set region/y=0/x=130e:80w/z=0:1000
 
+set window/size=1.5
+
 ! define a new variable for density (dens) and contour it just for a look
 let/title=density dens = rho_un(salt,temp,z)
-contour dens
+contour/color=blue dens
 message/quiet  ! pause to look at the plot
 
 ! in a new grid replace the unused T axis of "temp" with the density axis
@@ -69,7 +72,7 @@ let ktemp = r0[z=@weq:0] * temp[l=1]
 ! contour the new variable summed (integrated) along the Z axis
 ! ( Since the Z axis reduces to a point in this operation the result is 3D - 
 !   longitude, latitude and density with latitude fixed at Y=0) 
-contour/t=1022:1032 ktemp[z=@sum]
+contour/color=blue/t=1022:1032 ktemp[z=@sum]
 message/quiet  ! pause to look at the plot
 
 ! reverse the vertical (density) axis so it looks conventional

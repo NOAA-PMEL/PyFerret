@@ -82,22 +82,16 @@
 
       INTEGER id
 
-      INTEGER strdf
-#ifdef double_p
-      PARAMETER (strdf = 1)
-#else
-      PARAMETER (strdf = 2)
-#endif
 
       REAL bad_flag(EF_MAX_ARGS), bad_flag_result
-      REAL arg_1(strdf,mem1lox:mem1hix, mem1loy:mem1hiy, 
-     .     mem1loz:mem1hiz, mem1lot:mem1hit)
-      REAL arg_2(strdf,mem2lox:mem2hix, mem2loy:mem2hiy, 
-     .     mem2loz:mem2hiz, mem2lot:mem2hit)
-      REAL arg_3(strdf,mem3lox:mem3hix, mem3loy:mem3hiy, 
-     .     mem3loz:mem3hiz, mem3lot:mem3hit)
-      REAL result(strdf,memreslox:memreshix, memresloy:memreshiy, 
-     .     memresloz:memreshiz, memreslot:memreshit)
+      REAL arg_1(mem1lox:mem1hix, mem1loy:mem1hiy, 
+     .           mem1loz:mem1hiz, mem1lot:mem1hit)
+      REAL arg_2(mem2lox:mem2hix, mem2loy:mem2hiy, 
+     .           mem2loz:mem2hiz, mem2lot:mem2hit)
+      REAL arg_3(mem3lox:mem3hix, mem3loy:mem3hiy, 
+     .           mem3loz:mem3hiz, mem3lot:mem3hit)
+      REAL result(memreslox:memreshix, memresloy:memreshiy, 
+     .            memresloz:memreshiz, memreslot:memreshit)
 
 * After initialization, the 'res_' arrays contain indexing information 
 * for the result axes.  The 'arg_' arrays will contain the indexing 
@@ -171,7 +165,7 @@
                      slen = slen1 + slen2 + slen3
                      CALL EF_PUT_STRING (
      .                  str1(:slen1)//str2(:slen2)//str3(:slen3), 
-     .                  slen, result(1,i,j,k,l))
+     .                  slen, result(i,j,k,l))
 
                   l1 = l1 + arg_incr(T_AXIS,ARG1)
                   l2 = l2 + arg_incr(T_AXIS,ARG2)

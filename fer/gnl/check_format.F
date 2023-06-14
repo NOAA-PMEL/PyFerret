@@ -56,10 +56,7 @@
 
 	include 'ferret.parm'
 	include 'errmsg.parm'
-!	include 'xprog_state.cmn'
-#ifdef NO_PASSED_CONCAT
 	include 'xrisc.cmn'
-#endif
 
 * check out user-specified format
 	left_paren  = INDEX( string, '(' )
@@ -73,16 +70,9 @@
 
 * syntax error
  5000	RETURN
-#ifdef NO_PASSED_CONCAT	
  5040   risc_buff = string
 	CALL ERRMSG( ferr_syntax, status,
      .  'Unknown format or format need parentheses'//pCR//
      .  'Valid formats are CDF, UNFORMATTED, STREAM, COMMA, TAB or limited Fortran formats'//pCR//
      .			risc_buff, *5000 )
-#else
- 5040	CALL ERRMSG( ferr_syntax, status,
-     .  'Unknown format or format need parentheses'//pCR//
-     .  'Valid formats are CDF, UNFORMATTED, STREAM, COMMA, TAB or limited Fortran formats'//pCR//
-     .			string, *5000 )
-#endif
 	END

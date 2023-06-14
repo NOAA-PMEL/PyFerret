@@ -45,6 +45,7 @@
 * V702: *sh* 11/16 This is an expanded version of CHECK_MEMORY intended 
 *      for use with -D debug copilations
 *            1/17 - output to stdout for easier debugging
+C 12/2022 *acm* Code cleanup: Call LEFINT8 for INTEGER*8 arguments
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -67,7 +68,7 @@
      .		ninprogress, ntable_entries, 
      .		slen, nn, i, ws, s1, s2
 	INTEGER*8 sum, mem_in_use
-	CHARACTER LEFINT*10, buff*40, b12*12
+	CHARACTER LEFINT*10, LEFINT8*10, buff*40, b12*12
 	PARAMETER (b12 = '            ')    !kob 12/96
 
 ************************************
@@ -78,7 +79,7 @@
         ENDDO
         IF (mem_in_use .NE. total_mem) THEN
 	      CALL WARN('***** corrupted total mem size: '
-     .                  //LEFINT(mem_in_use,slen) )
+     .                  //LEFINT8(mem_in_use,slen) )
         ENDIF
 
 * 11/16 brute force check of memory table list integrity
@@ -365,7 +366,7 @@
 	ENDDO
 	IF (sum .NE. total_mem) THEN
 	   CALL TM_NOTE( 'SANITY ERR: Dynamic mem total: '
-     .			//LEFINT(sum,slen)//LEFINT(total_mem,slen)//tag,
+     .			//LEFINT8(sum,slen)//LEFINT8(total_mem,slen)//tag,
      .			 ttout_lun)
 	ENDIF
 

@@ -83,6 +83,9 @@
 *      with a real*4 argument. Gives consistent results with single-p.
 *       *acm* 3/12 Add E and F dimensions (use nferdims in tmap_dims.parm)
 * V7.43 Issue 1891 Compute v^2 as v*v for efficiency
+* 11/2022 *acm* Code cleanup: Modernize DO-loop syntax. 
+*  1/2023 *acm* Code cleanup: Replace the computed GOTO statement 
+*                  "GOTO ( 100, 200, 300..) op"  with IF blocks
 
         IMPLICIT NONE
 	include 'tmap_dims.parm'
@@ -159,64 +162,60 @@
         ENDIF
 
 * compute the delta increment for each axis of each component
-	DO 10 icom = 1, num_com
-	DO 10 idim = 1, nferdims
+	DO icom = 1, num_com
+	DO idim = 1, nferdims
 	   IF ( CX_DIM_LEN(idim,com_cx(icom)) .EQ. 1 ) THEN
 	      inc(idim,icom) = 0
 	   ELSE
 	      inc(idim,icom) = 1
 	   ENDIF
- 10	CONTINUE
+	ENDDO
+	ENDDO
 
 * compute the starting subscript for each axis of each component
 * (pre-decrement by 1 delta for looping ahead)
-	DO 20 icom = 1, num_com
-	DO 20 idim = 1, nferdims
- 20	lo(idim,icom) = cx_lo_ss(com_cx(icom),idim) - inc(idim,icom)
+	DO icom = 1, num_com
+	DO idim = 1, nferdims
+	   lo(idim,icom) = cx_lo_ss(com_cx(icom),idim) - inc(idim,icom)
+	ENDDO
+	ENDDO
 
-* operators, functions, logic structures
-	GOTO (   100, 200, 300, 400, 500, 600, 700, 800, 900,1000,
-     .		1100,1200,1300,1400,1500,1600,1700,1800,
-     .
-     .		1900,2000,
-     .		2100,2200,2300,2400,2500,2600,2700,2800,2900,3000,
-     .		3100,3200,3300,3400,3500,3600,3700,3800,3900,4000,
-     .		4100,4200,4300,
-     .
-     .		4400,4500,4600,4700,4800		   ) op
+* operators, functions, logic structures according to the value of op
 
 * ----------------------------------------------------------------------------
 * ------- OPERATORS -------------
 *
 * "+"
- 100	n1 = sn1
+      IF (op .EQ. 1) THEN
+
+	n1 = sn1
 	n2 = sn2
-	DO 110 n = mr_lo_s6(mres), mr_hi_s6(mres)
+	DO n = mr_lo_s6(mres), mr_hi_s6(mres)
 	 n1 = n1 + dn1
 	 n2 = n2 + dn2
 	 m1 = sm1
 	 m2 = sm2
-	  DO 110 m = mr_lo_s5(mres), mr_hi_s5(mres)
+	  DO m = mr_lo_s5(mres), mr_hi_s5(mres)
 	  m1 = m1 + dm1
 	  m2 = m2 + dm2
 	  l1 = sl1
 	  l2 = sl2
-	  DO 110 l = mr_lo_s4(mres), mr_hi_s4(mres)
+	  DO l = mr_lo_s4(mres), mr_hi_s4(mres)
 	  l1 = l1 + dl1
 	  l2 = l2 + dl2
 	  k1 = sk1
 	  k2 = sk2
-	   DO 110 k = mr_lo_s3(mres), mr_hi_s3(mres)
+	   DO k = mr_lo_s3(mres), mr_hi_s3(mres)
 	   k1 = k1 + dk1
 	   k2 = k2 + dk2
 	   j1 = sj1
 	   j2 = sj2
-	    DO 110 j = mr_lo_s2(mres), mr_hi_s2(mres)
+	    DO j = mr_lo_s2(mres), mr_hi_s2(mres)
 	    j1 = j1 + dj1
 	    j2 = j2 + dj2
 	    i1 = si1
 	    i2 = si2
-	     DO 110 i = mr_lo_s1(mres), mr_hi_s1(mres)
+	     DO i = mr_lo_s1(mres), mr_hi_s1(mres)
 	     i1 = i1 + di1
 	     i2 = i2 + di2
 
@@ -227,38 +226,48 @@
 	        res(i,j,k,l,m,n) = com1(i1,j1,k1,l1,m1,n1) + com2(i2,j2,k2,l2,m2,n2)
 	     ENDIF
 
- 110	CONTINUE
+	    ENDDO
+	   ENDDO
+	   ENDDO
+	  ENDDO
+	 ENDDO
+	ENDDO
+
 	RETURN
 
+      ENDIF
+
 * "-"
- 200	n1 = sn1
+      IF (op .EQ. 2) THEN
+
+	n1 = sn1
 	n2 = sn2
-	DO 210 n = mr_lo_s6(mres), mr_hi_s6(mres)
+	DO n = mr_lo_s6(mres), mr_hi_s6(mres)
 	 n1 = n1 + dn1
 	 n2 = n2 + dn2
 	 m1 = sm1
 	 m2 = sm2
-	  DO 210 m = mr_lo_s5(mres), mr_hi_s5(mres)
+	  DO m = mr_lo_s5(mres), mr_hi_s5(mres)
 	  m1 = m1 + dm1
 	  m2 = m2 + dm2
 	  l1 = sl1
 	  l2 = sl2
-	  DO 210 l = mr_lo_s4(mres), mr_hi_s4(mres)
+	  DO l = mr_lo_s4(mres), mr_hi_s4(mres)
 	  l1 = l1 + dl1
 	  l2 = l2 + dl2
 	  k1 = sk1
 	  k2 = sk2
-	   DO 210 k = mr_lo_s3(mres), mr_hi_s3(mres)
+	   DO k = mr_lo_s3(mres), mr_hi_s3(mres)
 	   k1 = k1 + dk1
 	   k2 = k2 + dk2
 	   j1 = sj1
 	   j2 = sj2
-	    DO 210 j = mr_lo_s2(mres), mr_hi_s2(mres)
+	    DO j = mr_lo_s2(mres), mr_hi_s2(mres)
 	    j1 = j1 + dj1
 	    j2 = j2 + dj2
 	    i1 = si1
 	    i2 = si2
-	     DO 210 i = mr_lo_s1(mres), mr_hi_s1(mres)
+	     DO i = mr_lo_s1(mres), mr_hi_s1(mres)
 	     i1 = i1 + di1
 	     i2 = i2 + di2
 
@@ -269,37 +278,48 @@
 	      res(i,j,k,l,m,n) = com1(i1,j1,k1,l1,m1,n1) - com2(i2,j2,k2,l2,m2,n2)
 	   ENDIF
 
- 210	CONTINUE
+	    ENDDO
+	   ENDDO
+	   ENDDO
+	  ENDDO
+	 ENDDO
+	ENDDO
+
 	RETURN
+
+      ENDIF
 * "*"
- 300	n1 = sn1
+
+      IF (op .EQ. 3) THEN
+
+	n1 = sn1
 	n2 = sn2
-	DO 310 n = mr_lo_s6(mres), mr_hi_s6(mres)
+	DO n = mr_lo_s6(mres), mr_hi_s6(mres)
 	 n1 = n1 + dn1
 	 n2 = n2 + dn2
 	 m1 = sm1
 	 m2 = sm2
-	  DO 310 m = mr_lo_s5(mres), mr_hi_s5(mres)
+	  DO m = mr_lo_s5(mres), mr_hi_s5(mres)
 	  m1 = m1 + dm1
 	  m2 = m2 + dm2
 	  l1 = sl1
 	  l2 = sl2
-	  DO 310 l = mr_lo_s4(mres), mr_hi_s4(mres)
+	  DO l = mr_lo_s4(mres), mr_hi_s4(mres)
 	  l1 = l1 + dl1
 	  l2 = l2 + dl2
 	  k1 = sk1
 	  k2 = sk2
-	   DO 310 k = mr_lo_s3(mres), mr_hi_s3(mres)
+	   DO k = mr_lo_s3(mres), mr_hi_s3(mres)
 	   k1 = k1 + dk1
 	   k2 = k2 + dk2
 	   j1 = sj1
 	   j2 = sj2
-	    DO 310 j = mr_lo_s2(mres), mr_hi_s2(mres)
+	    DO j = mr_lo_s2(mres), mr_hi_s2(mres)
 	    j1 = j1 + dj1
 	    j2 = j2 + dj2
 	    i1 = si1
 	    i2 = si2
-	     DO 310 i = mr_lo_s1(mres), mr_hi_s1(mres)
+	     DO i = mr_lo_s1(mres), mr_hi_s1(mres)
 	     i1 = i1 + di1
 	     i2 = i2 + di2
 
@@ -310,38 +330,48 @@
 	      res(i,j,k,l,m,n) = com1(i1,j1,k1,l1,m1,n1) * com2(i2,j2,k2,l2,m2,n2)
 	   ENDIF
 
- 310	CONTINUE
+	    ENDDO
+	   ENDDO
+	   ENDDO
+	  ENDDO
+	 ENDDO
+	ENDDO
+
 	RETURN
 
+      ENDIF
+
 * "/"
- 400	n1 = sn1
+      IF (op .EQ. 4) THEN
+ 
+	n1 = sn1
 	n2 = sn2
-	DO 410 n = mr_lo_s6(mres), mr_hi_s6(mres)
+	DO n = mr_lo_s6(mres), mr_hi_s6(mres)
 	 n1 = n1 + dn1
 	 n2 = n2 + dn2
 	 m1 = sm1
 	 m2 = sm2
-	  DO 410 m = mr_lo_s5(mres), mr_hi_s5(mres)
+	  DO m = mr_lo_s5(mres), mr_hi_s5(mres)
 	  m1 = m1 + dm1
 	  m2 = m2 + dm2
 	  l1 = sl1
 	  l2 = sl2
-	  DO 410 l = mr_lo_s4(mres), mr_hi_s4(mres)
+	  DO l = mr_lo_s4(mres), mr_hi_s4(mres)
 	  l1 = l1 + dl1
 	  l2 = l2 + dl2
 	  k1 = sk1
 	  k2 = sk2
-	   DO 410 k = mr_lo_s3(mres), mr_hi_s3(mres)
+	   DO k = mr_lo_s3(mres), mr_hi_s3(mres)
 	   k1 = k1 + dk1
 	   k2 = k2 + dk2
 	   j1 = sj1
 	   j2 = sj2
-	    DO 410 j = mr_lo_s2(mres), mr_hi_s2(mres)
+	    DO j = mr_lo_s2(mres), mr_hi_s2(mres)
 	    j1 = j1 + dj1
 	    j2 = j2 + dj2
 	    i1 = si1
 	    i2 = si2
-	     DO 410 i = mr_lo_s1(mres), mr_hi_s1(mres)
+	     DO i = mr_lo_s1(mres), mr_hi_s1(mres)
 	     i1 = i1 + di1
 	     i2 = i2 + di2
 
@@ -353,38 +383,48 @@
 	        res(i,j,k,l,m,n) = com1(i1,j1,k1,l1,m1,n1) / com2(i2,j2,k2,l2,m2,n2)
 	     ENDIF
 
- 410	CONTINUE
+	    ENDDO
+	   ENDDO
+	   ENDDO
+	  ENDDO
+	 ENDDO
+	ENDDO
+
 	RETURN
 
+      ENDIF
+
 * "^"
- 500	n1 = sn1
+      IF (op .EQ. 5) THEN
+
+	n1 = sn1
 	n2 = sn2
-	DO 510 n = mr_lo_s6(mres), mr_hi_s6(mres)
+	DO n = mr_lo_s6(mres), mr_hi_s6(mres)
 	 n1 = n1 + dn1
 	 n2 = n2 + dn2
 	 m1 = sm1
 	 m2 = sm2
-	  DO 510 m = mr_lo_s5(mres), mr_hi_s5(mres)
+	  DO m = mr_lo_s5(mres), mr_hi_s5(mres)
 	  m1 = m1 + dm1
 	  m2 = m2 + dm2
 	  l1 = sl1
 	  l2 = sl2
-	  DO 510 l = mr_lo_s4(mres), mr_hi_s4(mres)
+	  DO l = mr_lo_s4(mres), mr_hi_s4(mres)
 	  l1 = l1 + dl1
 	  l2 = l2 + dl2
 	  k1 = sk1
 	  k2 = sk2
-	   DO 510 k = mr_lo_s3(mres), mr_hi_s3(mres)
+	   DO k = mr_lo_s3(mres), mr_hi_s3(mres)
 	   k1 = k1 + dk1
 	   k2 = k2 + dk2
 	   j1 = sj1
 	   j2 = sj2
-	    DO 510 j = mr_lo_s2(mres), mr_hi_s2(mres)
+	    DO j = mr_lo_s2(mres), mr_hi_s2(mres)
 	    j1 = j1 + dj1
 	    j2 = j2 + dj2
 	    i1 = si1
 	    i2 = si2
-	     DO 510 i = mr_lo_s1(mres), mr_hi_s1(mres)
+	     DO i = mr_lo_s1(mres), mr_hi_s1(mres)
 	     i1 = i1 + di1
 	     i2 = i2 + di2
 
@@ -404,38 +444,48 @@
 	        res(i,j,k,l,m,n) = com1(i1,j1,k1,l1,m1,n1) ** com2(i2,j2,k2,l2,m2,n2)
 	     ENDIF
 
- 510	CONTINUE
+	    ENDDO
+	   ENDDO
+	   ENDDO
+	  ENDDO
+	 ENDDO
+	ENDDO
+
 	RETURN
 
+      ENDIF
+
 * "AND" - logical AND of 2 masks (any non-zero data regarded as .TRUE.)
- 600    n1 = sn1
+      IF (op .EQ. 6) THEN
+
+	n1 = sn1
 	n2 = sn2
-	DO 610 n = mr_lo_s6(mres), mr_hi_s6(mres)
+	DO n = mr_lo_s6(mres), mr_hi_s6(mres)
 	 n1 = n1 + dn1
 	 n2 = n2 + dn2
 	 m1 = sm1
 	 m2 = sm2
-	  DO 610 m = mr_lo_s5(mres), mr_hi_s5(mres)
+	  DO m = mr_lo_s5(mres), mr_hi_s5(mres)
 	  m1 = m1 + dm1
 	  m2 = m2 + dm2
 	  l1 = sl1
 	  l2 = sl2
-	  DO 610 l = mr_lo_s4(mres), mr_hi_s4(mres)
+	  DO l = mr_lo_s4(mres), mr_hi_s4(mres)
 	  l1 = l1 + dl1
 	  l2 = l2 + dl2
 	  k1 = sk1
 	  k2 = sk2
-	   DO 610 k = mr_lo_s3(mres), mr_hi_s3(mres)
+	   DO k = mr_lo_s3(mres), mr_hi_s3(mres)
 	   k1 = k1 + dk1
 	   k2 = k2 + dk2
 	   j1 = sj1
 	   j2 = sj2
-	    DO 610 j = mr_lo_s2(mres), mr_hi_s2(mres)
+	    DO j = mr_lo_s2(mres), mr_hi_s2(mres)
 	    j1 = j1 + dj1
 	    j2 = j2 + dj2
 	    i1 = si1
 	    i2 = si2
-	     DO 610 i = mr_lo_s1(mres), mr_hi_s1(mres)
+	     DO i = mr_lo_s1(mres), mr_hi_s1(mres)
 	     i1 = i1 + di1
 	     i2 = i2 + di2
 
@@ -450,38 +500,50 @@
 	  	 res(i,j,k,l,m,n) = op_repl
 	        ENDIF
 	     ENDIF
- 610	CONTINUE
+
+	    ENDDO
+	   ENDDO
+	   ENDDO
+	  ENDDO
+	 ENDDO
+	ENDDO
+
 	RETURN
 
+      ENDIF
+
 * "OR" - logical OR of 2 masks (any non-zero data regarded as .TRUE.)
- 700	n1 = sn1
+
+      IF (op .EQ. 7) THEN
+
+	n1 = sn1
 	n2 = sn2
-	DO 710 n = mr_lo_s6(mres), mr_hi_s6(mres)
+	DO n = mr_lo_s6(mres), mr_hi_s6(mres)
 	 n1 = n1 + dn1
 	 n2 = n2 + dn2
 	 m1 = sm1
 	 m2 = sm2
-	  DO 710 m = mr_lo_s5(mres), mr_hi_s5(mres)
+	  DO m = mr_lo_s5(mres), mr_hi_s5(mres)
 	  m1 = m1 + dm1
 	  m2 = m2 + dm2
 	  l1 = sl1
 	  l2 = sl2
-	  DO 710 l = mr_lo_s4(mres), mr_hi_s4(mres)
+	  DO l = mr_lo_s4(mres), mr_hi_s4(mres)
 	  l1 = l1 + dl1
 	  l2 = l2 + dl2
 	  k1 = sk1
 	  k2 = sk2
-	   DO 710 k = mr_lo_s3(mres), mr_hi_s3(mres)
+	   DO k = mr_lo_s3(mres), mr_hi_s3(mres)
 	   k1 = k1 + dk1
 	   k2 = k2 + dk2
 	   j1 = sj1
 	   j2 = sj2
-	    DO 710 j = mr_lo_s2(mres), mr_hi_s2(mres)
+	    DO j = mr_lo_s2(mres), mr_hi_s2(mres)
 	    j1 = j1 + dj1
 	    j2 = j2 + dj2
 	    i1 = si1
 	    i2 = si2
-	     DO 710 i = mr_lo_s1(mres), mr_hi_s1(mres)
+	     DO i = mr_lo_s1(mres), mr_hi_s1(mres)
 	     i1 = i1 + di1
 	     i2 = i2 + di2
 
@@ -496,39 +558,50 @@
 		   res(i,j,k,l,m,n) = op_repl
 	        ENDIF
 	     ENDIF
- 710	CONTINUE
+
+	    ENDDO
+	   ENDDO
+	   ENDDO
+	  ENDDO
+	 ENDDO
+	ENDDO
+
 	RETURN
+
+      ENDIF
 
 * "GT" - mask of 1's where grid 1 exceeds grid 2, 0's elsewhere
 * "GT" - mask of 1's where grid 1 exceeds grid 2, bad-val elsewhere
- 800 	n1 = sn1
+      IF (op .EQ. 8) THEN
+
+ 	n1 = sn1
 	n2 = sn2
-	DO 810 n = mr_lo_s6(mres), mr_hi_s6(mres)
+	DO n = mr_lo_s6(mres), mr_hi_s6(mres)
 	 n1 = n1 + dn1
 	 n2 = n2 + dn2
 	 m1 = sm1
 	 m2 = sm2
-	  DO 810 m = mr_lo_s5(mres), mr_hi_s5(mres)
+	  DO m = mr_lo_s5(mres), mr_hi_s5(mres)
 	  m1 = m1 + dm1
 	  m2 = m2 + dm2
 	  l1 = sl1
 	  l2 = sl2
-	  DO 810 l = mr_lo_s4(mres), mr_hi_s4(mres)
+	  DO l = mr_lo_s4(mres), mr_hi_s4(mres)
 	  l1 = l1 + dl1
 	  l2 = l2 + dl2
 	  k1 = sk1
 	  k2 = sk2
-	   DO 810 k = mr_lo_s3(mres), mr_hi_s3(mres)
+	   DO k = mr_lo_s3(mres), mr_hi_s3(mres)
 	   k1 = k1 + dk1
 	   k2 = k2 + dk2
 	   j1 = sj1
 	   j2 = sj2
-	    DO 810 j = mr_lo_s2(mres), mr_hi_s2(mres)
+	    DO j = mr_lo_s2(mres), mr_hi_s2(mres)
 	    j1 = j1 + dj1
 	    j2 = j2 + dj2
 	    i1 = si1
 	    i2 = si2
-	     DO 810 i = mr_lo_s1(mres), mr_hi_s1(mres)
+	     DO i = mr_lo_s1(mres), mr_hi_s1(mres)
 	     i1 = i1 + di1
 	     i2 = i2 + di2
 
@@ -542,39 +615,51 @@
 		   res(i,j,k,l,m,n) = op_repl
 	        ENDIF
 	     ENDIF
- 810	CONTINUE
+
+	    ENDDO
+	   ENDDO
+	   ENDDO
+	  ENDDO
+	 ENDDO
+	ENDDO
+
 	RETURN
+
+      ENDIF
 
 * "GE" - mask of 1's where grid 1 exceeds or equals grid 2, 0's elsewhere
 * "GE" - mask of 1's where grid 1 exceeds or equals grid 2, bad elsewhere
- 900 	n1 = sn1
+
+      IF (op .EQ. 9) THEN
+
+	n1 = sn1
 	n2 = sn2
-	DO 910 n = mr_lo_s6(mres), mr_hi_s6(mres)
+	DO n = mr_lo_s6(mres), mr_hi_s6(mres)
 	 n1 = n1 + dn1
 	 n2 = n2 + dn2
 	 m1 = sm1
 	 m2 = sm2
-	  DO 910 m = mr_lo_s5(mres), mr_hi_s5(mres)
+	  DO m = mr_lo_s5(mres), mr_hi_s5(mres)
 	  m1 = m1 + dm1
 	  m2 = m2 + dm2
 	  l1 = sl1
 	  l2 = sl2
-	  DO 910 l = mr_lo_s4(mres), mr_hi_s4(mres)
+	  DO l = mr_lo_s4(mres), mr_hi_s4(mres)
 	  l1 = l1 + dl1
 	  l2 = l2 + dl2
 	  k1 = sk1
 	  k2 = sk2
-	   DO 910 k = mr_lo_s3(mres), mr_hi_s3(mres)
+	   DO k = mr_lo_s3(mres), mr_hi_s3(mres)
 	   k1 = k1 + dk1
 	   k2 = k2 + dk2
 	   j1 = sj1
 	   j2 = sj2
-	    DO 910 j = mr_lo_s2(mres), mr_hi_s2(mres)
+	    DO j = mr_lo_s2(mres), mr_hi_s2(mres)
 	    j1 = j1 + dj1
 	    j2 = j2 + dj2
 	    i1 = si1
 	    i2 = si2
-	     DO 910 i = mr_lo_s1(mres), mr_hi_s1(mres)
+	     DO i = mr_lo_s1(mres), mr_hi_s1(mres)
 	     i1 = i1 + di1
 	     i2 = i2 + di2
 
@@ -588,39 +673,50 @@
 		 res(i,j,k,l,m,n) = op_repl
 	      ENDIF
 	   ENDIF
- 910	CONTINUE
+
+	    ENDDO
+	   ENDDO
+	   ENDDO
+	  ENDDO
+	 ENDDO
+	ENDDO
+
 	RETURN
+
+      ENDIF
 
 * "LT" - mask of 1's where grid 1 is less than grid 2, 0's elsewhere
 * "LT" - mask of 1's where grid 1 is less than grid 2, bad elsewhere
- 1000 	n1 = sn1
+      IF (op .EQ. 10) THEN
+
+ 	n1 = sn1
 	n2 = sn2
-	DO 1010 n = mr_lo_s6(mres), mr_hi_s6(mres)
+	DO n = mr_lo_s6(mres), mr_hi_s6(mres)
 	 n1 = n1 + dn1
 	 n2 = n2 + dn2
 	 m1 = sm1
 	 m2 = sm2
-	  DO 1010 m = mr_lo_s5(mres), mr_hi_s5(mres)
+	  DO m = mr_lo_s5(mres), mr_hi_s5(mres)
 	  m1 = m1 + dm1
 	  m2 = m2 + dm2
 	  l1 = sl1
 	  l2 = sl2
-	  DO 1010 l = mr_lo_s4(mres), mr_hi_s4(mres)
+	  DO l = mr_lo_s4(mres), mr_hi_s4(mres)
 	  l1 = l1 + dl1
 	  l2 = l2 + dl2
 	  k1 = sk1
 	  k2 = sk2
-	   DO 1010 k = mr_lo_s3(mres), mr_hi_s3(mres)
+	   DO k = mr_lo_s3(mres), mr_hi_s3(mres)
 	   k1 = k1 + dk1
 	   k2 = k2 + dk2
 	   j1 = sj1
 	   j2 = sj2
-	    DO 1010 j = mr_lo_s2(mres), mr_hi_s2(mres)
+	    DO j = mr_lo_s2(mres), mr_hi_s2(mres)
 	    j1 = j1 + dj1
 	    j2 = j2 + dj2
 	    i1 = si1
 	    i2 = si2
-	     DO 1010 i = mr_lo_s1(mres), mr_hi_s1(mres)
+	     DO i = mr_lo_s1(mres), mr_hi_s1(mres)
 	     i1 = i1 + di1
 	     i2 = i2 + di2
 
@@ -634,39 +730,50 @@
 		 res(i,j,k,l,m,n) = op_repl
 	      ENDIF
 	   ENDIF
- 1010	CONTINUE
+ 
+ 	     ENDDO
+ 	    ENDDO
+ 	   ENDDO
+ 	   ENDDO
+	  ENDDO
+	ENDDO
+
 	RETURN
+
+      ENDIF
 
 * "LE" - mask of 1's where grid 1 is less than or equal to grid 2, 0's elsewhere
 * "LE" - mask of 1's where grid 1 is less than or equal to grid 2, bad elsewhere
- 1100	n1 = sn1
+      IF (op .EQ. 11) THEN
+
+	n1 = sn1
 	n2 = sn2
-	DO 1110 n = mr_lo_s6(mres), mr_hi_s6(mres)
+	DO n = mr_lo_s6(mres), mr_hi_s6(mres)
 	 n1 = n1 + dn1
 	 n2 = n2 + dn2
 	 m1 = sm1
 	 m2 = sm2
-	  DO 1110 m = mr_lo_s5(mres), mr_hi_s5(mres)
+	  DO m = mr_lo_s5(mres), mr_hi_s5(mres)
 	  m1 = m1 + dm1
 	  m2 = m2 + dm2
 	  l1 = sl1
 	  l2 = sl2
-	  DO 1110 l = mr_lo_s4(mres), mr_hi_s4(mres)
+	  DO l = mr_lo_s4(mres), mr_hi_s4(mres)
 	  l1 = l1 + dl1
 	  l2 = l2 + dl2
 	  k1 = sk1
 	  k2 = sk2
-	   DO 1110 k = mr_lo_s3(mres), mr_hi_s3(mres)
+	   DO k = mr_lo_s3(mres), mr_hi_s3(mres)
 	   k1 = k1 + dk1
 	   k2 = k2 + dk2
 	   j1 = sj1
 	   j2 = sj2
-	    DO 1110 j = mr_lo_s2(mres), mr_hi_s2(mres)
+	    DO j = mr_lo_s2(mres), mr_hi_s2(mres)
 	    j1 = j1 + dj1
 	    j2 = j2 + dj2
 	    i1 = si1
 	    i2 = si2
-	     DO 1110 i = mr_lo_s1(mres), mr_hi_s1(mres)
+	     DO i = mr_lo_s1(mres), mr_hi_s1(mres)
 	     i1 = i1 + di1
 	     i2 = i2 + di2
 
@@ -680,42 +787,53 @@
 		 res(i,j,k,l,m,n) = op_repl
 	      ENDIF
 	   ENDIF
- 1110	CONTINUE
+
+	    ENDDO
+	   ENDDO
+	   ENDDO
+	  ENDDO
+	 ENDDO
+	ENDDO
+
 	RETURN
+
+      ENDIF
 
 * "EQ" - mask of 1's where grids are equal, 0's elsewhere
 * "EQ" - mask of 1's where grids are equal, bad elsewhere
- 1200	n1 = sn1
+
+      IF (op .EQ. 12) THEN
+
+	n1 = sn1
 	n2 = sn2
-	DO 1210 n = mr_lo_s6(mres), mr_hi_s6(mres)
+	DO n = mr_lo_s6(mres), mr_hi_s6(mres)
 	 n1 = n1 + dn1
 	 n2 = n2 + dn2
 	 m1 = sm1
 	 m2 = sm2
-	  DO 1210 m = mr_lo_s5(mres), mr_hi_s5(mres)
+	  DO m = mr_lo_s5(mres), mr_hi_s5(mres)
 	  m1 = m1 + dm1
 	  m2 = m2 + dm2
 	  l1 = sl1
 	  l2 = sl2
-	  DO 1210 l = mr_lo_s4(mres), mr_hi_s4(mres)
+	  DO l = mr_lo_s4(mres), mr_hi_s4(mres)
 	  l1 = l1 + dl1
 	  l2 = l2 + dl2
 	  k1 = sk1
 	  k2 = sk2
-	   DO 1210 k = mr_lo_s3(mres), mr_hi_s3(mres)
+	   DO k = mr_lo_s3(mres), mr_hi_s3(mres)
 	   k1 = k1 + dk1
 	   k2 = k2 + dk2
 	   j1 = sj1
 	   j2 = sj2
-	    DO 1210 j = mr_lo_s2(mres), mr_hi_s2(mres)
+	    DO j = mr_lo_s2(mres), mr_hi_s2(mres)
 	    j1 = j1 + dj1
 	    j2 = j2 + dj2
 	    i1 = si1
 	    i2 = si2
-	     DO 1210 i = mr_lo_s1(mres), mr_hi_s1(mres)
+	     DO i = mr_lo_s1(mres), mr_hi_s1(mres)
 	     i1 = i1 + di1
 	     i2 = i2 + di2
-
 	   IF ( com1(i1,j1,k1,l1,m1,n1) .EQ. bad1
      .	   .OR. com2(i2,j2,k2,l2,m2,n2) .EQ. bad2 ) THEN
 	      res(i,j,k,l,m,n) = bad_res
@@ -726,38 +844,52 @@
 		 res(i,j,k,l,m,n) = op_repl
 	      ENDIF
 	   ENDIF
- 1210	CONTINUE
+
+
+
+	    ENDDO
+	   ENDDO
+	   ENDDO
+	  ENDDO
+	 ENDDO
+	ENDDO
+
+
 	RETURN
 
+      ENDIF
+
 * "NE" - mask of 1's where grids are not equal, 0's elsewhere
- 1300	n1 = sn1
+      IF (op .EQ. 13) THEN
+
+	n1 = sn1
 	n2 = sn2
-	DO 1310 n = mr_lo_s6(mres), mr_hi_s6(mres)
+	DO n = mr_lo_s6(mres), mr_hi_s6(mres)
 	 n1 = n1 + dn1
 	 n2 = n2 + dn2
 	 m1 = sm1
 	 m2 = sm2
-	  DO 1310 m = mr_lo_s5(mres), mr_hi_s5(mres)
+	  DO m = mr_lo_s5(mres), mr_hi_s5(mres)
 	  m1 = m1 + dm1
 	  m2 = m2 + dm2
 	  l1 = sl1
 	  l2 = sl2
-	  DO 1310 l = mr_lo_s4(mres), mr_hi_s4(mres)
+	  DO l = mr_lo_s4(mres), mr_hi_s4(mres)
 	  l1 = l1 + dl1
 	  l2 = l2 + dl2
 	  k1 = sk1
 	  k2 = sk2
-	   DO 1310 k = mr_lo_s3(mres), mr_hi_s3(mres)
+	   DO k = mr_lo_s3(mres), mr_hi_s3(mres)
 	   k1 = k1 + dk1
 	   k2 = k2 + dk2
 	   j1 = sj1
 	   j2 = sj2
-	    DO 1310 j = mr_lo_s2(mres), mr_hi_s2(mres)
+	    DO j = mr_lo_s2(mres), mr_hi_s2(mres)
 	    j1 = j1 + dj1
 	    j2 = j2 + dj2
 	    i1 = si1
 	    i2 = si2
-	     DO 1310 i = mr_lo_s1(mres), mr_hi_s1(mres)
+	     DO i = mr_lo_s1(mres), mr_hi_s1(mres)
 	     i1 = i1 + di1
 	     i2 = i2 + di2
 
@@ -771,25 +903,37 @@
 		 res(i,j,k,l,m,n) = op_repl
 	      ENDIF
 	   ENDIF
- 1310	CONTINUE
+
+
+
+	    ENDDO
+	   ENDDO
+	   ENDDO
+	  ENDDO
+	 ENDDO
+	ENDDO
+
+
 	RETURN
 
- 1400	CONTINUE
- 1500	CONTINUE
- 1600	CONTINUE
- 1700	CONTINUE
- 1800	CONTINUE
+      ENDIF
+
+      IF (op.EQ.14 .OR.op.EQ.15 .OR.op.EQ.16 .OR.op.EQ.17 .OR.op.EQ.18) THEN
 	STOP 'OPERATOR NOT IMPLEMENTED'
+      ENDIF
+
 * -----------------------------------------------------------------------------
 * -------- FUNCTIONS ------------
 
-* "EXP" - exponential function
- 1900	DO 1910 n = mr_lo_s6(mres), mr_hi_s6(mres)
-	 DO 1910 m = mr_lo_s5(mres), mr_hi_s5(mres)
-	  DO 1910 l = mr_lo_s4(mres), mr_hi_s4(mres)
-	   DO 1910 k = mr_lo_s3(mres), mr_hi_s3(mres)
-	    DO 1910 j = mr_lo_s2(mres), mr_hi_s2(mres)
-	     DO 1910 i = mr_lo_s1(mres), mr_hi_s1(mres)
+* "EXP" - exponential function 
+      IF (op .EQ. 19) THEN
+
+	DO n = mr_lo_s6(mres), mr_hi_s6(mres)
+	 DO m = mr_lo_s5(mres), mr_hi_s5(mres)
+	  DO l = mr_lo_s4(mres), mr_hi_s4(mres)
+	   DO k = mr_lo_s3(mres), mr_hi_s3(mres)
+	    DO j = mr_lo_s2(mres), mr_hi_s2(mres)
+	     DO i = mr_lo_s1(mres), mr_hi_s1(mres)
 
 	   IF ( com1(i,j,k,l,m,n) .EQ. bad1
      .     .OR. com1(i,j,k,l,m,n) .GT. 77.0 ) THEN    ! 8/92
@@ -797,16 +941,30 @@
 	   ELSE
 	      res(i,j,k,l,m,n) = EXP(com1(i,j,k,l,m,n))
 	   ENDIF
- 1910	CONTINUE
+
+
+
+	    ENDDO
+	   ENDDO
+	   ENDDO
+	  ENDDO
+	 ENDDO
+	ENDDO
+
+
 	RETURN
 
+      ENDIF
+
 * "LOG"
- 2000	DO 2010 n = mr_lo_s6(mres), mr_hi_s6(mres)
-	 DO 2010 m = mr_lo_s5(mres), mr_hi_s5(mres)
-	  DO 2010 l = mr_lo_s4(mres), mr_hi_s4(mres)
-	  DO 2010 k = mr_lo_s3(mres), mr_hi_s3(mres)
-	    DO 2010 j = mr_lo_s2(mres), mr_hi_s2(mres)
-	     DO 2010 i = mr_lo_s1(mres), mr_hi_s1(mres)
+      IF (op .EQ. 20) THEN
+
+	DO n = mr_lo_s6(mres), mr_hi_s6(mres)
+	 DO m = mr_lo_s5(mres), mr_hi_s5(mres)
+	  DO l = mr_lo_s4(mres), mr_hi_s4(mres)
+	  DO k = mr_lo_s3(mres), mr_hi_s3(mres)
+	    DO j = mr_lo_s2(mres), mr_hi_s2(mres)
+	     DO i = mr_lo_s1(mres), mr_hi_s1(mres)
 
 	   IF ( com1(i,j,k,l,m,n) .EQ. bad1
      .    .OR.  com1(i,j,k,l,m,n) .LE. 0.0 ) THEN    ! 8/92
@@ -814,38 +972,49 @@
 	   ELSE
 	      res(i,j,k,l,m,n) = LOG10( com1(i,j,k,l,m,n) )
 	   ENDIF
- 2010	CONTINUE
+
+	    ENDDO
+	   ENDDO
+	   ENDDO
+	  ENDDO
+	 ENDDO
+	ENDDO
+
 	RETURN
 
+      ENDIF
+
 * "MAX"
- 2100	n1 = sn1
+      IF (op .EQ. 21) THEN
+
+	n1 = sn1
 	n2 = sn2
-	DO 2110 n = mr_lo_s6(mres), mr_hi_s6(mres)
+	DO n = mr_lo_s6(mres), mr_hi_s6(mres)
 	 n1 = n1 + dn1
 	 n2 = n2 + dn2
 	 m1 = sm1
 	 m2 = sm2
-	  DO 2110 m = mr_lo_s5(mres), mr_hi_s5(mres)
+	  DO m = mr_lo_s5(mres), mr_hi_s5(mres)
 	  m1 = m1 + dm1
 	  m2 = m2 + dm2
 	  l1 = sl1
 	  l2 = sl2
-	  DO 2110 l = mr_lo_s4(mres), mr_hi_s4(mres)
+	  DO l = mr_lo_s4(mres), mr_hi_s4(mres)
 	  l1 = l1 + dl1
 	  l2 = l2 + dl2
 	  k1 = sk1
 	  k2 = sk2
-	   DO 2110 k = mr_lo_s3(mres), mr_hi_s3(mres)
+	   DO k = mr_lo_s3(mres), mr_hi_s3(mres)
 	   k1 = k1 + dk1
 	   k2 = k2 + dk2
 	   j1 = sj1
 	   j2 = sj2
-	    DO 2110 j = mr_lo_s2(mres), mr_hi_s2(mres)
+	    DO j = mr_lo_s2(mres), mr_hi_s2(mres)
 	    j1 = j1 + dj1
 	    j2 = j2 + dj2
 	    i1 = si1
 	    i2 = si2
-	     DO 2110 i = mr_lo_s1(mres), mr_hi_s1(mres)
+	     DO i = mr_lo_s1(mres), mr_hi_s1(mres)
 	     i1 = i1 + di1
 	     i2 = i2 + di2
 
@@ -856,38 +1025,49 @@
 	      res(i,j,k,l,m,n) = MAX( com1(i1,j1,k1,l1,m1,n1), com2(i2,j2,k2,l2,m2,n2) )
 	   ENDIF
 
- 2110	CONTINUE
+	    ENDDO
+	   ENDDO
+	   ENDDO
+	  ENDDO
+	 ENDDO
+	ENDDO
+
 	RETURN
 
+      ENDIF
+
 * "MIN"
- 2200	n1 = sn1
+
+      IF (op .EQ. 22) THEN
+
+	n1 = sn1
 	n2 = sn2
-	DO 2210 n = mr_lo_s6(mres), mr_hi_s6(mres)
+	DO n = mr_lo_s6(mres), mr_hi_s6(mres)
 	 n1 = n1 + dn1
 	 n2 = n2 + dn2
 	 m1 = sm1
 	 m2 = sm2
-	  DO 2210 m = mr_lo_s5(mres), mr_hi_s5(mres)
+	  DO m = mr_lo_s5(mres), mr_hi_s5(mres)
 	  m1 = m1 + dm1
 	  m2 = m2 + dm2
 	  l1 = sl1
 	  l2 = sl2
-	  DO 2210 l = mr_lo_s4(mres), mr_hi_s4(mres)
+	  DO l = mr_lo_s4(mres), mr_hi_s4(mres)
 	  l1 = l1 + dl1
 	  l2 = l2 + dl2
 	  k1 = sk1
 	  k2 = sk2
-	   DO 2210 k = mr_lo_s3(mres), mr_hi_s3(mres)
+	   DO k = mr_lo_s3(mres), mr_hi_s3(mres)
 	   k1 = k1 + dk1
 	   k2 = k2 + dk2
 	   j1 = sj1
 	   j2 = sj2
-	    DO 2210 j = mr_lo_s2(mres), mr_hi_s2(mres)
+	    DO j = mr_lo_s2(mres), mr_hi_s2(mres)
 	    j1 = j1 + dj1
 	    j2 = j2 + dj2
 	    i1 = si1
 	    i2 = si2
-	     DO 2210 i = mr_lo_s1(mres), mr_hi_s1(mres)
+	     DO i = mr_lo_s1(mres), mr_hi_s1(mres)
 	     i1 = i1 + di1
 	     i2 = i2 + di2
 
@@ -897,96 +1077,163 @@
 	   ELSE
 	      res(i,j,k,l,m,n) = MIN( com1(i1,j1,k1,l1,m1,n1), com2(i2,j2,k2,l2,m2,n2) )
 	   ENDIF
- 2210	CONTINUE
+
+
+	    ENDDO
+	   ENDDO
+	   ENDDO
+	  ENDDO
+	 ENDDO
+	ENDDO
+
 	RETURN
 
+      ENDIF
+
 * "INT"
- 2300	DO 2310 n = mr_lo_s6(mres), mr_hi_s6(mres)
-	 DO 2310 m = mr_lo_s5(mres), mr_hi_s5(mres)
-	  DO 2310 l = mr_lo_s4(mres), mr_hi_s4(mres)
-	   DO 2310 k = mr_lo_s3(mres), mr_hi_s3(mres)
-	    DO 2310 j = mr_lo_s2(mres), mr_hi_s2(mres)
-	     DO 2310 i = mr_lo_s1(mres), mr_hi_s1(mres)
+      IF (op .EQ. 23) THEN
+
+	DO n = mr_lo_s6(mres), mr_hi_s6(mres)
+	 DO m = mr_lo_s5(mres), mr_hi_s5(mres)
+	  DO l = mr_lo_s4(mres), mr_hi_s4(mres)
+	   DO k = mr_lo_s3(mres), mr_hi_s3(mres)
+	    DO j = mr_lo_s2(mres), mr_hi_s2(mres)
+	     DO i = mr_lo_s1(mres), mr_hi_s1(mres)
 
 	   IF ( com1(i,j,k,l,m,n) .EQ. bad1 ) THEN
 	      res(i,j,k,l,m,n) = bad_res
 	   ELSE
 	      res(i,j,k,l,m,n) = INT( com1(i,j,k,l,m,n) )
 	   ENDIF
- 2310	CONTINUE
+
+	    ENDDO
+	   ENDDO
+	   ENDDO
+	  ENDDO
+	 ENDDO
+	ENDDO
+
 	RETURN
 
+      ENDIF
+
 * "ABS"
- 2400	DO 2410 n = mr_lo_s6(mres), mr_hi_s6(mres)
-	 DO 2410 m = mr_lo_s5(mres), mr_hi_s5(mres)
-	  DO 2410 l = mr_lo_s4(mres), mr_hi_s4(mres)
-	   DO 2410 k = mr_lo_s3(mres), mr_hi_s3(mres)
-	    DO 2410 j = mr_lo_s2(mres), mr_hi_s2(mres)
-	     DO 2410 i = mr_lo_s1(mres), mr_hi_s1(mres)
+      IF (op .EQ. 24) THEN
+
+	DO n = mr_lo_s6(mres), mr_hi_s6(mres)
+	 DO m = mr_lo_s5(mres), mr_hi_s5(mres)
+	  DO l = mr_lo_s4(mres), mr_hi_s4(mres)
+	   DO k = mr_lo_s3(mres), mr_hi_s3(mres)
+	    DO j = mr_lo_s2(mres), mr_hi_s2(mres)
+	     DO i = mr_lo_s1(mres), mr_hi_s1(mres)
 
 	   IF ( com1(i,j,k,l,m,n) .EQ. bad1 ) THEN
 	      res(i,j,k,l,m,n) = bad_res
 	   ELSE
 	      res(i,j,k,l,m,n) = ABS( com1(i,j,k,l,m,n) )
 	   ENDIF
- 2410	CONTINUE
+
+	    ENDDO
+	   ENDDO
+	   ENDDO
+	  ENDDO
+	 ENDDO
+	ENDDO
+
 	RETURN
 
+      ENDIF
+
 * "SIN"
- 2500	DO 2510 n = mr_lo_s6(mres), mr_hi_s6(mres)
-	 DO 2510 m = mr_lo_s5(mres), mr_hi_s5(mres)
-	  DO 2510 l = mr_lo_s4(mres), mr_hi_s4(mres)
-	   DO 2510 k = mr_lo_s3(mres), mr_hi_s3(mres)
-	    DO 2510 j = mr_lo_s2(mres), mr_hi_s2(mres)
-	     DO 2510 i = mr_lo_s1(mres), mr_hi_s1(mres)
+      IF (op .EQ. 25) THEN
+
+	DO n = mr_lo_s6(mres), mr_hi_s6(mres)
+	 DO m = mr_lo_s5(mres), mr_hi_s5(mres)
+	  DO l = mr_lo_s4(mres), mr_hi_s4(mres)
+	   DO k = mr_lo_s3(mres), mr_hi_s3(mres)
+	    DO j = mr_lo_s2(mres), mr_hi_s2(mres)
+	     DO i = mr_lo_s1(mres), mr_hi_s1(mres)
 
 	   IF ( com1(i,j,k,l,m,n) .EQ. bad1 ) THEN
 	      res(i,j,k,l,m,n) = bad_res
 	   ELSE
 	      res(i,j,k,l,m,n) = SIN( com1(i,j,k,l,m,n) )
 	   ENDIF
- 2510	CONTINUE
+
+	    ENDDO
+	   ENDDO
+	   ENDDO
+	  ENDDO
+	 ENDDO
+	ENDDO
+
 	RETURN
 
+      ENDIF
+
 * "COS"
- 2600	DO 2610 n = mr_lo_s6(mres), mr_hi_s6(mres)
-	 DO 2610 m = mr_lo_s5(mres), mr_hi_s5(mres)
-	  DO 2610 l = mr_lo_s4(mres), mr_hi_s4(mres)
-	   DO 2610 k = mr_lo_s3(mres), mr_hi_s3(mres)
-	    DO 2610 j = mr_lo_s2(mres), mr_hi_s2(mres)
-	     DO 2610 i = mr_lo_s1(mres), mr_hi_s1(mres)
+      IF (op .EQ. 26) THEN
+
+	DO n = mr_lo_s6(mres), mr_hi_s6(mres)
+	 DO m = mr_lo_s5(mres), mr_hi_s5(mres)
+	  DO l = mr_lo_s4(mres), mr_hi_s4(mres)
+	   DO k = mr_lo_s3(mres), mr_hi_s3(mres)
+	    DO j = mr_lo_s2(mres), mr_hi_s2(mres)
+	     DO i = mr_lo_s1(mres), mr_hi_s1(mres)
 
 	   IF ( com1(i,j,k,l,m,n) .EQ. bad1 ) THEN
 	      res(i,j,k,l,m,n) = bad_res
 	   ELSE
 	      res(i,j,k,l,m,n) = COS( com1(i,j,k,l,m,n) )
 	   ENDIF
- 2610	CONTINUE
+
+	    ENDDO
+	   ENDDO
+	   ENDDO
+	  ENDDO
+	 ENDDO
+	ENDDO
+
 	RETURN
 
+      ENDIF
+
 * "TAN"
- 2700	DO 2710 n = mr_lo_s6(mres), mr_hi_s6(mres)
-	 DO 2710 m = mr_lo_s5(mres), mr_hi_s5(mres)
-	  DO 2710 l = mr_lo_s4(mres), mr_hi_s4(mres)
-	   DO 2710 k = mr_lo_s3(mres), mr_hi_s3(mres)
-	    DO 2710 j = mr_lo_s2(mres), mr_hi_s2(mres)
-	     DO 2710 i = mr_lo_s1(mres), mr_hi_s1(mres)
+      IF (op .EQ. 27) THEN
+
+	DO n = mr_lo_s6(mres), mr_hi_s6(mres)
+	 DO m = mr_lo_s5(mres), mr_hi_s5(mres)
+	  DO l = mr_lo_s4(mres), mr_hi_s4(mres)
+	   DO k = mr_lo_s3(mres), mr_hi_s3(mres)
+	    DO j = mr_lo_s2(mres), mr_hi_s2(mres)
+	     DO i = mr_lo_s1(mres), mr_hi_s1(mres)
 
 	   IF ( com1(i,j,k,l,m,n) .EQ. bad1 ) THEN
 	      res(i,j,k,l,m,n) = bad_res
 	   ELSE
 	      res(i,j,k,l,m,n) = TAN( com1(i,j,k,l,m,n) )
 	   ENDIF
- 2710	CONTINUE
+
+	    ENDDO
+	   ENDDO
+	   ENDDO
+	  ENDDO
+	 ENDDO
+	ENDDO
+
 	RETURN
 
+      ENDIF
+
 * "LN"
- 2800	DO 2810 n = mr_lo_s6(mres), mr_hi_s6(mres)
-	 DO 2810 m = mr_lo_s5(mres), mr_hi_s5(mres)
-	  DO 2810 l = mr_lo_s4(mres), mr_hi_s4(mres)
-	   DO 2810 k = mr_lo_s3(mres), mr_hi_s3(mres)
-	    DO 2810 j = mr_lo_s2(mres), mr_hi_s2(mres)
-	     DO 2810 i = mr_lo_s1(mres), mr_hi_s1(mres)
+      IF (op .EQ. 28) THEN
+
+	DO n = mr_lo_s6(mres), mr_hi_s6(mres)
+	 DO m = mr_lo_s5(mres), mr_hi_s5(mres)
+	  DO l = mr_lo_s4(mres), mr_hi_s4(mres)
+	   DO k = mr_lo_s3(mres), mr_hi_s3(mres)
+	    DO j = mr_lo_s2(mres), mr_hi_s2(mres)
+	     DO i = mr_lo_s1(mres), mr_hi_s1(mres)
 
 	   IF ( com1(i,j,k,l,m,n) .EQ. bad1
      .    .OR.  com1(i,j,k,l,m,n) .LE. 0.0 ) THEN    ! 8/92
@@ -994,38 +1241,49 @@
 	   ELSE
 	      res(i,j,k,l,m,n) = LOG( com1(i,j,k,l,m,n) )
 	   ENDIF
- 2810	CONTINUE
+
+	    ENDDO
+	   ENDDO
+	   ENDDO
+	  ENDDO
+	 ENDDO
+	ENDDO
+
 	RETURN
 
+      ENDIF
+
 * "MOD"
- 2900	n1 = sn1
+      IF (op .EQ. 29) THEN
+
+	n1 = sn1
 	n2 = sn2
-	DO 2910 n = mr_lo_s6(mres), mr_hi_s6(mres)
+	DO n = mr_lo_s6(mres), mr_hi_s6(mres)
 	 n1 = n1 + dn1
 	 n2 = n2 + dn2
 	 m1 = sm1
 	 m2 = sm2
-	  DO 2910 m = mr_lo_s5(mres), mr_hi_s5(mres)
+	  DO m = mr_lo_s5(mres), mr_hi_s5(mres)
 	  m1 = m1 + dm1
 	  m2 = m2 + dm2
 	  l1 = sl1
 	  l2 = sl2
-	  DO 2910 l = mr_lo_s4(mres), mr_hi_s4(mres)
+	  DO l = mr_lo_s4(mres), mr_hi_s4(mres)
 	  l1 = l1 + dl1
 	  l2 = l2 + dl2
 	  k1 = sk1
 	  k2 = sk2
-	   DO 2910 k = mr_lo_s3(mres), mr_hi_s3(mres)
+	   DO k = mr_lo_s3(mres), mr_hi_s3(mres)
 	   k1 = k1 + dk1
 	   k2 = k2 + dk2
 	   j1 = sj1
 	   j2 = sj2
-	    DO 2910 j = mr_lo_s2(mres), mr_hi_s2(mres)
+	    DO j = mr_lo_s2(mres), mr_hi_s2(mres)
 	    j1 = j1 + dj1
 	    j2 = j2 + dj2
 	    i1 = si1
 	    i2 = si2
-	     DO 2910 i = mr_lo_s1(mres), mr_hi_s1(mres)
+	     DO i = mr_lo_s1(mres), mr_hi_s1(mres)
 	     i1 = i1 + di1
 	     i2 = i2 + di2
 
@@ -1035,38 +1293,49 @@
 	   ELSE
 	      res(i,j,k,l,m,n) = MOD( com1(i1,j1,k1,l1,m1,n1), com2(i2,j2,k2,l2,m2,n2) )
 	   ENDIF
- 2910	CONTINUE
+
+	    ENDDO
+	   ENDDO
+	   ENDDO
+	  ENDDO
+	 ENDDO
+	ENDDO
+
 	RETURN
 
+      ENDIF
+
 * "MISSING" - replace missing value flag with values in grid 2
- 3000	n1 = sn1
+      IF (op .EQ. 30) THEN
+
+	n1 = sn1
 	n2 = sn2
-	DO 3010 n = mr_lo_s6(mres), mr_hi_s6(mres)
+	DO n = mr_lo_s6(mres), mr_hi_s6(mres)
 	 n1 = n1 + dn1
 	 n2 = n2 + dn2
 	 m1 = sm1
 	 m2 = sm2
-	  DO 3010 m = mr_lo_s5(mres), mr_hi_s5(mres)
+	  DO m = mr_lo_s5(mres), mr_hi_s5(mres)
 	  m1 = m1 + dm1
 	  m2 = m2 + dm2
 	  l1 = sl1
 	  l2 = sl2
-	  DO 3010 l = mr_lo_s4(mres), mr_hi_s4(mres)
+	  DO l = mr_lo_s4(mres), mr_hi_s4(mres)
 	  l1 = l1 + dl1
 	  l2 = l2 + dl2
 	  k1 = sk1
 	  k2 = sk2
-	   DO 3010 k = mr_lo_s3(mres), mr_hi_s3(mres)
+	   DO k = mr_lo_s3(mres), mr_hi_s3(mres)
 	   k1 = k1 + dk1
 	   k2 = k2 + dk2
 	   j1 = sj1
 	   j2 = sj2
-	    DO 3010 j = mr_lo_s2(mres), mr_hi_s2(mres)
+	    DO j = mr_lo_s2(mres), mr_hi_s2(mres)
 	    j1 = j1 + dj1
 	    j2 = j2 + dj2
 	    i1 = si1
 	    i2 = si2
-	     DO 3010 i = mr_lo_s1(mres), mr_hi_s1(mres)
+	     DO i = mr_lo_s1(mres), mr_hi_s1(mres)
 	     i1 = i1 + di1
 	     i2 = i2 + di2
 
@@ -1078,16 +1347,26 @@
               res(i,j,k,l,m,n) = bad_res
            ENDIF
 
- 3010	CONTINUE
+	    ENDDO
+	   ENDDO
+	   ENDDO
+	  ENDDO
+	 ENDDO
+	ENDDO
+
 	RETURN
 
+      ENDIF
+
 * "IGNORE0" - replace zeros with bad flags
- 3100	DO 3110 n = mr_lo_s6(mres), mr_hi_s6(mres)
-	 DO 3110 m = mr_lo_s5(mres), mr_hi_s5(mres)
-	  DO 3110 l = mr_lo_s4(mres), mr_hi_s4(mres)
-	   DO 3110 k = mr_lo_s3(mres), mr_hi_s3(mres)
-	    DO 3110 j = mr_lo_s2(mres), mr_hi_s2(mres)
-	     DO 3110 i = mr_lo_s1(mres), mr_hi_s1(mres)
+      IF (op .EQ. 31) THEN
+
+	DO n = mr_lo_s6(mres), mr_hi_s6(mres)
+	 DO m = mr_lo_s5(mres), mr_hi_s5(mres)
+	  DO l = mr_lo_s4(mres), mr_hi_s4(mres)
+	   DO k = mr_lo_s3(mres), mr_hi_s3(mres)
+	    DO j = mr_lo_s2(mres), mr_hi_s2(mres)
+	     DO i = mr_lo_s1(mres), mr_hi_s1(mres)
 
 	   IF ( com1(i,j,k,l,m,n) .EQ. bad1 ) THEN
 	      res(i,j,k,l,m,n) = bad_res
@@ -1096,54 +1375,76 @@
 	   ELSE
 	      res(i,j,k,l,m,n) = com1(i,j,k,l,m,n)
 	   ENDIF
- 3110	CONTINUE
+
+	    ENDDO
+	   ENDDO
+	   ENDDO
+	  ENDDO
+	 ENDDO
+	ENDDO
+
 	RETURN
 
+      ENDIF
+
 * "ATAN"
- 3200	DO 3210 n = mr_lo_s6(mres), mr_hi_s6(mres)
-	 DO 3210 m = mr_lo_s5(mres), mr_hi_s5(mres)
-	  DO 3210 l = mr_lo_s4(mres), mr_hi_s4(mres)
-	   DO 3210 k = mr_lo_s3(mres), mr_hi_s3(mres)
-	    DO 3210 j = mr_lo_s2(mres), mr_hi_s2(mres)
-	     DO 3210 i = mr_lo_s1(mres), mr_hi_s1(mres)
+      IF (op .EQ. 32) THEN
+
+	DO n = mr_lo_s6(mres), mr_hi_s6(mres)
+	 DO m = mr_lo_s5(mres), mr_hi_s5(mres)
+	  DO l = mr_lo_s4(mres), mr_hi_s4(mres)
+	   DO k = mr_lo_s3(mres), mr_hi_s3(mres)
+	    DO j = mr_lo_s2(mres), mr_hi_s2(mres)
+	     DO i = mr_lo_s1(mres), mr_hi_s1(mres)
 
 	   IF ( com1(i,j,k,l,m,n) .EQ. bad1 ) THEN
 	      res(i,j,k,l,m,n) = bad_res
 	   ELSE
 	      res(i,j,k,l,m,n) = ATAN( com1(i,j,k,l,m,n) )
 	   ENDIF
- 3210	CONTINUE
+
+	    ENDDO
+	   ENDDO
+	   ENDDO
+	  ENDDO
+	 ENDDO
+	ENDDO
+
 	RETURN
 
+      ENDIF
+
 * "ATAN2" - 2 argument arc tangent
- 3300	n1 = sn1
+      IF (op .EQ. 33) THEN
+
+	n1 = sn1
 	n2 = sn2
-	DO 3310 n = mr_lo_s6(mres), mr_hi_s6(mres)
+	DO n = mr_lo_s6(mres), mr_hi_s6(mres)
 	 n1 = n1 + dn1
 	 n2 = n2 + dn2
 	 m1 = sm1
 	 m2 = sm2
-	  DO 3310 m = mr_lo_s5(mres), mr_hi_s5(mres)
+	  DO m = mr_lo_s5(mres), mr_hi_s5(mres)
 	  m1 = m1 + dm1
 	  m2 = m2 + dm2
 	  l1 = sl1
 	  l2 = sl2
-	  DO 3310 l = mr_lo_s4(mres), mr_hi_s4(mres)
+	  DO l = mr_lo_s4(mres), mr_hi_s4(mres)
 	  l1 = l1 + dl1
 	  l2 = l2 + dl2
 	  k1 = sk1
 	  k2 = sk2
-	   DO 3310 k = mr_lo_s3(mres), mr_hi_s3(mres)
+	   DO k = mr_lo_s3(mres), mr_hi_s3(mres)
 	   k1 = k1 + dk1
 	   k2 = k2 + dk2
 	   j1 = sj1
 	   j2 = sj2
-	    DO 3310 j = mr_lo_s2(mres), mr_hi_s2(mres)
+	    DO j = mr_lo_s2(mres), mr_hi_s2(mres)
 	    j1 = j1 + dj1
 	    j2 = j2 + dj2
 	    i1 = si1
 	    i2 = si2
-	     DO 3310 i = mr_lo_s1(mres), mr_hi_s1(mres)
+	     DO i = mr_lo_s1(mres), mr_hi_s1(mres)
 	     i1 = i1 + di1
 	     i2 = i2 + di2
 
@@ -1157,16 +1458,26 @@
 	      res(i,j,k,l,m,n) = ATAN2( com1(i1,j1,k1,l1,m1,n1),com2(i2,j2,k2,l2,m2,n2) )
 	   ENDIF
 
- 3310	CONTINUE
+	    ENDDO
+	   ENDDO
+	   ENDDO
+	  ENDDO
+	 ENDDO
+	ENDDO
+
 	RETURN
 
+      ENDIF
+
 * "ASIN"
- 3400	DO 3410 n = mr_lo_s6(mres), mr_hi_s6(mres)
-	 DO 3410 m = mr_lo_s5(mres), mr_hi_s5(mres)
-	  DO 3410 l = mr_lo_s4(mres), mr_hi_s4(mres)
-	   DO 3410 k = mr_lo_s3(mres), mr_hi_s3(mres)
-	    DO 3410 j = mr_lo_s2(mres), mr_hi_s2(mres)
-	     DO 3410 i = mr_lo_s1(mres), mr_hi_s1(mres)
+      IF (op .EQ. 34) THEN
+
+	DO n = mr_lo_s6(mres), mr_hi_s6(mres)
+	 DO m = mr_lo_s5(mres), mr_hi_s5(mres)
+	  DO l = mr_lo_s4(mres), mr_hi_s4(mres)
+	   DO k = mr_lo_s3(mres), mr_hi_s3(mres)
+	    DO j = mr_lo_s2(mres), mr_hi_s2(mres)
+	     DO i = mr_lo_s1(mres), mr_hi_s1(mres)
 
 	   IF ( com1(i,j,k,l,m,n) .EQ. bad1
      .     .OR. com1(i,j,k,l,m,n) .LT. -1.
@@ -1175,16 +1486,27 @@
 	   ELSE
 	      res(i,j,k,l,m,n) = ASIN( com1(i,j,k,l,m,n) )
 	   ENDIF
- 3410	CONTINUE
+
+	    ENDDO
+	   ENDDO
+	   ENDDO
+	  ENDDO
+	 ENDDO
+	ENDDO
+
 	RETURN
 
+      ENDIF
+
 * "ACOS"
- 3500	DO 3510 n = mr_lo_s6(mres), mr_hi_s6(mres)
-	 DO 3510 m = mr_lo_s5(mres), mr_hi_s5(mres)
-	  DO 3510 l = mr_lo_s4(mres), mr_hi_s4(mres)
-	   DO 3510 k = mr_lo_s3(mres), mr_hi_s3(mres)
-	    DO 3510 j = mr_lo_s2(mres), mr_hi_s2(mres)
-	     DO 3510 i = mr_lo_s1(mres), mr_hi_s1(mres)
+      IF (op .EQ. 35) THEN
+
+	DO n = mr_lo_s6(mres), mr_hi_s6(mres)
+	 DO m = mr_lo_s5(mres), mr_hi_s5(mres)
+	  DO l = mr_lo_s4(mres), mr_hi_s4(mres)
+	   DO k = mr_lo_s3(mres), mr_hi_s3(mres)
+	    DO j = mr_lo_s2(mres), mr_hi_s2(mres)
+	     DO i = mr_lo_s1(mres), mr_hi_s1(mres)
 
 	   IF ( com1(i,j,k,l,m,n) .EQ. bad1
      .     .OR. com1(i,j,k,l,m,n) .LT. -1.
@@ -1193,18 +1515,29 @@
 	   ELSE
 	      res(i,j,k,l,m,n) = ACOS( com1(i,j,k,l,m,n) )
 	   ENDIF
- 3510	CONTINUE
+
+	    ENDDO
+	   ENDDO
+	   ENDDO
+	  ENDDO
+	 ENDDO
+	ENDDO
+
 	RETURN
+
+      ENDIF
 
 * "RANDU" - random uniform
 * use the first value as the seed
- 3600	first = .TRUE.
-	DO 3610 n = mr_lo_s6(mres), mr_hi_s6(mres)
-	 DO 3610 m = mr_lo_s5(mres), mr_hi_s5(mres)
-	  DO 3610 l = mr_lo_s4(mres), mr_hi_s4(mres)
-	   DO 3610 k = mr_lo_s3(mres), mr_hi_s3(mres)
-	    DO 3610 j = mr_lo_s2(mres), mr_hi_s2(mres)
-	     DO 3610 i = mr_lo_s1(mres), mr_hi_s1(mres)
+      IF (op .EQ. 36) THEN
+
+	first = .TRUE.
+	DO n = mr_lo_s6(mres), mr_hi_s6(mres)
+	 DO m = mr_lo_s5(mres), mr_hi_s5(mres)
+	  DO l = mr_lo_s4(mres), mr_hi_s4(mres)
+	   DO k = mr_lo_s3(mres), mr_hi_s3(mres)
+	    DO j = mr_lo_s2(mres), mr_hi_s2(mres)
+	     DO i = mr_lo_s1(mres), mr_hi_s1(mres)
 
 	   IF ( com1(i,j,k,l,m,n) .EQ. bad1 ) THEN
 	      res(i,j,k,l,m,n) = bad_res
@@ -1217,18 +1550,29 @@
               R_IN = 0.
 	      res(i,j,k,l,m,n) = RANDU(R_IN)			!kob 12/96
 	   ENDIF
- 3610	CONTINUE
+
+	    ENDDO
+	   ENDDO
+	   ENDDO
+	  ENDDO
+	 ENDDO
+	ENDDO
+
 	RETURN
+
+      ENDIF
 
 * "RANDN" - random normal
 * use the first value as the seed
- 3700	first = .TRUE.
-	DO 3710 n = mr_lo_s6(mres), mr_hi_s6(mres)
-	 DO 3710 m = mr_lo_s5(mres), mr_hi_s5(mres)
-	  DO 3710 l = mr_lo_s4(mres), mr_hi_s4(mres)
-	   DO 3710 k = mr_lo_s3(mres), mr_hi_s3(mres)
-	    DO 3710 j = mr_lo_s2(mres), mr_hi_s2(mres)
-	     DO 3710 i = mr_lo_s1(mres), mr_hi_s1(mres)
+      IF (op .EQ. 37) THEN
+
+	first = .TRUE.
+	DO n = mr_lo_s6(mres), mr_hi_s6(mres)
+	 DO m = mr_lo_s5(mres), mr_hi_s5(mres)
+	  DO l = mr_lo_s4(mres), mr_hi_s4(mres)
+	   DO k = mr_lo_s3(mres), mr_hi_s3(mres)
+	    DO j = mr_lo_s2(mres), mr_hi_s2(mres)
+	     DO i = mr_lo_s1(mres), mr_hi_s1(mres)
 
 	   IF ( com1(i,j,k,l,m,n) .EQ. bad1 ) THEN
 	      res(i,j,k,l,m,n) = bad_res
@@ -1241,51 +1585,62 @@
               R_IN = 0.
 	      res(i,j,k,l,m,n) = RANDN(R_IN)			!kob 12/96
 	   ENDIF
- 3710	CONTINUE
+
+	    ENDDO
+	   ENDDO
+	   ENDDO
+	  ENDDO
+	 ENDDO
+	ENDDO
+
 	RETURN
+
+      ENDIF
 
 * "RHO" - UNESCO equation of state:
 * rho = rho(salinity, temperature, pressure)
 * three components - each may be a different XYZT shape
- 3800	n1 = sn1
+      IF (op .EQ. 38) THEN
+
+	n1 = sn1
 	n2 = sn2
 	n3 = sn3
-	DO 3810 n = mr_lo_s6(mres), mr_hi_s6(mres)
+	DO n = mr_lo_s6(mres), mr_hi_s6(mres)
 	n1 = n1 + dn1
 	n2 = n2 + dn2
 	n3 = n3 + dn3
 	m1 = sm1
 	m2 = sm2
 	m3 = sm3
-	 DO 3810 m = mr_lo_s5(mres), mr_hi_s5(mres)
+	 DO m = mr_lo_s5(mres), mr_hi_s5(mres)
 	 m1 = m1 + dm1
 	 m2 = m2 + dm2
 	 m3 = m3 + dm3
 	  l1 = sl1
 	  l2 = sl2
 	  l3 = sl3
-	  DO 3810 l = mr_lo_s4(mres), mr_hi_s4(mres)
+	  DO l = mr_lo_s4(mres), mr_hi_s4(mres)
 	  l1 = l1 + dl1
 	  l2 = l2 + dl2
 	  l3 = l3 + dl3
 	  k1 = sk1
 	  k2 = sk2
 	  k3 = sk3
-	   DO 3810 k = mr_lo_s3(mres), mr_hi_s3(mres)
+	   DO k = mr_lo_s3(mres), mr_hi_s3(mres)
 	   k1 = k1 + dk1
 	   k2 = k2 + dk2
 	   k3 = k3 + dk3
 	   j1 = sj1
 	   j2 = sj2
 	   j3 = sj3
-	    DO 3810 j = mr_lo_s2(mres), mr_hi_s2(mres)
+	    DO j = mr_lo_s2(mres), mr_hi_s2(mres)
 	    j1 = j1 + dj1
 	    j2 = j2 + dj2
 	    j3 = j3 + dj3
 	    i1 = si1
 	    i2 = si2
 	    i3 = si3
-	     DO 3810 i = mr_lo_s1(mres), mr_hi_s1(mres)
+	     DO i = mr_lo_s1(mres), mr_hi_s1(mres)
 	     i1 = i1 + di1
 	     i2 = i2 + di2
 	     i3 = i3 + di3
@@ -1301,18 +1656,28 @@
      .                                   com3(i3,j3,k3,l3,m3,n3) )
            ENDIF
 
- 3810	CONTINUE
+	    ENDDO
+	   ENDDO
+	   ENDDO
+	  ENDDO
+	 ENDDO
+	ENDDO
+
 	RETURN
+
+      ENDIF
 
 * "THETA" - potential temperature from BRYDEN,H.,1973,DEEP-SEA RES
 *           and FOFONOFF,N,M,1977,DEEP-SEA RES
 * theta = theta(salinity, temperature, pressure,reference_pressure)
 * three components - each may be a different XYZT shape
- 3900	n1 = sn1
+      IF (op .EQ. 39) THEN
+
+	n1 = sn1
 	n2 = sn2
 	n3 = sn3
 	n4 = sn4
-	DO 3910 n = mr_lo_s6(mres), mr_hi_s6(mres)
+	DO n = mr_lo_s6(mres), mr_hi_s6(mres)
 	n1 = n1 + dn1
 	n2 = n2 + dn2
 	n3 = n3 + dn3
@@ -1321,7 +1686,7 @@
 	m2 = sm2
 	m3 = sm3
 	m4 = sm4
-	 DO 3910 m = mr_lo_s5(mres), mr_hi_s5(mres)
+	 DO m = mr_lo_s5(mres), mr_hi_s5(mres)
 	 m1 = m1 + dm1
 	 m2 = m2 + dm2
 	 m3 = m3 + dm3
@@ -1330,7 +1695,7 @@
 	  l2 = sl2
 	  l3 = sl3
 	  l4 = sl4
-	  DO 3910 l = mr_lo_s4(mres), mr_hi_s4(mres)
+	  DO l = mr_lo_s4(mres), mr_hi_s4(mres)
 	  l1 = l1 + dl1
 	  l2 = l2 + dl2
 	  l3 = l3 + dl3
@@ -1339,7 +1704,7 @@
 	  k2 = sk2
 	  k3 = sk3
 	  k4 = sk4
-	   DO 3910 k = mr_lo_s3(mres), mr_hi_s3(mres)
+	   DO k = mr_lo_s3(mres), mr_hi_s3(mres)
 	   k1 = k1 + dk1
 	   k2 = k2 + dk2
 	   k3 = k3 + dk3
@@ -1348,7 +1713,7 @@
 	   j2 = sj2
 	   j3 = sj3
 	   j4 = sj4
-	  DO 3910 j = mr_lo_s2(mres), mr_hi_s2(mres)
+	  DO j = mr_lo_s2(mres), mr_hi_s2(mres)
 	  j1 = j1 + dj1
 	  j2 = j2 + dj2
 	  j3 = j3 + dj3
@@ -1357,7 +1722,7 @@
 	  i2 = si2
 	  i3 = si3
 	  i4 = si4
-	   DO 3910 i = mr_lo_s1(mres), mr_hi_s1(mres)
+	   DO i = mr_lo_s1(mres), mr_hi_s1(mres)
 	   i1 = i1 + di1
 	   i2 = i2 + di2
 	   i3 = i3 + di3
@@ -1375,52 +1740,62 @@
      .                                   com4(i4,j4,k4,l4,m4,n4) )
            ENDIF
 
- 3910	CONTINUE
+	    ENDDO
+	   ENDDO
+	   ENDDO
+	  ENDDO
+	 ENDDO
+	ENDDO
+
 	RETURN
+
+      ENDIF
 
 * "DAYS1900(year, month, day)" - number of days since 1900
 * three components - each may be a different XYZT shape
 * *** note: returns days since 1-jan-1900, on the STANDARD CALENDAR
 
- 4000	n1 = sn1
+      IF (op .EQ. 40) THEN
+
+	n1 = sn1
 	n2 = sn2
 	n3 = sn3
-	DO 4010 n = mr_lo_s6(mres), mr_hi_s6(mres)
+	DO n = mr_lo_s6(mres), mr_hi_s6(mres)
 	n1 = n1 + dn1
 	n2 = n2 + dn2
 	n3 = n3 + dn3
 	m1 = sm1
 	m2 = sm2
 	m3 = sm3
-	 DO 4010 m = mr_lo_s5(mres), mr_hi_s5(mres)
+	 DO m = mr_lo_s5(mres), mr_hi_s5(mres)
 	 m1 = m1 + dm1
 	 m2 = m2 + dm2
 	 m3 = m3 + dm3
 	  l1 = sl1
 	  l2 = sl2
 	  l3 = sl3
-	  DO 4010 l = mr_lo_s4(mres), mr_hi_s4(mres)
+	  DO l = mr_lo_s4(mres), mr_hi_s4(mres)
 	  l1 = l1 + dl1
 	  l2 = l2 + dl2
 	  l3 = l3 + dl3
 	  k1 = sk1
 	  k2 = sk2
 	  k3 = sk3
-	   DO 4010 k = mr_lo_s3(mres), mr_hi_s3(mres)
+	   DO k = mr_lo_s3(mres), mr_hi_s3(mres)
 	   k1 = k1 + dk1
 	   k2 = k2 + dk2
 	   k3 = k3 + dk3
 	   j1 = sj1
 	   j2 = sj2
 	   j3 = sj3
-	    DO 4010 j = mr_lo_s2(mres), mr_hi_s2(mres)
+	    DO j = mr_lo_s2(mres), mr_hi_s2(mres)
 	    j1 = j1 + dj1
 	    j2 = j2 + dj2
 	    j3 = j3 + dj3
 	    i1 = si1
 	    i2 = si2
 	    i3 = si3
-	     DO 4010 i = mr_lo_s1(mres), mr_hi_s1(mres)
+	     DO i = mr_lo_s1(mres), mr_hi_s1(mres)
 	     i1 = i1 + di1
 	     i2 = i2 + di2
 	     i3 = i3 + di3
@@ -1442,8 +1817,16 @@
      .                                       dummy)
            ENDIF
 
- 4010	CONTINUE
+	    ENDDO
+	   ENDDO
+	   ENDDO
+	  ENDDO
+	 ENDDO
+	ENDDO
+
 	RETURN
+
+      ENDIF
 
 
 * "RANDU2" - random uniform 
@@ -1454,7 +1837,9 @@
 * iseed = -1 initialize using system clock
 * iseed = integer > 0 initialize using that integer: results will be repeatable
 
- 4100	CONTINUE
+      IF (op .EQ. 41) THEN
+
+	CONTINUE
 	n2 = sn2
 	m2 = sm2
 	l2 = sl2
@@ -1463,24 +1848,34 @@
 	i2 = si2
         inseed = INT(com2(i2,j2,k2,l2,m2,n2))
         CALL INIT_RANDOM_SEED(inseed)
-	DO 4110 n = mr_lo_s6(mres), mr_hi_s6(mres)
-	 DO 4110 m = mr_lo_s5(mres), mr_hi_s5(mres)
-	  DO 4110 l = mr_lo_s4(mres), mr_hi_s4(mres)
-	   DO 4110 k = mr_lo_s3(mres), mr_hi_s3(mres)
-	    DO 4110 j = mr_lo_s2(mres), mr_hi_s2(mres)
-	     DO 4110 i = mr_lo_s1(mres), mr_hi_s1(mres)
+	DO n = mr_lo_s6(mres), mr_hi_s6(mres)
+	 DO m = mr_lo_s5(mres), mr_hi_s5(mres)
+	  DO l = mr_lo_s4(mres), mr_hi_s4(mres)
+	   DO k = mr_lo_s3(mres), mr_hi_s3(mres)
+	    DO j = mr_lo_s2(mres), mr_hi_s2(mres)
+	     DO i = mr_lo_s1(mres), mr_hi_s1(mres)
 
 	   IF ( com1(i,j,k,l,m,n) .EQ. bad1 ) THEN
 	      res(i,j,k,l,m,n) = bad_res
 	   ELSE
 	      CALL RANDOM_NUMBER(res(i,j,k,l,m,n))
 	   ENDIF
- 4110	CONTINUE
+
+	    ENDDO
+	   ENDDO
+	   ENDDO
+	  ENDDO
+	 ENDDO
+	ENDDO
+
 	RETURN
+
+      ENDIF
 
 * "RANDN2" - random normal using gfortran RANDOM_SEED and RANDOM_SEED functions.
 * seed set as for RANDU2
- 4200	CONTINUE
+      IF (op .EQ. 42) THEN
+
 	n2 = sn2
 	m2 = sm2
 	l2 = sl2
@@ -1489,12 +1884,12 @@
 	i2 = si2
 	first = .TRUE.
         inseed = INT(com2(i2,j2,k2,l2,m2,n2))
-	DO 4210 n = mr_lo_s6(mres), mr_hi_s6(mres)
-	 DO 4210 m = mr_lo_s5(mres), mr_hi_s5(mres)
-	  DO 4210 l = mr_lo_s4(mres), mr_hi_s4(mres)
-	   DO 4210 k = mr_lo_s3(mres), mr_hi_s3(mres)
-	    DO 4210 j = mr_lo_s2(mres), mr_hi_s2(mres)
-	     DO 4210 i = mr_lo_s1(mres), mr_hi_s1(mres)
+	DO n = mr_lo_s6(mres), mr_hi_s6(mres)
+	 DO m = mr_lo_s5(mres), mr_hi_s5(mres)
+	  DO l = mr_lo_s4(mres), mr_hi_s4(mres)
+	   DO k = mr_lo_s3(mres), mr_hi_s3(mres)
+	    DO j = mr_lo_s2(mres), mr_hi_s2(mres)
+	     DO i = mr_lo_s1(mres), mr_hi_s1(mres)
 
 	   IF ( com1(i,j,k,l,m,n) .EQ. bad1 ) THEN
 	      res(i,j,k,l,m,n) = bad_res
@@ -1505,46 +1900,57 @@
 	      res(i,j,k,l,m,n) = RANDN2(0)
 	   ENDIF
 
- 4210	CONTINUE
+	    ENDDO
+	   ENDDO
+	   ENDDO
+	  ENDDO
+	 ENDDO
+	ENDDO
+
 	RETURN
 
- 4300	CONTINUE
+      ENDIF
+
+      IF (op .EQ. 42) THEN
+
 	STOP 'FUNCTION NOT IMPLEMENTED'
 
+      ENDIF
 * ----------------------------------------------------------------------------
 * ------- LOGIC STRUCTURES -------------
 *
- 4400	CONTINUE
+      IF (op .EQ. 44 .OR. op.EQ.45) THEN
+
 * "THEN" - comes from IF (condition) THEN (choice)   ... no "ELSE" given
 * component 1 is the condition.  component 2 is the choice
- 4500	n1 = sn1
+	n1 = sn1
 	n2 = sn2
-	DO 4510 n = mr_lo_s6(mres), mr_hi_s6(mres)
+	DO n = mr_lo_s6(mres), mr_hi_s6(mres)
 	 n1 = n1 + dn1
 	 n2 = n2 + dn2
 	 m1 = sm1
 	 m2 = sm2
-	  DO 4510 m = mr_lo_s5(mres), mr_hi_s5(mres)
+	  DO m = mr_lo_s5(mres), mr_hi_s5(mres)
 	  m1 = m1 + dm1
 	  m2 = m2 + dm2
 	  l1 = sl1
 	  l2 = sl2
-	  DO 4510 l = mr_lo_s4(mres), mr_hi_s4(mres)
+	  DO l = mr_lo_s4(mres), mr_hi_s4(mres)
 	  l1 = l1 + dl1
 	  l2 = l2 + dl2
 	  k1 = sk1
 	  k2 = sk2
-	   DO 4510 k = mr_lo_s3(mres), mr_hi_s3(mres)
+	   DO k = mr_lo_s3(mres), mr_hi_s3(mres)
 	   k1 = k1 + dk1
 	   k2 = k2 + dk2
 	   j1 = sj1
 	   j2 = sj2
-	    DO 4510 j = mr_lo_s2(mres), mr_hi_s2(mres)
+	    DO j = mr_lo_s2(mres), mr_hi_s2(mres)
 	    j1 = j1 + dj1
 	    j2 = j2 + dj2
 	    i1 = si1
 	    i2 = si2
-	     DO 4510 i = mr_lo_s1(mres), mr_hi_s1(mres)
+	     DO i = mr_lo_s1(mres), mr_hi_s1(mres)
 	     i1 = i1 + di1
 	     i2 = i2 + di2
 
@@ -1556,49 +1962,59 @@
 	      res(i,j,k,l,m,n) = bad_res
 	   ENDIF
 
- 4510	CONTINUE
+	    ENDDO
+	   ENDDO
+	   ENDDO
+	  ENDDO
+	 ENDDO
+	ENDDO
+
 	RETURN
+
+      ENDIF
 * "ELSE" - comes from IF (condition) THEN (choice1) ELSE (choice2)
 * component 1 is the condition.  components 2 and 3 are the choices
- 4600	n1 = sn1
+
+      IF (op .EQ. 46) THEN
+	n1 = sn1
 	n2 = sn2
 	n3 = sn3
-	DO 4610 n = mr_lo_s6(mres), mr_hi_s6(mres)
+	DO n = mr_lo_s6(mres), mr_hi_s6(mres)
 	n1 = n1 + dn1
 	n2 = n2 + dn2
 	n3 = n3 + dn3
 	m1 = sm1
 	m2 = sm2
 	m3 = sm3
-	 DO 4610 m = mr_lo_s5(mres), mr_hi_s5(mres)
+	 DO m = mr_lo_s5(mres), mr_hi_s5(mres)
 	 m1 = m1 + dm1
 	 m2 = m2 + dm2
 	 m3 = m3 + dm3
 	  l1 = sl1
 	  l2 = sl2
 	  l3 = sl3
-	  DO 4610 l = mr_lo_s4(mres), mr_hi_s4(mres)
+	  DO l = mr_lo_s4(mres), mr_hi_s4(mres)
 	  l1 = l1 + dl1
 	  l2 = l2 + dl2
 	  l3 = l3 + dl3
 	  k1 = sk1
 	  k2 = sk2
 	  k3 = sk3
-	   DO 4610 k = mr_lo_s3(mres), mr_hi_s3(mres)
+	   DO k = mr_lo_s3(mres), mr_hi_s3(mres)
 	   k1 = k1 + dk1
 	   k2 = k2 + dk2
 	   k3 = k3 + dk3
 	   j1 = sj1
 	   j2 = sj2
 	   j3 = sj3
-	    DO 4610 j = mr_lo_s2(mres), mr_hi_s2(mres)
+	    DO j = mr_lo_s2(mres), mr_hi_s2(mres)
 	    j1 = j1 + dj1
 	    j2 = j2 + dj2
 	    j3 = j3 + dj3
 	    i1 = si1
 	    i2 = si2
 	    i3 = si3
-	     DO 4610 i = mr_lo_s1(mres), mr_hi_s1(mres)
+	     DO i = mr_lo_s1(mres), mr_hi_s1(mres)
 	     i1 = i1 + di1
 	     i2 = i2 + di2
 	     i3 = i3 + di3
@@ -1617,39 +2033,50 @@
 	         res(i,j,k,l,m,n) = bad_res
 	      ENDIF
 	   ENDIF
- 4610	CONTINUE
+
+	    ENDDO
+	   ENDDO
+	   ENDDO
+	  ENDDO
+	 ENDDO
+	ENDDO
+
 	RETURN
+
+      ENDIF
 
 * "THEN" - comes from IFV (condition) THEN (choice)   ... no "ELSE" given
 * component 1 is the condition.  component 2 is the choice
- 4700	n1 = sn1
+
+      IF (op .EQ. 47) THEN
+	n1 = sn1
 	n2 = sn2
-	DO 4710 n = mr_lo_s6(mres), mr_hi_s6(mres)
+	DO n = mr_lo_s6(mres), mr_hi_s6(mres)
 	 n1 = n1 + dn1
 	 n2 = n2 + dn2
 	 m1 = sm1
 	 m2 = sm2
-	  DO 4710 m = mr_lo_s5(mres), mr_hi_s5(mres)
+	  DO m = mr_lo_s5(mres), mr_hi_s5(mres)
 	  m1 = m1 + dm1
 	  m2 = m2 + dm2
 	  l1 = sl1
 	  l2 = sl2
-	  DO 4710 l = mr_lo_s4(mres), mr_hi_s4(mres)
+	  DO l = mr_lo_s4(mres), mr_hi_s4(mres)
 	  l1 = l1 + dl1
 	  l2 = l2 + dl2
 	  k1 = sk1
 	  k2 = sk2
-	   DO 4710 k = mr_lo_s3(mres), mr_hi_s3(mres)
+	   DO k = mr_lo_s3(mres), mr_hi_s3(mres)
 	   k1 = k1 + dk1
 	   k2 = k2 + dk2
 	   j1 = sj1
 	   j2 = sj2
-	    DO 4710 j = mr_lo_s2(mres), mr_hi_s2(mres)
+	    DO j = mr_lo_s2(mres), mr_hi_s2(mres)
 	    j1 = j1 + dj1
 	    j2 = j2 + dj2
 	    i1 = si1
 	    i2 = si2
-	     DO 4710 i = mr_lo_s1(mres), mr_hi_s1(mres)
+	     DO i = mr_lo_s1(mres), mr_hi_s1(mres)
 	     i1 = i1 + di1
 	     i2 = i2 + di2
 
@@ -1660,49 +2087,59 @@
 	      res(i,j,k,l,m,n) = bad_res
 	   ENDIF
 
- 4710	CONTINUE
+	    ENDDO
+	   ENDDO
+	   ENDDO
+	  ENDDO
+	 ENDDO
+	ENDDO
+
 	RETURN
+
+      ENDIF
 * "ELSE" - comes from IFV (condition) THEN (choice1) ELSE (choice2)
 * component 1 is the condition.  components 2 and 3 are the choices
- 4800	n1 = sn1
+
+      IF (op .EQ. 48) THEN
+	n1 = sn1
 	n2 = sn2
 	n3 = sn3
-	DO 4810 n = mr_lo_s6(mres), mr_hi_s6(mres)
+	DO n = mr_lo_s6(mres), mr_hi_s6(mres)
 	n1 = n1 + dn1
 	n2 = n2 + dn2
 	n3 = n3 + dn3
 	m1 = sm1
 	m2 = sm2
 	m3 = sm3
-	 DO 4810 m = mr_lo_s5(mres), mr_hi_s5(mres)
+	 DO m = mr_lo_s5(mres), mr_hi_s5(mres)
 	 m1 = m1 + dm1
 	 m2 = m2 + dm2
 	 m3 = m3 + dm3
 	  l1 = sl1
 	  l2 = sl2
 	  l3 = sl3
-	  DO 4810 l = mr_lo_s4(mres), mr_hi_s4(mres)
+	  DO l = mr_lo_s4(mres), mr_hi_s4(mres)
 	  l1 = l1 + dl1
 	  l2 = l2 + dl2
 	  l3 = l3 + dl3
 	  k1 = sk1
 	  k2 = sk2
 	  k3 = sk3
-	   DO 4810 k = mr_lo_s3(mres), mr_hi_s3(mres)
+	   DO k = mr_lo_s3(mres), mr_hi_s3(mres)
 	   k1 = k1 + dk1
 	   k2 = k2 + dk2
 	   k3 = k3 + dk3
 	   j1 = sj1
 	   j2 = sj2
 	   j3 = sj3
-	    DO 4810 j = mr_lo_s2(mres), mr_hi_s2(mres)
+	    DO j = mr_lo_s2(mres), mr_hi_s2(mres)
 	    j1 = j1 + dj1
 	    j2 = j2 + dj2
 	    j3 = j3 + dj3
 	    i1 = si1
 	    i2 = si2
 	    i3 = si3
-	     DO 4810 i = mr_lo_s1(mres), mr_hi_s1(mres)
+	     DO i = mr_lo_s1(mres), mr_hi_s1(mres)
 	     i1 = i1 + di1
 	     i2 = i2 + di2
 	     i3 = i3 + di3
@@ -1720,10 +2157,16 @@
 	         res(i,j,k,l,m,n) = bad_res
 	      ENDIF
 	   ENDIF
- 4810	CONTINUE
+
+	    ENDDO
+	   ENDDO
+	   ENDDO
+	  ENDDO
+	 ENDDO
+	ENDDO
 
 	RETURN
 
-* error exits
-! 9000	RETURN
+      ENDIF
+
 	END

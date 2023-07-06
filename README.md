@@ -77,6 +77,13 @@ A development version of `pyferret` is also available to install through Anacond
 ```
 (It is recommended to create two enironments, one for the test version of `pyferret` and one for the stable version. Hence, `FERRET` and `FERRET_DEV`)
 
+### Apple Silicon Computers (M1, M2, etc.)
+To install PyFerret on an Apple Silicon computer, you may either run the above command from a x86_64 version of Anaconda/miniconda installed via a Rosetta terminal or install the usual arm64 version of Anaconda/miniconda and run the following:
+```shell
+CONDA_SUBDIR=osx-64 conda create -n FERRET -c conda-forge pyferret ferret_datasets --yes
+```
+
+### Running PyFerret installed via conda
 To start using PyFerret, execute the following command:
 ```shell
 conda activate FERRET

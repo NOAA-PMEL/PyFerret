@@ -1,0 +1,1031 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML+RDFa 1.1//EN">
+<html lang="en" dir="ltr" version="HTML+RDFa 1.1"
+  xmlns:content="http://purl.org/rss/1.0/modules/content/"
+  xmlns:dc="http://purl.org/dc/terms/"
+  xmlns:foaf="http://xmlns.com/foaf/0.1/"
+  xmlns:og="http://ogp.me/ns#"
+  xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+  xmlns:sioc="http://rdfs.org/sioc/ns#"
+  xmlns:sioct="http://rdfs.org/sioc/types#"
+  xmlns:skos="http://www.w3.org/2004/02/skos/core#"
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+  xmlns:schema="http://schema.org/">
+
+<!-- Mirrored from ferret.pmel.noaa.gov/Ferret/documentation/users-guide/writing-external-functions/UTILITY-FUNCTIONS by HTTrack Website Copier/3.x [XR&CO'2014], Thu, 15 Jun 2023 18:11:36 GMT -->
+<!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=utf-8" /><!-- /Added by HTTrack -->
+<head profile="http://www.w3.org/1999/xhtml/vocab">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="Generator" content="Drupal 7 (http://drupal.org)" />
+<link rel="canonical" href="UTILITY-FUNCTIONS.html" />
+<link rel="shortlink" href="https://ferret.pmel.noaa.gov/Ferret/node/729" />
+<link rel="shortcut icon" href="https://ferret.pmel.noaa.gov/Ferret/sites/all/themes/pacific_marine/images/favicon-32.png" type="image/png" />
+<link rel="apple-touch-icon" href="https://ferret.pmel.noaa.gov/Ferret/sites/all/themes/pacific_marine/images/apple-touch-icon-152x152.png" type="image/png" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no" />
+  <title>11.6 UTILITY FUNCTIONS | Science Data Integration Group - Ferret Support</title>  
+  <style type="text/css" media="all">
+@import url("https://ferret.pmel.noaa.gov/Ferret/modules/system/system.base.css?rw9vml");
+@import url("https://ferret.pmel.noaa.gov/Ferret/modules/system/system.menus.css?rw9vml");
+@import url("https://ferret.pmel.noaa.gov/Ferret/modules/system/system.messages.css?rw9vml");
+@import url("https://ferret.pmel.noaa.gov/Ferret/modules/system/system.theme.css?rw9vml");
+</style>
+<style type="text/css" media="all">
+@import url("https://ferret.pmel.noaa.gov/Ferret/sites/all/modules/jquery_update/replace/ui/themes/base/minified/jquery.ui.core.min.css?rw9vml");
+@import url("https://ferret.pmel.noaa.gov/Ferret/sites/all/modules/jquery_update/replace/ui/themes/base/minified/jquery.ui.theme.min.css?rw9vml");
+@import url("https://ferret.pmel.noaa.gov/Ferret/sites/all/modules/jquery_update/replace/ui/themes/base/minified/jquery.ui.menu.min.css?rw9vml");
+@import url("https://ferret.pmel.noaa.gov/Ferret/sites/all/modules/jquery_update/replace/ui/themes/base/minified/jquery.ui.autocomplete.min.css?rw9vml");
+</style>
+<style type="text/css" media="all">
+@import url("https://ferret.pmel.noaa.gov/Ferret/sites/all/modules/calendar/css/calendar_multiday.css?rw9vml");
+@import url("https://ferret.pmel.noaa.gov/Ferret/modules/field/theme/field.css?rw9vml");
+@import url("https://ferret.pmel.noaa.gov/Ferret/sites/all/modules/scald/modules/fields/mee/css/editor-global.css?rw9vml");
+@import url("https://ferret.pmel.noaa.gov/Ferret/modules/node/node.css?rw9vml");
+@import url("https://ferret.pmel.noaa.gov/Ferret/sites/all/modules/scald_file/scald_file.css?rw9vml");
+@import url("https://ferret.pmel.noaa.gov/Ferret/modules/search/search.css?rw9vml");
+@import url("https://ferret.pmel.noaa.gov/Ferret/modules/user/user.css?rw9vml");
+@import url("https://ferret.pmel.noaa.gov/Ferret/sites/all/modules/views/css/views.css?rw9vml");
+@import url("https://ferret.pmel.noaa.gov/Ferret/sites/all/modules/ckeditor/css/ckeditor.css?rw9vml");
+</style>
+<style type="text/css" media="all">
+@import url("https://ferret.pmel.noaa.gov/Ferret/sites/all/modules/ctools/css/ctools.css?rw9vml");
+@import url("https://ferret.pmel.noaa.gov/Ferret/sites/all/modules/custom_search/custom_search.css?rw9vml");
+@import url("https://ferret.pmel.noaa.gov/Ferret/sites/all/modules/search_autocomplete/css/themes/minimal.css?rw9vml");
+@import url("https://ferret.pmel.noaa.gov/Ferret/sites/all/libraries/superfish/css/superfish.css?rw9vml");
+@import url("https://ferret.pmel.noaa.gov/Ferret/sites/all/libraries/superfish/css/superfish-smallscreen.css?rw9vml");
+@import url("https://ferret.pmel.noaa.gov/Ferret/sites/all/libraries/superfish/css/superfish-vertical.css?rw9vml");
+</style>
+<style type="text/css" media="all">
+@import url("https://ferret.pmel.noaa.gov/Ferret/sites/all/themes/pacific_marine/css/ckeditor_custom.css?rw9vml");
+</style>
+<style type="text/css" media="all">
+@import url("https://ferret.pmel.noaa.gov/Ferret/sites/all/themes/omega/alpha/css/alpha-reset.css?rw9vml");
+@import url("https://ferret.pmel.noaa.gov/Ferret/sites/all/themes/omega/alpha/css/alpha-mobile.css?rw9vml");
+@import url("https://ferret.pmel.noaa.gov/Ferret/sites/all/themes/omega/alpha/css/alpha-alpha.css?rw9vml");
+@import url("https://ferret.pmel.noaa.gov/Ferret/sites/all/themes/omega/omega/css/formalize.css?rw9vml");
+@import url("https://ferret.pmel.noaa.gov/Ferret/sites/all/themes/omega/omega/css/omega-text.css?rw9vml");
+@import url("https://ferret.pmel.noaa.gov/Ferret/sites/all/themes/omega/omega/css/omega-branding.css?rw9vml");
+@import url("https://ferret.pmel.noaa.gov/Ferret/sites/all/themes/omega/omega/css/omega-menu.css?rw9vml");
+@import url("https://ferret.pmel.noaa.gov/Ferret/sites/all/themes/omega/omega/css/omega-forms.css?rw9vml");
+@import url("https://ferret.pmel.noaa.gov/Ferret/sites/all/themes/omega/omega/css/omega-visuals.css?rw9vml");
+@import url("https://ferret.pmel.noaa.gov/Ferret/sites/all/themes/pacific_marine/css/global.css?rw9vml");
+</style>
+
+<!--[if (lt IE 9)&(!IEMobile)]>
+<style type="text/css" media="all">
+@import url("https://ferret.pmel.noaa.gov/Ferret/sites/all/themes/pacific_marine/css/pacific-marine-alpha-default.css?rw9vml");
+@import url("https://ferret.pmel.noaa.gov/Ferret/sites/all/themes/pacific_marine/css/pacific-marine-alpha-default-normal.css?rw9vml");
+@import url("https://ferret.pmel.noaa.gov/Ferret/sites/all/themes/omega/alpha/css/grid/alpha_default/normal/alpha-default-normal-12.css?rw9vml");
+</style>
+<![endif]-->
+
+<!--[if gte IE 9]><!-->
+<style type="text/css" media="all and (min-width: 740px) and (min-device-width: 740px), (max-device-width: 800px) and (min-width: 740px) and (orientation:landscape)">
+@import url("https://ferret.pmel.noaa.gov/Ferret/sites/all/themes/pacific_marine/css/pacific-marine-alpha-default.css?rw9vml");
+@import url("https://ferret.pmel.noaa.gov/Ferret/sites/all/themes/pacific_marine/css/pacific-marine-alpha-default-narrow.css?rw9vml");
+@import url("https://ferret.pmel.noaa.gov/Ferret/sites/all/themes/omega/alpha/css/grid/alpha_default/narrow/alpha-default-narrow-12.css?rw9vml");
+</style>
+<!--<![endif]-->
+
+<!--[if gte IE 9]><!-->
+<style type="text/css" media="all and (min-width: 980px) and (min-device-width: 980px), all and (max-device-width: 1024px) and (min-width: 1024px) and (orientation:landscape)">
+@import url("https://ferret.pmel.noaa.gov/Ferret/sites/all/themes/pacific_marine/css/pacific-marine-alpha-default.css?rw9vml");
+@import url("https://ferret.pmel.noaa.gov/Ferret/sites/all/themes/pacific_marine/css/pacific-marine-alpha-default-normal.css?rw9vml");
+@import url("https://ferret.pmel.noaa.gov/Ferret/sites/all/themes/omega/alpha/css/grid/alpha_default/normal/alpha-default-normal-12.css?rw9vml");
+</style>
+<!--<![endif]-->
+
+<!--[if gte IE 9]><!-->
+<style type="text/css" media="all and (min-width: 1220px)">
+@import url("https://ferret.pmel.noaa.gov/Ferret/sites/all/themes/pacific_marine/css/pacific-marine-alpha-default.css?rw9vml");
+@import url("https://ferret.pmel.noaa.gov/Ferret/sites/all/themes/pacific_marine/css/pacific-marine-alpha-default-wide.css?rw9vml");
+@import url("https://ferret.pmel.noaa.gov/Ferret/sites/all/themes/omega/alpha/css/grid/alpha_default/wide/alpha-default-wide-12.css?rw9vml");
+</style>
+<!--<![endif]-->
+	
+	<script id="_fed_an_ua_tag" src="https://dap.digitalgov.gov/Universal-Federated-Analytics-Min.js?agency=DOC&amp;subagency=NOAA&amp;pua=UA-96523701-1"></script>
+	
+  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<script type="text/javascript">
+<!--//--><![CDATA[//><!--
+window.jQuery || document.write("<script src='https://ferret.pmel.noaa.gov/Ferret/sites/all/modules/jquery_update/replace/jquery/1.12/jquery.min.js'>\x3C/script>")
+//--><!]]>
+</script>
+<script type="text/javascript" src="https://ferret.pmel.noaa.gov/Ferret/misc/jquery-extend-3.4.0.js?v=1.12.4"></script>
+<script type="text/javascript" src="https://ferret.pmel.noaa.gov/Ferret/misc/jquery-html-prefilter-3.5.0-backport.js?v=1.12.4"></script>
+<script type="text/javascript" src="https://ferret.pmel.noaa.gov/Ferret/misc/jquery.once.js?v=1.2"></script>
+<script type="text/javascript" src="https://ferret.pmel.noaa.gov/Ferret/misc/drupal.js?rw9vml"></script>
+<script type="text/javascript" src="https://ferret.pmel.noaa.gov/Ferret/sites/all/modules/jquery_update/js/jquery_browser.js?v=0.0.1"></script>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.2/jquery-ui.min.js"></script>
+<script type="text/javascript">
+<!--//--><![CDATA[//><!--
+window.jQuery.ui || document.write("<script src='https://ferret.pmel.noaa.gov/Ferret/sites/all/modules/jquery_update/replace/ui/ui/minified/jquery-ui.min.js'>\x3C/script>")
+//--><!]]>
+</script>
+<script type="text/javascript" src="https://ferret.pmel.noaa.gov/Ferret/misc/ui/jquery.ui.position-1.13.0-backport.js?v=1.10.2"></script>
+<script type="text/javascript" src="https://ferret.pmel.noaa.gov/Ferret/sites/all/modules/entityreference/js/entityreference.js?rw9vml"></script>
+<script type="text/javascript" src="https://ferret.pmel.noaa.gov/Ferret/sites/all/modules/custom_search/js/custom_search.js?rw9vml"></script>
+<script type="text/javascript" src="https://ferret.pmel.noaa.gov/Ferret/sites/all/modules/scald_file/scald_file.js?rw9vml"></script>
+<script type="text/javascript" src="https://ferret.pmel.noaa.gov/Ferret/sites/all/modules/scald/modules/providers/scald_image/scald_image.js?rw9vml"></script>
+<script type="text/javascript" src="https://ferret.pmel.noaa.gov/Ferret/sites/all/modules/search_autocomplete/js/jquery.autocomplete.js?rw9vml"></script>
+<script type="text/javascript" src="https://ferret.pmel.noaa.gov/Ferret/sites/all/libraries/superfish/jquery.hoverIntent.minified.js?rw9vml"></script>
+<script type="text/javascript" src="https://ferret.pmel.noaa.gov/Ferret/sites/all/libraries/superfish/sfsmallscreen.js?rw9vml"></script>
+<script type="text/javascript" src="https://ferret.pmel.noaa.gov/Ferret/sites/all/libraries/superfish/supposition.js?rw9vml"></script>
+<script type="text/javascript" src="https://ferret.pmel.noaa.gov/Ferret/sites/all/libraries/superfish/superfish.js?rw9vml"></script>
+<script type="text/javascript" src="https://ferret.pmel.noaa.gov/Ferret/sites/all/libraries/superfish/supersubs.js?rw9vml"></script>
+<script type="text/javascript" src="https://ferret.pmel.noaa.gov/Ferret/sites/all/modules/superfish/superfish.js?rw9vml"></script>
+<script type="text/javascript" src="https://ferret.pmel.noaa.gov/Ferret/sites/all/themes/pacific_marine/js/pacific_marine.js?rw9vml"></script>
+<script type="text/javascript" src="https://ferret.pmel.noaa.gov/Ferret/sites/all/themes/omega/omega/js/jquery.formalize.js?rw9vml"></script>
+<script type="text/javascript" src="https://ferret.pmel.noaa.gov/Ferret/sites/all/themes/omega/omega/js/omega-mediaqueries.js?rw9vml"></script>
+<script type="text/javascript" src="https://ferret.pmel.noaa.gov/Ferret/sites/all/themes/omega/omega/js/omega-equalheights.js?rw9vml"></script>
+<script type="text/javascript">
+<!--//--><![CDATA[//><!--
+jQuery.extend(Drupal.settings, {"basePath":"\/Ferret\/","pathPrefix":"","setHasJsCookie":0,"ajaxPageState":{"theme":"pacific_marine","theme_token":"UVSoie6mNgGAFLRA3aDrqpOjyvaYMrccaVeQ4JU8ovs","js":{"\/\/ajax.googleapis.com\/ajax\/libs\/jquery\/1.12.4\/jquery.min.js":1,"0":1,"misc\/jquery-extend-3.4.0.js":1,"misc\/jquery-html-prefilter-3.5.0-backport.js":1,"misc\/jquery.once.js":1,"misc\/drupal.js":1,"sites\/all\/modules\/jquery_update\/js\/jquery_browser.js":1,"\/\/ajax.googleapis.com\/ajax\/libs\/jqueryui\/1.10.2\/jquery-ui.min.js":1,"1":1,"misc\/ui\/jquery.ui.position-1.13.0-backport.js":1,"sites\/all\/modules\/entityreference\/js\/entityreference.js":1,"sites\/all\/modules\/custom_search\/js\/custom_search.js":1,"sites\/all\/modules\/scald_file\/scald_file.js":1,"sites\/all\/modules\/scald\/modules\/providers\/scald_image\/scald_image.js":1,"sites\/all\/modules\/search_autocomplete\/js\/jquery.autocomplete.js":1,"sites\/all\/libraries\/superfish\/jquery.hoverIntent.minified.js":1,"sites\/all\/libraries\/superfish\/sfsmallscreen.js":1,"sites\/all\/libraries\/superfish\/supposition.js":1,"sites\/all\/libraries\/superfish\/superfish.js":1,"sites\/all\/libraries\/superfish\/supersubs.js":1,"sites\/all\/modules\/superfish\/superfish.js":1,"sites\/all\/themes\/pacific_marine\/js\/pacific_marine.js":1,"sites\/all\/themes\/omega\/omega\/js\/jquery.formalize.js":1,"sites\/all\/themes\/omega\/omega\/js\/omega-mediaqueries.js":1,"sites\/all\/themes\/omega\/omega\/js\/omega-equalheights.js":1},"css":{"modules\/system\/system.base.css":1,"modules\/system\/system.menus.css":1,"modules\/system\/system.messages.css":1,"modules\/system\/system.theme.css":1,"misc\/ui\/jquery.ui.core.css":1,"misc\/ui\/jquery.ui.theme.css":1,"misc\/ui\/jquery.ui.menu.css":1,"misc\/ui\/jquery.ui.autocomplete.css":1,"sites\/all\/modules\/calendar\/css\/calendar_multiday.css":1,"modules\/field\/theme\/field.css":1,"sites\/all\/modules\/scald\/modules\/fields\/mee\/css\/editor-global.css":1,"modules\/node\/node.css":1,"sites\/all\/modules\/scald_file\/scald_file.css":1,"modules\/search\/search.css":1,"modules\/user\/user.css":1,"sites\/all\/modules\/views\/css\/views.css":1,"sites\/all\/modules\/ckeditor\/css\/ckeditor.css":1,"sites\/all\/modules\/ctools\/css\/ctools.css":1,"sites\/all\/modules\/custom_search\/custom_search.css":1,"sites\/all\/modules\/search_autocomplete\/css\/themes\/minimal.css":1,"sites\/all\/libraries\/superfish\/css\/superfish.css":1,"sites\/all\/libraries\/superfish\/css\/superfish-smallscreen.css":1,"sites\/all\/libraries\/superfish\/css\/superfish-vertical.css":1,"sites\/all\/themes\/pacific_marine\/css\/ckeditor_custom.css":1,"sites\/all\/themes\/omega\/alpha\/css\/alpha-reset.css":1,"sites\/all\/themes\/omega\/alpha\/css\/alpha-mobile.css":1,"sites\/all\/themes\/omega\/alpha\/css\/alpha-alpha.css":1,"sites\/all\/themes\/omega\/omega\/css\/formalize.css":1,"sites\/all\/themes\/omega\/omega\/css\/omega-text.css":1,"sites\/all\/themes\/omega\/omega\/css\/omega-branding.css":1,"sites\/all\/themes\/omega\/omega\/css\/omega-menu.css":1,"sites\/all\/themes\/omega\/omega\/css\/omega-forms.css":1,"sites\/all\/themes\/omega\/omega\/css\/omega-visuals.css":1,"sites\/all\/themes\/pacific_marine\/css\/global.css":1,"ie::normal::sites\/all\/themes\/pacific_marine\/css\/pacific-marine-alpha-default.css":1,"ie::normal::sites\/all\/themes\/pacific_marine\/css\/pacific-marine-alpha-default-normal.css":1,"ie::normal::sites\/all\/themes\/omega\/alpha\/css\/grid\/alpha_default\/normal\/alpha-default-normal-12.css":1,"narrow::sites\/all\/themes\/pacific_marine\/css\/pacific-marine-alpha-default.css":1,"narrow::sites\/all\/themes\/pacific_marine\/css\/pacific-marine-alpha-default-narrow.css":1,"sites\/all\/themes\/omega\/alpha\/css\/grid\/alpha_default\/narrow\/alpha-default-narrow-12.css":1,"normal::sites\/all\/themes\/pacific_marine\/css\/pacific-marine-alpha-default.css":1,"normal::sites\/all\/themes\/pacific_marine\/css\/pacific-marine-alpha-default-normal.css":1,"sites\/all\/themes\/omega\/alpha\/css\/grid\/alpha_default\/normal\/alpha-default-normal-12.css":1,"wide::sites\/all\/themes\/pacific_marine\/css\/pacific-marine-alpha-default.css":1,"wide::sites\/all\/themes\/pacific_marine\/css\/pacific-marine-alpha-default-wide.css":1,"sites\/all\/themes\/omega\/alpha\/css\/grid\/alpha_default\/wide\/alpha-default-wide-12.css":1}},"custom_search":{"form_target":"_self","solr":0},"scaldFile":{"path":"sites\/all\/modules\/scald_file\/scald_file.css"},"search_autocomplete":{"form3":{"selector":"#edit-search-block-form--2","minChars":"3","max_sug":"10","type":"internal","datas":"https:\/\/ferret.pmel.noaa.gov\/Ferret\/search_autocomplete\/autocomplete\/3\/","fid":"3","theme":"minimal","auto_submit":"1","auto_redirect":"1"}},"urlIsAjaxTrusted":{"\/Ferret\/documentation\/users-guide\/writing-external-functions\/UTILITY-FUNCTIONS":true},"superfish":{"1":{"id":"1","sf":{"animation":{"opacity":"show","height":"show"},"speed":"fast"},"plugins":{"smallscreen":{"mode":"window_width","breakpointUnit":"px","title":"Documentation"},"supposition":true,"supersubs":true}}},"omega":{"layouts":{"primary":"normal","order":["narrow","normal","wide"],"queries":{"narrow":"all and (min-width: 740px) and (min-device-width: 740px), (max-device-width: 800px) and (min-width: 740px) and (orientation:landscape)","normal":"all and (min-width: 980px) and (min-device-width: 980px), all and (max-device-width: 1024px) and (min-width: 1024px) and (orientation:landscape)","wide":"all and (min-width: 1220px)"}}}});
+//--><!]]>
+</script>
+  <!--[if lt IE 9]><script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+</head>
+<body class="html not-front not-logged-in page-node page-node- page-node-729 node-type-documentation-page context-documentation">
+  <div id="body-bg-top"></div>
+  <div id="skip-link">
+    <a href="#main-content" class="element-invisible element-focusable">Skip to main content</a>
+  </div>
+    <div class="page clearfix" id="page">
+      <header id="section-header" class="section section-header">
+  <div id="zone-header-wrapper" class="zone-wrapper zone-header-wrapper clearfix">  
+  <div id="zone-header" class="zone zone-header clearfix container-12">
+    <div class="grid-7 region region-branding" id="region-branding">
+  <div class="region-inner region-branding-inner">
+        <div class="branding-data clearfix">
+            <div class="logo-img">
+        <a href="https://ferret.pmel.noaa.gov/Ferret/" rel="home" title=""><img src="https://ferret.pmel.noaa.gov/Ferret/sites/all/themes/pacific_marine/images/header-logo.png" alt="" id="logo" /></a>      </div>
+                </div>
+          </div>
+</div><div class="grid-5 region region-header-first" id="region-header-first">
+  <div class="region-inner region-header-first-inner">
+    <div class="block block-block block-4 block-block-4 odd block-without-title" id="block-block-4">
+  <div class="block-inner clearfix">
+                
+    <div class="content clearfix">
+      <div id="noaa-doc">
+<div class="logos">
+<div class="logo" id="doc-logo"><a href="https://www.commerce.gov/" target="_blank"><img alt="Department of Commerce logo" src="https://ferret.pmel.noaa.gov/Ferret/sites/all/themes/pacific_marine/images/doc_logo.png" style="width: 40px; height: 40px;" /></a></div>
+<div class="logo" id="noaa-logo"><a href="https://www.noaa.gov/" target="_blank"><img alt="National Oceanic and Atmospheric Administration logo" src="https://ferret.pmel.noaa.gov/Ferret/sites/all/themes/pacific_marine/images/noaa_logo.png" style="width: 40px; height: 40px;" /></a></div>
+</div>
+<div class="words">National Oceanic and<br />
+Atmospheric Administration<br /><span id="doc">United States Department of Commerce</span></div>
+</div>
+    </div>
+  </div>
+</div><div class="block block-search block-form block-search-form even block-without-title" id="block-search-form">
+  <div class="block-inner clearfix">
+                
+    <div class="content clearfix">
+      <form class="search-form" role="search" action="https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/writing-external-functions/UTILITY-FUNCTIONS" method="post" id="search-block-form" accept-charset="UTF-8"><div><div class="container-inline">
+      <h2 class="element-invisible">Search form</h2>
+    <div class="form-item form-type-textfield form-item-search-block-form">
+  <label class="element-invisible" for="edit-search-block-form--2">Search PMEL </label>
+ <input title="Enter the terms you wish to search for." class="custom-search-box form-text" placeholder="Search Ferret" type="text" id="edit-search-block-form--2" name="search_block_form" value="" size="15" maxlength="128" />
+</div>
+<div class="form-actions form-wrapper" id="edit-actions"><input style="display:none;" type="submit" id="edit-submit" name="op" value="" class="form-submit" /></div><input type="hidden" name="form_build_id" value="form-LVh7PKseH7Vxp-gg2G7D1XdUVzMkWCkYhJEEosNZHk0" />
+<input type="hidden" name="form_id" value="search_block_form" />
+</div>
+</div></form>    </div>
+  </div>
+</div>  </div>
+</div>  </div>
+</div><div id="zone-menu-wrapper" class="zone-wrapper zone-menu-wrapper clearfix">  
+  <div id="zone-menu" class="zone zone-menu clearfix container-12">
+    <div class="grid-12 region region-menu" id="region-menu">
+  <div class="region-inner region-menu-inner">
+        <div class="block block-system block-menu block-main-menu block-system-main-menu odd block-without-title" id="block-system-main-menu">
+  <div class="block-inner clearfix">
+                
+    <div class="content clearfix">
+      <ul class="menu"><li class="first expanded"><a href="https://ferret.pmel.noaa.gov/Ferret/">Home</a><ul class="menu"><li class="first leaf"><a href="http://www.pmel.noaa.gov/project/science-data-integration">SDIG Home</a></li>
+<li class="leaf"><a href="https://ferret.pmel.noaa.gov/Ferret/">Ferret/PyFerret Home</a></li>
+<li class="last leaf"><a href="http://ferret.pmel.noaa.gov/LAS">LAS Home</a></li>
+</ul></li>
+<li class="leaf"><a href="../../ferret-documentation.html">Documentation</a></li>
+<li class="collapsed"><a href="https://ferret.pmel.noaa.gov/Ferret/downloads">Downloads</a></li>
+<li class="leaf"><a href="https://ferret.pmel.noaa.gov/Ferret/faq">FAQ</a></li>
+<li class="leaf"><a href="https://ferret.pmel.noaa.gov/Ferret/email-users-group">eMail Users Group</a></li>
+<li class="last collapsed"><a href="https://ferret.pmel.noaa.gov/Ferret/support/ferret-support">Support</a></li>
+</ul>    </div>
+  </div>
+</div>  </div>
+</div>
+  </div>
+</div></header>    
+      <section id="section-content" class="section section-content">
+  <div id="zone-preface-wrapper" class="zone-wrapper zone-preface-wrapper clearfix">  
+  <div id="zone-preface" class="zone zone-preface clearfix equal-height-container container-12">
+    <div class="grid-3 region region-preface-first equal-height-element" id="region-preface-first">
+  <div class="region-inner region-preface-first-inner">
+      </div>
+</div><div class="grid-9 region region-preface-second equal-height-element" id="region-preface-second">
+  <div class="region-inner region-preface-second-inner">
+      </div>
+</div>  </div>
+</div><div id="zone-content-wrapper" class="zone-wrapper zone-content-wrapper clearfix sidebar">  
+  <div id="zone-content" class="zone zone-content clearfix equal-height-container container-12">    
+          <div id="breadcrumb" class="grid-12"><h2 class="element-invisible">You are here</h2><div class="breadcrumb"><a href="https://ferret.pmel.noaa.gov/Ferret/">Home</a> > <a href="../../ferret-documentation.html">Documentation</a> > <a href="../../users-guide.html">Ferret User&#039;s Guide</a> > <a href="../writing-external-functions.html">11. Writing External Functions</a> > 11.6 UTILITY FUNCTIONS</div></div>
+        
+        <aside class="grid-3 region region-sidebar-first equal-height-element" id="region-sidebar-first">
+  <div class="region-inner region-sidebar-first-inner">
+    <div class="block block-superfish block-1 block-superfish-1 odd block-without-title" id="block-superfish-1">
+  <div class="block-inner clearfix">
+                
+    <div class="content clearfix">
+      <ul  id="superfish-1" class="menu sf-menu sf-main-menu sf-vertical sf-style-none sf-total-items-8 sf-parent-items-4 sf-single-items-4"><li id="menu-1620-1" class="first odd sf-item-1 sf-depth-2 sf-no-children"><a href="../../version-763-release-notes.html" class="sf-depth-2">Current Release Notes</a></li><li id="menu-1170-1" class="active-trail middle even sf-item-2 sf-depth-2 sf-total-children-17 sf-parent-children-15 sf-single-children-2 menuparent"><a href="../../users-guide.html" class="sf-depth-2 menuparent">Ferret User&#039;s Guide</a><ul><li id="menu-1613-1" class="first odd sf-item-1 sf-depth-3 sf-no-children"><a href="../full-index/index.html" class="sf-depth-3">Users Guide Index</a></li><li id="menu-1154-1" class="middle even sf-item-2 sf-depth-3 sf-total-children-41 sf-parent-children-0 sf-single-children-41 menuparent"><a href="../commands-reference/chapter-commnad-references.html" class="sf-depth-3 menuparent">Commands Reference</a><ul><li id="menu-1175-1" class="first odd sf-item-1 sf-depth-4 sf-no-children"><a href="../commands-reference/ALIAS.html" class="sf-depth-4">ALIAS</a></li><li id="menu-1176-1" class="middle even sf-item-2 sf-depth-4 sf-no-children"><a href="../commands-reference/CANCEL.html" class="sf-depth-4">CANCEL</a></li><li id="menu-1177-1" class="middle odd sf-item-3 sf-depth-4 sf-no-children"><a href="../commands-reference/CONTOUR.html" class="sf-depth-4">CONTOUR</a></li><li id="menu-1178-1" class="middle even sf-item-4 sf-depth-4 sf-no-children"><a href="../commands-reference/DEFINE.html" class="sf-depth-4">DEFINE</a></li><li id="menu-1179-1" class="middle odd sf-item-5 sf-depth-4 sf-no-children"><a href="../commands-reference/ELIF.html" class="sf-depth-4">ELIF</a></li><li id="menu-1180-1" class="middle even sf-item-6 sf-depth-4 sf-no-children"><a href="../commands-reference/ELSE.html" class="sf-depth-4">ELSE</a></li><li id="menu-1181-1" class="middle odd sf-item-7 sf-depth-4 sf-no-children"><a href="../commands-reference/ENDIF.html" class="sf-depth-4">ENDIF</a></li><li id="menu-1182-1" class="middle even sf-item-8 sf-depth-4 sf-no-children"><a href="../commands-reference/EXIT.html" class="sf-depth-4">EXIT</a></li><li id="menu-1183-1" class="middle odd sf-item-9 sf-depth-4 sf-no-children"><a href="../commands-reference/FILE.html" class="sf-depth-4">FILE</a></li><li id="menu-1184-1" class="middle even sf-item-10 sf-depth-4 sf-no-children"><a href="../commands-reference/FILL.html" class="sf-depth-4">FILL</a></li><li id="menu-1185-1" class="middle odd sf-item-11 sf-depth-4 sf-no-children"><a href="../commands-reference/FRAME.html" class="sf-depth-4">FRAME</a></li><li id="menu-1186-1" class="middle even sf-item-12 sf-depth-4 sf-no-children"><a href="../commands-reference/GO.html" class="sf-depth-4">GO</a></li><li id="menu-1187-1" class="middle odd sf-item-13 sf-depth-4 sf-no-children"><a href="../commands-reference/HELP.html" class="sf-depth-4">HELP</a></li><li id="menu-1188-1" class="middle even sf-item-14 sf-depth-4 sf-no-children"><a href="../commands-reference/IF.html" class="sf-depth-4">IF</a></li><li id="menu-1189-1" class="middle odd sf-item-15 sf-depth-4 sf-no-children"><a href="../commands-reference/LABEL.html" class="sf-depth-4">LABEL</a></li><li id="menu-1190-1" class="middle even sf-item-16 sf-depth-4 sf-no-children"><a href="../commands-reference/LET.html" class="sf-depth-4">LET</a></li><li id="menu-1191-1" class="middle odd sf-item-17 sf-depth-4 sf-no-children"><a href="../commands-reference/LIST.html" class="sf-depth-4">LIST</a></li><li id="menu-1192-1" class="middle even sf-item-18 sf-depth-4 sf-no-children"><a href="../commands-reference/LOAD.html" class="sf-depth-4">LOAD</a></li><li id="menu-1193-1" class="middle odd sf-item-19 sf-depth-4 sf-no-children"><a href="../commands-reference/MESSAGE.html" class="sf-depth-4">MESSAGE</a></li><li id="menu-1194-1" class="middle even sf-item-20 sf-depth-4 sf-no-children"><a href="../commands-reference/PALETTE.html" class="sf-depth-4">PALETTE</a></li><li id="menu-1195-1" class="middle odd sf-item-21 sf-depth-4 sf-no-children"><a href="../commands-reference/PATTERN.html" class="sf-depth-4">PATTERN</a></li><li id="menu-1196-1" class="middle even sf-item-22 sf-depth-4 sf-no-children"><a href="../commands-reference/PAUSE.html" class="sf-depth-4">PAUSE</a></li><li id="menu-1197-1" class="middle odd sf-item-23 sf-depth-4 sf-no-children"><a href="../commands-reference/PLOT.html" class="sf-depth-4">PLOT</a></li><li id="menu-1198-1" class="middle even sf-item-24 sf-depth-4 sf-no-children"><a href="../commands-reference/POLYGON.html" class="sf-depth-4">POLYGON</a></li><li id="menu-1199-1" class="middle odd sf-item-25 sf-depth-4 sf-no-children"><a href="../commands-reference/PPLUS.html" class="sf-depth-4">PPLUS</a></li><li id="menu-1200-1" class="middle even sf-item-26 sf-depth-4 sf-no-children"><a href="../commands-reference/QUERY.html" class="sf-depth-4">QUERY</a></li><li id="menu-1201-1" class="middle odd sf-item-27 sf-depth-4 sf-no-children"><a href="../commands-reference/QUIT.html" class="sf-depth-4">QUIT</a></li><li id="menu-1202-1" class="middle even sf-item-28 sf-depth-4 sf-no-children"><a href="../commands-reference/REPEAT.html" class="sf-depth-4">REPEAT</a></li><li id="menu-1203-1" class="middle odd sf-item-29 sf-depth-4 sf-no-children"><a href="../commands-reference/SAVE.html" class="sf-depth-4">SAVE</a></li><li id="menu-1204-1" class="middle even sf-item-30 sf-depth-4 sf-no-children"><a href="../commands-reference/SAY.html" class="sf-depth-4">SAY</a></li><li id="menu-1205-1" class="middle odd sf-item-31 sf-depth-4 sf-no-children"><a href="../commands-reference/SET.html" class="sf-depth-4">SET</a></li><li id="menu-1206-1" class="middle even sf-item-32 sf-depth-4 sf-no-children"><a href="../commands-reference/SHADE.html" class="sf-depth-4">SHADE</a></li><li id="menu-1207-1" class="middle odd sf-item-33 sf-depth-4 sf-no-children"><a href="../commands-reference/SHOW.html" class="sf-depth-4">SHOW</a></li><li id="menu-1208-1" class="middle even sf-item-34 sf-depth-4 sf-no-children"><a href="../commands-reference/SPAWN.html" class="sf-depth-4">SPAWN</a></li><li id="menu-1209-1" class="middle odd sf-item-35 sf-depth-4 sf-no-children"><a href="../commands-reference/STATISTICS.html" class="sf-depth-4">STATISTICS</a></li><li id="menu-1210-1" class="middle even sf-item-36 sf-depth-4 sf-no-children"><a href="../commands-reference/UNALIAS.html" class="sf-depth-4">UNALIAS</a></li><li id="menu-1211-1" class="middle odd sf-item-37 sf-depth-4 sf-no-children"><a href="../commands-reference/VECTOR.html" class="sf-depth-4">VECTOR</a></li><li id="menu-1212-1" class="middle even sf-item-38 sf-depth-4 sf-no-children"><a href="../commands-reference/USE.html" class="sf-depth-4">USE</a></li><li id="menu-1213-1" class="middle odd sf-item-39 sf-depth-4 sf-no-children"><a href="../commands-reference/USER.html" class="sf-depth-4">USER</a></li><li id="menu-1214-1" class="middle even sf-item-40 sf-depth-4 sf-no-children"><a href="../commands-reference/WI.html" class="sf-depth-4">WIRE</a></li><li id="menu-1215-1" class="last odd sf-item-41 sf-depth-4 sf-no-children"><a href="../commands-reference/WHERE.html" class="sf-depth-4">WHERE</a></li></ul></li><li id="menu-1390-1" class="middle odd sf-item-3 sf-depth-3 sf-total-children-8 sf-parent-children-0 sf-single-children-8 menuparent"><a href="../introduction.html" class="sf-depth-3 menuparent">1. Introduction</a><ul><li id="menu-1230-1" class="first odd sf-item-1 sf-depth-4 sf-no-children"><a href="../introduction/OVERVIEW.html" class="sf-depth-4">1.1 OVERVIEW</a></li><li id="menu-1231-1" class="middle even sf-item-2 sf-depth-4 sf-no-children"><a href="../introduction/GETTING-STARTED.html" class="sf-depth-4">1.2 GETTING STARTED</a></li><li id="menu-1232-1" class="middle odd sf-item-3 sf-depth-4 sf-no-children"><a href="../introduction/COMMON-COMMANDS.html" class="sf-depth-4">1.3 COMMON COMMANDS</a></li><li id="menu-1233-1" class="middle even sf-item-4 sf-depth-4 sf-no-children"><a href="../introduction/COMMAND-SYNTAX.html" class="sf-depth-4">1.4 COMMAND SYNTAX</a></li><li id="menu-1234-1" class="middle odd sf-item-5 sf-depth-4 sf-no-children"><a href="../introduction/GO-FILES.html" class="sf-depth-4">1.5 GO FILES</a></li><li id="menu-1235-1" class="middle even sf-item-6 sf-depth-4 sf-no-children"><a href="../introduction/SAMPLE-DATA-SETS.html" class="sf-depth-4">1.6 SAMPLE DATA SETS</a></li><li id="menu-1236-1" class="middle odd sf-item-7 sf-depth-4 sf-no-children"><a href="../introduction/UNIX-TOOLS.html" class="sf-depth-4">1.7 UNIX TOOLS</a></li><li id="menu-1237-1" class="last even sf-item-8 sf-depth-4 sf-no-children"><a href="../introduction/HELP.html" class="sf-depth-4">1.8 HELP</a></li></ul></li><li id="menu-1391-1" class="middle even sf-item-4 sf-depth-3 sf-total-children-9 sf-parent-children-1 sf-single-children-8 menuparent"><a href="../data-set-basics.html" class="sf-depth-3 menuparent">2. Data Set Basics</a><ul><li id="menu-1238-1" class="first odd sf-item-1 sf-depth-4 sf-no-children"><a href="../data-set-basics/OVERVIEW.html" class="sf-depth-4">2.1 OVERVIEW</a></li><li id="menu-1239-1" class="middle even sf-item-2 sf-depth-4 sf-total-children-1 sf-parent-children-0 sf-single-children-1 menuparent"><a href="../data-set-basics/NETCDF-DATA.html" class="sf-depth-4 menuparent">2.2 NETCDF DATA</a><ul><li id="menu-1593-1" class="firstandlast odd sf-item-1 sf-depth-5 sf-no-children"><a href="../../udunits.html" class="sf-depth-5">udunits.dat</a></li></ul></li><li id="menu-1240-1" class="middle odd sf-item-3 sf-depth-4 sf-no-children"><a href="../data-set-basics/TMAP-FORMATTED-DATA.html" class="sf-depth-4">2.3 TMAP-FORMATTED DATA</a></li><li id="menu-1241-1" class="middle even sf-item-4 sf-depth-4 sf-no-children"><a href="../data-set-basics/BINARY-DATA.html" class="sf-depth-4">2.4 BINARY DATA</a></li><li id="menu-1243-1" class="middle odd sf-item-5 sf-depth-4 sf-no-children"><a href="../data-set-basics/ASCII-DATA.html" class="sf-depth-4">2.5 ASCII DATA</a></li><li id="menu-1242-1" class="middle even sf-item-6 sf-depth-4 sf-no-children"><a href="../data-set-basics/TRICKS-TO-READING-BINARY-AND-ASCII-FILES.html" class="sf-depth-4">2.6 TRICKS TO READING BINARY AND ASCII FILES</a></li><li id="menu-1244-1" class="middle odd sf-item-7 sf-depth-4 sf-no-children"><a href="../data-set-basics/ACCESS-TO-REMOTE-DATA-SETS-WITH-DODS.html" class="sf-depth-4">2.7 ACCESS TO REMOTE DATA SETS WITH OPeNDAP</a></li><li id="menu-1246-1" class="middle even sf-item-8 sf-depth-4 sf-no-children"><a href="https://ferret.pmel.noaa.gov/Ferret/" class="sf-depth-4">dsg_trajectories</a></li><li id="menu-1247-1" class="last odd sf-item-9 sf-depth-4 sf-no-children"><a href="https://ferret.pmel.noaa.gov/Ferret/" class="sf-depth-4">dsg_profiles</a></li></ul></li><li id="menu-1392-1" class="middle odd sf-item-5 sf-depth-3 sf-total-children-5 sf-parent-children-0 sf-single-children-5 menuparent"><a href="../variables-xpressions.html" class="sf-depth-3 menuparent">3. Variables &amp; Expressions</a><ul><li id="menu-1248-1" class="first odd sf-item-1 sf-depth-4 sf-no-children"><a href="../variables-xpressions/VARIABLES.html" class="sf-depth-4">3.1 VARIABLES</a></li><li id="menu-1249-1" class="middle even sf-item-2 sf-depth-4 sf-no-children"><a href="../variables-xpressions/XPRESSIONS.html" class="sf-depth-4">3.2 EXPRESSIONS</a></li><li id="menu-1250-1" class="middle odd sf-item-3 sf-depth-4 sf-no-children"><a href="../variables-xpressions/EMBEDDED-XPRESSIONS.html" class="sf-depth-4">3.3 EMBEDDED EXPRESSIONS</a></li><li id="menu-1251-1" class="middle even sf-item-4 sf-depth-4 sf-no-children"><a href="../variables-xpressions/DEFINING-NEW-VARIABLES.html" class="sf-depth-4">3.4 DEFINING NEW VARIABLES</a></li><li id="menu-1252-1" class="last odd sf-item-5 sf-depth-4 sf-no-children"><a href="../variables-xpressions/DEBUGGING-COMPLEX-HIERARCHIES-OF-XPRESSIONS.html" class="sf-depth-4">3.5 DEBUGGING COMPLEX HIERARCHIES OF EXPRESSIONS</a></li></ul></li><li id="menu-1393-1" class="middle even sf-item-6 sf-depth-3 sf-total-children-4 sf-parent-children-0 sf-single-children-4 menuparent"><a href="../Grids-Regions.html" class="sf-depth-3 menuparent">4. Grids &amp; Regions</a><ul><li id="menu-1253-1" class="first odd sf-item-1 sf-depth-4 sf-no-children"><a href="../Grids-Regions/OVERVIEW.html" class="sf-depth-4">4.1 OVERVIEW</a></li><li id="menu-1254-1" class="middle even sf-item-2 sf-depth-4 sf-no-children"><a href="../Grids-Regions/GRIDS.html" class="sf-depth-4">4.2 GRIDS</a></li><li id="menu-1255-1" class="middle odd sf-item-3 sf-depth-4 sf-no-children"><a href="../Grids-Regions/REGIONS.html" class="sf-depth-4">4.3 REGIONS</a></li><li id="menu-1256-1" class="last even sf-item-4 sf-depth-4 sf-no-children"><a href="../Grids-Regions/FERRET-PROGRAM-LIMITS.html" class="sf-depth-4">4.4 FERRET PROGRAM LIMITS</a></li></ul></li><li id="menu-1394-1" class="middle odd sf-item-7 sf-depth-3 sf-total-children-5 sf-parent-children-0 sf-single-children-5 menuparent"><a href="../animations-gif-images.html" class="sf-depth-3 menuparent">5. Animations &amp; Gif Images</a><ul><li id="menu-1257-1" class="first odd sf-item-1 sf-depth-4 sf-no-children"><a href="../animations-gif-images/OVERVIEW.html" class="sf-depth-4">5.1 OVERVIEW</a></li><li id="menu-1258-1" class="middle even sf-item-2 sf-depth-4 sf-no-children"><a href="../animations-gif-images/CREATING-AN-HDF-MOVIE.html" class="sf-depth-4">5.2 CREATING AN HDF MOVIE</a></li><li id="menu-1259-1" class="middle odd sf-item-3 sf-depth-4 sf-no-children"><a href="../animations-gif-images/DISPLAYING-AN-HDF-MOVIE.html" class="sf-depth-4">5.3 DISPLAYING AN HDF MOVIE</a></li><li id="menu-1260-1" class="middle even sf-item-4 sf-depth-4 sf-no-children"><a href="../animations-gif-images/ADVANCED-MOVIE-MAKING.html" class="sf-depth-4">5.4 ADVANCED MOVIE-MAKING</a></li><li id="menu-1261-1" class="last odd sf-item-5 sf-depth-4 sf-no-children"><a href="../animations-gif-images/CREATING-GIF-IMAGES.html" class="sf-depth-4">5.5 CREATING GIF IMAGES</a></li></ul></li><li id="menu-1395-1" class="middle even sf-item-8 sf-depth-3 sf-total-children-12 sf-parent-children-0 sf-single-children-12 menuparent"><a href="../customizing-plots.html" class="sf-depth-3 menuparent">6. Customizing Plots</a><ul><li id="menu-1262-1" class="first odd sf-item-1 sf-depth-4 sf-no-children"><a href="../customizing-plots/OVERVIEW.html" class="sf-depth-4">6.1 OVERVIEW</a></li><li id="menu-1263-1" class="middle even sf-item-2 sf-depth-4 sf-no-children"><a href="../customizing-plots/GRAPHICAL-OUTPUT.html" class="sf-depth-4">6.2 GRAPHICAL OUTPUT</a></li><li id="menu-1264-1" class="middle odd sf-item-3 sf-depth-4 sf-no-children"><a href="../customizing-plots/AXES.html" class="sf-depth-4">6.3 AXES</a></li><li id="menu-1265-1" class="middle even sf-item-4 sf-depth-4 sf-no-children"><a href="../customizing-plots/LABELS.html" class="sf-depth-4">6.4 LABELS</a></li><li id="menu-1266-1" class="middle odd sf-item-5 sf-depth-4 sf-no-children"><a href="../customizing-plots/COLOR.html" class="sf-depth-4">6.5 COLOR</a></li><li id="menu-1267-1" class="middle even sf-item-6 sf-depth-4 sf-no-children"><a href="../customizing-plots/FONTS.html" class="sf-depth-4">6.6 FONTS</a></li><li id="menu-1268-1" class="middle odd sf-item-7 sf-depth-4 sf-no-children"><a href="../customizing-plots/PLOT-LAYOUT.html" class="sf-depth-4">6.7 PLOT LAYOUT</a></li><li id="menu-1269-1" class="middle even sf-item-8 sf-depth-4 sf-no-children"><a href="../customizing-plots/CONTOURING.html" class="sf-depth-4">6.8 CONTOURING</a></li><li id="menu-1270-1" class="middle odd sf-item-9 sf-depth-4 sf-no-children"><a href="../customizing-plots/SPECIAL-SYMBOLS.html" class="sf-depth-4">6.9 SPECIAL SYMBOLS</a></li><li id="menu-1617-1" class="middle even sf-item-10 sf-depth-4 sf-no-children"><a href="../customizing-plots/MAP-PROJECTIONS-AND-CURVILINEAR-COORDINATES.html" class="sf-depth-4">6.10 MAP PROJECTIONS AND CURVILINEAR COORDINATES</a></li><li id="menu-1272-1" class="middle odd sf-item-11 sf-depth-4 sf-no-children"><a href="../customizing-plots/linecolors.gif/view.html" class="sf-depth-4">LINECOLORS example</a></li><li id="menu-1273-1" class="last even sf-item-12 sf-depth-4 sf-no-children"><a href="../customizing-plots/Chapter6_plotuv.png/view.html" class="sf-depth-4">PLOTUV example</a></li></ul></li><li id="menu-1396-1" class="middle odd sf-item-9 sf-depth-3 sf-total-children-11 sf-parent-children-0 sf-single-children-11 menuparent"><a href="../handing-string-data-symbols.html" class="sf-depth-3 menuparent">7. Handing String Data Symbols</a><ul><li id="menu-1274-1" class="first odd sf-item-1 sf-depth-4 sf-no-children"><a href="../handing-string-data-symbols/STRING-VARIABLES.html" class="sf-depth-4">7.1 STRING VARIABLES</a></li><li id="menu-1275-1" class="middle even sf-item-2 sf-depth-4 sf-no-children"><a href="../handing-string-data-symbols/STRING-FUNCTIONS.html" class="sf-depth-4">7.2 STRING FUNCTIONS</a></li><li id="menu-1276-1" class="middle odd sf-item-3 sf-depth-4 sf-no-children"><a href="../handing-string-data-symbols/SYMBOL-COMMANDS.html" class="sf-depth-4">7.3 SYMBOL COMMANDS</a></li><li id="menu-1277-1" class="middle even sf-item-4 sf-depth-4 sf-no-children"><a href="../handing-string-data-symbols/AUTOMATICALLY-GENERATED-SYMBOLS.html" class="sf-depth-4">7.4 AUTOMATICALLY GENERATED SYMBOLS</a></li><li id="menu-1278-1" class="middle odd sf-item-5 sf-depth-4 sf-no-children"><a href="../handing-string-data-symbols/USE-WITH-EMBEDDED-EXPRESSIONS.html" class="sf-depth-4">7.5 USE WITH EMBEDDED EXPRESSIONS</a></li><li id="menu-1279-1" class="middle even sf-item-6 sf-depth-4 sf-no-children"><a href="../handing-string-data-symbols/ORDER-OF-STRING-SUBSTITUTIONS.html" class="sf-depth-4">7.6 ORDER OF STRING SUBSTITUTIONS</a></li><li id="menu-1280-1" class="middle odd sf-item-7 sf-depth-4 sf-no-children"><a href="../handing-string-data-symbols/CUSTOMIZING-THE-POSITION-AND-STYLE%20OF%20PLOT%20LABELS.html" class="sf-depth-4">7.7 CUSTOMIZING THE POSITION AND STYLE OF PLOT LABELS</a></li><li id="menu-1281-1" class="middle even sf-item-8 sf-depth-4 sf-no-children"><a href="../handing-string-data-symbols/USING-SYMBOLS-IN-COMMAND-FILES.html" class="sf-depth-4">7.8 USING SYMBOLS IN COMMAND FILES</a></li><li id="menu-1282-1" class="middle odd sf-item-9 sf-depth-4 sf-no-children"><a href="../handing-string-data-symbols/PLOT-STRING-EDITING-TOOLS.html" class="sf-depth-4">7.9 PLOT+ STRING EDITING TOOLS</a></li><li id="menu-1283-1" class="middle even sf-item-10 sf-depth-4 sf-no-children"><a href="../handing-string-data-symbols/SYMBOL-EDITING.html" class="sf-depth-4">7.10 SYMBOL EDITING</a></li><li id="menu-1284-1" class="last odd sf-item-11 sf-depth-4 sf-no-children"><a href="../handing-string-data-symbols/SPECIAL-SYMBOLS.html" class="sf-depth-4">7.11 SPECIAL SYMBOLS</a></li></ul></li><li id="menu-1397-1" class="middle even sf-item-10 sf-depth-3 sf-total-children-10 sf-parent-children-0 sf-single-children-10 menuparent"><a href="../working-with-special-data-sets.html" class="sf-depth-3 menuparent">8. Working with Special Data Sets</a><ul><li id="menu-1285-1" class="first odd sf-item-1 sf-depth-4 sf-no-children"><a href="../working-with-special-data-sets/WHAT-IS-NON-GRIDDED-DATA.html" class="sf-depth-4">8.1 WHAT IS NON-GRIDDED DATA?</a></li><li id="menu-1286-1" class="middle even sf-item-2 sf-depth-4 sf-no-children"><a href="../working-with-special-data-sets/POINT-DATA.html" class="sf-depth-4">8.2 POINT DATA</a></li><li id="menu-1287-1" class="middle odd sf-item-3 sf-depth-4 sf-no-children"><a href="../working-with-special-data-sets/VERTICAL-PROFILES.html" class="sf-depth-4">8.3 VERTICAL PROFILES</a></li><li id="menu-1288-1" class="middle even sf-item-4 sf-depth-4 sf-no-children"><a href="../working-with-special-data-sets/COLLECTIONS-OF-TIME-SERIES.html" class="sf-depth-4">8.4 COLLECTIONS OF TIME SERIES</a></li><li id="menu-1289-1" class="middle odd sf-item-5 sf-depth-4 sf-no-children"><a href="../working-with-special-data-sets/COLLECTIONS-OF-2-DIMENSIONAL-GRIDS.html" class="sf-depth-4">8.5 COLLECTIONS OF 2-DIMENSIONAL GRIDS</a></li><li id="menu-1290-1" class="middle even sf-item-6 sf-depth-4 sf-no-children"><a href="../working-with-special-data-sets/LAGRANGIAN-DATA.html" class="sf-depth-4">8.6 LAGRANGIAN DATA</a></li><li id="menu-1291-1" class="middle odd sf-item-7 sf-depth-4 sf-no-children"><a href="../working-with-special-data-sets/SIGMA-COORDINATE-DATA.html" class="sf-depth-4">8.7 SIGMA COORDINATE DATA</a></li><li id="menu-1292-1" class="middle even sf-item-8 sf-depth-4 sf-no-children"><a href="../working-with-special-data-sets/CURVILINEAR-COORDINATE-DATA.html" class="sf-depth-4">8.8 CURVILINEAR COORDINATE DATA</a></li><li id="menu-1293-1" class="middle odd sf-item-9 sf-depth-4 sf-no-children"><a href="../working-with-special-data-sets/POLYGONAL-DATA.html" class="sf-depth-4">8.9 POLYGONAL DATA</a></li><li id="menu-1245-1" class="last even sf-item-10 sf-depth-4 sf-no-children"><a href="../working-with-special-data-sets/DSG_datasets.html" class="sf-depth-4">8.10 Discrete Geometries Datasets</a></li></ul></li><li id="menu-1398-1" class="middle odd sf-item-11 sf-depth-3 sf-total-children-7 sf-parent-children-0 sf-single-children-7 menuparent"><a href="../computing-environment.html" class="sf-depth-3 menuparent">9. Computing Environment</a><ul><li id="menu-1294-1" class="first odd sf-item-1 sf-depth-4 sf-no-children"><a href="../computing-environment/SETTING-UP-TO-RUN-FERRET.html" class="sf-depth-4">9.1 SETTING UP TO RUN FERRET</a></li><li id="menu-1295-1" class="middle even sf-item-2 sf-depth-4 sf-no-children"><a href="../computing-environment/FILES-AND-ENVIRONMENT-VARIABLES-USED-BY-FERRET.html" class="sf-depth-4">9.2 FILES AND ENVIRONMENT VARIABLES USED BY FERRET</a></li><li id="menu-1296-1" class="middle odd sf-item-3 sf-depth-4 sf-no-children"><a href="../computing-environment/MEMORY-USE.html" class="sf-depth-4">9.3 MEMORY USE</a></li><li id="menu-1297-1" class="middle even sf-item-4 sf-depth-4 sf-no-children"><a href="../computing-environment/HARD-COPY-AND-METAFILE-TRANSLATION.html" class="sf-depth-4">9.4 HARD COPY AND METAFILE TRANSLATION</a></li><li id="menu-1298-1" class="middle odd sf-item-5 sf-depth-4 sf-no-children"><a href="../computing-environment/OUTPUT-FILE-NAMING.html" class="sf-depth-4">9.5 OUTPUT FILE NAMING</a></li><li id="menu-1299-1" class="middle even sf-item-6 sf-depth-4 sf-no-children"><a href="../computing-environment/INPUT-FILE-NAMING.html" class="sf-depth-4">9.6 INPUT FILE NAMING</a></li><li id="menu-1300-1" class="last odd sf-item-7 sf-depth-4 sf-no-children"><a href="../computing-environment/my_ferret_paths_template.html" class="sf-depth-4">my_ferret_paths_template</a></li></ul></li><li id="menu-1399-1" class="middle even sf-item-12 sf-depth-3 sf-total-children-4 sf-parent-children-0 sf-single-children-4 menuparent"><a href="../converting-to-netcdf.html" class="sf-depth-3 menuparent">10. Converting to NetCDF</a><ul><li id="menu-1301-1" class="first odd sf-item-1 sf-depth-4 sf-no-children"><a href="../converting-to-netcdf/OVERVIEW.html" class="sf-depth-4">10.1 OVERVIEW</a></li><li id="menu-1302-1" class="middle even sf-item-2 sf-depth-4 sf-no-children"><a href="../converting-to-netcdf/SIMPLE-CONVERSIONS-USING-FERRET.html" class="sf-depth-4">10.2 SIMPLE CONVERSIONS USING FERRET</a></li><li id="menu-1303-1" class="middle odd sf-item-3 sf-depth-4 sf-no-children"><a href="../converting-to-netcdf/WRITING-A-CONVERSION-PROGRAM.html" class="sf-depth-4">10.3 WRITING A CONVERSION PROGRAM</a></li><li id="menu-1304-1" class="last even sf-item-4 sf-depth-4 sf-no-children"><a href="../converting-to-netcdf/CREATING-A-MULTI-FILE-NETCDF-DATA-SET.html" class="sf-depth-4">10.4 CREATING A MULTI-FILE NETCDF DATA SET</a></li></ul></li><li id="menu-1400-1" class="active-trail middle odd sf-item-13 sf-depth-3 sf-total-children-6 sf-parent-children-0 sf-single-children-6 menuparent"><a href="../writing-external-functions.html" class="sf-depth-3 menuparent">11. Writing External Functions</a><ul><li id="menu-1305-1" class="first odd sf-item-1 sf-depth-4 sf-no-children"><a href="OVERVIEW.html" class="sf-depth-4">11.1 OVERVIEW</a></li><li id="menu-1306-1" class="middle even sf-item-2 sf-depth-4 sf-no-children"><a href="GETTING-STARTED.html" class="sf-depth-4">11.2 GETTING STARTED</a></li><li id="menu-1307-1" class="middle odd sf-item-3 sf-depth-4 sf-no-children"><a href="QUICK-START-EXAMPLE.html" class="sf-depth-4">11.3 QUICK START EXAMPLE</a></li><li id="menu-1308-1" class="middle even sf-item-4 sf-depth-4 sf-no-children"><a href="ANATOMY-OF-AN-EXTERNAL-FUNCTION.html" class="sf-depth-4">11.4 ANATOMY OF AN EXTERNAL FUNCTION</a></li><li id="menu-1309-1" class="middle odd sf-item-5 sf-depth-4 sf-no-children"><a href="NOTES-AND-SUGGESTIONS.html" class="sf-depth-4">11.5 NOTES AND SUGGESTIONS</a></li><li id="menu-1310-1" class="active-trail last even sf-item-6 sf-depth-4 sf-no-children"><a href="UTILITY-FUNCTIONS.html" class="sf-depth-4 active">11.6 UTILITY FUNCTIONS</a></li></ul></li><li id="menu-1166-1" class="middle even sf-item-14 sf-depth-3 sf-no-children"><a href="../glossary/glossary.html" class="sf-depth-3">Glossary</a></li><li id="menu-1427-1" class="middle odd sf-item-15 sf-depth-3 sf-total-children-58 sf-parent-children-0 sf-single-children-58 menuparent"><a href="../appendix-a-external-functions/appendix-a.html" class="sf-depth-3 menuparent">Appendix A: Functions</a><ul><li id="menu-1597-1" class="first odd sf-item-1 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/BIN_INDEX_WT.html" class="sf-depth-4">BIN_INDEX_WT</a></li><li id="menu-1430-1" class="middle even sf-item-2 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/COMPRESSI.html" class="sf-depth-4">COMPRESSI (and J,K,L,M,N)</a></li><li id="menu-1431-1" class="middle odd sf-item-3 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/COMPRESSI-BY.html" class="sf-depth-4">COMPRESSI_BY (and J,K,L,M,N)</a></li><li id="menu-1432-1" class="middle even sf-item-4 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/CONVOLVEI.html" class="sf-depth-4">CONVOLVEI</a></li><li id="menu-1428-1" class="middle odd sf-item-5 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/CURV-TO-RECT.html" class="sf-depth-4">CURV_TO_RECT</a></li><li id="menu-1429-1" class="middle even sf-item-6 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/CURV-TO-RECT-MAP.html" class="sf-depth-4">CURV_TO_RECT_MAP</a></li><li id="menu-1433-1" class="middle odd sf-item-7 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/DATE1900.html" class="sf-depth-4">DATE1900</a></li><li id="menu-1434-1" class="middle even sf-item-8 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/DAYS1900TOYMDHMS.html" class="sf-depth-4">DAYS1900TOYMDHMS</a></li><li id="menu-1601-1" class="middle odd sf-item-9 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/DOT.html" class="sf-depth-4">DOT</a></li><li id="menu-1437-1" class="middle even sf-item-10 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/ecat.html" class="sf-depth-4">ECAT and ECAT_STR</a></li><li id="menu-1438-1" class="middle odd sf-item-11 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/ELEMENT-INDEX.html" class="sf-depth-4">ELEMENT_INDEX</a></li><li id="menu-1439-1" class="middle even sf-item-12 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/ELEMENT-INDEX-STRING.html" class="sf-depth-4">ELEMENT_INDEX_STR</a></li><li id="menu-1440-1" class="middle odd sf-item-13 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/EOF-SPACE.html" class="sf-depth-4">EOF_SPACE and EOFSVD_SPACE</a></li><li id="menu-1441-1" class="middle even sf-item-14 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/EOF-STAT.html" class="sf-depth-4">EOF_STAT and EOFSVD_STAT</a></li><li id="menu-1442-1" class="middle odd sf-item-15 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/EOF-TFUNC.html" class="sf-depth-4">EOF_TFUNC and EOFSVD_TFUNC</a></li><li id="menu-1443-1" class="middle even sf-item-16 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/expnd_by_len.html" class="sf-depth-4">EXPND_BY_LEN and EXPND_BY_LEN_STR</a></li><li id="menu-1444-1" class="middle odd sf-item-17 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/expndi_by.html" class="sf-depth-4">EXPNDI_BY</a></li><li id="menu-1445-1" class="middle even sf-item-18 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/expndi_by_m_counts.html" class="sf-depth-4">EXPNDI_BY_M_COUNTS</a></li><li id="menu-1446-1" class="middle odd sf-item-19 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/expndi_by_t.html" class="sf-depth-4">EXPNDI_BY_T</a></li><li id="menu-1447-1" class="middle even sf-item-20 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/expndi_by_z.html" class="sf-depth-4">EXPNDI_BY_Z</a></li><li id="menu-1448-1" class="middle odd sf-item-21 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/expndi_by_z_counts-and-expndi_id_by_z_counts.html" class="sf-depth-4">EXPNDI_BY_Z_COUNTS</a></li><li id="menu-1449-1" class="middle even sf-item-22 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/expndi_id_by_z_counts.html" class="sf-depth-4">EXPNDI_ID_BY_Z_COUNTS</a></li><li id="menu-1436-1" class="middle odd sf-item-23 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/fcat.html" class="sf-depth-4">FCAT</a></li><li id="menu-1435-1" class="middle even sf-item-24 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/fc_isubset.html" class="sf-depth-4">FC_ISUBSET</a></li><li id="menu-1450-1" class="middle odd sf-item-25 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/FFT-IM.html" class="sf-depth-4">FFT_IM</a></li><li id="menu-1451-1" class="middle even sf-item-26 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/FFT-INVERSE.html" class="sf-depth-4">FFT_INVERSE</a></li><li id="menu-1453-1" class="middle odd sf-item-27 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/FFT-RE.html" class="sf-depth-4">FFT_RE</a></li><li id="menu-1452-1" class="middle even sf-item-28 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/fill_xy.html" class="sf-depth-4">FILL_XY</a></li><li id="menu-1454-1" class="middle odd sf-item-29 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/FINDHI.html" class="sf-depth-4">FINDHI</a></li><li id="menu-1455-1" class="middle even sf-item-30 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/FINDLO.html" class="sf-depth-4">FINDLO</a></li><li id="menu-1456-1" class="middle odd sf-item-31 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/IS-ELEMENT-OF.html" class="sf-depth-4">IS_ELEMENT_OF</a></li><li id="menu-1458-1" class="middle even sf-item-32 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/LANCZOS.html" class="sf-depth-4">LANCZOS</a></li><li id="menu-1459-1" class="middle odd sf-item-33 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/lon_lat_time_string.html" class="sf-depth-4">LON_LAT_TIME_STRING</a></li><li id="menu-1460-1" class="middle even sf-item-34 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/LSL-LOWPASS.html" class="sf-depth-4">LSL_LOWPASS</a></li><li id="menu-1461-1" class="middle odd sf-item-35 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/MINUTES24.html" class="sf-depth-4">MINUTES24</a></li><li id="menu-1462-1" class="middle even sf-item-36 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/NCO.html" class="sf-depth-4">NCO</a></li><li id="menu-1463-1" class="middle odd sf-item-37 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/NCO_ATTR.html" class="sf-depth-4">NCO_ATTR</a></li><li id="menu-1464-1" class="middle even sf-item-38 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/pt_in_poly.html" class="sf-depth-4">PT_IN_POLY</a></li><li id="menu-1465-1" class="middle odd sf-item-39 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/RECT-TO-CURV.html" class="sf-depth-4">RECT_TO_CURV</a></li><li id="menu-1466-1" class="middle even sf-item-40 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/samplexy_curv_avg.html" class="sf-depth-4">SAMPLEXY_CURV_AVG</a></li><li id="menu-1467-1" class="middle odd sf-item-41 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/samplexy_curv_nrst.html" class="sf-depth-4">SAMPLEXY_CURV_NRST</a></li><li id="menu-1468-1" class="middle even sf-item-42 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/samplexyt.html" class="sf-depth-4">SAMPLEXYT</a></li><li id="menu-1469-1" class="middle odd sf-item-43 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/samplexz.html" class="sf-depth-4">SAMPLEXZ</a></li><li id="menu-1470-1" class="middle even sf-item-44 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/sampleyz.html" class="sf-depth-4">SAMPLEYZ</a></li><li id="menu-1472-1" class="middle odd sf-item-45 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/scat2grid_bin_xy.html" class="sf-depth-4">SCAT2GRID_BIN_XY and SCAT2GRID_BIN_XYT</a></li><li id="menu-1473-1" class="middle even sf-item-46 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/scatgrid_nbin_xyt.html" class="sf-depth-4">SCAT2GRID_NBIN_XY and SCAT2GRID_NBIN_XYT</a></li><li id="menu-1471-1" class="middle odd sf-item-47 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/scat2grid_nobs_xy.html" class="sf-depth-4">SCAT2GRID_NOBS_XY</a></li><li id="menu-1474-1" class="middle even sf-item-48 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/separate.html" class="sf-depth-4">SEPARATE</a></li><li id="menu-1475-1" class="middle odd sf-item-49 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/tax_datestring.html" class="sf-depth-4">TAX_DATESTRING</a></li><li id="menu-1477-1" class="middle even sf-item-50 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/TCAT.html" class="sf-depth-4">TCAT</a></li><li id="menu-1476-1" class="middle odd sf-item-51 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/test_opendap.html" class="sf-depth-4">TEST_OPENDAP</a></li><li id="menu-1599-1" class="middle even sf-item-52 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/TRANSPOSE.html" class="sf-depth-4">TRANSPOSE</a></li><li id="menu-1478-1" class="middle odd sf-item-53 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/WRITEV5D.html" class="sf-depth-4">WRITEV5D</a></li><li id="menu-1481-1" class="middle even sf-item-54 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/XCAT.html" class="sf-depth-4">XCAT</a></li><li id="menu-1482-1" class="middle odd sf-item-55 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/YCAT.html" class="sf-depth-4">YCAT</a></li><li id="menu-1479-1" class="middle even sf-item-56 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/ZAXREPLACE-AVG.html" class="sf-depth-4">ZAXREPLACE_AVG</a></li><li id="menu-1480-1" class="middle odd sf-item-57 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/ZAXREPLACE-BIN.html" class="sf-depth-4">ZAXREPLACE_BIN</a></li><li id="menu-1483-1" class="last even sf-item-58 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/ZCAT.html" class="sf-depth-4">ZCAT</a></li></ul></li><li id="menu-1168-1" class="middle even sf-item-16 sf-depth-3 sf-total-children-9 sf-parent-children-1 sf-single-children-8 menuparent"><a href="../appendix-b-pplus-guide/appendix-b-pplus-guide.html" class="sf-depth-3 menuparent">Appendix B: PPLUS Guide</a><ul><li id="menu-1311-1" class="first odd sf-item-1 sf-depth-4 sf-no-children"><a href="../appendix-b-pplus-guide/INTRODUCTION.html" class="sf-depth-4">INTRODUCTION</a></li><li id="menu-1312-1" class="middle even sf-item-2 sf-depth-4 sf-no-children"><a href="../appendix-b-pplus-guide/GETTING-STARTED.html" class="sf-depth-4">GETTING STARTED</a></li><li id="menu-1313-1" class="middle odd sf-item-3 sf-depth-4 sf-no-children"><a href="../appendix-b-pplus-guide/COMMAND-FORMAT.html" class="sf-depth-4">COMMAND FORMAT</a></li><li id="menu-1314-1" class="middle even sf-item-4 sf-depth-4 sf-no-children"><a href="../appendix-b-pplus-guide/COMMAND-SYNOPSIS.html" class="sf-depth-4">COMMAND SYNOPSIS</a></li><li id="menu-1315-1" class="middle odd sf-item-5 sf-depth-4 sf-no-children"><a href="../appendix-b-pplus-guide/BEGINNERS-GUIDE.html" class="sf-depth-4">BEGINNERS GUIDE</a></li><li id="menu-1316-1" class="middle even sf-item-6 sf-depth-4 sf-no-children"><a href="../appendix-b-pplus-guide/ROUTING-PLOT-FILES.html" class="sf-depth-4">ROUTING PLOT FILES</a></li><li id="menu-1317-1" class="middle odd sf-item-7 sf-depth-4 sf-total-children-2 sf-parent-children-0 sf-single-children-2 menuparent"><a href="../appendix-b-pplus-guide/PPLUS-COMMAND-FILES.html" class="sf-depth-4 menuparent">PPLUS COMMAND FILES</a><ul><li id="menu-1324-1" class="first odd sf-item-1 sf-depth-5 sf-no-children"><a href="../ferret-fonts/list-of-ferret-fonts.html" class="sf-depth-5">List of Ferret Symbol Fonts</a></li><li id="menu-1325-1" class="last even sf-item-2 sf-depth-5 sf-no-children"><a href="../ferret-fonts/list-of-ferret-character-fonts.html" class="sf-depth-5">List of Ferret/PPLUS Character fonts</a></li></ul></li><li id="menu-1318-1" class="middle even sf-item-8 sf-depth-4 sf-no-children"><a href="../appendix-b-pplus-guide/PLOT5-PPLUS-DIFFERENCES.html" class="sf-depth-4">PLOT5, PPLUS DIFFERENCES</a></li><li id="menu-1319-1" class="last odd sf-item-9 sf-depth-4 sf-no-children"><a href="../appendix-b-pplus-guide/COMMAND-DESCRIPTION.html" class="sf-depth-4">COMMAND DESCRIPTION</a></li></ul></li><li id="menu-1169-1" class="last odd sf-item-17 sf-depth-3 sf-total-children-4 sf-parent-children-0 sf-single-children-4 menuparent"><a href="../appendix-c-ferret-specific-pplus-enhancements/appendix-c-ferret-specific-pplus-enhancements.html" class="sf-depth-3 menuparent">Appendix C: Ferret-Specific PPLUS Enhancements</a><ul><li id="menu-1320-1" class="first odd sf-item-1 sf-depth-4 sf-no-children"><a href="../appendix-c-ferret-specific-pplus-enhancements/PLOTPLUS-HISTORY-EVOLUTION.html" class="sf-depth-4">PLOTPLUS HISTORY, EVOLUTION</a></li><li id="menu-1321-1" class="middle even sf-item-2 sf-depth-4 sf-no-children"><a href="../appendix-c-ferret-specific-pplus-enhancements/ENHANCED-COMMANDS-DESCRIPTION.html" class="sf-depth-4">ENHANCED COMMANDS DESCRIPTION</a></li><li id="menu-1322-1" class="middle odd sf-item-3 sf-depth-4 sf-no-children"><a href="../appendix-c-ferret-specific-pplus-enhancements/GKS-LINE-BUNDLES.html" class="sf-depth-4">GKS LINE BUNDLES</a></li><li id="menu-1323-1" class="last even sf-item-4 sf-depth-4 sf-no-children"><a href="../appendix-c-ferret-specific-pplus-enhancements/HARD-COPY.html" class="sf-depth-4">HARD COPY</a></li></ul></li></ul></li><li id="menu-1336-1" class="middle odd sf-item-3 sf-depth-2 sf-no-children"><a href="../../all-release-notes.html" class="sf-depth-2">Previous Release Notes</a></li><li id="menu-1339-1" class="middle even sf-item-4 sf-depth-2 sf-total-children-15 sf-parent-children-1 sf-single-children-14 menuparent"><a href="../../ferret-tutorials.html" class="sf-depth-2 menuparent">Tutorials and Demos</a><ul><li id="menu-1338-1" class="first odd sf-item-1 sf-depth-3 sf-no-children"><a href="../../ferret-tutorial-script.html" class="sf-depth-3">Ferret Tour</a></li><li id="menu-1618-1" class="middle even sf-item-2 sf-depth-3 sf-no-children"><a href="../../dsg-files-discrete-sampling-geometries-demo.html" class="sf-depth-3">DSG files: Discrete Sampling Geometries Demo</a></li><li id="menu-1337-1" class="middle odd sf-item-3 sf-depth-3 sf-total-children-5 sf-parent-children-0 sf-single-children-5 menuparent"><a href="../../ferret-tutorials.html" class="sf-depth-3 menuparent">External Function Examples</a><ul><li id="menu-1343-1" class="first odd sf-item-1 sf-depth-4 sf-no-children"><a href="../../sorting-demo.html" class="sf-depth-4">Ferret sorting demo (1)</a></li><li id="menu-1591-1" class="middle even sf-item-2 sf-depth-4 sf-no-children"><a href="../../ferret-sorting-demo.html" class="sf-depth-4">Ferret sorting demo (2)</a></li><li id="menu-1344-1" class="middle odd sf-item-3 sf-depth-4 sf-no-children"><a href="../../how-to-use-ferret-external-functions-for-computing-ffts.html" class="sf-depth-4">Fast Fourier Transforms demo</a></li><li id="menu-1345-1" class="middle even sf-item-4 sf-depth-4 sf-no-children"><a href="../../ferret-eof-demo.html" class="sf-depth-4">Empirical Orthogonal Functions demo</a></li><li id="menu-1346-1" class="last odd sf-item-5 sf-depth-4 sf-no-children"><a href="../../ferret-objective-analysis.html" class="sf-depth-4">Ferret objective analysis demo</a></li></ul></li><li id="menu-1353-1" class="middle even sf-item-4 sf-depth-3 sf-no-children"><a href="../../ferret-palette-demo.html" class="sf-depth-3">Ferret Palette Demo</a></li><li id="menu-1350-1" class="middle odd sf-item-5 sf-depth-3 sf-no-children"><a href="../../ferret-map-projections-demo.html" class="sf-depth-3">Map projections</a></li><li id="menu-1354-1" class="middle even sf-item-6 sf-depth-3 sf-no-children"><a href="../../ferret-polygon-vector-demo.html" class="sf-depth-3">Ferret polygon vector demo</a></li><li id="menu-1355-1" class="middle odd sf-item-7 sf-depth-3 sf-no-children"><a href="../../ferret-graticules-demo.html" class="sf-depth-3">Ferret Graticules demo</a></li><li id="menu-1352-1" class="middle even sf-item-8 sf-depth-3 sf-no-children"><a href="../../ferret-polytube-demo.html" class="sf-depth-3">Ferret Polytube Demo</a></li><li id="menu-1351-1" class="middle odd sf-item-9 sf-depth-3 sf-no-children"><a href="../../ferret-polymark-demo.html" class="sf-depth-3">Ferret Polymark Demo</a></li><li id="menu-1349-1" class="middle even sf-item-10 sf-depth-3 sf-no-children"><a href="../../ferret-constant-array-demo.html" class="sf-depth-3">Ferret Constant-Array demo</a></li><li id="menu-1356-1" class="middle odd sf-item-11 sf-depth-3 sf-no-children"><a href="../../ferret-land_detail-demo.html" class="sf-depth-3">Ferret land_detail demo</a></li><li id="menu-1340-1" class="middle even sf-item-12 sf-depth-3 sf-no-children"><a href="../../coads-tour.html" class="sf-depth-3">COADS Tour</a></li><li id="menu-1341-1" class="middle odd sf-item-13 sf-depth-3 sf-no-children"><a href="../../levitus-tour.html" class="sf-depth-3">Levitus Tour</a></li><li id="menu-1342-1" class="middle even sf-item-14 sf-depth-3 sf-no-children"><a href="../../how-to-use-ferret-and-opendap-to-access-and-analyze-remote-data-1.html" class="sf-depth-3">Use OPeNDAP</a></li><li id="menu-1348-1" class="last odd sf-item-15 sf-depth-3 sf-no-children"><a href="../../ferret-binary-read-demo.html" class="sf-depth-3">Ferret binary read demo</a></li></ul></li><li id="menu-1333-1" class="middle odd sf-item-5 sf-depth-2 sf-total-children-13 sf-parent-children-1 sf-single-children-12 menuparent"><a href="../../pyferret.html" class="sf-depth-2 menuparent">PyFerret</a><ul><li id="menu-1426-1" class="first odd sf-item-1 sf-depth-3 sf-total-children-4 sf-parent-children-0 sf-single-children-4 menuparent"><a href="../../pyferret/downloads.html" class="sf-depth-3 menuparent">PyFerret Downloads and Install</a><ul><li id="menu-1374-1" class="first odd sf-item-1 sf-depth-4 sf-no-children"><a href="../../pyferret/requirements.html" class="sf-depth-4">PyFerret requirements</a></li><li id="menu-1375-1" class="middle even sf-item-2 sf-depth-4 sf-no-children"><a href="https://ferret.pmel.noaa.gov/Ferret/downloads/pyferret" class="sf-depth-4">PyFerret Downloads</a></li><li id="menu-1377-1" class="middle odd sf-item-3 sf-depth-4 sf-no-children"><a href="../../pyferret/build-install.html" class="sf-depth-4">Installing or Building PyFerret</a></li><li id="menu-1376-1" class="last even sf-item-4 sf-depth-4 sf-no-children"><a href="../../pyferret/known-issues.html" class="sf-depth-4">PyFerret Known Issues and Release Notes</a></li></ul></li><li id="menu-1359-1" class="middle even sf-item-2 sf-depth-3 sf-no-children"><a href="../../pyferret/what-is-pyferret.html" class="sf-depth-3">What is PyFerret?</a></li><li id="menu-1360-1" class="middle odd sf-item-3 sf-depth-3 sf-no-children"><a href="../../pyferret/why-use-pyferret.html" class="sf-depth-3">Why use PyFerret?</a></li><li id="menu-1361-1" class="middle even sf-item-4 sf-depth-3 sf-no-children"><a href="../../pyferret/example-sessions-ferret.html" class="sf-depth-3">PyFerret for the Ferret user</a></li><li id="menu-1362-1" class="middle odd sf-item-5 sf-depth-3 sf-no-children"><a href="../../pyferret/pyferret-quick-start-notes.html" class="sf-depth-3">PyFerret command syntax: quick-start notes</a></li><li id="menu-1364-1" class="middle even sf-item-6 sf-depth-3 sf-no-children"><a href="../../pyferret/example-sessions-python.html" class="sf-depth-3">PyFerret for the Python user</a></li><li id="menu-1365-1" class="middle odd sf-item-7 sf-depth-3 sf-no-children"><a href="../../pyferret/graphics.html" class="sf-depth-3">Graphics in PyFerret  </a></li><li id="menu-1366-1" class="middle even sf-item-8 sf-depth-3 sf-no-children"><a href="../../pyferret/ferret-functionality.html" class="sf-depth-3">New Ferret functionality</a></li><li id="menu-1367-1" class="middle odd sf-item-9 sf-depth-3 sf-no-children"><a href="../../pyferret/python-functions.html" class="sf-depth-3">PyFerret Python functions and constants</a></li><li id="menu-1368-1" class="middle even sf-item-10 sf-depth-3 sf-no-children"><a href="../../pyferret/pyferret-python-objects.html" class="sf-depth-3">PyFerret Python objects and methods</a></li><li id="menu-1369-1" class="middle odd sf-item-11 sf-depth-3 sf-no-children"><a href="../../pyferret/pyefs.html" class="sf-depth-3">Ferret external functions in Python</a></li><li id="menu-1371-1" class="middle even sf-item-12 sf-depth-3 sf-no-children"><a href="../../pyferret/fortranefs.html" class="sf-depth-3">Ferret Fortran external functions</a></li><li id="menu-1373-1" class="last odd sf-item-13 sf-depth-3 sf-no-children"><a href="../../pyferret/data-dictionaries.html" class="sf-depth-3">PyFerret metadata-and-data dictionaries</a></li></ul></li><li id="menu-1147-1" class="middle even sf-item-6 sf-depth-2 sf-total-children-3 sf-parent-children-0 sf-single-children-3 menuparent"><a href="../../opendap/opendap-usage-in-ferret.html" class="sf-depth-2 menuparent">OPeNDAP</a><ul><li id="menu-1590-1" class="first odd sf-item-1 sf-depth-3 sf-no-children"><a href="../../opendap/opendap-usage-in-ferret.html" class="sf-depth-3">OPeNDAP usage in Ferret</a></li><li id="menu-1489-1" class="middle even sf-item-2 sf-depth-3 sf-no-children"><a href="../../how-to-use-ferret-and-opendap-to-access-and-analyze-remote-data-1.html" class="sf-depth-3">Use OPeNDAP Demo</a></li><li id="menu-1491-1" class="last odd sf-item-3 sf-depth-3 sf-no-children"><a href="../appendix-a-external-functions/test_opendap.html" class="sf-depth-3">Test OPeNDAP</a></li></ul></li><li id="menu-1592-1" class="middle odd sf-item-7 sf-depth-2 sf-no-children"><a href="../../ferret-publications.html" class="sf-depth-2">Ferret Publications</a></li><li id="menu-1389-1" class="last even sf-item-8 sf-depth-2 sf-no-children"><a href="../../acknowledging-ferret.html" class="sf-depth-2">Acknowledging Ferret</a></li></ul>    </div>
+  </div>
+</div>  </div>
+</aside><div class="grid-9 region region-content equal-height-element" id="region-content">
+  <div class="region-inner region-content-inner">
+    <a id="main-content"></a>
+                <h1 class="title" id="page-title">11.6 UTILITY FUNCTIONS</h1>
+                        <div class="block block-system block-main block-system-main odd block-without-title" id="block-system-main">
+  <div class="block-inner clearfix">
+                
+    <div class="content clearfix">
+      <article about="/Ferret/documentation/users-guide/writing-external-functions/UTILITY-FUNCTIONS" typeof="sioc:Item foaf:Document" class="node node-documentation-page node-promoted node-published node-not-sticky author-burger odd clearfix" id="node-documentation-page-729">
+    
+  <!-- add the following line to print out updated date -->
+  <div class="modified-date">Last modified: Tue, 03/24/2020 - 12:01</div>
+  <!-- add the following line to print out the page description -->
+    
+  <div class="content clearfix">
+                
+<div class="field field-name-body field-type-text-with-summary field-label-hidden">
+    <div class="field-items">
+          <div class="field-item even" property="content:encoded"><h3 align="left">Ch11 Sec6. <a name="Chapter11-Utility_Functions" id="Chapter11-Utility_Functions"></a><a name="_VPID_386" id="_VPID_386"></a><a name="_VPINDEXENTRY_1166" id="_VPINDEXENTRY_1166"></a></h3>
+<p align="left" class="callout"><b>UTILITY FUNCTIONS </b></p>
+<p align="left">The lists below describe the utility functions built into Ferret which are available to the external function writer. These are used to set parameters associated with the external function and to retrieve information provided by Ferret. (Input variables, sending information to Ferret, are in plain type and output variables, getting information from Ferret, are in italic.)</p>
+<p> </p>
+<h3 align="left">Ch11 Sec6.1. <a name="_VPID_387" id="_VPID_387"></a><a name="_VPINDEXENTRY_1167" id="_VPINDEXENTRY_1167"></a></h3>
+<p> </p>
+<p align="left" class="callout"><b>EF_Util.cmn </b></p>
+<p align="left">External functions need to include the <i><b>EF_Util.cmn</b></i> file in each subroutine in order to use various pre-defined parameters. These parameters are defined in the table below:</p>
+<p align="center">Parameters defined in <i><b>EF_Util.cmn</b></i></p>
+<table><tbody><tr><td colspan="4">
+<p align="left"><b>To make the code more readable:</b></p>
+</td>
+</tr><tr><td>
+<p align="left"><i><b>X_AXIS (=1)</b></i></p>
+</td>
+<td>
+<p align="left"><i><b>ARG1 (=1)</b></i></p>
+</td>
+<td>
+<p align="left"><i><b>ARG5 (=5)</b></i></p>
+</td>
+<td>
+<p align="left"><i><b>ARG9 (=9)</b></i></p>
+</td>
+</tr><tr><td>
+<p align="left"><i><b>Y_AXIS (=2)</b></i></p>
+</td>
+<td>
+<p align="left"><i><b>ARG2 (=3)</b></i></p>
+</td>
+<td>
+<p align="left"><i><b>ARG6 (=6)</b></i></p>
+</td>
+<td>
+<p align="left"><i><b>YES (=2)</b></i></p>
+</td>
+</tr><tr><td>
+<p align="left"><i><b>Z_AXIS (=3)</b></i></p>
+</td>
+<td>
+<p align="left"><i><b>ARG3 (=3)</b></i></p>
+</td>
+<td>
+<p align="left"><i><b>ARG7 (=7)</b></i></p>
+</td>
+<td>
+<p align="left"><i><b>NO (=0)</b></i></p>
+</td>
+</tr><tr><td>
+<p align="left"><i><b>T_AXIS (=4)</b></i></p>
+</td>
+<td>
+<p align="left"><i><b>ARG4 (=4)</b></i></p>
+</td>
+<td>
+<p align="left"><i><b>ARG8 (=8)</b></i></p>
+</td>
+<td>
+<p align="left"> </p>
+</td>
+</tr><tr><td colspan="4">
+<p align="left">
+			<b>Internal parameters for Ferret:</b></p>
+</td>
+</tr><tr><td>
+<p align="left"><i><b>CUSTOM</b></i></p>
+</td>
+<td colspan="3">
+<p align="left">result axis is defined by the external function</p>
+</td>
+</tr><tr><td>
+<p align="left"><i><b>IMPLIED_BY_ARGS</b></i></p>
+</td>
+<td colspan="3">
+<p align="left">result axis is inherited from one (or more) of the arguments</p>
+</td>
+</tr><tr><td>
+<p align="left"><i><b>NORMAL</b></i></p>
+</td>
+<td colspan="3">
+<p align="left">this axis does not exist in the result</p>
+</td>
+</tr><tr><td>
+<p align="left"><i><b>ABSTRACT</b></i></p>
+</td>
+<td colspan="3">
+<p align="left">result axis is an indexed axis [1:N]</p>
+</td>
+</tr><tr><td>
+<p align="left"><i><b>RETAINED</b></i></p>
+</td>
+<td colspan="3">
+<p align="left">result axis has same extent as argument axis</p>
+</td>
+</tr><tr><td>
+<p align="left"><i><b>REDUCED</b></i></p>
+</td>
+<td colspan="3">
+<p align="left">result axis is reduced to a point</p>
+</td>
+</tr></tbody></table><p> </p>
+<h3>Ch11 Sec6.2. <a name="_VPID_388" id="_VPID_388"></a><a name="_VPINDEXENTRY_1168" id="_VPINDEXENTRY_1168"></a></h3>
+<p align="left" class="callout"><b>Available utility functions (scroll down the page for more detailed information) </b></p>
+<p align="left"><b>Setting Parameters </b></p>
+<ul><li>ef_set_desc(id, desc)</li>
+<li>ef_set_num_args(id, num)</li>
+<li>ef_set_piecemeal_ok(id, Xyn, Yyn, Zyn, Tyn)</li>
+<li>ef_set_piecemeal_ok_6d(id, Xyn, Yyn, Zyn, Tyn, Eyn, Fyn)</li>
+<li>ef_set_axis_influence(id, arg, Xyn, Yyn, Zyn, Tyn)</li>
+<li>ef_set_axis_influence_6d(id, arg, Xyn, Yyn, Zyn, Tyn, Eyn, Fyn)</li>
+<li>ef_set_axis_inheritance(id, Xsrc, Ysrc, Zsrc, Tsrc)</li>
+<li>ef_set_axis_inheritance_6d(id, Xsrc, Ysrc, Zsrc, Tsrc, Esrc, Fsrc)</li>
+<li>ef_set_arg_name(id, arg, name)</li>
+<li>ef_set_arg_desc(id, arg, desc)</li>
+<li>ef_set_arg_unit(id, arg, unit)</li>
+<li>ef_set_arg_type(id, arg, type)</li>
+<li>ef_set_axis_reduction(id, Xred, Yred, Zred, Tred)</li>
+<li>ef_set_axis_reduction_6d(id, Xred, Yred, Zred, Tred, Ered, Fred)</li>
+<li>ef_set_axis_extend(id, arg, axis, lo_amt, hi_amt)</li>
+<li>ef_set_axis_limits(id, axis, lo, hi)</li>
+<li>ef_set_custom_axis(id, axis, lo, hi, delta, unit, modulo)</li>
+<li>ef_set_num_work_arrays(id, num)</li>
+<li>ef_set_work_array_dims(id, array, Xlo, Ylo, Zlo, Tlo, Xhi, Yhi, Zhi, Thi)</li>
+<li>ef_set_work_array_dims_6d(id, array, Xlo, Ylo, Zlo, Tlo, Elo, Flo, Xhi, Yhi, Zhi, Thi, Ehi, Fhi)</li>
+</ul><p align="left"><b>Getting Information</b></p>
+<p class="indented">For all calculations</p>
+<ul><li>ef_get_res_subscripts(id, res_lo_ss, res_hi_ss, res_incr)</li>
+<li>ef_get_res_subscripts_6d(id, res_lo_ss, res_hi_ss, res_incr)</li>
+<li>ef_get_arg_subscripts(id, arg_lo_ss, arg_hi_ss, arg_incr)</li>
+<li>ef_get_arg_subscripts_6d(id, arg_lo_ss, arg_hi_ss, arg_incr)</li>
+<li>ef_get_bad_flags(id, bad_flag, bad_flag_result)</li>
+<li>ef_get_bad_flags_6d(id, bad_flag, bad_flag_result)</li>
+</ul><p align="left">     Text</p>
+<ul><li>ef_get_arg_info(id, arg, name, title, units)</li>
+<li>ef_get_arg_string(id, arg, text)</li>
+<li>ef_get_axis_info(id, arg, name, units, bkwd, modulo, regular)</li>
+<li>ef_get_axis_info_6d(id, arg, name, units, bkwd, modulo, regular)</li>
+<li>ef_get_axis_dates(id, arg, tax, direction, numtimes, datebuf)</li>
+<li>ef_get_string_arg_element(id, arg, str_arg, i,j,k,l, slen, text) </li>
+<li>ef_get_string_arg_element_6d(id, arg, str_arg, i,j,k,l,m,n slen, text)<br />
+	 </li>
+</ul><p class="indented">Values</p>
+<ul><li>ef_get_arg_ss_extremes(id, arg, ss_min, ss_max)</li>
+<li>ef_get_coordinates(id, arg, axis, lo, hi, coords)</li>
+<li>ef_get_box_size(id, arg, axis, lo, hi, size)</li>
+<li>ef_get_box_limits(id, arg, axis, lo, hi, lo_lims, hi_lims)</li>
+<li>ef_get_one_val(id, arg, value)</li>
+<li>ef_get_string_arg_element_len(id, arg, str_arg, i,j,k,l, slen) </li>
+<li>ef_get_string_arg_element_len_6d(id, arg, str_arg, i,j,k,l,m,n slen) </li>
+</ul><p align="left"><b>Other </b></p>
+<ul><li>ef_version_test(version)</li>
+<li>ef_bail_out(id, text)</li>
+<p></p>
+<li> </li>
+</ul><h3 align="left">Ch11 Sec6.2.1. <a name="ef_set_desc" id="ef_set_desc"></a><a name="_VPID_389" id="_VPID_389"></a><a name="_VPINDEXENTRY_1169" id="_VPINDEXENTRY_1169"></a></h3>
+<p align="left" class="callout"><b>ef_set_desc(id, desc) </b></p>
+<p align="left">Assign a text string description to the external function.</p>
+<p class="indented">Input arguments:</p>
+<p align="left">1. <b>INTEGER id:</b> external function's ID number</p>
+<p align="left">2. <b>CHARACTER*(*) desc:</b> description of this function</p>
+<h3 align="left">Ch11 Sec6.2.2. <a name="ef_set_num_args" id="ef_set_num_args"></a><a name="_VPID_390" id="_VPID_390"></a><a name="_VPINDEXENTRY_1170" id="_VPINDEXENTRY_1170"></a></h3>
+<p align="left" class="callout"><b>ef_set_num_args(id, num) </b></p>
+<p align="left">Specify the number of arguments this function will accept. The maximum number of arguments allowed is 9</p>
+<p class="indented">Input arguments:</p>
+<p align="left">1. <b>INTEGER id:</b> external function's ID number</p>
+<p align="left">2. <b>INTEGER num:</b> number of arguments for this function</p>
+<p> </p>
+<h3 align="left">Ch11 Sec6.2.3. <a name="ef_set_axis_inheritance" id="ef_set_axis_inheritance"></a><a name="_VPID_391" id="_VPID_391"></a><a name="_VPINDEXENTRY_1171" id="_VPINDEXENTRY_1171"></a></h3>
+<p align="left" class="callout"><b>ef_set_axis_inheritance(id, Xsrc, Ysrc, Zsrc, Tsrc)  and </b></p>
+<p align="left" class="callout"><b>ef_set_axis_inheritance_6d(id, Xsrc, Ysrc, Zsrc, Esrc, Fsrc) </b></p>
+<p align="left">Specify where the result axes will come from. The acceptable values for each axis will be one of:</p>
+<table><tbody><tr><td>
+<p align="left"><i><b>CUSTOM</b></i></p>
+</td>
+<td>
+<p align="left">result axis is defined by the external function</p>
+</td>
+</tr><tr><td>
+<p align="left"><i><b>IMPLIED_BY_ARGS</b></i></p>
+</td>
+<td>
+<p align="left">result axis is inherited from one (or more) of the arguments</p>
+</td>
+</tr><tr><td>
+<p align="left"><i><b>NORMAL</b></i></p>
+</td>
+<td>
+<p align="left">this axis does not exist in the result</p>
+</td>
+</tr><tr><td>
+<p align="left"><i><b>ABSTRACT</b></i></p>
+</td>
+<td>
+<p align="left">result axis is an indexed axis [1:N]</p>
+</td>
+</tr></tbody></table><p class="indented">Input arguments:</p>
+<p align="left">1. <b>INTEGER id:</b> external function's ID number</p>
+<p align="left">2. <b>INTEGER Xsrc:</b> inheritance flag for the X axis</p>
+<p align="left">3. <b>INTEGER Ysrc:</b> inheritance flag for the Y axis</p>
+<p align="left">4. <b>INTEGER Zsrc:</b> inheritance flag for the Z axis</p>
+<p align="left">5. <b>INTEGER Tsrc:</b> inheritance flag for the T axis</p>
+<p align="left">6. <b>INTEGER Esrc:</b> inheritance flag for the E axis, when calling ef_set_axis_inheritance_6d</p>
+<p align="left">6. <b>INTEGER Esrc:</b> inheritance flag for the F axis, when calling ef_set_axis_inheritance_6d</p>
+<p> </p>
+<h3 align="left">Ch11 Sec6.2.4. <a name="ef_set_piecemeal_ok" id="ef_set_piecemeal_ok"></a><a name="_VPID_392" id="_VPID_392"></a><a name="_VPINDEXENTRY_1172" id="_VPINDEXENTRY_1172"></a></h3>
+<p align="left" class="callout"><b>ef_set_piecemeal_ok(id, Xyn, Yyn, Zyn, Tyn) and</b></p>
+<p align="left" class="callout"><b>ef_set_piecemeal_ok_6d(id, Xyn, Yyn, Zyn, Tyn, Eyn, Fyn) </b></p>
+<p align="left">Tell Ferret whether it is ok to break up calculations along a particular axis. (Not implemented, placeholder for future implementation)</p>
+<p class="indented">Input arguments:</p>
+<p align="left">1. <b>INTEGER id:</b> external function's ID number</p>
+<p align="left">2. <b>INTEGER Xyn:</b> yes/no flag for the X axis</p>
+<p align="left">3. <b>INTEGER Yyn:</b> yes/no flag for the Y axis</p>
+<p align="left">4. <b>INTEGER Zyn:</b> yes/no flag for the Z axis</p>
+<p align="left">5. <b>INTEGER Tyn:</b> yes/no flag for the T axis</p>
+<p align="left">6. <b>INTEGER Eyn:</b> yes/no flag for the E axis, when calling ef_set_piecemeal_ok_6d</p>
+<p align="left">7. <b>INTEGER Fyn:</b> yes/no flag for the F axis, when calling ef_set_piecemeal_ok_6d</p>
+<p> </p>
+<h3 align="left">Ch11 Sec6.2.5. <a name="ef_set_arg_name" id="ef_set_arg_name"></a><a name="_VPID_393" id="_VPID_393"></a><a name="_VPINDEXENTRY_1173" id="_VPINDEXENTRY_1173"></a></h3>
+<p align="left" class="callout"><b>ef_set_arg_name(id, arg, name) </b></p>
+<p class="indented">Assign a text string name to an argument.</p>
+<p class="indented">Input arguments:</p>
+<p align="left">1. <b>INTEGER id:</b> external function's ID number</p>
+<p align="left">2. <b>INTEGER arg:</b> argument number</p>
+<p align="left">3. <b>CHARACTER*(*) name:</b> argument name</p>
+<p> </p>
+<h3 align="left">Ch11 Sec6.2.6. <a name="ef_set_arg_desc" id="ef_set_arg_desc"></a><a name="_VPID_394" id="_VPID_394"></a><a name="_VPINDEXENTRY_1174" id="_VPINDEXENTRY_1174"></a></h3>
+<p align="left" class="callout"><b>ef_set_arg_desc(id, arg, desc) </b></p>
+<p align="left">Assign a text string description to an argument.</p>
+<p class="indented">Input arguments:</p>
+<p align="left">1. <b>INTEGER id:</b> external function's ID number</p>
+<p align="left">2. <b>INTEGER arg:</b> argument number</p>
+<p align="left">3. <b>CHARACTER*(*) desc:</b> argument description</p>
+<p> </p>
+<h3 align="left">Ch11 Sec6.2.7. <a name="ef_set_arg_unit" id="ef_set_arg_unit"></a><a name="_VPID_395" id="_VPID_395"></a><a name="_VPINDEXENTRY_1175" id="_VPINDEXENTRY_1175"></a></h3>
+<p align="left" class="callout"><b>ef_set_arg_unit(id, arg, unit) </b></p>
+<p align="left">Assign a text string to an argument's units.</p>
+<p class="indented">Input arguments:</p>
+<p align="left">1. <b>INTEGER id:</b> external function's ID number</p>
+<p align="left">2. <b>INTEGER arg:</b> argument number</p>
+<p align="left">3. <b>CHARACTER*(*) unit:</b> unit description</p>
+<p> </p>
+<h3 align="left">Ch11 Sec6.2.8. <a name="ef_set_arg_type" id="ef_set_arg_type"></a><a name="_VPID_396" id="_VPID_396"></a><a name="_VPINDEXENTRY_1176" id="_VPINDEXENTRY_1176"></a></h3>
+<p align="left" class="callout"><b>ef_set_arg_type(id, arg, type) </b></p>
+<p align="left">Specify the type of an argument as either <i><b>FLOAT_ARG</b></i> or <i><b>STRING_ARG</b></i>. In the <i><b>~_compute</b></i> subroutine, the <i><b>ef_get_arg_string()</b></i> function is used to obtain the desired text string.</p>
+<p class="indented">Input arguments:</p>
+<p align="left">1. <b>INTEGER id:</b> external function's ID number</p>
+<p align="left">2. <b>INTEGER arg:</b> argument number</p>
+<p align="left">3. <b>INTEGER type:</b> either FLOAT_ARG or STRING_ARG</p>
+<p> </p>
+<h3 align="left">Ch11 Sec6.2.9. <a name="ef_set_axis_extend" id="ef_set_axis_extend"></a><a name="_VPID_397" id="_VPID_397"></a><a name="_VPINDEXENTRY_1177" id="_VPINDEXENTRY_1177"></a></h3>
+<p align="left" class="callout"><b>ef_set_axis_extend(id, arg, axis, lo_amt, hi_amt) </b></p>
+<p align="left">Tell Ferret to extend the range of data passed for an argument. This is useful for cases like smoothers where the result at a particular point depends upon a range of input values around that point.</p>
+<p class="indented">Input arguments:</p>
+<p align="left">1. <b>INTEGER id:</b> external function's ID number</p>
+<p align="left">2. <b>INTEGER arg:</b> argument number</p>
+<p align="left">3. <b>INTEGER axis:</b> axis number</p>
+<p align="left">4. <b>INTEGER lo_amt:</b> extension to the lo range (–1 means get one more point than in the result)</p>
+<p align="left">5. <b>INTEGER hi_amt:</b> extension to the hi range (+1 means get one more point than in the result)</p>
+<p> </p>
+<h3>Ch11 Sec6.2.10.</h3>
+<p align="left" class="callout"><a name="ef_set_axis_influence" id="ef_set_axis_influence"></a><a name="_VPID_398" id="_VPID_398"></a><b><a name="_VPINDEXENTRY_1178" id="_VPINDEXENTRY_1178"></a>ef_set_axis_influence(id, arg, Xyn, Yyn, Zyn, Tyn) and</b></p>
+<p align="left" class="callout"><b>ef_set_axis_influence_6d(id, arg, Xyn, Yyn, Zyn, Tyn, Eyn, Fyn)</b></p>
+<p align="left">Specify whether this argument's axes "influence" the result axes. A value of <i><b>YES</b></i> for a particular axis means that the result should have the same axis as this argument. If the result should have the same axis as several input arguments, then each argument should specify <i><b>YES</b></i> for the axis in question. Note that <i><b>ef_set_axis_inheritance</b></i> must have specified <i><b>IMPLIED_BY_ARGS</b></i> for this axis.</p>
+<p class="indented">Input arguments:</p>
+<p align="left">1. <b>INTEGER id:</b> external function's ID number</p>
+<p align="left">2. <b>INTEGER arg:</b> argument number</p>
+<p align="left">3. <b>INTEGER Xyn:</b> influence flag for the X axis</p>
+<p align="left">4. <b>INTEGER Yyn:</b> influence flag for the Y axis</p>
+<p align="left">5. <b>INTEGER Zyn:</b> influence flag for the Z axis</p>
+<p align="left">6. <b>INTEGER Tyn:</b> influence flag for the T axis</p>
+<p align="left">7. <b>INTEGER Eyn:</b> influence flag for the E axis, when calling ef_set_axis_influence_6d</p>
+<p align="left">8. <b>INTEGER Fyn:</b> influence flag for the F axis, when calling ef_set_axis_influence_6d</p>
+<p> </p>
+<h3 align="left">Ch11 Sec6.2.11. <a name="ef_set_axis_reduction" id="ef_set_axis_reduction"></a><a name="_VPID_399" id="_VPID_399"></a><a name="_VPINDEXENTRY_1179" id="_VPINDEXENTRY_1179"></a></h3>
+<p align="left" class="callout"><b>ef_set_axis_reduction(id, Xred, Yred, Zred, Tred) and </b></p>
+<p align="left" class="callout"><b>ef_set_axis_reduction_6d(id, Xred, Yred, Zred, Tred, Ered, Fred)</b></p>
+<p align="left">Specify whether the result axes are RETAINED or REDUCED with respect to the argument axes from which they are inherited. Setting the axis reduction flag to REDUCED means that the result axis is reduced to a point by the external function. The axis reduction flag need only be set when the result is reduced to a point but SET REGION information should still be applied to the external function arguments.</p>
+<p class="indented">Input arguments:</p>
+<p align="left">1. <b>INTEGER id</b>: external function's ID number</p>
+<p align="left">2. <b>INTEGER Xred</b>: reduction flag for the X axis</p>
+<p align="left">3. <b>INTEGER Yred</b>: reduction flag for the Y axis</p>
+<p align="left">4. <b>INTEGER Zred</b>: reduction flag for the Z axis</p>
+<p align="left">5. <b>INTEGER Tred</b>: reduction flag for the T axis</p>
+<p align="left">6.<b> INTEGER Ered</b>: reduction flag for the E axis, when calling ef_set_axis_reduction_6d</p>
+<p align="left">7. <b>INTEGER Fred</b>: reduction flag for the F axis, when calling ef_set_axis_reduction_6d</p>
+<p> </p>
+<h3 align="left">Ch11 Sec6.2.12. <a name="ef_set_axis_limits" id="ef_set_axis_limits"></a><a name="_VPID_400" id="_VPID_400"></a><a name="_VPINDEXENTRY_1180" id="_VPINDEXENTRY_1180"></a></h3>
+<p align="left" class="callout"><b>ef_set_axis_limits(id, axis, lo, hi) </b></p>
+<p align="left">Specify the lo and hi limits of an axis. (This is not needed for most functions and must appear in a separate subroutine named <i><b>~func_name~_result_limits(id)</b></i>).</p>
+<p class="indented">Input arguments:</p>
+<p align="left">1. <b>INTEGER id:</b> external function's ID number</p>
+<p align="left">2. <b>INTEGER axis:</b> axis number</p>
+<p align="left">3. <b>INTEGER lo:</b> index value of the lo range of this axis</p>
+<p align="left">4. <b>INTEGER hi:</b> index value of the hi range of this axis</p>
+<p> </p>
+<h3 align="left">Ch11 Sec6.2.13.</h3>
+<p align="left" class="callout"><a name="ef_set_custom_axis" id="ef_set_custom_axis"></a><a name="_VPID_401" id="_VPID_401"></a><b><a name="_VPINDEXENTRY_1181" id="_VPINDEXENTRY_1181"></a>ef_set_custom_axis(id, axis, lo, hi, delta, unit, modulo) </b></p>
+<p align="left">Create a custom axis. This is only used by functions which create a custom axis and must appear in a separate subroutine named <i><b>~func_name~_custom_axes(id)</b></i>. See also the discussion of the <a href="ANATOMY-OF-AN-EXTERNAL-FUNCTION.html#_VPID_380">custom_axis subroutine</a>. If the axis is a time axis, the units should be the unit only (e.g. "year", "day"), and should not include the time origin. Set the time origin separately as noted in the discussion of the custom_axis subroutine.</p>
+<p class="indented">Input arguments:</p>
+<p align="left">1. <b>INTEGER id:</b> external function's ID number</p>
+<p align="left">2. <b>INTEGER axis:</b> axis number</p>
+<p align="left">3. <b>REAL lo:</b> coordinate value of the lo range of this axis</p>
+<p align="left">4. <b>REAL hi:</b> coordinate value of the hi range of this axis</p>
+<p align="left">5. <b>REAL delta:</b> increment for this axis</p>
+<p align="left">6. <b>CHARACTER*(*) unit:</b> unit for this axis</p>
+<p align="left">7. <b>INTEGER modulo:</b> flag for modulo axes (1 = modulo)</p>
+<p> </p>
+<h3 align="left">Ch11 Sec6.2.14. <a name="ef_set_num_work_arrays" id="ef_set_num_work_arrays"></a><a name="_VPID_402" id="_VPID_402"></a><a name="_VPINDEXENTRY_1182" id="_VPINDEXENTRY_1182"></a></h3>
+<p align="left" class="callout"><b>ef_set_num_work_arrays(id, nwork) </b></p>
+<p align="left">Set the number of work arrays to be allocated. The maximum number of work arrays allowed is 9.</p>
+<p class="indented">Input arguments:</p>
+<p align="left">1. <b>INTEGER id:</b> external function's ID number</p>
+<p align="left">2. <b>INTEGER nwork:</b> number of storage arrays</p>
+<p> </p>
+<h3 align="left">Ch11 Sec6.2.15. <a name="ef_set_work_array_dims" id="ef_set_work_array_dims"></a><a name="_VPID_403" id="_VPID_403"></a><a name="_VPINDEXENTRY_1183" id="_VPINDEXENTRY_1183"></a></h3>
+<p align="left" class="callout"><b>ef_set_work_array_dims(id, iarray, xlo, ylo, zlo, tlo, xhi, yhi, zhi, thi)  and</b></p>
+<p align="left" class="callout">ef_set_work_array_dims_6d(id, array, Xlo, Ylo, Zlo, Tlo, Elo, Flo, Xhi, Yhi, Zhi, Thi, Ehi, Fhi)</p>
+<p align="left">Set the working array axis lengths.</p>
+<p class="indented">Input arguments:</p>
+<p align="left">1. <b>INTEGER id:</b> external function's ID number</p>
+<p align="left">2. <b>INTEGER iarray:</b> array number</p>
+<p align="left">3. <b>INTEGER xlo:</b> index value of the lo range of x axis</p>
+<p align="left">4. <b>INTEGER ylo:</b> index value of the lo range of y axis</p>
+<p align="left">5. <b>INTEGER zlo:</b> index value of the lo range of z axis</p>
+<p align="left">6. <b>INTEGER tlo:</b> index value of the lo range of t axis</p>
+<p align="left">7. <b>INTEGER xhi:</b> index value of the hi range of x axis</p>
+<p align="left">8. <b>INTEGER yhi:</b> index value of the hi range of y axis</p>
+<p align="left">9. <b>INTEGER zhi:</b> index value of the hi range of z axis</p>
+<p align="left">10. <b>INTEGER thi:</b> index value of the hi range of t axis</p>
+<p>When calling ef_set_work_array_dims_6d, integers <strong>Elo, Flo, Ehi, Fhi</strong> are index values of the low and high range of the E and F axes.</p>
+<p> </p>
+<h3 align="left">Ch11 Sec6.2.16. <a name="ef_get_res_subscripts" id="ef_get_res_subscripts"></a><a name="_VPID_404" id="_VPID_404"></a><a name="_VPINDEXENTRY_1184" id="_VPINDEXENTRY_1184"></a></h3>
+<p align="left" class="callout"><b>ef_get_res_subscripts(id, res_lo_ss, res_hi_ss, res_incr) and</b></p>
+<p align="left" class="callout"><b>ef_get_res_subscripts_6d(id, res_lo_ss, res_hi_ss, res_incr)</b></p>
+<p align="left">Return lo and hi indices and increments to be used in looping through the calculation of the result.</p>
+<p align="left">Input arguments:</p>
+<p align="left">1. <b>INTEGER id:</b> external function's ID number</p>
+<p class="indented">Output arguments:</p>
+<p align="left">1. <b>INTEGER res_lo_ss(4):</b> the lo end indices for the X, Y, Z, T axes of the result</p>
+<p align="left">2. <b>INTEGER res_hi_ss(4):</b> the hi end indices for the X, Y, Z, T axes of the result</p>
+<p align="left">3. <b>INTEGER res_incr(4):</b> the increment to be applied to the X, Y, Z, T axes of the result</p>
+<p align="left">or when calling <b>ef_get_res_subscripts_6d,</b></p>
+<p align="left">1. <b>INTEGER res_lo_ss(6):</b> the lo end indices for the X, Y, Z, T, E, F axes of the result</p>
+<p align="left">2. <b>INTEGER res_hi_ss(6):</b> the hi end indices for the X, Y, Z, T, E, F axes of the result</p>
+<p align="left">3. <b>INTEGER res_incr(6):</b> the increment to be applied to the X, Y, Z, T, E, F axes of the result</p>
+<p class="indented">Sample code:</p>
+<pre>
+CALL ef_get_res_subscripts(id,
+res_lo_ss, res_hi_ss, res_incr) ... 
+
+DO 400 n=res_lo_ss(F_AXIS), res_hi_ss(F_AXIS) 
+
+DO 300 m=res_lo_ss(E_AXIS), res_hi_ss(E_AXIS)
+... 
+
+300 CONTINUE 
+
+400 CONTINUE</pre><p> </p>
+<h3 align="left">Ch11 Sec6.2.17. <a name="ef_get_arg_info" id="ef_get_arg_info"></a><a name="_VPID_405" id="_VPID_405"></a><a name="_VPINDEXENTRY_1185" id="_VPINDEXENTRY_1185"></a></h3>
+<p align="left" class="callout"><b>ef_get_arg_info(id, iarg, arg_name, arg_title, arg_units) </b></p>
+<p align="left">Return strings describing argument: name, title, units.</p>
+<p class="indented">Input arguments:</p>
+<p align="left">1. <b>INTEGER id:</b> external function's ID number</p>
+<p align="left">2. <b>INTEGER iarg:</b> argument number</p>
+<p class="indented">Output arguments:</p>
+<p align="left">1. <b>CHARACTER*24 arg_name:</b> the name of the argument</p>
+<p align="left">2. <b>CHARACTER*128 arg_title:</b> title associated with the argument</p>
+<p align="left">3. <b>CHARACTER*32 arg_units:</b> the argument's units.</p>
+<p> </p>
+<h3 align="left">Ch11 Sec6.2.18. <a name="ef_get_arg_string" id="ef_get_arg_string"></a><a name="_VPID_406" id="_VPID_406"></a><a name="_VPINDEXENTRY_1186" id="_VPINDEXENTRY_1186"></a></h3>
+<p align="left" class="callout"><b>ef_get_arg_string(id, iarg, text) </b></p>
+<p align="left">This name is deprecated, and renamed to ef_get_one_arg_string.</p>
+<p> </p>
+<h3 align="left">Ch11 Sec6.2.19.</h3>
+<p align="left" class="callout"><a name="ef_get_one_arg_string" id="ef_get_one_arg_string"></a><a name="_VPID_407" id="_VPID_407"></a><b><a name="_VPINDEXENTRY_1187" id="_VPINDEXENTRY_1187"></a>ef_get_one_arg_string(id, iarg, text) </b></p>
+<p align="left">Return the string associated with an argument of type STRING_ARG. This routine like ef_get_one_val, may be called during the init phase of an external function, in the routines to set custom or abstract axes (but not in the ~init subroutine itself).</p>
+<p class="indented">Input arguments:</p>
+<p align="left">1. <b>INTEGER id:</b> external function's ID number</p>
+<p align="left">2. <b>INTEGER iarg:</b> argument number</p>
+<p class="indented">Output arguments:</p>
+<p align="left">1. <b>CHARACTER*(*) text:</b> the actual text string for the argument</p>
+<p align="left">Sample code:</p>
+<pre>
+…
+
+CHARACTER arg_text*160
+
+* *************************
+* USER CONFIGURABLE PORTION
+* 
+* 
+INTEGER i,j,k,l
+INTEGER i1, j1, k1, l1
+
+CALL ef_get_arg_string(id, 1, arg_text)
+WRITE(6,49) arg_text
+49 FORMAT ('The text is : ''',a,'''')
+
+…</pre><p> </p>
+<p> </p>
+<h3 align="left">Ch11 Sec6.2.20. <a name="ef_get_axis_info" id="ef_get_axis_info"></a><a name="_VPID_408" id="_VPID_408"></a><a name="_VPINDEXENTRY_1188" id="_VPINDEXENTRY_1188"></a></h3>
+<p align="left" class="callout"><b>ef_get_axis_info(id, iarg, axname, ax_units, backward, modulo, regular) and</b></p>
+<p align="left" class="callout"><b>ef_get_axis_info_6d(id, iarg, axname, ax_units, backward, modulo, regular) </b></p>
+<p align="left">Return strings describing argument: name, title, units.</p>
+<p align="left">Input arguments:</p>
+<p align="left">1. <b>INTEGER id:</b> external function's ID number</p>
+<p align="left">2. <b>INTEGER iarg:</b> argument number</p>
+<p class="indented">Output arguments:</p>
+<p align="left">1. <b>CHARACTER*16 ax_name(4):</b> the name of the four axes<br />
+   or <b>CHARACTER*16 ax_name(4) </b>when calling ef_get_axis_info_6d</p>
+<p align="left">2. <b>CHARACTER*16 ax_units(4):</b> units of the four axes<br />
+   or <b>CHARACTER*16 ax_units(6) </b>when calling ef_get_axis_info_6d</p>
+<p align="left">3. <b>LOGICAL backward(4):</b> true if axis is backward axis<br />
+   or <b>LOGICAL backward(6) </b>when calling ef_get_axis_info_6d</p>
+<p align="left">4. <b>LOGICAL modulo(4):</b> true if axis is modulo axis<br />
+   or <b>LOGICAL modulo(6) </b>when calling ef_get_axis_info_6d</p>
+<p align="left">5. <b>LOGICAL regular(4):</b> true if axis is regular axis<br />
+   or <b>LOGICAL regular(6)</b>when calling ef_get_axis_info_6d</p>
+<p> </p>
+<h3 align="left">Ch11 Sec6.2.21. <a name="ef_get_axis_dates" id="ef_get_axis_dates"></a><a name="_VPID_409" id="_VPID_409"></a><a name="_VPINDEXENTRY_1189" id="_VPINDEXENTRY_1189"></a><a name="_VPINDEXENTRY_1190" id="_VPINDEXENTRY_1190"></a></h3>
+<p align="left" class="callout"><b>ef_get_axis_dates(id, iarg, taxis, direction, numtimes, precision, datebuf) </b></p>
+<p align="left">Returns the string date buffer associated with the time axis of an argument.</p>
+<p align="left"><strong><em>(Previous to Ferret v6.72 Ferret did not have an F axis and this function had only five arguments; it did not include argument 4: dimension.</em></strong><strong><em> The precision argument was added with version 7.5)</em></strong></p>
+<p class="indented">Input arguments:</p>
+<p align="left">1. <b>INTEGER id:</b> external function's ID number</p>
+<p align="left">2. <b>INTEGER iarg:</b> argument number</p>
+<p align="left">3. <b>REAL*8 taxis(numtimes):</b> time coordinate values to translate</p>
+<p align="left">4. <strong>DIRECTION:</strong> Axis direction in the grid: 4 for Time axis or 6 for Forecast-time axis</p>
+<p align="left">5. <b>INTEGER numtimes:</b> number of timesteps to return</p>
+<p align="left">6. <strong>INTEGER precision:</strong> one of the following codes:<br />
+ 3 for day-month-year<br />
+ 4 for day-month-year hour<br />
+ 5 for day-month-year hour:minute<br />
+ 6 for day-month-year hour:minute:second<br />
+ 7 for day-month-year hour:minute:second.fraction</p>
+<p>Output arguments:</p>
+<p align="left">1. <b>CHARACTER*24 datebuf(numtimes):</b> the string-date buffer for each time.  This can be shorter if the precision chosen is less than full precision.</p>
+<p> </p>
+<h3 align="left">Ch11 Sec6.2.22. <a name="_VPID_410" id="_VPID_410"></a><a name="_VPINDEXENTRY_1191" id="_VPINDEXENTRY_1191"></a></h3>
+<p align="left" class="callout"><b>ef_get_axis_calendar(id, iarg, calname, yrdays, nmonths, days_in_month) </b></p>
+<p align="left">Returns the calendar name, days per year, number of months, and days per month associated with the time axis of an argument.</p>
+<p class="indented">Input arguments:</p>
+<p align="left">1. <b>INTEGER id:</b> external function's ID number</p>
+<p align="left">2. <b>INTEGER iarg:</b> argument number</p>
+<p class="indented">Output arguments:</p>
+<p align="left">1. <b>CHARACTER calname: </b>the string name of the axis</p>
+<p align="left">2. <b>REAL yrdays:</b> the number of days in the year, including fractional days as in 365.2425 for the standard calendar</p>
+<p align="left">3. <b>INTEGER nmonths:</b> the number of months in the year. Currently Ferret has only 12-month years defined</p>
+<p align="left">4. <b>INTEGER days_in_month(12):</b> The number of days in each month</p>
+<p align="left"> </p>
+<h3 align="left">Ch11 Sec6.2.23.</h3>
+<p align="left" class="callout"><a name="ef_get_arg_subscripts" id="ef_get_arg_subscripts"></a><a name="_VPID_411" id="_VPID_411"></a><b><a name="_VPINDEXENTRY_1192" id="_VPINDEXENTRY_1192"></a>ef_get_arg_subscripts(id, arg_lo_ss, arg_hi_ss, arg_incr) and</b></p>
+<p align="left" class="callout"><b>ef_get_arg_subscripts_6d(id, arg_lo_ss, arg_hi_ss, arg_incr) </b></p>
+<p align="left">Return lo and hi indices and increments to be used in looping through the calculation of the result. If you call ef_get_arg_subscripts to generate a custom axis, see the discussion under the <a href="ANATOMY-OF-AN-EXTERNAL-FUNCTION.html#_VPID_380">custom_axis</a> subroutine.299</p>
+<p class="indented">Input arguments:</p>
+<p align="left">1. <b>INTEGER id:</b> external function's ID number</p>
+<p class="indented">Output arguments:</p>
+<p align="left">1. <b>INTEGER arg_lo_ss(4,EF_MAX_ARGS):</b> the lo end indices for the X, Y, Z, T axes of each argument</p>
+<p align="left">2. <b>INTEGER arg_hi_ss(4,EF_MAX_ARGS):</b> the hi end indices for the X, Y, Z, T axes of each argument</p>
+<p align="left">3. <b>INTEGER arg_incr(4,EF_MAX_ARGS):</b> the increment to be applied to the X, Y, Z, T axes of each argument</p>
+<p align="left">or, when calling <b>ef_get_arg_subscripts_6d:</b></p>
+<p align="left">1. <b>INTEGER arg_lo_ss(6,EF_MAX_ARGS):</b> the lo end indices for the X, Y, Z, T, E, F axes of each argument</p>
+<p align="left">2. <b>INTEGER arg_hi_ss(6,EF_MAX_ARGS):</b> the hi end indices for the X, Y, Z, T, E, F axes of each argument</p>
+<p align="left">3. <b>INTEGER arg_incr(6,EF_MAX_ARGS):</b> the increment to be applied to the X, Y, Z, T, E, F axes of each argument</p>
+<p class="indented">Sample code:</p>
+<pre>
+INTEGER i,j,k,l, m, n 
+INTEGER i1, j1, k1, l1, m1, n1 
+INTEGER i2, j2, k2, l2, m2, n2
+
+CALL ef_get_res_subscripts(id, res_lo_ss, res_hi_ss, res_incr) 
+CALL ef_get_arg_subscripts(id, arg_lo_ss, arg_hi_ss, arg_incr) 
+CALL ef_get_bad_flags(id, bad_flag, bad_flag_result) 
+
+i1 = arg_lo_ss(X_AXIS,ARG1) 
+i2 = arg_lo_ss(X_AXIS,ARG2) 
+
+DO 400 i=res_lo_ss(X_AXIS), res_hi_ss(X_AXIS) 
+… 
+i1 = i1 + arg_incr(X_AXIS,ARG1) 
+i2 = i2 + arg_incr(X_AXIS,ARG2) 
+400 CONTINUE</pre><p> </p>
+<h3 align="left">Ch11 Sec6.2.24. <a name="ef_get_arg_ss_extremes" id="ef_get_arg_ss_extremes"></a><a name="_VPID_412" id="_VPID_412"></a><a name="_VPINDEXENTRY_1193" id="_VPINDEXENTRY_1193"></a></h3>
+<p align="left" class="callout"><b>ef_get_arg_ss_extremes(id, num_args, ss_min, ss_max)    and </b></p>
+<p align="left" class="callout"><b>ef_get_arg_ss_extremes_6d(id, num_args, ss_min, ss_max)</b></p>
+<p align="left">Return the maximum and minim index values for all the arguments. These define the domain of the data.</p>
+<p class="indented">Input arguments:</p>
+<p align="left">1. <b>INTEGER id:</b> external function's ID number</p>
+<p align="left">2. <b>INTEGER num_args:</b> number of arguments for which to return index extremes</p>
+<p class="indented">Output arguments:</p>
+<p align="left">1. <b>INTEGER ss_min(4,EF_MAX_ARGS):</b> the minimum indices for the X, Y, Z, T axes of each argument</p>
+<p align="left">2. <b>INTEGER ss_max(4,EF_MAX_ARGS):</b> the maximum indices for the X, Y, Z, T axes of each argument</p>
+<p align="left">or, when calling <b>ef_get_arg_ss_extremes_6d, </b></p>
+<p align="left">1. <b>INTEGER ss_min(6,EF_MAX_ARGS):</b> the minimum indices for the X, Y, Z, T, E, F axes of each argument</p>
+<p align="left">2. <b>INTEGER ss_max(6,EF_MAX_ARGS):</b> the maximum indices for the X, Y, Z, T, E, F axes of each argument</p>
+<p align="left"><b>Example: </b></p>
+<pre>
+INTEGER id, num_args
+INTEGER ss_min(4,EF_MAX_ARGS), ss_max(4,EF_MAX_ARGS)
+
+num_args = 3
+CALL ef_get_arg_ss_extremes(id, num_args, ss_min, ss_max)</pre><p> </p>
+<h3 align="left">Ch11 Sec6.2.25. <a name="ef_get_bad_flags" id="ef_get_bad_flags"></a><a name="_VPID_413" id="_VPID_413"></a><a name="_VPINDEXENTRY_1194" id="_VPINDEXENTRY_1194"></a></h3>
+<p align="left" class="callout"><b>ef_get_bad_flags(id, bad_flag, bad_flag_result) </b></p>
+<p align="left">Return the missing value flags for each argument and for the result.</p>
+<p class="indented">Input arguments:</p>
+<p align="left">1. <b>INTEGER id:</b> external function's ID number</p>
+<p class="indented">Output arguments:</p>
+<p align="left">1. <b>REAL bad_flag(EF_MAX_ARGS):</b> missing value flags for each argument</p>
+<p align="left">2. <b>REAL bad_flag_result:</b> missing value flag for the result</p>
+<p class="indented">Sample code:</p>
+<pre>
+CALL ef_get_res_subscripts(id, res_lo_ss, res_hi_ss, res_incr) 
+CALL ef_get_arg_subscripts(id, arg_lo_ss, arg_hi_ss, arg_incr) 
+CALL ef_get_bad_flags(id, bad_flag, bad_flag_result) 
+
+… 
+
+IF ( arg_1(i1,j1,k1,l1) .EQ. bad_flag(ARG1) ) THEN 
+result(i,j,k,l) = bad_flag_result 
+ELSE 
+...</pre><p> </p>
+<h3 align="left">Ch11 Sec6.2.26. <a name="ef_get_coordinates" id="ef_get_coordinates"></a><a name="Chapter11--ef_get_coordinates" id="Chapter11--ef_get_coordinates"></a><a name="_VPID_414" id="_VPID_414"></a><a name="_VPINDEXENTRY_1195" id="_VPINDEXENTRY_1195"></a></h3>
+<p align="left" class="callout"><b>ef_get_coordinates(id, arg, axis, lo, hi, coords) </b></p>
+<p align="left">Return the "world coordinates" associated with a particular arg, axis and lo:hi range.</p>
+<p class="indented">Input arguments:</p>
+<p align="left">1. <b>INTEGER id:</b> external function's ID number</p>
+<p align="left">2. <b>INTEGER arg:</b> argument number</p>
+<p align="left">3. <b>INTEGER axis:</b> axis number</p>
+<p align="left">4. <b>INTEGER lo:</b> lo index of desired range</p>
+<p align="left">5. <b>INTEGER hi:</b> hi index of desired range</p>
+<p class="indented">Output arguments:</p>
+<p align="left">1. <b>REAL*8 coords(*):</b> array of "world coordinate" values (NB_ these values are associated with index values lo:hi but are returned as <i><b>coords(1:hi-lo)</b></i>.)</p>
+<p align="left">Sample code:</p>
+<p align="left">[Not that Previous to Ferret v6.8, in the <b>work_size</b> subroutine, we needed to define twice as many elements as coordinates so as to have storage for REAL*8 numbers<b>. In Ferret v6.8 and higher </b>all variables are double precision so this special treatment is unnecessary. The REAL declaration defines double precision variables because of the compiler flags we use.]</p>
+<pre>
+SUBROUTINE myfcn_work_size(id)
+INCLUDE 'ferret_cmn/EF_Util.cmn'
+INCLUDE 'ferret_cmn/EF_mem_subsc.cmn'
+INTEGER id
+
+* Set the work arrays, X/Y/Z/T dimensions
+
+INTEGER nxout, nx2
+INTEGER arg_lo_ss(4,1:EF_MAX_ARGS), arg_hi_ss(4,1:EF_MAX_ARGS),
+arg_incr(4,1:EF_MAX_ARGS)
+
+CALL ef_get_arg_subscripts(id, arg_lo_ss, arg_hi_ss, arg_incr)
+
+nxout = 1 + arg_hi_ss(X_AXIS,ARG4) - arg_lo_ss(X_AXIS,ARG4)
+nx2 = nxout* 2
+
+* Define work array XAX
+
+CALL ef_set_work_array_dims (id, 1, 1, 1, 1, 1, nx2, 1, 1, 1)
+RETURN
+END</pre><p align="left">[In the <b>compute</b> subroutine, prior to Ferret v6.8, we needed to dimension the REAL*8 coordinate array with half the <b>wkr1hix</b> dimension (wrk1lox:wrk1hix, etc are defined by the <b>work_size </b>subroutine, so the xax declaration below would have had xax(wrk1lox:wrk1hix/2... )]</p>
+<pre>
+SUBROUTINE myfcn_compute(id, arg_1, arg_2, result, xax)
+…
+REAL arg_1(mem1lox:mem1hix, mem1loy:mem1hiy, mem1loz:mem1hiz, 
+. Mem1lot:mem1hit) 
+REAL result(memreslox:memreshix, memresloy:memreshiy, 
+. memresloz:memreshiz, memreslot:memreshit)
+
+INTEGER res_lo_ss(4), res_hi_ss(4), res_incr(4)
+INTEGER arg_lo_ss(4,EF_MAX_ARGS), arg_hi_ss(4,EF_MAX_ARGS),
+. Arg_incr(4,EF_MAX_ARGS)
+
+C Dimension the work array: X dimension was defined twice as large 
+C as the # coordinates, for double precision work array.
+
+REAL*8 xax(wrk1lox:wrk1hix, wrk1loy:wrk1hiy,
+. wrk1loz:wrk1hiz, wrk1lot:wrk1hit)
+… 
+
+CALL ef_get_res_subscripts(id, res_lo_ss, res_hi_ss, res_incr) 
+CALL ef_get_arg_subscripts(id, arg_lo_ss, arg_hi_ss, arg_incr) 
+CALL ef_get_bad_flags(id, bad_flag, bad_flag_result) 
+
+CALL ef_get_coordinates(id, ARG1, X_AXIS, arg_lo_ss(X_AXIS
+. ARG1), arg_hi_ss(X_AXIS, ARG1), xax ) 
+
+… 
+
+dummy = 1 
+DO 30 i = arg_lo_ss(Y_AXIS, ARG1), arg_hi_ss(Y_AXIS, ARG1)
+cstr(i) = 1.0 / cos( xax(dummy) * (1.0/radian) ) 
+dummy = dummy + 1 
+30 CONTINUE</pre><p> </p>
+<p> </p>
+<h3 align="left">Ch11 Sec6.2.27.</h3>
+<p align="left" class="callout"><a name="ef_get_box_size" id="ef_get_box_size"></a><a name="_VPID_415" id="_VPID_415"></a><b><a name="_VPINDEXENTRY_1196" id="_VPINDEXENTRY_1196"></a>ef_get_box_size(id, arg, axis, lo, hi, size) </b></p>
+<p align="left">Return the grid-cell box sizes (in "world coordinates") associated with a particular arg, axis and lo:hi range.</p>
+<p class="indented">Input arguments:</p>
+<p align="left">1. <b>INTEGER id:</b> external function's ID number</p>
+<p align="left">2. <b>INTEGER arg:</b> argument number</p>
+<p align="left">3. <b>INTEGER axis:</b> axis number</p>
+<p align="left">4. <b>INTEGER lo:</b> lo index of desired range</p>
+<p align="left">5. <b>INTEGER hi:</b> hi index of desired range</p>
+<p class="indented">Output arguments:</p>
+<p align="left">1. <b>REAL size(*):</b> array of box size values (NB_ these values are associated with index values lo:hi but are returned as <i><b>coords(1:hi-lo)</b></i>.)</p>
+<p class="indented">Sample code:</p>
+<pre>
+REAL tk_y(wrk1lox:wrk1hix, wrk1loy:wrk1hiy/2,
+. wrk1loz:wrk1hiz, wrk1lot:wrk1hit)
+REAL tk_dx(wrk2lox:wrk2hix, wrk2loy:wrk2hiy,
+. wrk2loz:wrk2hiz, wrk2lot:wrk2hit)
+
+INTEGER dummy 
+
+… 
+
+CALL ef_get_res_subscripts(id, res_lo_ss, res_hi_ss, res_incr) 
+CALL ef_get_arg_subscripts(id, arg_lo_ss, arg_hi_ss, arg_incr) 
+CALL ef_get_bad_flags(id, bad_flag, bad_flag_result) 
+CALL ef_get_coordinates(id, ARG1, Y_AXIS, arg_lo_ss(Y_AXIS, ARG1),
+. arg_hi_ss(Y_AXIS, ARG1), tk_y ) 
+CALL ef_get_box_size(id, ARG1, X_AXIS, arg_lo_ss(X_AXIS, ARG1),
+. arg_hi_ss(X_AXIS, ARG1), tk_dx ) 
+
+… 
+
+dummy = 1 
+DO 20 i = arg_lo_ss(X_AXIS, ARG1), arg_hi_ss(X_AXIS, ARG1) 
+dxt4r(i) = 1.0 / ( 4.0 * tk_dx(dummy) * radius/radian ) 
+dummy = dummy + 1 
+20 CONTINUE</pre><p> </p>
+<p> </p>
+<h3 align="left">Ch11 Sec6.2.28.</h3>
+<p align="left" class="callout"><a name="ef_ge_box_limits" id="ef_ge_box_limits"></a><a name="_VPID_416" id="_VPID_416"></a><b><a name="_VPINDEXENTRY_1197" id="_VPINDEXENTRY_1197"></a>ef_get_box_limits(id, arg, axis, lo, hi, lo_lims, hi_lims) </b></p>
+<p align="left">Return the box limits (in "world coordinates") associated with a particular arg, axis and lo:hi range.</p>
+<p class="indented">Input arguments:</p>
+<p align="left">1. <b>INTEGER id:</b> external function's ID number</p>
+<p align="left">2. <b>INTEGER arg:</b> argument number</p>
+<p align="left">3. <b>INTEGER axis:</b> axis number</p>
+<p align="left">4. <b>INTEGER lo:</b> lo index of desired range</p>
+<p align="left">5. <b>INTEGER hi:</b> hi index of desired range</p>
+<p class="indented">Output arguments:</p>
+<p align="left">1. <b>REAL lo_lims(*):</b> array of box lower limit values (NB_ these values are associated with index values lo:hi but are returned as <i><b>coords(1:hi-lo)</b></i>.)</p>
+<p align="left">2. <b>REAL hi_lims(*):</b> array of box upper limit values (NB_ these values are associated with index values lo:hi but are returned as <i><b>coords(1:hi-lo)</b></i>.)</p>
+<p> </p>
+<h3 align="left">Ch11 Sec6.2.29. <a name="ef_get_one_val" id="ef_get_one_val"></a><a name="_VPID_417" id="_VPID_417"></a><a name="_VPINDEXENTRY_1198" id="_VPINDEXENTRY_1198"></a></h3>
+<p align="left" class="callout"><b>ef_get_one_val(id, arg, value) </b></p>
+<p align="left">Return the value of 1×1×1×1 variable.</p>
+<p class="indented">Input arguments:</p>
+<p align="left">1. <b>INTEGER id</b>: external function's ID number</p>
+<p align="left">2. <b>INTEGER arg</b>: argument number</p>
+<p class="indented">Output arguments:</p>
+<p align="left">1. <b>REAL </b><i><b>value </b></i>: The value of the variable</p>
+<p> </p>
+<h3 align="left">Ch11 Sec6.2.30. <a name="_VPID_418" id="_VPID_418"></a><a name="_VPINDEXENTRY_1199" id="_VPINDEXENTRY_1199"></a></h3>
+<p align="left" class="callout"><b>ef_get_string_arg_element(id, arg, </b><b>str_arg, </b><b>i,j,k,l, slen, text)  and</b></p>
+<p align="left" class="callout"><b>ef_get_string_arg_element_6d(id, arg, </b><b>str_arg, </b><b>i,j,k,l,m,n slen, text)</b></p>
+<p align="left">Return one single string element from a string variable.</p>
+<p class="indented">Input arguments:</p>
+<p align="left">1. <b>INTEGER id</b>: external function's ID number</p>
+<p align="left">2. <b>INTEGER arg</b>: argument number</p>
+<p align="left">3. <b>REAL str_arg</b>: the argument, e.g. arg_1, pointer to the string argument.</p>
+<p align="left">4-7. <b>INTEGER i,j,k,l: </b>the indices of the string element to return.<br />
+When calling<b> ef_get_string_arg_element_6d, m n </b>are the indices in the E and F directions for the element to return.<b> </b></p>
+<p align="indented">Output arguments:</p>
+<p>1. <b>INTEGER slen</b><i><b> </b></i>: The length of the string element</p>
+<p>2. <b>CHARACTER text</b><i><b> </b></i>: The string. If the string variable you have declared in the external function is too short for the string in the argument, the variable text will be truncated, but the value of slen will contain the length of the string in the argument.</p>
+<p> </p>
+<h3 align="left">Ch11 Sec6.2.31. <a name="_VPID_419" id="_VPID_419"></a></h3>
+<p align="left" class="callout"><a name="_VPINDEXENTRY_1200" id="_VPINDEXENTRY_1200"></a><b>ef_get_string_arg_element_len (id, arg, str_arg, i,j,k,l, slen)  and </b></p>
+<p align="left" class="callout"><b>ef_get_string_arg_element_len_6d (id, arg, str_arg, i,j,k,l,m,n, slen) </b></p>
+<p align="left">Return the length of a single string element from a string variable.</p>
+<p class="indented">Input arguments:</p>
+<p align="left">1. <b>INTEGER id</b>: external function's ID number</p>
+<p align="left">2. <b>INTEGER arg</b>: argument number</p>
+<p align="left">3. <b>REAL str_arg</b>: the argument, e.g. arg_1, pointer to the string argument.</p>
+<p align="left">4-7. <b>INTEGER i,j,k,l: </b>the indices of the string element to return.<br />
+When calling<b> </b><strong>ef_</strong><strong>g</strong><b>et</b><b>_string</b><b>_arg_element_len_6d, m n </b>are the indices in the E and F directions for the element to return.</p>
+<p align="indented">Output arguments:</p>
+<p align="left">1. <b>INTEGER slen</b><i><b> </b></i>: The length of the string element<br />
+ </p>
+<h3 align="left">Ch11 Sec6.2.32. <a name="_VPID_420" id="_VPID_420"></a><a name="_VPINDEXENTRY_1201" id="_VPINDEXENTRY_1201"></a></h3>
+<p align="left" class="callout"><b>ef_get_string_arg_max_len (id, arg, str_arg, slen) </b></p>
+<p align="left">Return the length of a single string element from a string variable.</p>
+<p class="indented">Input arguments:</p>
+<p align="left">1. <b>INTEGER id</b>: external function's ID number</p>
+<p align="left">2. <b>INTEGER arg</b>: argument number</p>
+<p align="left">3. <b>REAL str_arg</b>: the argument, e.g. arg_1, pointer to the string argument.</p>
+<p align="indented">Output arguments:</p>
+<p class="left">1. <b>INTEGER slen</b><i><b> </b></i>: The maximum length of the strings in the array</p>
+<p> </p>
+<p> </p>
+<h3 align="left">Ch11 Sec6.2.33. <a name="ef_version_test" id="ef_version_test"></a><a name="_VPID_421" id="_VPID_421"></a><a name="_VPINDEXENTRY_1202" id="_VPINDEXENTRY_1202"></a></h3>
+<p align="left" class="callout"><b>ef_version_test (version) </b></p>
+<p align="left">Return the version number of the external functions code that is in place.</p>
+<p align="indented">Output argument:</p>
+<p align="left">1. <b>REAL</b> <i><b>version </b></i>: The version number</p>
+<h3 align="left">Ch11 Sec6.2.34. <a name="ef_bail_out" id="ef_bail_out"></a><a name="_VPID_422" id="_VPID_422"></a><a name="_VPINDEXENTRY_1203" id="_VPINDEXENTRY_1203"></a></h3>
+<p align="left" class="callout"><b>ef_bail_out(id, text) </b></p>
+<p align="left">Bail out of an external function, returning to Ferret and issuing a message to the user.</p>
+<p class="indented">Input arguments:</p>
+<p align="left">1. <b>INTEGER id</b>: external function's ID number</p>
+<p align="left">2. <b>INTEGER text</b>: text string to output.</p>
+<p align="left">The bail-out message looks like this, where the text supplied in the call to ef_bail_out is on the second line:</p>
+<p align="left">Bailing out of external function "ffta":<br />
+Time axis must be a regular axis<br />
+**ERROR: : error in external function</p>
+</div>
+      </div>
+</div>
+    
+  </div>
+  
+  <div class="clearfix">
+          <nav class="links node-links clearfix"></nav>
+    
+      </div>
+</article>
+    </div>
+  </div>
+</div>      </div>
+</div>  </div>
+</div></section>    
+  
+      <footer id="section-footer" class="section section-footer">
+  <div id="zone-footer-wrapper" class="zone-wrapper zone-footer-wrapper clearfix">  
+  <div id="zone-footer" class="zone zone-footer clearfix container-12">
+    <div class="grid-8 region region-footer-first" id="region-footer-first">
+  <div class="region-inner region-footer-first-inner">
+    <div class="block block-block block-1 block-block-1 odd block-without-title" id="block-block-1">
+  <div class="block-inner clearfix">
+                
+    <div class="content clearfix">
+      <p><a href="https://www.pmel.noaa.gov/"><img alt="PMEL logo" border="0" src="https://ferret.pmel.noaa.gov/Ferret/sites/all/themes/pacific_marine/images/PMEL-meatball-logo-sm.png" style="width: 110px; height: 110px;" /></a></p>
+    </div>
+  </div>
+</div><div class="block block-block block-2 block-block-2 even block-without-title" id="block-block-2">
+  <div class="block-inner clearfix">
+                
+    <div class="content clearfix">
+      <p><a href="https://www.noaa.gov/">National Oceanic and Atmospheric Administration</a><br /><a href="https://www.pmel.noaa.gov/">Pacific Marine Environmental Laboratory</a> | <a href="https://ferret.pmel.noaa.gov/Ferret">Ferret Support</a><br /><a href="mailto:oar.pmel.contact_ferret@noaa.gov">oar.pmel.contact_ferret@noaa.gov </a></p>
+    </div>
+  </div>
+</div><div class="block block-menu block-menu-footer-first-menu block-menu-menu-footer-first-menu odd block-without-title" id="block-menu-menu-footer-first-menu">
+  <div class="block-inner clearfix">
+                
+    <div class="content clearfix">
+      <ul class="menu"><li class="first leaf"><a href="https://www.commerce.gov/" title="The United States Department of Commerce">DOC</a></li>
+<li class="leaf"><a href="https://www.noaa.gov/" title="The National Oceanographic and Atmospheric Administration">NOAA</a></li>
+<li class="leaf"><a href="https://www.research.noaa.gov/" title="Department of Commerce &gt; NOAA &gt; Office of Oceanic and Atmospheric Research">OAR</a></li>
+<li class="leaf"><a href="https://www.pmel.noaa.gov/">PMEL</a></li>
+<li class="leaf"><a href="https://www.pmel.noaa.gov/project/science-data-integration" target="_blank">SDIG</a></li>
+<li class="leaf"><a href="https://www.noaa.gov/protecting-your-privacy" target="_blank">Privacy Policy</a></li>
+<li class="last leaf"><a href="https://www.noaa.gov/disclaimer" target="_blank">Disclaimer</a></li>
+</ul>    </div>
+  </div>
+</div>  </div>
+</div><div class="grid-4 region region-footer-second" id="region-footer-second">
+  <div class="region-inner region-footer-second-inner">
+    <div class="block block-menu block-menu-footer-second-menu block-menu-menu-footer-second-menu odd block-without-title" id="block-menu-menu-footer-second-menu">
+  <div class="block-inner clearfix">
+                
+    <div class="content clearfix">
+      <ul class="menu"><li class="first last leaf"><a href="https://ferret.pmel.noaa.gov/Ferret/sitemap" title="Title of Site map page">Ferret Sitemap</a></li>
+</ul>    </div>
+  </div>
+</div>  </div>
+</div>  </div>
+</div></footer>  </div>  <div class="region region-page-bottom" id="region-page-bottom">
+  <div class="region-inner region-page-bottom-inner">
+      </div>
+</div>  <div id="body-bg-bottom"></div>
+</body>
+
+<!-- Mirrored from ferret.pmel.noaa.gov/Ferret/documentation/users-guide/writing-external-functions/UTILITY-FUNCTIONS by HTTrack Website Copier/3.x [XR&CO'2014], Thu, 15 Jun 2023 18:11:36 GMT -->
+</html>

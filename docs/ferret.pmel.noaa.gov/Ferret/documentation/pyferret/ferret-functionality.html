@@ -1,0 +1,895 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML+RDFa 1.1//EN">
+<html lang="en" dir="ltr" version="HTML+RDFa 1.1"
+  xmlns:content="http://purl.org/rss/1.0/modules/content/"
+  xmlns:dc="http://purl.org/dc/terms/"
+  xmlns:foaf="http://xmlns.com/foaf/0.1/"
+  xmlns:og="http://ogp.me/ns#"
+  xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+  xmlns:sioc="http://rdfs.org/sioc/ns#"
+  xmlns:sioct="http://rdfs.org/sioc/types#"
+  xmlns:skos="http://www.w3.org/2004/02/skos/core#"
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+  xmlns:schema="http://schema.org/">
+
+<!-- Mirrored from ferret.pmel.noaa.gov/Ferret/documentation/pyferret/ferret-functionality by HTTrack Website Copier/3.x [XR&CO'2014], Thu, 15 Jun 2023 18:12:37 GMT -->
+<!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=utf-8" /><!-- /Added by HTTrack -->
+<head profile="http://www.w3.org/1999/xhtml/vocab">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="Generator" content="Drupal 7 (http://drupal.org)" />
+<link rel="canonical" href="ferret-functionality.html" />
+<link rel="shortlink" href="https://ferret.pmel.noaa.gov/Ferret/node/739" />
+<link rel="shortcut icon" href="https://ferret.pmel.noaa.gov/Ferret/sites/all/themes/pacific_marine/images/favicon-32.png" type="image/png" />
+<link rel="apple-touch-icon" href="https://ferret.pmel.noaa.gov/Ferret/sites/all/themes/pacific_marine/images/apple-touch-icon-152x152.png" type="image/png" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no" />
+  <title>Ferret functionality via PyFerret | Science Data Integration Group - Ferret Support</title>  
+  <style type="text/css" media="all">
+@import url("https://ferret.pmel.noaa.gov/Ferret/modules/system/system.base.css?rw9vml");
+@import url("https://ferret.pmel.noaa.gov/Ferret/modules/system/system.menus.css?rw9vml");
+@import url("https://ferret.pmel.noaa.gov/Ferret/modules/system/system.messages.css?rw9vml");
+@import url("https://ferret.pmel.noaa.gov/Ferret/modules/system/system.theme.css?rw9vml");
+</style>
+<style type="text/css" media="all">
+@import url("https://ferret.pmel.noaa.gov/Ferret/sites/all/modules/jquery_update/replace/ui/themes/base/minified/jquery.ui.core.min.css?rw9vml");
+@import url("https://ferret.pmel.noaa.gov/Ferret/sites/all/modules/jquery_update/replace/ui/themes/base/minified/jquery.ui.theme.min.css?rw9vml");
+@import url("https://ferret.pmel.noaa.gov/Ferret/sites/all/modules/jquery_update/replace/ui/themes/base/minified/jquery.ui.menu.min.css?rw9vml");
+@import url("https://ferret.pmel.noaa.gov/Ferret/sites/all/modules/jquery_update/replace/ui/themes/base/minified/jquery.ui.autocomplete.min.css?rw9vml");
+</style>
+<style type="text/css" media="all">
+@import url("https://ferret.pmel.noaa.gov/Ferret/sites/all/modules/calendar/css/calendar_multiday.css?rw9vml");
+@import url("https://ferret.pmel.noaa.gov/Ferret/modules/field/theme/field.css?rw9vml");
+@import url("https://ferret.pmel.noaa.gov/Ferret/sites/all/modules/scald/modules/fields/mee/css/editor-global.css?rw9vml");
+@import url("https://ferret.pmel.noaa.gov/Ferret/modules/node/node.css?rw9vml");
+@import url("https://ferret.pmel.noaa.gov/Ferret/sites/all/modules/scald_file/scald_file.css?rw9vml");
+@import url("https://ferret.pmel.noaa.gov/Ferret/modules/search/search.css?rw9vml");
+@import url("https://ferret.pmel.noaa.gov/Ferret/modules/user/user.css?rw9vml");
+@import url("https://ferret.pmel.noaa.gov/Ferret/sites/all/modules/views/css/views.css?rw9vml");
+@import url("https://ferret.pmel.noaa.gov/Ferret/sites/all/modules/ckeditor/css/ckeditor.css?rw9vml");
+</style>
+<style type="text/css" media="all">
+@import url("https://ferret.pmel.noaa.gov/Ferret/sites/all/modules/ctools/css/ctools.css?rw9vml");
+@import url("https://ferret.pmel.noaa.gov/Ferret/sites/all/modules/custom_search/custom_search.css?rw9vml");
+@import url("https://ferret.pmel.noaa.gov/Ferret/sites/all/modules/search_autocomplete/css/themes/minimal.css?rw9vml");
+@import url("https://ferret.pmel.noaa.gov/Ferret/sites/all/libraries/superfish/css/superfish.css?rw9vml");
+@import url("https://ferret.pmel.noaa.gov/Ferret/sites/all/libraries/superfish/css/superfish-smallscreen.css?rw9vml");
+@import url("https://ferret.pmel.noaa.gov/Ferret/sites/all/libraries/superfish/css/superfish-vertical.css?rw9vml");
+</style>
+<style type="text/css" media="all">
+@import url("https://ferret.pmel.noaa.gov/Ferret/sites/all/themes/pacific_marine/css/ckeditor_custom.css?rw9vml");
+</style>
+<style type="text/css" media="all">
+@import url("https://ferret.pmel.noaa.gov/Ferret/sites/all/themes/omega/alpha/css/alpha-reset.css?rw9vml");
+@import url("https://ferret.pmel.noaa.gov/Ferret/sites/all/themes/omega/alpha/css/alpha-mobile.css?rw9vml");
+@import url("https://ferret.pmel.noaa.gov/Ferret/sites/all/themes/omega/alpha/css/alpha-alpha.css?rw9vml");
+@import url("https://ferret.pmel.noaa.gov/Ferret/sites/all/themes/omega/omega/css/formalize.css?rw9vml");
+@import url("https://ferret.pmel.noaa.gov/Ferret/sites/all/themes/omega/omega/css/omega-text.css?rw9vml");
+@import url("https://ferret.pmel.noaa.gov/Ferret/sites/all/themes/omega/omega/css/omega-branding.css?rw9vml");
+@import url("https://ferret.pmel.noaa.gov/Ferret/sites/all/themes/omega/omega/css/omega-menu.css?rw9vml");
+@import url("https://ferret.pmel.noaa.gov/Ferret/sites/all/themes/omega/omega/css/omega-forms.css?rw9vml");
+@import url("https://ferret.pmel.noaa.gov/Ferret/sites/all/themes/omega/omega/css/omega-visuals.css?rw9vml");
+@import url("https://ferret.pmel.noaa.gov/Ferret/sites/all/themes/pacific_marine/css/global.css?rw9vml");
+</style>
+
+<!--[if (lt IE 9)&(!IEMobile)]>
+<style type="text/css" media="all">
+@import url("https://ferret.pmel.noaa.gov/Ferret/sites/all/themes/pacific_marine/css/pacific-marine-alpha-default.css?rw9vml");
+@import url("https://ferret.pmel.noaa.gov/Ferret/sites/all/themes/pacific_marine/css/pacific-marine-alpha-default-normal.css?rw9vml");
+@import url("https://ferret.pmel.noaa.gov/Ferret/sites/all/themes/omega/alpha/css/grid/alpha_default/normal/alpha-default-normal-12.css?rw9vml");
+</style>
+<![endif]-->
+
+<!--[if gte IE 9]><!-->
+<style type="text/css" media="all and (min-width: 740px) and (min-device-width: 740px), (max-device-width: 800px) and (min-width: 740px) and (orientation:landscape)">
+@import url("https://ferret.pmel.noaa.gov/Ferret/sites/all/themes/pacific_marine/css/pacific-marine-alpha-default.css?rw9vml");
+@import url("https://ferret.pmel.noaa.gov/Ferret/sites/all/themes/pacific_marine/css/pacific-marine-alpha-default-narrow.css?rw9vml");
+@import url("https://ferret.pmel.noaa.gov/Ferret/sites/all/themes/omega/alpha/css/grid/alpha_default/narrow/alpha-default-narrow-12.css?rw9vml");
+</style>
+<!--<![endif]-->
+
+<!--[if gte IE 9]><!-->
+<style type="text/css" media="all and (min-width: 980px) and (min-device-width: 980px), all and (max-device-width: 1024px) and (min-width: 1024px) and (orientation:landscape)">
+@import url("https://ferret.pmel.noaa.gov/Ferret/sites/all/themes/pacific_marine/css/pacific-marine-alpha-default.css?rw9vml");
+@import url("https://ferret.pmel.noaa.gov/Ferret/sites/all/themes/pacific_marine/css/pacific-marine-alpha-default-normal.css?rw9vml");
+@import url("https://ferret.pmel.noaa.gov/Ferret/sites/all/themes/omega/alpha/css/grid/alpha_default/normal/alpha-default-normal-12.css?rw9vml");
+</style>
+<!--<![endif]-->
+
+<!--[if gte IE 9]><!-->
+<style type="text/css" media="all and (min-width: 1220px)">
+@import url("https://ferret.pmel.noaa.gov/Ferret/sites/all/themes/pacific_marine/css/pacific-marine-alpha-default.css?rw9vml");
+@import url("https://ferret.pmel.noaa.gov/Ferret/sites/all/themes/pacific_marine/css/pacific-marine-alpha-default-wide.css?rw9vml");
+@import url("https://ferret.pmel.noaa.gov/Ferret/sites/all/themes/omega/alpha/css/grid/alpha_default/wide/alpha-default-wide-12.css?rw9vml");
+</style>
+<!--<![endif]-->
+	
+	<script id="_fed_an_ua_tag" src="https://dap.digitalgov.gov/Universal-Federated-Analytics-Min.js?agency=DOC&amp;subagency=NOAA&amp;pua=UA-96523701-1"></script>
+	
+  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<script type="text/javascript">
+<!--//--><![CDATA[//><!--
+window.jQuery || document.write("<script src='https://ferret.pmel.noaa.gov/Ferret/sites/all/modules/jquery_update/replace/jquery/1.12/jquery.min.js'>\x3C/script>")
+//--><!]]>
+</script>
+<script type="text/javascript" src="https://ferret.pmel.noaa.gov/Ferret/misc/jquery-extend-3.4.0.js?v=1.12.4"></script>
+<script type="text/javascript" src="https://ferret.pmel.noaa.gov/Ferret/misc/jquery-html-prefilter-3.5.0-backport.js?v=1.12.4"></script>
+<script type="text/javascript" src="https://ferret.pmel.noaa.gov/Ferret/misc/jquery.once.js?v=1.2"></script>
+<script type="text/javascript" src="https://ferret.pmel.noaa.gov/Ferret/misc/drupal.js?rw9vml"></script>
+<script type="text/javascript" src="https://ferret.pmel.noaa.gov/Ferret/sites/all/modules/jquery_update/js/jquery_browser.js?v=0.0.1"></script>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.2/jquery-ui.min.js"></script>
+<script type="text/javascript">
+<!--//--><![CDATA[//><!--
+window.jQuery.ui || document.write("<script src='https://ferret.pmel.noaa.gov/Ferret/sites/all/modules/jquery_update/replace/ui/ui/minified/jquery-ui.min.js'>\x3C/script>")
+//--><!]]>
+</script>
+<script type="text/javascript" src="https://ferret.pmel.noaa.gov/Ferret/misc/ui/jquery.ui.position-1.13.0-backport.js?v=1.10.2"></script>
+<script type="text/javascript" src="https://ferret.pmel.noaa.gov/Ferret/sites/all/modules/entityreference/js/entityreference.js?rw9vml"></script>
+<script type="text/javascript" src="https://ferret.pmel.noaa.gov/Ferret/sites/all/modules/custom_search/js/custom_search.js?rw9vml"></script>
+<script type="text/javascript" src="https://ferret.pmel.noaa.gov/Ferret/sites/all/modules/scald_file/scald_file.js?rw9vml"></script>
+<script type="text/javascript" src="https://ferret.pmel.noaa.gov/Ferret/sites/all/modules/scald/modules/providers/scald_image/scald_image.js?rw9vml"></script>
+<script type="text/javascript" src="https://ferret.pmel.noaa.gov/Ferret/sites/all/modules/search_autocomplete/js/jquery.autocomplete.js?rw9vml"></script>
+<script type="text/javascript" src="https://ferret.pmel.noaa.gov/Ferret/sites/all/libraries/superfish/jquery.hoverIntent.minified.js?rw9vml"></script>
+<script type="text/javascript" src="https://ferret.pmel.noaa.gov/Ferret/sites/all/libraries/superfish/sfsmallscreen.js?rw9vml"></script>
+<script type="text/javascript" src="https://ferret.pmel.noaa.gov/Ferret/sites/all/libraries/superfish/supposition.js?rw9vml"></script>
+<script type="text/javascript" src="https://ferret.pmel.noaa.gov/Ferret/sites/all/libraries/superfish/superfish.js?rw9vml"></script>
+<script type="text/javascript" src="https://ferret.pmel.noaa.gov/Ferret/sites/all/libraries/superfish/supersubs.js?rw9vml"></script>
+<script type="text/javascript" src="https://ferret.pmel.noaa.gov/Ferret/sites/all/modules/superfish/superfish.js?rw9vml"></script>
+<script type="text/javascript" src="https://ferret.pmel.noaa.gov/Ferret/sites/all/themes/pacific_marine/js/pacific_marine.js?rw9vml"></script>
+<script type="text/javascript" src="https://ferret.pmel.noaa.gov/Ferret/sites/all/themes/omega/omega/js/jquery.formalize.js?rw9vml"></script>
+<script type="text/javascript" src="https://ferret.pmel.noaa.gov/Ferret/sites/all/themes/omega/omega/js/omega-mediaqueries.js?rw9vml"></script>
+<script type="text/javascript" src="https://ferret.pmel.noaa.gov/Ferret/sites/all/themes/omega/omega/js/omega-equalheights.js?rw9vml"></script>
+<script type="text/javascript">
+<!--//--><![CDATA[//><!--
+jQuery.extend(Drupal.settings, {"basePath":"\/Ferret\/","pathPrefix":"","setHasJsCookie":0,"ajaxPageState":{"theme":"pacific_marine","theme_token":"85FC-sc6kR2z0brOlJEHPr_Fn9Xv-0fy3SFQ3gs3WQE","js":{"\/\/ajax.googleapis.com\/ajax\/libs\/jquery\/1.12.4\/jquery.min.js":1,"0":1,"misc\/jquery-extend-3.4.0.js":1,"misc\/jquery-html-prefilter-3.5.0-backport.js":1,"misc\/jquery.once.js":1,"misc\/drupal.js":1,"sites\/all\/modules\/jquery_update\/js\/jquery_browser.js":1,"\/\/ajax.googleapis.com\/ajax\/libs\/jqueryui\/1.10.2\/jquery-ui.min.js":1,"1":1,"misc\/ui\/jquery.ui.position-1.13.0-backport.js":1,"sites\/all\/modules\/entityreference\/js\/entityreference.js":1,"sites\/all\/modules\/custom_search\/js\/custom_search.js":1,"sites\/all\/modules\/scald_file\/scald_file.js":1,"sites\/all\/modules\/scald\/modules\/providers\/scald_image\/scald_image.js":1,"sites\/all\/modules\/search_autocomplete\/js\/jquery.autocomplete.js":1,"sites\/all\/libraries\/superfish\/jquery.hoverIntent.minified.js":1,"sites\/all\/libraries\/superfish\/sfsmallscreen.js":1,"sites\/all\/libraries\/superfish\/supposition.js":1,"sites\/all\/libraries\/superfish\/superfish.js":1,"sites\/all\/libraries\/superfish\/supersubs.js":1,"sites\/all\/modules\/superfish\/superfish.js":1,"sites\/all\/themes\/pacific_marine\/js\/pacific_marine.js":1,"sites\/all\/themes\/omega\/omega\/js\/jquery.formalize.js":1,"sites\/all\/themes\/omega\/omega\/js\/omega-mediaqueries.js":1,"sites\/all\/themes\/omega\/omega\/js\/omega-equalheights.js":1},"css":{"modules\/system\/system.base.css":1,"modules\/system\/system.menus.css":1,"modules\/system\/system.messages.css":1,"modules\/system\/system.theme.css":1,"misc\/ui\/jquery.ui.core.css":1,"misc\/ui\/jquery.ui.theme.css":1,"misc\/ui\/jquery.ui.menu.css":1,"misc\/ui\/jquery.ui.autocomplete.css":1,"sites\/all\/modules\/calendar\/css\/calendar_multiday.css":1,"modules\/field\/theme\/field.css":1,"sites\/all\/modules\/scald\/modules\/fields\/mee\/css\/editor-global.css":1,"modules\/node\/node.css":1,"sites\/all\/modules\/scald_file\/scald_file.css":1,"modules\/search\/search.css":1,"modules\/user\/user.css":1,"sites\/all\/modules\/views\/css\/views.css":1,"sites\/all\/modules\/ckeditor\/css\/ckeditor.css":1,"sites\/all\/modules\/ctools\/css\/ctools.css":1,"sites\/all\/modules\/custom_search\/custom_search.css":1,"sites\/all\/modules\/search_autocomplete\/css\/themes\/minimal.css":1,"sites\/all\/libraries\/superfish\/css\/superfish.css":1,"sites\/all\/libraries\/superfish\/css\/superfish-smallscreen.css":1,"sites\/all\/libraries\/superfish\/css\/superfish-vertical.css":1,"sites\/all\/themes\/pacific_marine\/css\/ckeditor_custom.css":1,"sites\/all\/themes\/omega\/alpha\/css\/alpha-reset.css":1,"sites\/all\/themes\/omega\/alpha\/css\/alpha-mobile.css":1,"sites\/all\/themes\/omega\/alpha\/css\/alpha-alpha.css":1,"sites\/all\/themes\/omega\/omega\/css\/formalize.css":1,"sites\/all\/themes\/omega\/omega\/css\/omega-text.css":1,"sites\/all\/themes\/omega\/omega\/css\/omega-branding.css":1,"sites\/all\/themes\/omega\/omega\/css\/omega-menu.css":1,"sites\/all\/themes\/omega\/omega\/css\/omega-forms.css":1,"sites\/all\/themes\/omega\/omega\/css\/omega-visuals.css":1,"sites\/all\/themes\/pacific_marine\/css\/global.css":1,"ie::normal::sites\/all\/themes\/pacific_marine\/css\/pacific-marine-alpha-default.css":1,"ie::normal::sites\/all\/themes\/pacific_marine\/css\/pacific-marine-alpha-default-normal.css":1,"ie::normal::sites\/all\/themes\/omega\/alpha\/css\/grid\/alpha_default\/normal\/alpha-default-normal-12.css":1,"narrow::sites\/all\/themes\/pacific_marine\/css\/pacific-marine-alpha-default.css":1,"narrow::sites\/all\/themes\/pacific_marine\/css\/pacific-marine-alpha-default-narrow.css":1,"sites\/all\/themes\/omega\/alpha\/css\/grid\/alpha_default\/narrow\/alpha-default-narrow-12.css":1,"normal::sites\/all\/themes\/pacific_marine\/css\/pacific-marine-alpha-default.css":1,"normal::sites\/all\/themes\/pacific_marine\/css\/pacific-marine-alpha-default-normal.css":1,"sites\/all\/themes\/omega\/alpha\/css\/grid\/alpha_default\/normal\/alpha-default-normal-12.css":1,"wide::sites\/all\/themes\/pacific_marine\/css\/pacific-marine-alpha-default.css":1,"wide::sites\/all\/themes\/pacific_marine\/css\/pacific-marine-alpha-default-wide.css":1,"sites\/all\/themes\/omega\/alpha\/css\/grid\/alpha_default\/wide\/alpha-default-wide-12.css":1}},"custom_search":{"form_target":"_self","solr":0},"scaldFile":{"path":"sites\/all\/modules\/scald_file\/scald_file.css"},"search_autocomplete":{"form3":{"selector":"#edit-search-block-form--2","minChars":"3","max_sug":"10","type":"internal","datas":"https:\/\/ferret.pmel.noaa.gov\/Ferret\/search_autocomplete\/autocomplete\/3\/","fid":"3","theme":"minimal","auto_submit":"1","auto_redirect":"1"}},"urlIsAjaxTrusted":{"\/Ferret\/documentation\/pyferret\/ferret-functionality":true},"superfish":{"1":{"id":"1","sf":{"animation":{"opacity":"show","height":"show"},"speed":"fast"},"plugins":{"smallscreen":{"mode":"window_width","breakpointUnit":"px","title":"Documentation"},"supposition":true,"supersubs":true}}},"omega":{"layouts":{"primary":"normal","order":["narrow","normal","wide"],"queries":{"narrow":"all and (min-width: 740px) and (min-device-width: 740px), (max-device-width: 800px) and (min-width: 740px) and (orientation:landscape)","normal":"all and (min-width: 980px) and (min-device-width: 980px), all and (max-device-width: 1024px) and (min-width: 1024px) and (orientation:landscape)","wide":"all and (min-width: 1220px)"}}}});
+//--><!]]>
+</script>
+  <!--[if lt IE 9]><script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+</head>
+<body class="html not-front not-logged-in page-node page-node- page-node-739 node-type-documentation-page context-documentation">
+  <div id="body-bg-top"></div>
+  <div id="skip-link">
+    <a href="#main-content" class="element-invisible element-focusable">Skip to main content</a>
+  </div>
+    <div class="page clearfix" id="page">
+      <header id="section-header" class="section section-header">
+  <div id="zone-header-wrapper" class="zone-wrapper zone-header-wrapper clearfix">  
+  <div id="zone-header" class="zone zone-header clearfix container-12">
+    <div class="grid-7 region region-branding" id="region-branding">
+  <div class="region-inner region-branding-inner">
+        <div class="branding-data clearfix">
+            <div class="logo-img">
+        <a href="https://ferret.pmel.noaa.gov/Ferret/" rel="home" title=""><img src="https://ferret.pmel.noaa.gov/Ferret/sites/all/themes/pacific_marine/images/header-logo.png" alt="" id="logo" /></a>      </div>
+                </div>
+          </div>
+</div><div class="grid-5 region region-header-first" id="region-header-first">
+  <div class="region-inner region-header-first-inner">
+    <div class="block block-block block-4 block-block-4 odd block-without-title" id="block-block-4">
+  <div class="block-inner clearfix">
+                
+    <div class="content clearfix">
+      <div id="noaa-doc">
+<div class="logos">
+<div class="logo" id="doc-logo"><a href="https://www.commerce.gov/" target="_blank"><img alt="Department of Commerce logo" src="https://ferret.pmel.noaa.gov/Ferret/sites/all/themes/pacific_marine/images/doc_logo.png" style="width: 40px; height: 40px;" /></a></div>
+<div class="logo" id="noaa-logo"><a href="https://www.noaa.gov/" target="_blank"><img alt="National Oceanic and Atmospheric Administration logo" src="https://ferret.pmel.noaa.gov/Ferret/sites/all/themes/pacific_marine/images/noaa_logo.png" style="width: 40px; height: 40px;" /></a></div>
+</div>
+<div class="words">National Oceanic and<br />
+Atmospheric Administration<br /><span id="doc">United States Department of Commerce</span></div>
+</div>
+    </div>
+  </div>
+</div><div class="block block-search block-form block-search-form even block-without-title" id="block-search-form">
+  <div class="block-inner clearfix">
+                
+    <div class="content clearfix">
+      <form class="search-form" role="search" action="https://ferret.pmel.noaa.gov/Ferret/documentation/pyferret/ferret-functionality" method="post" id="search-block-form" accept-charset="UTF-8"><div><div class="container-inline">
+      <h2 class="element-invisible">Search form</h2>
+    <div class="form-item form-type-textfield form-item-search-block-form">
+  <label class="element-invisible" for="edit-search-block-form--2">Search PMEL </label>
+ <input title="Enter the terms you wish to search for." class="custom-search-box form-text" placeholder="Search Ferret" type="text" id="edit-search-block-form--2" name="search_block_form" value="" size="15" maxlength="128" />
+</div>
+<div class="form-actions form-wrapper" id="edit-actions"><input style="display:none;" type="submit" id="edit-submit" name="op" value="" class="form-submit" /></div><input type="hidden" name="form_build_id" value="form-yW0Fiigkehif55zLQlEJfEc5UUqUCW5fkAq9xGEBDRA" />
+<input type="hidden" name="form_id" value="search_block_form" />
+</div>
+</div></form>    </div>
+  </div>
+</div>  </div>
+</div>  </div>
+</div><div id="zone-menu-wrapper" class="zone-wrapper zone-menu-wrapper clearfix">  
+  <div id="zone-menu" class="zone zone-menu clearfix container-12">
+    <div class="grid-12 region region-menu" id="region-menu">
+  <div class="region-inner region-menu-inner">
+        <div class="block block-system block-menu block-main-menu block-system-main-menu odd block-without-title" id="block-system-main-menu">
+  <div class="block-inner clearfix">
+                
+    <div class="content clearfix">
+      <ul class="menu"><li class="first expanded"><a href="https://ferret.pmel.noaa.gov/Ferret/">Home</a><ul class="menu"><li class="first leaf"><a href="http://www.pmel.noaa.gov/project/science-data-integration">SDIG Home</a></li>
+<li class="leaf"><a href="https://ferret.pmel.noaa.gov/Ferret/">Ferret/PyFerret Home</a></li>
+<li class="last leaf"><a href="http://ferret.pmel.noaa.gov/LAS">LAS Home</a></li>
+</ul></li>
+<li class="leaf"><a href="../ferret-documentation.html">Documentation</a></li>
+<li class="collapsed"><a href="https://ferret.pmel.noaa.gov/Ferret/downloads">Downloads</a></li>
+<li class="leaf"><a href="https://ferret.pmel.noaa.gov/Ferret/faq">FAQ</a></li>
+<li class="leaf"><a href="https://ferret.pmel.noaa.gov/Ferret/email-users-group">eMail Users Group</a></li>
+<li class="last collapsed"><a href="https://ferret.pmel.noaa.gov/Ferret/support/ferret-support">Support</a></li>
+</ul>    </div>
+  </div>
+</div>  </div>
+</div>
+  </div>
+</div></header>    
+      <section id="section-content" class="section section-content">
+  <div id="zone-preface-wrapper" class="zone-wrapper zone-preface-wrapper clearfix">  
+  <div id="zone-preface" class="zone zone-preface clearfix equal-height-container container-12">
+    <div class="grid-3 region region-preface-first equal-height-element" id="region-preface-first">
+  <div class="region-inner region-preface-first-inner">
+      </div>
+</div><div class="grid-9 region region-preface-second equal-height-element" id="region-preface-second">
+  <div class="region-inner region-preface-second-inner">
+      </div>
+</div>  </div>
+</div><div id="zone-content-wrapper" class="zone-wrapper zone-content-wrapper clearfix sidebar">  
+  <div id="zone-content" class="zone zone-content clearfix equal-height-container container-12">    
+          <div id="breadcrumb" class="grid-12"><h2 class="element-invisible">You are here</h2><div class="breadcrumb"><a href="https://ferret.pmel.noaa.gov/Ferret/">Home</a> > <a href="../ferret-documentation.html">Documentation</a> > <a href="../pyferret.html">PyFerret</a> > Ferret functionality via PyFerret</div></div>
+        
+        <aside class="grid-3 region region-sidebar-first equal-height-element" id="region-sidebar-first">
+  <div class="region-inner region-sidebar-first-inner">
+    <div class="block block-superfish block-1 block-superfish-1 odd block-without-title" id="block-superfish-1">
+  <div class="block-inner clearfix">
+                
+    <div class="content clearfix">
+      <ul  id="superfish-1" class="menu sf-menu sf-main-menu sf-vertical sf-style-none sf-total-items-8 sf-parent-items-4 sf-single-items-4"><li id="menu-1620-1" class="first odd sf-item-1 sf-depth-2 sf-no-children"><a href="../version-763-release-notes.html" class="sf-depth-2">Current Release Notes</a></li><li id="menu-1170-1" class="middle even sf-item-2 sf-depth-2 sf-total-children-17 sf-parent-children-15 sf-single-children-2 menuparent"><a href="../users-guide.html" class="sf-depth-2 menuparent">Ferret User&#039;s Guide</a><ul><li id="menu-1613-1" class="first odd sf-item-1 sf-depth-3 sf-no-children"><a href="../users-guide/full-index/index.html" class="sf-depth-3">Users Guide Index</a></li><li id="menu-1154-1" class="middle even sf-item-2 sf-depth-3 sf-total-children-41 sf-parent-children-0 sf-single-children-41 menuparent"><a href="../users-guide/commands-reference/chapter-commnad-references.html" class="sf-depth-3 menuparent">Commands Reference</a><ul><li id="menu-1175-1" class="first odd sf-item-1 sf-depth-4 sf-no-children"><a href="../users-guide/commands-reference/ALIAS.html" class="sf-depth-4">ALIAS</a></li><li id="menu-1176-1" class="middle even sf-item-2 sf-depth-4 sf-no-children"><a href="../users-guide/commands-reference/CANCEL.html" class="sf-depth-4">CANCEL</a></li><li id="menu-1177-1" class="middle odd sf-item-3 sf-depth-4 sf-no-children"><a href="../users-guide/commands-reference/CONTOUR.html" class="sf-depth-4">CONTOUR</a></li><li id="menu-1178-1" class="middle even sf-item-4 sf-depth-4 sf-no-children"><a href="../users-guide/commands-reference/DEFINE.html" class="sf-depth-4">DEFINE</a></li><li id="menu-1179-1" class="middle odd sf-item-5 sf-depth-4 sf-no-children"><a href="../users-guide/commands-reference/ELIF.html" class="sf-depth-4">ELIF</a></li><li id="menu-1180-1" class="middle even sf-item-6 sf-depth-4 sf-no-children"><a href="../users-guide/commands-reference/ELSE.html" class="sf-depth-4">ELSE</a></li><li id="menu-1181-1" class="middle odd sf-item-7 sf-depth-4 sf-no-children"><a href="../users-guide/commands-reference/ENDIF.html" class="sf-depth-4">ENDIF</a></li><li id="menu-1182-1" class="middle even sf-item-8 sf-depth-4 sf-no-children"><a href="../users-guide/commands-reference/EXIT.html" class="sf-depth-4">EXIT</a></li><li id="menu-1183-1" class="middle odd sf-item-9 sf-depth-4 sf-no-children"><a href="../users-guide/commands-reference/FILE.html" class="sf-depth-4">FILE</a></li><li id="menu-1184-1" class="middle even sf-item-10 sf-depth-4 sf-no-children"><a href="../users-guide/commands-reference/FILL.html" class="sf-depth-4">FILL</a></li><li id="menu-1185-1" class="middle odd sf-item-11 sf-depth-4 sf-no-children"><a href="../users-guide/commands-reference/FRAME.html" class="sf-depth-4">FRAME</a></li><li id="menu-1186-1" class="middle even sf-item-12 sf-depth-4 sf-no-children"><a href="../users-guide/commands-reference/GO.html" class="sf-depth-4">GO</a></li><li id="menu-1187-1" class="middle odd sf-item-13 sf-depth-4 sf-no-children"><a href="../users-guide/commands-reference/HELP.html" class="sf-depth-4">HELP</a></li><li id="menu-1188-1" class="middle even sf-item-14 sf-depth-4 sf-no-children"><a href="../users-guide/commands-reference/IF.html" class="sf-depth-4">IF</a></li><li id="menu-1189-1" class="middle odd sf-item-15 sf-depth-4 sf-no-children"><a href="../users-guide/commands-reference/LABEL.html" class="sf-depth-4">LABEL</a></li><li id="menu-1190-1" class="middle even sf-item-16 sf-depth-4 sf-no-children"><a href="../users-guide/commands-reference/LET.html" class="sf-depth-4">LET</a></li><li id="menu-1191-1" class="middle odd sf-item-17 sf-depth-4 sf-no-children"><a href="../users-guide/commands-reference/LIST.html" class="sf-depth-4">LIST</a></li><li id="menu-1192-1" class="middle even sf-item-18 sf-depth-4 sf-no-children"><a href="../users-guide/commands-reference/LOAD.html" class="sf-depth-4">LOAD</a></li><li id="menu-1193-1" class="middle odd sf-item-19 sf-depth-4 sf-no-children"><a href="../users-guide/commands-reference/MESSAGE.html" class="sf-depth-4">MESSAGE</a></li><li id="menu-1194-1" class="middle even sf-item-20 sf-depth-4 sf-no-children"><a href="../users-guide/commands-reference/PALETTE.html" class="sf-depth-4">PALETTE</a></li><li id="menu-1195-1" class="middle odd sf-item-21 sf-depth-4 sf-no-children"><a href="../users-guide/commands-reference/PATTERN.html" class="sf-depth-4">PATTERN</a></li><li id="menu-1196-1" class="middle even sf-item-22 sf-depth-4 sf-no-children"><a href="../users-guide/commands-reference/PAUSE.html" class="sf-depth-4">PAUSE</a></li><li id="menu-1197-1" class="middle odd sf-item-23 sf-depth-4 sf-no-children"><a href="../users-guide/commands-reference/PLOT.html" class="sf-depth-4">PLOT</a></li><li id="menu-1198-1" class="middle even sf-item-24 sf-depth-4 sf-no-children"><a href="../users-guide/commands-reference/POLYGON.html" class="sf-depth-4">POLYGON</a></li><li id="menu-1199-1" class="middle odd sf-item-25 sf-depth-4 sf-no-children"><a href="../users-guide/commands-reference/PPLUS.html" class="sf-depth-4">PPLUS</a></li><li id="menu-1200-1" class="middle even sf-item-26 sf-depth-4 sf-no-children"><a href="../users-guide/commands-reference/QUERY.html" class="sf-depth-4">QUERY</a></li><li id="menu-1201-1" class="middle odd sf-item-27 sf-depth-4 sf-no-children"><a href="../users-guide/commands-reference/QUIT.html" class="sf-depth-4">QUIT</a></li><li id="menu-1202-1" class="middle even sf-item-28 sf-depth-4 sf-no-children"><a href="../users-guide/commands-reference/REPEAT.html" class="sf-depth-4">REPEAT</a></li><li id="menu-1203-1" class="middle odd sf-item-29 sf-depth-4 sf-no-children"><a href="../users-guide/commands-reference/SAVE.html" class="sf-depth-4">SAVE</a></li><li id="menu-1204-1" class="middle even sf-item-30 sf-depth-4 sf-no-children"><a href="../users-guide/commands-reference/SAY.html" class="sf-depth-4">SAY</a></li><li id="menu-1205-1" class="middle odd sf-item-31 sf-depth-4 sf-no-children"><a href="../users-guide/commands-reference/SET.html" class="sf-depth-4">SET</a></li><li id="menu-1206-1" class="middle even sf-item-32 sf-depth-4 sf-no-children"><a href="../users-guide/commands-reference/SHADE.html" class="sf-depth-4">SHADE</a></li><li id="menu-1207-1" class="middle odd sf-item-33 sf-depth-4 sf-no-children"><a href="../users-guide/commands-reference/SHOW.html" class="sf-depth-4">SHOW</a></li><li id="menu-1208-1" class="middle even sf-item-34 sf-depth-4 sf-no-children"><a href="../users-guide/commands-reference/SPAWN.html" class="sf-depth-4">SPAWN</a></li><li id="menu-1209-1" class="middle odd sf-item-35 sf-depth-4 sf-no-children"><a href="../users-guide/commands-reference/STATISTICS.html" class="sf-depth-4">STATISTICS</a></li><li id="menu-1210-1" class="middle even sf-item-36 sf-depth-4 sf-no-children"><a href="../users-guide/commands-reference/UNALIAS.html" class="sf-depth-4">UNALIAS</a></li><li id="menu-1211-1" class="middle odd sf-item-37 sf-depth-4 sf-no-children"><a href="../users-guide/commands-reference/VECTOR.html" class="sf-depth-4">VECTOR</a></li><li id="menu-1212-1" class="middle even sf-item-38 sf-depth-4 sf-no-children"><a href="../users-guide/commands-reference/USE.html" class="sf-depth-4">USE</a></li><li id="menu-1213-1" class="middle odd sf-item-39 sf-depth-4 sf-no-children"><a href="../users-guide/commands-reference/USER.html" class="sf-depth-4">USER</a></li><li id="menu-1214-1" class="middle even sf-item-40 sf-depth-4 sf-no-children"><a href="../users-guide/commands-reference/WI.html" class="sf-depth-4">WIRE</a></li><li id="menu-1215-1" class="last odd sf-item-41 sf-depth-4 sf-no-children"><a href="../users-guide/commands-reference/WHERE.html" class="sf-depth-4">WHERE</a></li></ul></li><li id="menu-1390-1" class="middle odd sf-item-3 sf-depth-3 sf-total-children-8 sf-parent-children-0 sf-single-children-8 menuparent"><a href="../users-guide/introduction.html" class="sf-depth-3 menuparent">1. Introduction</a><ul><li id="menu-1230-1" class="first odd sf-item-1 sf-depth-4 sf-no-children"><a href="../users-guide/introduction/OVERVIEW.html" class="sf-depth-4">1.1 OVERVIEW</a></li><li id="menu-1231-1" class="middle even sf-item-2 sf-depth-4 sf-no-children"><a href="../users-guide/introduction/GETTING-STARTED.html" class="sf-depth-4">1.2 GETTING STARTED</a></li><li id="menu-1232-1" class="middle odd sf-item-3 sf-depth-4 sf-no-children"><a href="../users-guide/introduction/COMMON-COMMANDS.html" class="sf-depth-4">1.3 COMMON COMMANDS</a></li><li id="menu-1233-1" class="middle even sf-item-4 sf-depth-4 sf-no-children"><a href="../users-guide/introduction/COMMAND-SYNTAX.html" class="sf-depth-4">1.4 COMMAND SYNTAX</a></li><li id="menu-1234-1" class="middle odd sf-item-5 sf-depth-4 sf-no-children"><a href="../users-guide/introduction/GO-FILES.html" class="sf-depth-4">1.5 GO FILES</a></li><li id="menu-1235-1" class="middle even sf-item-6 sf-depth-4 sf-no-children"><a href="../users-guide/introduction/SAMPLE-DATA-SETS.html" class="sf-depth-4">1.6 SAMPLE DATA SETS</a></li><li id="menu-1236-1" class="middle odd sf-item-7 sf-depth-4 sf-no-children"><a href="../users-guide/introduction/UNIX-TOOLS.html" class="sf-depth-4">1.7 UNIX TOOLS</a></li><li id="menu-1237-1" class="last even sf-item-8 sf-depth-4 sf-no-children"><a href="../users-guide/introduction/HELP.html" class="sf-depth-4">1.8 HELP</a></li></ul></li><li id="menu-1391-1" class="middle even sf-item-4 sf-depth-3 sf-total-children-9 sf-parent-children-1 sf-single-children-8 menuparent"><a href="../users-guide/data-set-basics.html" class="sf-depth-3 menuparent">2. Data Set Basics</a><ul><li id="menu-1238-1" class="first odd sf-item-1 sf-depth-4 sf-no-children"><a href="../users-guide/data-set-basics/OVERVIEW.html" class="sf-depth-4">2.1 OVERVIEW</a></li><li id="menu-1239-1" class="middle even sf-item-2 sf-depth-4 sf-total-children-1 sf-parent-children-0 sf-single-children-1 menuparent"><a href="../users-guide/data-set-basics/NETCDF-DATA.html" class="sf-depth-4 menuparent">2.2 NETCDF DATA</a><ul><li id="menu-1593-1" class="firstandlast odd sf-item-1 sf-depth-5 sf-no-children"><a href="../udunits.html" class="sf-depth-5">udunits.dat</a></li></ul></li><li id="menu-1240-1" class="middle odd sf-item-3 sf-depth-4 sf-no-children"><a href="../users-guide/data-set-basics/TMAP-FORMATTED-DATA.html" class="sf-depth-4">2.3 TMAP-FORMATTED DATA</a></li><li id="menu-1241-1" class="middle even sf-item-4 sf-depth-4 sf-no-children"><a href="../users-guide/data-set-basics/BINARY-DATA.html" class="sf-depth-4">2.4 BINARY DATA</a></li><li id="menu-1243-1" class="middle odd sf-item-5 sf-depth-4 sf-no-children"><a href="../users-guide/data-set-basics/ASCII-DATA.html" class="sf-depth-4">2.5 ASCII DATA</a></li><li id="menu-1242-1" class="middle even sf-item-6 sf-depth-4 sf-no-children"><a href="../users-guide/data-set-basics/TRICKS-TO-READING-BINARY-AND-ASCII-FILES.html" class="sf-depth-4">2.6 TRICKS TO READING BINARY AND ASCII FILES</a></li><li id="menu-1244-1" class="middle odd sf-item-7 sf-depth-4 sf-no-children"><a href="../users-guide/data-set-basics/ACCESS-TO-REMOTE-DATA-SETS-WITH-DODS.html" class="sf-depth-4">2.7 ACCESS TO REMOTE DATA SETS WITH OPeNDAP</a></li><li id="menu-1246-1" class="middle even sf-item-8 sf-depth-4 sf-no-children"><a href="https://ferret.pmel.noaa.gov/Ferret/" class="sf-depth-4">dsg_trajectories</a></li><li id="menu-1247-1" class="last odd sf-item-9 sf-depth-4 sf-no-children"><a href="https://ferret.pmel.noaa.gov/Ferret/" class="sf-depth-4">dsg_profiles</a></li></ul></li><li id="menu-1392-1" class="middle odd sf-item-5 sf-depth-3 sf-total-children-5 sf-parent-children-0 sf-single-children-5 menuparent"><a href="../users-guide/variables-xpressions.html" class="sf-depth-3 menuparent">3. Variables &amp; Expressions</a><ul><li id="menu-1248-1" class="first odd sf-item-1 sf-depth-4 sf-no-children"><a href="../users-guide/variables-xpressions/VARIABLES.html" class="sf-depth-4">3.1 VARIABLES</a></li><li id="menu-1249-1" class="middle even sf-item-2 sf-depth-4 sf-no-children"><a href="../users-guide/variables-xpressions/XPRESSIONS.html" class="sf-depth-4">3.2 EXPRESSIONS</a></li><li id="menu-1250-1" class="middle odd sf-item-3 sf-depth-4 sf-no-children"><a href="../users-guide/variables-xpressions/EMBEDDED-XPRESSIONS.html" class="sf-depth-4">3.3 EMBEDDED EXPRESSIONS</a></li><li id="menu-1251-1" class="middle even sf-item-4 sf-depth-4 sf-no-children"><a href="../users-guide/variables-xpressions/DEFINING-NEW-VARIABLES.html" class="sf-depth-4">3.4 DEFINING NEW VARIABLES</a></li><li id="menu-1252-1" class="last odd sf-item-5 sf-depth-4 sf-no-children"><a href="../users-guide/variables-xpressions/DEBUGGING-COMPLEX-HIERARCHIES-OF-XPRESSIONS.html" class="sf-depth-4">3.5 DEBUGGING COMPLEX HIERARCHIES OF EXPRESSIONS</a></li></ul></li><li id="menu-1393-1" class="middle even sf-item-6 sf-depth-3 sf-total-children-4 sf-parent-children-0 sf-single-children-4 menuparent"><a href="../users-guide/Grids-Regions.html" class="sf-depth-3 menuparent">4. Grids &amp; Regions</a><ul><li id="menu-1253-1" class="first odd sf-item-1 sf-depth-4 sf-no-children"><a href="../users-guide/Grids-Regions/OVERVIEW.html" class="sf-depth-4">4.1 OVERVIEW</a></li><li id="menu-1254-1" class="middle even sf-item-2 sf-depth-4 sf-no-children"><a href="../users-guide/Grids-Regions/GRIDS.html" class="sf-depth-4">4.2 GRIDS</a></li><li id="menu-1255-1" class="middle odd sf-item-3 sf-depth-4 sf-no-children"><a href="../users-guide/Grids-Regions/REGIONS.html" class="sf-depth-4">4.3 REGIONS</a></li><li id="menu-1256-1" class="last even sf-item-4 sf-depth-4 sf-no-children"><a href="../users-guide/Grids-Regions/FERRET-PROGRAM-LIMITS.html" class="sf-depth-4">4.4 FERRET PROGRAM LIMITS</a></li></ul></li><li id="menu-1394-1" class="middle odd sf-item-7 sf-depth-3 sf-total-children-5 sf-parent-children-0 sf-single-children-5 menuparent"><a href="../users-guide/animations-gif-images.html" class="sf-depth-3 menuparent">5. Animations &amp; Gif Images</a><ul><li id="menu-1257-1" class="first odd sf-item-1 sf-depth-4 sf-no-children"><a href="../users-guide/animations-gif-images/OVERVIEW.html" class="sf-depth-4">5.1 OVERVIEW</a></li><li id="menu-1258-1" class="middle even sf-item-2 sf-depth-4 sf-no-children"><a href="../users-guide/animations-gif-images/CREATING-AN-HDF-MOVIE.html" class="sf-depth-4">5.2 CREATING AN HDF MOVIE</a></li><li id="menu-1259-1" class="middle odd sf-item-3 sf-depth-4 sf-no-children"><a href="../users-guide/animations-gif-images/DISPLAYING-AN-HDF-MOVIE.html" class="sf-depth-4">5.3 DISPLAYING AN HDF MOVIE</a></li><li id="menu-1260-1" class="middle even sf-item-4 sf-depth-4 sf-no-children"><a href="../users-guide/animations-gif-images/ADVANCED-MOVIE-MAKING.html" class="sf-depth-4">5.4 ADVANCED MOVIE-MAKING</a></li><li id="menu-1261-1" class="last odd sf-item-5 sf-depth-4 sf-no-children"><a href="../users-guide/animations-gif-images/CREATING-GIF-IMAGES.html" class="sf-depth-4">5.5 CREATING GIF IMAGES</a></li></ul></li><li id="menu-1395-1" class="middle even sf-item-8 sf-depth-3 sf-total-children-12 sf-parent-children-0 sf-single-children-12 menuparent"><a href="../users-guide/customizing-plots.html" class="sf-depth-3 menuparent">6. Customizing Plots</a><ul><li id="menu-1262-1" class="first odd sf-item-1 sf-depth-4 sf-no-children"><a href="../users-guide/customizing-plots/OVERVIEW.html" class="sf-depth-4">6.1 OVERVIEW</a></li><li id="menu-1263-1" class="middle even sf-item-2 sf-depth-4 sf-no-children"><a href="../users-guide/customizing-plots/GRAPHICAL-OUTPUT.html" class="sf-depth-4">6.2 GRAPHICAL OUTPUT</a></li><li id="menu-1264-1" class="middle odd sf-item-3 sf-depth-4 sf-no-children"><a href="../users-guide/customizing-plots/AXES.html" class="sf-depth-4">6.3 AXES</a></li><li id="menu-1265-1" class="middle even sf-item-4 sf-depth-4 sf-no-children"><a href="../users-guide/customizing-plots/LABELS.html" class="sf-depth-4">6.4 LABELS</a></li><li id="menu-1266-1" class="middle odd sf-item-5 sf-depth-4 sf-no-children"><a href="../users-guide/customizing-plots/COLOR.html" class="sf-depth-4">6.5 COLOR</a></li><li id="menu-1267-1" class="middle even sf-item-6 sf-depth-4 sf-no-children"><a href="../users-guide/customizing-plots/FONTS.html" class="sf-depth-4">6.6 FONTS</a></li><li id="menu-1268-1" class="middle odd sf-item-7 sf-depth-4 sf-no-children"><a href="../users-guide/customizing-plots/PLOT-LAYOUT.html" class="sf-depth-4">6.7 PLOT LAYOUT</a></li><li id="menu-1269-1" class="middle even sf-item-8 sf-depth-4 sf-no-children"><a href="../users-guide/customizing-plots/CONTOURING.html" class="sf-depth-4">6.8 CONTOURING</a></li><li id="menu-1270-1" class="middle odd sf-item-9 sf-depth-4 sf-no-children"><a href="../users-guide/customizing-plots/SPECIAL-SYMBOLS.html" class="sf-depth-4">6.9 SPECIAL SYMBOLS</a></li><li id="menu-1617-1" class="middle even sf-item-10 sf-depth-4 sf-no-children"><a href="../users-guide/customizing-plots/MAP-PROJECTIONS-AND-CURVILINEAR-COORDINATES.html" class="sf-depth-4">6.10 MAP PROJECTIONS AND CURVILINEAR COORDINATES</a></li><li id="menu-1272-1" class="middle odd sf-item-11 sf-depth-4 sf-no-children"><a href="../users-guide/customizing-plots/linecolors.gif/view.html" class="sf-depth-4">LINECOLORS example</a></li><li id="menu-1273-1" class="last even sf-item-12 sf-depth-4 sf-no-children"><a href="../users-guide/customizing-plots/Chapter6_plotuv.png/view.html" class="sf-depth-4">PLOTUV example</a></li></ul></li><li id="menu-1396-1" class="middle odd sf-item-9 sf-depth-3 sf-total-children-11 sf-parent-children-0 sf-single-children-11 menuparent"><a href="../users-guide/handing-string-data-symbols.html" class="sf-depth-3 menuparent">7. Handing String Data Symbols</a><ul><li id="menu-1274-1" class="first odd sf-item-1 sf-depth-4 sf-no-children"><a href="../users-guide/handing-string-data-symbols/STRING-VARIABLES.html" class="sf-depth-4">7.1 STRING VARIABLES</a></li><li id="menu-1275-1" class="middle even sf-item-2 sf-depth-4 sf-no-children"><a href="../users-guide/handing-string-data-symbols/STRING-FUNCTIONS.html" class="sf-depth-4">7.2 STRING FUNCTIONS</a></li><li id="menu-1276-1" class="middle odd sf-item-3 sf-depth-4 sf-no-children"><a href="../users-guide/handing-string-data-symbols/SYMBOL-COMMANDS.html" class="sf-depth-4">7.3 SYMBOL COMMANDS</a></li><li id="menu-1277-1" class="middle even sf-item-4 sf-depth-4 sf-no-children"><a href="../users-guide/handing-string-data-symbols/AUTOMATICALLY-GENERATED-SYMBOLS.html" class="sf-depth-4">7.4 AUTOMATICALLY GENERATED SYMBOLS</a></li><li id="menu-1278-1" class="middle odd sf-item-5 sf-depth-4 sf-no-children"><a href="../users-guide/handing-string-data-symbols/USE-WITH-EMBEDDED-EXPRESSIONS.html" class="sf-depth-4">7.5 USE WITH EMBEDDED EXPRESSIONS</a></li><li id="menu-1279-1" class="middle even sf-item-6 sf-depth-4 sf-no-children"><a href="../users-guide/handing-string-data-symbols/ORDER-OF-STRING-SUBSTITUTIONS.html" class="sf-depth-4">7.6 ORDER OF STRING SUBSTITUTIONS</a></li><li id="menu-1280-1" class="middle odd sf-item-7 sf-depth-4 sf-no-children"><a href="../users-guide/handing-string-data-symbols/CUSTOMIZING-THE-POSITION-AND-STYLE%20OF%20PLOT%20LABELS.html" class="sf-depth-4">7.7 CUSTOMIZING THE POSITION AND STYLE OF PLOT LABELS</a></li><li id="menu-1281-1" class="middle even sf-item-8 sf-depth-4 sf-no-children"><a href="../users-guide/handing-string-data-symbols/USING-SYMBOLS-IN-COMMAND-FILES.html" class="sf-depth-4">7.8 USING SYMBOLS IN COMMAND FILES</a></li><li id="menu-1282-1" class="middle odd sf-item-9 sf-depth-4 sf-no-children"><a href="../users-guide/handing-string-data-symbols/PLOT-STRING-EDITING-TOOLS.html" class="sf-depth-4">7.9 PLOT+ STRING EDITING TOOLS</a></li><li id="menu-1283-1" class="middle even sf-item-10 sf-depth-4 sf-no-children"><a href="../users-guide/handing-string-data-symbols/SYMBOL-EDITING.html" class="sf-depth-4">7.10 SYMBOL EDITING</a></li><li id="menu-1284-1" class="last odd sf-item-11 sf-depth-4 sf-no-children"><a href="../users-guide/handing-string-data-symbols/SPECIAL-SYMBOLS.html" class="sf-depth-4">7.11 SPECIAL SYMBOLS</a></li></ul></li><li id="menu-1397-1" class="middle even sf-item-10 sf-depth-3 sf-total-children-10 sf-parent-children-0 sf-single-children-10 menuparent"><a href="../users-guide/working-with-special-data-sets.html" class="sf-depth-3 menuparent">8. Working with Special Data Sets</a><ul><li id="menu-1285-1" class="first odd sf-item-1 sf-depth-4 sf-no-children"><a href="../users-guide/working-with-special-data-sets/WHAT-IS-NON-GRIDDED-DATA.html" class="sf-depth-4">8.1 WHAT IS NON-GRIDDED DATA?</a></li><li id="menu-1286-1" class="middle even sf-item-2 sf-depth-4 sf-no-children"><a href="../users-guide/working-with-special-data-sets/POINT-DATA.html" class="sf-depth-4">8.2 POINT DATA</a></li><li id="menu-1287-1" class="middle odd sf-item-3 sf-depth-4 sf-no-children"><a href="../users-guide/working-with-special-data-sets/VERTICAL-PROFILES.html" class="sf-depth-4">8.3 VERTICAL PROFILES</a></li><li id="menu-1288-1" class="middle even sf-item-4 sf-depth-4 sf-no-children"><a href="../users-guide/working-with-special-data-sets/COLLECTIONS-OF-TIME-SERIES.html" class="sf-depth-4">8.4 COLLECTIONS OF TIME SERIES</a></li><li id="menu-1289-1" class="middle odd sf-item-5 sf-depth-4 sf-no-children"><a href="../users-guide/working-with-special-data-sets/COLLECTIONS-OF-2-DIMENSIONAL-GRIDS.html" class="sf-depth-4">8.5 COLLECTIONS OF 2-DIMENSIONAL GRIDS</a></li><li id="menu-1290-1" class="middle even sf-item-6 sf-depth-4 sf-no-children"><a href="../users-guide/working-with-special-data-sets/LAGRANGIAN-DATA.html" class="sf-depth-4">8.6 LAGRANGIAN DATA</a></li><li id="menu-1291-1" class="middle odd sf-item-7 sf-depth-4 sf-no-children"><a href="../users-guide/working-with-special-data-sets/SIGMA-COORDINATE-DATA.html" class="sf-depth-4">8.7 SIGMA COORDINATE DATA</a></li><li id="menu-1292-1" class="middle even sf-item-8 sf-depth-4 sf-no-children"><a href="../users-guide/working-with-special-data-sets/CURVILINEAR-COORDINATE-DATA.html" class="sf-depth-4">8.8 CURVILINEAR COORDINATE DATA</a></li><li id="menu-1293-1" class="middle odd sf-item-9 sf-depth-4 sf-no-children"><a href="../users-guide/working-with-special-data-sets/POLYGONAL-DATA.html" class="sf-depth-4">8.9 POLYGONAL DATA</a></li><li id="menu-1245-1" class="last even sf-item-10 sf-depth-4 sf-no-children"><a href="../users-guide/working-with-special-data-sets/DSG_datasets.html" class="sf-depth-4">8.10 Discrete Geometries Datasets</a></li></ul></li><li id="menu-1398-1" class="middle odd sf-item-11 sf-depth-3 sf-total-children-7 sf-parent-children-0 sf-single-children-7 menuparent"><a href="../users-guide/computing-environment.html" class="sf-depth-3 menuparent">9. Computing Environment</a><ul><li id="menu-1294-1" class="first odd sf-item-1 sf-depth-4 sf-no-children"><a href="../users-guide/computing-environment/SETTING-UP-TO-RUN-FERRET.html" class="sf-depth-4">9.1 SETTING UP TO RUN FERRET</a></li><li id="menu-1295-1" class="middle even sf-item-2 sf-depth-4 sf-no-children"><a href="../users-guide/computing-environment/FILES-AND-ENVIRONMENT-VARIABLES-USED-BY-FERRET.html" class="sf-depth-4">9.2 FILES AND ENVIRONMENT VARIABLES USED BY FERRET</a></li><li id="menu-1296-1" class="middle odd sf-item-3 sf-depth-4 sf-no-children"><a href="../users-guide/computing-environment/MEMORY-USE.html" class="sf-depth-4">9.3 MEMORY USE</a></li><li id="menu-1297-1" class="middle even sf-item-4 sf-depth-4 sf-no-children"><a href="../users-guide/computing-environment/HARD-COPY-AND-METAFILE-TRANSLATION.html" class="sf-depth-4">9.4 HARD COPY AND METAFILE TRANSLATION</a></li><li id="menu-1298-1" class="middle odd sf-item-5 sf-depth-4 sf-no-children"><a href="../users-guide/computing-environment/OUTPUT-FILE-NAMING.html" class="sf-depth-4">9.5 OUTPUT FILE NAMING</a></li><li id="menu-1299-1" class="middle even sf-item-6 sf-depth-4 sf-no-children"><a href="../users-guide/computing-environment/INPUT-FILE-NAMING.html" class="sf-depth-4">9.6 INPUT FILE NAMING</a></li><li id="menu-1300-1" class="last odd sf-item-7 sf-depth-4 sf-no-children"><a href="../users-guide/computing-environment/my_ferret_paths_template.html" class="sf-depth-4">my_ferret_paths_template</a></li></ul></li><li id="menu-1399-1" class="middle even sf-item-12 sf-depth-3 sf-total-children-4 sf-parent-children-0 sf-single-children-4 menuparent"><a href="../users-guide/converting-to-netcdf.html" class="sf-depth-3 menuparent">10. Converting to NetCDF</a><ul><li id="menu-1301-1" class="first odd sf-item-1 sf-depth-4 sf-no-children"><a href="../users-guide/converting-to-netcdf/OVERVIEW.html" class="sf-depth-4">10.1 OVERVIEW</a></li><li id="menu-1302-1" class="middle even sf-item-2 sf-depth-4 sf-no-children"><a href="../users-guide/converting-to-netcdf/SIMPLE-CONVERSIONS-USING-FERRET.html" class="sf-depth-4">10.2 SIMPLE CONVERSIONS USING FERRET</a></li><li id="menu-1303-1" class="middle odd sf-item-3 sf-depth-4 sf-no-children"><a href="../users-guide/converting-to-netcdf/WRITING-A-CONVERSION-PROGRAM.html" class="sf-depth-4">10.3 WRITING A CONVERSION PROGRAM</a></li><li id="menu-1304-1" class="last even sf-item-4 sf-depth-4 sf-no-children"><a href="../users-guide/converting-to-netcdf/CREATING-A-MULTI-FILE-NETCDF-DATA-SET.html" class="sf-depth-4">10.4 CREATING A MULTI-FILE NETCDF DATA SET</a></li></ul></li><li id="menu-1400-1" class="middle odd sf-item-13 sf-depth-3 sf-total-children-6 sf-parent-children-0 sf-single-children-6 menuparent"><a href="../users-guide/writing-external-functions.html" class="sf-depth-3 menuparent">11. Writing External Functions</a><ul><li id="menu-1305-1" class="first odd sf-item-1 sf-depth-4 sf-no-children"><a href="../users-guide/writing-external-functions/OVERVIEW.html" class="sf-depth-4">11.1 OVERVIEW</a></li><li id="menu-1306-1" class="middle even sf-item-2 sf-depth-4 sf-no-children"><a href="../users-guide/writing-external-functions/GETTING-STARTED.html" class="sf-depth-4">11.2 GETTING STARTED</a></li><li id="menu-1307-1" class="middle odd sf-item-3 sf-depth-4 sf-no-children"><a href="../users-guide/writing-external-functions/QUICK-START-EXAMPLE.html" class="sf-depth-4">11.3 QUICK START EXAMPLE</a></li><li id="menu-1308-1" class="middle even sf-item-4 sf-depth-4 sf-no-children"><a href="../users-guide/writing-external-functions/ANATOMY-OF-AN-EXTERNAL-FUNCTION.html" class="sf-depth-4">11.4 ANATOMY OF AN EXTERNAL FUNCTION</a></li><li id="menu-1309-1" class="middle odd sf-item-5 sf-depth-4 sf-no-children"><a href="../users-guide/writing-external-functions/NOTES-AND-SUGGESTIONS.html" class="sf-depth-4">11.5 NOTES AND SUGGESTIONS</a></li><li id="menu-1310-1" class="last even sf-item-6 sf-depth-4 sf-no-children"><a href="../users-guide/writing-external-functions/UTILITY-FUNCTIONS.html" class="sf-depth-4">11.6 UTILITY FUNCTIONS</a></li></ul></li><li id="menu-1166-1" class="middle even sf-item-14 sf-depth-3 sf-no-children"><a href="../users-guide/glossary/glossary.html" class="sf-depth-3">Glossary</a></li><li id="menu-1427-1" class="middle odd sf-item-15 sf-depth-3 sf-total-children-58 sf-parent-children-0 sf-single-children-58 menuparent"><a href="../users-guide/appendix-a-external-functions/appendix-a.html" class="sf-depth-3 menuparent">Appendix A: Functions</a><ul><li id="menu-1597-1" class="first odd sf-item-1 sf-depth-4 sf-no-children"><a href="../users-guide/appendix-a-external-functions/BIN_INDEX_WT.html" class="sf-depth-4">BIN_INDEX_WT</a></li><li id="menu-1430-1" class="middle even sf-item-2 sf-depth-4 sf-no-children"><a href="../users-guide/appendix-a-external-functions/COMPRESSI.html" class="sf-depth-4">COMPRESSI (and J,K,L,M,N)</a></li><li id="menu-1431-1" class="middle odd sf-item-3 sf-depth-4 sf-no-children"><a href="../users-guide/appendix-a-external-functions/COMPRESSI-BY.html" class="sf-depth-4">COMPRESSI_BY (and J,K,L,M,N)</a></li><li id="menu-1432-1" class="middle even sf-item-4 sf-depth-4 sf-no-children"><a href="../users-guide/appendix-a-external-functions/CONVOLVEI.html" class="sf-depth-4">CONVOLVEI</a></li><li id="menu-1428-1" class="middle odd sf-item-5 sf-depth-4 sf-no-children"><a href="../users-guide/appendix-a-external-functions/CURV-TO-RECT.html" class="sf-depth-4">CURV_TO_RECT</a></li><li id="menu-1429-1" class="middle even sf-item-6 sf-depth-4 sf-no-children"><a href="../users-guide/appendix-a-external-functions/CURV-TO-RECT-MAP.html" class="sf-depth-4">CURV_TO_RECT_MAP</a></li><li id="menu-1433-1" class="middle odd sf-item-7 sf-depth-4 sf-no-children"><a href="../users-guide/appendix-a-external-functions/DATE1900.html" class="sf-depth-4">DATE1900</a></li><li id="menu-1434-1" class="middle even sf-item-8 sf-depth-4 sf-no-children"><a href="../users-guide/appendix-a-external-functions/DAYS1900TOYMDHMS.html" class="sf-depth-4">DAYS1900TOYMDHMS</a></li><li id="menu-1601-1" class="middle odd sf-item-9 sf-depth-4 sf-no-children"><a href="../users-guide/appendix-a-external-functions/DOT.html" class="sf-depth-4">DOT</a></li><li id="menu-1437-1" class="middle even sf-item-10 sf-depth-4 sf-no-children"><a href="../users-guide/appendix-a-external-functions/ecat.html" class="sf-depth-4">ECAT and ECAT_STR</a></li><li id="menu-1438-1" class="middle odd sf-item-11 sf-depth-4 sf-no-children"><a href="../users-guide/appendix-a-external-functions/ELEMENT-INDEX.html" class="sf-depth-4">ELEMENT_INDEX</a></li><li id="menu-1439-1" class="middle even sf-item-12 sf-depth-4 sf-no-children"><a href="../users-guide/appendix-a-external-functions/ELEMENT-INDEX-STRING.html" class="sf-depth-4">ELEMENT_INDEX_STR</a></li><li id="menu-1440-1" class="middle odd sf-item-13 sf-depth-4 sf-no-children"><a href="../users-guide/appendix-a-external-functions/EOF-SPACE.html" class="sf-depth-4">EOF_SPACE and EOFSVD_SPACE</a></li><li id="menu-1441-1" class="middle even sf-item-14 sf-depth-4 sf-no-children"><a href="../users-guide/appendix-a-external-functions/EOF-STAT.html" class="sf-depth-4">EOF_STAT and EOFSVD_STAT</a></li><li id="menu-1442-1" class="middle odd sf-item-15 sf-depth-4 sf-no-children"><a href="../users-guide/appendix-a-external-functions/EOF-TFUNC.html" class="sf-depth-4">EOF_TFUNC and EOFSVD_TFUNC</a></li><li id="menu-1443-1" class="middle even sf-item-16 sf-depth-4 sf-no-children"><a href="../users-guide/appendix-a-external-functions/expnd_by_len.html" class="sf-depth-4">EXPND_BY_LEN and EXPND_BY_LEN_STR</a></li><li id="menu-1444-1" class="middle odd sf-item-17 sf-depth-4 sf-no-children"><a href="../users-guide/appendix-a-external-functions/expndi_by.html" class="sf-depth-4">EXPNDI_BY</a></li><li id="menu-1445-1" class="middle even sf-item-18 sf-depth-4 sf-no-children"><a href="../users-guide/appendix-a-external-functions/expndi_by_m_counts.html" class="sf-depth-4">EXPNDI_BY_M_COUNTS</a></li><li id="menu-1446-1" class="middle odd sf-item-19 sf-depth-4 sf-no-children"><a href="../users-guide/appendix-a-external-functions/expndi_by_t.html" class="sf-depth-4">EXPNDI_BY_T</a></li><li id="menu-1447-1" class="middle even sf-item-20 sf-depth-4 sf-no-children"><a href="../users-guide/appendix-a-external-functions/expndi_by_z.html" class="sf-depth-4">EXPNDI_BY_Z</a></li><li id="menu-1448-1" class="middle odd sf-item-21 sf-depth-4 sf-no-children"><a href="../users-guide/appendix-a-external-functions/expndi_by_z_counts-and-expndi_id_by_z_counts.html" class="sf-depth-4">EXPNDI_BY_Z_COUNTS</a></li><li id="menu-1449-1" class="middle even sf-item-22 sf-depth-4 sf-no-children"><a href="../users-guide/appendix-a-external-functions/expndi_id_by_z_counts.html" class="sf-depth-4">EXPNDI_ID_BY_Z_COUNTS</a></li><li id="menu-1436-1" class="middle odd sf-item-23 sf-depth-4 sf-no-children"><a href="../users-guide/appendix-a-external-functions/fcat.html" class="sf-depth-4">FCAT</a></li><li id="menu-1435-1" class="middle even sf-item-24 sf-depth-4 sf-no-children"><a href="../users-guide/appendix-a-external-functions/fc_isubset.html" class="sf-depth-4">FC_ISUBSET</a></li><li id="menu-1450-1" class="middle odd sf-item-25 sf-depth-4 sf-no-children"><a href="../users-guide/appendix-a-external-functions/FFT-IM.html" class="sf-depth-4">FFT_IM</a></li><li id="menu-1451-1" class="middle even sf-item-26 sf-depth-4 sf-no-children"><a href="../users-guide/appendix-a-external-functions/FFT-INVERSE.html" class="sf-depth-4">FFT_INVERSE</a></li><li id="menu-1453-1" class="middle odd sf-item-27 sf-depth-4 sf-no-children"><a href="../users-guide/appendix-a-external-functions/FFT-RE.html" class="sf-depth-4">FFT_RE</a></li><li id="menu-1452-1" class="middle even sf-item-28 sf-depth-4 sf-no-children"><a href="../users-guide/appendix-a-external-functions/fill_xy.html" class="sf-depth-4">FILL_XY</a></li><li id="menu-1454-1" class="middle odd sf-item-29 sf-depth-4 sf-no-children"><a href="../users-guide/appendix-a-external-functions/FINDHI.html" class="sf-depth-4">FINDHI</a></li><li id="menu-1455-1" class="middle even sf-item-30 sf-depth-4 sf-no-children"><a href="../users-guide/appendix-a-external-functions/FINDLO.html" class="sf-depth-4">FINDLO</a></li><li id="menu-1456-1" class="middle odd sf-item-31 sf-depth-4 sf-no-children"><a href="../users-guide/appendix-a-external-functions/IS-ELEMENT-OF.html" class="sf-depth-4">IS_ELEMENT_OF</a></li><li id="menu-1458-1" class="middle even sf-item-32 sf-depth-4 sf-no-children"><a href="../users-guide/appendix-a-external-functions/LANCZOS.html" class="sf-depth-4">LANCZOS</a></li><li id="menu-1459-1" class="middle odd sf-item-33 sf-depth-4 sf-no-children"><a href="../users-guide/appendix-a-external-functions/lon_lat_time_string.html" class="sf-depth-4">LON_LAT_TIME_STRING</a></li><li id="menu-1460-1" class="middle even sf-item-34 sf-depth-4 sf-no-children"><a href="../users-guide/appendix-a-external-functions/LSL-LOWPASS.html" class="sf-depth-4">LSL_LOWPASS</a></li><li id="menu-1461-1" class="middle odd sf-item-35 sf-depth-4 sf-no-children"><a href="../users-guide/appendix-a-external-functions/MINUTES24.html" class="sf-depth-4">MINUTES24</a></li><li id="menu-1462-1" class="middle even sf-item-36 sf-depth-4 sf-no-children"><a href="../users-guide/appendix-a-external-functions/NCO.html" class="sf-depth-4">NCO</a></li><li id="menu-1463-1" class="middle odd sf-item-37 sf-depth-4 sf-no-children"><a href="../users-guide/appendix-a-external-functions/NCO_ATTR.html" class="sf-depth-4">NCO_ATTR</a></li><li id="menu-1464-1" class="middle even sf-item-38 sf-depth-4 sf-no-children"><a href="../users-guide/appendix-a-external-functions/pt_in_poly.html" class="sf-depth-4">PT_IN_POLY</a></li><li id="menu-1465-1" class="middle odd sf-item-39 sf-depth-4 sf-no-children"><a href="../users-guide/appendix-a-external-functions/RECT-TO-CURV.html" class="sf-depth-4">RECT_TO_CURV</a></li><li id="menu-1466-1" class="middle even sf-item-40 sf-depth-4 sf-no-children"><a href="../users-guide/appendix-a-external-functions/samplexy_curv_avg.html" class="sf-depth-4">SAMPLEXY_CURV_AVG</a></li><li id="menu-1467-1" class="middle odd sf-item-41 sf-depth-4 sf-no-children"><a href="../users-guide/appendix-a-external-functions/samplexy_curv_nrst.html" class="sf-depth-4">SAMPLEXY_CURV_NRST</a></li><li id="menu-1468-1" class="middle even sf-item-42 sf-depth-4 sf-no-children"><a href="../users-guide/appendix-a-external-functions/samplexyt.html" class="sf-depth-4">SAMPLEXYT</a></li><li id="menu-1469-1" class="middle odd sf-item-43 sf-depth-4 sf-no-children"><a href="../users-guide/appendix-a-external-functions/samplexz.html" class="sf-depth-4">SAMPLEXZ</a></li><li id="menu-1470-1" class="middle even sf-item-44 sf-depth-4 sf-no-children"><a href="../users-guide/appendix-a-external-functions/sampleyz.html" class="sf-depth-4">SAMPLEYZ</a></li><li id="menu-1472-1" class="middle odd sf-item-45 sf-depth-4 sf-no-children"><a href="../users-guide/appendix-a-external-functions/scat2grid_bin_xy.html" class="sf-depth-4">SCAT2GRID_BIN_XY and SCAT2GRID_BIN_XYT</a></li><li id="menu-1473-1" class="middle even sf-item-46 sf-depth-4 sf-no-children"><a href="../users-guide/appendix-a-external-functions/scatgrid_nbin_xyt.html" class="sf-depth-4">SCAT2GRID_NBIN_XY and SCAT2GRID_NBIN_XYT</a></li><li id="menu-1471-1" class="middle odd sf-item-47 sf-depth-4 sf-no-children"><a href="../users-guide/appendix-a-external-functions/scat2grid_nobs_xy.html" class="sf-depth-4">SCAT2GRID_NOBS_XY</a></li><li id="menu-1474-1" class="middle even sf-item-48 sf-depth-4 sf-no-children"><a href="../users-guide/appendix-a-external-functions/separate.html" class="sf-depth-4">SEPARATE</a></li><li id="menu-1475-1" class="middle odd sf-item-49 sf-depth-4 sf-no-children"><a href="../users-guide/appendix-a-external-functions/tax_datestring.html" class="sf-depth-4">TAX_DATESTRING</a></li><li id="menu-1477-1" class="middle even sf-item-50 sf-depth-4 sf-no-children"><a href="../users-guide/appendix-a-external-functions/TCAT.html" class="sf-depth-4">TCAT</a></li><li id="menu-1476-1" class="middle odd sf-item-51 sf-depth-4 sf-no-children"><a href="../users-guide/appendix-a-external-functions/test_opendap.html" class="sf-depth-4">TEST_OPENDAP</a></li><li id="menu-1599-1" class="middle even sf-item-52 sf-depth-4 sf-no-children"><a href="../users-guide/appendix-a-external-functions/TRANSPOSE.html" class="sf-depth-4">TRANSPOSE</a></li><li id="menu-1478-1" class="middle odd sf-item-53 sf-depth-4 sf-no-children"><a href="../users-guide/appendix-a-external-functions/WRITEV5D.html" class="sf-depth-4">WRITEV5D</a></li><li id="menu-1481-1" class="middle even sf-item-54 sf-depth-4 sf-no-children"><a href="../users-guide/appendix-a-external-functions/XCAT.html" class="sf-depth-4">XCAT</a></li><li id="menu-1482-1" class="middle odd sf-item-55 sf-depth-4 sf-no-children"><a href="../users-guide/appendix-a-external-functions/YCAT.html" class="sf-depth-4">YCAT</a></li><li id="menu-1479-1" class="middle even sf-item-56 sf-depth-4 sf-no-children"><a href="../users-guide/appendix-a-external-functions/ZAXREPLACE-AVG.html" class="sf-depth-4">ZAXREPLACE_AVG</a></li><li id="menu-1480-1" class="middle odd sf-item-57 sf-depth-4 sf-no-children"><a href="../users-guide/appendix-a-external-functions/ZAXREPLACE-BIN.html" class="sf-depth-4">ZAXREPLACE_BIN</a></li><li id="menu-1483-1" class="last even sf-item-58 sf-depth-4 sf-no-children"><a href="../users-guide/appendix-a-external-functions/ZCAT.html" class="sf-depth-4">ZCAT</a></li></ul></li><li id="menu-1168-1" class="middle even sf-item-16 sf-depth-3 sf-total-children-9 sf-parent-children-1 sf-single-children-8 menuparent"><a href="../users-guide/appendix-b-pplus-guide/appendix-b-pplus-guide.html" class="sf-depth-3 menuparent">Appendix B: PPLUS Guide</a><ul><li id="menu-1311-1" class="first odd sf-item-1 sf-depth-4 sf-no-children"><a href="../users-guide/appendix-b-pplus-guide/INTRODUCTION.html" class="sf-depth-4">INTRODUCTION</a></li><li id="menu-1312-1" class="middle even sf-item-2 sf-depth-4 sf-no-children"><a href="../users-guide/appendix-b-pplus-guide/GETTING-STARTED.html" class="sf-depth-4">GETTING STARTED</a></li><li id="menu-1313-1" class="middle odd sf-item-3 sf-depth-4 sf-no-children"><a href="../users-guide/appendix-b-pplus-guide/COMMAND-FORMAT.html" class="sf-depth-4">COMMAND FORMAT</a></li><li id="menu-1314-1" class="middle even sf-item-4 sf-depth-4 sf-no-children"><a href="../users-guide/appendix-b-pplus-guide/COMMAND-SYNOPSIS.html" class="sf-depth-4">COMMAND SYNOPSIS</a></li><li id="menu-1315-1" class="middle odd sf-item-5 sf-depth-4 sf-no-children"><a href="../users-guide/appendix-b-pplus-guide/BEGINNERS-GUIDE.html" class="sf-depth-4">BEGINNERS GUIDE</a></li><li id="menu-1316-1" class="middle even sf-item-6 sf-depth-4 sf-no-children"><a href="../users-guide/appendix-b-pplus-guide/ROUTING-PLOT-FILES.html" class="sf-depth-4">ROUTING PLOT FILES</a></li><li id="menu-1317-1" class="middle odd sf-item-7 sf-depth-4 sf-total-children-2 sf-parent-children-0 sf-single-children-2 menuparent"><a href="../users-guide/appendix-b-pplus-guide/PPLUS-COMMAND-FILES.html" class="sf-depth-4 menuparent">PPLUS COMMAND FILES</a><ul><li id="menu-1324-1" class="first odd sf-item-1 sf-depth-5 sf-no-children"><a href="../users-guide/ferret-fonts/list-of-ferret-fonts.html" class="sf-depth-5">List of Ferret Symbol Fonts</a></li><li id="menu-1325-1" class="last even sf-item-2 sf-depth-5 sf-no-children"><a href="../users-guide/ferret-fonts/list-of-ferret-character-fonts.html" class="sf-depth-5">List of Ferret/PPLUS Character fonts</a></li></ul></li><li id="menu-1318-1" class="middle even sf-item-8 sf-depth-4 sf-no-children"><a href="../users-guide/appendix-b-pplus-guide/PLOT5-PPLUS-DIFFERENCES.html" class="sf-depth-4">PLOT5, PPLUS DIFFERENCES</a></li><li id="menu-1319-1" class="last odd sf-item-9 sf-depth-4 sf-no-children"><a href="../users-guide/appendix-b-pplus-guide/COMMAND-DESCRIPTION.html" class="sf-depth-4">COMMAND DESCRIPTION</a></li></ul></li><li id="menu-1169-1" class="last odd sf-item-17 sf-depth-3 sf-total-children-4 sf-parent-children-0 sf-single-children-4 menuparent"><a href="../users-guide/appendix-c-ferret-specific-pplus-enhancements/appendix-c-ferret-specific-pplus-enhancements.html" class="sf-depth-3 menuparent">Appendix C: Ferret-Specific PPLUS Enhancements</a><ul><li id="menu-1320-1" class="first odd sf-item-1 sf-depth-4 sf-no-children"><a href="../users-guide/appendix-c-ferret-specific-pplus-enhancements/PLOTPLUS-HISTORY-EVOLUTION.html" class="sf-depth-4">PLOTPLUS HISTORY, EVOLUTION</a></li><li id="menu-1321-1" class="middle even sf-item-2 sf-depth-4 sf-no-children"><a href="../users-guide/appendix-c-ferret-specific-pplus-enhancements/ENHANCED-COMMANDS-DESCRIPTION.html" class="sf-depth-4">ENHANCED COMMANDS DESCRIPTION</a></li><li id="menu-1322-1" class="middle odd sf-item-3 sf-depth-4 sf-no-children"><a href="../users-guide/appendix-c-ferret-specific-pplus-enhancements/GKS-LINE-BUNDLES.html" class="sf-depth-4">GKS LINE BUNDLES</a></li><li id="menu-1323-1" class="last even sf-item-4 sf-depth-4 sf-no-children"><a href="../users-guide/appendix-c-ferret-specific-pplus-enhancements/HARD-COPY.html" class="sf-depth-4">HARD COPY</a></li></ul></li></ul></li><li id="menu-1336-1" class="middle odd sf-item-3 sf-depth-2 sf-no-children"><a href="../all-release-notes.html" class="sf-depth-2">Previous Release Notes</a></li><li id="menu-1339-1" class="middle even sf-item-4 sf-depth-2 sf-total-children-15 sf-parent-children-1 sf-single-children-14 menuparent"><a href="../ferret-tutorials.html" class="sf-depth-2 menuparent">Tutorials and Demos</a><ul><li id="menu-1338-1" class="first odd sf-item-1 sf-depth-3 sf-no-children"><a href="../ferret-tutorial-script.html" class="sf-depth-3">Ferret Tour</a></li><li id="menu-1618-1" class="middle even sf-item-2 sf-depth-3 sf-no-children"><a href="../dsg-files-discrete-sampling-geometries-demo.html" class="sf-depth-3">DSG files: Discrete Sampling Geometries Demo</a></li><li id="menu-1337-1" class="middle odd sf-item-3 sf-depth-3 sf-total-children-5 sf-parent-children-0 sf-single-children-5 menuparent"><a href="../ferret-tutorials.html" class="sf-depth-3 menuparent">External Function Examples</a><ul><li id="menu-1343-1" class="first odd sf-item-1 sf-depth-4 sf-no-children"><a href="../sorting-demo.html" class="sf-depth-4">Ferret sorting demo (1)</a></li><li id="menu-1591-1" class="middle even sf-item-2 sf-depth-4 sf-no-children"><a href="../ferret-sorting-demo.html" class="sf-depth-4">Ferret sorting demo (2)</a></li><li id="menu-1344-1" class="middle odd sf-item-3 sf-depth-4 sf-no-children"><a href="../how-to-use-ferret-external-functions-for-computing-ffts.html" class="sf-depth-4">Fast Fourier Transforms demo</a></li><li id="menu-1345-1" class="middle even sf-item-4 sf-depth-4 sf-no-children"><a href="../ferret-eof-demo.html" class="sf-depth-4">Empirical Orthogonal Functions demo</a></li><li id="menu-1346-1" class="last odd sf-item-5 sf-depth-4 sf-no-children"><a href="../ferret-objective-analysis.html" class="sf-depth-4">Ferret objective analysis demo</a></li></ul></li><li id="menu-1353-1" class="middle even sf-item-4 sf-depth-3 sf-no-children"><a href="../ferret-palette-demo.html" class="sf-depth-3">Ferret Palette Demo</a></li><li id="menu-1350-1" class="middle odd sf-item-5 sf-depth-3 sf-no-children"><a href="../ferret-map-projections-demo.html" class="sf-depth-3">Map projections</a></li><li id="menu-1354-1" class="middle even sf-item-6 sf-depth-3 sf-no-children"><a href="../ferret-polygon-vector-demo.html" class="sf-depth-3">Ferret polygon vector demo</a></li><li id="menu-1355-1" class="middle odd sf-item-7 sf-depth-3 sf-no-children"><a href="../ferret-graticules-demo.html" class="sf-depth-3">Ferret Graticules demo</a></li><li id="menu-1352-1" class="middle even sf-item-8 sf-depth-3 sf-no-children"><a href="../ferret-polytube-demo.html" class="sf-depth-3">Ferret Polytube Demo</a></li><li id="menu-1351-1" class="middle odd sf-item-9 sf-depth-3 sf-no-children"><a href="../ferret-polymark-demo.html" class="sf-depth-3">Ferret Polymark Demo</a></li><li id="menu-1349-1" class="middle even sf-item-10 sf-depth-3 sf-no-children"><a href="../ferret-constant-array-demo.html" class="sf-depth-3">Ferret Constant-Array demo</a></li><li id="menu-1356-1" class="middle odd sf-item-11 sf-depth-3 sf-no-children"><a href="../ferret-land_detail-demo.html" class="sf-depth-3">Ferret land_detail demo</a></li><li id="menu-1340-1" class="middle even sf-item-12 sf-depth-3 sf-no-children"><a href="../coads-tour.html" class="sf-depth-3">COADS Tour</a></li><li id="menu-1341-1" class="middle odd sf-item-13 sf-depth-3 sf-no-children"><a href="../levitus-tour.html" class="sf-depth-3">Levitus Tour</a></li><li id="menu-1342-1" class="middle even sf-item-14 sf-depth-3 sf-no-children"><a href="../how-to-use-ferret-and-opendap-to-access-and-analyze-remote-data-1.html" class="sf-depth-3">Use OPeNDAP</a></li><li id="menu-1348-1" class="last odd sf-item-15 sf-depth-3 sf-no-children"><a href="../ferret-binary-read-demo.html" class="sf-depth-3">Ferret binary read demo</a></li></ul></li><li id="menu-1333-1" class="active-trail middle odd sf-item-5 sf-depth-2 sf-total-children-13 sf-parent-children-1 sf-single-children-12 menuparent"><a href="../pyferret.html" class="sf-depth-2 menuparent">PyFerret</a><ul><li id="menu-1426-1" class="first odd sf-item-1 sf-depth-3 sf-total-children-4 sf-parent-children-0 sf-single-children-4 menuparent"><a href="downloads.html" class="sf-depth-3 menuparent">PyFerret Downloads and Install</a><ul><li id="menu-1374-1" class="first odd sf-item-1 sf-depth-4 sf-no-children"><a href="requirements.html" class="sf-depth-4">PyFerret requirements</a></li><li id="menu-1375-1" class="middle even sf-item-2 sf-depth-4 sf-no-children"><a href="https://ferret.pmel.noaa.gov/Ferret/downloads/pyferret" class="sf-depth-4">PyFerret Downloads</a></li><li id="menu-1377-1" class="middle odd sf-item-3 sf-depth-4 sf-no-children"><a href="build-install.html" class="sf-depth-4">Installing or Building PyFerret</a></li><li id="menu-1376-1" class="last even sf-item-4 sf-depth-4 sf-no-children"><a href="known-issues.html" class="sf-depth-4">PyFerret Known Issues and Release Notes</a></li></ul></li><li id="menu-1359-1" class="middle even sf-item-2 sf-depth-3 sf-no-children"><a href="what-is-pyferret.html" class="sf-depth-3">What is PyFerret?</a></li><li id="menu-1360-1" class="middle odd sf-item-3 sf-depth-3 sf-no-children"><a href="why-use-pyferret.html" class="sf-depth-3">Why use PyFerret?</a></li><li id="menu-1361-1" class="middle even sf-item-4 sf-depth-3 sf-no-children"><a href="example-sessions-ferret.html" class="sf-depth-3">PyFerret for the Ferret user</a></li><li id="menu-1362-1" class="middle odd sf-item-5 sf-depth-3 sf-no-children"><a href="pyferret-quick-start-notes.html" class="sf-depth-3">PyFerret command syntax: quick-start notes</a></li><li id="menu-1364-1" class="middle even sf-item-6 sf-depth-3 sf-no-children"><a href="example-sessions-python.html" class="sf-depth-3">PyFerret for the Python user</a></li><li id="menu-1365-1" class="middle odd sf-item-7 sf-depth-3 sf-no-children"><a href="graphics.html" class="sf-depth-3">Graphics in PyFerret  </a></li><li id="menu-1366-1" class="active-trail middle even sf-item-8 sf-depth-3 sf-no-children"><a href="ferret-functionality.html" class="sf-depth-3 active">New Ferret functionality</a></li><li id="menu-1367-1" class="middle odd sf-item-9 sf-depth-3 sf-no-children"><a href="python-functions.html" class="sf-depth-3">PyFerret Python functions and constants</a></li><li id="menu-1368-1" class="middle even sf-item-10 sf-depth-3 sf-no-children"><a href="pyferret-python-objects.html" class="sf-depth-3">PyFerret Python objects and methods</a></li><li id="menu-1369-1" class="middle odd sf-item-11 sf-depth-3 sf-no-children"><a href="pyefs.html" class="sf-depth-3">Ferret external functions in Python</a></li><li id="menu-1371-1" class="middle even sf-item-12 sf-depth-3 sf-no-children"><a href="fortranefs.html" class="sf-depth-3">Ferret Fortran external functions</a></li><li id="menu-1373-1" class="last odd sf-item-13 sf-depth-3 sf-no-children"><a href="data-dictionaries.html" class="sf-depth-3">PyFerret metadata-and-data dictionaries</a></li></ul></li><li id="menu-1147-1" class="middle even sf-item-6 sf-depth-2 sf-total-children-3 sf-parent-children-0 sf-single-children-3 menuparent"><a href="../opendap/opendap-usage-in-ferret.html" class="sf-depth-2 menuparent">OPeNDAP</a><ul><li id="menu-1590-1" class="first odd sf-item-1 sf-depth-3 sf-no-children"><a href="../opendap/opendap-usage-in-ferret.html" class="sf-depth-3">OPeNDAP usage in Ferret</a></li><li id="menu-1489-1" class="middle even sf-item-2 sf-depth-3 sf-no-children"><a href="../how-to-use-ferret-and-opendap-to-access-and-analyze-remote-data-1.html" class="sf-depth-3">Use OPeNDAP Demo</a></li><li id="menu-1491-1" class="last odd sf-item-3 sf-depth-3 sf-no-children"><a href="../users-guide/appendix-a-external-functions/test_opendap.html" class="sf-depth-3">Test OPeNDAP</a></li></ul></li><li id="menu-1592-1" class="middle odd sf-item-7 sf-depth-2 sf-no-children"><a href="../ferret-publications.html" class="sf-depth-2">Ferret Publications</a></li><li id="menu-1389-1" class="last even sf-item-8 sf-depth-2 sf-no-children"><a href="../acknowledging-ferret.html" class="sf-depth-2">Acknowledging Ferret</a></li></ul>    </div>
+  </div>
+</div>  </div>
+</aside><div class="grid-9 region region-content equal-height-element" id="region-content">
+  <div class="region-inner region-content-inner">
+    <a id="main-content"></a>
+                <h1 class="title" id="page-title">Ferret functionality via PyFerret</h1>
+                        <div class="block block-system block-main block-system-main odd block-without-title" id="block-system-main">
+  <div class="block-inner clearfix">
+                
+    <div class="content clearfix">
+      <article about="/Ferret/documentation/pyferret/ferret-functionality" typeof="sioc:Item foaf:Document" class="node node-documentation-page node-promoted node-published node-not-sticky author-willa odd clearfix" id="node-documentation-page-739">
+    
+  <!-- add the following line to print out updated date -->
+  <div class="modified-date">Last modified: Thu, 11/05/2020 - 09:43</div>
+  <!-- add the following line to print out the page description -->
+  
+<div class="field field-name-field-page-description field-type-text field-label-hidden">
+    <div class="field-items">
+          <div class="field-item even" property="schema:description">Additional options from the yes? command line: commands, and functions available in PyFerret</div>
+      </div>
+</div>
+  
+  <div class="content clearfix">
+                
+<div class="field field-name-body field-type-text-with-summary field-label-hidden">
+    <div class="field-items">
+          <div class="field-item even" property="content:encoded"><p><a href="graphics/index.html">Previous</a> <a href="python-functions/index.html">Next</a></p>
+<p>The following describes the new options to existing Ferret commands, additional <a href="#PYFERRET_NEW_FUNCTIONS">Ferret commands</a>, <a href="#PYFERRET_REGRID_FUNCTIONS">regridding functions</a>, <a href="#PYFERRET_SHAPEFILE_FUNCTIONS">shapefile functions</a>, and <a href="#PYFERRET_STATS_FUNCTIONS">statistical functions</a> found in PyFerret.</p>
+<h3>Additional options to existing Ferret commands</h3>
+<p>The following new options have been added to existing Ferret commands and are available in PyFerret only from the PyFerret "yes?" command line:</p>
+<dl><dt>SET WINDOW</dt>
+<dd>
+<dl><dt>/QUALITY={high,draft}</dt>
+<dd>Specifies the quality of displayed images. A warning will be issued and this option will be ignored if the -nodisplay (or -unmapped or -gif) command-line option to pyferret was given. High-quality is required to generate PDF or PostScript images. Draft quality is required to correctly handle on-the-fly animation.</dd>
+<dt>/ANTIALIAS | /NOANTIALIAS</dt>
+<dd>Turns on or off anti-aliasing is subsequent drawing commands. Only one should be specified; if both are given, a warning will be issued and /NOANTIALIAS will be ignored.</dd>
+<dt>/COLOR=...</dt>
+<dd>Specifies the background color for the image. The color can be a pen number, a color name, a (%red, %green, %blue) triplet, or a (%red, %green, %blue, %opacity) quartet, where each of the percent values is in [0,100].</dd>
+<dt>/OPACITY=n</dt>
+<dd>Specifies the opacity for the background color. Overrides any opacity specified in /COLOR. Primarily used for specifying an opacity of a named color, or setting a transparent background.</dd>
+<dt>/THICKEN=f</dt>
+<dd>Universal line thickness scaling factor. This floating point value is particularly useful for modifying the default line thicknesses.</dd>
+<dt>/XINCHES=f /YINCHES=f</dt>
+<dd>Specifies the values for PPL$WIDTH and PPL$HEIGHT, the inch size of the "canvas" for the plot. The default values should by used by most users. While this is the default size when saving vector images (PDF, PS, SVG), one should normally use the /XINCHES or /YINCHES option to the FRAME command to scale the plot to the desired size for vector images.</dd>
+<dt>/XPIXELS=n /YPIXELS=n</dt>
+<dd>Specifies the size, in pixels, of the displayed plot. This is also the default size of raster images (PNG, JPEG) saved using the FRAME command. The displayed plot, including line thickness, is scaled to the specified size; use the /THICKEN option to scale line thickness as desired.</dd>
+<dt>/TEXTPROM=f</dt>
+<dd>Universal scaling factor for text size. This floating point value is particularly useful for modifying the default text sizes.</dd>
+<dt>/WMARK=... /WMXLOC=f /WMYLOC=f /WMOPACITY=f /WMSCALE=f</dt>
+<dd><em>This capability is in development and may change in future releases.</em></dd>
+<dd>Specifies the file containing the image of the watermark to overlay on top of the plot. /WMXLOC &amp; /WMYLOC together specify the location of the image's upper right corner over the plot in terms of pixels. /WMOPACITY specifies the opacity of the image to overlay as a percentage independently of any other opacity values. /WMSCALE specifies the scale of the vertical and horizontal dimensions of the image as a ratio of the original image and preserves the original aspect ratio.</dd>
+</dl></dd>
+<dt> </dt>
+<dt>Size options to FRAME</dt>
+<dd>The pixel size of saved raster images (PNG, JPEG) can be specified using either the /XPIXEL or /YPIXEL (but not both) option to the FRAME Ferret command. The inch size of saved vector images (PS, PDF, SVG) can be specified using either /XINCHES or /YINCHES (but not both) option to the FRAME Ferret command. When saving the plot, the image is scaled, maintaining the aspect ratio, so that the specified size is obtained.</dd>
+<dt>/COLOR option to CONTOUR, PLOT, POLYGON, VECTOR</dt>
+<dd>Colors can now be specified using a (%red, %green, %blue triplet) or a (%red, %green, %blue, %opacity) quartet, where each of the percent values is in [0,100].</dd>
+<dt>/OPACITY option to CONTOUR (FILL), PLOT, POLYGON, SHADE, VECTOR</dt>
+<dd>Specifies the percent opacity (0 = transparent, 100 = opaque) of any colors used, overriding any color opacities given. Particularly useful for given setting an opacity for a named color or a color palette.</dd>
+<dt>Color palettes for FILL and SHADE</dt>
+<dd>Colors in color palette files can now include a percent opacity after the red, green, and blue percents. Colors without a percent opacity will be opaque (100% opacity).</dd>
+<dt>/THICK option to CONTOUR, PLOT, VECTOR</dt>
+<dd>Line thickness can now be any floating point value, and gives the line thickness in points (1/72 inches). The scaling factor in SET WINDOW /THICKEN=f is applied to the specified value.</dd>
+</dl><p>
+<a name="PYFERRET_NEW_FUNCTIONS" id="PYFERRET_NEW_FUNCTIONS"></a></p>
+<h3>Ferret commands available from the PyFerret command line</h3>
+<p>The following commands have been added to Ferret when running PyFerret from the "yes?" command-line prompt:</p>
+<dl><dt>DEFINE PYFUNC [ /NAME=<i>alias</i> ] <i>module.name</i></dt>
+<dd>Creates an external function using the Python module given by <i>module.name</i>. If <i>/NAME</i> is given, the name of the function will the the name given by <i>alias</i>; otherwise, the name of the functions will be the name of the module.</dd>
+<dt>EXIT /TOPYTHON</dt>
+<dd>Exits the Ferret command-line interface and returns to the Python interface. To return to the Ferret command-line interface, enter <i>pyferret.run()</i> at the Python prompt.</dd>
+<dt>CANCEL PYVAR [ <i>pyvar_name</i> | /ALL ]</dt>
+<dd>Deletes the Python variable given by <i>pyvar_name</i>, or all Python variables present if <i>/ALL</i> is given instead. Python variables are variables added to Ferret datasets using the <i>pyferret.put</i> or <i>pyferret.putdata</i> functions.</dd>
+</dl><p>
+<a name="PYFERRET_REGRID_FUNCTIONS" id="PYFERRET_REGRID_FUNCTIONS"></a></p>
+<h3>Additional regridding functions</h3>
+<p>These functions are currently under development and may not be available on all systems. They use the ESMP library and will not install if it is not present.</p>
+<p>The following regridding functions have been added to Ferret when running PyFerret from the "yes?" command line. These regridding functions return data values on a standard Ferret grid that closely approximate the data values given on the curvilinear grid. These are Ferret external functions written in Python, and make use of the ESMP Python module that uses ESMF functionality for regridding. To build and install ESMP/ESMF, see: <a href="http://earthsystemcog.org/projects/esmp/">http://earthsystemcog.org/projects/esmp/</a></p>
+<dl><dt>CURV2RECT(CurvData, CurvCenterLons, CurvCenterLats, CurvCornerLons, CurvCornerLats, TemplateRectVar, Method)</dt>
+<dd>Regrids curvilinear data to a standard Ferret grid. A brief list of the function arguments are given below, followed by more detailed descriptions of each argument.
+<ul><li><b>CurvData</b>: curvilinear X,Y data positioned at centers</li>
+<li><b>CurvCenterLons</b>: curvilinear center longitudes on an X,Y grid</li>
+<li><b>CurvCenterLats</b>: curvilinear center latitudes on an X,Y grid</li>
+<li><b>CurvCornerLons</b>: curvilinear corner longitudes on an X,Y (maybe Z) grid</li>
+<li><b>CurvCornerLats</b>: curvilinear corner latitudes on an X,Y (maybe Z) grid</li>
+<li><b>TemplateRectVar</b>: template variable on the desired rectilinear grid</li>
+<li><b>Method</b>: regridding method; one of "BILINEAR", "PATCH", or "CONSERVE"</li>
+</ul><p>	The data in CurvData is given on a curvilinear coordinate system where the longitude and latitude for each data point is specified by other arguments. Locations of undefined curvilinear data values will be ignored in the regridding process.<br />
+	The longitudes and latitudes of the "center" points, where the data values are located, can be specified by the two-dimension arrays CurvCenterLons and CurvCenterLats. The data point CurvData(i,j,k,l,m,n) is located at longitude CurvCenterLons(i,j) and latitude CurvCenterLats(i,j).<br />
+	Alternatively, or additionally, the corners of the curvilinear cell quadrilaterals can be specified by the two-dimensional or three-dimensional arrays CurvCornerLons and CurvCornerLats. If these corner arrays are two-dimensional, the number of points on their X and Y axes must be one more than that of CurvData. The data point CurvData(i,j,k,l,m,n) is positioned in the quadrilateral formed by CurvCornerLons longitudes and CurvCornerLats latitudes (i,j), (i+1,j), (i+1,j+1), and (i,j+1).<br />
+	If these corner arrays are three-dimensional, the number of points on their X and Y axes must be the same as CurvData, and the Z axis must have four points. The data point CurvData(i,j,k,l,m,n) is positioned in the quadrilateral formed by CurvCornerLons longitudes and CurvCornerLats latitudes (i,j,1), (i,j,2), (i,j,3), and (i,j,4). These corner points must overlap such that corner point (i,j,3) is the same as (i+1,j+1,1). Also, corner points (i,j,2) must be the same as (i+1,j,1) and (i,j,4) must be the same as (i,j+1,1), or corner points (i,j,2) must be the same as (i,j+1,1) and (i,j,4) must be the same as (i+1,j,1).<br />
+	If you only want to specify center points, CurvCornerLons and CurvCornerLats should both be given as a single-point array {0.0}. If you only want to specify corner points, CurvCenterLons and CurvCenterLats should both be given as a single-point array {0.0}. If only corner points are given, the data will be positioned at the centroid (computed using unweighted coordinates) of each curvilinear quadrilateral.<br />
+	TemplateRectVar is a variable specifying the grid, as well as the undefined points, for the desired variable returned by this function. The Z, T, E, and F axes of TemplateRectVar and CurvData must be the same. Data values at undefined data locations in TemplateRectVar will not be estimated in the regridding process and will be undefined in the returned variable.<br />
+	The name of the method to use to perform the regridding is given by the Method argument. To perform conservative regridding, specified by the "CONSERVE" method name, corner points must be specified in CurvCornerLons and CurvCornerLats.</p></dd>
+<dt>CURV3SRECT(CurvData, CurvLons, CurvLats, CurvBaths, CurvZetas, TemplateRectVar, Method)</dt>
+<dd>Regrids curvilinear longitude, latitude, and sigma depths to a standard Ferret grid; zeta specifies ocean swell at a given location and time. A brief list of the function arguments are given below, followed by more detailed descriptions of each argument.
+<ul><li><b>CurvData</b>: curvilinear X,Y,Z,[T,E,F] data where Z is sigma values</li>
+<li><b>CurvLons</b>: longitudes of curvilinear data on an X,Y grid</li>
+<li><b>CurvLats</b>: latitudes of curvilinear data on an X,Y grid</li>
+<li><b>CurvBaths</b>: bathymetry (as depths) of curvilinear data on an X,Y grid</li>
+<li><b>CurvZetas</b>: water surface elevations of curvilinear data on an X,Y,[T] grid (optional)</li>
+<li><b>TemplateRectVar</b>: template variable on the desired rectilinear X,Y,Z,[T,E,F] grid where Z is depths</li>
+<li><b>Method</b>: regridding method; either "BILINEAR" or "PATCH"</li>
+</ul><p>	The data in CurvData is given on a curvilinear coordinate system where the longitude, latitude, and depth for each data point is specified by other arguments. Locations of undefined curvilinear data values will be ignored in the regridding process.<br />
+	The longitudes and latitudes of the "center" points, where the data values are located, are specified by the two-dimension arrays CurvLons and CurvLats. The data point CurvData(i,j,k,l,m,n) is located at longitude CurvCenterLons(i,j) and latitude CurvCenterLats(i,j); thus do not change with depth or time.<br />
+	The sigma Z axis of CurvData is unitless and ranges from zero to one, specifying the depth of the data point as a fraction of the total ocean depth at that location and time. Thus, the depth of CurvData(i,j,k,l,m,n) is given by Z(k) * (CurvBaths(i,j) + CurvZetas(i,j,,l)) - CurvZetas(i,j,,l). Units of CurvBaths and CurvZetas should be meters, and CurvZetas must have the same time (T) axis as CurvData. If you do not want to include a zeta value, CurvZeta should both be given as a single-point array {0.0}.<br />
+	TemplateRectVar is a variable specifying the grid, as well as the undefined points, for the desired variable returned by this function. The T, E, and F axes of TemplateRectVar and CurvData must be the same. Data values at undefined data locations in TemplateRectVar will not be estimated in the regridding process and will be undefined in the returned variable.<br />
+	The name of the method to use to perform the regridding is given by the Method argument. Note that the patch method is computationally much more intensive. Also, the bilinear method can be sensitive to irregularities or rapidly changing values, such as those that may occur near deep ocean islands.</p></dd>
+</dl><p>
+<a name="PYFERRET_SHAPEFILE_FUNCTIONS" id="PYFERRET_SHAPEFILE_FUNCTIONS"></a></p>
+<h3>Shapefile functions</h3>
+<p>The following functions supporting shapefiles have been added to Ferret, when running PyFerret from the "yes? command line. These are Ferret external functions written in Python, and make use of the PyShp Python module available from <a href="http://code.google.com/p/pyshp/">http://code.google.com/p/pyshp/</a></p>
+<p>There is more discussion and a short example in the FAQ, <strong><a href="https://ferret.pmel.noaa.gov/Ferret/faq/using_shapefiles_pyferret">Using Shapefiles in PyFerret</a></strong></p>
+<dl><dt> </dt>
+<dt>SHAPEFILE_READXY(SHAPEFILE, MAXPTS)</dt>
+<dd>Returns X, Y coordinates of shapes from shapefile. Missing value separates shapes.</dd>
+<dt>SHAPEFILE_READXYVAL(SHAPEFILE ,VALNAME, MAXPTS)</dt>
+<dd>Returns X, Y, and a value from shapes in a shapefile. Missing value separates shapes.</dd>
+<dt>SHAPEFILE_READXYZ(SHAPEFILE, MAXPTS)</dt>
+<dd>Returns X, Y, Z coordinates of shapes from shapefile. Missing value separates shapes.</dd>
+<dt>SHAPEFILE_READXYZVAL(SHAPEFILE, VALNAME, MAXPTS)</dt>
+<dd>Returns X, Y, Z, and a value from shapes in a shapefile. Missing value separates shapes.</dd>
+<dt>SHAPEFILE_WRITEVAL(SHAPEFILE, VALUE, VALNAME, MAPPRJ)</dt>
+<dd>Writes a shapefile of XY quadrilaterals associated with given values.</dd>
+<dt>SHAPEFILE_WRITEXYVAL(SHAPEFILE, GRIDX, GRIDY, VALUE, VALNAME, MAPPRJ)</dt>
+<dd>Writes a shapefile of XY quadrilaterals and an associated value from the curvilinear data arrays.</dd>
+<dt>SHAPEFILE_WRITEXYZVAL(SHAPEFILE, GRIDX, GRIDY, GRIDZ, VALUE, VALNAME, MAPPRJ)</dt>
+<dd>Writes a shapefile of XY quadrilaterals with Z coordinates and an associated value from the curvilinear data arrays.</dd>
+</dl><p> </p>
+<p><a name="PYFERRET_STATS_FUNCTIONS" id="PYFERRET_STATS_FUNCTIONS"></a></p>
+<p> </p>
+<h3>Additional statistical functions</h3>
+<p>The following statistical functions have been added to Ferret, when running PyFerret from the "yes? command line. These are Ferret external functions written in Python, and make use of stats module in SciPy (see: <a href="http://scipy.org/">http://scipy.org/</a>). Listed first are a number of statistical tests and fitting functions. This is followed by statistical functions returning the cumulative distribution function (CDF) values, inverse survival function (ISF) values, probability density function (PDF) or probability mass function (PMF) values, percent-point function (PPF) values, survival function (SF) values, and random variates (RVS). There are <a href="#STATS_FUNCTIONS_GENERIC">generic versions</a> of these functions, where one names the probability distribution to use and provides an appropriate array of parameters for that distribution. There are also distribution-specific versions of these functions for the <a href="#STATS_FUNCTIONS_BETA">Beta</a>, <a href="#STATS_FUNCTIONS_BINOMIAL">Binomial</a>, <a href="#STATS_FUNCTIONS_CAUCHY">Cauchy</a>, <a href="#STATS_FUNCTIONS_CHI">Chi</a>, <a href="#STATS_FUNCTIONS_CHI_SQUARE">Chi-square</a>, <a href="#STATS_FUNCTIONS_EXPONENTIAL">Exponential</a>, <a href="#STATS_FUNCTIONS_EXPONENTIATED_WEIBULL">Exponentiated-Weibull</a>, <a href="#STATS_FUNCTIONS_FISCHER">Fisher</a>, <a href="#STATS_FUNCTIONS_GAMMA">Gamma</a>, <a href="#STATS_FUNCTIONS_SHIFTED_GEOMETRIC">Shifted-geometric</a>, <a href="#STATS_FUNCTIONS_HYPERGEOMETRIC">Hypergeometric</a>, <a href="#STATS_FUNCTIONS_INVERSE_GAMMA">Inverse-gamma</a>, <a href="#STATS_FUNCTIONS_LAPLACE">Laplace</a>, <a href="#STATS_FUNCTIONS_LOG_NORMAL">Log-normal</a>, <a href="#STATS_FUNCTIONS_NEGATIVE_BINOMIAL">Negative-binomial</a>, <a href="#STATS_FUNCTIONS_NORMAL">Normal</a>, <a href="#STATS_FUNCTIONS_PARETO">Pareto</a>, <a href="#STATS_FUNCTIONS_POISSON">Poisson</a>, <a href="#STATS_FUNCTIONS_STUDENTS_T">Students-T</a>, <a href="#STATS_FUNCTIONS_DISCRETE_UNIFORM">Discrete-uniform</a>, <a href="#STATS_FUNCTIONS_UNIFORM">Uniform</a>, and <a href="#STATS_FUNCTIONS_WEIBULL">Weibull</a> distributions. For the distribution-specific functions, each of the distribution paramaters are separate function arguments and, as such, may be arrays of values. Finally, an example Ferret session using some of these functions are given in the <a href="#STATS_FUNCTIONS_EXAMPLE_SESSION">example session</a> below.</p>
+<p> </p>
+<h5>Statistical tests and fitting</h5>
+<p> </p>
+<p>In the following statistical functions, the probability distribution name argument <i>PDNAME</i> and parameter argument <i>PDPARAMS</i> match those described for the <a href="#STATS_FUNCTIONS_GENERIC">generic distribution functions</a>.</p>
+<dl><dt>STATS_CHISQUARE(SAMPLE_CNTS, EXPECT_CNTS, DELTA_DEGFREE)</dt>
+<dd>Returns the chi-square test statistic and probability that the given sample counts of the category data matches the given population expected counts. The number of good categories is also returned.<br />
+	SAMPLE_CNTS: Sample counts of categorical data<br />
+	EXPECT_CNTS: Expected counts or relative frequencies (will be adjusted)<br />
+	DELTA_DEGFREE: Difference from standard (N-1) degrees of freedom (the number of computed parameters)</dd>
+<dt>STATS_FIT(VALS, PDNAME, PDPARAMS)</dt>
+<dd>Returns parameters for a probability distribution that best fit all defined data values.<br />
+	Note: use with caution; as of this writing, the underlying scipy.stats function does not raise an error when it fails, but rather returns parameters with either a value of one or the input value.<br />
+	VALS: Values to fit with the probability distribution<br />
+	PDNAME: Name of the probability distribution type to use<br />
+	PDPARAMS: Initial parameter estimates for this probability distribution</dd>
+<dt>STATS_KSTEST1(SAMPLE, PDNAME, PDPARAMS)</dt>
+<dd>Returns two-sided Kolmogorov-Smirnov test statistic and probability that sample comes from a population with indicated probability distribution.<br />
+	SAMPLE: Sample data array<br />
+	PDNAME: Name of a continuous probability distribution<br />
+	PDPARAMS: Parameters for this continuous probability distribution</dd>
+<dt>STATS_KSTEST2(SAMPLEA, SAMPLEB)</dt>
+<dd>Returns two-sided Kolmogorov-Smirnov test statistic and probability that two samples comes from the same probability distribution.<br />
+	SAMPLEA: First sample data array<br />
+	SAMPLEB: Second sample data array</dd>
+<dt>STATS_LINREGRESS(XVALS, YVALS)</dt>
+<dd>Returns the slope, intercept, and correlation coefficient (r) for a linear regression. The number of good points used in the linear regression is also returned.<br />
+	XVALS: Abscissa values for the linear regression fit<br />
+	YVALS: Ordinate values for the linear regression fit</dd>
+<dt>STATS_PEARSONR(SAMPLEA, SAMPLEB)</dt>
+<dd>Returns Pearson correlation coefficient between two samples of data. The number of good points used in the calculation is also returned.<br />
+	SAMPLEA: First array of sample data<br />
+	SAMPLEB: Second array of sample data</dd>
+<dt>STATS_PERCENTILESOFSCORES(SAMPLE, SCORES)</dt>
+<dd>Returns interpolated percentiles (0-100) through a sample for given scores (values)<br />
+	SAMPLE: Sample of scores (values)<br />
+	SCORES: Scores (values) to find percentiles through sample</dd>
+<dt>STATS_PROBPLOTVALS(SAMPLE, PDNAME, PDPARAMS)</dt>
+<dd>Returns the order statistic medians in the j=1 column, the ordered response data in the j=2 column for the given sample compared to the indicated distribution. The slope, intercept, and correlation coefficient of regression line best fitting these columns of data is return in the j=3 column. The slope and intercept values often are used as spread and location parameter estimates (or corrections) of the indicated distribution. A demonstration of this is given the <a href="#STATS_FUNCTIONS_EXAMPLE_SESSION">example Ferret session</a> below.<br />
+	SAMPLE: Sample values for the ordered response data<br />
+	PDNAME: Name of a continuous probability distribution for the order statistic medians<br />
+	PDPARAMS: Parameters for this continuous probability distribution</dd>
+<dt>STATS_STATS(VALUES)</dt>
+<dd>Returns the unweighted mean, variance, skew, and excess kurtosis of an array of values<br />
+	VALUES: Array of values to find the statistical values of</dd>
+<dt>STATS_SCORESATPERCENTILES(SAMPLE, PERCENTILES)</dt>
+<dd>Returns interpolated scores (values) that are given percentiles through a sample<br />
+	SAMPLE: Sample of scores (values)<br />
+	PERCENTILES: Percentiles (0-100) through sample to find scores (values) of</dd>
+<dt>STATS_SPEARMANR(SAMPLEA, SAMPLEB)</dt>
+<dd>Returns Spearman's rank correlation coefficient between two samples of data. The number of good points used in the calculation is also returned.<br />
+	SAMPLEA: First array of sample data<br />
+	SAMPLEB: Second array of sample data</dd>
+<dt>STATS_TTEST1(SAMPLE, POPMEANS)</dt>
+<dd>Returns the two-sided T-test statistic and probability for the given sample data coming from a population with indicated mean(s).<br />
+	SAMPLE: Sample data to compare<br />
+	POPMEANS: Proposed population means (averages)</dd>
+<dt>STATS_TTEST2IND(SAMPLEA, SAMPLEB)</dt>
+<dd>Returns the two-sided T-test statistic and probability that two independent samples comes from normal distributions with the same mean.<br />
+	SAMPLEA: First sample data array<br />
+	SAMPLEB: Second sample data array</dd>
+<dt>STATS_TTEST2REL(SAMPLEA, SAMPLEB)</dt>
+<dd>Returns the two-sided T-test statistic and probability that two related (paired) samples comes from normal distributions with the same mean. The number of good points used in the calculation is also returned.<br />
+	SAMPLEA: First sample data array<br />
+	SAMPLEB: Second sample data array</dd>
+<dt>STATS_ZSCORE(VALUES)</dt>
+<dd>Returns the standard scores for data values relative to a normal distribution with same mean and variance as the data.<br />
+	VALUES: Array of data values</dd>
+<dt>STATS_HISTOGRAM(VALS, BINS_TEMPLATE)</dt>
+<dd>Returns the unweighted histogram bin counts for all defined data values.<br />
+	VALS: Values to put into bins and then count<br />
+	BINS_TEMPLATE: Template argument whose one defined axis gives midpoints of the bins to use</dd>
+</dl><p>
+<a name="STATS_FUNCTIONS_GENERIC" id="STATS_FUNCTIONS_GENERIC"></a></p>
+<h5>Generic statistical functions</h5>
+<p>These "generic" distribution functions expect the name of the probability distribution to use as the argument <i>PDNAME</i>, and a list of parameters appropriate for that distribution as the argument <i>PDPARAMS</i>. For a description of the parameters expected for each probability distribution, see the description of distribution-specific functions: <a href="#STATS_FUNCTIONS_BETA">Beta</a>, <a href="#STATS_FUNCTIONS_BINOMIAL">Binomial</a>, <a href="#STATS_FUNCTIONS_CAUCHY">Cauchy</a>, <a href="#STATS_FUNCTIONS_CHI">Chi</a>, <a href="#STATS_FUNCTIONS_CHI_SQUARE">Chi-square</a>, <a href="#STATS_FUNCTIONS_EXPONENTIAL">Exponential</a>, <a href="#STATS_FUNCTIONS_EXPONENTIATED_WEIBULL">Exponentiated-Weibull</a>, <a href="#STATS_FUNCTIONS_FISCHER">Fisher</a>, <a href="#STATS_FUNCTIONS_GAMMA">Gamma</a>, <a href="#STATS_FUNCTIONS_SHIFTED_GEOMETRIC">Shifted-geometric</a>, <a href="#STATS_FUNCTIONS_HYPERGEOMETRIC">Hypergeometric</a>, <a href="#STATS_FUNCTIONS_INVERSE_GAMMA">Inverse-gamma</a>, <a href="#STATS_FUNCTIONS_LAPLACE">Laplace</a>, <a href="#STATS_FUNCTIONS_LOG_NORMAL">Log-normal</a>, <a href="#STATS_FUNCTIONS_NEGATIVE_BINOMIAL">Negative-binomial</a>, <a href="#STATS_FUNCTIONS_NORMAL">Normal</a>, <a href="#STATS_FUNCTIONS_PARETO">Pareto</a>, <a href="#STATS_FUNCTIONS_POISSON">Poisson</a>, <a href="#STATS_FUNCTIONS_STUDENTS_T">Students-T</a>, <a href="#STATS_FUNCTIONS_DISCRETE_UNIFORM">Discrete-uniform</a>, <a href="#STATS_FUNCTIONS_UNIFORM">Uniform</a>, and <a href="#STATS_FUNCTIONS_WEIBULL">Weibull</a>. Or list the results of the <i>STATS_HELPER</i> Ferret function.</p>
+<dl><dt>STATS_HELPER(PDNAME)</dt>
+<dd>Help on probability distribution names or parameters<br />
+	PDNAME: Name of a probability distribution to list the parameters of, or blank to list all distribution names</dd>
+</dl><pre>
+yes? list stats_helper("normal")
+             VARIABLE : STATS_HELPER("normal")
+             SUBSET   : 24 points (X)
+ 1    /  1:"Parameters of probability distribution normal"
+ 2    /  2:"(1) MU: mean value"
+ 3    /  3:"(2) SIGMA: standard deviation"
+ 4    /  4:""
+ 5    /  5:""
+   ...</pre><dl><dt>STATS_CDF(PTS, PDNAME, PDPARAMS)</dt>
+<dd>Returns cumulative distribution function values for a probability distribution<br />
+	PTS: Points at which to calculate the cumulative distribution function values</dd>
+<dt>STATS_ISF(PROBS, PDNAME, PDPARAMS)</dt>
+<dd>Returns inverse survival function values for a probability distribution<br />
+	PROBS: Probabilities (values from zero to one) at which to calculate the inverse survival function values</dd>
+<dt>STATS_PDF(PTS, PDNAME, PDPARAMS)</dt>
+<dd>Returns probability density function values for a continuous probability distribution<br />
+	PTS: Points at which to calculate the probability density function values</dd>
+<dt>STATS_PMF(PTS, PDNAME, PDPARAMS)</dt>
+<dd>Returns probability mass function values for a discrete probability distribution<br />
+	PTS: Points at which to calculate the probability mass function values</dd>
+<dt>STATS_PPF(PROBS, PDNAME, PDPARAMS)</dt>
+<dd>Returns percent point function (inverse of CDF) values for a probability distribution<br />
+	PROBS: Probabilities (0-1) at which to calculate the percent point function values</dd>
+<dt>STATS_SF(PTS, PDNAME, PDPARAMS)</dt>
+<dd>Returns survival function (1.0 - CDF) values for a probability distribution<br />
+	PTS: Points at which to calculate the survival function values</dd>
+<dt>STATS_RVS(TEMPLATE, PDNAME, PDPARAMS)</dt>
+<dd>Returns random variates for a probability distribution<br />
+	TEMPLATE: Template array for the array of random variates to be returned</dd>
+</dl><p>
+<a name="STATS_FUNCTIONS_BETA" id="STATS_FUNCTIONS_BETA"></a></p>
+<h5>Beta distribution functions</h5>
+<dl><dt>STATS_BETA_CDF(PTS, ALPHA, BETA)<br />
+	STATS_BETA_ISF(PTS, ALPHA, BETA)<br />
+	STATS_BETA_PDF(PTS, ALPHA, BETA)<br />
+	STATS_BETA_PPF(PTS, ALPHA, BETA)<br />
+	STATS_BETA_SF(PTS, ALPHA, BETA)<br />
+	STATS_BETA_RVS(PTS, ALPHA, BETA)</dt>
+<dd>ALPHA: First shape parameter(s)<br />
+	BETA: Second shape parameter(s)</dd>
+</dl><p>
+<a name="STATS_FUNCTIONS_BINOMIAL" id="STATS_FUNCTIONS_BINOMIAL"></a></p>
+<h5>Binomial distribution functions</h5>
+<dl><dt>STATS_BINOM_CDF(PTS, N, P)<br />
+	STATS_BINOM_ISF(PTS, N, P)<br />
+	STATS_BINOM_PMF(PTS, N, P)<br />
+	STATS_BINOM_PPF(PTS, N, P)<br />
+	STATS_BINOM_SF(PTS, N, P)<br />
+	STATS_BINOM_RVS(PTS, N, P)</dt>
+<dd>N: Parameter(s) defining the number of trials<br />
+	P: Parameter(s) defining the success probability in each trial</dd>
+</dl><p>
+<a name="STATS_FUNCTIONS_CAUCHY" id="STATS_FUNCTIONS_CAUCHY"></a></p>
+<h5>Cauchy distribution functions</h5>
+<dl><dt>STATS_CAUCHY_CDF(PTS, M, GAMMA)<br />
+	STATS_CAUCHY_ISF(PTS, M, GAMMA)<br />
+	STATS_CAUCHY_PDF(PTS, M, GAMMA)<br />
+	STATS_CAUCHY_PPF(PTS, M, GAMMA)<br />
+	STATS_CAUCHY_SF(PTS, M, GAMMA)<br />
+	STATS_CAUCHY_RVS(PTS, M, GAMMA)</dt>
+<dd>M: Parameter(s) defining the location (median)<br />
+	GAMMA: Parameter(s) defining the scale (half-width at half-maximum)</dd>
+</dl><p>
+<a name="STATS_FUNCTIONS_CHI" id="STATS_FUNCTIONS_CHI"></a></p>
+<h5>Chi distribution functions</h5>
+<dl><dt>STATS_CHI_CDF(PTS, DF)<br />
+	STATS_CHI_ISF(PTS, DF)<br />
+	STATS_CHI_PDF(PTS, DF)<br />
+	STATS_CHI_PPF(PTS, DF)<br />
+	STATS_CHI_SF(PTS, DF)<br />
+	STATS_CHI_RVS(PTS, DF)</dt>
+<dd>DF: Parameter(s) defining the degrees of freedom</dd>
+</dl><p>
+<a name="STATS_FUNCTIONS_CHI_SQUARE" id="STATS_FUNCTIONS_CHI_SQUARE"></a></p>
+<h5>Chi-square distribution functions</h5>
+<dl><dt>STATS_CHI2_CDF(PTS, DF)<br />
+	STATS_CHI2_ISF(PTS, DF)<br />
+	STATS_CHI2_PDF(PTS, DF)<br />
+	STATS_CHI2_PPF(PTS, DF)<br />
+	STATS_CHI2_SF(PTS, DF)<br />
+	STATS_CHI2_RVS(PTS, DF)</dt>
+<dd>DF: Parameter(s) defining the degrees of freedom</dd>
+</dl><p>
+<a name="STATS_FUNCTIONS_EXPONENTIAL" id="STATS_FUNCTIONS_EXPONENTIAL"></a></p>
+<h5>Exponential distribution functions</h5>
+<dl><dt>STATS_EXPON_CDF(PTS, LAMBDA)<br />
+	STATS_EXPON_ISF(PTS, LAMBDA)<br />
+	STATS_EXPON_PDF(PTS, LAMBDA)<br />
+	STATS_EXPON_PPF(PTS, LAMBDA)<br />
+	STATS_EXPON_SF(PTS, LAMBDA)<br />
+	STATS_EXPON_RVS(PTS, LAMBDA)</dt>
+<dd>LAMBDA: Parameter(s) defining the rate (inverse scale)</dd>
+</dl><p>
+<a name="STATS_FUNCTIONS_EXPONENTIATED_WEIBULL" id="STATS_FUNCTIONS_EXPONENTIATED_WEIBULL"></a></p>
+<h5>Exponentiated-Weibull distribution functions</h5>
+<dl><dt>STATS_EXPONWEIB_CDF(PTS, K, LAMBDA, ALPHA)<br />
+	STATS_EXPONWEIB_ISF(PTS, K, LAMBDA, ALPHA)<br />
+	STATS_EXPONWEIB_PDF(PTS, K, LAMBDA, ALPHA)<br />
+	STATS_EXPONWEIB_PPF(PTS, K, LAMBDA, ALPHA)<br />
+	STATS_EXPONWEIB_SF(PTS, K, LAMBDA, ALPHA)<br />
+	STATS_EXPONWEIB_RVS(PTS, K, LAMBDA, ALPHA)</dt>
+<dd>K: Parameter(s) defining the Weibull shape<br />
+	LAMBDA: Parameter(s) defining the scale<br />
+	ALPHA: Parameter(s) defining the power shape</dd>
+</dl><p>
+<a name="STATS_FUNCTIONS_FISCHER" id="STATS_FUNCTIONS_FISCHER"></a></p>
+<h5>Fisher (F) distribution functions</h5>
+<dl><dt>STATS_F_CDF(PTS, DFN, DFD)<br />
+	STATS_F_ISF(PTS, DFN, DFD)<br />
+	STATS_F_PDF(PTS, DFN, DFD)<br />
+	STATS_F_PPF(PTS, DFN, DFD)<br />
+	STATS_F_SF(PTS, DFN, DFD)<br />
+	STATS_F_RVS(PTS, DFN, DFD)</dt>
+<dd>DFN: Parameter(s) defining the numerator degrees of freedom<br />
+	DFD: Parameter(s) defining the denominator degrees of freedom</dd>
+</dl><p>
+<a name="STATS_FUNCTIONS_GAMMA" id="STATS_FUNCTIONS_GAMMA"></a></p>
+<h5>Gamma distribution functions</h5>
+<dl><dt>STATS_GAMMA_CDF(PTS, ALPHA, THETA)<br />
+	STATS_GAMMA_ISF(PTS, ALPHA, THETA)<br />
+	STATS_GAMMA_PDF(PTS, ALPHA, THETA)<br />
+	STATS_GAMMA_PPF(PTS, ALPHA, THETA)<br />
+	STATS_GAMMA_SF(PTS, ALPHA, THETA)<br />
+	STATS_GAMMA_RVS(PTS, ALPHA, THETA)</dt>
+<dd>ALPHA: Parameter(s) defining the shape<br />
+	THETA: Parameter(s) defining the scale</dd>
+</dl><p>
+<a name="STATS_FUNCTIONS_SHIFTED_GEOMETRIC" id="STATS_FUNCTIONS_SHIFTED_GEOMETRIC"></a></p>
+<h5>(Shifted-)geometric distribution functions</h5>
+<dl><dt>STATS_GEOM_CDF(PTS, P)<br />
+	STATS_GEOM_ISF(PTS, P)<br />
+	STATS_GEOM_PMF(PTS ,P)<br />
+	STATS_GEOM_PPF(PTS, P)<br />
+	STATS_GEOM_SF(PTS, P)<br />
+	STATS_GEOM_RVS(PTS, P)</dt>
+<dd>P: Parameter(s) defining the success probability</dd>
+</dl><p>
+<a name="STATS_FUNCTIONS_HYPERGEOMETRIC" id="STATS_FUNCTIONS_HYPERGEOMETRIC"></a></p>
+<h5>Hypergeometric distribution functions</h5>
+<dl><dt>STATS_HYPERGEOM_CDF(PTS, NTOTAL, NGOOD, NDRAWN)<br />
+	STATS_HYPERGEOM_ISF(PTS, NTOTAL, NGOOD, NDRAWN)<br />
+	STATS_HYPERGEOM_PMF(PTS, NTOTAL, NGOOD, NDRAWN)<br />
+	STATS_HYPERGEOM_PPF(PTS, NTOTAL, NGOOD, NDRAWN)<br />
+	STATS_HYPERGEOM_SF(PTS, NTOTAL, NGOOD, NDRAWN)<br />
+	STATS_HYPERGEOM_RVS(PTS, NTOTAL, NGOOD, NDRAWN)</dt>
+<dd>NTOTAL: Parameter(s) defining the total number of items<br />
+	NGOOD: Parameter(s) defining the total number of 'success' items<br />
+	NDRAWN: Parameter(s) defining the number of items selected</dd>
+</dl><p>
+<a name="STATS_FUNCTIONS_INVERSE_GAMMA" id="STATS_FUNCTIONS_INVERSE_GAMMA"></a></p>
+<h5>Inverse-gamma distribution functions</h5>
+<dl><dt>STATS_INVGAMMA_CDF(PTS, ALPHA ,BETA)<br />
+	STATS_INVGAMMA_ISF(PTS, ALPHA, BETA)<br />
+	STATS_INVGAMMA_PDF(PTS, ALPHA, BETA)<br />
+	STATS_INVGAMMA_PPF(PTS, ALPHA, BETA)<br />
+	STATS_INVGAMMA_SF(PTS, ALPHA, BETA)<br />
+	STATS_INVGAMMA_RVS(PTS, ALPHA, BETA)</dt>
+<dd>ALPHA: Parameter(s) defining the shape<br />
+	BETA: Parameter(s) defining the scale</dd>
+</dl><p>
+<a name="STATS_FUNCTIONS_LAPLACE" id="STATS_FUNCTIONS_LAPLACE"></a></p>
+<h5>Laplace distribution functions</h5>
+<dl><dt>STATS_LAPLACE_CDF(PTS, MU, B)<br />
+	STATS_LAPLACE_ISF(PTS, MU, B)<br />
+	STATS_LAPLACE_PDF(PTS, MU, B)<br />
+	STATS_LAPLACE_PPF(PTS, MU, B)<br />
+	STATS_LAPLACE_SF(PTS, MU, B)<br />
+	STATS_LAPLACE_RVS(PTS, MU, B)</dt>
+<dd>MU: Parameter(s) defining the location (mean)<br />
+	B: Parameter(s) defining the scale</dd>
+</dl><p>
+<a name="STATS_FUNCTIONS_LOG_NORMAL" id="STATS_FUNCTIONS_LOG_NORMAL"></a></p>
+<h5>Log-normal distribution functions</h5>
+<dl><dt>STATS_LOGNORM_CDF(PTS, MU, SIGMA)<br />
+	STATS_LOGNORM_ISF(PTS, MU, SIGMA)<br />
+	STATS_LOGNORM_PDF(PTS, MU, SIGMA)<br />
+	STATS_LOGNORM_PPF(PTS, MU, SIGMA)<br />
+	STATS_LOGNORM_SF(PTS, MU, SIGMA)<br />
+	STATS_LOGNORM_RVS(PTS, MU, SIGMA)</dt>
+<dd>MU: Parameter(s) defining the log-scale (mean of the natural log of the distribution)<br />
+	SIGMA: Parameter(s) defining the shape (std. dev. of the natural log of the distribution)</dd>
+</dl><p>
+<a name="STATS_FUNCTIONS_NEGATIVE_BINOMIAL" id="STATS_FUNCTIONS_NEGATIVE_BINOMIAL"></a></p>
+<h5>Negative-binomial distribution functions</h5>
+<dl><dt>STATS_NBINOM_CDF(PTS, N, P)<br />
+	STATS_NBINOM_ISF(PTS, N, P)<br />
+	STATS_NBINOM_PMF(PTS, N, P)<br />
+	STATS_NBINOM_PPF(PTS, N, P)<br />
+	STATS_NBINOM_SF(PTS, N, P)<br />
+	STATS_NBINOM_RVS(PTS, N, P)</dt>
+<dd>N: Parameter(s) defining the number of successes to stop<br />
+	P: Parameter(s) defining the success probability in each trial</dd>
+</dl><p>
+<a name="STATS_FUNCTIONS_NORMAL" id="STATS_FUNCTIONS_NORMAL"></a></p>
+<h5>Normal distribution functions</h5>
+<dl><dt>STATS_NORM_CDF(PTS, MU, SIGMA)<br />
+	STATS_NORM_ISF(PTS, MU, SIGMA)<br />
+	STATS_NORM_PDF(PTS, MU, SIGMA)<br />
+	STATS_NORM_PPF(PTS, MU, SIGMA)<br />
+	STATS_NORM_SF(PTS, MU, SIGMA)<br />
+	STATS_NORM_RVS(PTS, MU, SIGMA)</dt>
+<dd>MU: Parameter(s) defining the mean value<br />
+	SIGMA: Parameter(s) defining the standard deviation</dd>
+</dl><p>
+<a name="STATS_FUNCTIONS_PARETO" id="STATS_FUNCTIONS_PARETO"></a></p>
+<h5>Pareto distribution functions</h5>
+<dl><dt>STATS_PARETO_CDF(PTS, XM, ALPHA)<br />
+	STATS_PARETO_ISF(PTS, XM, ALPHA)<br />
+	STATS_PARETO_PDF(PTS, XM, ALPHA)<br />
+	STATS_PARETO_PPF(PTS, XM, ALPHA)<br />
+	STATS_PARETO_SF(PTS, XM, ALPHA)<br />
+	STATS_PARETO_RVS(PTS, XM, ALPHA)</dt>
+<dd>XM: Parameter(s) defining the scale (minimum abscissa value)<br />
+	ALPHA: Parameter(s) defining the shape</dd>
+</dl><p>
+<a name="STATS_FUNCTIONS_POISSON" id="STATS_FUNCTIONS_POISSON"></a></p>
+<h5>Poisson distribution functions</h5>
+<dl><dt>STATS_POISSON_CDF(PTS, MU)<br />
+	STATS_POISSON_ISF(PTS, MU)<br />
+	STATS_POISSON_PMF(PTS, MU)<br />
+	STATS_POISSON_PPF(PTS, MU)<br />
+	STATS_POISSON_SF(PTS, MU)<br />
+	STATS_POISSON_RVS(PTS, MU)</dt>
+<dd>MU: Parameter(s) defining the expected number of occurrences</dd>
+</dl><p>
+<a name="STATS_FUNCTIONS_STUDENTS_T" id="STATS_FUNCTIONS_STUDENTS_T"></a></p>
+<h5>Students-T distribution functions</h5>
+<dl><dt>STATS_T_CDF(PTS, DF)<br />
+	STATS_T_ISF(PTS, DF)<br />
+	STATS_T_PDF(PTS, DF)<br />
+	STATS_T_PPF(PTS, DF)<br />
+	STATS_T_SF(PTS, DF)<br />
+	STATS_T_RVS(PTS, DF)</dt>
+<dd>DF: Parameter(s) defining the degrees of freedom</dd>
+</dl><p>
+<a name="STATS_FUNCTIONS_DISCRETE_UNIFORM" id="STATS_FUNCTIONS_DISCRETE_UNIFORM"></a></p>
+<h5>Discrete-uniform (random integer) distribution functions</h5>
+<dl><dt>STATS_RANDINT_CDF(PTS, MIN, MAX)<br />
+	STATS_RANDINT_ISF(PTS, MIN, MAX)<br />
+	STATS_RANDINT_PMF(PTS, MIN, MAX)<br />
+	STATS_RANDINT_PPF(PTS, MIN, MAX)<br />
+	STATS_RANDINT_SF(PTS, MIN, MAX)<br />
+	STATS_RANDINT_RVS(PTS, MIN, MAX)</dt>
+<dd>MIN: Parameter(s) defining the minimum integer<br />
+	MAX: Parameter(s) defining the maximum integer (included)</dd>
+</dl><p>
+<a name="STATS_FUNCTIONS_UNIFORM" id="STATS_FUNCTIONS_UNIFORM"></a></p>
+<h5>Uniform distribution functions</h5>
+<dl><dt>STATS_UNIFORM_CDF(PTS, MIN, MAX)<br />
+	STATS_UNIFORM_ISF(PTS, MIN, MAX)<br />
+	STATS_UNIFORM_PDF(PTS, MIN, MAX)<br />
+	STATS_UNIFORM_PPF(PTS, MIN, MAX)<br />
+	STATS_UNIFORM_SF(PTS, MIN, MAX)<br />
+	STATS_UNIFORM_RVS(PTS, MIN, MAX)</dt>
+<dd>MIN: Parameter(s) defining the minimum<br />
+	MAX: Parameter(s) defining the maximum</dd>
+</dl><p>
+<a name="STATS_FUNCTIONS_WEIBULL" id="STATS_FUNCTIONS_WEIBULL"></a></p>
+<h5>Weibull distribution functions</h5>
+<dl><dt>STATS_WEIBULL_CDF(PTS, K, LAMBDA)<br />
+	STATS_WEIBULL_ISF(PTS, K, LAMBDA)<br />
+	STATS_WEIBULL_PDF(PTS, K, LAMBDA)<br />
+	STATS_WEIBULL_PPF(PTS, K, LAMBDA)<br />
+	STATS_WEIBULL_SF(PTS, K, LAMBDA)<br />
+	STATS_WEIBULL_RVS(PTS, K, LAMBDA)</dt>
+<dd>K: Parameter(s) defining the shape<br />
+	LAMBDA: Parameter(s) defining the scale</dd>
+</dl><p>
+<a name="STATS_FUNCTIONS_EXAMPLE_SESSION" id="STATS_FUNCTIONS_EXAMPLE_SESSION"></a></p>
+<h3>Ferret session using some of the statistics functions</h3>
+<p>Here is an example Ferret session in PyFerret using the <i>STATS_NORM_PDF</i> function with an array of values for one of the parameter arguments.</p>
+<pre>
+use coads_climatology
+! Create a Z axis defining temperatures (instead of level)
+def axis /Z=0.0:35.0:5.0 /unit="Deg C" ztempaxis
+           *** NOTE: (fyi) units are not subject to auto-conversion: DEG C
+let ztemp = Z[gz=ztempaxis]
+
+! Generate probabilities that SST comes from normal distributions
+! centered at the ztempaxis values with a standard deviation of 2.0
+
+! Since SST does not have a Z axis, the Z-array of values can be
+! given for the mu parameter and the result will use that Z axis.
+
+let sstpdfs = <strong>stats_norm_pdf</strong>(sst, ztemp, 2.0)
+
+! The result's X, Y, and T axes are inherited from SST;
+! the Z axis is inherited from ztemp
+show grid sstpdfs
+    GRID (G003)
+ name       axis              # pts   start                end
+ COADSX    LONGITUDE          180mr   21E                  19E(379)
+ COADSY    LATITUDE            90 r   89S                  89N
+ ZTEMPAXIS Z (DEG C)            8 r   0                    35
+ TIME      TIME                12mr   16-JAN 06:00         16-DEC 01:20
+
+! Generate a plot, using the system's arial font for text,
+! of some of the data and save it as a small PNG
+set text /font=arial
+fill /lev=(-inf)(0.0,0.2,0.01)(inf) sstpdfs[Y=65S:65N,Z=20,T=17-MAR]
+go fland
+frame /file=sst20deg.png /xpixels=600</pre><p>The image produced show the bands of the ocean where the sea surface temperature is near 20°C mid-March in the climatological year.<br /><img class="image-inline" src="https://ferret.pmel.noaa.gov/Ferret/sites/default/files/images/documentation/pyferret/pyferret-images/sst20deg.png" /></p>
+<p> </p>
+<p>Continuing the above Ferret session, we now uses some of the random variate functions and demonstrate the use of the <i>STATS_PROBPLOTVALS</i> function.</p>
+<p> </p>
+<pre>
+! create a template area with some regions of undefined values
+let template = sst[X=155W:115W,Y=25N:55N,T=15-MAR]
+stats template
+ 
+             SST[X=155W:115W,Y=25N:55N,T=15-MAR]
+             LONGITUDE: 156W to 114W
+             LATITUDE: 24N to 56N
+             Z:  N/A
+             TIME: 17-MAR 02:58
+             E:  N/A
+             F:  N/A
+             DATA SET: .../data/coads_climatology.cdf
+ 
+ Total # of data points: 336 (21*16*1*1*1*1)
+ # flagged as bad  data: 49
+ Minimum value: 3.7339
+ Maximum value: 22.528
+ Mean    value: 12.497 (unweighted average)
+ Standard deviation: 5.1224
+ 
+! Create some test values by selecting random values from a Laplace
+! distribution centered at 12.5 with a width parameter of 3.0.
+! Then add some "noise" by adding random values from a normal
+! distribution centered at 0.0 with a standard deviation of 1.0
+let testvals = stats_laplace_rvs(template, 12.5, 3.0) + stats_norm_rvs(template, 0.0, 1.0)
+ 
+! Note that the axes and undefined regions are inherited from the template
+stats testvals
+ 
+             STATS_LAPLACE_RVS(TEMPLATE, 12.5, 3.0) + STATS_NORM_RVS(TEMPLATE, 0.0, 1.0)
+             LONGITUDE: 156W to 114W
+             LATITUDE: 24N to 56N
+             Z:  N/A
+             TIME: 17-MAR 02:58
+             E:  N/A
+             F:  N/A
+             DATA SET: .../data/coads_climatology.cdf
+ 
+ Total # of data points: 336 (21*16*1*1*1*1)
+ # flagged as bad  data: 49
+ Minimum value: -4.2095
+ Maximum value: 31.93
+ Mean    value: 12.436 (unweighted average)
+ Standard deviation: 4.5833
+ 
+! Use the stats_probplotvals function to obtain data for visually
+! comparing the test data to that expected from a Laplace distribution
+let ppvals = stats_probplotvals(testvals, "laplace", {0.0,1.0})
+ 
+! Plot the data points for visually examining the distribution fit
+plot /vs /graticule=dash /nolabel ppvals[j=1], ppvals[j=2]
+ 
+! Save the plot as a PNG file
+frame /file=probplot.png /xpixels=600
+ 
+! List the slope, intercept, and correlation coefficient of the fitted line
+list ppvals[i=1:3,j=3]
+             VARIABLE : STATS_PROBPLOTVALS(TESTVALS, "laplace", {0.0,1.0})
+             FILENAME : coads_climatology.cdf
+             FILEPATH : /home/flat/ksmith/Datasets/data/
+             SUBSET   : 3 points (X (VALUE_NUM))
+             Y (OSM,ORD,P): 3
+             3    
+             3
+ 1   / 1:   3.29
+ 2   / 2:  12.44
+ 3   / 3:   1.00</pre><p>The fairly straight line in the resulting plot shows a fairly good fit of the data to the probability distribution. The slope and intercept of the fitted line are close to the width and position parameters of the Laplace distribution used when creating the data.<br /><img class="image-inline" src="https://ferret.pmel.noaa.gov/Ferret/sites/default/files/images/documentation/pyferret/pyferret-images/probplot.png" /></p>
+<p> </p>
+<p><a href="graphics/index.html">Previous</a> <a href="python-functions/index.html">Next</a></p>
+<p> </p>
+</div>
+      </div>
+</div>
+    
+  </div>
+  
+  <div class="clearfix">
+          <nav class="links node-links clearfix"></nav>
+    
+      </div>
+</article>
+    </div>
+  </div>
+</div>      </div>
+</div>  </div>
+</div></section>    
+  
+      <footer id="section-footer" class="section section-footer">
+  <div id="zone-footer-wrapper" class="zone-wrapper zone-footer-wrapper clearfix">  
+  <div id="zone-footer" class="zone zone-footer clearfix container-12">
+    <div class="grid-8 region region-footer-first" id="region-footer-first">
+  <div class="region-inner region-footer-first-inner">
+    <div class="block block-block block-1 block-block-1 odd block-without-title" id="block-block-1">
+  <div class="block-inner clearfix">
+                
+    <div class="content clearfix">
+      <p><a href="https://www.pmel.noaa.gov/"><img alt="PMEL logo" border="0" src="https://ferret.pmel.noaa.gov/Ferret/sites/all/themes/pacific_marine/images/PMEL-meatball-logo-sm.png" style="width: 110px; height: 110px;" /></a></p>
+    </div>
+  </div>
+</div><div class="block block-block block-2 block-block-2 even block-without-title" id="block-block-2">
+  <div class="block-inner clearfix">
+                
+    <div class="content clearfix">
+      <p><a href="https://www.noaa.gov/">National Oceanic and Atmospheric Administration</a><br /><a href="https://www.pmel.noaa.gov/">Pacific Marine Environmental Laboratory</a> | <a href="https://ferret.pmel.noaa.gov/Ferret">Ferret Support</a><br /><a href="mailto:oar.pmel.contact_ferret@noaa.gov">oar.pmel.contact_ferret@noaa.gov </a></p>
+    </div>
+  </div>
+</div><div class="block block-menu block-menu-footer-first-menu block-menu-menu-footer-first-menu odd block-without-title" id="block-menu-menu-footer-first-menu">
+  <div class="block-inner clearfix">
+                
+    <div class="content clearfix">
+      <ul class="menu"><li class="first leaf"><a href="https://www.commerce.gov/" title="The United States Department of Commerce">DOC</a></li>
+<li class="leaf"><a href="https://www.noaa.gov/" title="The National Oceanographic and Atmospheric Administration">NOAA</a></li>
+<li class="leaf"><a href="https://www.research.noaa.gov/" title="Department of Commerce &gt; NOAA &gt; Office of Oceanic and Atmospheric Research">OAR</a></li>
+<li class="leaf"><a href="https://www.pmel.noaa.gov/">PMEL</a></li>
+<li class="leaf"><a href="https://www.pmel.noaa.gov/project/science-data-integration" target="_blank">SDIG</a></li>
+<li class="leaf"><a href="https://www.noaa.gov/protecting-your-privacy" target="_blank">Privacy Policy</a></li>
+<li class="last leaf"><a href="https://www.noaa.gov/disclaimer" target="_blank">Disclaimer</a></li>
+</ul>    </div>
+  </div>
+</div>  </div>
+</div><div class="grid-4 region region-footer-second" id="region-footer-second">
+  <div class="region-inner region-footer-second-inner">
+    <div class="block block-menu block-menu-footer-second-menu block-menu-menu-footer-second-menu odd block-without-title" id="block-menu-menu-footer-second-menu">
+  <div class="block-inner clearfix">
+                
+    <div class="content clearfix">
+      <ul class="menu"><li class="first last leaf"><a href="https://ferret.pmel.noaa.gov/Ferret/sitemap" title="Title of Site map page">Ferret Sitemap</a></li>
+</ul>    </div>
+  </div>
+</div>  </div>
+</div>  </div>
+</div></footer>  </div>  <div class="region region-page-bottom" id="region-page-bottom">
+  <div class="region-inner region-page-bottom-inner">
+      </div>
+</div>  <div id="body-bg-bottom"></div>
+</body>
+
+<!-- Mirrored from ferret.pmel.noaa.gov/Ferret/documentation/pyferret/ferret-functionality by HTTrack Website Copier/3.x [XR&CO'2014], Thu, 15 Jun 2023 18:12:37 GMT -->
+</html>

@@ -1,0 +1,1743 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML+RDFa 1.1//EN">
+<html lang="en" dir="ltr" version="HTML+RDFa 1.1"
+  xmlns:content="http://purl.org/rss/1.0/modules/content/"
+  xmlns:dc="http://purl.org/dc/terms/"
+  xmlns:foaf="http://xmlns.com/foaf/0.1/"
+  xmlns:og="http://ogp.me/ns#"
+  xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+  xmlns:sioc="http://rdfs.org/sioc/ns#"
+  xmlns:sioct="http://rdfs.org/sioc/types#"
+  xmlns:skos="http://www.w3.org/2004/02/skos/core#"
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+  xmlns:schema="http://schema.org/">
+
+<!-- Mirrored from ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-b-pplus-guide/PPLUS-COMMAND-FILES by HTTrack Website Copier/3.x [XR&CO'2014], Thu, 15 Jun 2023 18:11:56 GMT -->
+<!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=utf-8" /><!-- /Added by HTTrack -->
+<head profile="http://www.w3.org/1999/xhtml/vocab">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="Generator" content="Drupal 7 (http://drupal.org)" />
+<link rel="canonical" href="PPLUS-COMMAND-FILES.html" />
+<link rel="shortlink" href="https://ferret.pmel.noaa.gov/Ferret/node/730" />
+<link rel="shortcut icon" href="https://ferret.pmel.noaa.gov/Ferret/sites/all/themes/pacific_marine/images/favicon-32.png" type="image/png" />
+<link rel="apple-touch-icon" href="https://ferret.pmel.noaa.gov/Ferret/sites/all/themes/pacific_marine/images/apple-touch-icon-152x152.png" type="image/png" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no" />
+  <title>PPLUS COMMAND FILES | Science Data Integration Group - Ferret Support</title>  
+  <style type="text/css" media="all">
+@import url("https://ferret.pmel.noaa.gov/Ferret/modules/system/system.base.css?rw9vml");
+@import url("https://ferret.pmel.noaa.gov/Ferret/modules/system/system.menus.css?rw9vml");
+@import url("https://ferret.pmel.noaa.gov/Ferret/modules/system/system.messages.css?rw9vml");
+@import url("https://ferret.pmel.noaa.gov/Ferret/modules/system/system.theme.css?rw9vml");
+</style>
+<style type="text/css" media="all">
+@import url("https://ferret.pmel.noaa.gov/Ferret/sites/all/modules/jquery_update/replace/ui/themes/base/minified/jquery.ui.core.min.css?rw9vml");
+@import url("https://ferret.pmel.noaa.gov/Ferret/sites/all/modules/jquery_update/replace/ui/themes/base/minified/jquery.ui.theme.min.css?rw9vml");
+@import url("https://ferret.pmel.noaa.gov/Ferret/sites/all/modules/jquery_update/replace/ui/themes/base/minified/jquery.ui.menu.min.css?rw9vml");
+@import url("https://ferret.pmel.noaa.gov/Ferret/sites/all/modules/jquery_update/replace/ui/themes/base/minified/jquery.ui.autocomplete.min.css?rw9vml");
+</style>
+<style type="text/css" media="all">
+@import url("https://ferret.pmel.noaa.gov/Ferret/sites/all/modules/calendar/css/calendar_multiday.css?rw9vml");
+@import url("https://ferret.pmel.noaa.gov/Ferret/modules/field/theme/field.css?rw9vml");
+@import url("https://ferret.pmel.noaa.gov/Ferret/sites/all/modules/scald/modules/fields/mee/css/editor-global.css?rw9vml");
+@import url("https://ferret.pmel.noaa.gov/Ferret/modules/node/node.css?rw9vml");
+@import url("https://ferret.pmel.noaa.gov/Ferret/sites/all/modules/scald_file/scald_file.css?rw9vml");
+@import url("https://ferret.pmel.noaa.gov/Ferret/modules/search/search.css?rw9vml");
+@import url("https://ferret.pmel.noaa.gov/Ferret/modules/user/user.css?rw9vml");
+@import url("https://ferret.pmel.noaa.gov/Ferret/sites/all/modules/views/css/views.css?rw9vml");
+@import url("https://ferret.pmel.noaa.gov/Ferret/sites/all/modules/ckeditor/css/ckeditor.css?rw9vml");
+</style>
+<style type="text/css" media="all">
+@import url("https://ferret.pmel.noaa.gov/Ferret/sites/all/modules/ctools/css/ctools.css?rw9vml");
+@import url("https://ferret.pmel.noaa.gov/Ferret/sites/all/modules/custom_search/custom_search.css?rw9vml");
+@import url("https://ferret.pmel.noaa.gov/Ferret/sites/all/modules/search_autocomplete/css/themes/minimal.css?rw9vml");
+@import url("https://ferret.pmel.noaa.gov/Ferret/sites/all/libraries/superfish/css/superfish.css?rw9vml");
+@import url("https://ferret.pmel.noaa.gov/Ferret/sites/all/libraries/superfish/css/superfish-smallscreen.css?rw9vml");
+@import url("https://ferret.pmel.noaa.gov/Ferret/sites/all/libraries/superfish/css/superfish-vertical.css?rw9vml");
+</style>
+<style type="text/css" media="all">
+@import url("https://ferret.pmel.noaa.gov/Ferret/sites/all/themes/pacific_marine/css/ckeditor_custom.css?rw9vml");
+</style>
+<style type="text/css" media="all">
+@import url("https://ferret.pmel.noaa.gov/Ferret/sites/all/themes/omega/alpha/css/alpha-reset.css?rw9vml");
+@import url("https://ferret.pmel.noaa.gov/Ferret/sites/all/themes/omega/alpha/css/alpha-mobile.css?rw9vml");
+@import url("https://ferret.pmel.noaa.gov/Ferret/sites/all/themes/omega/alpha/css/alpha-alpha.css?rw9vml");
+@import url("https://ferret.pmel.noaa.gov/Ferret/sites/all/themes/omega/omega/css/formalize.css?rw9vml");
+@import url("https://ferret.pmel.noaa.gov/Ferret/sites/all/themes/omega/omega/css/omega-text.css?rw9vml");
+@import url("https://ferret.pmel.noaa.gov/Ferret/sites/all/themes/omega/omega/css/omega-branding.css?rw9vml");
+@import url("https://ferret.pmel.noaa.gov/Ferret/sites/all/themes/omega/omega/css/omega-menu.css?rw9vml");
+@import url("https://ferret.pmel.noaa.gov/Ferret/sites/all/themes/omega/omega/css/omega-forms.css?rw9vml");
+@import url("https://ferret.pmel.noaa.gov/Ferret/sites/all/themes/omega/omega/css/omega-visuals.css?rw9vml");
+@import url("https://ferret.pmel.noaa.gov/Ferret/sites/all/themes/pacific_marine/css/global.css?rw9vml");
+</style>
+
+<!--[if (lt IE 9)&(!IEMobile)]>
+<style type="text/css" media="all">
+@import url("https://ferret.pmel.noaa.gov/Ferret/sites/all/themes/pacific_marine/css/pacific-marine-alpha-default.css?rw9vml");
+@import url("https://ferret.pmel.noaa.gov/Ferret/sites/all/themes/pacific_marine/css/pacific-marine-alpha-default-normal.css?rw9vml");
+@import url("https://ferret.pmel.noaa.gov/Ferret/sites/all/themes/omega/alpha/css/grid/alpha_default/normal/alpha-default-normal-12.css?rw9vml");
+</style>
+<![endif]-->
+
+<!--[if gte IE 9]><!-->
+<style type="text/css" media="all and (min-width: 740px) and (min-device-width: 740px), (max-device-width: 800px) and (min-width: 740px) and (orientation:landscape)">
+@import url("https://ferret.pmel.noaa.gov/Ferret/sites/all/themes/pacific_marine/css/pacific-marine-alpha-default.css?rw9vml");
+@import url("https://ferret.pmel.noaa.gov/Ferret/sites/all/themes/pacific_marine/css/pacific-marine-alpha-default-narrow.css?rw9vml");
+@import url("https://ferret.pmel.noaa.gov/Ferret/sites/all/themes/omega/alpha/css/grid/alpha_default/narrow/alpha-default-narrow-12.css?rw9vml");
+</style>
+<!--<![endif]-->
+
+<!--[if gte IE 9]><!-->
+<style type="text/css" media="all and (min-width: 980px) and (min-device-width: 980px), all and (max-device-width: 1024px) and (min-width: 1024px) and (orientation:landscape)">
+@import url("https://ferret.pmel.noaa.gov/Ferret/sites/all/themes/pacific_marine/css/pacific-marine-alpha-default.css?rw9vml");
+@import url("https://ferret.pmel.noaa.gov/Ferret/sites/all/themes/pacific_marine/css/pacific-marine-alpha-default-normal.css?rw9vml");
+@import url("https://ferret.pmel.noaa.gov/Ferret/sites/all/themes/omega/alpha/css/grid/alpha_default/normal/alpha-default-normal-12.css?rw9vml");
+</style>
+<!--<![endif]-->
+
+<!--[if gte IE 9]><!-->
+<style type="text/css" media="all and (min-width: 1220px)">
+@import url("https://ferret.pmel.noaa.gov/Ferret/sites/all/themes/pacific_marine/css/pacific-marine-alpha-default.css?rw9vml");
+@import url("https://ferret.pmel.noaa.gov/Ferret/sites/all/themes/pacific_marine/css/pacific-marine-alpha-default-wide.css?rw9vml");
+@import url("https://ferret.pmel.noaa.gov/Ferret/sites/all/themes/omega/alpha/css/grid/alpha_default/wide/alpha-default-wide-12.css?rw9vml");
+</style>
+<!--<![endif]-->
+	
+	<script id="_fed_an_ua_tag" src="https://dap.digitalgov.gov/Universal-Federated-Analytics-Min.js?agency=DOC&amp;subagency=NOAA&amp;pua=UA-96523701-1"></script>
+	
+  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<script type="text/javascript">
+<!--//--><![CDATA[//><!--
+window.jQuery || document.write("<script src='https://ferret.pmel.noaa.gov/Ferret/sites/all/modules/jquery_update/replace/jquery/1.12/jquery.min.js'>\x3C/script>")
+//--><!]]>
+</script>
+<script type="text/javascript" src="https://ferret.pmel.noaa.gov/Ferret/misc/jquery-extend-3.4.0.js?v=1.12.4"></script>
+<script type="text/javascript" src="https://ferret.pmel.noaa.gov/Ferret/misc/jquery-html-prefilter-3.5.0-backport.js?v=1.12.4"></script>
+<script type="text/javascript" src="https://ferret.pmel.noaa.gov/Ferret/misc/jquery.once.js?v=1.2"></script>
+<script type="text/javascript" src="https://ferret.pmel.noaa.gov/Ferret/misc/drupal.js?rw9vml"></script>
+<script type="text/javascript" src="https://ferret.pmel.noaa.gov/Ferret/sites/all/modules/jquery_update/js/jquery_browser.js?v=0.0.1"></script>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.2/jquery-ui.min.js"></script>
+<script type="text/javascript">
+<!--//--><![CDATA[//><!--
+window.jQuery.ui || document.write("<script src='https://ferret.pmel.noaa.gov/Ferret/sites/all/modules/jquery_update/replace/ui/ui/minified/jquery-ui.min.js'>\x3C/script>")
+//--><!]]>
+</script>
+<script type="text/javascript" src="https://ferret.pmel.noaa.gov/Ferret/misc/ui/jquery.ui.position-1.13.0-backport.js?v=1.10.2"></script>
+<script type="text/javascript" src="https://ferret.pmel.noaa.gov/Ferret/sites/all/modules/entityreference/js/entityreference.js?rw9vml"></script>
+<script type="text/javascript" src="https://ferret.pmel.noaa.gov/Ferret/sites/all/modules/custom_search/js/custom_search.js?rw9vml"></script>
+<script type="text/javascript" src="https://ferret.pmel.noaa.gov/Ferret/sites/all/modules/scald_file/scald_file.js?rw9vml"></script>
+<script type="text/javascript" src="https://ferret.pmel.noaa.gov/Ferret/sites/all/modules/scald/modules/providers/scald_image/scald_image.js?rw9vml"></script>
+<script type="text/javascript" src="https://ferret.pmel.noaa.gov/Ferret/sites/all/modules/search_autocomplete/js/jquery.autocomplete.js?rw9vml"></script>
+<script type="text/javascript" src="https://ferret.pmel.noaa.gov/Ferret/sites/all/libraries/superfish/jquery.hoverIntent.minified.js?rw9vml"></script>
+<script type="text/javascript" src="https://ferret.pmel.noaa.gov/Ferret/sites/all/libraries/superfish/sfsmallscreen.js?rw9vml"></script>
+<script type="text/javascript" src="https://ferret.pmel.noaa.gov/Ferret/sites/all/libraries/superfish/supposition.js?rw9vml"></script>
+<script type="text/javascript" src="https://ferret.pmel.noaa.gov/Ferret/sites/all/libraries/superfish/superfish.js?rw9vml"></script>
+<script type="text/javascript" src="https://ferret.pmel.noaa.gov/Ferret/sites/all/libraries/superfish/supersubs.js?rw9vml"></script>
+<script type="text/javascript" src="https://ferret.pmel.noaa.gov/Ferret/sites/all/modules/superfish/superfish.js?rw9vml"></script>
+<script type="text/javascript" src="https://ferret.pmel.noaa.gov/Ferret/sites/all/themes/pacific_marine/js/pacific_marine.js?rw9vml"></script>
+<script type="text/javascript" src="https://ferret.pmel.noaa.gov/Ferret/sites/all/themes/omega/omega/js/jquery.formalize.js?rw9vml"></script>
+<script type="text/javascript" src="https://ferret.pmel.noaa.gov/Ferret/sites/all/themes/omega/omega/js/omega-mediaqueries.js?rw9vml"></script>
+<script type="text/javascript" src="https://ferret.pmel.noaa.gov/Ferret/sites/all/themes/omega/omega/js/omega-equalheights.js?rw9vml"></script>
+<script type="text/javascript">
+<!--//--><![CDATA[//><!--
+jQuery.extend(Drupal.settings, {"basePath":"\/Ferret\/","pathPrefix":"","setHasJsCookie":0,"ajaxPageState":{"theme":"pacific_marine","theme_token":"WZX7NAu6pcLRyw-8aDpmBGKiLzxs6arbYhr5TuQwIv0","js":{"\/\/ajax.googleapis.com\/ajax\/libs\/jquery\/1.12.4\/jquery.min.js":1,"0":1,"misc\/jquery-extend-3.4.0.js":1,"misc\/jquery-html-prefilter-3.5.0-backport.js":1,"misc\/jquery.once.js":1,"misc\/drupal.js":1,"sites\/all\/modules\/jquery_update\/js\/jquery_browser.js":1,"\/\/ajax.googleapis.com\/ajax\/libs\/jqueryui\/1.10.2\/jquery-ui.min.js":1,"1":1,"misc\/ui\/jquery.ui.position-1.13.0-backport.js":1,"sites\/all\/modules\/entityreference\/js\/entityreference.js":1,"sites\/all\/modules\/custom_search\/js\/custom_search.js":1,"sites\/all\/modules\/scald_file\/scald_file.js":1,"sites\/all\/modules\/scald\/modules\/providers\/scald_image\/scald_image.js":1,"sites\/all\/modules\/search_autocomplete\/js\/jquery.autocomplete.js":1,"sites\/all\/libraries\/superfish\/jquery.hoverIntent.minified.js":1,"sites\/all\/libraries\/superfish\/sfsmallscreen.js":1,"sites\/all\/libraries\/superfish\/supposition.js":1,"sites\/all\/libraries\/superfish\/superfish.js":1,"sites\/all\/libraries\/superfish\/supersubs.js":1,"sites\/all\/modules\/superfish\/superfish.js":1,"sites\/all\/themes\/pacific_marine\/js\/pacific_marine.js":1,"sites\/all\/themes\/omega\/omega\/js\/jquery.formalize.js":1,"sites\/all\/themes\/omega\/omega\/js\/omega-mediaqueries.js":1,"sites\/all\/themes\/omega\/omega\/js\/omega-equalheights.js":1},"css":{"modules\/system\/system.base.css":1,"modules\/system\/system.menus.css":1,"modules\/system\/system.messages.css":1,"modules\/system\/system.theme.css":1,"misc\/ui\/jquery.ui.core.css":1,"misc\/ui\/jquery.ui.theme.css":1,"misc\/ui\/jquery.ui.menu.css":1,"misc\/ui\/jquery.ui.autocomplete.css":1,"sites\/all\/modules\/calendar\/css\/calendar_multiday.css":1,"modules\/field\/theme\/field.css":1,"sites\/all\/modules\/scald\/modules\/fields\/mee\/css\/editor-global.css":1,"modules\/node\/node.css":1,"sites\/all\/modules\/scald_file\/scald_file.css":1,"modules\/search\/search.css":1,"modules\/user\/user.css":1,"sites\/all\/modules\/views\/css\/views.css":1,"sites\/all\/modules\/ckeditor\/css\/ckeditor.css":1,"sites\/all\/modules\/ctools\/css\/ctools.css":1,"sites\/all\/modules\/custom_search\/custom_search.css":1,"sites\/all\/modules\/search_autocomplete\/css\/themes\/minimal.css":1,"sites\/all\/libraries\/superfish\/css\/superfish.css":1,"sites\/all\/libraries\/superfish\/css\/superfish-smallscreen.css":1,"sites\/all\/libraries\/superfish\/css\/superfish-vertical.css":1,"sites\/all\/themes\/pacific_marine\/css\/ckeditor_custom.css":1,"sites\/all\/themes\/omega\/alpha\/css\/alpha-reset.css":1,"sites\/all\/themes\/omega\/alpha\/css\/alpha-mobile.css":1,"sites\/all\/themes\/omega\/alpha\/css\/alpha-alpha.css":1,"sites\/all\/themes\/omega\/omega\/css\/formalize.css":1,"sites\/all\/themes\/omega\/omega\/css\/omega-text.css":1,"sites\/all\/themes\/omega\/omega\/css\/omega-branding.css":1,"sites\/all\/themes\/omega\/omega\/css\/omega-menu.css":1,"sites\/all\/themes\/omega\/omega\/css\/omega-forms.css":1,"sites\/all\/themes\/omega\/omega\/css\/omega-visuals.css":1,"sites\/all\/themes\/pacific_marine\/css\/global.css":1,"ie::normal::sites\/all\/themes\/pacific_marine\/css\/pacific-marine-alpha-default.css":1,"ie::normal::sites\/all\/themes\/pacific_marine\/css\/pacific-marine-alpha-default-normal.css":1,"ie::normal::sites\/all\/themes\/omega\/alpha\/css\/grid\/alpha_default\/normal\/alpha-default-normal-12.css":1,"narrow::sites\/all\/themes\/pacific_marine\/css\/pacific-marine-alpha-default.css":1,"narrow::sites\/all\/themes\/pacific_marine\/css\/pacific-marine-alpha-default-narrow.css":1,"sites\/all\/themes\/omega\/alpha\/css\/grid\/alpha_default\/narrow\/alpha-default-narrow-12.css":1,"normal::sites\/all\/themes\/pacific_marine\/css\/pacific-marine-alpha-default.css":1,"normal::sites\/all\/themes\/pacific_marine\/css\/pacific-marine-alpha-default-normal.css":1,"sites\/all\/themes\/omega\/alpha\/css\/grid\/alpha_default\/normal\/alpha-default-normal-12.css":1,"wide::sites\/all\/themes\/pacific_marine\/css\/pacific-marine-alpha-default.css":1,"wide::sites\/all\/themes\/pacific_marine\/css\/pacific-marine-alpha-default-wide.css":1,"sites\/all\/themes\/omega\/alpha\/css\/grid\/alpha_default\/wide\/alpha-default-wide-12.css":1}},"custom_search":{"form_target":"_self","solr":0},"scaldFile":{"path":"sites\/all\/modules\/scald_file\/scald_file.css"},"search_autocomplete":{"form3":{"selector":"#edit-search-block-form--2","minChars":"3","max_sug":"10","type":"internal","datas":"https:\/\/ferret.pmel.noaa.gov\/Ferret\/search_autocomplete\/autocomplete\/3\/","fid":"3","theme":"minimal","auto_submit":"1","auto_redirect":"1"}},"urlIsAjaxTrusted":{"\/Ferret\/documentation\/users-guide\/appendix-b-pplus-guide\/PPLUS-COMMAND-FILES":true},"superfish":{"1":{"id":"1","sf":{"animation":{"opacity":"show","height":"show"},"speed":"fast"},"plugins":{"smallscreen":{"mode":"window_width","breakpointUnit":"px","title":"Documentation"},"supposition":true,"supersubs":true}}},"omega":{"layouts":{"primary":"normal","order":["narrow","normal","wide"],"queries":{"narrow":"all and (min-width: 740px) and (min-device-width: 740px), (max-device-width: 800px) and (min-width: 740px) and (orientation:landscape)","normal":"all and (min-width: 980px) and (min-device-width: 980px), all and (max-device-width: 1024px) and (min-width: 1024px) and (orientation:landscape)","wide":"all and (min-width: 1220px)"}}}});
+//--><!]]>
+</script>
+  <!--[if lt IE 9]><script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+</head>
+<body class="html not-front not-logged-in page-node page-node- page-node-730 node-type-documentation-page context-documentation">
+  <div id="body-bg-top"></div>
+  <div id="skip-link">
+    <a href="#main-content" class="element-invisible element-focusable">Skip to main content</a>
+  </div>
+    <div class="page clearfix" id="page">
+      <header id="section-header" class="section section-header">
+  <div id="zone-header-wrapper" class="zone-wrapper zone-header-wrapper clearfix">  
+  <div id="zone-header" class="zone zone-header clearfix container-12">
+    <div class="grid-7 region region-branding" id="region-branding">
+  <div class="region-inner region-branding-inner">
+        <div class="branding-data clearfix">
+            <div class="logo-img">
+        <a href="https://ferret.pmel.noaa.gov/Ferret/" rel="home" title=""><img src="https://ferret.pmel.noaa.gov/Ferret/sites/all/themes/pacific_marine/images/header-logo.png" alt="" id="logo" /></a>      </div>
+                </div>
+          </div>
+</div><div class="grid-5 region region-header-first" id="region-header-first">
+  <div class="region-inner region-header-first-inner">
+    <div class="block block-block block-4 block-block-4 odd block-without-title" id="block-block-4">
+  <div class="block-inner clearfix">
+                
+    <div class="content clearfix">
+      <div id="noaa-doc">
+<div class="logos">
+<div class="logo" id="doc-logo"><a href="https://www.commerce.gov/" target="_blank"><img alt="Department of Commerce logo" src="https://ferret.pmel.noaa.gov/Ferret/sites/all/themes/pacific_marine/images/doc_logo.png" style="width: 40px; height: 40px;" /></a></div>
+<div class="logo" id="noaa-logo"><a href="https://www.noaa.gov/" target="_blank"><img alt="National Oceanic and Atmospheric Administration logo" src="https://ferret.pmel.noaa.gov/Ferret/sites/all/themes/pacific_marine/images/noaa_logo.png" style="width: 40px; height: 40px;" /></a></div>
+</div>
+<div class="words">National Oceanic and<br />
+Atmospheric Administration<br /><span id="doc">United States Department of Commerce</span></div>
+</div>
+    </div>
+  </div>
+</div><div class="block block-search block-form block-search-form even block-without-title" id="block-search-form">
+  <div class="block-inner clearfix">
+                
+    <div class="content clearfix">
+      <form class="search-form" role="search" action="https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-b-pplus-guide/PPLUS-COMMAND-FILES" method="post" id="search-block-form" accept-charset="UTF-8"><div><div class="container-inline">
+      <h2 class="element-invisible">Search form</h2>
+    <div class="form-item form-type-textfield form-item-search-block-form">
+  <label class="element-invisible" for="edit-search-block-form--2">Search PMEL </label>
+ <input title="Enter the terms you wish to search for." class="custom-search-box form-text" placeholder="Search Ferret" type="text" id="edit-search-block-form--2" name="search_block_form" value="" size="15" maxlength="128" />
+</div>
+<div class="form-actions form-wrapper" id="edit-actions"><input style="display:none;" type="submit" id="edit-submit" name="op" value="" class="form-submit" /></div><input type="hidden" name="form_build_id" value="form-LXocZ4DwSq68IPKKBmvelBWiUZgmSFJMAObLPQQ_nzs" />
+<input type="hidden" name="form_id" value="search_block_form" />
+</div>
+</div></form>    </div>
+  </div>
+</div>  </div>
+</div>  </div>
+</div><div id="zone-menu-wrapper" class="zone-wrapper zone-menu-wrapper clearfix">  
+  <div id="zone-menu" class="zone zone-menu clearfix container-12">
+    <div class="grid-12 region region-menu" id="region-menu">
+  <div class="region-inner region-menu-inner">
+        <div class="block block-system block-menu block-main-menu block-system-main-menu odd block-without-title" id="block-system-main-menu">
+  <div class="block-inner clearfix">
+                
+    <div class="content clearfix">
+      <ul class="menu"><li class="first expanded"><a href="https://ferret.pmel.noaa.gov/Ferret/">Home</a><ul class="menu"><li class="first leaf"><a href="http://www.pmel.noaa.gov/project/science-data-integration">SDIG Home</a></li>
+<li class="leaf"><a href="https://ferret.pmel.noaa.gov/Ferret/">Ferret/PyFerret Home</a></li>
+<li class="last leaf"><a href="http://ferret.pmel.noaa.gov/LAS">LAS Home</a></li>
+</ul></li>
+<li class="leaf"><a href="../../ferret-documentation.html">Documentation</a></li>
+<li class="collapsed"><a href="https://ferret.pmel.noaa.gov/Ferret/downloads">Downloads</a></li>
+<li class="leaf"><a href="https://ferret.pmel.noaa.gov/Ferret/faq">FAQ</a></li>
+<li class="leaf"><a href="https://ferret.pmel.noaa.gov/Ferret/email-users-group">eMail Users Group</a></li>
+<li class="last collapsed"><a href="https://ferret.pmel.noaa.gov/Ferret/support/ferret-support">Support</a></li>
+</ul>    </div>
+  </div>
+</div>  </div>
+</div>
+  </div>
+</div></header>    
+      <section id="section-content" class="section section-content">
+  <div id="zone-preface-wrapper" class="zone-wrapper zone-preface-wrapper clearfix">  
+  <div id="zone-preface" class="zone zone-preface clearfix equal-height-container container-12">
+    <div class="grid-3 region region-preface-first equal-height-element" id="region-preface-first">
+  <div class="region-inner region-preface-first-inner">
+      </div>
+</div><div class="grid-9 region region-preface-second equal-height-element" id="region-preface-second">
+  <div class="region-inner region-preface-second-inner">
+      </div>
+</div>  </div>
+</div><div id="zone-content-wrapper" class="zone-wrapper zone-content-wrapper clearfix sidebar">  
+  <div id="zone-content" class="zone zone-content clearfix equal-height-container container-12">    
+          <div id="breadcrumb" class="grid-12"><h2 class="element-invisible">You are here</h2><div class="breadcrumb"><a href="https://ferret.pmel.noaa.gov/Ferret/">Home</a> > <a href="../../ferret-documentation.html">Documentation</a> > <a href="../../users-guide.html">Ferret User&#039;s Guide</a> > <a href="appendix-b-pplus-guide.html">Appendix B: PPLUS Guide</a> > PPLUS COMMAND FILES</div></div>
+        
+        <aside class="grid-3 region region-sidebar-first equal-height-element" id="region-sidebar-first">
+  <div class="region-inner region-sidebar-first-inner">
+    <div class="block block-superfish block-1 block-superfish-1 odd block-without-title" id="block-superfish-1">
+  <div class="block-inner clearfix">
+                
+    <div class="content clearfix">
+      <ul  id="superfish-1" class="menu sf-menu sf-main-menu sf-vertical sf-style-none sf-total-items-8 sf-parent-items-4 sf-single-items-4"><li id="menu-1620-1" class="first odd sf-item-1 sf-depth-2 sf-no-children"><a href="../../version-763-release-notes.html" class="sf-depth-2">Current Release Notes</a></li><li id="menu-1170-1" class="active-trail middle even sf-item-2 sf-depth-2 sf-total-children-17 sf-parent-children-15 sf-single-children-2 menuparent"><a href="../../users-guide.html" class="sf-depth-2 menuparent">Ferret User&#039;s Guide</a><ul><li id="menu-1613-1" class="first odd sf-item-1 sf-depth-3 sf-no-children"><a href="../full-index/index.html" class="sf-depth-3">Users Guide Index</a></li><li id="menu-1154-1" class="middle even sf-item-2 sf-depth-3 sf-total-children-41 sf-parent-children-0 sf-single-children-41 menuparent"><a href="../commands-reference/chapter-commnad-references.html" class="sf-depth-3 menuparent">Commands Reference</a><ul><li id="menu-1175-1" class="first odd sf-item-1 sf-depth-4 sf-no-children"><a href="../commands-reference/ALIAS.html" class="sf-depth-4">ALIAS</a></li><li id="menu-1176-1" class="middle even sf-item-2 sf-depth-4 sf-no-children"><a href="../commands-reference/CANCEL.html" class="sf-depth-4">CANCEL</a></li><li id="menu-1177-1" class="middle odd sf-item-3 sf-depth-4 sf-no-children"><a href="../commands-reference/CONTOUR.html" class="sf-depth-4">CONTOUR</a></li><li id="menu-1178-1" class="middle even sf-item-4 sf-depth-4 sf-no-children"><a href="../commands-reference/DEFINE.html" class="sf-depth-4">DEFINE</a></li><li id="menu-1179-1" class="middle odd sf-item-5 sf-depth-4 sf-no-children"><a href="../commands-reference/ELIF.html" class="sf-depth-4">ELIF</a></li><li id="menu-1180-1" class="middle even sf-item-6 sf-depth-4 sf-no-children"><a href="../commands-reference/ELSE.html" class="sf-depth-4">ELSE</a></li><li id="menu-1181-1" class="middle odd sf-item-7 sf-depth-4 sf-no-children"><a href="../commands-reference/ENDIF.html" class="sf-depth-4">ENDIF</a></li><li id="menu-1182-1" class="middle even sf-item-8 sf-depth-4 sf-no-children"><a href="../commands-reference/EXIT.html" class="sf-depth-4">EXIT</a></li><li id="menu-1183-1" class="middle odd sf-item-9 sf-depth-4 sf-no-children"><a href="../commands-reference/FILE.html" class="sf-depth-4">FILE</a></li><li id="menu-1184-1" class="middle even sf-item-10 sf-depth-4 sf-no-children"><a href="../commands-reference/FILL.html" class="sf-depth-4">FILL</a></li><li id="menu-1185-1" class="middle odd sf-item-11 sf-depth-4 sf-no-children"><a href="../commands-reference/FRAME.html" class="sf-depth-4">FRAME</a></li><li id="menu-1186-1" class="middle even sf-item-12 sf-depth-4 sf-no-children"><a href="../commands-reference/GO.html" class="sf-depth-4">GO</a></li><li id="menu-1187-1" class="middle odd sf-item-13 sf-depth-4 sf-no-children"><a href="../commands-reference/HELP.html" class="sf-depth-4">HELP</a></li><li id="menu-1188-1" class="middle even sf-item-14 sf-depth-4 sf-no-children"><a href="../commands-reference/IF.html" class="sf-depth-4">IF</a></li><li id="menu-1189-1" class="middle odd sf-item-15 sf-depth-4 sf-no-children"><a href="../commands-reference/LABEL.html" class="sf-depth-4">LABEL</a></li><li id="menu-1190-1" class="middle even sf-item-16 sf-depth-4 sf-no-children"><a href="../commands-reference/LET.html" class="sf-depth-4">LET</a></li><li id="menu-1191-1" class="middle odd sf-item-17 sf-depth-4 sf-no-children"><a href="../commands-reference/LIST.html" class="sf-depth-4">LIST</a></li><li id="menu-1192-1" class="middle even sf-item-18 sf-depth-4 sf-no-children"><a href="../commands-reference/LOAD.html" class="sf-depth-4">LOAD</a></li><li id="menu-1193-1" class="middle odd sf-item-19 sf-depth-4 sf-no-children"><a href="../commands-reference/MESSAGE.html" class="sf-depth-4">MESSAGE</a></li><li id="menu-1194-1" class="middle even sf-item-20 sf-depth-4 sf-no-children"><a href="../commands-reference/PALETTE.html" class="sf-depth-4">PALETTE</a></li><li id="menu-1195-1" class="middle odd sf-item-21 sf-depth-4 sf-no-children"><a href="../commands-reference/PATTERN.html" class="sf-depth-4">PATTERN</a></li><li id="menu-1196-1" class="middle even sf-item-22 sf-depth-4 sf-no-children"><a href="../commands-reference/PAUSE.html" class="sf-depth-4">PAUSE</a></li><li id="menu-1197-1" class="middle odd sf-item-23 sf-depth-4 sf-no-children"><a href="../commands-reference/PLOT.html" class="sf-depth-4">PLOT</a></li><li id="menu-1198-1" class="middle even sf-item-24 sf-depth-4 sf-no-children"><a href="../commands-reference/POLYGON.html" class="sf-depth-4">POLYGON</a></li><li id="menu-1199-1" class="middle odd sf-item-25 sf-depth-4 sf-no-children"><a href="../commands-reference/PPLUS.html" class="sf-depth-4">PPLUS</a></li><li id="menu-1200-1" class="middle even sf-item-26 sf-depth-4 sf-no-children"><a href="../commands-reference/QUERY.html" class="sf-depth-4">QUERY</a></li><li id="menu-1201-1" class="middle odd sf-item-27 sf-depth-4 sf-no-children"><a href="../commands-reference/QUIT.html" class="sf-depth-4">QUIT</a></li><li id="menu-1202-1" class="middle even sf-item-28 sf-depth-4 sf-no-children"><a href="../commands-reference/REPEAT.html" class="sf-depth-4">REPEAT</a></li><li id="menu-1203-1" class="middle odd sf-item-29 sf-depth-4 sf-no-children"><a href="../commands-reference/SAVE.html" class="sf-depth-4">SAVE</a></li><li id="menu-1204-1" class="middle even sf-item-30 sf-depth-4 sf-no-children"><a href="../commands-reference/SAY.html" class="sf-depth-4">SAY</a></li><li id="menu-1205-1" class="middle odd sf-item-31 sf-depth-4 sf-no-children"><a href="../commands-reference/SET.html" class="sf-depth-4">SET</a></li><li id="menu-1206-1" class="middle even sf-item-32 sf-depth-4 sf-no-children"><a href="../commands-reference/SHADE.html" class="sf-depth-4">SHADE</a></li><li id="menu-1207-1" class="middle odd sf-item-33 sf-depth-4 sf-no-children"><a href="../commands-reference/SHOW.html" class="sf-depth-4">SHOW</a></li><li id="menu-1208-1" class="middle even sf-item-34 sf-depth-4 sf-no-children"><a href="../commands-reference/SPAWN.html" class="sf-depth-4">SPAWN</a></li><li id="menu-1209-1" class="middle odd sf-item-35 sf-depth-4 sf-no-children"><a href="../commands-reference/STATISTICS.html" class="sf-depth-4">STATISTICS</a></li><li id="menu-1210-1" class="middle even sf-item-36 sf-depth-4 sf-no-children"><a href="../commands-reference/UNALIAS.html" class="sf-depth-4">UNALIAS</a></li><li id="menu-1211-1" class="middle odd sf-item-37 sf-depth-4 sf-no-children"><a href="../commands-reference/VECTOR.html" class="sf-depth-4">VECTOR</a></li><li id="menu-1212-1" class="middle even sf-item-38 sf-depth-4 sf-no-children"><a href="../commands-reference/USE.html" class="sf-depth-4">USE</a></li><li id="menu-1213-1" class="middle odd sf-item-39 sf-depth-4 sf-no-children"><a href="../commands-reference/USER.html" class="sf-depth-4">USER</a></li><li id="menu-1214-1" class="middle even sf-item-40 sf-depth-4 sf-no-children"><a href="../commands-reference/WI.html" class="sf-depth-4">WIRE</a></li><li id="menu-1215-1" class="last odd sf-item-41 sf-depth-4 sf-no-children"><a href="../commands-reference/WHERE.html" class="sf-depth-4">WHERE</a></li></ul></li><li id="menu-1390-1" class="middle odd sf-item-3 sf-depth-3 sf-total-children-8 sf-parent-children-0 sf-single-children-8 menuparent"><a href="../introduction.html" class="sf-depth-3 menuparent">1. Introduction</a><ul><li id="menu-1230-1" class="first odd sf-item-1 sf-depth-4 sf-no-children"><a href="../introduction/OVERVIEW.html" class="sf-depth-4">1.1 OVERVIEW</a></li><li id="menu-1231-1" class="middle even sf-item-2 sf-depth-4 sf-no-children"><a href="../introduction/GETTING-STARTED.html" class="sf-depth-4">1.2 GETTING STARTED</a></li><li id="menu-1232-1" class="middle odd sf-item-3 sf-depth-4 sf-no-children"><a href="../introduction/COMMON-COMMANDS.html" class="sf-depth-4">1.3 COMMON COMMANDS</a></li><li id="menu-1233-1" class="middle even sf-item-4 sf-depth-4 sf-no-children"><a href="../introduction/COMMAND-SYNTAX.html" class="sf-depth-4">1.4 COMMAND SYNTAX</a></li><li id="menu-1234-1" class="middle odd sf-item-5 sf-depth-4 sf-no-children"><a href="../introduction/GO-FILES.html" class="sf-depth-4">1.5 GO FILES</a></li><li id="menu-1235-1" class="middle even sf-item-6 sf-depth-4 sf-no-children"><a href="../introduction/SAMPLE-DATA-SETS.html" class="sf-depth-4">1.6 SAMPLE DATA SETS</a></li><li id="menu-1236-1" class="middle odd sf-item-7 sf-depth-4 sf-no-children"><a href="../introduction/UNIX-TOOLS.html" class="sf-depth-4">1.7 UNIX TOOLS</a></li><li id="menu-1237-1" class="last even sf-item-8 sf-depth-4 sf-no-children"><a href="../introduction/HELP.html" class="sf-depth-4">1.8 HELP</a></li></ul></li><li id="menu-1391-1" class="middle even sf-item-4 sf-depth-3 sf-total-children-9 sf-parent-children-1 sf-single-children-8 menuparent"><a href="../data-set-basics.html" class="sf-depth-3 menuparent">2. Data Set Basics</a><ul><li id="menu-1238-1" class="first odd sf-item-1 sf-depth-4 sf-no-children"><a href="../data-set-basics/OVERVIEW.html" class="sf-depth-4">2.1 OVERVIEW</a></li><li id="menu-1239-1" class="middle even sf-item-2 sf-depth-4 sf-total-children-1 sf-parent-children-0 sf-single-children-1 menuparent"><a href="../data-set-basics/NETCDF-DATA.html" class="sf-depth-4 menuparent">2.2 NETCDF DATA</a><ul><li id="menu-1593-1" class="firstandlast odd sf-item-1 sf-depth-5 sf-no-children"><a href="../../udunits.html" class="sf-depth-5">udunits.dat</a></li></ul></li><li id="menu-1240-1" class="middle odd sf-item-3 sf-depth-4 sf-no-children"><a href="../data-set-basics/TMAP-FORMATTED-DATA.html" class="sf-depth-4">2.3 TMAP-FORMATTED DATA</a></li><li id="menu-1241-1" class="middle even sf-item-4 sf-depth-4 sf-no-children"><a href="../data-set-basics/BINARY-DATA.html" class="sf-depth-4">2.4 BINARY DATA</a></li><li id="menu-1243-1" class="middle odd sf-item-5 sf-depth-4 sf-no-children"><a href="../data-set-basics/ASCII-DATA.html" class="sf-depth-4">2.5 ASCII DATA</a></li><li id="menu-1242-1" class="middle even sf-item-6 sf-depth-4 sf-no-children"><a href="../data-set-basics/TRICKS-TO-READING-BINARY-AND-ASCII-FILES.html" class="sf-depth-4">2.6 TRICKS TO READING BINARY AND ASCII FILES</a></li><li id="menu-1244-1" class="middle odd sf-item-7 sf-depth-4 sf-no-children"><a href="../data-set-basics/ACCESS-TO-REMOTE-DATA-SETS-WITH-DODS.html" class="sf-depth-4">2.7 ACCESS TO REMOTE DATA SETS WITH OPeNDAP</a></li><li id="menu-1246-1" class="middle even sf-item-8 sf-depth-4 sf-no-children"><a href="https://ferret.pmel.noaa.gov/Ferret/" class="sf-depth-4">dsg_trajectories</a></li><li id="menu-1247-1" class="last odd sf-item-9 sf-depth-4 sf-no-children"><a href="https://ferret.pmel.noaa.gov/Ferret/" class="sf-depth-4">dsg_profiles</a></li></ul></li><li id="menu-1392-1" class="middle odd sf-item-5 sf-depth-3 sf-total-children-5 sf-parent-children-0 sf-single-children-5 menuparent"><a href="../variables-xpressions.html" class="sf-depth-3 menuparent">3. Variables &amp; Expressions</a><ul><li id="menu-1248-1" class="first odd sf-item-1 sf-depth-4 sf-no-children"><a href="../variables-xpressions/VARIABLES.html" class="sf-depth-4">3.1 VARIABLES</a></li><li id="menu-1249-1" class="middle even sf-item-2 sf-depth-4 sf-no-children"><a href="../variables-xpressions/XPRESSIONS.html" class="sf-depth-4">3.2 EXPRESSIONS</a></li><li id="menu-1250-1" class="middle odd sf-item-3 sf-depth-4 sf-no-children"><a href="../variables-xpressions/EMBEDDED-XPRESSIONS.html" class="sf-depth-4">3.3 EMBEDDED EXPRESSIONS</a></li><li id="menu-1251-1" class="middle even sf-item-4 sf-depth-4 sf-no-children"><a href="../variables-xpressions/DEFINING-NEW-VARIABLES.html" class="sf-depth-4">3.4 DEFINING NEW VARIABLES</a></li><li id="menu-1252-1" class="last odd sf-item-5 sf-depth-4 sf-no-children"><a href="../variables-xpressions/DEBUGGING-COMPLEX-HIERARCHIES-OF-XPRESSIONS.html" class="sf-depth-4">3.5 DEBUGGING COMPLEX HIERARCHIES OF EXPRESSIONS</a></li></ul></li><li id="menu-1393-1" class="middle even sf-item-6 sf-depth-3 sf-total-children-4 sf-parent-children-0 sf-single-children-4 menuparent"><a href="../Grids-Regions.html" class="sf-depth-3 menuparent">4. Grids &amp; Regions</a><ul><li id="menu-1253-1" class="first odd sf-item-1 sf-depth-4 sf-no-children"><a href="../Grids-Regions/OVERVIEW.html" class="sf-depth-4">4.1 OVERVIEW</a></li><li id="menu-1254-1" class="middle even sf-item-2 sf-depth-4 sf-no-children"><a href="../Grids-Regions/GRIDS.html" class="sf-depth-4">4.2 GRIDS</a></li><li id="menu-1255-1" class="middle odd sf-item-3 sf-depth-4 sf-no-children"><a href="../Grids-Regions/REGIONS.html" class="sf-depth-4">4.3 REGIONS</a></li><li id="menu-1256-1" class="last even sf-item-4 sf-depth-4 sf-no-children"><a href="../Grids-Regions/FERRET-PROGRAM-LIMITS.html" class="sf-depth-4">4.4 FERRET PROGRAM LIMITS</a></li></ul></li><li id="menu-1394-1" class="middle odd sf-item-7 sf-depth-3 sf-total-children-5 sf-parent-children-0 sf-single-children-5 menuparent"><a href="../animations-gif-images.html" class="sf-depth-3 menuparent">5. Animations &amp; Gif Images</a><ul><li id="menu-1257-1" class="first odd sf-item-1 sf-depth-4 sf-no-children"><a href="../animations-gif-images/OVERVIEW.html" class="sf-depth-4">5.1 OVERVIEW</a></li><li id="menu-1258-1" class="middle even sf-item-2 sf-depth-4 sf-no-children"><a href="../animations-gif-images/CREATING-AN-HDF-MOVIE.html" class="sf-depth-4">5.2 CREATING AN HDF MOVIE</a></li><li id="menu-1259-1" class="middle odd sf-item-3 sf-depth-4 sf-no-children"><a href="../animations-gif-images/DISPLAYING-AN-HDF-MOVIE.html" class="sf-depth-4">5.3 DISPLAYING AN HDF MOVIE</a></li><li id="menu-1260-1" class="middle even sf-item-4 sf-depth-4 sf-no-children"><a href="../animations-gif-images/ADVANCED-MOVIE-MAKING.html" class="sf-depth-4">5.4 ADVANCED MOVIE-MAKING</a></li><li id="menu-1261-1" class="last odd sf-item-5 sf-depth-4 sf-no-children"><a href="../animations-gif-images/CREATING-GIF-IMAGES.html" class="sf-depth-4">5.5 CREATING GIF IMAGES</a></li></ul></li><li id="menu-1395-1" class="middle even sf-item-8 sf-depth-3 sf-total-children-12 sf-parent-children-0 sf-single-children-12 menuparent"><a href="../customizing-plots.html" class="sf-depth-3 menuparent">6. Customizing Plots</a><ul><li id="menu-1262-1" class="first odd sf-item-1 sf-depth-4 sf-no-children"><a href="../customizing-plots/OVERVIEW.html" class="sf-depth-4">6.1 OVERVIEW</a></li><li id="menu-1263-1" class="middle even sf-item-2 sf-depth-4 sf-no-children"><a href="../customizing-plots/GRAPHICAL-OUTPUT.html" class="sf-depth-4">6.2 GRAPHICAL OUTPUT</a></li><li id="menu-1264-1" class="middle odd sf-item-3 sf-depth-4 sf-no-children"><a href="../customizing-plots/AXES.html" class="sf-depth-4">6.3 AXES</a></li><li id="menu-1265-1" class="middle even sf-item-4 sf-depth-4 sf-no-children"><a href="../customizing-plots/LABELS.html" class="sf-depth-4">6.4 LABELS</a></li><li id="menu-1266-1" class="middle odd sf-item-5 sf-depth-4 sf-no-children"><a href="../customizing-plots/COLOR.html" class="sf-depth-4">6.5 COLOR</a></li><li id="menu-1267-1" class="middle even sf-item-6 sf-depth-4 sf-no-children"><a href="../customizing-plots/FONTS.html" class="sf-depth-4">6.6 FONTS</a></li><li id="menu-1268-1" class="middle odd sf-item-7 sf-depth-4 sf-no-children"><a href="../customizing-plots/PLOT-LAYOUT.html" class="sf-depth-4">6.7 PLOT LAYOUT</a></li><li id="menu-1269-1" class="middle even sf-item-8 sf-depth-4 sf-no-children"><a href="../customizing-plots/CONTOURING.html" class="sf-depth-4">6.8 CONTOURING</a></li><li id="menu-1270-1" class="middle odd sf-item-9 sf-depth-4 sf-no-children"><a href="../customizing-plots/SPECIAL-SYMBOLS.html" class="sf-depth-4">6.9 SPECIAL SYMBOLS</a></li><li id="menu-1617-1" class="middle even sf-item-10 sf-depth-4 sf-no-children"><a href="../customizing-plots/MAP-PROJECTIONS-AND-CURVILINEAR-COORDINATES.html" class="sf-depth-4">6.10 MAP PROJECTIONS AND CURVILINEAR COORDINATES</a></li><li id="menu-1272-1" class="middle odd sf-item-11 sf-depth-4 sf-no-children"><a href="../customizing-plots/linecolors.gif/view.html" class="sf-depth-4">LINECOLORS example</a></li><li id="menu-1273-1" class="last even sf-item-12 sf-depth-4 sf-no-children"><a href="../customizing-plots/Chapter6_plotuv.png/view.html" class="sf-depth-4">PLOTUV example</a></li></ul></li><li id="menu-1396-1" class="middle odd sf-item-9 sf-depth-3 sf-total-children-11 sf-parent-children-0 sf-single-children-11 menuparent"><a href="../handing-string-data-symbols.html" class="sf-depth-3 menuparent">7. Handing String Data Symbols</a><ul><li id="menu-1274-1" class="first odd sf-item-1 sf-depth-4 sf-no-children"><a href="../handing-string-data-symbols/STRING-VARIABLES.html" class="sf-depth-4">7.1 STRING VARIABLES</a></li><li id="menu-1275-1" class="middle even sf-item-2 sf-depth-4 sf-no-children"><a href="../handing-string-data-symbols/STRING-FUNCTIONS.html" class="sf-depth-4">7.2 STRING FUNCTIONS</a></li><li id="menu-1276-1" class="middle odd sf-item-3 sf-depth-4 sf-no-children"><a href="../handing-string-data-symbols/SYMBOL-COMMANDS.html" class="sf-depth-4">7.3 SYMBOL COMMANDS</a></li><li id="menu-1277-1" class="middle even sf-item-4 sf-depth-4 sf-no-children"><a href="../handing-string-data-symbols/AUTOMATICALLY-GENERATED-SYMBOLS.html" class="sf-depth-4">7.4 AUTOMATICALLY GENERATED SYMBOLS</a></li><li id="menu-1278-1" class="middle odd sf-item-5 sf-depth-4 sf-no-children"><a href="../handing-string-data-symbols/USE-WITH-EMBEDDED-EXPRESSIONS.html" class="sf-depth-4">7.5 USE WITH EMBEDDED EXPRESSIONS</a></li><li id="menu-1279-1" class="middle even sf-item-6 sf-depth-4 sf-no-children"><a href="../handing-string-data-symbols/ORDER-OF-STRING-SUBSTITUTIONS.html" class="sf-depth-4">7.6 ORDER OF STRING SUBSTITUTIONS</a></li><li id="menu-1280-1" class="middle odd sf-item-7 sf-depth-4 sf-no-children"><a href="../handing-string-data-symbols/CUSTOMIZING-THE-POSITION-AND-STYLE%20OF%20PLOT%20LABELS.html" class="sf-depth-4">7.7 CUSTOMIZING THE POSITION AND STYLE OF PLOT LABELS</a></li><li id="menu-1281-1" class="middle even sf-item-8 sf-depth-4 sf-no-children"><a href="../handing-string-data-symbols/USING-SYMBOLS-IN-COMMAND-FILES.html" class="sf-depth-4">7.8 USING SYMBOLS IN COMMAND FILES</a></li><li id="menu-1282-1" class="middle odd sf-item-9 sf-depth-4 sf-no-children"><a href="../handing-string-data-symbols/PLOT-STRING-EDITING-TOOLS.html" class="sf-depth-4">7.9 PLOT+ STRING EDITING TOOLS</a></li><li id="menu-1283-1" class="middle even sf-item-10 sf-depth-4 sf-no-children"><a href="../handing-string-data-symbols/SYMBOL-EDITING.html" class="sf-depth-4">7.10 SYMBOL EDITING</a></li><li id="menu-1284-1" class="last odd sf-item-11 sf-depth-4 sf-no-children"><a href="../handing-string-data-symbols/SPECIAL-SYMBOLS.html" class="sf-depth-4">7.11 SPECIAL SYMBOLS</a></li></ul></li><li id="menu-1397-1" class="middle even sf-item-10 sf-depth-3 sf-total-children-10 sf-parent-children-0 sf-single-children-10 menuparent"><a href="../working-with-special-data-sets.html" class="sf-depth-3 menuparent">8. Working with Special Data Sets</a><ul><li id="menu-1285-1" class="first odd sf-item-1 sf-depth-4 sf-no-children"><a href="../working-with-special-data-sets/WHAT-IS-NON-GRIDDED-DATA.html" class="sf-depth-4">8.1 WHAT IS NON-GRIDDED DATA?</a></li><li id="menu-1286-1" class="middle even sf-item-2 sf-depth-4 sf-no-children"><a href="../working-with-special-data-sets/POINT-DATA.html" class="sf-depth-4">8.2 POINT DATA</a></li><li id="menu-1287-1" class="middle odd sf-item-3 sf-depth-4 sf-no-children"><a href="../working-with-special-data-sets/VERTICAL-PROFILES.html" class="sf-depth-4">8.3 VERTICAL PROFILES</a></li><li id="menu-1288-1" class="middle even sf-item-4 sf-depth-4 sf-no-children"><a href="../working-with-special-data-sets/COLLECTIONS-OF-TIME-SERIES.html" class="sf-depth-4">8.4 COLLECTIONS OF TIME SERIES</a></li><li id="menu-1289-1" class="middle odd sf-item-5 sf-depth-4 sf-no-children"><a href="../working-with-special-data-sets/COLLECTIONS-OF-2-DIMENSIONAL-GRIDS.html" class="sf-depth-4">8.5 COLLECTIONS OF 2-DIMENSIONAL GRIDS</a></li><li id="menu-1290-1" class="middle even sf-item-6 sf-depth-4 sf-no-children"><a href="../working-with-special-data-sets/LAGRANGIAN-DATA.html" class="sf-depth-4">8.6 LAGRANGIAN DATA</a></li><li id="menu-1291-1" class="middle odd sf-item-7 sf-depth-4 sf-no-children"><a href="../working-with-special-data-sets/SIGMA-COORDINATE-DATA.html" class="sf-depth-4">8.7 SIGMA COORDINATE DATA</a></li><li id="menu-1292-1" class="middle even sf-item-8 sf-depth-4 sf-no-children"><a href="../working-with-special-data-sets/CURVILINEAR-COORDINATE-DATA.html" class="sf-depth-4">8.8 CURVILINEAR COORDINATE DATA</a></li><li id="menu-1293-1" class="middle odd sf-item-9 sf-depth-4 sf-no-children"><a href="../working-with-special-data-sets/POLYGONAL-DATA.html" class="sf-depth-4">8.9 POLYGONAL DATA</a></li><li id="menu-1245-1" class="last even sf-item-10 sf-depth-4 sf-no-children"><a href="../working-with-special-data-sets/DSG_datasets.html" class="sf-depth-4">8.10 Discrete Geometries Datasets</a></li></ul></li><li id="menu-1398-1" class="middle odd sf-item-11 sf-depth-3 sf-total-children-7 sf-parent-children-0 sf-single-children-7 menuparent"><a href="../computing-environment.html" class="sf-depth-3 menuparent">9. Computing Environment</a><ul><li id="menu-1294-1" class="first odd sf-item-1 sf-depth-4 sf-no-children"><a href="../computing-environment/SETTING-UP-TO-RUN-FERRET.html" class="sf-depth-4">9.1 SETTING UP TO RUN FERRET</a></li><li id="menu-1295-1" class="middle even sf-item-2 sf-depth-4 sf-no-children"><a href="../computing-environment/FILES-AND-ENVIRONMENT-VARIABLES-USED-BY-FERRET.html" class="sf-depth-4">9.2 FILES AND ENVIRONMENT VARIABLES USED BY FERRET</a></li><li id="menu-1296-1" class="middle odd sf-item-3 sf-depth-4 sf-no-children"><a href="../computing-environment/MEMORY-USE.html" class="sf-depth-4">9.3 MEMORY USE</a></li><li id="menu-1297-1" class="middle even sf-item-4 sf-depth-4 sf-no-children"><a href="../computing-environment/HARD-COPY-AND-METAFILE-TRANSLATION.html" class="sf-depth-4">9.4 HARD COPY AND METAFILE TRANSLATION</a></li><li id="menu-1298-1" class="middle odd sf-item-5 sf-depth-4 sf-no-children"><a href="../computing-environment/OUTPUT-FILE-NAMING.html" class="sf-depth-4">9.5 OUTPUT FILE NAMING</a></li><li id="menu-1299-1" class="middle even sf-item-6 sf-depth-4 sf-no-children"><a href="../computing-environment/INPUT-FILE-NAMING.html" class="sf-depth-4">9.6 INPUT FILE NAMING</a></li><li id="menu-1300-1" class="last odd sf-item-7 sf-depth-4 sf-no-children"><a href="../computing-environment/my_ferret_paths_template.html" class="sf-depth-4">my_ferret_paths_template</a></li></ul></li><li id="menu-1399-1" class="middle even sf-item-12 sf-depth-3 sf-total-children-4 sf-parent-children-0 sf-single-children-4 menuparent"><a href="../converting-to-netcdf.html" class="sf-depth-3 menuparent">10. Converting to NetCDF</a><ul><li id="menu-1301-1" class="first odd sf-item-1 sf-depth-4 sf-no-children"><a href="../converting-to-netcdf/OVERVIEW.html" class="sf-depth-4">10.1 OVERVIEW</a></li><li id="menu-1302-1" class="middle even sf-item-2 sf-depth-4 sf-no-children"><a href="../converting-to-netcdf/SIMPLE-CONVERSIONS-USING-FERRET.html" class="sf-depth-4">10.2 SIMPLE CONVERSIONS USING FERRET</a></li><li id="menu-1303-1" class="middle odd sf-item-3 sf-depth-4 sf-no-children"><a href="../converting-to-netcdf/WRITING-A-CONVERSION-PROGRAM.html" class="sf-depth-4">10.3 WRITING A CONVERSION PROGRAM</a></li><li id="menu-1304-1" class="last even sf-item-4 sf-depth-4 sf-no-children"><a href="../converting-to-netcdf/CREATING-A-MULTI-FILE-NETCDF-DATA-SET.html" class="sf-depth-4">10.4 CREATING A MULTI-FILE NETCDF DATA SET</a></li></ul></li><li id="menu-1400-1" class="middle odd sf-item-13 sf-depth-3 sf-total-children-6 sf-parent-children-0 sf-single-children-6 menuparent"><a href="../writing-external-functions.html" class="sf-depth-3 menuparent">11. Writing External Functions</a><ul><li id="menu-1305-1" class="first odd sf-item-1 sf-depth-4 sf-no-children"><a href="../writing-external-functions/OVERVIEW.html" class="sf-depth-4">11.1 OVERVIEW</a></li><li id="menu-1306-1" class="middle even sf-item-2 sf-depth-4 sf-no-children"><a href="../writing-external-functions/GETTING-STARTED.html" class="sf-depth-4">11.2 GETTING STARTED</a></li><li id="menu-1307-1" class="middle odd sf-item-3 sf-depth-4 sf-no-children"><a href="../writing-external-functions/QUICK-START-EXAMPLE.html" class="sf-depth-4">11.3 QUICK START EXAMPLE</a></li><li id="menu-1308-1" class="middle even sf-item-4 sf-depth-4 sf-no-children"><a href="../writing-external-functions/ANATOMY-OF-AN-EXTERNAL-FUNCTION.html" class="sf-depth-4">11.4 ANATOMY OF AN EXTERNAL FUNCTION</a></li><li id="menu-1309-1" class="middle odd sf-item-5 sf-depth-4 sf-no-children"><a href="../writing-external-functions/NOTES-AND-SUGGESTIONS.html" class="sf-depth-4">11.5 NOTES AND SUGGESTIONS</a></li><li id="menu-1310-1" class="last even sf-item-6 sf-depth-4 sf-no-children"><a href="../writing-external-functions/UTILITY-FUNCTIONS.html" class="sf-depth-4">11.6 UTILITY FUNCTIONS</a></li></ul></li><li id="menu-1166-1" class="middle even sf-item-14 sf-depth-3 sf-no-children"><a href="../glossary/glossary.html" class="sf-depth-3">Glossary</a></li><li id="menu-1427-1" class="middle odd sf-item-15 sf-depth-3 sf-total-children-58 sf-parent-children-0 sf-single-children-58 menuparent"><a href="../appendix-a-external-functions/appendix-a.html" class="sf-depth-3 menuparent">Appendix A: Functions</a><ul><li id="menu-1597-1" class="first odd sf-item-1 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/BIN_INDEX_WT.html" class="sf-depth-4">BIN_INDEX_WT</a></li><li id="menu-1430-1" class="middle even sf-item-2 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/COMPRESSI.html" class="sf-depth-4">COMPRESSI (and J,K,L,M,N)</a></li><li id="menu-1431-1" class="middle odd sf-item-3 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/COMPRESSI-BY.html" class="sf-depth-4">COMPRESSI_BY (and J,K,L,M,N)</a></li><li id="menu-1432-1" class="middle even sf-item-4 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/CONVOLVEI.html" class="sf-depth-4">CONVOLVEI</a></li><li id="menu-1428-1" class="middle odd sf-item-5 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/CURV-TO-RECT.html" class="sf-depth-4">CURV_TO_RECT</a></li><li id="menu-1429-1" class="middle even sf-item-6 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/CURV-TO-RECT-MAP.html" class="sf-depth-4">CURV_TO_RECT_MAP</a></li><li id="menu-1433-1" class="middle odd sf-item-7 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/DATE1900.html" class="sf-depth-4">DATE1900</a></li><li id="menu-1434-1" class="middle even sf-item-8 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/DAYS1900TOYMDHMS.html" class="sf-depth-4">DAYS1900TOYMDHMS</a></li><li id="menu-1601-1" class="middle odd sf-item-9 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/DOT.html" class="sf-depth-4">DOT</a></li><li id="menu-1437-1" class="middle even sf-item-10 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/ecat.html" class="sf-depth-4">ECAT and ECAT_STR</a></li><li id="menu-1438-1" class="middle odd sf-item-11 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/ELEMENT-INDEX.html" class="sf-depth-4">ELEMENT_INDEX</a></li><li id="menu-1439-1" class="middle even sf-item-12 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/ELEMENT-INDEX-STRING.html" class="sf-depth-4">ELEMENT_INDEX_STR</a></li><li id="menu-1440-1" class="middle odd sf-item-13 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/EOF-SPACE.html" class="sf-depth-4">EOF_SPACE and EOFSVD_SPACE</a></li><li id="menu-1441-1" class="middle even sf-item-14 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/EOF-STAT.html" class="sf-depth-4">EOF_STAT and EOFSVD_STAT</a></li><li id="menu-1442-1" class="middle odd sf-item-15 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/EOF-TFUNC.html" class="sf-depth-4">EOF_TFUNC and EOFSVD_TFUNC</a></li><li id="menu-1443-1" class="middle even sf-item-16 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/expnd_by_len.html" class="sf-depth-4">EXPND_BY_LEN and EXPND_BY_LEN_STR</a></li><li id="menu-1444-1" class="middle odd sf-item-17 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/expndi_by.html" class="sf-depth-4">EXPNDI_BY</a></li><li id="menu-1445-1" class="middle even sf-item-18 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/expndi_by_m_counts.html" class="sf-depth-4">EXPNDI_BY_M_COUNTS</a></li><li id="menu-1446-1" class="middle odd sf-item-19 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/expndi_by_t.html" class="sf-depth-4">EXPNDI_BY_T</a></li><li id="menu-1447-1" class="middle even sf-item-20 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/expndi_by_z.html" class="sf-depth-4">EXPNDI_BY_Z</a></li><li id="menu-1448-1" class="middle odd sf-item-21 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/expndi_by_z_counts-and-expndi_id_by_z_counts.html" class="sf-depth-4">EXPNDI_BY_Z_COUNTS</a></li><li id="menu-1449-1" class="middle even sf-item-22 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/expndi_id_by_z_counts.html" class="sf-depth-4">EXPNDI_ID_BY_Z_COUNTS</a></li><li id="menu-1436-1" class="middle odd sf-item-23 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/fcat.html" class="sf-depth-4">FCAT</a></li><li id="menu-1435-1" class="middle even sf-item-24 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/fc_isubset.html" class="sf-depth-4">FC_ISUBSET</a></li><li id="menu-1450-1" class="middle odd sf-item-25 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/FFT-IM.html" class="sf-depth-4">FFT_IM</a></li><li id="menu-1451-1" class="middle even sf-item-26 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/FFT-INVERSE.html" class="sf-depth-4">FFT_INVERSE</a></li><li id="menu-1453-1" class="middle odd sf-item-27 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/FFT-RE.html" class="sf-depth-4">FFT_RE</a></li><li id="menu-1452-1" class="middle even sf-item-28 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/fill_xy.html" class="sf-depth-4">FILL_XY</a></li><li id="menu-1454-1" class="middle odd sf-item-29 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/FINDHI.html" class="sf-depth-4">FINDHI</a></li><li id="menu-1455-1" class="middle even sf-item-30 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/FINDLO.html" class="sf-depth-4">FINDLO</a></li><li id="menu-1456-1" class="middle odd sf-item-31 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/IS-ELEMENT-OF.html" class="sf-depth-4">IS_ELEMENT_OF</a></li><li id="menu-1458-1" class="middle even sf-item-32 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/LANCZOS.html" class="sf-depth-4">LANCZOS</a></li><li id="menu-1459-1" class="middle odd sf-item-33 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/lon_lat_time_string.html" class="sf-depth-4">LON_LAT_TIME_STRING</a></li><li id="menu-1460-1" class="middle even sf-item-34 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/LSL-LOWPASS.html" class="sf-depth-4">LSL_LOWPASS</a></li><li id="menu-1461-1" class="middle odd sf-item-35 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/MINUTES24.html" class="sf-depth-4">MINUTES24</a></li><li id="menu-1462-1" class="middle even sf-item-36 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/NCO.html" class="sf-depth-4">NCO</a></li><li id="menu-1463-1" class="middle odd sf-item-37 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/NCO_ATTR.html" class="sf-depth-4">NCO_ATTR</a></li><li id="menu-1464-1" class="middle even sf-item-38 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/pt_in_poly.html" class="sf-depth-4">PT_IN_POLY</a></li><li id="menu-1465-1" class="middle odd sf-item-39 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/RECT-TO-CURV.html" class="sf-depth-4">RECT_TO_CURV</a></li><li id="menu-1466-1" class="middle even sf-item-40 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/samplexy_curv_avg.html" class="sf-depth-4">SAMPLEXY_CURV_AVG</a></li><li id="menu-1467-1" class="middle odd sf-item-41 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/samplexy_curv_nrst.html" class="sf-depth-4">SAMPLEXY_CURV_NRST</a></li><li id="menu-1468-1" class="middle even sf-item-42 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/samplexyt.html" class="sf-depth-4">SAMPLEXYT</a></li><li id="menu-1469-1" class="middle odd sf-item-43 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/samplexz.html" class="sf-depth-4">SAMPLEXZ</a></li><li id="menu-1470-1" class="middle even sf-item-44 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/sampleyz.html" class="sf-depth-4">SAMPLEYZ</a></li><li id="menu-1472-1" class="middle odd sf-item-45 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/scat2grid_bin_xy.html" class="sf-depth-4">SCAT2GRID_BIN_XY and SCAT2GRID_BIN_XYT</a></li><li id="menu-1473-1" class="middle even sf-item-46 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/scatgrid_nbin_xyt.html" class="sf-depth-4">SCAT2GRID_NBIN_XY and SCAT2GRID_NBIN_XYT</a></li><li id="menu-1471-1" class="middle odd sf-item-47 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/scat2grid_nobs_xy.html" class="sf-depth-4">SCAT2GRID_NOBS_XY</a></li><li id="menu-1474-1" class="middle even sf-item-48 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/separate.html" class="sf-depth-4">SEPARATE</a></li><li id="menu-1475-1" class="middle odd sf-item-49 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/tax_datestring.html" class="sf-depth-4">TAX_DATESTRING</a></li><li id="menu-1477-1" class="middle even sf-item-50 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/TCAT.html" class="sf-depth-4">TCAT</a></li><li id="menu-1476-1" class="middle odd sf-item-51 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/test_opendap.html" class="sf-depth-4">TEST_OPENDAP</a></li><li id="menu-1599-1" class="middle even sf-item-52 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/TRANSPOSE.html" class="sf-depth-4">TRANSPOSE</a></li><li id="menu-1478-1" class="middle odd sf-item-53 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/WRITEV5D.html" class="sf-depth-4">WRITEV5D</a></li><li id="menu-1481-1" class="middle even sf-item-54 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/XCAT.html" class="sf-depth-4">XCAT</a></li><li id="menu-1482-1" class="middle odd sf-item-55 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/YCAT.html" class="sf-depth-4">YCAT</a></li><li id="menu-1479-1" class="middle even sf-item-56 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/ZAXREPLACE-AVG.html" class="sf-depth-4">ZAXREPLACE_AVG</a></li><li id="menu-1480-1" class="middle odd sf-item-57 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/ZAXREPLACE-BIN.html" class="sf-depth-4">ZAXREPLACE_BIN</a></li><li id="menu-1483-1" class="last even sf-item-58 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/ZCAT.html" class="sf-depth-4">ZCAT</a></li></ul></li><li id="menu-1168-1" class="active-trail middle even sf-item-16 sf-depth-3 sf-total-children-9 sf-parent-children-1 sf-single-children-8 menuparent"><a href="appendix-b-pplus-guide.html" class="sf-depth-3 menuparent">Appendix B: PPLUS Guide</a><ul><li id="menu-1311-1" class="first odd sf-item-1 sf-depth-4 sf-no-children"><a href="INTRODUCTION.html" class="sf-depth-4">INTRODUCTION</a></li><li id="menu-1312-1" class="middle even sf-item-2 sf-depth-4 sf-no-children"><a href="GETTING-STARTED.html" class="sf-depth-4">GETTING STARTED</a></li><li id="menu-1313-1" class="middle odd sf-item-3 sf-depth-4 sf-no-children"><a href="COMMAND-FORMAT.html" class="sf-depth-4">COMMAND FORMAT</a></li><li id="menu-1314-1" class="middle even sf-item-4 sf-depth-4 sf-no-children"><a href="COMMAND-SYNOPSIS.html" class="sf-depth-4">COMMAND SYNOPSIS</a></li><li id="menu-1315-1" class="middle odd sf-item-5 sf-depth-4 sf-no-children"><a href="BEGINNERS-GUIDE.html" class="sf-depth-4">BEGINNERS GUIDE</a></li><li id="menu-1316-1" class="middle even sf-item-6 sf-depth-4 sf-no-children"><a href="ROUTING-PLOT-FILES.html" class="sf-depth-4">ROUTING PLOT FILES</a></li><li id="menu-1317-1" class="active-trail middle odd sf-item-7 sf-depth-4 sf-total-children-2 sf-parent-children-0 sf-single-children-2 menuparent"><a href="PPLUS-COMMAND-FILES.html" class="sf-depth-4 menuparent active">PPLUS COMMAND FILES</a><ul><li id="menu-1324-1" class="first odd sf-item-1 sf-depth-5 sf-no-children"><a href="../ferret-fonts/list-of-ferret-fonts.html" class="sf-depth-5">List of Ferret Symbol Fonts</a></li><li id="menu-1325-1" class="last even sf-item-2 sf-depth-5 sf-no-children"><a href="../ferret-fonts/list-of-ferret-character-fonts.html" class="sf-depth-5">List of Ferret/PPLUS Character fonts</a></li></ul></li><li id="menu-1318-1" class="middle even sf-item-8 sf-depth-4 sf-no-children"><a href="PLOT5-PPLUS-DIFFERENCES.html" class="sf-depth-4">PLOT5, PPLUS DIFFERENCES</a></li><li id="menu-1319-1" class="last odd sf-item-9 sf-depth-4 sf-no-children"><a href="COMMAND-DESCRIPTION.html" class="sf-depth-4">COMMAND DESCRIPTION</a></li></ul></li><li id="menu-1169-1" class="last odd sf-item-17 sf-depth-3 sf-total-children-4 sf-parent-children-0 sf-single-children-4 menuparent"><a href="../appendix-c-ferret-specific-pplus-enhancements/appendix-c-ferret-specific-pplus-enhancements.html" class="sf-depth-3 menuparent">Appendix C: Ferret-Specific PPLUS Enhancements</a><ul><li id="menu-1320-1" class="first odd sf-item-1 sf-depth-4 sf-no-children"><a href="../appendix-c-ferret-specific-pplus-enhancements/PLOTPLUS-HISTORY-EVOLUTION.html" class="sf-depth-4">PLOTPLUS HISTORY, EVOLUTION</a></li><li id="menu-1321-1" class="middle even sf-item-2 sf-depth-4 sf-no-children"><a href="../appendix-c-ferret-specific-pplus-enhancements/ENHANCED-COMMANDS-DESCRIPTION.html" class="sf-depth-4">ENHANCED COMMANDS DESCRIPTION</a></li><li id="menu-1322-1" class="middle odd sf-item-3 sf-depth-4 sf-no-children"><a href="../appendix-c-ferret-specific-pplus-enhancements/GKS-LINE-BUNDLES.html" class="sf-depth-4">GKS LINE BUNDLES</a></li><li id="menu-1323-1" class="last even sf-item-4 sf-depth-4 sf-no-children"><a href="../appendix-c-ferret-specific-pplus-enhancements/HARD-COPY.html" class="sf-depth-4">HARD COPY</a></li></ul></li></ul></li><li id="menu-1336-1" class="middle odd sf-item-3 sf-depth-2 sf-no-children"><a href="../../all-release-notes.html" class="sf-depth-2">Previous Release Notes</a></li><li id="menu-1339-1" class="middle even sf-item-4 sf-depth-2 sf-total-children-15 sf-parent-children-1 sf-single-children-14 menuparent"><a href="../../ferret-tutorials.html" class="sf-depth-2 menuparent">Tutorials and Demos</a><ul><li id="menu-1338-1" class="first odd sf-item-1 sf-depth-3 sf-no-children"><a href="../../ferret-tutorial-script.html" class="sf-depth-3">Ferret Tour</a></li><li id="menu-1618-1" class="middle even sf-item-2 sf-depth-3 sf-no-children"><a href="../../dsg-files-discrete-sampling-geometries-demo.html" class="sf-depth-3">DSG files: Discrete Sampling Geometries Demo</a></li><li id="menu-1337-1" class="middle odd sf-item-3 sf-depth-3 sf-total-children-5 sf-parent-children-0 sf-single-children-5 menuparent"><a href="../../ferret-tutorials.html" class="sf-depth-3 menuparent">External Function Examples</a><ul><li id="menu-1343-1" class="first odd sf-item-1 sf-depth-4 sf-no-children"><a href="../../sorting-demo.html" class="sf-depth-4">Ferret sorting demo (1)</a></li><li id="menu-1591-1" class="middle even sf-item-2 sf-depth-4 sf-no-children"><a href="../../ferret-sorting-demo.html" class="sf-depth-4">Ferret sorting demo (2)</a></li><li id="menu-1344-1" class="middle odd sf-item-3 sf-depth-4 sf-no-children"><a href="../../how-to-use-ferret-external-functions-for-computing-ffts.html" class="sf-depth-4">Fast Fourier Transforms demo</a></li><li id="menu-1345-1" class="middle even sf-item-4 sf-depth-4 sf-no-children"><a href="../../ferret-eof-demo.html" class="sf-depth-4">Empirical Orthogonal Functions demo</a></li><li id="menu-1346-1" class="last odd sf-item-5 sf-depth-4 sf-no-children"><a href="../../ferret-objective-analysis.html" class="sf-depth-4">Ferret objective analysis demo</a></li></ul></li><li id="menu-1353-1" class="middle even sf-item-4 sf-depth-3 sf-no-children"><a href="../../ferret-palette-demo.html" class="sf-depth-3">Ferret Palette Demo</a></li><li id="menu-1350-1" class="middle odd sf-item-5 sf-depth-3 sf-no-children"><a href="../../ferret-map-projections-demo.html" class="sf-depth-3">Map projections</a></li><li id="menu-1354-1" class="middle even sf-item-6 sf-depth-3 sf-no-children"><a href="../../ferret-polygon-vector-demo.html" class="sf-depth-3">Ferret polygon vector demo</a></li><li id="menu-1355-1" class="middle odd sf-item-7 sf-depth-3 sf-no-children"><a href="../../ferret-graticules-demo.html" class="sf-depth-3">Ferret Graticules demo</a></li><li id="menu-1352-1" class="middle even sf-item-8 sf-depth-3 sf-no-children"><a href="../../ferret-polytube-demo.html" class="sf-depth-3">Ferret Polytube Demo</a></li><li id="menu-1351-1" class="middle odd sf-item-9 sf-depth-3 sf-no-children"><a href="../../ferret-polymark-demo.html" class="sf-depth-3">Ferret Polymark Demo</a></li><li id="menu-1349-1" class="middle even sf-item-10 sf-depth-3 sf-no-children"><a href="../../ferret-constant-array-demo.html" class="sf-depth-3">Ferret Constant-Array demo</a></li><li id="menu-1356-1" class="middle odd sf-item-11 sf-depth-3 sf-no-children"><a href="../../ferret-land_detail-demo.html" class="sf-depth-3">Ferret land_detail demo</a></li><li id="menu-1340-1" class="middle even sf-item-12 sf-depth-3 sf-no-children"><a href="../../coads-tour.html" class="sf-depth-3">COADS Tour</a></li><li id="menu-1341-1" class="middle odd sf-item-13 sf-depth-3 sf-no-children"><a href="../../levitus-tour.html" class="sf-depth-3">Levitus Tour</a></li><li id="menu-1342-1" class="middle even sf-item-14 sf-depth-3 sf-no-children"><a href="../../how-to-use-ferret-and-opendap-to-access-and-analyze-remote-data-1.html" class="sf-depth-3">Use OPeNDAP</a></li><li id="menu-1348-1" class="last odd sf-item-15 sf-depth-3 sf-no-children"><a href="../../ferret-binary-read-demo.html" class="sf-depth-3">Ferret binary read demo</a></li></ul></li><li id="menu-1333-1" class="middle odd sf-item-5 sf-depth-2 sf-total-children-13 sf-parent-children-1 sf-single-children-12 menuparent"><a href="../../pyferret.html" class="sf-depth-2 menuparent">PyFerret</a><ul><li id="menu-1426-1" class="first odd sf-item-1 sf-depth-3 sf-total-children-4 sf-parent-children-0 sf-single-children-4 menuparent"><a href="../../pyferret/downloads.html" class="sf-depth-3 menuparent">PyFerret Downloads and Install</a><ul><li id="menu-1374-1" class="first odd sf-item-1 sf-depth-4 sf-no-children"><a href="../../pyferret/requirements.html" class="sf-depth-4">PyFerret requirements</a></li><li id="menu-1375-1" class="middle even sf-item-2 sf-depth-4 sf-no-children"><a href="https://ferret.pmel.noaa.gov/Ferret/downloads/pyferret" class="sf-depth-4">PyFerret Downloads</a></li><li id="menu-1377-1" class="middle odd sf-item-3 sf-depth-4 sf-no-children"><a href="../../pyferret/build-install.html" class="sf-depth-4">Installing or Building PyFerret</a></li><li id="menu-1376-1" class="last even sf-item-4 sf-depth-4 sf-no-children"><a href="../../pyferret/known-issues.html" class="sf-depth-4">PyFerret Known Issues and Release Notes</a></li></ul></li><li id="menu-1359-1" class="middle even sf-item-2 sf-depth-3 sf-no-children"><a href="../../pyferret/what-is-pyferret.html" class="sf-depth-3">What is PyFerret?</a></li><li id="menu-1360-1" class="middle odd sf-item-3 sf-depth-3 sf-no-children"><a href="../../pyferret/why-use-pyferret.html" class="sf-depth-3">Why use PyFerret?</a></li><li id="menu-1361-1" class="middle even sf-item-4 sf-depth-3 sf-no-children"><a href="../../pyferret/example-sessions-ferret.html" class="sf-depth-3">PyFerret for the Ferret user</a></li><li id="menu-1362-1" class="middle odd sf-item-5 sf-depth-3 sf-no-children"><a href="../../pyferret/pyferret-quick-start-notes.html" class="sf-depth-3">PyFerret command syntax: quick-start notes</a></li><li id="menu-1364-1" class="middle even sf-item-6 sf-depth-3 sf-no-children"><a href="../../pyferret/example-sessions-python.html" class="sf-depth-3">PyFerret for the Python user</a></li><li id="menu-1365-1" class="middle odd sf-item-7 sf-depth-3 sf-no-children"><a href="../../pyferret/graphics.html" class="sf-depth-3">Graphics in PyFerret  </a></li><li id="menu-1366-1" class="middle even sf-item-8 sf-depth-3 sf-no-children"><a href="../../pyferret/ferret-functionality.html" class="sf-depth-3">New Ferret functionality</a></li><li id="menu-1367-1" class="middle odd sf-item-9 sf-depth-3 sf-no-children"><a href="../../pyferret/python-functions.html" class="sf-depth-3">PyFerret Python functions and constants</a></li><li id="menu-1368-1" class="middle even sf-item-10 sf-depth-3 sf-no-children"><a href="../../pyferret/pyferret-python-objects.html" class="sf-depth-3">PyFerret Python objects and methods</a></li><li id="menu-1369-1" class="middle odd sf-item-11 sf-depth-3 sf-no-children"><a href="../../pyferret/pyefs.html" class="sf-depth-3">Ferret external functions in Python</a></li><li id="menu-1371-1" class="middle even sf-item-12 sf-depth-3 sf-no-children"><a href="../../pyferret/fortranefs.html" class="sf-depth-3">Ferret Fortran external functions</a></li><li id="menu-1373-1" class="last odd sf-item-13 sf-depth-3 sf-no-children"><a href="../../pyferret/data-dictionaries.html" class="sf-depth-3">PyFerret metadata-and-data dictionaries</a></li></ul></li><li id="menu-1147-1" class="middle even sf-item-6 sf-depth-2 sf-total-children-3 sf-parent-children-0 sf-single-children-3 menuparent"><a href="../../opendap/opendap-usage-in-ferret.html" class="sf-depth-2 menuparent">OPeNDAP</a><ul><li id="menu-1590-1" class="first odd sf-item-1 sf-depth-3 sf-no-children"><a href="../../opendap/opendap-usage-in-ferret.html" class="sf-depth-3">OPeNDAP usage in Ferret</a></li><li id="menu-1489-1" class="middle even sf-item-2 sf-depth-3 sf-no-children"><a href="../../how-to-use-ferret-and-opendap-to-access-and-analyze-remote-data-1.html" class="sf-depth-3">Use OPeNDAP Demo</a></li><li id="menu-1491-1" class="last odd sf-item-3 sf-depth-3 sf-no-children"><a href="../appendix-a-external-functions/test_opendap.html" class="sf-depth-3">Test OPeNDAP</a></li></ul></li><li id="menu-1592-1" class="middle odd sf-item-7 sf-depth-2 sf-no-children"><a href="../../ferret-publications.html" class="sf-depth-2">Ferret Publications</a></li><li id="menu-1389-1" class="last even sf-item-8 sf-depth-2 sf-no-children"><a href="../../acknowledging-ferret.html" class="sf-depth-2">Acknowledging Ferret</a></li></ul>    </div>
+  </div>
+</div>  </div>
+</aside><div class="grid-9 region region-content equal-height-element" id="region-content">
+  <div class="region-inner region-content-inner">
+    <a id="main-content"></a>
+                <h1 class="title" id="page-title">PPLUS COMMAND FILES</h1>
+                        <div class="block block-system block-main block-system-main odd block-without-title" id="block-system-main">
+  <div class="block-inner clearfix">
+                
+    <div class="content clearfix">
+      <article about="/Ferret/documentation/users-guide/appendix-b-pplus-guide/PPLUS-COMMAND-FILES" typeof="sioc:Item foaf:Document" class="node node-documentation-page node-promoted node-published node-not-sticky author-burger odd clearfix" id="node-documentation-page-730">
+    
+  <!-- add the following line to print out updated date -->
+  <div class="modified-date">Last modified: Mon, 07/10/2017 - 11:57</div>
+  <!-- add the following line to print out the page description -->
+    
+  <div class="content clearfix">
+                
+<div class="field field-name-body field-type-text-with-summary field-label-hidden">
+    <div class="field-items">
+          <div class="field-item even" property="content:encoded"><h3>Appendix B Sec7 <a name="_VPID_621" id="_VPID_621"></a></h3>
+<p align="left" class="callout"><b>PPLUS COMMAND FILES </b></p>
+<p> </p>
+<h3>Appendix B Sec7.1 <a name="_VPID_622" id="_VPID_622"></a></h3>
+<p> </p>
+<p align="left" class="callout"><b>INTRODUCTION </b></p>
+<p align="left">PPLUS can be run using a PPLUS command file that contains the same commands used by PPLUS interactively. The file can have any name or extension, but the default extension is .PPC. To run a PPLUS command file named CMD.PPC, you can enter PPLUS by typing PPLUS CMD.PPC in response to the VAX/VMS prompt, or you can enter PPLUS in the usual way and give the PPLUS command @CMD.PPC. (See @ in the chapter on Command Description.)</p>
+<p align="left">Each time PPLUS is used, an echo file (named ECHO.DAT by default) is generated. This file can be edited (it should be renamed) with any VAX text editor and used as a PPLUS command file in subsequent PPLUS sessions.</p>
+<p> </p>
+<h3 align="left">Appendix B Sec7.2 <a name="_VPID_623" id="_VPID_623"></a></h3>
+<p> </p>
+<p align="left" class="callout"><b>SYMBOL SUBSTITUTION </b></p>
+<p align="left">PPLUS allows symbol substitution in a manner similar to VAX/VMS symbols. Global and local symbols are supported in conjunction with nested command files and parameter passing. The SET and SHOW commands create, modify and list the symbols. When initially entering PPLUS (i.e., at the first command level) the symbols are global and available to all command levels. At each subsequent command level, local symbols are created and used by default. Global symbols are used when no local symbol exists. If the symbol name is preceded by a star (*), the global symbol will be created, modified or substituted.</p>
+<p align="left">Parameters passed via the @ command line are named P1, P2, P3, etc... just as they are in VAX/VMS. Symbols are recognized by PPLUS by being enclosed by single quotes. Character strings can be enclosed in double quotes. For example:</p>
+<p align="left"><b>SET TEMP "This is a test label"<br />
+XLAB 'temp' </b></p>
+<p align="left">will have the same effect as:</p>
+<p align="left"><b>XLAB This is a test label </b></p>
+<p align="left">Several symbols are predefined. 'DATE' and 'TIME' contain the current date and time. Date and time formats are dd-mmm-yy and hh:mm:ss. In addition, P1 through Pn are also predefined if the corresponding argument was passed via the @ command. For example, the command procedure PLOTIT.PPC could be executed in PPLUS by typing @PLOTIT 110W Temperature. Then in the procedure PLOTIT, the symbol P1 will have the value "110W" and the symbol P2 will have the value "Temperature".</p>
+<p align="left">Symbols can also be defined and used in an array format, i.e., 'P(3)' will get symbol P3 and 'label(12)' will access symbol LABEL12.</p>
+<p align="left">To have a single quote (') in the symbol or command line two single quotes must be used (''). To have a double quote (") in the command line two double quotes ("") are required.</p>
+<p align="left">Here is a sample PPLUS command file which demonstrates some of the new, powerful PPLUS features. In this example, the symbol P1 has the value 110W.</p>
+<p align="left"><b>pltnme,'p1'.plt<br />
+format,(f5.0,15x,f15.0)<br />
+vars,1,1,2<br />
+skp,1,'p1'.dat<br />
+rd,60<br />
+debug,on<br />
+show p1<br />
+debug,off<br />
+plot,@TRMonthly data 1979-83 at 'P1' ('date' 'time') </b></p>
+<p align="left">The proceeding PPLUS command file (named PLOTIT.PPC) could be called repeatedly in PPLUS for different data files named 110W.DAT, 140W.DAT, etc. by entering the PPLUS commands @PLOTIT 110W, @PLOTIT 140W, etc. The resulting plot files, ECHO.DAT files and graphs would be identified by the data file names of 110W, 140W, etc. The graph title will also include the time and date when the graph was made.</p>
+<p> </p>
+<h3 align="left">Appendix B Sec7.3 <a name="AppendixB_pplus_symbols" id="AppendixB_pplus_symbols"></a><a name="_VPID_624" id="_VPID_624"></a></h3>
+<p> </p>
+<p align="left" class="callout"><b>GENERAL GLOBAL SYMBOLS </b></p>
+<p align="left">The global symbols set by PPLUS to allow information to be available in the command procedure are:</p>
+<table><tbody><tr><td>
+<p align="left">SYMBOL</p>
+</td>
+<td>
+<p align="left">COMMAND</p>
+</td>
+<td>
+<p align="left">DESCRIPTION</p>
+</td>
+</tr><tr></tr><tr><td>
+<p align="left">DATE</p>
+</td>
+<td>The current date dd-mmm-yy</td>
+</tr><tr><td>
+<p align="left">PPL$COMMAND_FILE</p>
+</td>
+<td>
+<p align="left">@</p>
+</td>
+<td>
+<p align="left">The current command file name.</p>
+</td>
+</tr><tr><td>
+<p align="left">PPL$EOF</p>
+</td>
+<td>
+<p align="left">RD,RWD,SKP</p>
+</td>
+<td>
+<p align="left">"YES" if an EOF was read.</p>
+</td>
+</tr><tr><td>
+<p align="left">PPL$FORMAT</p>
+</td>
+<td>
+<p align="left">FORMAT</p>
+</td>
+<td>
+<p align="left">The current format.</p>
+</td>
+</tr><tr><td>
+<p align="left">PPL$HEIGHT</p>
+</td>
+<td>
+<p align="left">SIZE</p>
+</td>
+<td>
+<p align="left">Height of the box.</p>
+</td>
+</tr><tr><td>
+<p align="left">PPL$INPUT_FILE</p>
+</td>
+<td>
+<p align="left">RD,SKP,RWD</p>
+</td>
+<td>
+<p align="left">The current input file.</p>
+</td>
+</tr><tr><td>
+<p align="left">PPL$LF_A</p>
+</td>
+<td>
+<p align="left">LINFIT</p>
+</td>
+<td>
+<p align="left">Constant from fit y= a + b*x</p>
+</td>
+</tr><tr><td>
+<p align="left">PPL$LF_A_STDEV</p>
+</td>
+<td>
+<p align="left">LINFIT</p>
+</td>
+<td>
+<p align="left">Standard error of A.</p>
+</td>
+</tr><tr><td>
+<p align="left">PPL$LF_B</p>
+</td>
+<td>
+<p align="left">LINFIT</p>
+</td>
+<td>
+<p align="left">Constant from fit.</p>
+</td>
+</tr><tr><td>
+<p align="left">PPL$LF_B_STDEV</p>
+</td>
+<td>
+<p align="left">LINFIT</p>
+</td>
+<td>
+<p align="left">Standard error of B.</p>
+</td>
+</tr><tr><td>
+<p align="left">PPL$LF_R2</p>
+</td>
+<td>
+<p align="left">LINFIT</p>
+</td>
+<td>
+<p align="left">Regression coefficient squared.</p>
+</td>
+</tr><tr><td>
+<p align="left">PPL$LF_RES_VAR</p>
+</td>
+<td>
+<p align="left">LINFIT</p>
+</td>
+<td>
+<p align="left">Residual variance.</p>
+</td>
+</tr><tr><td>
+<p align="left">PPL$LF_VAR</p>
+</td>
+<td>
+<p align="left">LINFIT</p>
+</td>
+<td>
+<p align="left">Total variance.</p>
+</td>
+</tr><tr><td>
+<p align="left">PPL$LINE_COUNT</p>
+</td>
+<td>
+<p align="left">-</p>
+</td>
+<td>
+<p align="left">The number of the last line read.</p>
+</td>
+</tr><tr><td>
+<p align="left">PPL$PLTNME</p>
+</td>
+<td>
+<p align="left">PLTNME</p>
+</td>
+<td>
+<p align="left">The name of the plot file.</p>
+</td>
+</tr><tr><td>
+<p align="left">PPL$RANGE_INC</p>
+</td>
+<td>
+<p align="left">%RANGE</p>
+</td>
+<td>
+<p align="left">See Advanced Commands Chapter</p>
+</td>
+</tr><tr><td>
+<p align="left">PPL$RANGE_HIGH</p>
+</td>
+<td>
+<p align="left">%RANGE See</p>
+</td>
+<td>
+<p align="left">Advanced Commands Chapter</p>
+</td>
+</tr><tr><td>
+<p align="left">PPL$RANGE_LOW</p>
+</td>
+<td>
+<p align="left">%RANGE</p>
+</td>
+<td>
+<p align="left">See Advanced Commands Chapter</p>
+</td>
+</tr><tr><td>
+<p align="left">PPL$TEKNME</p>
+</td>
+<td>
+<p align="left">TEKNME</p>
+</td>
+<td>
+<p align="left">The name of the tektronix file.</p>
+</td>
+</tr><tr><td>
+<p align="left">PPL$VIEW_X</p>
+</td>
+<td>
+<p align="left">VPOINT</p>
+</td>
+<td>
+<p align="left">X viewpoint</p>
+</td>
+</tr><tr><td>
+<p align="left">PPL$VIEW_Y</p>
+</td>
+<td>
+<p align="left">VPOINT</p>
+</td>
+<td>
+<p align="left">Y viewpoint</p>
+</td>
+</tr><tr><td>
+<p align="left">PPL$VIEW_Z</p>
+</td>
+<td>
+<p align="left">VPOINT</p>
+</td>
+<td>
+<p align="left">Z viewpoint</p>
+</td>
+</tr><tr><td>
+<p align="left">PPL$WIDTH</p>
+</td>
+<td>
+<p align="left">SIZE</p>
+</td>
+<td>
+<p align="left">Width of the box.</p>
+</td>
+</tr><tr><td>
+<p align="left">PPL$XFACT(n)</p>
+</td>
+<td>
+<p align="left">TRANSXY</p>
+</td>
+<td>
+<p align="left">Xfact for line n.</p>
+</td>
+</tr><tr><td>
+<p align="left">PPL$XLEN</p>
+</td>
+<td>
+<p align="left">AXLEN</p>
+</td>
+<td>
+<p align="left">Length of X axis.</p>
+</td>
+</tr><tr><td>
+<p align="left">PPL$XOFF(n)</p>
+</td>
+<td>
+<p align="left">TRANSXY</p>
+</td>
+<td>
+<p align="left">Xoff for line n.</p>
+</td>
+</tr><tr><td>
+<p align="left">PPL$XORG</p>
+</td>
+<td>
+<p align="left">ORIGIN</p>
+</td>
+<td>
+<p align="left">Distance between origin and left edge.</p>
+</td>
+</tr><tr><td>
+<p align="left">PPL$XFIRST(n)</p>
+</td>
+<td>
+<p align="left">-</p>
+</td>
+<td>
+<p align="left">X value for first data point in line n.</p>
+</td>
+</tr><tr><td>
+<p align="left">PPL$XLAST(n)</p>
+</td>
+<td>
+<p align="left">-</p>
+</td>
+<td>
+<p align="left">X value for last data point in line n.</p>
+</td>
+</tr><tr><td>
+<p align="left">PPL$XMAX</p>
+</td>
+<td>
+<p align="left">RD</p>
+</td>
+<td>
+<p align="left">Xmax of contour grid</p>
+</td>
+</tr><tr><td>
+<p align="left">PPL$XMIN</p>
+</td>
+<td>
+<p align="left">RD</p>
+</td>
+<td>
+<p align="left">Xmin of contour grid</p>
+</td>
+</tr><tr><td>
+<p align="left">PPL$XMAX(n)</p>
+</td>
+<td>
+<p align="left">-</p>
+</td>
+<td>
+<p align="left">Xmax for valid data in line n.</p>
+</td>
+</tr><tr><td>
+<p align="left">PPL$XMIN(n)</p>
+</td>
+<td>
+<p align="left">-</p>
+</td>
+<td>
+<p align="left">Xmin for valid data in line n.</p>
+</td>
+</tr><tr><td>
+<p align="left">PPL$YFACT(n)</p>
+</td>
+<td>
+<p align="left">TRANSXY</p>
+</td>
+<td>
+<p align="left">Yfact for line n.</p>
+</td>
+</tr><tr><td>
+<p align="left">PPL$YLEN</p>
+</td>
+<td>
+<p align="left">AXLEN</p>
+</td>
+<td>
+<p align="left">Length of Y axis.</p>
+</td>
+</tr><tr><td>
+<p align="left">PPL$YOFF(n)</p>
+</td>
+<td>
+<p align="left">TRANSXY</p>
+</td>
+<td>
+<p align="left">Yoff for line n.</p>
+</td>
+</tr><tr><td>
+<p align="left">PPL$YORG</p>
+</td>
+<td>
+<p align="left">ORIGIN</p>
+</td>
+<td>
+<p align="left">Distance between origin and bottom edge.</p>
+</td>
+</tr><tr><td>
+<p align="left">PPL$YFIRST(n)</p>
+</td>
+<td>
+<p align="left">-</p>
+</td>
+<td>
+<p align="left">Y value for first data point in line n.</p>
+</td>
+</tr><tr><td>
+<p align="left">PPL$YLAST(n)</p>
+</td>
+<td>
+<p align="left">-</p>
+</td>
+<td>
+<p align="left">Y value for last data point in line n.</p>
+</td>
+</tr><tr><td>
+<p align="left">PPL$YMAX</p>
+</td>
+<td>
+<p align="left">RD</p>
+</td>
+<td>
+<p align="left">Ymax of contour grid</p>
+</td>
+</tr><tr><td>
+<p align="left">PPL$YMIN</p>
+</td>
+<td>
+<p align="left">RD</p>
+</td>
+<td>
+<p align="left">Ymin of contour grid</p>
+</td>
+</tr><tr><td>
+<p align="left">PPL$YMAX(n)</p>
+</td>
+<td>
+<p align="left">-</p>
+</td>
+<td>
+<p align="left">Ymax for valid data in line n.</p>
+</td>
+</tr><tr><td>
+<p align="left">PPL$YMIN(n)</p>
+</td>
+<td>
+<p align="left">-</p>
+</td>
+<td>
+<p align="left">Ymin for valid data in line n.</p>
+</td>
+</tr><tr><td>
+<p align="left">PPL$ZMAX</p>
+</td>
+<td>
+<p align="left">-</p>
+</td>
+<td>
+<p align="left">Zmax for valid contour data.</p>
+</td>
+</tr><tr><td>
+<p align="left">PPL$ZMIN</p>
+</td>
+<td>
+<p align="left">-</p>
+</td>
+<td>
+<p align="left">Zmin for valid contour data.</p>
+</td>
+</tr><tr><td>
+<p align="left">TIME</p>
+</td>
+<td>
+<p align="left">-</p>
+</td>
+<td>
+<p align="left">The current time hh:mm:ss</p>
+</td>
+</tr></tbody></table><p> </p>
+<p> </p>
+<h3 align="left">Appendix B Sec7.4 <a name="_VPID_625" id="_VPID_625"></a></h3>
+<p> </p>
+<p> </p>
+<p align="left" class="callout"><b>EPIC GLOBAL SYMBOLS </b></p>
+<p align="left"> </p>
+<p align="left">The following global symbols set by PPLUS contain information from EPIC time series data headers:</p>
+<p align="left"><b>SYMBOL COMMAND DESCRIPTION </b></p>
+<p align="left"> </p>
+<p align="left"><b>PPL$EPIC_COMMENT_DATA(n) RD Data comment from header. </b></p>
+<p align="left"><b>PPL$EPIC_COMMENT_FIRST(n) RD Data comment from header. </b></p>
+<p align="left"><b>PPL$EPIC_COMMENT_SECOND(n) RD Data comment from header. </b></p>
+<p align="left"><b>PPL$EPIC_DEPTH(n) RD Depth of measurement. </b></p>
+<p align="left"><b>PPL$EPIC_DESCRIPT(n) RD EPIC series descriptor. </b></p>
+<p align="left"><b>PPL$EPIC_EXPERIMENT(n) RD Experiment identifier. </b></p>
+<p align="left"><b>PPL$EPIC_LATITUDE(n) RD Latitude. </b></p>
+<p align="left"><b>PPL$EPIC_LONGITUDE(n) RD Longitude. </b></p>
+<p align="left"><b>PPL$EPIC_MOORING(n) RD Mooring identifier. </b></p>
+<p align="left"><b>PPL$EPIC_PROJECT(n) RD Project identifier. </b></p>
+<p align="left"><b>PPL$EPIC_XLAB(n) RD X-axis label. </b></p>
+<p align="left"><b>PPL$EPIC_YLAB(n) RD Y-axis label. </b></p>
+<p align="left">The following global symbols set by PPLUS contain information from EPIC CTD data headers:</p>
+<p align="left"><b>SYMBOL COMMAND DESCRIPTION </b></p>
+<p align="left"> </p>
+<p align="left"><b>PPL$EPIC_CAST(n) RD CTD Cruise and Cast identifier </b></p>
+<p align="left"><b>PPL$EPIC_COMMENT_FIRST(n) RD Data comment from header. </b></p>
+<p align="left"><b>PPL$EPIC_COMMENT_SECOND(n) RD Data comment from header. </b></p>
+<p align="left"><b>PPL$EPIC_DATE(n) RD CTD Cast Date (GMT) </b></p>
+<p align="left"><b>PPL$EPIC_LATITUDE(n) RD Latitude. </b></p>
+<p align="left"><b>PPL$EPIC_LONGITUDE(n) RD Longitude. </b></p>
+<p align="left"><b>PPL$EPIC_XLAB(n) RD X-axis label. </b></p>
+<p align="left"><b>PPL$EPIC_YLAB(n) RD Y-axis label. </b></p>
+<p align="left">The following global symbol set by PPLUS contains information about the EPIC data file:</p>
+<p align="left"> </p>
+<p align="left"><b>SYMBOL COMMAND DESCRIPTION </b></p>
+<p align="left"><b>PPL$EPIC_DATAFILE(n) RD Data file name </b></p>
+<p align="left"><b>PPL$INPUT_FILE RD EPIC/pointer file </b></p>
+<p> </p>
+<p> </p>
+<h3 align="left">Appendix B Sec7.5 <a name="_VPID_626" id="_VPID_626"></a></h3>
+<p> </p>
+<p> </p>
+<p align="left" class="callout"><b>COMMAND FILE LOGIC </b></p>
+<p align="left">There are several commands that enable the user to make command files more like small programs. These commands are similar to FORTRAN's block IF and C's WHILE loops. Commands have been introduced that enable the user to increment and decrement a counter stored in a symbol by one. In order to make command files more readable leading blanks and tabs are ignored.</p>
+<p align="left">The syntax for the PPLUS commands is given in the Command Description chapter.</p>
+<p align="left">EXAMPLES:</p>
+<p align="left">In this example, PPLUS is exited when an end-of-file is encountered by the RD command. This illustrates both the block IF and the use of the global PPLUS symbol PPL$EOF.</p>
+<p align="left"><b>RD </b></p>
+<p align="left"><b>IF PPL$EOF .EQ. "YES" THEN </b></p>
+<p align="left"><b>EXIT </b></p>
+<p align="left"><b>ENDIF </b></p>
+<p align="left">In the following example, the size of the plot is set to val by val inches if the value of the symbol val is less than or equal to 13 otherwise the size is set to 13 x 13.</p>
+<p align="left"><b>IF VAL .LE. 13 THEN </b></p>
+<p align="left"><b>SIZE 'VAL' 'VAL' </b></p>
+<p align="left"><b>ELSE </b></p>
+<p align="left"><b>SIZE 13 13 </b></p>
+<p align="left"><b>ENDIF </b></p>
+<p align="left">In the next example, if P1 is null then P1 is set to TEMPORARY.PLT and then the plot name is set to the value of the symbol P1.</p>
+<p align="left"> </p>
+<p align="left"><b>IF P1 .EQ. "" THEN </b></p>
+<p align="left"><b>SET P1 TEMPORARY.PLT </b></p>
+<p align="left"><b>ENDIF </b></p>
+<p align="left"><b>PLTNME 'P1' </b></p>
+<p align="left">This WHILE loop results in 10 plots of 100 points each from data file DLDK1039.DAT. (PPL$LINE_COUNT is a PPLUS defined symbol for the sequence number of the last data line read.)</p>
+<p align="left"><b>SKP,DLKD1039.DAT </b></p>
+<p align="left"><b>WHILE PPL$LINE_COUNT .LE. 10 THEN </b></p>
+<p align="left"><b>RD,100 </b></p>
+<p align="left"><b>PLOT </b></p>
+<p align="left"><b>ENDW </b></p>
+<p> </p>
+<p> </p>
+<h3 align="left">Appendix B Sec7.6 <a name="_VPID_627" id="_VPID_627"></a></h3>
+<p> </p>
+<p> </p>
+<p align="left" class="callout"><b>ARITHMETIC </b></p>
+<p align="left">Simple arithmetic can be performed using PPLUS symbols. The commands that perform these function are SET, INC and DEC. The INC and DEC functions are primarily used to increment and decrement counters in WHILE loops. The following WHILE loop uses the counter to set the line type to a solid line for each line to be plotted (PPL$LINE_COUNT is a PPLUS defined symbol for the number of the last data line read):</p>
+<p align="left"><b>SET COUNT 1 </b></p>
+<p align="left"><b>WHILE COUNT .LE. PPL$LINE_COUNT THEN </b></p>
+<p align="left"><b>LINE,'COUNT',,0 </b></p>
+<p align="left"><b>INC COUNT </b></p>
+<p align="left"><b>ENDW </b></p>
+<p align="left">The SET command can be used to perform simple arithmetic on PPLUS symbols. The syntax for these arithmetic expressions have the form:</p>
+<p align="left">num1 op num2,</p>
+<p align="left">where op is +, -, * or / (addition, subtraction, multiplication or division) and num1 and num2 are numbers. The numeric values must be separated from the operator op by spaces. The string will be used exactly as it appears if enclosed by double quotes ("). The following example centers a moveable label 0.5 inches above the top axis (PPL$XLEN and PPL$YLEN are PPLUS symbols for the X and Y axis lengths):</p>
+<p align="left"><b>SET XPOS 'PPL$XLEN' / 2.0 </b></p>
+<p align="left"><b>SET YPOS 'PPL$YLEN' + 0.5 </b></p>
+<p align="left"><b>LABS/NOUSER,1,'XPOS','YPOS',0,"A centered label" </b></p>
+<p> </p>
+<p> </p>
+<h3 align="left">Appendix B Sec7.7 <a name="_VPID_628" id="_VPID_628"></a></h3>
+<p> </p>
+<p> </p>
+<p align="left" class="callout"><b>SYMBOL ARRAYS </b></p>
+<p align="left">As described in the SYMBOL SUBSTITUTION section, PPLUS symbols can be defined and used as arrays. There are several general PPLUS global symbols which are also defined as arrays, such as PPL$XLAST(n) and PPL$YLAST(n), the last x and y values for data line n. The array index, in parentheses, can be either a number or a PPLUS symbol. Examples will illustrate this.</p>
+<p align="left">The following piece of a PPLUS command file uses moveable lables to write the line number to the right of the last point plotted for the last line read in. It uses the global PPLUS symbols PPL$XLAST(n), PPL$YLAST(n) and PPL$LINE_COUNT.</p>
+<p align="left"><b>SET XPOS 'PPL$XLAST(PPL$LINE_COUNT)' </b></p>
+<p align="left"><b>SET YPOS 'PPL$YLAST(PPL$LINE_COUNT)' </b></p>
+<p align="left"><b>LABS 'PPL$LINE_COUNT','XPOS','YPOS',-1,'PPL$LINE_COUNT' </b></p>
+<p align="left">The array index can also be a user defined symbol. In the following example, the array MON contains the names of the first 3 months of the year. The graph title will be "Daily Values for the Month of FEBRUARY".</p>
+<p align="left"><b>set mon(1) "JANUARY" </b></p>
+<p align="left"><b>set mon(2) "FEBRUARY </b></p>
+<p align="left"><b>set mon(3) "MARCH" </b></p>
+<p align="left"><b>. </b></p>
+<p align="left"><b>. </b></p>
+<p align="left"><b>. </b></p>
+<p align="left"><b>set count 2 </b></p>
+<p align="left"><b>. </b></p>
+<p align="left"><b>. </b></p>
+<p align="left"><b>. </b></p>
+<p align="left"><b>plot,"Daily Values for the Month of 'mon(count)' </b></p>
+<p align="left"> </p>
+<p align="left">The index of an array (inside parentheses) will be interpreted according to the following rules: 1) if it is a number, that number will be used as the array index, 2) if it is not a number, it will be interpreted as a symbol, 3) if it is in single quotes, it will be interpreted as a symbol.</p>
+<p> </p>
+<h3 align="left">Appendix B Sec7.8 <a name="AppendixB_special_func" id="AppendixB_special_func"></a><a name="_VPID_629" id="_VPID_629"></a></h3>
+<p> </p>
+<p align="left" class="callout"><b>SPECIAL FUNCTIONS </b></p>
+<p align="left">The functions described in this sections are all accessed with the SET command. They can be accessed only with the SET command. The functions enable string manipulation and formatting within PPLUS symbol values. The PPLUS functions are similar to some of the VAX/VMS lexical functions.</p>
+<p align="left">The general syntax is :</p>
+<p align="left">SET sym $function (arg1, arg2,...),</p>
+<p align="left">where "sym" is the symbol set by the function and "function" is the name of the PPLUS function. PPLUS functions and their arguments are described in the following sections. Where function arguments are indicated as symbols, they must be PPLUS symbols and cannot be strings. Where function arguments are indicated as strings, they can be enclosed in double quotes.</p>
+<p> </p>
+<h3 align="left">Appendix B Sec7.8.1</h3>
+<p> </p>
+<p align="left" class="callout"><a name="AppendixB_$edit" id="AppendixB_$edit"></a><a name="_VPID_630" id="_VPID_630"></a><b>$EDIT </b></p>
+<p align="left">The command is :</p>
+<p align="left"><b>SET sym_out $EDIT (sym_in, arg1 [ arg2 arg3...] ) </b></p>
+<p align="left"><b>where: </b></p>
+<p align="left">sym_out = symbol set by the function</p>
+<p align="left">sym_in = symbol on which function is to work</p>
+<p align="left">arg1 = UPCASE - changes string in sym_in to upper case<br />
+= TRIM - trims leading and trailing blanks from sym_in<br />
+= COMPRESS - removes extra blanks from sym_in (reduces each group of blanks to a single blank)<br />
+= COLLAPSE - removes all blanks from sym_in</p>
+<p align="left">If multiple arguments are used, they can be separated by blanks, e.g., SET sym $EDIT(sym_in,UPCASE COLLAPSE). If commas are used as separaters, the entire set of arguments must be enclosed in quotes, e.g.,<br />
+SET sym $EDIT(sym_in,"UPCASE,COLLAPSE").</p>
+<p align="left"><b>Example: </b></p>
+<p align="left"><b>SET S1 "depth" </b></p>
+<p align="left"><b>SET S2 $EDIT (S1,UPCASE) </b></p>
+<p align="left">This results in S2 having the value "DEPTH".</p>
+<p align="left"><b>Example: </b></p>
+<p align="left"><b>SET S1 " depth " </b></p>
+<p align="left"><b>SET S2 $EDIT (S2,UPCASE TRIM) </b></p>
+<p align="left">This results in S2 having the value "DEPTH".</p>
+<p> </p>
+<h3 align="left">Appendix B Sec7.8.2</h3>
+<p> </p>
+<p align="left" class="callout"><a name="AppendixB_$extract" id="AppendixB_$extract"></a><a name="_VPID_631" id="_VPID_631"></a><b>$EXTRACT </b></p>
+<p align="left"> </p>
+<p align="left">This function extracts selected characters from the input string. The first character in the string is in position 1. The command is :</p>
+<p align="left"><b>SET sym_out $EXTRACT (start,length,sym_in) </b></p>
+<p align="left"><b>where: </b></p>
+<p align="left">sym_out = symbol set by the function</p>
+<p align="left">start = starting character position</p>
+<p align="left">length = length of character string to be extracted</p>
+<p align="left">sym_in = symbol on which function is to work</p>
+<p align="left"><b>Example: </b></p>
+<p align="left"><b>SET S1 "February"<br />
+SET S2 $EXTRACT(1,3,S1) </b></p>
+<p align="left">This results in S2 having the value "Feb".</p>
+<p> </p>
+<h3 align="left">Appendix B Sec7.8.3</h3>
+<p> </p>
+<p align="left" class="callout"><a name="AppendixB_$integer" id="AppendixB_$integer"></a><a name="_VPID_632" id="_VPID_632"></a><b>$INTEGER </b></p>
+<p align="left">This function converts a number to integer format. The command is :</p>
+<p align="left"><b>SET sym_out $INTEGER (sym_in) </b></p>
+<p align="left"><b>where: </b></p>
+<p align="left">sym_out = symbol set by the function</p>
+<p align="left">sym_in = symbol on which function is to work</p>
+<p align="left"><b>Example: </b></p>
+<p align="left"><b>SET MON 1<br />
+.<br />
+.<br />
+INC MON<br />
+SET INT_MON $INTEGER(MON) </b></p>
+<p align="left">In this example, the symbol MON has been incremented, and will have the value "2.00". The symbol INT_MON will have the value "2".</p>
+<p> </p>
+<h3 align="left">Appendix B Sec7.8.4</h3>
+<p> </p>
+<p align="left" class="callout"><a name="AppendixB_$length" id="AppendixB_$length"></a><a name="_VPID_633" id="_VPID_633"></a><b>$LENGTH </b></p>
+<p align="left">This function returns the length of the input string. The command is :</p>
+<p align="left"><b>SET sym_out $LENGTH (sym_in) </b></p>
+<p align="left"><b>where: </b></p>
+<p align="left">sym_out = symbol set by the function</p>
+<p align="left">sym_in = symbol on which function is to work</p>
+<p align="left"><b>Example: </b></p>
+<p align="left"><b>SET S1 "February"<br />
+SET S2 $LENGTH(S1) </b></p>
+<p align="left">This results in S2 having the value "8".</p>
+<p> </p>
+<h3 align="left">Appendix B Sec7.8.5 <a name="AppendixB_$locate" id="AppendixB_$locate"></a><a name="_VPID_634" id="_VPID_634"></a></h3>
+<p> </p>
+<p align="left" class="callout"><b>$LOCATE </b></p>
+<p align="left">[This function is deprecated; see the Ferret function SUBSTRING] This function locates a substring in the input string. The first character in the string is in position 1. The command is :</p>
+<p align="left"><b>SET sym_out $LOCATE (substrg,sym_in) </b></p>
+<p align="left"><b>where: </b></p>
+<p align="left">sym_out = symbol set by the function</p>
+<p align="left">substrg = string to be located. The first 30 characters of this string are compared with sym_in.</p>
+<p align="left">sym_in = symbol function on which function is to work</p>
+<p align="left"><b>Example: </b></p>
+<p align="left"><b>SET S1 "JAN 21,1987"<br />
+SET S2 $LOCATE(",",S1) </b></p>
+<p align="left">This results in S2 having the value "7".</p>
+<p> </p>
+<h3 align="left">Appendix B Sec7.8.6</h3>
+<p> </p>
+<p align="left" class="callout"><a name="AppendixB_$element" id="AppendixB_$element"></a><a name="_VPID_635" id="_VPID_635"></a><b>$ELEMENT </b></p>
+<p align="left">This function extracts an element from an input string in which the elements are separated by a specified delimiter. The command is :</p>
+<p align="left"><b>SET sym_out $ELEMENT (pos,delim,sym_in) </b></p>
+<p align="left"><b>where: </b></p>
+<p align="left">sym_out = symbol set by the function</p>
+<p align="left">pos = position of element to be extracted</p>
+<p align="left">delim = delimiter</p>
+<p align="left">sym_in = symbol on which function is to work</p>
+<p align="left"><b>Example: </b></p>
+<p align="left">SET MONTH "JAN/FEB/MAR/APR/MAY/JUN/JUL"<br />
+SET MON $ELEMENT(3,"/",MONTH)</p>
+<p align="left">This results in MON having the value "MAR".</p>
+<p align="left"><b>Example: </b></p>
+<p align="left">SET MONTH "JAN/FEB/MAR/APR/MAY/JUN/JUL"<br />
+SET COUNT 1<br />
+WHILE COUNT .LE. 7 THEN<br />
+SET MON(COUNT) $ELEMENT('COUNT',"/",MONTH)<br />
+INC COUNT<br />
+ENDW</p>
+<p align="left">This results in MON(1) = "JAN", MON(2) = "FEB", MON(3) = "MAR", MON(4) = "APR", MON(5) = "MAY", MON(6) = "JUN", MON(7) = "JUL".</p>
+<p> </p>
+<h3 align="left">Appendix B Sec7.9 <a name="_VPID_636" id="_VPID_636"></a></h3>
+<p> </p>
+<p align="left" class="callout"><b>LABELS </b></p>
+<p> </p>
+<h3 align="left">Appendix B Sec7.9.1 <a name="_VPID_637" id="_VPID_637"></a></h3>
+<p> </p>
+<p align="left" class="callout"><b>AXIS LABELING </b></p>
+<p align="left">Commands affecting the labeling of the axes are:</p>
+<table><tbody><tr><td>
+<p align="left">XAXIS</p>
+</td>
+<td>
+<p align="left">Controls numeric labeling and tics on the x-axis.</p>
+</td>
+</tr><tr><td>
+<p align="left">YAXIS</p>
+</td>
+<td>
+<p align="left">Controls numeric labeling and tics on the y-axis.</p>
+</td>
+</tr><tr><td>
+<p align="left">AXATIC</p>
+</td>
+<td>
+<p align="left">Sets number of large tics automatically for x and y.</p>
+</td>
+</tr><tr><td>
+<p align="left">AXLABP</p>
+</td>
+<td>
+<p align="left">Locates axis labels at top/bottom or left/right of plot.</p>
+</td>
+</tr><tr><td>
+<p align="left">AXLEN</p>
+</td>
+<td>
+<p align="left">Sets axis lengths.</p>
+</td>
+</tr><tr><td>
+<p align="left">AXLINT</p>
+</td>
+<td>
+<p align="left">Sets label interval for axes.</p>
+</td>
+</tr><tr><td>
+<p align="left">AXLSZE</p>
+</td>
+<td>
+<p align="left">Sets axis label heights.</p>
+</td>
+</tr><tr><td>
+<p align="left">AXNMTC</p>
+</td>
+<td>
+<p align="left">Sets number of small tics between large tics on axes.</p>
+</td>
+</tr><tr><td>
+<p align="left">AXNSIG</p>
+</td>
+<td>
+<p align="left">Sets no. significant digits in numeric axis labels (auto only).</p>
+</td>
+</tr><tr><td>
+<p align="left">AXSET</p>
+</td>
+<td>
+<p align="left">Allows omission of plotting of any axis.</p>
+</td>
+</tr><tr><td>
+<p align="left">AXTYPE</p>
+</td>
+<td>
+<p align="left">Sets axis type for x- and y-axis.</p>
+</td>
+</tr><tr><td>
+<p align="left">XFOR</p>
+</td>
+<td>
+<p align="left">Sets format of x-axis numeric labels.</p>
+</td>
+</tr><tr><td>
+<p align="left">YFOR</p>
+</td>
+<td>
+<p align="left">Sets format of y-axis numeric labels.</p>
+</td>
+</tr><tr><td>
+<p align="left">XLAB</p>
+</td>
+<td>
+<p align="left">Sets label of x-axis.</p>
+</td>
+</tr><tr><td>
+<p align="left">YLAB</p>
+</td>
+<td>
+<p align="left">Sets label of y-axis.</p>
+</td>
+</tr></tbody></table><p align="left">The numeric axis labels are drawn such that zero will be labelled if it occurs between the low and high axis limits. If zero does not occur, then the first large tic (from the bottom or left) will be labelled. The large tics are forced to occur at integer multiples of the tic interval.</p>
+<p> </p>
+<h3 align="left">Appendix B Sec7.9.2 <a name="AppendixB_Embedded strings" id="AppendixB_Embedded strings"></a><a name="_VPID_638" id="_VPID_638"></a></h3>
+<p> </p>
+<p align="left" class="callout"><b>EMBEDDED STRING COMMANDS </b></p>
+<p align="left"><b><a name="_VPINDEXENTRY_2062" id="_VPINDEXENTRY_2062"></a>Fonts </b></p>
+<p class="pnormal">In PyFerret, make font and text-style settings with the <a href="../commands-reference/SET.html#_SETTEXT" title="SET TEXT">SET TEXT </a>command. Change to any of the true fonts available to the python libraries, change to custom colors, and use bold or italic styles. Define a global text style, or customize text groupings, to control the style of, for instance the colorbar labels, the labels on axis tic marks, or the main plot title.</p>
+<p class="pnormal">PyFerret can use the PPLUS fonts described below, if the font is set to the HERSHEY font.</p>
+<pre class="pliteral">
+yes? set text/font=hershey
+yes? plot/title="$CITemperature" sst
+</pre><p align="left">In Classic Ferret, all labels in can be plotted using any one of 21 PPLUS character fonts and 11 symbol fonts. The default font is SR (Simplex Roman) and other fonts are called by preceding their two letter abbreviation by an @, i.e., @CI for complex itallic.</p>
+<p align="left">Symbol fonts are called by using the symbol number, i.e., @MA01 plots the first symbol in MATH and @MA12 will plot the twelfth symbol. Font changes (of the form @XX) can be imbedded in any label string (e.g., XLAB, YLAB, PLOT commands).</p>
+<p align="left">@font selects "font" as the character or symbol font to be used, where the font abbreviations are listed below.</p>
+<p align="left"><b>Character Fonts </b></p>
+<p align="left"><a href="../ferret-fonts/list-of-ferret-character-fonts.html" title="List of Ferret Character fonts">Tables showing the character fonts</a></p>
+<p align="left"> </p>
+<table><tbody><tr><td>
+<p align="left">SR</p>
+</td>
+<td>
+<p align="left">Simplex Roman (default)</p>
+</td>
+</tr><tr><td>
+<p align="left">DR</p>
+</td>
+<td>
+<p align="left">Duplex Roman</p>
+</td>
+</tr><tr><td>
+<p align="left">TR</p>
+</td>
+<td>
+<p align="left">Triplex Roman</p>
+</td>
+</tr><tr><td>
+<p align="left">CR</p>
+</td>
+<td>
+<p align="left">Complex Roman</p>
+</td>
+</tr><tr><td>
+<p align="left">AS</p>
+</td>
+<td>
+<p align="left">ASCII Simplex Roman</p>
+</td>
+</tr><tr><td>
+<p align="left">AC</p>
+</td>
+<td>
+<p align="left">ASCII Complex Roman</p>
+</td>
+</tr><tr><td>
+<p align="left">CS</p>
+</td>
+<td>
+<p align="left">Complex Script</p>
+</td>
+</tr><tr><td>
+<p align="left">TI</p>
+</td>
+<td>
+<p align="left">Triplex Italic</p>
+</td>
+</tr><tr><td>
+<p align="left">GE</p>
+</td>
+<td>
+<p align="left">Gothic English</p>
+</td>
+</tr><tr><td>
+<p align="left">IR</p>
+</td>
+<td>
+<p align="left">Indexical complex Roman</p>
+</td>
+</tr><tr><td>
+<p align="left">SS</p>
+</td>
+<td>
+<p align="left">Simplex Script</p>
+</td>
+</tr><tr><td>
+<p align="left">CI</p>
+</td>
+<td>
+<p align="left">Complex Italic</p>
+</td>
+</tr><tr><td>
+<p align="left">II</p>
+</td>
+<td>
+<p align="left">Indexical complex Italic</p>
+</td>
+</tr><tr><td>
+<p align="left">SG</p>
+</td>
+<td>
+<p align="left">Simplex Greek</p>
+</td>
+</tr><tr><td>
+<p align="left">CG</p>
+</td>
+<td>
+<p align="left">Complex Greek</p>
+</td>
+</tr><tr><td>
+<p align="left">IG</p>
+</td>
+<td>
+<p align="left">Indexical complex Greek</p>
+</td>
+</tr><tr><td>
+<p align="left">GG</p>
+</td>
+<td>
+<p align="left">Gothic German</p>
+</td>
+</tr><tr><td>
+<p align="left">GI</p>
+</td>
+<td>
+<p align="left">Gothic Italian</p>
+</td>
+</tr><tr><td>
+<p align="left">CC</p>
+</td>
+<td>
+<p align="left">Complex Cyrillic</p>
+</td>
+</tr><tr><td>
+<p align="left">AR</p>
+</td>
+<td>
+<p align="left">Cartographic Roman</p>
+</td>
+</tr><tr><td>
+<p align="left">AG</p>
+</td>
+<td>
+<p align="left">Cartographic Greek</p>
+</td>
+</tr></tbody></table><p> </p>
+<p align="left"><b><a name="_VPINDEXENTRY_2063" id="_VPINDEXENTRY_2063"></a><a name="_VPINDEXENTRY_2064" id="_VPINDEXENTRY_2064"></a>Symbol Fonts </b></p>
+<p class="pnormal">In PyFerret, special symbols may be embedded in labels using an <a href="../commands-reference/SET.html#pyferret_embedded_symbols" title="SET">html-style syntax</a>.  If PyFerret SET TEXT/FONT=hershey has been issued, then the following applies.</p>
+<p align="left"><a href="../ferret-fonts/list-of-ferret-fonts.html" title="List of Ferret Symbol Fonts">Tables showing the symbol fonts are here</a></p>
+<table><tbody><tr><td>
+<p align="left">ZO</p>
+</td>
+<td>
+<p align="left">Zodiac</p>
+</td>
+</tr><tr><td>
+<p align="left">MU</p>
+</td>
+<td>
+<p align="left">Music</p>
+</td>
+</tr><tr><td>
+<p align="left">EL</p>
+</td>
+<td>
+<p align="left">Electrical</p>
+</td>
+</tr><tr><td>
+<p align="left">WE</p>
+</td>
+<td>
+<p align="left">Weather</p>
+</td>
+</tr><tr><td>
+<p align="left">MA</p>
+</td>
+<td>
+<p align="left">Math</p>
+</td>
+</tr><tr><td>
+<p align="left">SM</p>
+</td>
+<td>
+<p align="left">Simplex Math</p>
+</td>
+</tr><tr><td>
+<p align="left">MP</p>
+</td>
+<td>
+<p align="left">Map</p>
+</td>
+</tr><tr><td>
+<p align="left">LM</p>
+</td>
+<td>
+<p align="left">Large Math</p>
+</td>
+</tr><tr><td>
+<p align="left">IZ</p>
+</td>
+<td>
+<p align="left">Indexical Zodiac</p>
+</td>
+</tr><tr><td>
+<p align="left">IM</p>
+</td>
+<td>
+<p align="left">Indexical Math</p>
+</td>
+</tr><tr><td>
+<p align="left">CA</p>
+</td>
+<td>
+<p align="left">Cartographic</p>
+</td>
+</tr></tbody></table><p align="left"> </p>
+<p align="left">A clear font command @CL is available to change the default font. The next font called after a @CL becomes the new default font. The font is reset to the default at the start of each label. The command DFLTFNT can also be used to change the default font to one of your choice.</p>
+<p align="left">Tables showing the symbol fonts are at</p>
+<p align="left"><a href="../../Users_Guide/current/ppl_symbol_fonts.html">http://ferret.pmel.noaa.gov/Ferret/Documentation/Users_Guide/current/ppl...</a></p>
+<p align="left">Control characters for the two ASCII fonts AS and AC must be preceded by an &lt;ESC&gt; (ascii code=27). For example, to superscript while using the ASCII fonts you must have &lt;ESC&gt; in the label preceed the character to superscript.</p>
+<p> </p>
+<h3 align="left">Appendix B Sec7.9.3 <a name="_VPID_639" id="_VPID_639"></a></h3>
+<p> </p>
+<p align="left" class="callout"><b>Pen Selection </b></p>
+<p align="left">The pen may also be selected by giving the change pen command @Pn, where n is the character 1-9 and A-G. This allows the selection of up to 16 pens/colors. The color and font is reset to the default font and previous color after the character string is drawn. The PEN command can be used to change the default color by typing PEN,0,default_color.</p>
+<p align="left">If you need to select a color index beyond the range of P1 through PG, you can use the change color command @Cnnn where "nnn" is a 3-digit color index. (It must be 3 digits.)</p>
+<p> </p>
+<h3 align="left">Appendix B Sec7.9.4 <a name="_VPID_640" id="_VPID_640"></a></h3>
+<p> </p>
+<p align="left" class="callout"><b>Character Slant </b></p>
+<p align="left">The slant used in drawing the fonts may be changed by using the command @Zn, where n is the character 0-9 and A-G. This allows the selection of slant angles from 0 to 45 in 16 increments. The slant is reset to zero after the character string is drawn.</p>
+<p> </p>
+<h3 align="left">Appendix B Sec7.9.5</h3>
+<p> </p>
+<p align="left" class="callout"><a name="_VPID_641" id="_VPID_641"></a><b>Subscripting, Superscripting And Back Spacing </b></p>
+<p align="left"> </p>
+<p align="left">An ^ (up arrow) imbedded in any label string will cause the next character to be drawn superscripted, an _ (underscore) will draw it subscripted, and a \ (backslash) backspaces over the last character drawn. The control characters ^, _ and \ are available in the two ASCII fonts AS and AC by preceding the control character by an &lt;ESC&gt; (ASCII code=27). For example, to subscript while using the ASCII fonts you must have &lt;ESC&gt;_ in the label preceed the character to subscript.</p>
+<p> </p>
+<h3 align="left">Appendix B Sec7.10 <a name="_VPID_642" id="_VPID_642"></a></h3>
+<p> </p>
+<p align="left" class="callout"><b>DATA FORMATS </b></p>
+<p> </p>
+<h3 align="left">Appendix B Sec7.10.1 <a name="_VPID_643" id="_VPID_643"></a></h3>
+<p> </p>
+<p align="left" class="callout"><b>SEQUENTIAL FORMATS </b></p>
+<p align="left"> </p>
+<p align="left">The format to be used in reading from a sequential file is defined by the commands FORMAT, VARS, and RD. Some definitions are useful:</p>
+<p align="left">NVAR - the number of variables per group</p>
+<p align="left">NGRP - the number of groups per record</p>
+<p align="left">NREC - the total number of records</p>
+<p align="left">For example, if the data consists of depth, u, v, t and the format is 8F10.2 (the format statement must be for an entire record) with two groups per record, the data would look like</p>
+<p align="left">D U V T D U V T</p>
+<p align="left">and NGRP=2, NVAR=4.</p>
+<p align="left">If you wanted to plot D as the Y variable, T as the X then, FORMAT (8F10.2) would be the correct FORMAT command and VARS,2,2,,,1 would be the correct VARS command. (U and V are not read or plotted.)</p>
+<p align="left">However, if the format was F10.2,30X,2F10.2,30X,F10.2 then FORMAT (F10.2,30X,2F10.2,30X,F10.2) and VARS,2,2,1 would be appropriate.</p>
+<p align="left">If the data is unformatted the meanings of NVAR and NGRP are unchanged. Unformatted data is specified by the FORMAT command FORMAT,UNF.</p>
+<p align="left">Reading will automatically stop at the end of the file and properly store the data.</p>
+<p> </p>
+<h3>Appendix B Sec7.10.2 <a name="_VPID_644" id="_VPID_644"></a></h3>
+<p> </p>
+<p align="left" class="callout"><b>BIBO FORMAT </b></p>
+<p align="left">The BIBO data format consists of data files created using the DSF routines and a 145 word header in the BIBO format. This data format is in the standard dsf file format for data storage.</p>
+<p> </p>
+<h3 align="left">Appendix B Sec7.10.3 <a name="_VPID_645" id="_VPID_645"></a></h3>
+<p> </p>
+<p align="left" class="callout"><b>EPIC FORMAT </b></p>
+<p align="left">This is the standard format for data from the EPIC data base. The data files are binary sequential files with at least one header of 8 80-character lines followed by data records with 1 data scan per record. When the FORMAT,EPIC command is used, the file name specified with the RD, SKP and RWD commands refers to the EPIC or pointer file. Variables to be read are specified with the EVAR command. Both time series EPIC data files and CTD EPIC data files are recognized by PPLUS. The /CTD qualifier on the FORMAT command tells PPLUS which type of EPIC data is being read.</p>
+<p> </p>
+<h3 align="left">Appendix B Sec7.10.4 <a name="_VPID_646" id="_VPID_646"></a></h3>
+<p> </p>
+<p align="left" class="callout"><b>DSF FORMAT </b></p>
+<p align="left">This data format is that produced by the DSF routines with the header and data in PPLUS format. The format must be followed to ensure that PPLUS can interpret the data file read correctly.</p>
+<p align="left">A single data file consists of a single header record and any number of data records followed by an EOF. The header must be either an array or other sequentially organized data set of 38 real variables. Below is the expected format.</p>
+<p align="left">INT WORD DESCRIPTION</p>
+<p align="left">1 XPTS</p>
+<p align="left">3 ZMIN first four created by CLSDSF</p>
+<p align="left">5 ZMAX</p>
+<p align="left">7 ZMEAN</p>
+<p align="left">9 XMIN minimum x value (real)</p>
+<p align="left">11 XMAX maximum x value (real)</p>
+<p align="left">13 KX number of x grid points (integer*4)</p>
+<p align="left">15 YMIN minimum y value (real)</p>
+<p align="left">17 YMAX maximum y value (real)</p>
+<p align="left">19 KY number of y grid points (integer*4)</p>
+<p align="left">21 ITYPE data type 0= 2-d set, 1= 1-d set (integer*4)</p>
+<p align="left">23-38 LAB(16) main label hollerith (integer*2)</p>
+<p align="left">39 NCH number of characters is LAB (integer*4)</p>
+<p align="left"> </p>
+<p align="left">41-56 IXLAB(16) x axis label hollerith (integer*2)</p>
+<p align="left">57 NXLB number of characters in IXLAB (integer*4)</p>
+<p align="left">59-74 IYLAB(16) y axis label hollerith (integer*2)</p>
+<p align="left">75 NYLB number of characters in IYLAB (integer*4)</p>
+<p align="left">All labels use SYMBEL to generate the plotted characters. The labels are optional, but if not used they should contain blanks.</p>
+<p align="left"><b>ITYPE=0 </b></p>
+<p align="left">Data must be stored in a linear array as:</p>
+<p align="left">Z(1,1),Z(2,1),...,Z(KX,1),Z(1,2),...,...,Z(KX,KY)</p>
+<p align="left">or as a 2-d array where the array is dimensioned as KX,KY.</p>
+<p align="left">Assuming the following arrays exist, ITYPE=0 data can be created as follows: HEAD(38),Z(25,50) NOTE: use EQUIVALENCE to set the integers in the real array.</p>
+<p align="left">CALL OPNDSF(file_name,'WR',ILUN)</p>
+<p align="left">CALL WRHDSF(ILUN,38,HEAD)</p>
+<p align="left">CALL WRDDSF(ILUN,1250,Z)</p>
+<p align="left">CALL CLSDSF(ILUN)</p>
+<p align="left">where file_name is the file name and ILUN is the logical unit to be used.</p>
+<p align="left"><b>ITYPE=1 </b></p>
+<p align="left">Data must be stored as a linear array as:</p>
+<p align="left">X(1),X(2),...,X(KX),Y(1),Y(2),...,Y(KX)</p>
+<p align="left"> </p>
+<p align="left">in this case KX= length of the series and KY must be set to 1, there must be KX of each X and Y in the data set. Given,</p>
+<p align="left">HEAD(38),X(200),Y(200) KX=100 then,</p>
+<p align="left">CALL OPNDSF(file_name,'WR',ILUN)</p>
+<p align="left">CALL WRHDSF(ILUN,38,HEAD)</p>
+<p align="left">CALL WRDDSF(ILUN,KX,X)</p>
+<p align="left">CALL WRDDSF(ILUN,KX,Y)</p>
+<p align="left">CALL CLSDSF(ILUN)</p>
+<p align="left">where KX is the number of pairs. The DSF routines are available in a user library by Task building with</p>
+<p align="left">DISK1:[DENBO.PPL]OURLIB/LIB.</p>
+<p> </p>
+<h3 align="left">Appendix B Sec7.11 <a name="_VPID_647" id="_VPID_647"></a></h3>
+<p> </p>
+<p align="left" class="callout"><b>ADVANCED COMMANDS </b></p>
+<p align="left">This section describes PPLUS primitive plot commands. With these commands, the user can make a plot with several x- or y-axes. The location of each axis can be specified. To distinguish them from the standard PPLUS commands, these commands all begin with "%".</p>
+<p align="left">These % commands can be entered only from a PPLUS command file, and can not be entered interactively from the keyboard. Each command is implemented as it is read from the command file.</p>
+<p align="left">Specifically, when the %XAXIS command is read from a command file, an x-axis is immediately drawn on the graph. By contrast, the standard PPLUS XAXIS command simply sets x-axis parameters and the x-axis is not drawn on the graph until a plotting command such as PLOT is issued. The % commands give the user great control over the graphics display, but must be used carefully. No PPLUS error messages are issued for illegal % commands. The % commands can not be used with the MULTPLT command. See the notes with each command description and the example at the end of this chapter.</p>
+<p align="left">Command descriptions follow.</p>
+<p> </p>
+<h3 align="left">Appendix B Sec7.11.1</h3>
+<p> </p>
+<p align="left" class="callout"><a name="_VPID_648" id="_VPID_648"></a><b>%OPNPLT/qualifier </b></p>
+<p align="left">Opens the plot by putting the terminal into and out of graphics mode and setting /QUIET.</p>
+<p align="left">Valid qualifiers are:</p>
+<p align="left">/[NO]OVERLAY Controls whether PPLUS overlays the plot on the preceeding plot. The default is /OVERLAY which causes the plot to be overlaid without erasing the last plot.</p>
+<p> </p>
+<h3 align="left">Appendix B Sec7.11.2 <a name="_VPID_649" id="_VPID_649"></a></h3>
+<p> </p>
+<p align="left" class="callout"><b>%CLSPLT/qualifiers </b></p>
+<p align="left">Closes the plot by putting the terminal out of graphics mode and restoring /QUIET or /NOQUIET, whichever was in effect when the %OPNPLT command was issued.</p>
+<p align="left">Valid qualifiers are:</p>
+<p align="left">/[NO]WAIT</p>
+<p align="left">Controls whether PPLUS pauses after plot completion. Pause is signaled by a tone and terminated by typing a character. If an &lt;ESC&gt; is typed PPLUS will return from the current command level to the lowest command level. Default = WAIT.</p>
+<p> </p>
+<h3 align="left">Appendix B Sec7.11.3</h3>
+<p> </p>
+<p align="left" class="callout"><a name="_VPID_650" id="_VPID_650"></a><b>%PLTLIN,n </b></p>
+<p align="left">Plots the n-th data line. Each RD command increments the data line count by 1. Use of the standard plotting commands (PLOT, PLOTUV, PLOTV, CONTOUR, VECTOR, and VIEW) resets the data line count. The %PLTLIN command does not reset the data line count. (WINDOW works.)</p>
+<p align="left">n Plot line n using current scale factors.</p>
+<p> </p>
+<h3 align="left">Appendix B Sec7.11.4 <a name="_VPID_651" id="_VPID_651"></a></h3>
+<p> </p>
+<p align="left" class="callout"><b>%LABEL/qualifier,x,y,ipos,ang,chsiz,label </b></p>
+<p align="left">Draws a label similar to a moveable label (LABS command). There is no label number and the label is drawn as soon as the command is read from the command file. Any number of labels may be drawn.</p>
+<table><tbody><tr><td>
+<p align="left">x</p>
+</td>
+<td>
+<p align="left">x position user or inches</p>
+</td>
+</tr><tr><td>
+<p align="left">y</p>
+</td>
+<td>
+<p align="left">y position user or inches</p>
+</td>
+</tr><tr><td>
+<p align="left">ipos</p>
+</td>
+<td>
+<p align="left">-1 left, 0 center, +1 right justify</p>
+</td>
+</tr><tr><td>
+<p align="left">ang</p>
+</td>
+<td>
+<p align="left">Angle at which lable is to o be drawn. (0 degrees is at 3 o'clock and positive rotation is counter clockwise.)</p>
+</td>
+</tr><tr><td>
+<p align="left">chsize</p>
+</td>
+<td>
+<p align="left">character size (inches)</p>
+</td>
+</tr><tr><td>
+<p align="left">label</p>
+</td>
+<td>
+<p align="left">character string to draw</p>
+</td>
+</tr></tbody></table><p align="left">Valid qualifiers are:</p>
+<p align="left">/[NO]USER determines units of x and y positions. Default is /USER. If /NOUSER units are inches from the ORIGIN. (see the ORIGIN command)</p>
+<p> </p>
+<h3 align="left">Appendix B Sec7.11.5</h3>
+<p> </p>
+<p align="left" class="callout"><a name="_VPID_652" id="_VPID_652"></a><b>%RANGE,min,max,ntic </b></p>
+<p align="left">Finds axis limits for use with the %XAXIS and %YAXIS commands given the data extrema of min and max. The axis limits and tic interval are returned in the PPLUS symbols PPL$RANGE_LOW, PPL$RANGE_HIGH, and PPL$RANGE_INC.</p>
+<table><tbody><tr><td>
+<p align="left">min</p>
+</td>
+<td>
+<p align="left">minimum value of data to be ranged. Can use PPL$XMIN(n) or PPL$YMIN(n).</p>
+</td>
+</tr><tr><td>
+<p align="left">max</p>
+</td>
+<td>
+<p align="left">maximum value of data Can use PPL$XMAX(n) or PPL$YMAX(n).</p>
+</td>
+</tr><tr><td>
+<p align="left">ntic</p>
+</td>
+<td>
+<p align="left">number of large increments</p>
+</td>
+</tr><tr><td> </td>
+<td> </td>
+</tr><tr><td>
+<p align="left">PPL$RANGE_LOW</p>
+</td>
+<td>
+<p align="left">new minimum range value</p>
+</td>
+</tr><tr><td>
+<p align="left">PPL$RANGE_HIGH</p>
+</td>
+<td>
+<p align="left">new maximum range value</p>
+</td>
+</tr><tr><td>
+<p align="left">PPL$RANGE_INC</p>
+</td>
+<td>
+<p align="left">new increment</p>
+</td>
+</tr></tbody></table><p align="left"> </p>
+<h3 align="left">Appendix B Sec7.11.6 <a name="_VPID_653" id="_VPID_653"></a></h3>
+<p align="left" class="callout"><b>%XAXIS/qualifier,xlow,xhigh,xtic,y[,nmstc][,lint][,xunit][,ipos][,csize][,frmt] </b></p>
+<p align="left">This command draws an x-axis and redefines scaling for the x-direction. The arguments xlow, xhigh, xtic and y should not be omitted. See the %RANGE command to get default values for axis limits and increments. If you have used %RANGE, then you can use</p>
+<p align="left">PPL$RANGE_LOW, PPL$RANGE_HIGH, PPL$RANGE_INC for xlow, xhigh and xtic.</p>
+<table><tbody><tr><td>
+<p align="left">xlow</p>
+</td>
+<td>
+<p align="left">min value of x user</p>
+</td>
+</tr><tr><td>
+<p align="left">xhigh</p>
+</td>
+<td>
+<p align="left">max value of x user</p>
+</td>
+</tr><tr><td>
+<p align="left">xtic</p>
+</td>
+<td>
+<p align="left">large tic increment user</p>
+</td>
+</tr><tr><td>
+<p align="left">yy</p>
+</td>
+<td>
+<p align="left">position user or inches</p>
+</td>
+</tr><tr><td>
+<p align="left">nmstc</p>
+</td>
+<td>
+<p align="left">number of small tics</p>
+</td>
+</tr><tr><td>
+<p align="left">lint</p>
+</td>
+<td>
+<p align="left">label interval (large tics)</p>
+</td>
+</tr><tr><td>
+<p align="left">xunit</p>
+</td>
+<td>
+<p align="left">divisor for axis label</p>
+</td>
+</tr><tr><td>
+<p align="left">ipos</p>
+</td>
+<td>
+<p align="left">-1 bottom, 0 none, +1 top of label</p>
+</td>
+</tr><tr><td>
+<p align="left">csize</p>
+</td>
+<td>
+<p align="left">character size inches</p>
+</td>
+</tr><tr><td>
+<p align="left">frmt</p>
+</td>
+<td>
+<p align="left">axis format char*20</p>
+</td>
+</tr></tbody></table><p align="left">Valid qualifiers are:</p>
+<p align="left">/[NO]USER determines units of y position. Default is /USER. If /NOUSER units are inches from the ORIGIN. (see the ORIGIN command)</p>
+<p> </p>
+<h3 align="left">Appendix B Sec7.11.7 <a name="_VPID_654" id="_VPID_654"></a></h3>
+<p> </p>
+<p align="left" class="callout"><b>%YAXIS/qualifier,ylow,yhigh,ytic,x[,nmstc][,lint] [,yunit][,ipos][,csize][,frmt] </b></p>
+<p align="left">This command draws an y-axis and redefines scaling for the y direction. The arguments ylow, yhigh, ytic and x should not be omitted. See the %RANGE command to get default values for axis limits and increments. If you have used %RANGE, then you can use PPL$RANGE_LOW, PPL$RANGE_HIGH, PPL$RANGE_INC for ylow, yhigh and ytic.</p>
+<table><tbody><tr><td>
+<p align="left">ylow</p>
+</td>
+<td>
+<p align="left">min value of y user</p>
+</td>
+</tr><tr><td>
+<p align="left">yhigh</p>
+</td>
+<td>
+<p align="left">max value of y user</p>
+</td>
+</tr><tr><td>
+<p align="left">ytic</p>
+</td>
+<td>
+<p align="left">large tic increment user</p>
+</td>
+</tr><tr><td>
+<p align="left">xx</p>
+</td>
+<td>
+<p align="left">position user or inches</p>
+</td>
+</tr><tr><td>
+<p align="left">nmstc</p>
+</td>
+<td>
+<p align="left">number of small tics</p>
+</td>
+</tr><tr><td>
+<p align="left">lint</p>
+</td>
+<td>
+<p align="left">label interval (large tics)</p>
+</td>
+</tr><tr><td>
+<p align="left">yunit</p>
+</td>
+<td>
+<p align="left">divisor for axis label</p>
+</td>
+</tr><tr><td>
+<p align="left">ipos</p>
+</td>
+<td>
+<p align="left">-1 left, 0 none, +1 right of label</p>
+</td>
+</tr><tr><td>
+<p align="left">csize</p>
+</td>
+<td>
+<p align="left">character size inches</p>
+</td>
+</tr><tr><td>
+<p align="left">frmt</p>
+</td>
+<td>
+<p align="left">axis format char*20</p>
+</td>
+</tr></tbody></table><p align="left">Valid qualifiers are:</p>
+<p align="left">/[NO]USER determines units of y position. Default is /USER. If /NOUSER units are inches from the ORIGIN. (see the ORIGIN command)</p>
+<p align="left"><b>Example: </b></p>
+<p align="left">Here is a PPLUS command file which uses all the % routines described above. It can be found in the directory ppl$examples (PPL$EXAMPLES:CTD4.PPC), and can be executed in PPLUS to generate a plot.</p>
+<p align="left"> </p>
+<pre>
+c 
+c  PPLUS command file to plot EPIC CTD data demonstrating multiple axis 
+c  capability.
+c
+c  It plots  Pressure vs Temperature, Salinity, Sigma_t, Oxygen.
+c
+box,off
+window,on
+size,8,10.5
+origin,,2.3
+format/ctd,epic
+axlint,1,1
+c pltnme,ctd4.plt
+c
+c  First plot P vs T with T axis at top. Supress bottom x axis.
+c
+evar,t,p
+rd,ppl$examples:ctd4
+%opnplt
+%range/nouser 'ppl$ymin(1)','ppl$ymax(1)',5
+yfor,(i7)
+yaxis,'ppl$range_high','ppl$range_low','ppl$range_inc'
+title
+
+axlabp,1
+axset,,0
+plot
+c
+c  Plot P vs Salinity with S axis at top above T axis.
+c
+evar/next sal,p
+rd
+set ypos 'ppl$ylen' + .7
+%range/nouser 'ppl$xmin(1)','ppl$xmax(1)',4
+%xaxis/nouser,'ppl$range_low','ppl$range_high','ppl$range_inc',-
+'ypos',,,,+1
+%pltlin,1
+c
+c  Plot P vs Sigma_t with S_t axis at bottom
+c
+evar/next sig,p
+rd
+set ypos 0.
+%range/nouser 'ppl$xmin(2)','ppl$xmax(2)',4
+%xaxis/nouser,'ppl$range_low','ppl$range_high','ppl$range_inc',-
+'ypos',,,,-1
+%pltlin 2
+c
+c  Plot P vs Oxygen with O axis at bottom below S_t axis.
+c
+evar/next ox,p
+rd
+set ypos 'YPOS' - .7
+%range/nouser 'ppl$xmin(3)','ppl$xmax(3)',4
+%xaxis/nouser,'ppl$range_low','ppl$range_high','ppl$range_inc',-
+'ypos',,,,-1
+%pltlin 3
+c
+c  Now use PPLUS EPIC symbols in moveable labels for graph titles
+c
+set ypost 'ppl$ylen' + 1.9
+%label/nouser 0,'ypost',-1,0.,.16,'ppl$epic_latitude1'
+'ppl$epic_longitude1'
+set ypos 'ypost' + .3
+%label/nouser 0,'ypos',-1,0.,.16,'ppl$epic_cast1'
+'ppl$epic_date1'
+%clsplt</pre><p> </p>
+<p> </p>
+<p> </p>
+</div>
+      </div>
+</div>
+    
+  </div>
+  
+  <div class="clearfix">
+          <nav class="links node-links clearfix"></nav>
+    
+      </div>
+</article>
+    </div>
+  </div>
+</div>      </div>
+</div>  </div>
+</div></section>    
+  
+      <footer id="section-footer" class="section section-footer">
+  <div id="zone-footer-wrapper" class="zone-wrapper zone-footer-wrapper clearfix">  
+  <div id="zone-footer" class="zone zone-footer clearfix container-12">
+    <div class="grid-8 region region-footer-first" id="region-footer-first">
+  <div class="region-inner region-footer-first-inner">
+    <div class="block block-block block-1 block-block-1 odd block-without-title" id="block-block-1">
+  <div class="block-inner clearfix">
+                
+    <div class="content clearfix">
+      <p><a href="https://www.pmel.noaa.gov/"><img alt="PMEL logo" border="0" src="https://ferret.pmel.noaa.gov/Ferret/sites/all/themes/pacific_marine/images/PMEL-meatball-logo-sm.png" style="width: 110px; height: 110px;" /></a></p>
+    </div>
+  </div>
+</div><div class="block block-block block-2 block-block-2 even block-without-title" id="block-block-2">
+  <div class="block-inner clearfix">
+                
+    <div class="content clearfix">
+      <p><a href="https://www.noaa.gov/">National Oceanic and Atmospheric Administration</a><br /><a href="https://www.pmel.noaa.gov/">Pacific Marine Environmental Laboratory</a> | <a href="https://ferret.pmel.noaa.gov/Ferret">Ferret Support</a><br /><a href="mailto:oar.pmel.contact_ferret@noaa.gov">oar.pmel.contact_ferret@noaa.gov </a></p>
+    </div>
+  </div>
+</div><div class="block block-menu block-menu-footer-first-menu block-menu-menu-footer-first-menu odd block-without-title" id="block-menu-menu-footer-first-menu">
+  <div class="block-inner clearfix">
+                
+    <div class="content clearfix">
+      <ul class="menu"><li class="first leaf"><a href="https://www.commerce.gov/" title="The United States Department of Commerce">DOC</a></li>
+<li class="leaf"><a href="https://www.noaa.gov/" title="The National Oceanographic and Atmospheric Administration">NOAA</a></li>
+<li class="leaf"><a href="https://www.research.noaa.gov/" title="Department of Commerce &gt; NOAA &gt; Office of Oceanic and Atmospheric Research">OAR</a></li>
+<li class="leaf"><a href="https://www.pmel.noaa.gov/">PMEL</a></li>
+<li class="leaf"><a href="https://www.pmel.noaa.gov/project/science-data-integration" target="_blank">SDIG</a></li>
+<li class="leaf"><a href="https://www.noaa.gov/protecting-your-privacy" target="_blank">Privacy Policy</a></li>
+<li class="last leaf"><a href="https://www.noaa.gov/disclaimer" target="_blank">Disclaimer</a></li>
+</ul>    </div>
+  </div>
+</div>  </div>
+</div><div class="grid-4 region region-footer-second" id="region-footer-second">
+  <div class="region-inner region-footer-second-inner">
+    <div class="block block-menu block-menu-footer-second-menu block-menu-menu-footer-second-menu odd block-without-title" id="block-menu-menu-footer-second-menu">
+  <div class="block-inner clearfix">
+                
+    <div class="content clearfix">
+      <ul class="menu"><li class="first last leaf"><a href="https://ferret.pmel.noaa.gov/Ferret/sitemap" title="Title of Site map page">Ferret Sitemap</a></li>
+</ul>    </div>
+  </div>
+</div>  </div>
+</div>  </div>
+</div></footer>  </div>  <div class="region region-page-bottom" id="region-page-bottom">
+  <div class="region-inner region-page-bottom-inner">
+      </div>
+</div>  <div id="body-bg-bottom"></div>
+</body>
+
+<!-- Mirrored from ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-b-pplus-guide/PPLUS-COMMAND-FILES by HTTrack Website Copier/3.x [XR&CO'2014], Thu, 15 Jun 2023 18:11:58 GMT -->
+</html>

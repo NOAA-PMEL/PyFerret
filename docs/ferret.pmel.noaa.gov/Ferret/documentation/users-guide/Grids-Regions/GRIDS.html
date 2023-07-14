@@ -1,0 +1,1015 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML+RDFa 1.1//EN">
+<html lang="en" dir="ltr" version="HTML+RDFa 1.1"
+  xmlns:content="http://purl.org/rss/1.0/modules/content/"
+  xmlns:dc="http://purl.org/dc/terms/"
+  xmlns:foaf="http://xmlns.com/foaf/0.1/"
+  xmlns:og="http://ogp.me/ns#"
+  xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+  xmlns:sioc="http://rdfs.org/sioc/ns#"
+  xmlns:sioct="http://rdfs.org/sioc/types#"
+  xmlns:skos="http://www.w3.org/2004/02/skos/core#"
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+  xmlns:schema="http://schema.org/">
+
+<!-- Mirrored from ferret.pmel.noaa.gov/Ferret/documentation/users-guide/Grids-Regions/GRIDS by HTTrack Website Copier/3.x [XR&CO'2014], Thu, 15 Jun 2023 18:11:31 GMT -->
+<!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=utf-8" /><!-- /Added by HTTrack -->
+<head profile="http://www.w3.org/1999/xhtml/vocab">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="Generator" content="Drupal 7 (http://drupal.org)" />
+<link rel="canonical" href="GRIDS.html" />
+<link rel="shortlink" href="https://ferret.pmel.noaa.gov/Ferret/node/727" />
+<link rel="shortcut icon" href="https://ferret.pmel.noaa.gov/Ferret/sites/all/themes/pacific_marine/images/favicon-32.png" type="image/png" />
+<link rel="apple-touch-icon" href="https://ferret.pmel.noaa.gov/Ferret/sites/all/themes/pacific_marine/images/apple-touch-icon-152x152.png" type="image/png" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no" />
+  <title>4.2 GRIDS | Science Data Integration Group - Ferret Support</title>  
+  <style type="text/css" media="all">
+@import url("https://ferret.pmel.noaa.gov/Ferret/modules/system/system.base.css?rw9vml");
+@import url("https://ferret.pmel.noaa.gov/Ferret/modules/system/system.menus.css?rw9vml");
+@import url("https://ferret.pmel.noaa.gov/Ferret/modules/system/system.messages.css?rw9vml");
+@import url("https://ferret.pmel.noaa.gov/Ferret/modules/system/system.theme.css?rw9vml");
+</style>
+<style type="text/css" media="all">
+@import url("https://ferret.pmel.noaa.gov/Ferret/sites/all/modules/jquery_update/replace/ui/themes/base/minified/jquery.ui.core.min.css?rw9vml");
+@import url("https://ferret.pmel.noaa.gov/Ferret/sites/all/modules/jquery_update/replace/ui/themes/base/minified/jquery.ui.theme.min.css?rw9vml");
+@import url("https://ferret.pmel.noaa.gov/Ferret/sites/all/modules/jquery_update/replace/ui/themes/base/minified/jquery.ui.menu.min.css?rw9vml");
+@import url("https://ferret.pmel.noaa.gov/Ferret/sites/all/modules/jquery_update/replace/ui/themes/base/minified/jquery.ui.autocomplete.min.css?rw9vml");
+</style>
+<style type="text/css" media="all">
+@import url("https://ferret.pmel.noaa.gov/Ferret/sites/all/modules/calendar/css/calendar_multiday.css?rw9vml");
+@import url("https://ferret.pmel.noaa.gov/Ferret/modules/field/theme/field.css?rw9vml");
+@import url("https://ferret.pmel.noaa.gov/Ferret/sites/all/modules/scald/modules/fields/mee/css/editor-global.css?rw9vml");
+@import url("https://ferret.pmel.noaa.gov/Ferret/modules/node/node.css?rw9vml");
+@import url("https://ferret.pmel.noaa.gov/Ferret/sites/all/modules/scald_file/scald_file.css?rw9vml");
+@import url("https://ferret.pmel.noaa.gov/Ferret/modules/search/search.css?rw9vml");
+@import url("https://ferret.pmel.noaa.gov/Ferret/modules/user/user.css?rw9vml");
+@import url("https://ferret.pmel.noaa.gov/Ferret/sites/all/modules/views/css/views.css?rw9vml");
+@import url("https://ferret.pmel.noaa.gov/Ferret/sites/all/modules/ckeditor/css/ckeditor.css?rw9vml");
+</style>
+<style type="text/css" media="all">
+@import url("https://ferret.pmel.noaa.gov/Ferret/sites/all/modules/ctools/css/ctools.css?rw9vml");
+@import url("https://ferret.pmel.noaa.gov/Ferret/sites/all/modules/custom_search/custom_search.css?rw9vml");
+@import url("https://ferret.pmel.noaa.gov/Ferret/sites/all/modules/search_autocomplete/css/themes/minimal.css?rw9vml");
+@import url("https://ferret.pmel.noaa.gov/Ferret/sites/all/libraries/superfish/css/superfish.css?rw9vml");
+@import url("https://ferret.pmel.noaa.gov/Ferret/sites/all/libraries/superfish/css/superfish-smallscreen.css?rw9vml");
+@import url("https://ferret.pmel.noaa.gov/Ferret/sites/all/libraries/superfish/css/superfish-vertical.css?rw9vml");
+</style>
+<style type="text/css" media="all">
+@import url("https://ferret.pmel.noaa.gov/Ferret/sites/all/themes/pacific_marine/css/ckeditor_custom.css?rw9vml");
+</style>
+<style type="text/css" media="all">
+@import url("https://ferret.pmel.noaa.gov/Ferret/sites/all/themes/omega/alpha/css/alpha-reset.css?rw9vml");
+@import url("https://ferret.pmel.noaa.gov/Ferret/sites/all/themes/omega/alpha/css/alpha-mobile.css?rw9vml");
+@import url("https://ferret.pmel.noaa.gov/Ferret/sites/all/themes/omega/alpha/css/alpha-alpha.css?rw9vml");
+@import url("https://ferret.pmel.noaa.gov/Ferret/sites/all/themes/omega/omega/css/formalize.css?rw9vml");
+@import url("https://ferret.pmel.noaa.gov/Ferret/sites/all/themes/omega/omega/css/omega-text.css?rw9vml");
+@import url("https://ferret.pmel.noaa.gov/Ferret/sites/all/themes/omega/omega/css/omega-branding.css?rw9vml");
+@import url("https://ferret.pmel.noaa.gov/Ferret/sites/all/themes/omega/omega/css/omega-menu.css?rw9vml");
+@import url("https://ferret.pmel.noaa.gov/Ferret/sites/all/themes/omega/omega/css/omega-forms.css?rw9vml");
+@import url("https://ferret.pmel.noaa.gov/Ferret/sites/all/themes/omega/omega/css/omega-visuals.css?rw9vml");
+@import url("https://ferret.pmel.noaa.gov/Ferret/sites/all/themes/pacific_marine/css/global.css?rw9vml");
+</style>
+
+<!--[if (lt IE 9)&(!IEMobile)]>
+<style type="text/css" media="all">
+@import url("https://ferret.pmel.noaa.gov/Ferret/sites/all/themes/pacific_marine/css/pacific-marine-alpha-default.css?rw9vml");
+@import url("https://ferret.pmel.noaa.gov/Ferret/sites/all/themes/pacific_marine/css/pacific-marine-alpha-default-normal.css?rw9vml");
+@import url("https://ferret.pmel.noaa.gov/Ferret/sites/all/themes/omega/alpha/css/grid/alpha_default/normal/alpha-default-normal-12.css?rw9vml");
+</style>
+<![endif]-->
+
+<!--[if gte IE 9]><!-->
+<style type="text/css" media="all and (min-width: 740px) and (min-device-width: 740px), (max-device-width: 800px) and (min-width: 740px) and (orientation:landscape)">
+@import url("https://ferret.pmel.noaa.gov/Ferret/sites/all/themes/pacific_marine/css/pacific-marine-alpha-default.css?rw9vml");
+@import url("https://ferret.pmel.noaa.gov/Ferret/sites/all/themes/pacific_marine/css/pacific-marine-alpha-default-narrow.css?rw9vml");
+@import url("https://ferret.pmel.noaa.gov/Ferret/sites/all/themes/omega/alpha/css/grid/alpha_default/narrow/alpha-default-narrow-12.css?rw9vml");
+</style>
+<!--<![endif]-->
+
+<!--[if gte IE 9]><!-->
+<style type="text/css" media="all and (min-width: 980px) and (min-device-width: 980px), all and (max-device-width: 1024px) and (min-width: 1024px) and (orientation:landscape)">
+@import url("https://ferret.pmel.noaa.gov/Ferret/sites/all/themes/pacific_marine/css/pacific-marine-alpha-default.css?rw9vml");
+@import url("https://ferret.pmel.noaa.gov/Ferret/sites/all/themes/pacific_marine/css/pacific-marine-alpha-default-normal.css?rw9vml");
+@import url("https://ferret.pmel.noaa.gov/Ferret/sites/all/themes/omega/alpha/css/grid/alpha_default/normal/alpha-default-normal-12.css?rw9vml");
+</style>
+<!--<![endif]-->
+
+<!--[if gte IE 9]><!-->
+<style type="text/css" media="all and (min-width: 1220px)">
+@import url("https://ferret.pmel.noaa.gov/Ferret/sites/all/themes/pacific_marine/css/pacific-marine-alpha-default.css?rw9vml");
+@import url("https://ferret.pmel.noaa.gov/Ferret/sites/all/themes/pacific_marine/css/pacific-marine-alpha-default-wide.css?rw9vml");
+@import url("https://ferret.pmel.noaa.gov/Ferret/sites/all/themes/omega/alpha/css/grid/alpha_default/wide/alpha-default-wide-12.css?rw9vml");
+</style>
+<!--<![endif]-->
+	
+	<script id="_fed_an_ua_tag" src="https://dap.digitalgov.gov/Universal-Federated-Analytics-Min.js?agency=DOC&amp;subagency=NOAA&amp;pua=UA-96523701-1"></script>
+	
+  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<script type="text/javascript">
+<!--//--><![CDATA[//><!--
+window.jQuery || document.write("<script src='https://ferret.pmel.noaa.gov/Ferret/sites/all/modules/jquery_update/replace/jquery/1.12/jquery.min.js'>\x3C/script>")
+//--><!]]>
+</script>
+<script type="text/javascript" src="https://ferret.pmel.noaa.gov/Ferret/misc/jquery-extend-3.4.0.js?v=1.12.4"></script>
+<script type="text/javascript" src="https://ferret.pmel.noaa.gov/Ferret/misc/jquery-html-prefilter-3.5.0-backport.js?v=1.12.4"></script>
+<script type="text/javascript" src="https://ferret.pmel.noaa.gov/Ferret/misc/jquery.once.js?v=1.2"></script>
+<script type="text/javascript" src="https://ferret.pmel.noaa.gov/Ferret/misc/drupal.js?rw9vml"></script>
+<script type="text/javascript" src="https://ferret.pmel.noaa.gov/Ferret/sites/all/modules/jquery_update/js/jquery_browser.js?v=0.0.1"></script>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.2/jquery-ui.min.js"></script>
+<script type="text/javascript">
+<!--//--><![CDATA[//><!--
+window.jQuery.ui || document.write("<script src='https://ferret.pmel.noaa.gov/Ferret/sites/all/modules/jquery_update/replace/ui/ui/minified/jquery-ui.min.js'>\x3C/script>")
+//--><!]]>
+</script>
+<script type="text/javascript" src="https://ferret.pmel.noaa.gov/Ferret/misc/ui/jquery.ui.position-1.13.0-backport.js?v=1.10.2"></script>
+<script type="text/javascript" src="https://ferret.pmel.noaa.gov/Ferret/sites/all/modules/entityreference/js/entityreference.js?rw9vml"></script>
+<script type="text/javascript" src="https://ferret.pmel.noaa.gov/Ferret/sites/all/modules/custom_search/js/custom_search.js?rw9vml"></script>
+<script type="text/javascript" src="https://ferret.pmel.noaa.gov/Ferret/sites/all/modules/scald_file/scald_file.js?rw9vml"></script>
+<script type="text/javascript" src="https://ferret.pmel.noaa.gov/Ferret/sites/all/modules/scald/modules/providers/scald_image/scald_image.js?rw9vml"></script>
+<script type="text/javascript" src="https://ferret.pmel.noaa.gov/Ferret/sites/all/modules/search_autocomplete/js/jquery.autocomplete.js?rw9vml"></script>
+<script type="text/javascript" src="https://ferret.pmel.noaa.gov/Ferret/sites/all/libraries/superfish/jquery.hoverIntent.minified.js?rw9vml"></script>
+<script type="text/javascript" src="https://ferret.pmel.noaa.gov/Ferret/sites/all/libraries/superfish/sfsmallscreen.js?rw9vml"></script>
+<script type="text/javascript" src="https://ferret.pmel.noaa.gov/Ferret/sites/all/libraries/superfish/supposition.js?rw9vml"></script>
+<script type="text/javascript" src="https://ferret.pmel.noaa.gov/Ferret/sites/all/libraries/superfish/superfish.js?rw9vml"></script>
+<script type="text/javascript" src="https://ferret.pmel.noaa.gov/Ferret/sites/all/libraries/superfish/supersubs.js?rw9vml"></script>
+<script type="text/javascript" src="https://ferret.pmel.noaa.gov/Ferret/sites/all/modules/superfish/superfish.js?rw9vml"></script>
+<script type="text/javascript" src="https://ferret.pmel.noaa.gov/Ferret/sites/all/themes/pacific_marine/js/pacific_marine.js?rw9vml"></script>
+<script type="text/javascript" src="https://ferret.pmel.noaa.gov/Ferret/sites/all/themes/omega/omega/js/jquery.formalize.js?rw9vml"></script>
+<script type="text/javascript" src="https://ferret.pmel.noaa.gov/Ferret/sites/all/themes/omega/omega/js/omega-mediaqueries.js?rw9vml"></script>
+<script type="text/javascript" src="https://ferret.pmel.noaa.gov/Ferret/sites/all/themes/omega/omega/js/omega-equalheights.js?rw9vml"></script>
+<script type="text/javascript">
+<!--//--><![CDATA[//><!--
+jQuery.extend(Drupal.settings, {"basePath":"\/Ferret\/","pathPrefix":"","setHasJsCookie":0,"ajaxPageState":{"theme":"pacific_marine","theme_token":"bxj6zrLRPgpIJOQkJ-cE2PF8i9FQCpH_9g_kTNurq8c","js":{"\/\/ajax.googleapis.com\/ajax\/libs\/jquery\/1.12.4\/jquery.min.js":1,"0":1,"misc\/jquery-extend-3.4.0.js":1,"misc\/jquery-html-prefilter-3.5.0-backport.js":1,"misc\/jquery.once.js":1,"misc\/drupal.js":1,"sites\/all\/modules\/jquery_update\/js\/jquery_browser.js":1,"\/\/ajax.googleapis.com\/ajax\/libs\/jqueryui\/1.10.2\/jquery-ui.min.js":1,"1":1,"misc\/ui\/jquery.ui.position-1.13.0-backport.js":1,"sites\/all\/modules\/entityreference\/js\/entityreference.js":1,"sites\/all\/modules\/custom_search\/js\/custom_search.js":1,"sites\/all\/modules\/scald_file\/scald_file.js":1,"sites\/all\/modules\/scald\/modules\/providers\/scald_image\/scald_image.js":1,"sites\/all\/modules\/search_autocomplete\/js\/jquery.autocomplete.js":1,"sites\/all\/libraries\/superfish\/jquery.hoverIntent.minified.js":1,"sites\/all\/libraries\/superfish\/sfsmallscreen.js":1,"sites\/all\/libraries\/superfish\/supposition.js":1,"sites\/all\/libraries\/superfish\/superfish.js":1,"sites\/all\/libraries\/superfish\/supersubs.js":1,"sites\/all\/modules\/superfish\/superfish.js":1,"sites\/all\/themes\/pacific_marine\/js\/pacific_marine.js":1,"sites\/all\/themes\/omega\/omega\/js\/jquery.formalize.js":1,"sites\/all\/themes\/omega\/omega\/js\/omega-mediaqueries.js":1,"sites\/all\/themes\/omega\/omega\/js\/omega-equalheights.js":1},"css":{"modules\/system\/system.base.css":1,"modules\/system\/system.menus.css":1,"modules\/system\/system.messages.css":1,"modules\/system\/system.theme.css":1,"misc\/ui\/jquery.ui.core.css":1,"misc\/ui\/jquery.ui.theme.css":1,"misc\/ui\/jquery.ui.menu.css":1,"misc\/ui\/jquery.ui.autocomplete.css":1,"sites\/all\/modules\/calendar\/css\/calendar_multiday.css":1,"modules\/field\/theme\/field.css":1,"sites\/all\/modules\/scald\/modules\/fields\/mee\/css\/editor-global.css":1,"modules\/node\/node.css":1,"sites\/all\/modules\/scald_file\/scald_file.css":1,"modules\/search\/search.css":1,"modules\/user\/user.css":1,"sites\/all\/modules\/views\/css\/views.css":1,"sites\/all\/modules\/ckeditor\/css\/ckeditor.css":1,"sites\/all\/modules\/ctools\/css\/ctools.css":1,"sites\/all\/modules\/custom_search\/custom_search.css":1,"sites\/all\/modules\/search_autocomplete\/css\/themes\/minimal.css":1,"sites\/all\/libraries\/superfish\/css\/superfish.css":1,"sites\/all\/libraries\/superfish\/css\/superfish-smallscreen.css":1,"sites\/all\/libraries\/superfish\/css\/superfish-vertical.css":1,"sites\/all\/themes\/pacific_marine\/css\/ckeditor_custom.css":1,"sites\/all\/themes\/omega\/alpha\/css\/alpha-reset.css":1,"sites\/all\/themes\/omega\/alpha\/css\/alpha-mobile.css":1,"sites\/all\/themes\/omega\/alpha\/css\/alpha-alpha.css":1,"sites\/all\/themes\/omega\/omega\/css\/formalize.css":1,"sites\/all\/themes\/omega\/omega\/css\/omega-text.css":1,"sites\/all\/themes\/omega\/omega\/css\/omega-branding.css":1,"sites\/all\/themes\/omega\/omega\/css\/omega-menu.css":1,"sites\/all\/themes\/omega\/omega\/css\/omega-forms.css":1,"sites\/all\/themes\/omega\/omega\/css\/omega-visuals.css":1,"sites\/all\/themes\/pacific_marine\/css\/global.css":1,"ie::normal::sites\/all\/themes\/pacific_marine\/css\/pacific-marine-alpha-default.css":1,"ie::normal::sites\/all\/themes\/pacific_marine\/css\/pacific-marine-alpha-default-normal.css":1,"ie::normal::sites\/all\/themes\/omega\/alpha\/css\/grid\/alpha_default\/normal\/alpha-default-normal-12.css":1,"narrow::sites\/all\/themes\/pacific_marine\/css\/pacific-marine-alpha-default.css":1,"narrow::sites\/all\/themes\/pacific_marine\/css\/pacific-marine-alpha-default-narrow.css":1,"sites\/all\/themes\/omega\/alpha\/css\/grid\/alpha_default\/narrow\/alpha-default-narrow-12.css":1,"normal::sites\/all\/themes\/pacific_marine\/css\/pacific-marine-alpha-default.css":1,"normal::sites\/all\/themes\/pacific_marine\/css\/pacific-marine-alpha-default-normal.css":1,"sites\/all\/themes\/omega\/alpha\/css\/grid\/alpha_default\/normal\/alpha-default-normal-12.css":1,"wide::sites\/all\/themes\/pacific_marine\/css\/pacific-marine-alpha-default.css":1,"wide::sites\/all\/themes\/pacific_marine\/css\/pacific-marine-alpha-default-wide.css":1,"sites\/all\/themes\/omega\/alpha\/css\/grid\/alpha_default\/wide\/alpha-default-wide-12.css":1}},"custom_search":{"form_target":"_self","solr":0},"scaldFile":{"path":"sites\/all\/modules\/scald_file\/scald_file.css"},"search_autocomplete":{"form3":{"selector":"#edit-search-block-form--2","minChars":"3","max_sug":"10","type":"internal","datas":"https:\/\/ferret.pmel.noaa.gov\/Ferret\/search_autocomplete\/autocomplete\/3\/","fid":"3","theme":"minimal","auto_submit":"1","auto_redirect":"1"}},"urlIsAjaxTrusted":{"\/Ferret\/documentation\/users-guide\/Grids-Regions\/GRIDS":true},"superfish":{"1":{"id":"1","sf":{"animation":{"opacity":"show","height":"show"},"speed":"fast"},"plugins":{"smallscreen":{"mode":"window_width","breakpointUnit":"px","title":"Documentation"},"supposition":true,"supersubs":true}}},"omega":{"layouts":{"primary":"normal","order":["narrow","normal","wide"],"queries":{"narrow":"all and (min-width: 740px) and (min-device-width: 740px), (max-device-width: 800px) and (min-width: 740px) and (orientation:landscape)","normal":"all and (min-width: 980px) and (min-device-width: 980px), all and (max-device-width: 1024px) and (min-width: 1024px) and (orientation:landscape)","wide":"all and (min-width: 1220px)"}}}});
+//--><!]]>
+</script>
+  <!--[if lt IE 9]><script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+</head>
+<body class="html not-front not-logged-in page-node page-node- page-node-727 node-type-documentation-page context-documentation">
+  <div id="body-bg-top"></div>
+  <div id="skip-link">
+    <a href="#main-content" class="element-invisible element-focusable">Skip to main content</a>
+  </div>
+    <div class="page clearfix" id="page">
+      <header id="section-header" class="section section-header">
+  <div id="zone-header-wrapper" class="zone-wrapper zone-header-wrapper clearfix">  
+  <div id="zone-header" class="zone zone-header clearfix container-12">
+    <div class="grid-7 region region-branding" id="region-branding">
+  <div class="region-inner region-branding-inner">
+        <div class="branding-data clearfix">
+            <div class="logo-img">
+        <a href="https://ferret.pmel.noaa.gov/Ferret/" rel="home" title=""><img src="https://ferret.pmel.noaa.gov/Ferret/sites/all/themes/pacific_marine/images/header-logo.png" alt="" id="logo" /></a>      </div>
+                </div>
+          </div>
+</div><div class="grid-5 region region-header-first" id="region-header-first">
+  <div class="region-inner region-header-first-inner">
+    <div class="block block-block block-4 block-block-4 odd block-without-title" id="block-block-4">
+  <div class="block-inner clearfix">
+                
+    <div class="content clearfix">
+      <div id="noaa-doc">
+<div class="logos">
+<div class="logo" id="doc-logo"><a href="https://www.commerce.gov/" target="_blank"><img alt="Department of Commerce logo" src="https://ferret.pmel.noaa.gov/Ferret/sites/all/themes/pacific_marine/images/doc_logo.png" style="width: 40px; height: 40px;" /></a></div>
+<div class="logo" id="noaa-logo"><a href="https://www.noaa.gov/" target="_blank"><img alt="National Oceanic and Atmospheric Administration logo" src="https://ferret.pmel.noaa.gov/Ferret/sites/all/themes/pacific_marine/images/noaa_logo.png" style="width: 40px; height: 40px;" /></a></div>
+</div>
+<div class="words">National Oceanic and<br />
+Atmospheric Administration<br /><span id="doc">United States Department of Commerce</span></div>
+</div>
+    </div>
+  </div>
+</div><div class="block block-search block-form block-search-form even block-without-title" id="block-search-form">
+  <div class="block-inner clearfix">
+                
+    <div class="content clearfix">
+      <form class="search-form" role="search" action="https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/Grids-Regions/GRIDS" method="post" id="search-block-form" accept-charset="UTF-8"><div><div class="container-inline">
+      <h2 class="element-invisible">Search form</h2>
+    <div class="form-item form-type-textfield form-item-search-block-form">
+  <label class="element-invisible" for="edit-search-block-form--2">Search PMEL </label>
+ <input title="Enter the terms you wish to search for." class="custom-search-box form-text" placeholder="Search Ferret" type="text" id="edit-search-block-form--2" name="search_block_form" value="" size="15" maxlength="128" />
+</div>
+<div class="form-actions form-wrapper" id="edit-actions"><input style="display:none;" type="submit" id="edit-submit" name="op" value="" class="form-submit" /></div><input type="hidden" name="form_build_id" value="form-X3AdgU__BdqgZTkpY9nYZqiAKuXQGFOcKxg97baoq3o" />
+<input type="hidden" name="form_id" value="search_block_form" />
+</div>
+</div></form>    </div>
+  </div>
+</div>  </div>
+</div>  </div>
+</div><div id="zone-menu-wrapper" class="zone-wrapper zone-menu-wrapper clearfix">  
+  <div id="zone-menu" class="zone zone-menu clearfix container-12">
+    <div class="grid-12 region region-menu" id="region-menu">
+  <div class="region-inner region-menu-inner">
+        <div class="block block-system block-menu block-main-menu block-system-main-menu odd block-without-title" id="block-system-main-menu">
+  <div class="block-inner clearfix">
+                
+    <div class="content clearfix">
+      <ul class="menu"><li class="first expanded"><a href="https://ferret.pmel.noaa.gov/Ferret/">Home</a><ul class="menu"><li class="first leaf"><a href="http://www.pmel.noaa.gov/project/science-data-integration">SDIG Home</a></li>
+<li class="leaf"><a href="https://ferret.pmel.noaa.gov/Ferret/">Ferret/PyFerret Home</a></li>
+<li class="last leaf"><a href="http://ferret.pmel.noaa.gov/LAS">LAS Home</a></li>
+</ul></li>
+<li class="leaf"><a href="../../ferret-documentation.html">Documentation</a></li>
+<li class="collapsed"><a href="https://ferret.pmel.noaa.gov/Ferret/downloads">Downloads</a></li>
+<li class="leaf"><a href="https://ferret.pmel.noaa.gov/Ferret/faq">FAQ</a></li>
+<li class="leaf"><a href="https://ferret.pmel.noaa.gov/Ferret/email-users-group">eMail Users Group</a></li>
+<li class="last collapsed"><a href="https://ferret.pmel.noaa.gov/Ferret/support/ferret-support">Support</a></li>
+</ul>    </div>
+  </div>
+</div>  </div>
+</div>
+  </div>
+</div></header>    
+      <section id="section-content" class="section section-content">
+  <div id="zone-preface-wrapper" class="zone-wrapper zone-preface-wrapper clearfix">  
+  <div id="zone-preface" class="zone zone-preface clearfix equal-height-container container-12">
+    <div class="grid-3 region region-preface-first equal-height-element" id="region-preface-first">
+  <div class="region-inner region-preface-first-inner">
+      </div>
+</div><div class="grid-9 region region-preface-second equal-height-element" id="region-preface-second">
+  <div class="region-inner region-preface-second-inner">
+      </div>
+</div>  </div>
+</div><div id="zone-content-wrapper" class="zone-wrapper zone-content-wrapper clearfix sidebar">  
+  <div id="zone-content" class="zone zone-content clearfix equal-height-container container-12">    
+          <div id="breadcrumb" class="grid-12"><h2 class="element-invisible">You are here</h2><div class="breadcrumb"><a href="https://ferret.pmel.noaa.gov/Ferret/">Home</a> > <a href="../../ferret-documentation.html">Documentation</a> > <a href="../../users-guide.html">Ferret User&#039;s Guide</a> > <a href="../Grids-Regions.html">4. Grids &amp; Regions</a> > 4.2 GRIDS</div></div>
+        
+        <aside class="grid-3 region region-sidebar-first equal-height-element" id="region-sidebar-first">
+  <div class="region-inner region-sidebar-first-inner">
+    <div class="block block-superfish block-1 block-superfish-1 odd block-without-title" id="block-superfish-1">
+  <div class="block-inner clearfix">
+                
+    <div class="content clearfix">
+      <ul  id="superfish-1" class="menu sf-menu sf-main-menu sf-vertical sf-style-none sf-total-items-8 sf-parent-items-4 sf-single-items-4"><li id="menu-1620-1" class="first odd sf-item-1 sf-depth-2 sf-no-children"><a href="../../version-763-release-notes.html" class="sf-depth-2">Current Release Notes</a></li><li id="menu-1170-1" class="active-trail middle even sf-item-2 sf-depth-2 sf-total-children-17 sf-parent-children-15 sf-single-children-2 menuparent"><a href="../../users-guide.html" class="sf-depth-2 menuparent">Ferret User&#039;s Guide</a><ul><li id="menu-1613-1" class="first odd sf-item-1 sf-depth-3 sf-no-children"><a href="../full-index/index.html" class="sf-depth-3">Users Guide Index</a></li><li id="menu-1154-1" class="middle even sf-item-2 sf-depth-3 sf-total-children-41 sf-parent-children-0 sf-single-children-41 menuparent"><a href="../commands-reference/chapter-commnad-references.html" class="sf-depth-3 menuparent">Commands Reference</a><ul><li id="menu-1175-1" class="first odd sf-item-1 sf-depth-4 sf-no-children"><a href="../commands-reference/ALIAS.html" class="sf-depth-4">ALIAS</a></li><li id="menu-1176-1" class="middle even sf-item-2 sf-depth-4 sf-no-children"><a href="../commands-reference/CANCEL.html" class="sf-depth-4">CANCEL</a></li><li id="menu-1177-1" class="middle odd sf-item-3 sf-depth-4 sf-no-children"><a href="../commands-reference/CONTOUR.html" class="sf-depth-4">CONTOUR</a></li><li id="menu-1178-1" class="middle even sf-item-4 sf-depth-4 sf-no-children"><a href="../commands-reference/DEFINE.html" class="sf-depth-4">DEFINE</a></li><li id="menu-1179-1" class="middle odd sf-item-5 sf-depth-4 sf-no-children"><a href="../commands-reference/ELIF.html" class="sf-depth-4">ELIF</a></li><li id="menu-1180-1" class="middle even sf-item-6 sf-depth-4 sf-no-children"><a href="../commands-reference/ELSE.html" class="sf-depth-4">ELSE</a></li><li id="menu-1181-1" class="middle odd sf-item-7 sf-depth-4 sf-no-children"><a href="../commands-reference/ENDIF.html" class="sf-depth-4">ENDIF</a></li><li id="menu-1182-1" class="middle even sf-item-8 sf-depth-4 sf-no-children"><a href="../commands-reference/EXIT.html" class="sf-depth-4">EXIT</a></li><li id="menu-1183-1" class="middle odd sf-item-9 sf-depth-4 sf-no-children"><a href="../commands-reference/FILE.html" class="sf-depth-4">FILE</a></li><li id="menu-1184-1" class="middle even sf-item-10 sf-depth-4 sf-no-children"><a href="../commands-reference/FILL.html" class="sf-depth-4">FILL</a></li><li id="menu-1185-1" class="middle odd sf-item-11 sf-depth-4 sf-no-children"><a href="../commands-reference/FRAME.html" class="sf-depth-4">FRAME</a></li><li id="menu-1186-1" class="middle even sf-item-12 sf-depth-4 sf-no-children"><a href="../commands-reference/GO.html" class="sf-depth-4">GO</a></li><li id="menu-1187-1" class="middle odd sf-item-13 sf-depth-4 sf-no-children"><a href="../commands-reference/HELP.html" class="sf-depth-4">HELP</a></li><li id="menu-1188-1" class="middle even sf-item-14 sf-depth-4 sf-no-children"><a href="../commands-reference/IF.html" class="sf-depth-4">IF</a></li><li id="menu-1189-1" class="middle odd sf-item-15 sf-depth-4 sf-no-children"><a href="../commands-reference/LABEL.html" class="sf-depth-4">LABEL</a></li><li id="menu-1190-1" class="middle even sf-item-16 sf-depth-4 sf-no-children"><a href="../commands-reference/LET.html" class="sf-depth-4">LET</a></li><li id="menu-1191-1" class="middle odd sf-item-17 sf-depth-4 sf-no-children"><a href="../commands-reference/LIST.html" class="sf-depth-4">LIST</a></li><li id="menu-1192-1" class="middle even sf-item-18 sf-depth-4 sf-no-children"><a href="../commands-reference/LOAD.html" class="sf-depth-4">LOAD</a></li><li id="menu-1193-1" class="middle odd sf-item-19 sf-depth-4 sf-no-children"><a href="../commands-reference/MESSAGE.html" class="sf-depth-4">MESSAGE</a></li><li id="menu-1194-1" class="middle even sf-item-20 sf-depth-4 sf-no-children"><a href="../commands-reference/PALETTE.html" class="sf-depth-4">PALETTE</a></li><li id="menu-1195-1" class="middle odd sf-item-21 sf-depth-4 sf-no-children"><a href="../commands-reference/PATTERN.html" class="sf-depth-4">PATTERN</a></li><li id="menu-1196-1" class="middle even sf-item-22 sf-depth-4 sf-no-children"><a href="../commands-reference/PAUSE.html" class="sf-depth-4">PAUSE</a></li><li id="menu-1197-1" class="middle odd sf-item-23 sf-depth-4 sf-no-children"><a href="../commands-reference/PLOT.html" class="sf-depth-4">PLOT</a></li><li id="menu-1198-1" class="middle even sf-item-24 sf-depth-4 sf-no-children"><a href="../commands-reference/POLYGON.html" class="sf-depth-4">POLYGON</a></li><li id="menu-1199-1" class="middle odd sf-item-25 sf-depth-4 sf-no-children"><a href="../commands-reference/PPLUS.html" class="sf-depth-4">PPLUS</a></li><li id="menu-1200-1" class="middle even sf-item-26 sf-depth-4 sf-no-children"><a href="../commands-reference/QUERY.html" class="sf-depth-4">QUERY</a></li><li id="menu-1201-1" class="middle odd sf-item-27 sf-depth-4 sf-no-children"><a href="../commands-reference/QUIT.html" class="sf-depth-4">QUIT</a></li><li id="menu-1202-1" class="middle even sf-item-28 sf-depth-4 sf-no-children"><a href="../commands-reference/REPEAT.html" class="sf-depth-4">REPEAT</a></li><li id="menu-1203-1" class="middle odd sf-item-29 sf-depth-4 sf-no-children"><a href="../commands-reference/SAVE.html" class="sf-depth-4">SAVE</a></li><li id="menu-1204-1" class="middle even sf-item-30 sf-depth-4 sf-no-children"><a href="../commands-reference/SAY.html" class="sf-depth-4">SAY</a></li><li id="menu-1205-1" class="middle odd sf-item-31 sf-depth-4 sf-no-children"><a href="../commands-reference/SET.html" class="sf-depth-4">SET</a></li><li id="menu-1206-1" class="middle even sf-item-32 sf-depth-4 sf-no-children"><a href="../commands-reference/SHADE.html" class="sf-depth-4">SHADE</a></li><li id="menu-1207-1" class="middle odd sf-item-33 sf-depth-4 sf-no-children"><a href="../commands-reference/SHOW.html" class="sf-depth-4">SHOW</a></li><li id="menu-1208-1" class="middle even sf-item-34 sf-depth-4 sf-no-children"><a href="../commands-reference/SPAWN.html" class="sf-depth-4">SPAWN</a></li><li id="menu-1209-1" class="middle odd sf-item-35 sf-depth-4 sf-no-children"><a href="../commands-reference/STATISTICS.html" class="sf-depth-4">STATISTICS</a></li><li id="menu-1210-1" class="middle even sf-item-36 sf-depth-4 sf-no-children"><a href="../commands-reference/UNALIAS.html" class="sf-depth-4">UNALIAS</a></li><li id="menu-1211-1" class="middle odd sf-item-37 sf-depth-4 sf-no-children"><a href="../commands-reference/VECTOR.html" class="sf-depth-4">VECTOR</a></li><li id="menu-1212-1" class="middle even sf-item-38 sf-depth-4 sf-no-children"><a href="../commands-reference/USE.html" class="sf-depth-4">USE</a></li><li id="menu-1213-1" class="middle odd sf-item-39 sf-depth-4 sf-no-children"><a href="../commands-reference/USER.html" class="sf-depth-4">USER</a></li><li id="menu-1214-1" class="middle even sf-item-40 sf-depth-4 sf-no-children"><a href="../commands-reference/WI.html" class="sf-depth-4">WIRE</a></li><li id="menu-1215-1" class="last odd sf-item-41 sf-depth-4 sf-no-children"><a href="../commands-reference/WHERE.html" class="sf-depth-4">WHERE</a></li></ul></li><li id="menu-1390-1" class="middle odd sf-item-3 sf-depth-3 sf-total-children-8 sf-parent-children-0 sf-single-children-8 menuparent"><a href="../introduction.html" class="sf-depth-3 menuparent">1. Introduction</a><ul><li id="menu-1230-1" class="first odd sf-item-1 sf-depth-4 sf-no-children"><a href="../introduction/OVERVIEW.html" class="sf-depth-4">1.1 OVERVIEW</a></li><li id="menu-1231-1" class="middle even sf-item-2 sf-depth-4 sf-no-children"><a href="../introduction/GETTING-STARTED.html" class="sf-depth-4">1.2 GETTING STARTED</a></li><li id="menu-1232-1" class="middle odd sf-item-3 sf-depth-4 sf-no-children"><a href="../introduction/COMMON-COMMANDS.html" class="sf-depth-4">1.3 COMMON COMMANDS</a></li><li id="menu-1233-1" class="middle even sf-item-4 sf-depth-4 sf-no-children"><a href="../introduction/COMMAND-SYNTAX.html" class="sf-depth-4">1.4 COMMAND SYNTAX</a></li><li id="menu-1234-1" class="middle odd sf-item-5 sf-depth-4 sf-no-children"><a href="../introduction/GO-FILES.html" class="sf-depth-4">1.5 GO FILES</a></li><li id="menu-1235-1" class="middle even sf-item-6 sf-depth-4 sf-no-children"><a href="../introduction/SAMPLE-DATA-SETS.html" class="sf-depth-4">1.6 SAMPLE DATA SETS</a></li><li id="menu-1236-1" class="middle odd sf-item-7 sf-depth-4 sf-no-children"><a href="../introduction/UNIX-TOOLS.html" class="sf-depth-4">1.7 UNIX TOOLS</a></li><li id="menu-1237-1" class="last even sf-item-8 sf-depth-4 sf-no-children"><a href="../introduction/HELP.html" class="sf-depth-4">1.8 HELP</a></li></ul></li><li id="menu-1391-1" class="middle even sf-item-4 sf-depth-3 sf-total-children-9 sf-parent-children-1 sf-single-children-8 menuparent"><a href="../data-set-basics.html" class="sf-depth-3 menuparent">2. Data Set Basics</a><ul><li id="menu-1238-1" class="first odd sf-item-1 sf-depth-4 sf-no-children"><a href="../data-set-basics/OVERVIEW.html" class="sf-depth-4">2.1 OVERVIEW</a></li><li id="menu-1239-1" class="middle even sf-item-2 sf-depth-4 sf-total-children-1 sf-parent-children-0 sf-single-children-1 menuparent"><a href="../data-set-basics/NETCDF-DATA.html" class="sf-depth-4 menuparent">2.2 NETCDF DATA</a><ul><li id="menu-1593-1" class="firstandlast odd sf-item-1 sf-depth-5 sf-no-children"><a href="../../udunits.html" class="sf-depth-5">udunits.dat</a></li></ul></li><li id="menu-1240-1" class="middle odd sf-item-3 sf-depth-4 sf-no-children"><a href="../data-set-basics/TMAP-FORMATTED-DATA.html" class="sf-depth-4">2.3 TMAP-FORMATTED DATA</a></li><li id="menu-1241-1" class="middle even sf-item-4 sf-depth-4 sf-no-children"><a href="../data-set-basics/BINARY-DATA.html" class="sf-depth-4">2.4 BINARY DATA</a></li><li id="menu-1243-1" class="middle odd sf-item-5 sf-depth-4 sf-no-children"><a href="../data-set-basics/ASCII-DATA.html" class="sf-depth-4">2.5 ASCII DATA</a></li><li id="menu-1242-1" class="middle even sf-item-6 sf-depth-4 sf-no-children"><a href="../data-set-basics/TRICKS-TO-READING-BINARY-AND-ASCII-FILES.html" class="sf-depth-4">2.6 TRICKS TO READING BINARY AND ASCII FILES</a></li><li id="menu-1244-1" class="middle odd sf-item-7 sf-depth-4 sf-no-children"><a href="../data-set-basics/ACCESS-TO-REMOTE-DATA-SETS-WITH-DODS.html" class="sf-depth-4">2.7 ACCESS TO REMOTE DATA SETS WITH OPeNDAP</a></li><li id="menu-1246-1" class="middle even sf-item-8 sf-depth-4 sf-no-children"><a href="https://ferret.pmel.noaa.gov/Ferret/" class="sf-depth-4">dsg_trajectories</a></li><li id="menu-1247-1" class="last odd sf-item-9 sf-depth-4 sf-no-children"><a href="https://ferret.pmel.noaa.gov/Ferret/" class="sf-depth-4">dsg_profiles</a></li></ul></li><li id="menu-1392-1" class="middle odd sf-item-5 sf-depth-3 sf-total-children-5 sf-parent-children-0 sf-single-children-5 menuparent"><a href="../variables-xpressions.html" class="sf-depth-3 menuparent">3. Variables &amp; Expressions</a><ul><li id="menu-1248-1" class="first odd sf-item-1 sf-depth-4 sf-no-children"><a href="../variables-xpressions/VARIABLES.html" class="sf-depth-4">3.1 VARIABLES</a></li><li id="menu-1249-1" class="middle even sf-item-2 sf-depth-4 sf-no-children"><a href="../variables-xpressions/XPRESSIONS.html" class="sf-depth-4">3.2 EXPRESSIONS</a></li><li id="menu-1250-1" class="middle odd sf-item-3 sf-depth-4 sf-no-children"><a href="../variables-xpressions/EMBEDDED-XPRESSIONS.html" class="sf-depth-4">3.3 EMBEDDED EXPRESSIONS</a></li><li id="menu-1251-1" class="middle even sf-item-4 sf-depth-4 sf-no-children"><a href="../variables-xpressions/DEFINING-NEW-VARIABLES.html" class="sf-depth-4">3.4 DEFINING NEW VARIABLES</a></li><li id="menu-1252-1" class="last odd sf-item-5 sf-depth-4 sf-no-children"><a href="../variables-xpressions/DEBUGGING-COMPLEX-HIERARCHIES-OF-XPRESSIONS.html" class="sf-depth-4">3.5 DEBUGGING COMPLEX HIERARCHIES OF EXPRESSIONS</a></li></ul></li><li id="menu-1393-1" class="active-trail middle even sf-item-6 sf-depth-3 sf-total-children-4 sf-parent-children-0 sf-single-children-4 menuparent"><a href="../Grids-Regions.html" class="sf-depth-3 menuparent">4. Grids &amp; Regions</a><ul><li id="menu-1253-1" class="first odd sf-item-1 sf-depth-4 sf-no-children"><a href="OVERVIEW.html" class="sf-depth-4">4.1 OVERVIEW</a></li><li id="menu-1254-1" class="active-trail middle even sf-item-2 sf-depth-4 sf-no-children"><a href="GRIDS.html" class="sf-depth-4 active">4.2 GRIDS</a></li><li id="menu-1255-1" class="middle odd sf-item-3 sf-depth-4 sf-no-children"><a href="REGIONS.html" class="sf-depth-4">4.3 REGIONS</a></li><li id="menu-1256-1" class="last even sf-item-4 sf-depth-4 sf-no-children"><a href="FERRET-PROGRAM-LIMITS.html" class="sf-depth-4">4.4 FERRET PROGRAM LIMITS</a></li></ul></li><li id="menu-1394-1" class="middle odd sf-item-7 sf-depth-3 sf-total-children-5 sf-parent-children-0 sf-single-children-5 menuparent"><a href="../animations-gif-images.html" class="sf-depth-3 menuparent">5. Animations &amp; Gif Images</a><ul><li id="menu-1257-1" class="first odd sf-item-1 sf-depth-4 sf-no-children"><a href="../animations-gif-images/OVERVIEW.html" class="sf-depth-4">5.1 OVERVIEW</a></li><li id="menu-1258-1" class="middle even sf-item-2 sf-depth-4 sf-no-children"><a href="../animations-gif-images/CREATING-AN-HDF-MOVIE.html" class="sf-depth-4">5.2 CREATING AN HDF MOVIE</a></li><li id="menu-1259-1" class="middle odd sf-item-3 sf-depth-4 sf-no-children"><a href="../animations-gif-images/DISPLAYING-AN-HDF-MOVIE.html" class="sf-depth-4">5.3 DISPLAYING AN HDF MOVIE</a></li><li id="menu-1260-1" class="middle even sf-item-4 sf-depth-4 sf-no-children"><a href="../animations-gif-images/ADVANCED-MOVIE-MAKING.html" class="sf-depth-4">5.4 ADVANCED MOVIE-MAKING</a></li><li id="menu-1261-1" class="last odd sf-item-5 sf-depth-4 sf-no-children"><a href="../animations-gif-images/CREATING-GIF-IMAGES.html" class="sf-depth-4">5.5 CREATING GIF IMAGES</a></li></ul></li><li id="menu-1395-1" class="middle even sf-item-8 sf-depth-3 sf-total-children-12 sf-parent-children-0 sf-single-children-12 menuparent"><a href="../customizing-plots.html" class="sf-depth-3 menuparent">6. Customizing Plots</a><ul><li id="menu-1262-1" class="first odd sf-item-1 sf-depth-4 sf-no-children"><a href="../customizing-plots/OVERVIEW.html" class="sf-depth-4">6.1 OVERVIEW</a></li><li id="menu-1263-1" class="middle even sf-item-2 sf-depth-4 sf-no-children"><a href="../customizing-plots/GRAPHICAL-OUTPUT.html" class="sf-depth-4">6.2 GRAPHICAL OUTPUT</a></li><li id="menu-1264-1" class="middle odd sf-item-3 sf-depth-4 sf-no-children"><a href="../customizing-plots/AXES.html" class="sf-depth-4">6.3 AXES</a></li><li id="menu-1265-1" class="middle even sf-item-4 sf-depth-4 sf-no-children"><a href="../customizing-plots/LABELS.html" class="sf-depth-4">6.4 LABELS</a></li><li id="menu-1266-1" class="middle odd sf-item-5 sf-depth-4 sf-no-children"><a href="../customizing-plots/COLOR.html" class="sf-depth-4">6.5 COLOR</a></li><li id="menu-1267-1" class="middle even sf-item-6 sf-depth-4 sf-no-children"><a href="../customizing-plots/FONTS.html" class="sf-depth-4">6.6 FONTS</a></li><li id="menu-1268-1" class="middle odd sf-item-7 sf-depth-4 sf-no-children"><a href="../customizing-plots/PLOT-LAYOUT.html" class="sf-depth-4">6.7 PLOT LAYOUT</a></li><li id="menu-1269-1" class="middle even sf-item-8 sf-depth-4 sf-no-children"><a href="../customizing-plots/CONTOURING.html" class="sf-depth-4">6.8 CONTOURING</a></li><li id="menu-1270-1" class="middle odd sf-item-9 sf-depth-4 sf-no-children"><a href="../customizing-plots/SPECIAL-SYMBOLS.html" class="sf-depth-4">6.9 SPECIAL SYMBOLS</a></li><li id="menu-1617-1" class="middle even sf-item-10 sf-depth-4 sf-no-children"><a href="../customizing-plots/MAP-PROJECTIONS-AND-CURVILINEAR-COORDINATES.html" class="sf-depth-4">6.10 MAP PROJECTIONS AND CURVILINEAR COORDINATES</a></li><li id="menu-1272-1" class="middle odd sf-item-11 sf-depth-4 sf-no-children"><a href="../customizing-plots/linecolors.gif/view.html" class="sf-depth-4">LINECOLORS example</a></li><li id="menu-1273-1" class="last even sf-item-12 sf-depth-4 sf-no-children"><a href="../customizing-plots/Chapter6_plotuv.png/view.html" class="sf-depth-4">PLOTUV example</a></li></ul></li><li id="menu-1396-1" class="middle odd sf-item-9 sf-depth-3 sf-total-children-11 sf-parent-children-0 sf-single-children-11 menuparent"><a href="../handing-string-data-symbols.html" class="sf-depth-3 menuparent">7. Handing String Data Symbols</a><ul><li id="menu-1274-1" class="first odd sf-item-1 sf-depth-4 sf-no-children"><a href="../handing-string-data-symbols/STRING-VARIABLES.html" class="sf-depth-4">7.1 STRING VARIABLES</a></li><li id="menu-1275-1" class="middle even sf-item-2 sf-depth-4 sf-no-children"><a href="../handing-string-data-symbols/STRING-FUNCTIONS.html" class="sf-depth-4">7.2 STRING FUNCTIONS</a></li><li id="menu-1276-1" class="middle odd sf-item-3 sf-depth-4 sf-no-children"><a href="../handing-string-data-symbols/SYMBOL-COMMANDS.html" class="sf-depth-4">7.3 SYMBOL COMMANDS</a></li><li id="menu-1277-1" class="middle even sf-item-4 sf-depth-4 sf-no-children"><a href="../handing-string-data-symbols/AUTOMATICALLY-GENERATED-SYMBOLS.html" class="sf-depth-4">7.4 AUTOMATICALLY GENERATED SYMBOLS</a></li><li id="menu-1278-1" class="middle odd sf-item-5 sf-depth-4 sf-no-children"><a href="../handing-string-data-symbols/USE-WITH-EMBEDDED-EXPRESSIONS.html" class="sf-depth-4">7.5 USE WITH EMBEDDED EXPRESSIONS</a></li><li id="menu-1279-1" class="middle even sf-item-6 sf-depth-4 sf-no-children"><a href="../handing-string-data-symbols/ORDER-OF-STRING-SUBSTITUTIONS.html" class="sf-depth-4">7.6 ORDER OF STRING SUBSTITUTIONS</a></li><li id="menu-1280-1" class="middle odd sf-item-7 sf-depth-4 sf-no-children"><a href="../handing-string-data-symbols/CUSTOMIZING-THE-POSITION-AND-STYLE%20OF%20PLOT%20LABELS.html" class="sf-depth-4">7.7 CUSTOMIZING THE POSITION AND STYLE OF PLOT LABELS</a></li><li id="menu-1281-1" class="middle even sf-item-8 sf-depth-4 sf-no-children"><a href="../handing-string-data-symbols/USING-SYMBOLS-IN-COMMAND-FILES.html" class="sf-depth-4">7.8 USING SYMBOLS IN COMMAND FILES</a></li><li id="menu-1282-1" class="middle odd sf-item-9 sf-depth-4 sf-no-children"><a href="../handing-string-data-symbols/PLOT-STRING-EDITING-TOOLS.html" class="sf-depth-4">7.9 PLOT+ STRING EDITING TOOLS</a></li><li id="menu-1283-1" class="middle even sf-item-10 sf-depth-4 sf-no-children"><a href="../handing-string-data-symbols/SYMBOL-EDITING.html" class="sf-depth-4">7.10 SYMBOL EDITING</a></li><li id="menu-1284-1" class="last odd sf-item-11 sf-depth-4 sf-no-children"><a href="../handing-string-data-symbols/SPECIAL-SYMBOLS.html" class="sf-depth-4">7.11 SPECIAL SYMBOLS</a></li></ul></li><li id="menu-1397-1" class="middle even sf-item-10 sf-depth-3 sf-total-children-10 sf-parent-children-0 sf-single-children-10 menuparent"><a href="../working-with-special-data-sets.html" class="sf-depth-3 menuparent">8. Working with Special Data Sets</a><ul><li id="menu-1285-1" class="first odd sf-item-1 sf-depth-4 sf-no-children"><a href="../working-with-special-data-sets/WHAT-IS-NON-GRIDDED-DATA.html" class="sf-depth-4">8.1 WHAT IS NON-GRIDDED DATA?</a></li><li id="menu-1286-1" class="middle even sf-item-2 sf-depth-4 sf-no-children"><a href="../working-with-special-data-sets/POINT-DATA.html" class="sf-depth-4">8.2 POINT DATA</a></li><li id="menu-1287-1" class="middle odd sf-item-3 sf-depth-4 sf-no-children"><a href="../working-with-special-data-sets/VERTICAL-PROFILES.html" class="sf-depth-4">8.3 VERTICAL PROFILES</a></li><li id="menu-1288-1" class="middle even sf-item-4 sf-depth-4 sf-no-children"><a href="../working-with-special-data-sets/COLLECTIONS-OF-TIME-SERIES.html" class="sf-depth-4">8.4 COLLECTIONS OF TIME SERIES</a></li><li id="menu-1289-1" class="middle odd sf-item-5 sf-depth-4 sf-no-children"><a href="../working-with-special-data-sets/COLLECTIONS-OF-2-DIMENSIONAL-GRIDS.html" class="sf-depth-4">8.5 COLLECTIONS OF 2-DIMENSIONAL GRIDS</a></li><li id="menu-1290-1" class="middle even sf-item-6 sf-depth-4 sf-no-children"><a href="../working-with-special-data-sets/LAGRANGIAN-DATA.html" class="sf-depth-4">8.6 LAGRANGIAN DATA</a></li><li id="menu-1291-1" class="middle odd sf-item-7 sf-depth-4 sf-no-children"><a href="../working-with-special-data-sets/SIGMA-COORDINATE-DATA.html" class="sf-depth-4">8.7 SIGMA COORDINATE DATA</a></li><li id="menu-1292-1" class="middle even sf-item-8 sf-depth-4 sf-no-children"><a href="../working-with-special-data-sets/CURVILINEAR-COORDINATE-DATA.html" class="sf-depth-4">8.8 CURVILINEAR COORDINATE DATA</a></li><li id="menu-1293-1" class="middle odd sf-item-9 sf-depth-4 sf-no-children"><a href="../working-with-special-data-sets/POLYGONAL-DATA.html" class="sf-depth-4">8.9 POLYGONAL DATA</a></li><li id="menu-1245-1" class="last even sf-item-10 sf-depth-4 sf-no-children"><a href="../working-with-special-data-sets/DSG_datasets.html" class="sf-depth-4">8.10 Discrete Geometries Datasets</a></li></ul></li><li id="menu-1398-1" class="middle odd sf-item-11 sf-depth-3 sf-total-children-7 sf-parent-children-0 sf-single-children-7 menuparent"><a href="../computing-environment.html" class="sf-depth-3 menuparent">9. Computing Environment</a><ul><li id="menu-1294-1" class="first odd sf-item-1 sf-depth-4 sf-no-children"><a href="../computing-environment/SETTING-UP-TO-RUN-FERRET.html" class="sf-depth-4">9.1 SETTING UP TO RUN FERRET</a></li><li id="menu-1295-1" class="middle even sf-item-2 sf-depth-4 sf-no-children"><a href="../computing-environment/FILES-AND-ENVIRONMENT-VARIABLES-USED-BY-FERRET.html" class="sf-depth-4">9.2 FILES AND ENVIRONMENT VARIABLES USED BY FERRET</a></li><li id="menu-1296-1" class="middle odd sf-item-3 sf-depth-4 sf-no-children"><a href="../computing-environment/MEMORY-USE.html" class="sf-depth-4">9.3 MEMORY USE</a></li><li id="menu-1297-1" class="middle even sf-item-4 sf-depth-4 sf-no-children"><a href="../computing-environment/HARD-COPY-AND-METAFILE-TRANSLATION.html" class="sf-depth-4">9.4 HARD COPY AND METAFILE TRANSLATION</a></li><li id="menu-1298-1" class="middle odd sf-item-5 sf-depth-4 sf-no-children"><a href="../computing-environment/OUTPUT-FILE-NAMING.html" class="sf-depth-4">9.5 OUTPUT FILE NAMING</a></li><li id="menu-1299-1" class="middle even sf-item-6 sf-depth-4 sf-no-children"><a href="../computing-environment/INPUT-FILE-NAMING.html" class="sf-depth-4">9.6 INPUT FILE NAMING</a></li><li id="menu-1300-1" class="last odd sf-item-7 sf-depth-4 sf-no-children"><a href="../computing-environment/my_ferret_paths_template.html" class="sf-depth-4">my_ferret_paths_template</a></li></ul></li><li id="menu-1399-1" class="middle even sf-item-12 sf-depth-3 sf-total-children-4 sf-parent-children-0 sf-single-children-4 menuparent"><a href="../converting-to-netcdf.html" class="sf-depth-3 menuparent">10. Converting to NetCDF</a><ul><li id="menu-1301-1" class="first odd sf-item-1 sf-depth-4 sf-no-children"><a href="../converting-to-netcdf/OVERVIEW.html" class="sf-depth-4">10.1 OVERVIEW</a></li><li id="menu-1302-1" class="middle even sf-item-2 sf-depth-4 sf-no-children"><a href="../converting-to-netcdf/SIMPLE-CONVERSIONS-USING-FERRET.html" class="sf-depth-4">10.2 SIMPLE CONVERSIONS USING FERRET</a></li><li id="menu-1303-1" class="middle odd sf-item-3 sf-depth-4 sf-no-children"><a href="../converting-to-netcdf/WRITING-A-CONVERSION-PROGRAM.html" class="sf-depth-4">10.3 WRITING A CONVERSION PROGRAM</a></li><li id="menu-1304-1" class="last even sf-item-4 sf-depth-4 sf-no-children"><a href="../converting-to-netcdf/CREATING-A-MULTI-FILE-NETCDF-DATA-SET.html" class="sf-depth-4">10.4 CREATING A MULTI-FILE NETCDF DATA SET</a></li></ul></li><li id="menu-1400-1" class="middle odd sf-item-13 sf-depth-3 sf-total-children-6 sf-parent-children-0 sf-single-children-6 menuparent"><a href="../writing-external-functions.html" class="sf-depth-3 menuparent">11. Writing External Functions</a><ul><li id="menu-1305-1" class="first odd sf-item-1 sf-depth-4 sf-no-children"><a href="../writing-external-functions/OVERVIEW.html" class="sf-depth-4">11.1 OVERVIEW</a></li><li id="menu-1306-1" class="middle even sf-item-2 sf-depth-4 sf-no-children"><a href="../writing-external-functions/GETTING-STARTED.html" class="sf-depth-4">11.2 GETTING STARTED</a></li><li id="menu-1307-1" class="middle odd sf-item-3 sf-depth-4 sf-no-children"><a href="../writing-external-functions/QUICK-START-EXAMPLE.html" class="sf-depth-4">11.3 QUICK START EXAMPLE</a></li><li id="menu-1308-1" class="middle even sf-item-4 sf-depth-4 sf-no-children"><a href="../writing-external-functions/ANATOMY-OF-AN-EXTERNAL-FUNCTION.html" class="sf-depth-4">11.4 ANATOMY OF AN EXTERNAL FUNCTION</a></li><li id="menu-1309-1" class="middle odd sf-item-5 sf-depth-4 sf-no-children"><a href="../writing-external-functions/NOTES-AND-SUGGESTIONS.html" class="sf-depth-4">11.5 NOTES AND SUGGESTIONS</a></li><li id="menu-1310-1" class="last even sf-item-6 sf-depth-4 sf-no-children"><a href="../writing-external-functions/UTILITY-FUNCTIONS.html" class="sf-depth-4">11.6 UTILITY FUNCTIONS</a></li></ul></li><li id="menu-1166-1" class="middle even sf-item-14 sf-depth-3 sf-no-children"><a href="../glossary/glossary.html" class="sf-depth-3">Glossary</a></li><li id="menu-1427-1" class="middle odd sf-item-15 sf-depth-3 sf-total-children-58 sf-parent-children-0 sf-single-children-58 menuparent"><a href="../appendix-a-external-functions/appendix-a.html" class="sf-depth-3 menuparent">Appendix A: Functions</a><ul><li id="menu-1597-1" class="first odd sf-item-1 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/BIN_INDEX_WT.html" class="sf-depth-4">BIN_INDEX_WT</a></li><li id="menu-1430-1" class="middle even sf-item-2 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/COMPRESSI.html" class="sf-depth-4">COMPRESSI (and J,K,L,M,N)</a></li><li id="menu-1431-1" class="middle odd sf-item-3 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/COMPRESSI-BY.html" class="sf-depth-4">COMPRESSI_BY (and J,K,L,M,N)</a></li><li id="menu-1432-1" class="middle even sf-item-4 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/CONVOLVEI.html" class="sf-depth-4">CONVOLVEI</a></li><li id="menu-1428-1" class="middle odd sf-item-5 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/CURV-TO-RECT.html" class="sf-depth-4">CURV_TO_RECT</a></li><li id="menu-1429-1" class="middle even sf-item-6 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/CURV-TO-RECT-MAP.html" class="sf-depth-4">CURV_TO_RECT_MAP</a></li><li id="menu-1433-1" class="middle odd sf-item-7 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/DATE1900.html" class="sf-depth-4">DATE1900</a></li><li id="menu-1434-1" class="middle even sf-item-8 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/DAYS1900TOYMDHMS.html" class="sf-depth-4">DAYS1900TOYMDHMS</a></li><li id="menu-1601-1" class="middle odd sf-item-9 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/DOT.html" class="sf-depth-4">DOT</a></li><li id="menu-1437-1" class="middle even sf-item-10 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/ecat.html" class="sf-depth-4">ECAT and ECAT_STR</a></li><li id="menu-1438-1" class="middle odd sf-item-11 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/ELEMENT-INDEX.html" class="sf-depth-4">ELEMENT_INDEX</a></li><li id="menu-1439-1" class="middle even sf-item-12 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/ELEMENT-INDEX-STRING.html" class="sf-depth-4">ELEMENT_INDEX_STR</a></li><li id="menu-1440-1" class="middle odd sf-item-13 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/EOF-SPACE.html" class="sf-depth-4">EOF_SPACE and EOFSVD_SPACE</a></li><li id="menu-1441-1" class="middle even sf-item-14 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/EOF-STAT.html" class="sf-depth-4">EOF_STAT and EOFSVD_STAT</a></li><li id="menu-1442-1" class="middle odd sf-item-15 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/EOF-TFUNC.html" class="sf-depth-4">EOF_TFUNC and EOFSVD_TFUNC</a></li><li id="menu-1443-1" class="middle even sf-item-16 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/expnd_by_len.html" class="sf-depth-4">EXPND_BY_LEN and EXPND_BY_LEN_STR</a></li><li id="menu-1444-1" class="middle odd sf-item-17 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/expndi_by.html" class="sf-depth-4">EXPNDI_BY</a></li><li id="menu-1445-1" class="middle even sf-item-18 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/expndi_by_m_counts.html" class="sf-depth-4">EXPNDI_BY_M_COUNTS</a></li><li id="menu-1446-1" class="middle odd sf-item-19 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/expndi_by_t.html" class="sf-depth-4">EXPNDI_BY_T</a></li><li id="menu-1447-1" class="middle even sf-item-20 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/expndi_by_z.html" class="sf-depth-4">EXPNDI_BY_Z</a></li><li id="menu-1448-1" class="middle odd sf-item-21 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/expndi_by_z_counts-and-expndi_id_by_z_counts.html" class="sf-depth-4">EXPNDI_BY_Z_COUNTS</a></li><li id="menu-1449-1" class="middle even sf-item-22 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/expndi_id_by_z_counts.html" class="sf-depth-4">EXPNDI_ID_BY_Z_COUNTS</a></li><li id="menu-1436-1" class="middle odd sf-item-23 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/fcat.html" class="sf-depth-4">FCAT</a></li><li id="menu-1435-1" class="middle even sf-item-24 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/fc_isubset.html" class="sf-depth-4">FC_ISUBSET</a></li><li id="menu-1450-1" class="middle odd sf-item-25 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/FFT-IM.html" class="sf-depth-4">FFT_IM</a></li><li id="menu-1451-1" class="middle even sf-item-26 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/FFT-INVERSE.html" class="sf-depth-4">FFT_INVERSE</a></li><li id="menu-1453-1" class="middle odd sf-item-27 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/FFT-RE.html" class="sf-depth-4">FFT_RE</a></li><li id="menu-1452-1" class="middle even sf-item-28 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/fill_xy.html" class="sf-depth-4">FILL_XY</a></li><li id="menu-1454-1" class="middle odd sf-item-29 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/FINDHI.html" class="sf-depth-4">FINDHI</a></li><li id="menu-1455-1" class="middle even sf-item-30 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/FINDLO.html" class="sf-depth-4">FINDLO</a></li><li id="menu-1456-1" class="middle odd sf-item-31 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/IS-ELEMENT-OF.html" class="sf-depth-4">IS_ELEMENT_OF</a></li><li id="menu-1458-1" class="middle even sf-item-32 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/LANCZOS.html" class="sf-depth-4">LANCZOS</a></li><li id="menu-1459-1" class="middle odd sf-item-33 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/lon_lat_time_string.html" class="sf-depth-4">LON_LAT_TIME_STRING</a></li><li id="menu-1460-1" class="middle even sf-item-34 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/LSL-LOWPASS.html" class="sf-depth-4">LSL_LOWPASS</a></li><li id="menu-1461-1" class="middle odd sf-item-35 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/MINUTES24.html" class="sf-depth-4">MINUTES24</a></li><li id="menu-1462-1" class="middle even sf-item-36 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/NCO.html" class="sf-depth-4">NCO</a></li><li id="menu-1463-1" class="middle odd sf-item-37 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/NCO_ATTR.html" class="sf-depth-4">NCO_ATTR</a></li><li id="menu-1464-1" class="middle even sf-item-38 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/pt_in_poly.html" class="sf-depth-4">PT_IN_POLY</a></li><li id="menu-1465-1" class="middle odd sf-item-39 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/RECT-TO-CURV.html" class="sf-depth-4">RECT_TO_CURV</a></li><li id="menu-1466-1" class="middle even sf-item-40 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/samplexy_curv_avg.html" class="sf-depth-4">SAMPLEXY_CURV_AVG</a></li><li id="menu-1467-1" class="middle odd sf-item-41 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/samplexy_curv_nrst.html" class="sf-depth-4">SAMPLEXY_CURV_NRST</a></li><li id="menu-1468-1" class="middle even sf-item-42 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/samplexyt.html" class="sf-depth-4">SAMPLEXYT</a></li><li id="menu-1469-1" class="middle odd sf-item-43 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/samplexz.html" class="sf-depth-4">SAMPLEXZ</a></li><li id="menu-1470-1" class="middle even sf-item-44 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/sampleyz.html" class="sf-depth-4">SAMPLEYZ</a></li><li id="menu-1472-1" class="middle odd sf-item-45 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/scat2grid_bin_xy.html" class="sf-depth-4">SCAT2GRID_BIN_XY and SCAT2GRID_BIN_XYT</a></li><li id="menu-1473-1" class="middle even sf-item-46 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/scatgrid_nbin_xyt.html" class="sf-depth-4">SCAT2GRID_NBIN_XY and SCAT2GRID_NBIN_XYT</a></li><li id="menu-1471-1" class="middle odd sf-item-47 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/scat2grid_nobs_xy.html" class="sf-depth-4">SCAT2GRID_NOBS_XY</a></li><li id="menu-1474-1" class="middle even sf-item-48 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/separate.html" class="sf-depth-4">SEPARATE</a></li><li id="menu-1475-1" class="middle odd sf-item-49 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/tax_datestring.html" class="sf-depth-4">TAX_DATESTRING</a></li><li id="menu-1477-1" class="middle even sf-item-50 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/TCAT.html" class="sf-depth-4">TCAT</a></li><li id="menu-1476-1" class="middle odd sf-item-51 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/test_opendap.html" class="sf-depth-4">TEST_OPENDAP</a></li><li id="menu-1599-1" class="middle even sf-item-52 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/TRANSPOSE.html" class="sf-depth-4">TRANSPOSE</a></li><li id="menu-1478-1" class="middle odd sf-item-53 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/WRITEV5D.html" class="sf-depth-4">WRITEV5D</a></li><li id="menu-1481-1" class="middle even sf-item-54 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/XCAT.html" class="sf-depth-4">XCAT</a></li><li id="menu-1482-1" class="middle odd sf-item-55 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/YCAT.html" class="sf-depth-4">YCAT</a></li><li id="menu-1479-1" class="middle even sf-item-56 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/ZAXREPLACE-AVG.html" class="sf-depth-4">ZAXREPLACE_AVG</a></li><li id="menu-1480-1" class="middle odd sf-item-57 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/ZAXREPLACE-BIN.html" class="sf-depth-4">ZAXREPLACE_BIN</a></li><li id="menu-1483-1" class="last even sf-item-58 sf-depth-4 sf-no-children"><a href="../appendix-a-external-functions/ZCAT.html" class="sf-depth-4">ZCAT</a></li></ul></li><li id="menu-1168-1" class="middle even sf-item-16 sf-depth-3 sf-total-children-9 sf-parent-children-1 sf-single-children-8 menuparent"><a href="../appendix-b-pplus-guide/appendix-b-pplus-guide.html" class="sf-depth-3 menuparent">Appendix B: PPLUS Guide</a><ul><li id="menu-1311-1" class="first odd sf-item-1 sf-depth-4 sf-no-children"><a href="../appendix-b-pplus-guide/INTRODUCTION.html" class="sf-depth-4">INTRODUCTION</a></li><li id="menu-1312-1" class="middle even sf-item-2 sf-depth-4 sf-no-children"><a href="../appendix-b-pplus-guide/GETTING-STARTED.html" class="sf-depth-4">GETTING STARTED</a></li><li id="menu-1313-1" class="middle odd sf-item-3 sf-depth-4 sf-no-children"><a href="../appendix-b-pplus-guide/COMMAND-FORMAT.html" class="sf-depth-4">COMMAND FORMAT</a></li><li id="menu-1314-1" class="middle even sf-item-4 sf-depth-4 sf-no-children"><a href="../appendix-b-pplus-guide/COMMAND-SYNOPSIS.html" class="sf-depth-4">COMMAND SYNOPSIS</a></li><li id="menu-1315-1" class="middle odd sf-item-5 sf-depth-4 sf-no-children"><a href="../appendix-b-pplus-guide/BEGINNERS-GUIDE.html" class="sf-depth-4">BEGINNERS GUIDE</a></li><li id="menu-1316-1" class="middle even sf-item-6 sf-depth-4 sf-no-children"><a href="../appendix-b-pplus-guide/ROUTING-PLOT-FILES.html" class="sf-depth-4">ROUTING PLOT FILES</a></li><li id="menu-1317-1" class="middle odd sf-item-7 sf-depth-4 sf-total-children-2 sf-parent-children-0 sf-single-children-2 menuparent"><a href="../appendix-b-pplus-guide/PPLUS-COMMAND-FILES.html" class="sf-depth-4 menuparent">PPLUS COMMAND FILES</a><ul><li id="menu-1324-1" class="first odd sf-item-1 sf-depth-5 sf-no-children"><a href="../ferret-fonts/list-of-ferret-fonts.html" class="sf-depth-5">List of Ferret Symbol Fonts</a></li><li id="menu-1325-1" class="last even sf-item-2 sf-depth-5 sf-no-children"><a href="../ferret-fonts/list-of-ferret-character-fonts.html" class="sf-depth-5">List of Ferret/PPLUS Character fonts</a></li></ul></li><li id="menu-1318-1" class="middle even sf-item-8 sf-depth-4 sf-no-children"><a href="../appendix-b-pplus-guide/PLOT5-PPLUS-DIFFERENCES.html" class="sf-depth-4">PLOT5, PPLUS DIFFERENCES</a></li><li id="menu-1319-1" class="last odd sf-item-9 sf-depth-4 sf-no-children"><a href="../appendix-b-pplus-guide/COMMAND-DESCRIPTION.html" class="sf-depth-4">COMMAND DESCRIPTION</a></li></ul></li><li id="menu-1169-1" class="last odd sf-item-17 sf-depth-3 sf-total-children-4 sf-parent-children-0 sf-single-children-4 menuparent"><a href="../appendix-c-ferret-specific-pplus-enhancements/appendix-c-ferret-specific-pplus-enhancements.html" class="sf-depth-3 menuparent">Appendix C: Ferret-Specific PPLUS Enhancements</a><ul><li id="menu-1320-1" class="first odd sf-item-1 sf-depth-4 sf-no-children"><a href="../appendix-c-ferret-specific-pplus-enhancements/PLOTPLUS-HISTORY-EVOLUTION.html" class="sf-depth-4">PLOTPLUS HISTORY, EVOLUTION</a></li><li id="menu-1321-1" class="middle even sf-item-2 sf-depth-4 sf-no-children"><a href="../appendix-c-ferret-specific-pplus-enhancements/ENHANCED-COMMANDS-DESCRIPTION.html" class="sf-depth-4">ENHANCED COMMANDS DESCRIPTION</a></li><li id="menu-1322-1" class="middle odd sf-item-3 sf-depth-4 sf-no-children"><a href="../appendix-c-ferret-specific-pplus-enhancements/GKS-LINE-BUNDLES.html" class="sf-depth-4">GKS LINE BUNDLES</a></li><li id="menu-1323-1" class="last even sf-item-4 sf-depth-4 sf-no-children"><a href="../appendix-c-ferret-specific-pplus-enhancements/HARD-COPY.html" class="sf-depth-4">HARD COPY</a></li></ul></li></ul></li><li id="menu-1336-1" class="middle odd sf-item-3 sf-depth-2 sf-no-children"><a href="../../all-release-notes.html" class="sf-depth-2">Previous Release Notes</a></li><li id="menu-1339-1" class="middle even sf-item-4 sf-depth-2 sf-total-children-15 sf-parent-children-1 sf-single-children-14 menuparent"><a href="../../ferret-tutorials.html" class="sf-depth-2 menuparent">Tutorials and Demos</a><ul><li id="menu-1338-1" class="first odd sf-item-1 sf-depth-3 sf-no-children"><a href="../../ferret-tutorial-script.html" class="sf-depth-3">Ferret Tour</a></li><li id="menu-1618-1" class="middle even sf-item-2 sf-depth-3 sf-no-children"><a href="../../dsg-files-discrete-sampling-geometries-demo.html" class="sf-depth-3">DSG files: Discrete Sampling Geometries Demo</a></li><li id="menu-1337-1" class="middle odd sf-item-3 sf-depth-3 sf-total-children-5 sf-parent-children-0 sf-single-children-5 menuparent"><a href="../../ferret-tutorials.html" class="sf-depth-3 menuparent">External Function Examples</a><ul><li id="menu-1343-1" class="first odd sf-item-1 sf-depth-4 sf-no-children"><a href="../../sorting-demo.html" class="sf-depth-4">Ferret sorting demo (1)</a></li><li id="menu-1591-1" class="middle even sf-item-2 sf-depth-4 sf-no-children"><a href="../../ferret-sorting-demo.html" class="sf-depth-4">Ferret sorting demo (2)</a></li><li id="menu-1344-1" class="middle odd sf-item-3 sf-depth-4 sf-no-children"><a href="../../how-to-use-ferret-external-functions-for-computing-ffts.html" class="sf-depth-4">Fast Fourier Transforms demo</a></li><li id="menu-1345-1" class="middle even sf-item-4 sf-depth-4 sf-no-children"><a href="../../ferret-eof-demo.html" class="sf-depth-4">Empirical Orthogonal Functions demo</a></li><li id="menu-1346-1" class="last odd sf-item-5 sf-depth-4 sf-no-children"><a href="../../ferret-objective-analysis.html" class="sf-depth-4">Ferret objective analysis demo</a></li></ul></li><li id="menu-1353-1" class="middle even sf-item-4 sf-depth-3 sf-no-children"><a href="../../ferret-palette-demo.html" class="sf-depth-3">Ferret Palette Demo</a></li><li id="menu-1350-1" class="middle odd sf-item-5 sf-depth-3 sf-no-children"><a href="../../ferret-map-projections-demo.html" class="sf-depth-3">Map projections</a></li><li id="menu-1354-1" class="middle even sf-item-6 sf-depth-3 sf-no-children"><a href="../../ferret-polygon-vector-demo.html" class="sf-depth-3">Ferret polygon vector demo</a></li><li id="menu-1355-1" class="middle odd sf-item-7 sf-depth-3 sf-no-children"><a href="../../ferret-graticules-demo.html" class="sf-depth-3">Ferret Graticules demo</a></li><li id="menu-1352-1" class="middle even sf-item-8 sf-depth-3 sf-no-children"><a href="../../ferret-polytube-demo.html" class="sf-depth-3">Ferret Polytube Demo</a></li><li id="menu-1351-1" class="middle odd sf-item-9 sf-depth-3 sf-no-children"><a href="../../ferret-polymark-demo.html" class="sf-depth-3">Ferret Polymark Demo</a></li><li id="menu-1349-1" class="middle even sf-item-10 sf-depth-3 sf-no-children"><a href="../../ferret-constant-array-demo.html" class="sf-depth-3">Ferret Constant-Array demo</a></li><li id="menu-1356-1" class="middle odd sf-item-11 sf-depth-3 sf-no-children"><a href="../../ferret-land_detail-demo.html" class="sf-depth-3">Ferret land_detail demo</a></li><li id="menu-1340-1" class="middle even sf-item-12 sf-depth-3 sf-no-children"><a href="../../coads-tour.html" class="sf-depth-3">COADS Tour</a></li><li id="menu-1341-1" class="middle odd sf-item-13 sf-depth-3 sf-no-children"><a href="../../levitus-tour.html" class="sf-depth-3">Levitus Tour</a></li><li id="menu-1342-1" class="middle even sf-item-14 sf-depth-3 sf-no-children"><a href="../../how-to-use-ferret-and-opendap-to-access-and-analyze-remote-data-1.html" class="sf-depth-3">Use OPeNDAP</a></li><li id="menu-1348-1" class="last odd sf-item-15 sf-depth-3 sf-no-children"><a href="../../ferret-binary-read-demo.html" class="sf-depth-3">Ferret binary read demo</a></li></ul></li><li id="menu-1333-1" class="middle odd sf-item-5 sf-depth-2 sf-total-children-13 sf-parent-children-1 sf-single-children-12 menuparent"><a href="../../pyferret.html" class="sf-depth-2 menuparent">PyFerret</a><ul><li id="menu-1426-1" class="first odd sf-item-1 sf-depth-3 sf-total-children-4 sf-parent-children-0 sf-single-children-4 menuparent"><a href="../../pyferret/downloads.html" class="sf-depth-3 menuparent">PyFerret Downloads and Install</a><ul><li id="menu-1374-1" class="first odd sf-item-1 sf-depth-4 sf-no-children"><a href="../../pyferret/requirements.html" class="sf-depth-4">PyFerret requirements</a></li><li id="menu-1375-1" class="middle even sf-item-2 sf-depth-4 sf-no-children"><a href="https://ferret.pmel.noaa.gov/Ferret/downloads/pyferret" class="sf-depth-4">PyFerret Downloads</a></li><li id="menu-1377-1" class="middle odd sf-item-3 sf-depth-4 sf-no-children"><a href="../../pyferret/build-install.html" class="sf-depth-4">Installing or Building PyFerret</a></li><li id="menu-1376-1" class="last even sf-item-4 sf-depth-4 sf-no-children"><a href="../../pyferret/known-issues.html" class="sf-depth-4">PyFerret Known Issues and Release Notes</a></li></ul></li><li id="menu-1359-1" class="middle even sf-item-2 sf-depth-3 sf-no-children"><a href="../../pyferret/what-is-pyferret.html" class="sf-depth-3">What is PyFerret?</a></li><li id="menu-1360-1" class="middle odd sf-item-3 sf-depth-3 sf-no-children"><a href="../../pyferret/why-use-pyferret.html" class="sf-depth-3">Why use PyFerret?</a></li><li id="menu-1361-1" class="middle even sf-item-4 sf-depth-3 sf-no-children"><a href="../../pyferret/example-sessions-ferret.html" class="sf-depth-3">PyFerret for the Ferret user</a></li><li id="menu-1362-1" class="middle odd sf-item-5 sf-depth-3 sf-no-children"><a href="../../pyferret/pyferret-quick-start-notes.html" class="sf-depth-3">PyFerret command syntax: quick-start notes</a></li><li id="menu-1364-1" class="middle even sf-item-6 sf-depth-3 sf-no-children"><a href="../../pyferret/example-sessions-python.html" class="sf-depth-3">PyFerret for the Python user</a></li><li id="menu-1365-1" class="middle odd sf-item-7 sf-depth-3 sf-no-children"><a href="../../pyferret/graphics.html" class="sf-depth-3">Graphics in PyFerret  </a></li><li id="menu-1366-1" class="middle even sf-item-8 sf-depth-3 sf-no-children"><a href="../../pyferret/ferret-functionality.html" class="sf-depth-3">New Ferret functionality</a></li><li id="menu-1367-1" class="middle odd sf-item-9 sf-depth-3 sf-no-children"><a href="../../pyferret/python-functions.html" class="sf-depth-3">PyFerret Python functions and constants</a></li><li id="menu-1368-1" class="middle even sf-item-10 sf-depth-3 sf-no-children"><a href="../../pyferret/pyferret-python-objects.html" class="sf-depth-3">PyFerret Python objects and methods</a></li><li id="menu-1369-1" class="middle odd sf-item-11 sf-depth-3 sf-no-children"><a href="../../pyferret/pyefs.html" class="sf-depth-3">Ferret external functions in Python</a></li><li id="menu-1371-1" class="middle even sf-item-12 sf-depth-3 sf-no-children"><a href="../../pyferret/fortranefs.html" class="sf-depth-3">Ferret Fortran external functions</a></li><li id="menu-1373-1" class="last odd sf-item-13 sf-depth-3 sf-no-children"><a href="../../pyferret/data-dictionaries.html" class="sf-depth-3">PyFerret metadata-and-data dictionaries</a></li></ul></li><li id="menu-1147-1" class="middle even sf-item-6 sf-depth-2 sf-total-children-3 sf-parent-children-0 sf-single-children-3 menuparent"><a href="../../opendap/opendap-usage-in-ferret.html" class="sf-depth-2 menuparent">OPeNDAP</a><ul><li id="menu-1590-1" class="first odd sf-item-1 sf-depth-3 sf-no-children"><a href="../../opendap/opendap-usage-in-ferret.html" class="sf-depth-3">OPeNDAP usage in Ferret</a></li><li id="menu-1489-1" class="middle even sf-item-2 sf-depth-3 sf-no-children"><a href="../../how-to-use-ferret-and-opendap-to-access-and-analyze-remote-data-1.html" class="sf-depth-3">Use OPeNDAP Demo</a></li><li id="menu-1491-1" class="last odd sf-item-3 sf-depth-3 sf-no-children"><a href="../appendix-a-external-functions/test_opendap.html" class="sf-depth-3">Test OPeNDAP</a></li></ul></li><li id="menu-1592-1" class="middle odd sf-item-7 sf-depth-2 sf-no-children"><a href="../../ferret-publications.html" class="sf-depth-2">Ferret Publications</a></li><li id="menu-1389-1" class="last even sf-item-8 sf-depth-2 sf-no-children"><a href="../../acknowledging-ferret.html" class="sf-depth-2">Acknowledging Ferret</a></li></ul>    </div>
+  </div>
+</div>  </div>
+</aside><div class="grid-9 region region-content equal-height-element" id="region-content">
+  <div class="region-inner region-content-inner">
+    <a id="main-content"></a>
+                <h1 class="title" id="page-title">4.2 GRIDS</h1>
+                        <div class="block block-system block-main block-system-main odd block-without-title" id="block-system-main">
+  <div class="block-inner clearfix">
+                
+    <div class="content clearfix">
+      <article about="/Ferret/documentation/users-guide/Grids-Regions/GRIDS" typeof="sioc:Item foaf:Document" class="node node-documentation-page node-promoted node-published node-not-sticky author-burger odd clearfix" id="node-documentation-page-727">
+    
+  <!-- add the following line to print out updated date -->
+  <div class="modified-date">Last modified: Wed, 06/24/2020 - 12:14</div>
+  <!-- add the following line to print out the page description -->
+    
+  <div class="content clearfix">
+                
+<div class="field field-name-body field-type-text-with-summary field-label-hidden">
+    <div class="field-items">
+          <div class="field-item even" property="content:encoded"><p><a name="Chapter4-Grids" id="Chapter4-Grids"></a><a name="_VPID_190" id="_VPID_190"></a> <a name="_VPINDEXENTRY_625" id="_VPINDEXENTRY_625"></a><a name="_VPINDEXENTRY_626" id="_VPINDEXENTRY_626"></a><a name="_VPINDEXENTRY_627" id="_VPINDEXENTRY_627"></a><a name="_VPINDEXENTRY_628" id="_VPINDEXENTRY_628"></a></p>
+<p align="left">Every variable has an underlying grid which defines a coordinate space. All grids are in a sense 4 dimensional (X, Y, Z, and T) but axes normal to the data are represented as "normal" (such as the Z axis of the surface wind stress).</p>
+<p align="left">Grids can be viewed, specified and created using SHOW GRID, SET GRID, DEFINE AXIS, and DEFINE GRID. These commands are all in the Commands Reference section of this manual. Data can be regridded by the G= modifier. (See this chapter, section "<a href="GRIDS.html#Chapter4-Regridding" title="4.2 GRIDS">Regridding</a>")</p>
+<p> </p>
+<p align="left" class="secHeader"><a name="_VPID_191" id="_VPID_191"></a><b>4.2.1 Defining grids </b></p>
+<p> </p>
+<p align="left">Axes and grids can be explicitly created by DEFINE AXIS and DEFINE GRID. NetCDF and TMAP-formatted data set variables have all of the necessary grid and axis definitions embedded in the data set files, but if you are reading data from an ASCII or binary file, you must tell Ferret about the underlying grid of your data.</p>
+<p align="left">If you are creating abstract expressions entirely from pseudo-variables, you may want to define a grid in order to define the coordinate space of your calculation. This will also help produce a nicely labeled plot. (See the chapter "Variables and Expressions", "Grids and axes of <a href="../variables-xpressions/VARIABLES.html#_VPID_71" title="3.1 VARIABLES">pseudo-variables</a>" and the example in the section on "<a href="../variables-xpressions/VARIABLES.html#Chapter3-Abstract_variables" title="3.1 VARIABLES">Abstract Variables</a>")</p>
+<p align="left"><b>Example</b><b> </b></p>
+<p align="left">This example is taken from the demonstration script "file_reading_demo.jnl". An ASCII file contains a grid of numbers, 50 rows by 6 columns. Suppose the data are on a 2D grid of 6 longitudes by 50 latitudes (Figure 4_1).</p>
+<p><a href="https://ferret.pmel.noaa.gov/Ferret/sites/default/files/images/documentation/users-guide/user_guide_images/Ch4_fig01.gif"><img alt="Ch4_fig01" class="image-inline" src="https://ferret.pmel.noaa.gov/Ferret/sites/default/files/images/documentation/users-guide/user_guide_images/Ch4_fig01.gif" style="height: 172px; width: 200px;" /></a></p>
+<pre>
+yes? DEFINE AXIS/X=10E:60E:10/UNIT=DEGREE xlong
+yes? DEFINE AXIS/Y=0:49N:1/UNIT=DEGREE ylat
+yes? DEFINE GRID/X=xlong/Y=ylat gsnoopy2d
+! By default only 1 column is read, /COLUMNS= specifies 6 columns
+yes? FILE/VAR=my_2D_var/COL=6/GRID=gsnoopy2d snoopy.dat
+yes? CONTOUR my_2D_var</pre><p align="left"> </p>
+<p> </p>
+<p>
+<a name="Chapter4_time_axes_calendars" id="Chapter4_time_axes_calendars"></a><a name="_VPID_192" id="_VPID_192"></a><a name="_VPINDEXENTRY_629" id="_VPINDEXENTRY_629"></a><a name="_VPINDEXENTRY_630" id="_VPINDEXENTRY_630"></a><a name="_VPINDEXENTRY_631" id="_VPINDEXENTRY_631"></a><a name="_VPINDEXENTRY_632" id="_VPINDEXENTRY_632"></a><a name="_VPINDEXENTRY_633" id="_VPINDEXENTRY_633"></a></p>
+<p> </p>
+<p align="left" class="secHeader"><b>4.2.2 Time axes and calendars </b></p>
+<p align="left">Data, particularly outputs from models, may be defined with time axes that are not on the standard Gregorian calendar. The netCDF conventions document discusses and defines usage for different calendars. These conventions for calendars are implemented in Ferret version 5.3 See:</p>
+<p align="left"><a href="http://cfconventions.org/">http://cfconventions.org/</a></p>
+<p> </p>
+<p align="left">NetCDF conforms to the conventions in the UDUNITS software package</p>
+<p align="left"><a href="http://www.unidata.ucar.edu/software/udunits/">www.unidata.ucar.edu/software/udunits/</a></p>
+<p align="left">The concept of time units and formatted time needs some thought and explanation. The possibility of using different calendar definitions also compilcates the question. Time coordinates (seconds, days, years, etc) are used by the software for computation and comparison. Formatted time (30-DEC-2003 00:00:00) is for the convenience of the human user.</p>
+<p align="left">Time coordinates, given as so many units (seconds, days, years, etc) since a reference time is generally impossible to comprehend at a glance. There has to be internal code to convert to formatted time. Conversion between the time-since-reference form and formatted time requires that we know the calendar. The calendar says how many days there are in each month, and hence also implies the length of the year, which therefore depends on the calendar.</p>
+<p> </p>
+<p align="left">The units second, minute, hour and day (24 hours) are always the same in all calendars we use for Earth and so the utilities can assume this. Models would expect to use these units when they write out times in timesteps.</p>
+<p align="left">Conversion to units of time (year month day hour minute second) is also needed when processing data to calculate means over months or other calendar-related intervals and climatological statistics. For computation, comparisons, plotting and regridding, Ferret makes the choice to adopt a common length of year for all calendars.</p>
+<p align="left"><a name="_VPINDEXENTRY_634" id="_VPINDEXENTRY_634"></a>The default calendar in Ferret is the Gregorian calendar. This is implemented as a "proleptic" calendar, where the definition of a year is consistent throughout time and does not have an offset in the 1500's as the historical calendars did. However, files written using the NOAA/CDC standard for the "blended" Julian/Gregorian calendar are read correctly by Ferret: If a time axis has a time origin of 1-1-1 00:00:00, and uses the default calendar, and if the coordinates of axis lie entirely after the year 1582, then the historical 2-day shift is applied.</p>
+<p align="left"> </p>
+<p align="left"><a name="_VPINDEXENTRY_635" id="_VPINDEXENTRY_635"></a>Other calendars may be defined using DEFINE AXIS/<b>CALENDAR= </b>or by reading a variable with a calendar attribute from a <a href="../data-set-basics/NETCDF-DATA.html#Chapter2%20NetCDF%20nonstandard%20calendar" title="2.2 NETCDF DATA">netCDF file</a>. You can set the calendar type in a descriptor file, with the D_CALTYPE attribute.</p>
+<p align="left"><b>Example: </b></p>
+<pre>
+$BACKGROUND_RECORD
+D_TITLE = 'Model Output, Daily Averages',
+D_T0TIME = '30-DEC-0000 00:00:00',
+D_TIME_UNIT = 3600.,
+D_CALTYPE = 'NOLEAP',
+$END</pre><p align="left"> </p>
+<p align="left"><a name="_VPINDEXENTRY_636" id="_VPINDEXENTRY_636"></a><a name="_VPINDEXENTRY_637" id="_VPINDEXENTRY_637"></a><a name="_VPINDEXENTRY_638" id="_VPINDEXENTRY_638"></a><a name="_VPINDEXENTRY_639" id="_VPINDEXENTRY_639"></a><a name="_VPINDEXENTRY_640" id="_VPINDEXENTRY_640"></a><a name="_VPINDEXENTRY_641" id="_VPINDEXENTRY_641"></a><a name="_VPINDEXENTRY_642" id="_VPINDEXENTRY_642"></a><a name="_VPINDEXENTRY_643" id="_VPINDEXENTRY_643"></a><a name="_VPINDEXENTRY_644" id="_VPINDEXENTRY_644"></a><b><a name="_VPINDEXENTRY_645" id="_VPINDEXENTRY_645"></a></b>The calendars that are defined for use in Ferret are</p>
+<p align="left"> </p>
+<table><tbody><tr><td>
+<p align="left"><b>calendar name </b></p>
+</td>
+<td>
+<p align="left"><b>number of days/year</b></p>
+</td>
+<td>
+<p align="left"><b>notes</b></p>
+</td>
+</tr><tr><td>
+<p align="left">GREGORIAN or STANDARD</p>
+</td>
+<td>
+<p align="left">365.2425</p>
+</td>
+<td>
+<p align="left">default calendar <a href="#_VPINDEXENTRY_634">(proleptic gregorian)</a></p>
+</td>
+</tr><tr><td>
+<p align="left">JULIAN</p>
+</td>
+<td>
+<p align="left">365.25</p>
+</td>
+<td>
+<p align="left">with leap years every 4 years</p>
+</td>
+</tr><tr><td>
+<p align="left">NOLEAP or COMMON_YEAR</p>
+</td>
+<td>
+<p align="left">365</p>
+</td>
+<td>
+<p align="left">no leap years</p>
+</td>
+</tr><tr></tr><tr><td>
+<p align="left">ALL_LEAP or 366_DAY</p>
+</td>
+<td>
+<p align="left">366</p>
+</td>
+<td>
+<p align="left">all years have 366 days</p>
+</td>
+</tr><tr><td>
+<p align="left">360_DAY</p>
+</td>
+<td>
+<p align="left">360</p>
+</td>
+<td>
+<p align="left">each month is 30 days</p>
+</td>
+</tr></tbody></table><p align="left"> </p>
+<p align="left">If a time axis in a netCDF file has a calendar attribute with the value "PROLEPTIC_GREGORIAN" in a netCDF file, Ferret will treat it as having the standard calendar type. See the definition of the <a href="#_VPINDEXENTRY_634">Proleptic Gregorian</a> calendar, above.</p>
+<p align="left"> </p>
+<p><a name="_VPINDEXENTRY_646" id="_VPINDEXENTRY_646"></a></p>
+<p align="left">Regridding between different calendars is allowed using the transformations @LIN (the default), @ASN, or @NRST. When regridding with @LIN from one calendar axis to another the length of a year is assumed to be constant, therefore the regridding calculates a scale factor based on the length of a second in each calendar, computed from the number of seconds per year for the calendars.</p>
+<p align="left"><b>Example: </b></p>
+<p align="left">Define a calendar axis and regrid an existing variable to this axis:</p>
+<pre>
+yes? DEFINE AXIS/CALENDAR=JULIAN/T="15-JAN-1982":"15-DEC-1985":30/UNITS=days tmodel 
+yes? LET twind = uwnd[GT=tmodel@NRST]</pre><p align="left">When using @MOD modulo regridding to compute a monthly climatology, the monthly climatology must be defined using the same calendar as the source data. See the section on <a href="#Chapter4-Modulo_regridding" title="modulo regridding">modulo regridding</a> for details.</p>
+<p align="left"><a name="_VPINDEXENTRY_647" id="_VPINDEXENTRY_647"></a></p>
+<p align="left">The analysis of multi-year daily data is often awkward, because the length of the year changes for leap years. The analysis can often be made simpler by regridding the data to a NOLEAP calendar.</p>
+<p>
+<a name="Chapter4-Dynamic_grids_and_axes" id="Chapter4-Dynamic_grids_and_axes"></a><a name="_VPID_193" id="_VPID_193"></a><a name="_VPINDEXENTRY_648" id="_VPINDEXENTRY_648"></a></p>
+<p align="left" class="secHeader"><b>4.2.3 Dynamic grids and axes </b></p>
+<p align="left">The commands DEFINE AXIS and DEFINE GRID, described in the preceding section, should be used when the grid or axis will be referenced more than once and/or shared among several variables. In many cases it is more convenient to use dynamic (a.k.a. "implicit") grids and axes. Two quick examples:</p>
+<pre>
+PLOT SIN(X[X=0:3.14:.1])</pre><p align="left">– dynamically creates an axis from 0 to 3.14 by 0.1</p>
+<p align="left"> </p>
+<pre>
+SHADE SST[X=140E:160W:5, D=coads_climatology]</pre><p align="left">– dynamically creates a longitude axis extending from 140E to 160W by 5 degrees, dynamically creates a grid which is like the grid upon which the variable SST is defined but with the X axis replaced by the new dynamic axis, and automatically regrids to this new grid.</p>
+<p>
+<a name="Chapter4-Dynamic_grids" id="Chapter4-Dynamic_grids"></a><a name="_VPID_194" id="_VPID_194"></a></p>
+<p align="left" class="secHeader"><b>4.2.3.1 Dynamic grids </b></p>
+<p align="left">It is often possible to avoid explicitly defining grids. This is useful in two common situations:</p>
+<ul><li><b>Situation 1</b></li>
+</ul><p class="indented">Regridding to specified axes without the need for defining the destination grid.</p>
+<p class="indented">Syntax: <i><b>G*=<a href="mailto:name@transform">name@transform</a></b></i>, where</p>
+<p align="left"><b>Example:</b></p>
+<pre>
+sst[GX=x10deg]</pre><p align="left"> </p>
+<p class="indented">Suppose the variable SST is defined on a 2×2 degree grid in latitude/longitude (e.g., SET DATA coads_climatology). If we wish to regrid to 10-degree spacing in longitude over a range from 175W to 75W we could use the commands</p>
+<pre>
+DEFINE AXIS/X=175w:75w:10/UNITS=degrees x10deg
+LET sst10 = sst[GX=x10deg]</pre><p> </p>
+<p class="indented">Several axes can be specified together when they are to be regridded similarly. For example, instead of <i><b>sst[GX=x10deg, GY=y10deg]</b></i> one can use the more concise <i><b>sst[GXY=x10deg]</b></i></p>
+<p class="indented">Similarly, <i><b>av_sst[GZ=@AVE, GT=@AVE]</b></i> can be condensed to <i><b>av_sst[GZT=@AVE]</b></i></p>
+<p class="indented">Ferret will dynamically create a grid equivalent to new_grid in</p>
+<p class="indented"><b>DEFINE GRID/LIKE=sst/X=x10deg new_grid.</b></p>
+<p class="indented">Figure 4_2 shows the effects of regridding the 2×2 degree COADS data to a 10-degree spacing in longitude using (default) linear interpolation.</p>
+<p> </p>
+<p><a href="https://ferret.pmel.noaa.gov/Ferret/sites/default/files/images/documentation/users-guide/user_guide_images/Ch4_fig02.gif"><img alt="Ch4_fig02" class="image-inline" src="https://ferret.pmel.noaa.gov/Ferret/sites/default/files/images/documentation/users-guide/user_guide_images/Ch4_fig02.gif" style="height: 172px; width: 200px;" /></a></p>
+<p align="left"> </p>
+<p class="indented">The command SHOW GRID SST10 will show the dynamically created grid. The names of dynamic grids and axes will always be displayed in parentheses.</p>
+<p> </p>
+<p align="left"> </p>
+<p class="indented">Note that the transformation method to be used for regridding may also be specified, so LET SST10 = SST[GX=<a href="mailto:x10deg@ave">x10deg@ave</a>] would create a 10-degree spaced result in which each grid point was computed as the weighted sum of the source points that fell within its grid box. The default method for regridding is linear interpolation.</p>
+<p> </p>
+<p class="indented">• <b>Situation 2</b></p>
+<p class="indented">Automatic reconciliation of incompatible grid shapes</p>
+<p class="indented">Syntax: <i><b>G=<a href="mailto:name@transform">name@transform</a></b></i></p>
+<p align="left">where</p>
+<table><tbody><tr><td>
+<p align="left">name</p>
+</td>
+<td>
+<p align="left">– The name of a grid or of another variable defined on the desired grid</p>
+</td>
+</tr><tr><td>
+<p align="left">@transform</p>
+</td>
+<td>
+<p align="left">– The (optional) name of a regridding transform</p>
+</td>
+</tr></tbody></table><p class="indented"><b>Example:</b></p>
+<pre>
+VAR1[g=VAR2]</pre><p> </p>
+<p class="indented">If two variables are defined on grids that are mutually non-conformable because axes exist in one grid but do not exist (are NORMAL) in another, Ferret will now create a dynamic grid to resolve the non-conformabilities. This means that an expression of the form VAR1[G=VAR2] will be meaningful as long as the grid domains overlap.</p>
+<p class="indented">For example, TEMP[d=levitus_climatology] is defined on an XYZ (time-independent) grid whereas SST[d=coads_climatology] is defined on an XYT grid. So to evaluate the expression SST[d=coads_climatology,G=TEMP[d=levitus_climatology]] Ferret will create a dynamic intermediate grid equivalent to</p>
+<pre>
+DEFINE GRID/LIKE=sst[D=coads_climatology]/X=temp/Y=temp</pre><p class="indented">so that regridding occurs on the X and Y axes but the original grid structure is maintained with respect to depth and time.</p>
+<p class="indented">The command SHOW GRID will reveal the resulting dynamically created grid structure.</p>
+<p>
+<a name="_VPID_195" id="_VPID_195"></a><a name="_VPINDEXENTRY_649" id="_VPINDEXENTRY_649"></a></p>
+<p align="left" class="secHeader"><b>4.2.3.2 Dynamic axes </b></p>
+<p align="left">The syntax "GX=lo:hi:delta" can be used in square brackets modifying a variable name to indicate the dynamic creation of an axis with the indicated range and spacing and the immediate regridding of the variable to a grid containing that axis. For example, SST[GX=175W:75W:10] will create a dynamic axis of 10-degree regular point spacing, will create a dynamic grid incorporating this axis (see previous section), and will regrid the variable SST to this grid.</p>
+<p align="left">Similarly, by referring to the grid indices rather than their world coordinates, the expression SST[GX=1:100:5] will create a dynamic axis that subsamples every 5th longitude point from SST. In this case the points of the resulting axis may be irregularly spaced if the points of the original axis were also irregular.</p>
+<p align="left">As with the dynamic regridding described above, transformations can be specified to indicate the regridding technique. Thus SST[GX=1:100:<a href="mailto:5@AVE">5@AVE</a>] will use averaging instead of the default linear interpolation to perform the regridding.</p>
+<p align="left">As a notational convenience the "G" may be dropped when referring to dynamic axes. Thus SST[X=175W:75W:10] is equivalent to SST[GX=175W:75W:10] and SST[I=1:100:<a href="mailto:5@AVE">5@AVE</a>] is equivalent to SST[GX=1:100:<a href="mailto:5@AVE">5@AVE</a>]. When using this notational convenience keep in mind that a regridding is taking place, so the transformation applied (if any) must be a regridding transformation (see <a href="../commands-reference/SHOW.html#_VPINDEXENTRY_1863">SHOW TRANSFORMS</a> in the command reference).</p>
+<p align="left">The lower plot of Figure 4_2 illustrates the effect of dynamic axes in the command</p>
+<pre>
+SHADE SST[GX=175W:75W:10]</pre><p>
+<a name="_VPID_196" id="_VPID_196"></a></p>
+<p align="left" class="secHeader"><b>4.2.3.3 Dynamic pseudo-variables </b></p>
+<p align="left">The same notation used for dynamic axes may also be applied to pseudo-variables providing a simple means for creating arrays of values. For example, X[GX=0.2:1:0.2] is a vector of 5 points from 0.2 to 1 at a regular spacing of 0.2 units. The vector is oriented in the X direction.</p>
+<p align="left">An example of using such a vector is (Figure 4_3)</p>
+<p align="left"><b>PLOT SIN(X[GX=0:3.14:.1]) </b></p>
+<p><a href="https://ferret.pmel.noaa.gov/Ferret/sites/default/files/images/documentation/users-guide/user_guide_images/Ch4_fig03.gif"><img alt="Ch4_fig03" class="image-inline" src="https://ferret.pmel.noaa.gov/Ferret/sites/default/files/images/documentation/users-guide/user_guide_images/Ch4_fig03.gif" style="height: 172px; width: 200px;" /></a></p>
+<p align="left">Note that when the lo:high:delta notation is applied to T or L expressed as calendar dates the units of the delta value will be <b>hours.</b> For example, L[GT=1-jan-1980:1-feb-1980:24] is the integers 1 to 32 defined on an axis of 32 days, 24 hours apart.</p>
+<p align="left">As a notational convenience the "G" may be dropped when referring to dynamic pseudo-variables. Thus X[X=0.2:1:0.2] is equivalent to X[GX=0.2:1:0.2].</p>
+<p align="left">See also the discussion of <a href="../variables-xpressions/VARIABLES.html#_VPINDEXENTRY_255">pseudo-variables</a>. and <a href="../variables-xpressions/VARIABLES.html#_VPINDEXENTRY_grids_pseudo">grids for pseudo-variables</a></p>
+<p>
+<a name="Chapter4-Regridding" id="Chapter4-Regridding"></a><a name="_VPID_197" id="_VPID_197"></a><a name="_VPINDEXENTRY_650" id="_VPINDEXENTRY_650"></a><a name="_VPINDEXENTRY_651" id="_VPINDEXENTRY_651"></a><a name="_VPINDEXENTRY_652" id="_VPINDEXENTRY_652"></a><a name="_VPINDEXENTRY_653" id="_VPINDEXENTRY_653"></a></p>
+<p align="left" class="secHeader"><b>4.2.4 Regridding </b></p>
+<p align="left">Syntax:</p>
+<p align="left"><i><b>var[G=name]</b></i> for (default) linear interpolation to new grid</p>
+<p align="left">or</p>
+<p align="left"><i><b>var[G=<a href="mailto:name@trn">name@trn</a>]</b></i> to regrid all axes using transform "trn" (see below)</p>
+<p align="left">or</p>
+<p align="left"><i><b>var[G=name,GX=@TRN,GY=@TRN,...]</b></i> to control regridding transformations along each axis separately</p>
+<p align="left">where</p>
+<table><tbody><tr><td>
+<p align="left"><i><b>var</b></i></p>
+</td>
+<td>
+<p align="left">is the name of the variable to be regridded (e.g., temp, u, tau, ...)</p>
+</td>
+</tr><tr><td>
+<p align="left"><i><b>name</b></i></p>
+</td>
+<td>
+<p align="left">is the name of a variable (e.g., temp[G=u]) or the name of a grid (e.g., temp[G=gu01])</p>
+</td>
+</tr><tr><td>
+<p align="left"><i><b>trn </b></i></p>
+</td>
+<td>
+<p align="left">is the name of a special transformation (e.g., @AVE, @ASN, @LIN)</p>
+</td>
+</tr></tbody></table><p align="left"> </p>
+<p align="left">The syntax <i><b>var[G=name,GX=@TRN,GY=@TRN,...]</b></i> can be compressed when specifying that several axes are to be regridded similarly. For example, instead of<br /><i><b>var[GX=sst, GY=SST]</b></i><br />
+one can now use the more concise<br /><i><b>var[GXY=sst]</b></i></p>
+<p align="left"> </p>
+<p align="left">Similarly, if using a regridding transformation,<br /><i><b>var[GZ=@AVE, GT=@AVE] </b></i><br />
+can be condensed to<br /><i><b>var[GZT=@AVE]</b></i></p>
+<p align="left">Note that in Ferret Version 5 and after when the limits of a variable are unspecified v2[g=v1] will default to the full extent of the v1 grid. Previously, it would become the size of whatever region of the v2 native grid overlapped with the v1 grid.</p>
+<p align="left">The Ferret distribution provides a demonstration of many regridding techniques:</p>
+<pre>
+yes? GO regridding_demo</pre><p align="left">Regridding is essential for algebraic operations that combine variables on incompatible grids. Ferret provides the commands DEFINE AXIS and DEFINE GRID to assist with the creation of arbitrary grids.</p>
+<p align="left">The result grid of a regridding operation does not necessarily match exactly the destination grid requested. For example, suppose the native grid of variable TEMP3D (Ocean Temperature) is 1 degree resolution in X and Y and 50 meter spacing in Z. If the syntax "[G=sst]" is used to request regridding to the grid of variable SST (Sea Surface Temperature), which is 2 degree resolution in X and Y, but normal to Z, then the resulting grid will be generated dynamically— inheriting X and Y axes from SST as requested, but retaining the Z axis of TEMP3D.</p>
+<p align="left"><b>Examples</b></p>
+<p align="left">1) Suppose the variables u and temp are on staggered X, Y, and Z axes but share the same T axis. Then the two variables can be multiplied together on the axes (grid) of the u variable as follows:</p>
+<p align="left"> </p>
+<pre>
+yes? CONTOUR u * temp[G=u]</pre><p align="left"> </p>
+<p class="indented">This will regrid temp onto the u grid by multi-axis linear interpolation before performing the multiplication.</p>
+<p> </p>
+<p align="left">2) Two variables, v1 and v2, are defined on distinct 4-dimensional grids (X, Y, Z, and T axes). The T axes of the two grids are identical but the X, Y, and Z axes all differ between the two variables. (This is often the case in numerical model outputs.)</p>
+<p align="left"> </p>
+<p class="indented">To obtain the variable v1 on its original Z (depth) locations but regridded in the XY plane to the grid locations of the variable v2, define a new grid (say, named "new_grid") that has the X and Y axes of v2 but the Z axis of v1.</p>
+<p> </p>
+<pre>
+yes? DEFINE GRID/LIKE=v2/Z=v1 new_grid !define new grid
+yes? LIST/X=160E:140W/Y=5S:5N v1[G=new_grid] !request regridding</pre><p align="left"> </p>
+<p align="left">3) In this example we look at temperature data from two data sets. levitus_climatology, an annual climatology, has the variable "temp" on an XYZ grid which is 1×1 degree in XY, and coads_climatology, a monthly climatology, has the variable "sst" on an XYT grid which is 2×2 degrees in XY. Suppose we wish to look at the sea surface temperatures in January at the higher XY resolution of the Levitus data.</p>
+<p align="left"> </p>
+<pre>
+yes? SET DATA levitus_climatology
+yes? SET DATA coads_climatology
+yes? SET REGION/L=1/Z=0
+yes? !get the name of the grid on which temp is defined
+yes? SHOW GRID temp[D=levitus_climatology] ! —&gt; "Glevitr1"
+yes? DEFINE GRID/X=glevitr1/Y=glevitr1/Z=sst/L=sst glevitus_xy
+yes? LIST/X=150E:155E/Y=0:5N sst[G=glevitus_xy]</pre><p align="left"> </p>
+<p align="left">4)  PyFerret/Ferret v7.6 includes support for Discrete Sampling Geometries (DSG) datasets, containing collections of Timeseries, Profiles, Trajectories, and Points.  Regridding operations include regridding from a gridded dataset to the "grid" of a discrete data collection, which involves sampling the grid at the times and locations of the data.</p>
+<pre>
+yes? use reference_salinity_grid.nc
+yes? use dsg_profile_subset.nc
+yes? let salinity_on_profiles = salt[d=1, g=sal2[d=2]]</pre><p> </p>
+<p>To regrid data from a discrete collection to a grid, use one of the SCAT2GRID functions.  For details see the FAQ,</p>
+<div><strong><a href="https://ferret.pmel.noaa.gov/Ferret//faq/calling-scat2grid-functions-dsg-data" title="Calling SCAT2GRID functions on DSG data">How can I call SCAT2GRID functions for my DSG data?</a></strong></div>
+<p> </p>
+<p>
+<a name="_VPID_198" id="_VPID_198"></a><a name="_VPINDEXENTRY_654" id="_VPINDEXENTRY_654"></a><b><a name="_VPINDEXENTRY_655" id="_VPINDEXENTRY_655"></a></b></p>
+<p align="left" class="secHeader"><b>4.2.4.1 Regridding transformations </b></p>
+<p align="left">Ferret supports several regridding transformations. Use the SHOW TRANSFORMATIONS command to obtain a list of the supported transformations from Ferret. The choice of regridding transformation determines the computation by which data from the source grid determine the values on the destination grid.</p>
+<p align="left">Regridding transformations provide a means to perform a given calculation over a limited span of coordinates and repeat that calculation for a series of contiguous spans. For example, if we wish to compute the variance of the variable SST over 10-degree longitude range from 180 to 170W we could use the syntax <i><b>sst[X=180:<a href="mailto:170w@VAR">170w@VAR</a>]</b></i>. Now, if we wish to perform the same operation 10 times in 10-degree wide bands from 180 to 80W we could instead use <i><b>G=@VAR</b></i> regridding as in (see <a href="GRIDS.html#Chapter4-Dynamic_grids" title="4.2 GRIDS">Dynamic Grids</a> for an explanation of the "GX=" syntax):</p>
+<p align="left"><i><b>DEFINE AXIS/X=175w:85w:10/UNITS=degrees ×10deg<br />
+LET sst10 = sst[GX=<a href="mailto:x10deg@VAR">x10deg@VAR</a>]</b></i></p>
+<p align="left">In addition to the regridding transformations here, see also <a href="GRIDS.html#_4.2.6">Section 4.2.6</a>, Auxiliary coordinate regridding, and particularly the <a href="GRIDS.html#_4.2.6.3">Piecewise Linear averaging</a> transformation, @PLAVE.</p>
+<p align="left">The regridding transformations are:</p>
+<p align="left"><a name="_VPINDEXENTRY_656" id="_VPINDEXENTRY_656"></a>@LIN—linear interpolation (the default if no transform is specified)</p>
+<p align="left">Performs regridding by multi-axis linear interpolation between coordinate locations.</p>
+<p align="left">(Note that if there is just one point on the source or destination axis, a result is returned only if the coordinate locations match exactly.)</p>
+<p align="left"> </p>
+<p align="left"><a name="_VPINDEXENTRY_657" id="_VPINDEXENTRY_657"></a><a name="_VPINDEXENTRY_658" id="_VPINDEXENTRY_658"></a><a name="_VPINDEXENTRY_659" id="_VPINDEXENTRY_659"></a><a name="_VPINDEXENTRY_660" id="_VPINDEXENTRY_660"></a>@AVE—averaging</p>
+<p align="left">Computes the length-weighted average of all points on the source grid that lie partly or completely within each grid cell of the destination grid. If any portion of a source grid cell containing data overlaps a given destination grid cell, then data from that source cell contributes to the destination cell, weighted by the fraction of the destination cell overlapped by the source cell. The source data are treated as continuous, extending to the edges of the grid cells.</p>
+<p class="indented"><b>Note:</b> When @AVE is applied simultaneously to the X and Y axes, where X and Y are longitude and latitude, respectively, an area-weighted average (weighted by cos(latitude)) is used. The @AVE transformation is unique in this respect. In multiple axis applications other than X and Y @AVE will be applied sequentially to the axes, computing the "average of the average." This may not be the desired weighting scheme in some cases. See @VAR below for an example.</p>
+<p align="left"><a name="_VPINDEXENTRY_661" id="_VPINDEXENTRY_661"></a><a name="_VPINDEXENTRY_662" id="_VPINDEXENTRY_662"></a><a name="_VPINDEXENTRY_663" id="_VPINDEXENTRY_663"></a><a name="_VPINDEXENTRY_664" id="_VPINDEXENTRY_664"></a>@ASN—(blind) association</p>
+<p align="left">Associates by subscript (blindly) the points from the source grid onto destination coordinates.</p>
+<p align="left"><a name="_VPINDEXENTRY_BIN" id="_VPINDEXENTRY_BIN"></a>@BIN—unweighted mean; average by by binning</p>
+<p>Computes the unweighted average of all valid data whose coordinate locations lie within each destination grid cell.</p>
+<p> </p>
+<p align="left"><a name="_VPINDEXENTRY_NBIN" id="_VPINDEXENTRY_NBIN"></a>@NBIN</p>
+<p>The number of valid data whose coordinate locations lie within each destination grid cell. This is an unweighted count. See <a href="GRIDS.html#_VPINDEXENTRY_BIN" title="4.2 GRIDS">@BIN.</a></p>
+<p align="left"><a name="_VPINDEXENTRY_665" id="_VPINDEXENTRY_665"></a>@VAR</p>
+<p align="left">Computes the variance of the points from the source grid that fall within each destination grid cell. This is a length-weighted computation like the @AVE transformation.</p>
+<p align="left"> </p>
+<p class="indented"><b>Note:</b> This transformation is suitable for regridding only in a single axis. When applied simultaneously to two axes, for example, it will compute the variance of the variance. For example, V[gx=130E:80W:<a href="mailto:10@VAR">10@VAR</a>, gy=205:20W:<a href="mailto:10@VAR">10@VAR</a>] is equivalent to tmp[X=130E:80W:<a href="mailto:10@VAR">10@VAR</a>] where tmp=V[y=20S:20N:<a href="mailto:10@VAR">10@VAR</a>].</p>
+<p> </p>
+<p align="left"><a name="_VPINDEXENTRY_666" id="_VPINDEXENTRY_666"></a><a name="_VPINDEXENTRY_667" id="_VPINDEXENTRY_667"></a><a name="_VPINDEXENTRY_668" id="_VPINDEXENTRY_668"></a>@NGD</p>
+<p align="left">Compute the weighted number of points from the source grid that fall within each destination grid cell. Note that the results of this calculation need not be integers—this is a length-weighted computation like the @AVE transformation. It is common for a grid cell on the source grid to span the boundary between grid cells on the destination grid, thereby contributing a fraction of its weight to multiple destination grid cells. If the destination axis is the same as the source axis, then beginning with Ferret v7.42, the result is 1 for grid cells that have valid data and 0 otherwise. See also <a href="GRIDS.html#_VPINDEXENTRY_NBIN" title="4.2 GRIDS">@NBIN</a></p>
+<p class="indented"><b>Note:</b> This transformation is suitable only for regridding on a single axis. When applied simultaneously to two axes, for example, it will compute a constant. See @VAR for an example.</p>
+<p> </p>
+<p align="left"><a name="_VPINDEXENTRY_669" id="_VPINDEXENTRY_669"></a><a name="_VPINDEXENTRY_670" id="_VPINDEXENTRY_670"></a>@NRST</p>
+<p align="left">Nearest coordinate regridding VAR[GX=<a href="mailto:newaxis@NRST">newaxis@NRST</a>] chooses the value from the source axis coordinate closest to the destination axis. If source coordinates above and below are equally close to a destination coordinate the value at the lower coordinate will be chosen. (This is most useful for regridding between axes whose coordinate values are very close, though not exactly matched -- e.g. between equally and unequally spaced monthly time axes.)</p>
+<p align="left"><a name="_IIN" id="_IIN">@IIN</a></p>
+<p align="left">Compute the indefinite integral. The integration is the weighted sum of the source variable from the start of the first cell specified on the source axis, to each coordinate value on the destination axis. When the destination axis for the regridding is the same as the source axis, the result is 0 at the bottom of the first grid cell, and is equal to the definite integral at the top of the uppermost grid cell.  (The @IIN regridding transformation is new with Ferret v7.42).</p>
+<p align="left"><a name="_IIN" id="_IIN"></a><a name="_VPINDEXENTRY_671" id="_VPINDEXENTRY_671"></a><a name="_VPINDEXENTRY_672" id="_VPINDEXENTRY_672"></a><a name="_VPINDEXENTRY_673" id="_VPINDEXENTRY_673"></a>@SUM</p>
+<p align="left">Computes the length-weighted sum of the points from the source grid that fall within each destination grid cell. This is a length-weighted computation like the @AVE transformation.</p>
+<p align="left"><a name="_VPINDEXENTRY_674" id="_VPINDEXENTRY_674"></a><a name="_VPINDEXENTRY_675" id="_VPINDEXENTRY_675"></a>@MIN</p>
+<p align="left">Finds the minimum value of those points from the source grid that lie within each destination grid cell. Note that this is NOT a weighted calculation; the destination grid cell that "owns" a source point is determined entirely from the coordinate location of the source point, not from the limits of the source grid cell.</p>
+<p align="left"> </p>
+<p class="indented">(As of Ferret V5.1) If a point on the source axis lies exactly on the boundary between grid cells on the destination axis it will be included in the calculations for the higher indexed cell on the destination axis. If a point on the source axis lies exactly on the upper cell boundary of the highest point on the destination axis, then it will be included in the calculations for that highest destination grid cell.</p>
+<p> </p>
+<p><a name="_VPINDEXENTRY_676" id="_VPINDEXENTRY_676"></a>If you have data on a single point axis and you wish to embed it in a larger axis range you can achieve this by using either the G=@MIN or G=@MAX. For example,</p>
+<p> </p>
+<pre>
+yes? define axis/x=163e/npoints=1 x1pt
+yes? let var_1pt = randu(x[gx=x1pt]) ! a random value at a single coordinate
+yes? list var_1pt
+RANDU(X[GX=X1PT])
+LONGITUDE: 163E
+0.4914
+yes? define axis/x=161e:165e:1 x5pt
+yes? list var_1pt[gx=x5pt@max] ! same value embedded within 5 point axis 
+RANDU(X[GX=X1PT])
+regrid: 1 deg on X@MAX
+161E / 1: ....
+162E / 2: ....
+163E / 3: 0.4914
+164E / 4: ....
+165E / 5: ....</pre><p align="left"> </p>
+<p><a name="_VPINDEXENTRY_677" id="_VPINDEXENTRY_677"></a><a name="_VPINDEXENTRY_678" id="_VPINDEXENTRY_678"></a>@MAX</p>
+<p>Finds the maximum value of those points from the source grid that lie within each destination grid cell. Note that this is NOT a weighted calculation; the destination grid cell that "owns" a source point is determined entirely from the coordinate location of the source point, not from the limits of the source grid cell..</p>
+<p>(As of Ferret V5.1) If a point on the source axis lies exactly on the boundary between grid cells on the destination axis it will be included in the calculations for the higher indexed cell on the destination axis. If a point on the source axis lies exactly on the upper cell boundary of the highest point on the destination axis, then it will be included in the calculations for that highest destination grid cell.</p>
+<p><a name="Chapter4-time-axis-regridding" id="Chapter4-time-axis-regridding"></a><a name="Chapter4-regridding@max" id="Chapter4-regridding@max"></a></p>
+<p>The @MAX transformation is useful as a mechanism to perform regridding between two axes that do not quite match. A common example would be to regrid between two monthly axes one of which has points located at the 15th of each month and the other having points exactly at mid-month. These Ferret commands illustrate the example using a 5-month axis in 1993:</p>
+<p> </p>
+<pre>
+yes? DEFINE AXIS/UNIT=DAYS/T0=1-JAN-1900 month_15 =
+DAYS1900(1993,I[I1:5], 15) 
+
+yes? DEFINE AXIS/UNIT=DAYS/T0=1-JAN-1900/EDGES month_mid =
+DAYS1900(1993,I[I=1:6], 1)
+yes? let my_var = L[gt=month_15 
+yes? list my_var
+L[GT=MONTH_15] 
+
+15-JAN-1993 00 / 1: 1.000 
+15-FEB-1993 00 / 2: 2.000
+15-MAR-1993 00 / 3: 3.000
+15-APR-1993 00 / 4: 4.000
+15-MAY-1993 00 / 5: 5.000
+
+yes? list my_var[gt=month_mid] 
+L[GT=MONTH_15]
+
+regrid: on T 
+16-JAN-1993 12 / 1: 1.048
+15-FEB-1993 00 / 2: 2.000
+16-MAR-1993 12 / 3: 3.048
+16-APR-1993 00 / 4: 4.033
+16-MAY-1993 12 / 5: .... ! unable to interpolate
+
+yes? list my_var[gt=month_mid@max] 
+L[GT=MONTH_15] 
+regrid: on T@MAX
+16-JAN-1993 12 / 1: 1.000
+15-FEB-1993 00 / 2: 2.000
+16-MAR-1993 12 / 3: 3.000
+16-APR-1993 00 / 4: 4.000
+16-MAY-1993 12 / 5: 5.000
+</pre><p align="left"> </p>
+<p align="left"><a name="_VPINDEXENTRY_679" id="_VPINDEXENTRY_679"></a><a name="_VPINDEXENTRY_680" id="_VPINDEXENTRY_680"></a>@XACT</p>
+<p align="left">Regridding with G=@XACT (or GX=@XACT, etc.) is a request to transfer values from a source grid to a destination grid only at those positions where there is an exact coordinate match between the source and destination axis points on the axis in question. Other destination points will be set to "missing". This transformation is especially useful for taking multiple in-situ data profiles, such as oceanographic cast data, and regridding them onto a regular (sparse) grid. For example: grep</p>
+<pre>
+yes? LET xcoarse = sin(x[x=0:20:10])
+yes? LIST xcoarse 
+SIN(X[X=0:20:10]) 
+0 / 1: 0.0000 
+10 / 2: -0.5440 
+20 / 3: 0.9129 
+yes? DEFINE AXIS/X=0:20:5 xfine 
+yes? LIST xcoarse[gx=xfine@XACT] 
+SIN(X[X=0:20:10]) 
+regrid: 5 delta on X@XACT 
+0 / 1: 0.0000 
+5 / 2: .... 
+10 / 3: -0.5440 
+15 / 4: .... 
+20 / 5: 0.9129</pre><p align="left"><a name="_VPINDEXENTRY_682" id="_VPINDEXENTRY_682"></a><a name="_VPINDEXENTRY_683" id="_VPINDEXENTRY_683"></a><a name="_VPINDEXENTRY_681" id="_VPINDEXENTRY_681"></a></p>
+<p align="left">@MOD</p>
+<p align="left">Creates climatologies from time series by regridding to a time series axis with a modulo regridding transformation. See the section on<a href="GRIDS.html#Chapter4-Modulo_regridding" title="4.2 GRIDS"> Modulo Regridding</a> for details.</p>
+<p align="left"><b>Examples</b></p>
+<p align="left">1) Let variable temp be defined on a grid with points spaced regularly at 1-degree intervals in both longitude and latitude (X and Y). Let grid "g10" possess points spaced regularly at 10-degree intervals in both X and Y.</p>
+<pre>
+yes? PLOT temp[G=g10] ! uses linear interpolation (@LIN)
+yes? PLOT temp[G=g10@AVE] ! area-averages 10x10 degrees of source\
+points into each destination point.
+yes? PLOT temp[G=g10,GX=@AVE] ! averages 10 degrees of longitude but\
+interpolates (@LIN) in Y.</pre><p align="left">2) @ASN has the effect of bypassing Ferret's protections against misrepresenting data (Figure 4_4).</p>
+<p><a href="https://ferret.pmel.noaa.gov/Ferret/sites/default/files/images/documentation/users-guide/user_guide_images/Ch4_fig04.gif"><img alt="Ch4_fig04" class="image-inline" src="https://ferret.pmel.noaa.gov/Ferret/sites/default/files/images/documentation/users-guide/user_guide_images/Ch4_fig04.gif" style="height: 172px; width: 200px;" /></a></p>
+<pre>
+yes? SET DATA levitus_climatology
+yes? SET REGION/X=180/Y=0 ! true profile
+yes? PLOT/Z=0:5000 temp
+yes? DEFINE AXIS/DEPTH /Z=100:2000:100 zfalse
+yes? DEFINE GRID/LIKE=temp /Z=zfalse gfalse ! false profile
+yes? PLOT/Z=0:5000/OVER temp[G=gfalse@ASN]</pre><p>
+<a name="Chapter4-Modulo_regridding" id="Chapter4-Modulo_regridding"></a><a name="_VPID_199" id="_VPID_199"></a><a name="_VPINDEXENTRY_684" id="_VPINDEXENTRY_684"></a><a name="_VPINDEXENTRY_685" id="_VPINDEXENTRY_685"></a><a name="_VPINDEXENTRY_686" id="_VPINDEXENTRY_686"></a><a name="_VPINDEXENTRY_687" id="_VPINDEXENTRY_687"></a></p>
+<p> </p>
+<p align="left" class="secHeader"><b>4.2.5 Modulo regridding </b></p>
+<p align="left"><a name="_VPINDEXENTRY_688" id="_VPINDEXENTRY_688"></a>Ferret can create climatologies from time series simply by regridding to a climatological axis with a modulo regridding transformation. For example, if the axis named month_reg is a 12-point monthly climatological (modulo) axis then the expression</p>
+<p align="left"><b>LET sst_climatology = sst[D=coads,GT=<a href="mailto:month_reg@MOD">month_reg@MOD</a>] </b></p>
+<p align="left">is a 12-month climatology computed by averaging the full time domain of the input variable (576 points for coads) modulo fashion into the 12 points of the climatological axis.</p>
+<p align="left">Ferret has three pre-defined climatological axes: seasonal_reg (Feb, May, Aug, Nov), month_reg (middle of every month), and month_irreg (15th of every month). On opening Ferret or PyFerret these are defined:</p>
+<pre>
+&gt; ferret
+        NOAA/PMEL TMAP
+        FERRET v7.4 (optimized)
+        Linux 2.6.32-696.18.7.el6.x86_64 64-bit - 04/27/18
+        24-May-18 09:54     
+
+yes? sh axis/all
+ name       axis              # pts   start                end
+ MONTH_IRREG TIME              12mi   16-JAN 12:00         15-DEC 17:49
+ MONTH_REG TIME                12mr   16-JAN 06:00         16-DEC 01:20
+ SEASONAL_REG TIME              4mr   15-FEB 15:43         15-NOV 14:05
+ MONTH_GREGORIAN TIME          12mi   16-JAN 12:00         15-DEC 17:49
+ MONTH_NOLEAP TIME             12mi   16-JAN 12:00         16-DEC 12:00
+ MONTH_360_DAY TIME            12mr   16-JAN 00:00         16-DEC 00:00
+ MONTH_ALL_LEAP TIME           12mi   16-JAN 12:00         16-DEC 12:00
+ MONTH_JULIAN TIME             12mi   16-JAN 12:00         15-DEC 18:00</pre><p align="left">Datasets are available which define climatological axes for other calendars, Julian and noleap, and all possible seasonal calendars. To define these calendars, USE and CANCEL the axis-definition dataset. Datasets <strong>clim_axes_gregorian.nc, clim_axes_julian.nc, clim_axes_noleap.nc</strong> are distributed with Ferret beginning with the v7.4 release. They can be found at the <a href="https://github.com/NOAA-PMEL/FerretDatasets/releases">GitHub Datasets page</a>.</p>
+<p align="left">Note that MON_IRREG_GRG is the same as the pre-defined MONTH_IRREG and MON_REG_GRG is the same as MON_REG, included for naming consistency.</p>
+<pre>
+...
+yes? USE clim_axes_gregorian
+           *** NOTE: regarding /home/users/tmap/ferret/linux/fer_dsets/data/clim_axes_gregorian.nc ...
+           *** NOTE: GREGORIAN climatological axes defined
+yes? CANCEL DATA clim_axes_gregorian
+
+yes?  SHOW AXIS/ALL
+ name       axis              # pts   start                end
+ ...
+ MON_IRREG_GRG TIME            12mi   16-JAN 12:00         16-DEC 17:49
+ JFM_IRREG_GRG TIME             4mi   15-FEB 02:54         16-NOV 05:49
+ DJF_IRREG_GRG TIME             4mi   15-JAN-0002 08:43    16-OCT-0002 23:38
+ NDJ_IRREG_GRG TIME             4mi   17-DEC 05:49         16-SEP-0002 11:38
+ MON_REG_GRG TIME              12mr   16-JAN 05:14         17-DEC 00:34
+ JFM_REG_GRG TIME               4mr   15-FEB 15:43         16-NOV 14:05
+ DJF_REG_GRG TIME               4mr   16-JAN-0002 11:03    17-OCT-0002 09:25
+ NDJ_REG_GRG TIME               4mr   17-DEC 00:34         16-SEP-0002 22:56
+
+
+yes? use clim_axes_noleap
+           *** NOTE: regarding /home/users/tmap/ferret/linux/fer_dsets/data/clim_axes_noleap.nc ...
+           *** NOTE: NOLEAP climatological axes defined
+yes? cancel data  clim_axes_noleap
+yes? show axis/all
+...
+ MON_IRREG_NLP TIME            12mi   16-JAN 12:00         16-DEC 12:00
+ JFM_IRREG_NLP TIME             4mi   15-FEB 00:00         16-NOV 00:00
+ DJF_IRREG_NLP TIME             4mi   15-JAN-0002 00:00    16-OCT-0002 12:00
+ NDJ_IRREG_NLP TIME             4mi   17-DEC 00:00         16-SEP-0002 00:00
+ MON_REG_NLP TIME              12mr   16-JAN 05:00         16-DEC 19:00
+
+</pre><p> </p>
+<p align="left"> </p>
+<p align="left">In addition, there is an FAQ that describes how to create a daily climatological series, <a href="https://ferret.pmel.noaa.gov/Ferret/faq/creating-a-daily-climatology">How do I compute a daily climatology for a time series?</a> The analysis of multi-year daily data is often awkward, because the length of the year changes for leap years. The analysis can often be made simpler by regridding the data to a NOLEAP calendar.</p>
+<pre>
+!!!!! Prior to v6.9, need to USE and CANCEL this dataset. The next two
+!!!!! commands not nedded in v6.9 and higher
+
+yes? USE climatological_axes
+*** NOTE: regarding ... climatological_axes.cdf
+ *** NOTE: Climatological axes SEASONAL_REG, MONTH_REG, MONTH_IRREG, TAX_GREGORIAN, TAX_NOLEAP, 
+TAX_360_DAY  defined
+yes? CANCEL DATA climatological_axes ! the axes are still defined</pre><p> </p>
+<p align="left">To generate a climatology based on a restricted range of input data simply define an intermediate variable with the desired points. For example, a monthly climatological time series based on data from the 1960s could be computed using</p>
+<pre>
+yes? LET sst_1960s = sst[D=coads,T=1-jan-1960:31-dec-1969]
+yes? PLOT sst_1960s[GT=month_reg@MOD]
+
+</pre><p>If the source time axis uses a calendar other than the standard Gregorian calendar, then we need to use the appropriate climatological axis. The calendar can be found using the `var,RETURN=calendar` keyword.</p>
+<pre>
+yes? use my_surface_data
+yes? say `sst,return=calendar`
+!-&gt; MESSAGE/CONTINUE NOLEAP
+NOLEAP
+</pre><p align="left">These calendars are pre-defined in Ferret: MONTH_IRREG, MONTH_REG, MONTH_GREGORIAN, MONTH_NOLEAP, MONTH_360_DAY, MONTH_ALL_LEAP, MONTH_JULIAN. MONTH_REG and MONTH_IRREG are defined on the default Gregorian calendar. MONTH_GREGORIAN is the same as MONTH_IRREG. Choose the monthly climatological axis with the same calendar as the source data:</p>
+<pre>
+yes? use my_surface_data
+yes? let sst_climatology = sst[GT=month_noleap@MOD]
+</pre><p align="left"> </p>
+<p align="left">This example shows the entire sequence necessary to generate a plot of climatological SST at 40N, 40W based on the January 1982 to December 1992 Fleet Numerical wind data set. (Figure 4_5).</p>
+<p><a href="https://ferret.pmel.noaa.gov/Ferret/sites/default/files/images/documentation/users-guide/user_guide_images/Ch4_fig05.gif"><img alt="Ch4_fig05" class="image-inline" src="https://ferret.pmel.noaa.gov/Ferret/sites/default/files/images/documentation/users-guide/user_guide_images/Ch4_fig05.gif" style="height: 172px; width: 200px;" /></a></p>
+<pre>
+!!!!! Prior to v6.9, need to USE and CANCEL this dataset. The next two
+!!!!! commands not nedded in v6.9 and higher
+
+! use the predefined climatological axes
+USE climatological_axes
+CANCEL DATA climatological_axes
+
+! use the Fleet Numerical winds
+SET DATA monthly_navy_winds
+
+! plot the raw data (top figure)
+SET REGION/X=40w/Y=40n
+plot uwnd
+
+! plot the 12 month climatology (middle figure)
+LET uwnd_clim = uwnd[GT=month_reg@MOD]
+PLOT uwnd_clim
+
+! since uwnd_clim is on a climatological axis
+! Ferret can also plot it on the calendar axis with the raw data
+PLOT/T=16-jan-1982:17-dec-1992 uwnd,uwnd_clim</pre><p align="left">In many cases the volume of input data needed to perform climatological calculations is very large. In the example above the command</p>
+<p align="left"><b>CONTOUR/X=0:360/Y=90s:90n sst_climatology[L=1] </b></p>
+<p align="left">to plot January from the climatology would require Nx*Ny*Nt=72*72*576=3 Megawords of data. Such calculations may be too large to fit into memory. However, if the region is fully specified (as shown for the X and Y limits in the example) Ferret's internal memory manager will break up the calculation as needed to produce the result. (See <a href="../computing-environment/MEMORY-USE.html" title="9.3 MEMORY USE">Memory Use</a> in the chapter "Computing Environment", for further details.)</p>
+<p> </p>
+<p align="left">Unlike other transformations and regridding, modulo regridding is performed as an <i>unweighted</i> average: each non-missing source point contributes 100% of its weight to the destination grid box within which it falls. If the source and destination axes are not properly aligned this can lead to apparent shifts in the data. For example, if a monthly time series has data points at the first of each month and a climatological axis is defined at midmonths, then unweighted modulo averaging will lead to an apparent 1/2-month shift. To avoid situations of this type simply regrid to the climatological axis using linear interpolation prior to the modulo regridding.</p>
+<p align="left">Here is an example that illustrates the situation and the use of linear interpolation to repair it. (Figure 4_6).</p>
+<p><a href="https://ferret.pmel.noaa.gov/Ferret/sites/default/files/images/documentation/users-guide/user_guide_images/Ch4_fig06.gif"><img alt="Ch4_fig06" class="image-inline" src="https://ferret.pmel.noaa.gov/Ferret/sites/default/files/images/documentation/users-guide/user_guide_images/Ch4_fig06.gif" style="height: 172px; width: 200px;" /></a></p>
+<pre>
+! define test_var, an illustrative variable with 1 year periodicity
+! Note: test_var points are at the **beginnings** of months
+DEFINE AXIS/T=1-jan-1970:1-jan-1974:`365.25/12`/UNITS=days t10years
+DEFINE GRID/T=t10years gg
+LET test_var = SIN(L[G=gg]*2*3.14/12)
+
+! plot 4 years of the cycle
+PLOT test_var
+
+! define climatological axes at the midpoints of months
+
+!!!!! Prior to v6.9, need to USE and CANCEL this dataset. The next two
+!!!!! commands not nedded in v6.9 and higher
+USE climatological_axes
+CANCEL DATA climatological_axes
+
+! notice that modulo regridding appears to shift the data
+! (due to mis-aligned source and destination axes) (top figure)
+PLOT/OVER/T=1-jan-1970:1-jan-1974 test_var[GT=month_reg@MOD]
+
+! to avoid the shift we can first regrid test_var to mid-month
+! points using linear interpolation (the default regridding method)
+! notice that the function test_var is largely unchanged by this
+LET test_var_centered = test_var[GT=month_reg]
+PLOT/OVER/T=1-jan-1970:1-jan-1974 test_var_centered 
+
+! finally perform a modulo regridding on well-aligned data
+! notice that the shift is gone (bottom figure)
+PLOT/OVER/T=1-jan-1970:1-jan-1974 test_var_centered[GT=month_reg@MOD]</pre><p> </p>
+<p>More notes:</p>
+<p>In addition, modulo regridding can introduce biases if, say 2015 has 2 points lying in March and 2016 has 5 points in that same month. This is something to be aware of if the source data has many gaps.</p>
+<p>Finally, please read the FAQ about <a href="https://ferret.pmel.noaa.gov/Ferret/faq/how-do-i-calculate-climatologies-and-climatological-anomalies">computing climatologies and anomalies</a> computing climatologies and anomalies. At the end are two notes about computing these with the best accuracy and lack of bias.</p>
+<p> </p>
+<p><a name="_VPID_200" id="_VPID_200"></a><a name="_VPINDEXENTRY_689" id="_VPINDEXENTRY_689"></a><a name="_VPINDEXENTRY_690" id="_VPINDEXENTRY_690"></a><a name="_VPINDEXENTRY_691" id="_VPINDEXENTRY_691"></a></p>
+<p align="left" class="secHeader"><b>4.2.5.1 Modulo regridding statistics </b></p>
+<p align="left">In addition to the modulo averaging calculation performed by @MOD Ferret provides other statistics of the regridding. All modulo regridding calculations are unweighted as discussed under @MOD.</p>
+<p align="left"><a name="_VPINDEXENTRY_692" id="_VPINDEXENTRY_692"></a><a name="_VPINDEXENTRY_693" id="_VPINDEXENTRY_693"></a><a name="_VPINDEXENTRY_694" id="_VPINDEXENTRY_694"></a>@MODVAR</p>
+<p align="left">The variance of source points used to compute the result in each destination grid box: SUM((var-varbar)^2) / (n-1). That is, take each the source data value that goes into each modulo result-grid-cell. Subtract the modulo mean computed for its destination grid box, and square this difference. Divide by the number of points that went into each modulo-result grid box.</p>
+<p align="left"><a name="_VPINDEXENTRY_695" id="_VPINDEXENTRY_695"></a><a name="_VPINDEXENTRY_696" id="_VPINDEXENTRY_696"></a><a name="_VPINDEXENTRY_697" id="_VPINDEXENTRY_697"></a>@MODSUM</p>
+<p align="left">the sum of the source points within each destination grid box</p>
+<p align="left"><a name="_VPINDEXENTRY_698" id="_VPINDEXENTRY_698"></a><a name="_VPINDEXENTRY_699" id="_VPINDEXENTRY_699"></a><a name="_VPINDEXENTRY_700" id="_VPINDEXENTRY_700"></a>@MODNGD</p>
+<p align="left">the number of source points contributing to each destination grid box</p>
+<p align="left"><a name="_VPINDEXENTRY_MODNBD" id="_VPINDEXENTRY_MODNBD"></a><a name="_VPINDEXENTRY_699" id="_VPINDEXENTRY_699"></a>@MODNBD</p>
+<p align="left">the number of bad points in the region contributing to each destination grid box</p>
+<p align="left"><a name="_VPINDEXENTRY_701" id="_VPINDEXENTRY_701"></a><a name="_VPINDEXENTRY_702" id="_VPINDEXENTRY_702"></a><a name="_VPINDEXENTRY_703" id="_VPINDEXENTRY_703"></a>@MODMIN</p>
+<p align="left">the minimum value of the source points contributing to each destination grid box</p>
+<p align="left"><a name="_VPINDEXENTRY_704" id="_VPINDEXENTRY_704"></a><a name="_VPINDEXENTRY_705" id="_VPINDEXENTRY_705"></a>@MODMAX</p>
+<p align="left">the maximum value of the source points contributing to each destination grid box</p>
+<p> </p>
+<p align="left" class="secHeader"><a name="_4.2.6" id="_4.2.6"></a><b>Section 4.2.6. Using Auxiliary Coordinate Variables (logically rectangular grids)</b></p>
+<p align="left"><a href="#_VPID_197">Section 4.2.4</a> discusses how to regrid variables between rectilinear grids. A grid is rectilinear if each of its axes is rectilinear -- i.e. a simple, 1-dimensional sequence of points. On a rectilinear axis the relationship between real world coordinates and the corresponding indices is always one-to-one, for example depth=depth(k), lon=lon(i) and time-time(l). In this section we discuss how to work with ‘logically rectangular’ grids, a generalization of the concept of a rectilinear grid. Common examples of the logically rectangular (but non-rectilinear) grids that one may encounter include ‘layered vertical’ and ‘curvilinear horizontal’ coordinate systems. In a logically rectangular grid each real world coordinate (e.g. X, Y or Z) may depend upon multiple indices. For example, in a layered vertical coordinate system the Z real world coordinate (depth) typically depends upon the indices of the grid through depth=depth(i,j,k). In a curvilinear horizontal coordinate system each (lon, lat) position typically depends upon its index position through (lon(i,j), lat(i,j)), rather than the simpler rectilinear relationship of (lon(i), lat(j)).</p>
+<p>In netCDF files that adhere to the Climate and Forecast (CF) conventions [<a href="http://cfconventions.org/">http://cfconventions.org/</a>] the attribute named coordinates is used to make associations between a scientific variable and the auxiliary coordinate variables upon which its grid depends. For example, if the scientific variable temp has a curvilinear horizontal coordinate system, then the netCDF file will contain the attribute</p>
+<pre>
+    temp:coordinates=mylon, mylat;</pre><p>where mylon and mylat are two-dimensional variables that are also defined in the netCDF file, and share two dimensions of the variable temp. The netCDF-CF file “knows” that the shared dimensions represent the real world longitudes and latitudes, through the units attributes of the variables mylon and mylat, which would typically have values ”degrees_east” and ”degrees_north” respectively.</p>
+<p> </p>
+<h3><a name="_4.2.6.1" id="_4.2.6.1"></a>4.2.6.1 Regridding syntax for variables with auxiliary coordinates</h3>
+<p>Rectilinear regridding is invoked using the syntax</p>
+<pre>
+var[gW=axis@trans]</pre><p> </p>
+<p>(See <a href="#_VPID_197">Section 4.2.4</a> of this Users Guide for general information about regridding syntax.)</p>
+<p>The syntax to regrid a variable using auxiliary coordinate variables is an extension of the rectilinear regridding syntax:</p>
+<p>var[gW(auxcoord)=<a href="mailto:axis@trans">axis@trans</a>]</p>
+<p>where</p>
+<ul><li style="list-style-type: disc;">
+<p>the regridding axis, W may be X, Y, Z, T, E, F. (also see shorthand syntax under Regridding from curvilinear horizontal coordinate systems below;</p>
+</li>
+<li style="list-style-type: disc;">
+<p>variable auxcoord is the auxiliary coordinate variable that defines W=W(indices);</p>
+</li>
+<li style="list-style-type: disc;">
+<p>the transformation algorithm used to perform the regridding is trans;</p>
+</li>
+<li style="list-style-type: disc;">
+<p>axis is the name of an axis; or a grid containing the desired axis in orientation W; or the name of a variable defined upon such a grid; or a triple of values given as lo:hi:delta, or (for linear interpolation, only) a single point value, or a pair of values defining a range over which transformation, trans, should be applied, such as lo:<a href="mailto:hi@PLAVE">hi@PLAVE</a>. The units of axis should match the units of auxcoord.</p>
+</li>
+</ul><p>Auxcoord will typically be a variable that has been named as an auxiliary coordinate via a coordinates attribute in a netCDF dataset that follows the CF conventions. All of the axes that exist in the grid of auxcoord must also be found on the grid of the var. However, var may have axes not found on auxcoord (e.g. a time axis). The grid of auxcoord and the grid of var must share the Ferret axis in the W orientation.</p>
+<p> </p>
+<p>For all single axes, regrid operations @trans may be @LIN (linear interpolation); or @PLAVE (average under the piecewise linear function implied by variable auxcoord over the bounds of each target grid cell -- see the <a href="GRIDS.html#_4.2.6.3">Piecewise Linear averaging</a> section of this document). The @LIN is the default when no transform is specified (see exception for <a href="GRIDS.html#_4.2.7">FMRC time-forecast grids</a> discussed below). If the target axis is a single numerical value, the @LINtransformation will always be used. Note that “@AVE” is also acceptable syntax to request averaging; it is interpreted as a synonym for “@PLAVE” (<a href="GRIDS.html#_4.2.6.3">Piecewise Linear averaging</a>)in the context of auxiliary coordinate regridding.</p>
+<p> </p>
+<p>Regions: Auxiliary coordinate regridding treats region specifications in the same manner as traditional Ferret, namely region information always refers to the *target* grid. For example, in the command</p>
+<pre>
+SHADE/K=5:10  temp[gz(density)=myDensityAxis]</pre><p> </p>
+<p>The K limits will be interpreted as indices of the axis myDensityAxis (versus the native Z axis of temp). (This behavior has serious implications for implementation, as discussed below.)</p>
+<p>An example is shown in the <a href="https://ferret.pmel.noaa.gov/Ferret/faq/depth-axis-to-density-axis" title="Ferret FAQs">FAQ, Density axis &lt;--&gt; depth axis</a>.</p>
+<p> </p>
+<h3><a name="_4.2.6.2" id="_4.2.6.2"></a>4.2.6.2 Regridding from curvilinear horizontal coordinate systems</h3>
+<p> </p>
+<p><b><i>(not yet implemented as of 10/2015 -- syntax may change) </i></b></p>
+<p> </p>
+<p><i>To regrid from a curvilinear to a rectilinear grid and to average over lat/long boxes</i></p>
+<p><i>variants:</i></p>
+<p><i>var[gxy(auxlon,auxlat)=<a href="mailto:grid_or_var@trans">grid_or_var@trans</a>]</i></p>
+<p><i>var[gx(auxlon)=<a href="mailto:xaxis@trans">xaxis@trans</a>,gy(auxlat)=<a href="mailto:yaxis@trans">yaxis@trans</a>]</i></p>
+<p><i>var[gx(auxlon)=lo:hi:<a href="mailto:del@trans">del@trans</a>,gy(auxlat)=lo:hi:<a href="mailto:del@trans">del@trans</a>]</i></p>
+<p><i>var[gx(auxlon)=xpt,gy(auxlat)=ypt]</i></p>
+<p> </p>
+<p><i>The values of @trans for horizontal curvilinear regridding remain TBD at this time.</i></p>
+<p> </p>
+<h3><a name="_4.2.6.3" id="_4.2.6.3"></a> 4.2.6.3 Auxiliary coordinate regridding using piecewise linear averaging</h3>
+<p> </p>
+<p>The following example illustrates the algorithm used when the requested regridding transform is piecewise linear averaging (@PLAVE) rather than linear interpolation. The conventional @AVE algorithm cannot be applied in this situation, because the functional relation between a variable (e.g. temperature) and its auxiliary coordinate (e.g. density) is only defined in terms of points, not grid cells, along the auxiliary coordinate.</p>
+<p>Suppose the values shown just below represent a fragment of the variables density and temperature at some particular X,Y,T,E,F point as viewed on their native Z axis of depth (values are made-up for illustration)</p>
+<pre>
+ depth        density        temp
+ ...         ...          ...
+  10        1000.5        24.0
+  20        1001.5        23.5
+  50        1002.0        21.0
+ 100        1003.5        19.0
+ ...         ...          ...</pre><p> </p>
+<p> </p>
+<p>Suppose the requested regrid is</p>
+<p>temp[gz(density)=1000:1004:<a href="mailto:2@PLAVE">2@PLAVE</a>]</p>
+<p> </p>
+<p>For any fixed X,Y,T,E,F grid point the averaging algorithm will regard temperature as a piecewise linear function of density. Consider as an example the target Z grid point at density=1002 -- a grid cell that extends from 1001 to 1003. The @PLAVE algorithm will find the average height of the temperature over this cell as the weighted average height of the 3 trapezoids shown in Figure 1. The grid cells of the target axis are indicated with the dark horizontal line; grid point locations marked with star symbols. This averaging algorithm contrasts with the typical (rectilinear axis) @AVE transformation (e.g. temp[Z=10:<a href="mailto:50@AVE">50@AVE</a>]); @AVE regards each grid cell as having a constant value over the span of the cell (rectangles, rather than the trapezoids illustrated in Figure 4_8)</p>
+<p> </p>
+<p> </p>
+<p> </p>
+<p class="secHeader"><a name="_4.2.7" id="_4.2.7"></a>4.2.7 Forecast model Run Collections (FMRCs)</p>
+<p>When a forecast model is run on an operational cycle, with a new model run commencing on a regular cycle, the resulting collection of multiple model outputs is called a Forecast model Run Collection (FMRC). An FMRC can be handled by Ferret as a single dataset, vastly reducing the effort needed to explore the data. The variables of each individual model run may include mixed 2D (surface) and 3D (volume) variables, mixed time-dependent and time-independent variables, and optionally an ensemble (E) 5th dimension. The individual model runs are assembled into a single dataset through the addition of a sixth “F” (forecast) start time axis. The new F axis is a calendar axis on which each coordinate point is the date/time at which that model run was commenced.</p>
+<p>FMRCs are challenging to understand in detail, but quite easy to work with. A slide presentation providing both tutorial background and a sample session is available at</p>
+<p><a href="http://ferret.pmel.noaa.gov/tutorials/Using_Forecast_Model_Run_Collections_in_Ferret.pdf">Using_Forecast_Model_Run_Collections_in_Ferret.pdf</a></p>
+<p>The creation of the consolidated single dataset may be achieved using the Ferret <a href="../commands-reference/DEFINE.html#_define_data_agg" title="DEFINE">DEFINE DATA/AGGREGATE/F</a> command or using the <a href="https://www.unidata.ucar.edu/software/thredds/current/tds/">THREDDS DATA SERVER (TDS)</a> from Unidata. In either case, when the individual model runs are viewed in the context of the FMRC, the original time axes of the original model (which each differ) are replaced by a single uniform time axis in which each time step represents the elapsed time since the first time step of the model run. For example, if a forecast outputs snapshots 4 times daily, then the time axis of variables in that forecast run, when seen as part of the FMRC, will appear as a regular sequence 0, 6, 12, 18, … with units of hours. The true time steps of the individual model runs are preserved as a new variable that is synthesized by DEFINE/AGG/F (or by TDS). When created by the Ferret DEFINE DATA/AGGREGATE/F command the 2D time variable is named “TF_TIMES” (it will have a different name if the FMRC has been aggregated by TDS.) TF_TIMES is 2-dimensional variable, sharing the T and F axes of the other variables in the FMRC, where its value at each m,n index is the time step of that model snapshot as interpreted through the units of TF_TIMES. This time unit will follow the CF convention, e.g. “hours since 01-01-2015”.</p>
+<p> </p>
+<p>The native form of the FMRC, as created by DEFINE AGGREGATION/F or TDS is the “compact” form of the FMRC. This form of the FMRC is efficient for storage and I/O, but is poorly suited (confusing) for analysis and visualization. There are two alternative representations of the variables in the FMRC that are better suited to these tasks. The most useful form is the ‘skill’ form, in which the T axis is a single long calendar axis that represents the date/time being modeled, and the F axis is the offset (lag) since the model run was initiated. The alternative form (less commonly used) is the ‘diagonal’ form. The slide presentation (see link above) clarifies these alternative forms.</p>
+<p> </p>
+<p>Ferret’s auxiliary coordinate regridding syntax (<a href="GRIDS.html#_4.2.6.1">Section 4.2.6.1</a>) is used to transform the T and F axes of the compact form of an FMRC into the axes of the ‘skill’ and ‘diagonal’ forms. The 2-dimensional time coordinate variable, TF_TIMES (or other name if using TDS), must be provided as the auxcoord that guides the regridding. The ‘skill’ form of the FMRC is achieved by regridding both T and F</p>
+<p> </p>
+<pre>
+var[gt(tf_times)=TF_CAL_T,gf(tf_times)=TF_LAG_F]</pre><p>The diagonal form of the FMRC may be achieved by regridding only the T axis</p>
+<pre>
+ var[gt(tf_times)=TF_CAL_T@FMRC]</pre><p> </p>
+<p>The explicit transformation “@FMRC” is required when regridding T only, to distinguish from the default linear interpolation transformation. When T and F regridding are requested together the “@FMRC” transformation is implicit, and therefore optional.</p>
+<p> </p>
+<p>Starting in version 7.4.2, Ferret will, by default, find a common regular axis for the forecast initialization calendar times (TF_CAL_F) and the forecasted calender times (TF_CAL_T), and then define the elapsed time axes TF_LAG_T and TF_LAG_F in terms of this calendar axis.  In order to find a common regular axis, some forecast initialization (calendar) times and some forecasted (calendar) times must match, and have a underlying regular axis.  For instance, suppose every quarter-year (three months) one predicts conditions for every 1/12 of a year (month) of the next two years.  (So every three months one has 24 new monthly predictions.)  The common regular calendar axis will then be a monthly (1/12 of a year) axis starting at the time of the very first forecast and continuing to the end of the last forecasted time of the last forecast.  (Currently, only this default behavior is available in FMRC aggregation; future versions for Ferret will allow specification of the calendar time axes as desired.) </p>
+<p>The 2-dimensional time coordinate variable TF_TIMES is then defined using this common calendar axis.  Because of this, forecasted values saved in the 'compact' form may first need to be regridded to the TF_LAG_T and TF_CAL_F axes before proceeding with the conversion to the 'diagonal' and 'skill' forms of the FMRC.  For instance:</p>
+<pre style="font-size: 14.4px;">
+LET sparsevar = var[gt=TF_LAG_T@BIN,gf=TF_CAL_F@BIN]
+LET skillview = sparsevar[gt(tf_times)=TF_CAL_T,gf(tf_times)=TF_LAG_F]
+</pre><p>The reason for this change is to properly represent the plots made, particularly the 'skill' plot.  The regridding in the above example (using @BIN) puts in gaps between the forecasts in the 'compact' form, as there is a two-month gap between the start of each monthly forecast being made.  When converted to the 'skill' plot, the proper gaps appear in the forecast lead time: on the month that a forecast is made, there is 'zero' forecast lead time.  But on the months no forecast is made, there is no 'zero' forecast lead time but instead a one- or two-month forecast lead time.  If one prefers the plots without these gaps, one could estimate the forecasts that would have been made in these off-months by interpolating (for example, using @LIN instead of @BIN) in the initial regridding of the 'compact' form.</p>
+<p>A Ferret session plotting the above example forecast (two-year monthly forecasts made every quarter year) may look something like the following:</p>
+<p><style type="text/css">
+<!--/*--><![CDATA[/* ><!--*/
+p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 16.0px Menlo}
+span.s1 {font-variant-ligatures: no-common-ligatures}
+
+/*--><!]]>*/
+</style></p>
+<pre class="p1">
+<span class="s1">LET files = SPAWN("/bin/ls tmp/fcst_*.nc")</span>
+<span class="s1">DEFINE DATA /AGGREGATE /F /HIDE files</span>
+<span class="s1">SHADE /PALETTE=viridis /I=10 /J=10 fcst</span></pre><p class="p1"><img alt="plot of the compact form of the forecasted variable" src="https://ferret.pmel.noaa.gov/sites/default/files/u271/fcst_compact_0.png" style="width: 400px; height: 345px;" /></p>
+<pre class="p1">
+<span style="font-variant-ligatures: no-common-ligatures;">LET sparse = </span>fcst<span style="font-variant-ligatures: no-common-ligatures;">[gt=TF_LAG_T@BIN,gf=TF_CAL_F@BIN]</span>
+<span class="s1">SHADE /PALETTE=viridis /I=10 /J=10 sparse</span>
+</pre><p class="p1"><img alt="plot of compact form of forecasted value on common time/forecast axis" src="https://ferret.pmel.noaa.gov/sites/default/files/u271/fcst_sparse.png" style="width: 400px; height: 345px;" /></p>
+<pre class="p1">
+<span class="s1">LET diag = sparse[gt(TF_TIMES)=TF_CAL_T]</span>
+<span class="s1">SHADE /PALETTE=viridis /I=10 /J=10 diag</span></pre><p class="p1"> </p>
+<p class="p1"><img alt="plot of diagonal form of forecasted value on common time/forecast axis" src="https://ferret.pmel.noaa.gov/sites/default/files/u271/diag_sparse.png" style="width: 400px; height: 345px;" /></p>
+<pre class="p1">
+<span class="s1">LET skill = sparse[gt(TF_TIMES)=TF_CAL_T,gf(TF_TIMES)=TF_LAG_F]</span>
+<span class="s1">SHADE /PALETTE=viridis /I=10 /J=10 skill</span></pre><p class="p1"> </p>
+<p class="p1"><img alt="plot of skill form of forecasted value on common time/forecast axis" src="https://ferret.pmel.noaa.gov/sites/default/files/u271/skill_sparse.png" style="width: 400px; height: 345px;" /></p>
+<pre class="p1">
+<span class="s1">LET actual = skill[N=1] + 0.0 * _F</span>
+<span class="s1">LET error = skill - actual</span>
+<span class="s1">SHADE /PALETTE=red_blue_gray_centered /LEVEL=30CV /I=10 /J=10 error</span></pre><p><img alt="plot of errors in forecasted value on common time/forecast axis" src="https://ferret.pmel.noaa.gov/sites/default/files/u271/error_sparse.png" style="width: 400px; height: 345px;" /></p>
+<p>This last plot assumes that the zero-lag forecasted values are actual conditions.  Note that on months that a forecast was not made, actual conditions are not available.  Again, one could produce plots without the gaps by estimating the actual conditions (and the missing forecasts) by interpolation.</p>
+<p> </p>
+<p>See example plots in the section about defining FMRC datasets: <a href="../commands-reference/DEFINE.html#_define_data_agg" title="DEFINE">DEFINE DATA/F </a></p>
+<p> </p>
+</div>
+      </div>
+</div>
+    
+  </div>
+  
+  <div class="clearfix">
+          <nav class="links node-links clearfix"></nav>
+    
+      </div>
+</article>
+    </div>
+  </div>
+</div>      </div>
+</div>  </div>
+</div></section>    
+  
+      <footer id="section-footer" class="section section-footer">
+  <div id="zone-footer-wrapper" class="zone-wrapper zone-footer-wrapper clearfix">  
+  <div id="zone-footer" class="zone zone-footer clearfix container-12">
+    <div class="grid-8 region region-footer-first" id="region-footer-first">
+  <div class="region-inner region-footer-first-inner">
+    <div class="block block-block block-1 block-block-1 odd block-without-title" id="block-block-1">
+  <div class="block-inner clearfix">
+                
+    <div class="content clearfix">
+      <p><a href="https://www.pmel.noaa.gov/"><img alt="PMEL logo" border="0" src="https://ferret.pmel.noaa.gov/Ferret/sites/all/themes/pacific_marine/images/PMEL-meatball-logo-sm.png" style="width: 110px; height: 110px;" /></a></p>
+    </div>
+  </div>
+</div><div class="block block-block block-2 block-block-2 even block-without-title" id="block-block-2">
+  <div class="block-inner clearfix">
+                
+    <div class="content clearfix">
+      <p><a href="https://www.noaa.gov/">National Oceanic and Atmospheric Administration</a><br /><a href="https://www.pmel.noaa.gov/">Pacific Marine Environmental Laboratory</a> | <a href="https://ferret.pmel.noaa.gov/Ferret">Ferret Support</a><br /><a href="mailto:oar.pmel.contact_ferret@noaa.gov">oar.pmel.contact_ferret@noaa.gov </a></p>
+    </div>
+  </div>
+</div><div class="block block-menu block-menu-footer-first-menu block-menu-menu-footer-first-menu odd block-without-title" id="block-menu-menu-footer-first-menu">
+  <div class="block-inner clearfix">
+                
+    <div class="content clearfix">
+      <ul class="menu"><li class="first leaf"><a href="https://www.commerce.gov/" title="The United States Department of Commerce">DOC</a></li>
+<li class="leaf"><a href="https://www.noaa.gov/" title="The National Oceanographic and Atmospheric Administration">NOAA</a></li>
+<li class="leaf"><a href="https://www.research.noaa.gov/" title="Department of Commerce &gt; NOAA &gt; Office of Oceanic and Atmospheric Research">OAR</a></li>
+<li class="leaf"><a href="https://www.pmel.noaa.gov/">PMEL</a></li>
+<li class="leaf"><a href="https://www.pmel.noaa.gov/project/science-data-integration" target="_blank">SDIG</a></li>
+<li class="leaf"><a href="https://www.noaa.gov/protecting-your-privacy" target="_blank">Privacy Policy</a></li>
+<li class="last leaf"><a href="https://www.noaa.gov/disclaimer" target="_blank">Disclaimer</a></li>
+</ul>    </div>
+  </div>
+</div>  </div>
+</div><div class="grid-4 region region-footer-second" id="region-footer-second">
+  <div class="region-inner region-footer-second-inner">
+    <div class="block block-menu block-menu-footer-second-menu block-menu-menu-footer-second-menu odd block-without-title" id="block-menu-menu-footer-second-menu">
+  <div class="block-inner clearfix">
+                
+    <div class="content clearfix">
+      <ul class="menu"><li class="first last leaf"><a href="https://ferret.pmel.noaa.gov/Ferret/sitemap" title="Title of Site map page">Ferret Sitemap</a></li>
+</ul>    </div>
+  </div>
+</div>  </div>
+</div>  </div>
+</div></footer>  </div>  <div class="region region-page-bottom" id="region-page-bottom">
+  <div class="region-inner region-page-bottom-inner">
+      </div>
+</div>  <div id="body-bg-bottom"></div>
+</body>
+
+<!-- Mirrored from ferret.pmel.noaa.gov/Ferret/documentation/users-guide/Grids-Regions/GRIDS by HTTrack Website Copier/3.x [XR&CO'2014], Thu, 15 Jun 2023 18:11:31 GMT -->
+</html>

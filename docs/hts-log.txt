@@ -1,0 +1,184 @@
+HTTrack3.49-2 launched on Thu, 15 Jun 2023 11:06:50 at https://ferret.pmel.noaa.gov/Ferret/documentation/ferret-documentation
+(httrack -p1 -D -a -p1 -O /Users/osborne/Projects/pyferret/ferretdocs/documentation https://ferret.pmel.noaa.gov/Ferret/documentation/ferret-documentation )
+
+Information, Warnings and Errors reported for this mirror:
+note:	the hts-log.txt file, and hts-cache folder, may contain sensitive information,
+	such as username/password authentication for websites mirrored in this project
+	do not share these files/folders if you want these information to remain private
+
+11:12:39	Error: 	"Not Found" (404) at link https://ferret.pmel.noaa.gov/Ferret/documentation/ferret-tutorial (from https://ferret.pmel.noaa.gov/Ferret/documentation/ferret-documentation)
+11:12:39	Error: 	"Not Found" (404) at link https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/full-index/= (from https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/full-index/index)
+11:12:39	Error: 	"Not Found" (404) at link https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/commands_reference/SET (from https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/full-index/index)
+11:12:39	Error: 	"Not Found" (404) at link https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/full-index/working-with-special-data-sets/DSG_datasets (from https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/full-index/index)
+11:12:39	Error: 	"Not Found" (404) at link https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/SET (from https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/commands-reference/CANCEL)
+11:12:39	Error: 	"Not Found" (404) at link https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/commands-reference/writing-external-functions (from https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/commands-reference/SHOW)
+11:12:39	Warning: 	Moved Permanently for https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-c-ferret-specific-pplus-enhancements/
+11:12:39	Warning: 	File has moved from https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-c-ferret-specific-pplus-enhancements/ to https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-c-ferret-specific-pplus-enhancements
+11:12:39	Error: 	"Not Found" (404) at link https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/documentation/users-guide/commands-reference/LIST (from https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/variables-xpressions/VARIABLES)
+11:12:39	Error: 	"Not Found" (404) at link https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/documentation/users-guide/appendix-a-external-functions/NCO (from https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/variables-xpressions/VARIABLES)
+11:12:39	Error: 	"Not Found" (404) at link https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-b-pplus-guide/appendix-b-pplus-guide/PPLUS-COMMAND-FILES (from https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/customizing-plots/COLOR)
+11:12:39	Error: 	"Not Found" (404) at link https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-c-ferret-specific-pplus-enhancements (from https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/customizing-plots/COLOR)
+11:12:39	Error: 	"Not Found" (404) at link https://ferret.pmel.noaa.gov/Ferret/documentation/polytube_demo/polytube_demo.html (from https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/working-with-special-data-sets/LAGRANGIAN-DATA)
+11:12:39	Warning: 	Moved Permanently for https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-a-external-functions/COMPRESSI/
+11:12:39	Warning: 	File has moved from https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-a-external-functions/COMPRESSI/ to https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-a-external-functions/COMPRESSI
+11:12:39	Warning: 	Moved Permanently for https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-a-external-functions/COMPRESSI-BY/
+11:12:39	Warning: 	File has moved from https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-a-external-functions/COMPRESSI-BY/ to https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-a-external-functions/COMPRESSI-BY
+11:12:39	Warning: 	Moved Permanently for https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-a-external-functions/CONVOLVEI/
+11:12:39	Warning: 	File has moved from https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-a-external-functions/CONVOLVEI/ to https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-a-external-functions/CONVOLVEI
+11:12:39	Warning: 	Moved Permanently for https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-a-external-functions/CURV-TO-RECT/
+11:12:39	Warning: 	File has moved from https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-a-external-functions/CURV-TO-RECT/ to https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-a-external-functions/CURV-TO-RECT
+11:12:39	Warning: 	Moved Permanently for https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-a-external-functions/CURV-TO-RECT-MAP/
+11:12:39	Warning: 	File has moved from https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-a-external-functions/CURV-TO-RECT-MAP/ to https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-a-external-functions/CURV-TO-RECT-MAP
+11:12:39	Warning: 	Moved Permanently for https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-a-external-functions/DATE1900/
+11:12:39	Warning: 	File has moved from https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-a-external-functions/DATE1900/ to https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-a-external-functions/DATE1900
+11:12:39	Warning: 	Moved Permanently for https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-a-external-functions/DAYS1900TOYMDHMS/
+11:12:39	Warning: 	File has moved from https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-a-external-functions/DAYS1900TOYMDHMS/ to https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-a-external-functions/DAYS1900TOYMDHMS
+11:12:39	Warning: 	Moved Permanently for https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-a-external-functions/ecat/
+11:12:39	Warning: 	File has moved from https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-a-external-functions/ecat/ to https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-a-external-functions/ecat
+11:12:39	Warning: 	Moved Permanently for https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-a-external-functions/ELEMENT-INDEX/
+11:12:39	Warning: 	File has moved from https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-a-external-functions/ELEMENT-INDEX/ to https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-a-external-functions/ELEMENT-INDEX
+11:12:39	Warning: 	Moved Permanently for https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-a-external-functions/ELEMENT-INDEX-STRING/
+11:12:39	Warning: 	File has moved from https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-a-external-functions/ELEMENT-INDEX-STRING/ to https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-a-external-functions/ELEMENT-INDEX-STRING
+11:12:39	Warning: 	Moved Permanently for https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-a-external-functions/EOF-SPACE/
+11:12:39	Warning: 	File has moved from https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-a-external-functions/EOF-SPACE/ to https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-a-external-functions/EOF-SPACE
+11:12:39	Warning: 	Moved Permanently for https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-a-external-functions/EOF-STAT/
+11:12:39	Warning: 	File has moved from https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-a-external-functions/EOF-STAT/ to https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-a-external-functions/EOF-STAT
+11:12:39	Warning: 	Moved Permanently for https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-a-external-functions/EOF-TFUNC/
+11:12:39	Warning: 	File has moved from https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-a-external-functions/EOF-TFUNC/ to https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-a-external-functions/EOF-TFUNC
+11:12:39	Warning: 	Moved Permanently for https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-a-external-functions/expnd_by_len/
+11:12:39	Warning: 	File has moved from https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-a-external-functions/expnd_by_len/ to https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-a-external-functions/expnd_by_len
+11:12:39	Warning: 	Moved Permanently for https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-a-external-functions/expndi_by/
+11:12:39	Warning: 	File has moved from https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-a-external-functions/expndi_by/ to https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-a-external-functions/expndi_by
+11:12:39	Warning: 	Moved Permanently for https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-a-external-functions/expndi_by_m_counts/
+11:12:39	Warning: 	File has moved from https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-a-external-functions/expndi_by_m_counts/ to https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-a-external-functions/expndi_by_m_counts
+11:12:39	Warning: 	Moved Permanently for https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-a-external-functions/expndi_by_t/
+11:12:39	Warning: 	File has moved from https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-a-external-functions/expndi_by_t/ to https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-a-external-functions/expndi_by_t
+11:12:39	Warning: 	Moved Permanently for https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-a-external-functions/expndi_by_z/
+11:12:39	Warning: 	File has moved from https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-a-external-functions/expndi_by_z/ to https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-a-external-functions/expndi_by_z
+11:12:39	Warning: 	Moved Permanently for https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-a-external-functions/expndi_by_z_counts-and-expndi_id_by_z_counts/
+11:12:39	Warning: 	File has moved from https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-a-external-functions/expndi_by_z_counts-and-expndi_id_by_z_counts/ to https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-a-external-functions/expndi_by_z_counts-and-expndi_id_by_z_counts
+11:12:39	Warning: 	Moved Permanently for https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-a-external-functions/expndi_id_by_z_counts/
+11:12:39	Warning: 	File has moved from https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-a-external-functions/expndi_id_by_z_counts/ to https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-a-external-functions/expndi_id_by_z_counts
+11:12:39	Warning: 	Moved Permanently for https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-a-external-functions/fcat/
+11:12:39	Warning: 	File has moved from https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-a-external-functions/fcat/ to https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-a-external-functions/fcat
+11:12:39	Warning: 	Moved Permanently for https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-a-external-functions/fc_isubset/
+11:12:39	Warning: 	File has moved from https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-a-external-functions/fc_isubset/ to https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-a-external-functions/fc_isubset
+11:12:39	Warning: 	Moved Permanently for https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-a-external-functions/FFT-IM/
+11:12:39	Warning: 	File has moved from https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-a-external-functions/FFT-IM/ to https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-a-external-functions/FFT-IM
+11:12:39	Warning: 	Moved Permanently for https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-a-external-functions/FFT-INVERSE/
+11:12:39	Warning: 	File has moved from https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-a-external-functions/FFT-INVERSE/ to https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-a-external-functions/FFT-INVERSE
+11:12:39	Warning: 	Moved Permanently for https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-a-external-functions/fill_xy/
+11:12:39	Warning: 	File has moved from https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-a-external-functions/fill_xy/ to https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-a-external-functions/fill_xy
+11:12:39	Warning: 	Moved Permanently for https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-a-external-functions/FFT-RE/
+11:12:39	Warning: 	File has moved from https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-a-external-functions/FFT-RE/ to https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-a-external-functions/FFT-RE
+11:12:39	Warning: 	Moved Permanently for https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-a-external-functions/FINDHI/
+11:12:39	Warning: 	File has moved from https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-a-external-functions/FINDHI/ to https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-a-external-functions/FINDHI
+11:12:39	Warning: 	Moved Permanently for https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-a-external-functions/FINDLO/
+11:12:39	Warning: 	File has moved from https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-a-external-functions/FINDLO/ to https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-a-external-functions/FINDLO
+11:12:39	Warning: 	Moved Permanently for https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-a-external-functions/IS-ELEMENT-OF/
+11:12:39	Warning: 	File has moved from https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-a-external-functions/IS-ELEMENT-OF/ to https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-a-external-functions/IS-ELEMENT-OF
+11:12:39	Warning: 	Moved Permanently for https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-a-external-functions/LANCZOS/
+11:12:39	Warning: 	File has moved from https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-a-external-functions/LANCZOS/ to https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-a-external-functions/LANCZOS
+11:12:39	Warning: 	Moved Permanently for https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-a-external-functions/LSL-LOWPASS/
+11:12:39	Warning: 	File has moved from https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-a-external-functions/LSL-LOWPASS/ to https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-a-external-functions/LSL-LOWPASS
+11:12:39	Warning: 	Moved Permanently for https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-a-external-functions/MINUTES24/
+11:12:39	Warning: 	File has moved from https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-a-external-functions/MINUTES24/ to https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-a-external-functions/MINUTES24
+11:12:39	Warning: 	Moved Permanently for https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-a-external-functions/NCO/
+11:12:39	Warning: 	File has moved from https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-a-external-functions/NCO/ to https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-a-external-functions/NCO
+11:12:39	Warning: 	Moved Permanently for https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-a-external-functions/NCO_ATTR/
+11:12:39	Warning: 	File has moved from https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-a-external-functions/NCO_ATTR/ to https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-a-external-functions/NCO_ATTR
+11:12:39	Warning: 	Moved Permanently for https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-a-external-functions/pt_in_poly/
+11:12:39	Warning: 	File has moved from https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-a-external-functions/pt_in_poly/ to https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-a-external-functions/pt_in_poly
+11:12:39	Warning: 	Moved Permanently for https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-a-external-functions/RECT-TO-CURV/
+11:12:39	Warning: 	File has moved from https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-a-external-functions/RECT-TO-CURV/ to https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-a-external-functions/RECT-TO-CURV
+11:12:39	Warning: 	Moved Permanently for https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-a-external-functions/samplexy_curv_avg/
+11:12:39	Warning: 	File has moved from https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-a-external-functions/samplexy_curv_avg/ to https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-a-external-functions/samplexy_curv_avg
+11:12:39	Warning: 	Moved Permanently for https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-a-external-functions/samplexy_curv_nrst/
+11:12:39	Warning: 	File has moved from https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-a-external-functions/samplexy_curv_nrst/ to https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-a-external-functions/samplexy_curv_nrst
+11:12:39	Warning: 	Moved Permanently for https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-a-external-functions/samplexyt/
+11:12:39	Warning: 	File has moved from https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-a-external-functions/samplexyt/ to https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-a-external-functions/samplexyt
+11:12:39	Warning: 	Moved Permanently for https://ferret.pmel.noaa.gov/Ferret/documentation/samplexyz/
+11:12:39	Warning: 	File has moved from https://ferret.pmel.noaa.gov/Ferret/documentation/samplexyz/ to https://ferret.pmel.noaa.gov/Ferret/documentation/samplexyz
+11:12:39	Warning: 	Moved Permanently for https://ferret.pmel.noaa.gov/Ferret/documentation/samplexyzt/
+11:12:39	Warning: 	File has moved from https://ferret.pmel.noaa.gov/Ferret/documentation/samplexyzt/ to https://ferret.pmel.noaa.gov/Ferret/documentation/samplexyzt
+11:12:39	Warning: 	Moved Permanently for https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-a-external-functions/samplexz/
+11:12:39	Warning: 	File has moved from https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-a-external-functions/samplexz/ to https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-a-external-functions/samplexz
+11:12:39	Warning: 	Moved Permanently for https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-a-external-functions/scat2grid_nobs_xy/
+11:12:39	Warning: 	File has moved from https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-a-external-functions/scat2grid_nobs_xy/ to https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-a-external-functions/scat2grid_nobs_xy
+11:12:39	Warning: 	Moved Permanently for https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-a-external-functions/scat2grid_bin_xy/
+11:12:39	Warning: 	File has moved from https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-a-external-functions/scat2grid_bin_xy/ to https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-a-external-functions/scat2grid_bin_xy
+11:12:39	Warning: 	Moved Permanently for https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-a-external-functions/scatgrid_nbin_xyt/
+11:12:39	Warning: 	File has moved from https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-a-external-functions/scatgrid_nbin_xyt/ to https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-a-external-functions/scatgrid_nbin_xyt
+11:12:39	Warning: 	Moved Permanently for https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-a-external-functions/sampleyz/
+11:12:39	Warning: 	File has moved from https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-a-external-functions/sampleyz/ to https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-a-external-functions/sampleyz
+11:12:39	Warning: 	Moved Permanently for https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-a-external-functions/separate/
+11:12:39	Warning: 	File has moved from https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-a-external-functions/separate/ to https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-a-external-functions/separate
+11:12:39	Warning: 	Moved Permanently for https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-a-external-functions/tax_datestring/
+11:12:39	Warning: 	File has moved from https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-a-external-functions/tax_datestring/ to https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-a-external-functions/tax_datestring
+11:12:39	Warning: 	Moved Permanently for https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-a-external-functions/test_opendap/
+11:12:39	Warning: 	File has moved from https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-a-external-functions/test_opendap/ to https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-a-external-functions/test_opendap
+11:12:39	Warning: 	Moved Permanently for https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-a-external-functions/TCAT/
+11:12:39	Warning: 	File has moved from https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-a-external-functions/TCAT/ to https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-a-external-functions/TCAT
+11:12:39	Warning: 	Moved Permanently for https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-a-external-functions/TRANSPOSE/
+11:12:39	Warning: 	File has moved from https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-a-external-functions/TRANSPOSE/ to https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-a-external-functions/TRANSPOSE
+11:12:39	Warning: 	Moved Permanently for https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-a-external-functions/XCAT/
+11:12:39	Warning: 	File has moved from https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-a-external-functions/XCAT/ to https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-a-external-functions/XCAT
+11:12:39	Warning: 	Moved Permanently for https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-a-external-functions/YCAT/
+11:12:39	Warning: 	File has moved from https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-a-external-functions/YCAT/ to https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-a-external-functions/YCAT
+11:12:39	Warning: 	Moved Permanently for https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-a-external-functions/WRITEV5D/
+11:12:39	Warning: 	File has moved from https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-a-external-functions/WRITEV5D/ to https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-a-external-functions/WRITEV5D
+11:12:39	Warning: 	Moved Permanently for https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-a-external-functions/ZAXREPLACE-AVG/
+11:12:39	Warning: 	File has moved from https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-a-external-functions/ZAXREPLACE-AVG/ to https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-a-external-functions/ZAXREPLACE-AVG
+11:12:39	Warning: 	Moved Permanently for https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-a-external-functions/ZAXREPLACE-BIN/
+11:12:39	Warning: 	File has moved from https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-a-external-functions/ZAXREPLACE-BIN/ to https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-a-external-functions/ZAXREPLACE-BIN
+11:12:39	Warning: 	Moved Permanently for https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-a-external-functions/ZCAT/
+11:12:39	Warning: 	File has moved from https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-a-external-functions/ZCAT/ to https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-a-external-functions/ZCAT
+11:12:39	Error: 	"Not Found" (404) at link https://ferret.pmel.noaa.gov/Ferret/Documentation/Users_Guide/current/ppl_symbol_fonts.htm (from https://ferret.pmel.noaa.gov/Ferret/documentation/users-guide/appendix-b-pplus-guide/PPLUS-COMMAND-FILES)
+11:12:51	Warning: 	Moved Permanently for https://ferret.pmel.noaa.gov/Ferret/documentation/pyferret/what-is-pyferret/
+11:12:51	Warning: 	File has moved from https://ferret.pmel.noaa.gov/Ferret/documentation/pyferret/what-is-pyferret/ to https://ferret.pmel.noaa.gov/Ferret/documentation/pyferret/what-is-pyferret
+11:12:51	Warning: 	Moved Permanently for https://ferret.pmel.noaa.gov/Ferret/documentation/pyferret/why-use-pyferret/
+11:12:51	Warning: 	File has moved from https://ferret.pmel.noaa.gov/Ferret/documentation/pyferret/why-use-pyferret/ to https://ferret.pmel.noaa.gov/Ferret/documentation/pyferret/why-use-pyferret
+11:12:51	Warning: 	Moved Permanently for https://ferret.pmel.noaa.gov/Ferret/documentation/pyferret/example-sessions-ferret/
+11:12:51	Warning: 	File has moved from https://ferret.pmel.noaa.gov/Ferret/documentation/pyferret/example-sessions-ferret/ to https://ferret.pmel.noaa.gov/Ferret/documentation/pyferret/example-sessions-ferret
+11:12:51	Warning: 	Moved Permanently for https://ferret.pmel.noaa.gov/Ferret/documentation/pyferret/pyferret-quick-start-notes/
+11:12:51	Warning: 	File has moved from https://ferret.pmel.noaa.gov/Ferret/documentation/pyferret/pyferret-quick-start-notes/ to https://ferret.pmel.noaa.gov/Ferret/documentation/pyferret/pyferret-quick-start-notes
+11:12:51	Warning: 	Moved Permanently for https://ferret.pmel.noaa.gov/Ferret/documentation/pyferret/example-sessions-python/
+11:12:51	Warning: 	File has moved from https://ferret.pmel.noaa.gov/Ferret/documentation/pyferret/example-sessions-python/ to https://ferret.pmel.noaa.gov/Ferret/documentation/pyferret/example-sessions-python
+11:12:51	Warning: 	Moved Permanently for https://ferret.pmel.noaa.gov/Ferret/documentation/pyferret/graphics/
+11:12:51	Warning: 	File has moved from https://ferret.pmel.noaa.gov/Ferret/documentation/pyferret/graphics/ to https://ferret.pmel.noaa.gov/Ferret/documentation/pyferret/graphics
+11:12:51	Warning: 	Moved Permanently for https://ferret.pmel.noaa.gov/Ferret/documentation/pyferret/ferret-functionality/
+11:12:51	Warning: 	File has moved from https://ferret.pmel.noaa.gov/Ferret/documentation/pyferret/ferret-functionality/ to https://ferret.pmel.noaa.gov/Ferret/documentation/pyferret/ferret-functionality
+11:12:51	Warning: 	Moved Permanently for https://ferret.pmel.noaa.gov/Ferret/documentation/pyferret/python-functions/
+11:12:51	Warning: 	File has moved from https://ferret.pmel.noaa.gov/Ferret/documentation/pyferret/python-functions/ to https://ferret.pmel.noaa.gov/Ferret/documentation/pyferret/python-functions
+11:12:51	Warning: 	Moved Permanently for https://ferret.pmel.noaa.gov/Ferret/documentation/pyferret/pyferret-python-objects/
+11:12:51	Warning: 	File has moved from https://ferret.pmel.noaa.gov/Ferret/documentation/pyferret/pyferret-python-objects/ to https://ferret.pmel.noaa.gov/Ferret/documentation/pyferret/pyferret-python-objects
+11:12:51	Warning: 	Moved Permanently for https://ferret.pmel.noaa.gov/Ferret/documentation/pyferret/pyefs/
+11:12:51	Warning: 	File has moved from https://ferret.pmel.noaa.gov/Ferret/documentation/pyferret/pyefs/ to https://ferret.pmel.noaa.gov/Ferret/documentation/pyferret/pyefs
+11:12:51	Warning: 	Moved Permanently for https://ferret.pmel.noaa.gov/Ferret/documentation/pyferret/fortranefs/
+11:12:51	Warning: 	File has moved from https://ferret.pmel.noaa.gov/Ferret/documentation/pyferret/fortranefs/ to https://ferret.pmel.noaa.gov/Ferret/documentation/pyferret/fortranefs
+11:12:51	Warning: 	Moved Permanently for https://ferret.pmel.noaa.gov/Ferret/documentation/pyferret/data-dictionaries/
+11:12:51	Warning: 	File has moved from https://ferret.pmel.noaa.gov/Ferret/documentation/pyferret/data-dictionaries/ to https://ferret.pmel.noaa.gov/Ferret/documentation/pyferret/data-dictionaries
+11:12:51	Warning: 	Moved Permanently for https://ferret.pmel.noaa.gov/Ferret/documentation/pyferret/requirements/
+11:12:51	Warning: 	File has moved from https://ferret.pmel.noaa.gov/Ferret/documentation/pyferret/requirements/ to https://ferret.pmel.noaa.gov/Ferret/documentation/pyferret/requirements
+11:12:51	Warning: 	Moved Permanently for https://ferret.pmel.noaa.gov/Ferret/documentation/pyferret/build-install/
+11:12:51	Warning: 	File has moved from https://ferret.pmel.noaa.gov/Ferret/documentation/pyferret/build-install/ to https://ferret.pmel.noaa.gov/Ferret/documentation/pyferret/build-install
+11:12:51	Warning: 	Moved Permanently for https://ferret.pmel.noaa.gov/Ferret/documentation/pyferret/known-issues/
+11:12:51	Warning: 	File has moved from https://ferret.pmel.noaa.gov/Ferret/documentation/pyferret/known-issues/ to https://ferret.pmel.noaa.gov/Ferret/documentation/pyferret/known-issues
+11:12:51	Warning: 	Moved Permanently for https://ferret.pmel.noaa.gov/Ferret/documentation/pyferret/downloads/
+11:12:51	Warning: 	File has moved from https://ferret.pmel.noaa.gov/Ferret/documentation/pyferret/downloads/ to https://ferret.pmel.noaa.gov/Ferret/documentation/pyferret/downloads
+11:12:51	Error: 	"Not Found" (404) at link https://ferret.pmel.noaa.gov/Ferret/documentation/pyferret/documentation/users-guide/commands-reference/SET (from https://ferret.pmel.noaa.gov/Ferret/documentation/pyferret/known-issues)
+11:12:51	Error: 	"Not Found" (404) at link https://ferret.pmel.noaa.gov/Ferret/documentation/documentation/users-guide/data-set-basics/ACCESS-TO-REMOTE-DATA-SETS-WITH-DODS (from https://ferret.pmel.noaa.gov/Ferret/documentation/opendap/opendap-usage-in-ferret)
+11:12:51	Error: 	"Not Found" (404) at link https://ferret.pmel.noaa.gov/Ferret/documentation/documentation/users-guide/data-set-basics/NETCDF-DATA (from https://ferret.pmel.noaa.gov/Ferret/documentation/release-notes/version-7-3-release-notes)
+11:12:51	Error: 	"Not Found" (404) at link https://ferret.pmel.noaa.gov/Ferret/documentation/faq/overlaying-a-time-series-on-a-2d-plot (from https://ferret.pmel.noaa.gov/Ferret/documentation/release-notes/version-7-0-release-notes)
+11:12:51	Error: 	"Not Found" (404) at link https://ferret.pmel.noaa.gov/Ferret/documentation/faq/locating-labels-on-a-time-axis-plot (from https://ferret.pmel.noaa.gov/Ferret/documentation/release-notes/version-7-0-release-notes)
+11:12:51	Error: 	"Not Found" (404) at link https://ferret.pmel.noaa.gov/Ferret/documentation/release-notes/users-guide/variables-xpressions/XPRESSIONS (from https://ferret.pmel.noaa.gov/Ferret/documentation/release-notes/version-6-7-1-release-notes)
+11:12:51	Error: 	"Not Found" (404) at link https://ferret.pmel.noaa.gov/Ferret/documentation/release-notes/users-guide/customizing-plots/CONTOURING (from https://ferret.pmel.noaa.gov/Ferret/documentation/release-notes/version-6-7-1-release-notes)
+11:12:51	Error: 	"Not Found" (404) at link https://ferret.pmel.noaa.gov/Ferret/documentation/release-notes/users-guide/commands-reference/SET (from https://ferret.pmel.noaa.gov/Ferret/documentation/release-notes/version-6-7-release-notes)
+11:12:51	Error: 	"Not Found" (404) at link https://ferret.pmel.noaa.gov/Ferret/documentation/downloads/ferret-downloads (from https://ferret.pmel.noaa.gov/Ferret/documentation/release-notes/version-6-6-5-release-notes)
+11:12:51	Error: 	"Not Found" (404) at link https://ferret.pmel.noaa.gov/Ferret/documentation/release-notes/users-guide/data-set-basics/NETCDF-DATA (from https://ferret.pmel.noaa.gov/Ferret/documentation/release-notes/v6-6-release-notes)
+11:12:51	Error: 	"Not Found" (404) at link https://ferret.pmel.noaa.gov/Ferret/documentation/release-notes/users-guide/index-1/index (from https://ferret.pmel.noaa.gov/Ferret/documentation/release-notes/v6-3-release-notes)
+11:12:51	Error: 	"Not Found" (404) at link https://ferret.pmel.noaa.gov/Ferret/documentation/v6-2-release-notes (from https://ferret.pmel.noaa.gov/Ferret/documentation/release-notes/v6-3-release-notes)
+11:12:51	Error: 	"Not Found" (404) at link https://ferret.pmel.noaa.gov/Ferret/documentation/release-notes/users-guide/computing-environment/FILES-AND-ENVIRONMENT-VARIABLES-USED-BY-FERRET (from https://ferret.pmel.noaa.gov/Ferret/documentation/release-notes/v6-2-release-notes)
+
+HTTrack Website Copier/3.49-2 mirror complete in 6 minutes 1 seconds : 402 links scanned, 302 files written (27895415 bytes overall) [28850160 bytes received at 79917 bytes/sec]
+(25 errors, 148 warnings, 0 messages)

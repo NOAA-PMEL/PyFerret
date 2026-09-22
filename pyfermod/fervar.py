@@ -744,10 +744,10 @@ class FerVar(object):
                     raise KeyError('negative indices not supported at this time')
                 # Ferret indices start at 1
                 val += 1
-                indexlimits[k] = '%d' % val
+                indexlimits[0] = '%d' % val
                 changed = True
-            elif isinstance(start,numbers.Real):
-                coordlimits[k] = '%s' % str(val)
+            elif isinstance(val,numbers.Real):
+                coordlimits[0] = '%s' % str(val)
                 changed = True
             else:
                 raise KeyError('%s in not valid' % str(key))
